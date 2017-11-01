@@ -968,18 +968,18 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
 
 """Accesses the google.example.library.v1 LibraryService API."""
 
-import collections
-import json
-import os
+import functools
 import pkg_resources
-import platform
 
-from google.gapic.longrunning import operations_client
-from google.gax import api_callable
-from google.gax import config
-from google.gax import path_template
-from google.gax.utils import oneof
-import google.gax
+import google.api_core.gapic_v1.client_info
+import google.api_core.gapic_v1.config
+import google.api_core.gapic_v1.method
+import google.api_core.grpc_helpers
+import google.api_core.operation
+import google.api_core.operations_v1
+import google.api_core.page_iterator
+import google.api_core.path_template
+import google.api_core.protobuf_helpers
 
 from google.cloud.example.library_v1.gapic import enums
 from google.cloud.example.library_v1.gapic import library_service_client_config
@@ -990,7 +990,9 @@ from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
 
-_PageDesc = google.gax.PageDescriptor
+_GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
+    'google-cloud-library',
+).version
 
 
 class LibraryServiceClient(object):
@@ -1011,339 +1013,253 @@ class LibraryServiceClient(object):
     Service comment may include special characters: <>&\"``'@.
     """
 
-    SERVICE_ADDRESS = 'library-example.googleapis.com'
+    SERVICE_ADDRESS = 'library-example.googleapis.com:443'
     """The default address of the service."""
-
-    DEFAULT_SERVICE_PORT = 443
-    """The default port of the service."""
-
-    _PAGE_DESCRIPTORS = {
-        'list_shelves': _PageDesc(
-            'page_token',
-            'next_page_token',
-            'shelves'
-        ),
-        'list_books': _PageDesc(
-            'page_token',
-            'next_page_token',
-            'books'
-        ),
-        'list_strings': _PageDesc(
-            'page_token',
-            'next_page_token',
-            'strings'
-        ),
-        'find_related_books': _PageDesc(
-            'page_token',
-            'next_page_token',
-            'names'
-        )
-    }
 
     # The scopes needed to make gRPC calls to all of the methods defined in
     # this service
-    _ALL_SCOPES = (
+    _DEFAULT_SCOPES = (
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/library',
     )
 
-    _SHELF_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf_id}')
-    _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf_id}/books/{book_id}')
-    _RETURN_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf}/books/{book}/returns/{return}')
+    # The name of the interface for this client. This is the key used to find
+    # method configuration in the client_config dictionary
+    _INTERFACE_NAME = (
+        'google.example.library.v1.LibraryService')
+
 
     @classmethod
     def shelf_path(cls, shelf_id):
         """Returns a fully-qualified shelf resource name string."""
-        return cls._SHELF_PATH_TEMPLATE.render({
-            'shelf_id': shelf_id,
-        })
+        return google.api_core.path_template.expand(
+            'shelves/{shelf_id}',
+            shelf_id=shelf_id,
+        )
 
     @classmethod
     def book_path(cls, shelf_id, book_id):
         """Returns a fully-qualified book resource name string."""
-        return cls._BOOK_PATH_TEMPLATE.render({
-            'shelf_id': shelf_id,
-            'book_id': book_id,
-        })
+        return google.api_core.path_template.expand(
+            'shelves/{shelf_id}/books/{book_id}',
+            shelf_id=shelf_id,
+            book_id=book_id,
+        )
 
     @classmethod
     def return_path(cls, shelf, book, return_):
         """Returns a fully-qualified return resource name string."""
-        return cls._RETURN_PATH_TEMPLATE.render({
-            'shelf': shelf,
-            'book': book,
-            'return': return_,
-        })
-
-    @classmethod
-    def match_shelf_id_from_shelf_name(cls, shelf_name):
-        """Parses the shelf_id from a shelf resource.
-
-        Args:
-            shelf_name (str): A fully-qualified path representing a shelf
-                resource.
-
-        Returns:
-            A string representing the shelf_id.
-        """
-        return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf_id')
-
-    @classmethod
-    def match_shelf_id_from_book_name(cls, book_name):
-        """Parses the shelf_id from a book resource.
-
-        Args:
-            book_name (str): A fully-qualified path representing a book
-                resource.
-
-        Returns:
-            A string representing the shelf_id.
-        """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf_id')
-
-    @classmethod
-    def match_book_id_from_book_name(cls, book_name):
-        """Parses the book_id from a book resource.
-
-        Args:
-            book_name (str): A fully-qualified path representing a book
-                resource.
-
-        Returns:
-            A string representing the book_id.
-        """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
-
-    @classmethod
-    def match_shelf_from_return_name(cls, return_name):
-        """Parses the shelf from a return resource.
-
-        Args:
-            return_name (str): A fully-qualified path representing a return
-                resource.
-
-        Returns:
-            A string representing the shelf.
-        """
-        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('shelf')
-
-    @classmethod
-    def match_book_from_return_name(cls, return_name):
-        """Parses the book from a return resource.
-
-        Args:
-            return_name (str): A fully-qualified path representing a return
-                resource.
-
-        Returns:
-            A string representing the book.
-        """
-        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('book')
-
-    @classmethod
-    def match_return_from_return_name(cls, return_name):
-        """Parses the return from a return resource.
-
-        Args:
-            return_name (str): A fully-qualified path representing a return
-                resource.
-
-        Returns:
-            A string representing the return.
-        """
-        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('return')
+        return google.api_core.path_template.expand(
+            'shelves/{shelf}/books/{book}/returns/{return}',
+            shelf=shelf,
+            book=book,
+            return=return_,
+        )
 
     def __init__(self,
             channel=None,
             credentials=None,
-            ssl_credentials=None,
-            scopes=None,
-            client_config=None,
-            lib_name=None,
-            lib_version='',
-            metrics_headers=()):
+            client_config=library_service_client_config.config,
+            client_info=None):
         """Constructor.
 
         Args:
-            channel (~grpc.Channel): A ``Channel`` instance through
-                which to make calls.
-            credentials (~google.auth.credentials.Credentials): The authorization
-                credentials to attach to requests. These credentials identify this
-                application to the service.
-            ssl_credentials (~grpc.ChannelCredentials): A
-                ``ChannelCredentials`` instance for use with an SSL-enabled
-                channel.
-            scopes (Sequence[str]): A list of OAuth2 scopes to attach to requests.
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. If specified, then the ``credentials``
+                argument is ignored.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
             client_config (dict):
-                A dictionary for call options for each method. See
-                :func:`google.gax.construct_settings` for the structure of
-                this data. Falls back to the default config if not specified
-                or the specified config is missing data points.
-            lib_name (str): The API library software used for calling
-                the service. (Unless you are writing an API client itself,
-                leave this as default.)
-            lib_version (str): The API library software version used
-                for calling the service. (Unless you are writing an API client
-                itself, leave this as default.)
-            metrics_headers (dict): A dictionary of values for tracking
-                client library metrics. Ultimately serializes to a string
-                (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
-                considered private.
+                A dictionary of call options for each method. If not specified
+                the default configuration is used. Generally, you only need
+                to set this if you're developing your own client library.
+            client_info (google.api_core.gapic_v1.client_info.ClientInfo):
+                The client info used to send a user-agent string along with
+                API requests. If ``None``, then default info will be used.
+                Generally, you only need to set this if you're developing
+                your own client library.
         """
-        # Unless the calling application specifically requested
-        # OAuth scopes, request everything.
-        if scopes is None:
-            scopes = self._ALL_SCOPES
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'channel and credentials arguments to {} are mutually '
+                'exclusive.'.format(self.__class__.__name__))
 
-        # Initialize an empty client config, if none is set.
-        if client_config is None:
-            client_config = {}
+        if channel is None:
+            channel = google.api_core.grpc_helpers.create_channel(
+                self.SERVICE_ADDRESS,
+                credentials=credentials,
+                scopes=self._DEFAULT_SCOPES)
 
-        # Initialize metrics_headers as an ordered dictionary
-        # (cuts down on cardinality of the resulting string slightly).
-        metrics_headers = collections.OrderedDict(metrics_headers)
-        metrics_headers['gl-python'] = platform.python_version()
+        self.library_service_stub = (
+            library_pb2.LibraryServiceStub(channel))
+        self.labeler_stub = (
+            tagger_pb2.LabelerStub(channel))
 
-        # The library may or may not be set, depending on what is
-        # calling this client. Newer client libraries set the library name
-        # and version.
-        if lib_name:
-            metrics_headers[lib_name] = lib_version
+        # Operations client for methods that return long-running operations
+        # futures.
+        self.operations_client = (
+            google.api_core.operations_v1.OperationsClient(channel))
 
-        # Finally, track the GAPIC package version.
-        metrics_headers['gapic'] = pkg_resources.get_distribution(
-            'google-cloud-library',
-        ).version
+        if client_info is None:
+            client_info = (
+                google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
 
-        # Load the configuration defaults.
-        defaults = api_callable.construct_settings(
-            'google.example.library.v1.LibraryService',
-            library_service_client_config.config,
-            client_config,
-            config.STATUS_CODE_NAMES,
-            metrics_headers=metrics_headers,
-            page_descriptors=self._PAGE_DESCRIPTORS,
-        )
-        self.library_service_stub = config.create_stub(
-            library_pb2.LibraryServiceStub,
-            channel=channel,
-            service_path=self.SERVICE_ADDRESS,
-            service_port=self.DEFAULT_SERVICE_PORT,
-            credentials=credentials,
-            scopes=scopes,
-            ssl_credentials=ssl_credentials)
-        self.labeler_stub = config.create_stub(
-            tagger_pb2.LabelerStub,
-            channel=channel,
-            service_path=self.SERVICE_ADDRESS,
-            service_port=self.DEFAULT_SERVICE_PORT,
-            credentials=credentials,
-            scopes=scopes,
-            ssl_credentials=ssl_credentials)
+        client_info.gapic_version = _GAPIC_LIBRARY_VERSION
 
-        self.operations_client = operations_client.OperationsClient(
-            service_path=self.SERVICE_ADDRESS,
-            channel=channel,
-            credentials=credentials,
-            ssl_credentials=ssl_credentials,
-            scopes=scopes,
-            client_config=client_config,
-            metrics_headers=metrics_headers,
-        )
+        interface_config = client_config['interfaces'][self._INTERFACE_NAME]
+        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+            interface_config)
 
-        self._create_shelf = api_callable.create_api_call(
+        self._create_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.CreateShelf,
-            settings=defaults['create_shelf'])
-        self._get_shelf = api_callable.create_api_call(
+            default_retry=method_configs['CreateShelf'].retry,
+            default_timeout=method_configs['CreateShelf'].timeout,
+            client_info=client_info)
+        self._get_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetShelf,
-            settings=defaults['get_shelf'])
-        self._list_shelves = api_callable.create_api_call(
+            default_retry=method_configs['GetShelf'].retry,
+            default_timeout=method_configs['GetShelf'].timeout,
+            client_info=client_info)
+        self._list_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListShelves,
-            settings=defaults['list_shelves'])
-        self._delete_shelf = api_callable.create_api_call(
+            default_retry=method_configs['ListShelves'].retry,
+            default_timeout=method_configs['ListShelves'].timeout,
+            client_info=client_info)
+        self._delete_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DeleteShelf,
-            settings=defaults['delete_shelf'])
-        self._merge_shelves = api_callable.create_api_call(
+            default_retry=method_configs['DeleteShelf'].retry,
+            default_timeout=method_configs['DeleteShelf'].timeout,
+            client_info=client_info)
+        self._merge_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MergeShelves,
-            settings=defaults['merge_shelves'])
-        self._create_book = api_callable.create_api_call(
+            default_retry=method_configs['MergeShelves'].retry,
+            default_timeout=method_configs['MergeShelves'].timeout,
+            client_info=client_info)
+        self._create_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.CreateBook,
-            settings=defaults['create_book'])
-        self._publish_series = api_callable.create_api_call(
+            default_retry=method_configs['CreateBook'].retry,
+            default_timeout=method_configs['CreateBook'].timeout,
+            client_info=client_info)
+        self._publish_series = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.PublishSeries,
-            settings=defaults['publish_series'])
-        self._get_book = api_callable.create_api_call(
+            default_retry=method_configs['PublishSeries'].retry,
+            default_timeout=method_configs['PublishSeries'].timeout,
+            client_info=client_info)
+        self._get_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBook,
-            settings=defaults['get_book'])
-        self._list_books = api_callable.create_api_call(
+            default_retry=method_configs['GetBook'].retry,
+            default_timeout=method_configs['GetBook'].timeout,
+            client_info=client_info)
+        self._list_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListBooks,
-            settings=defaults['list_books'])
-        self._delete_book = api_callable.create_api_call(
+            default_retry=method_configs['ListBooks'].retry,
+            default_timeout=method_configs['ListBooks'].timeout,
+            client_info=client_info)
+        self._delete_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DeleteBook,
-            settings=defaults['delete_book'])
-        self._update_book = api_callable.create_api_call(
+            default_retry=method_configs['DeleteBook'].retry,
+            default_timeout=method_configs['DeleteBook'].timeout,
+            client_info=client_info)
+        self._update_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.UpdateBook,
-            settings=defaults['update_book'])
-        self._move_book = api_callable.create_api_call(
+            default_retry=method_configs['UpdateBook'].retry,
+            default_timeout=method_configs['UpdateBook'].timeout,
+            client_info=client_info)
+        self._move_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MoveBook,
-            settings=defaults['move_book'])
-        self._list_strings = api_callable.create_api_call(
+            default_retry=method_configs['MoveBook'].retry,
+            default_timeout=method_configs['MoveBook'].timeout,
+            client_info=client_info)
+        self._list_strings = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListStrings,
-            settings=defaults['list_strings'])
-        self._add_comments = api_callable.create_api_call(
+            default_retry=method_configs['ListStrings'].retry,
+            default_timeout=method_configs['ListStrings'].timeout,
+            client_info=client_info)
+        self._add_comments = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.AddComments,
-            settings=defaults['add_comments'])
-        self._get_book_from_archive = api_callable.create_api_call(
+            default_retry=method_configs['AddComments'].retry,
+            default_timeout=method_configs['AddComments'].timeout,
+            client_info=client_info)
+        self._get_book_from_archive = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromArchive,
-            settings=defaults['get_book_from_archive'])
-        self._get_book_from_anywhere = api_callable.create_api_call(
+            default_retry=method_configs['GetBookFromArchive'].retry,
+            default_timeout=method_configs['GetBookFromArchive'].timeout,
+            client_info=client_info)
+        self._get_book_from_anywhere = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromAnywhere,
-            settings=defaults['get_book_from_anywhere'])
-        self._get_book_from_absolutely_anywhere = api_callable.create_api_call(
+            default_retry=method_configs['GetBookFromAnywhere'].retry,
+            default_timeout=method_configs['GetBookFromAnywhere'].timeout,
+            client_info=client_info)
+        self._get_book_from_absolutely_anywhere = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromAbsolutelyAnywhere,
-            settings=defaults['get_book_from_absolutely_anywhere'])
-        self._update_book_index = api_callable.create_api_call(
+            default_retry=method_configs['GetBookFromAbsolutelyAnywhere'].retry,
+            default_timeout=method_configs['GetBookFromAbsolutelyAnywhere'].timeout,
+            client_info=client_info)
+        self._update_book_index = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.UpdateBookIndex,
-            settings=defaults['update_book_index'])
-        self._stream_shelves = api_callable.create_api_call(
+            default_retry=method_configs['UpdateBookIndex'].retry,
+            default_timeout=method_configs['UpdateBookIndex'].timeout,
+            client_info=client_info)
+        self._stream_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.StreamShelves,
-            settings=defaults['stream_shelves'])
-        self._stream_books = api_callable.create_api_call(
+            default_retry=method_configs['StreamShelves'].retry,
+            default_timeout=method_configs['StreamShelves'].timeout,
+            client_info=client_info)
+        self._stream_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.StreamBooks,
-            settings=defaults['stream_books'])
-        self._discuss_book = api_callable.create_api_call(
+            default_retry=method_configs['StreamBooks'].retry,
+            default_timeout=method_configs['StreamBooks'].timeout,
+            client_info=client_info)
+        self._discuss_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DiscussBook,
-            settings=defaults['discuss_book'])
-        self._monolog_about_book = api_callable.create_api_call(
+            default_retry=method_configs['DiscussBook'].retry,
+            default_timeout=method_configs['DiscussBook'].timeout,
+            client_info=client_info)
+        self._monolog_about_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MonologAboutBook,
-            settings=defaults['monolog_about_book'])
-        self._find_related_books = api_callable.create_api_call(
+            default_retry=method_configs['MonologAboutBook'].retry,
+            default_timeout=method_configs['MonologAboutBook'].timeout,
+            client_info=client_info)
+        self._find_related_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.FindRelatedBooks,
-            settings=defaults['find_related_books'])
-        self._add_tag = api_callable.create_api_call(
+            default_retry=method_configs['FindRelatedBooks'].retry,
+            default_timeout=method_configs['FindRelatedBooks'].timeout,
+            client_info=client_info)
+        self._add_tag = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.AddTag,
-            settings=defaults['add_tag'])
-        self._add_label = api_callable.create_api_call(
+            default_retry=method_configs['AddTag'].retry,
+            default_timeout=method_configs['AddTag'].timeout,
+            client_info=client_info)
+        self._add_label = google.api_core.gapic_v1.method.wrap_method(
             self.labeler_stub.AddLabel,
-            settings=defaults['add_label'])
-        self._get_big_book = api_callable.create_api_call(
+            default_retry=method_configs['AddLabel'].retry,
+            default_timeout=method_configs['AddLabel'].timeout,
+            client_info=client_info)
+        self._get_big_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBigBook,
-            settings=defaults['get_big_book'])
-        self._get_big_nothing = api_callable.create_api_call(
+            default_retry=method_configs['GetBigBook'].retry,
+            default_timeout=method_configs['GetBigBook'].timeout,
+            client_info=client_info)
+        self._get_big_nothing = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBigNothing,
-            settings=defaults['get_big_nothing'])
-        self._test_optional_required_flattening_params = api_callable.create_api_call(
+            default_retry=method_configs['GetBigNothing'].retry,
+            default_timeout=method_configs['GetBigNothing'].timeout,
+            client_info=client_info)
+        self._test_optional_required_flattening_params = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.TestOptionalRequiredFlatteningParams,
-            settings=defaults['test_optional_required_flattening_params'])
+            default_retry=method_configs['TestOptionalRequiredFlatteningParams'].retry,
+            default_timeout=method_configs['TestOptionalRequiredFlatteningParams'].timeout,
+            client_info=client_info)
 
     # Service calls
     def create_shelf(
             self,
             shelf,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Creates a shelf, and returns the new Shelf.
         RPC method comment may include special characters: <>&\"``'@.
@@ -1361,19 +1277,26 @@ class LibraryServiceClient(object):
             shelf (Union[dict, ~google.cloud.example.library_v1.types.Shelf]): The shelf to create.
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.Shelf`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.CreateShelfRequest(
             shelf=shelf)
-        return self._create_shelf(request, options)
+        return self._create_shelf(request, retry=retry, timeout=timeout)
 
     def get_shelf(
             self,
@@ -1381,7 +1304,8 @@ class LibraryServiceClient(object):
             options_,
             message=None,
             string_builder=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Gets a shelf.
 
@@ -1403,32 +1327,39 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.SomeMessage`
             string_builder (Union[dict, ~google.cloud.example.library_v1.types.StringBuilder]): If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.StringBuilder`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetShelfRequest(
             name=name,
             options=options_,
             message=message,
             string_builder=string_builder)
-        return self._get_shelf(request, options)
+        return self._get_shelf(request, retry=retry, timeout=timeout)
 
     def list_shelves(
             self,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Lists shelves.
 
         Example:
             >>> from google.cloud.example import library_v1
-            >>> from google.gax import CallOptions, INITIAL_PAGE
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
@@ -1445,8 +1376,12 @@ class LibraryServiceClient(object):
             ...         pass
 
         Args:
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1455,15 +1390,26 @@ class LibraryServiceClient(object):
             of the response through the `options` parameter.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
         """
         request = library_pb2.ListShelvesRequest()
-        return self._list_shelves(request, options)
+        iterator = google.api_core.page_iterator.GRPCIterator(
+            client=None,
+            method=functools.partial(self._list_shelves, retry=retry, timeout=timeout),
+            request=request,
+            items_field='shelves',
+            request_token_field='page_token',
+            response_token_field='next_page_token')
+        return iterator
 
     def delete_shelf(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Deletes a shelf.
 
@@ -1478,22 +1424,30 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the shelf to delete.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.DeleteShelfRequest(
             name=name)
-        self._delete_shelf(request, options)
+        self._delete_shelf(request, retry=retry, timeout=timeout)
 
     def merge_shelves(
             self,
             name,
             other_shelf_name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Merges two shelves by adding all books from the shelf named
         ``other_shelf_name`` to shelf ``name``, and deletes
@@ -1512,26 +1466,34 @@ class LibraryServiceClient(object):
         Args:
             name (str): The name of the shelf we're adding books to.
             other_shelf_name (str): The name of the shelf we're removing books from and deleting.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.MergeShelvesRequest(
             name=name,
             other_shelf_name=other_shelf_name)
-        return self._merge_shelves(request, options)
+        return self._merge_shelves(request, retry=retry, timeout=timeout)
 
     def create_book(
             self,
             name,
             book,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Creates a book.
 
@@ -1550,20 +1512,27 @@ class LibraryServiceClient(object):
             book (Union[dict, ~google.cloud.example.library_v1.types.Book]): The book to create.
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.Book`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.CreateBookRequest(
             name=name,
             book=book)
-        return self._create_book(request, options)
+        return self._create_book(request, retry=retry, timeout=timeout)
 
     def publish_series(
             self,
@@ -1572,7 +1541,8 @@ class LibraryServiceClient(object):
             series_uuid,
             edition=None,
             review_copy=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Creates a series of books.
 
@@ -1600,19 +1570,26 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.SeriesUuid`
             edition (int): The edition of the series
             review_copy (bool): If the book is in a pre-publish state
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.PublishSeriesResponse` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         # Sanity check: We have some fields which are mutually exclusive;
         # raise ValueError if more than one is sent.
-        oneof.check_oneof(
+        google.api_core.protobuf_helpers.check_oneof(
             edition=edition,
             review_copy=review_copy,
         )
@@ -1623,12 +1600,13 @@ class LibraryServiceClient(object):
             series_uuid=series_uuid,
             edition=edition,
             review_copy=review_copy)
-        return self._publish_series(request, options)
+        return self._publish_series(request, retry=retry, timeout=timeout)
 
     def get_book(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Gets a book.
 
@@ -1643,32 +1621,39 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
-        return self._get_book(request, options)
+        return self._get_book(request, retry=retry, timeout=timeout)
 
     def list_books(
             self,
             name,
             page_size=None,
             filter_=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Lists books in a shelf.
 
         Example:
             >>> from google.cloud.example import library_v1
-            >>> from google.gax import CallOptions, INITIAL_PAGE
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
@@ -1694,8 +1679,12 @@ class LibraryServiceClient(object):
                 streaming is performed per-page, this determines the maximum number
                 of resources in a page.
             filter_ (str): To test python built-in wrapping.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1704,19 +1693,30 @@ class LibraryServiceClient(object):
             of the response through the `options` parameter.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
             filter=filter_)
-        return self._list_books(request, options)
+        iterator = google.api_core.page_iterator.GRPCIterator(
+            client=None,
+            method=functools.partial(self._list_books, retry=retry, timeout=timeout),
+            request=request,
+            items_field='books',
+            request_token_field='page_token',
+            response_token_field='next_page_token')
+        return iterator
 
     def delete_book(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Deletes a book.
 
@@ -1731,16 +1731,23 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to delete.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.DeleteBookRequest(
             name=name)
-        self._delete_book(request, options)
+        self._delete_book(request, retry=retry, timeout=timeout)
 
     def update_book(
             self,
@@ -1749,7 +1756,8 @@ class LibraryServiceClient(object):
             optional_foo=None,
             update_mask=None,
             physical_mask=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Updates a book.
 
@@ -1775,15 +1783,22 @@ class LibraryServiceClient(object):
             physical_mask (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]): To test Python import clash resolution.
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.FieldMask`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.UpdateBookRequest(
             name=name,
@@ -1791,13 +1806,14 @@ class LibraryServiceClient(object):
             optional_foo=optional_foo,
             update_mask=update_mask,
             physical_mask=physical_mask)
-        return self._update_book(request, options)
+        return self._update_book(request, retry=retry, timeout=timeout)
 
     def move_book(
             self,
             name,
             other_shelf_name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Moves a book to another shelf, and returns the new book.
 
@@ -1814,32 +1830,39 @@ class LibraryServiceClient(object):
         Args:
             name (str): The name of the book to move.
             other_shelf_name (str): The name of the destination shelf.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.MoveBookRequest(
             name=name,
             other_shelf_name=other_shelf_name)
-        return self._move_book(request, options)
+        return self._move_book(request, retry=retry, timeout=timeout)
 
     def list_strings(
             self,
             name=None,
             page_size=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Lists a primitive resource. To test go page streaming.
 
         Example:
             >>> from google.cloud.example import library_v1
-            >>> from google.gax import CallOptions, INITIAL_PAGE
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
@@ -1862,8 +1885,12 @@ class LibraryServiceClient(object):
                 resource, this parameter does not affect the return value. If page
                 streaming is performed per-page, this determines the maximum number
                 of resources in a page.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1872,19 +1899,30 @@ class LibraryServiceClient(object):
             of the response through the `options` parameter.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.ListStringsRequest(
             name=name,
             page_size=page_size)
-        return self._list_strings(request, options)
+        iterator = google.api_core.page_iterator.GRPCIterator(
+            client=None,
+            method=functools.partial(self._list_strings, retry=retry, timeout=timeout),
+            request=request,
+            items_field='strings',
+            request_token_field='page_token',
+            response_token_field='next_page_token')
+        return iterator
 
     def add_comments(
             self,
             name,
             comments,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Adds comments to a book
 
@@ -1907,22 +1945,30 @@ class LibraryServiceClient(object):
             name (str)
             comments (list[Union[dict, ~google.cloud.example.library_v1.types.Comment]]): If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.Comment`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.AddCommentsRequest(
             name=name,
             comments=comments)
-        self._add_comments(request, options)
+        self._add_comments(request, retry=retry, timeout=timeout)
 
     def get_book_from_archive(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Gets a book from an archive.
 
@@ -1937,25 +1983,33 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromArchive` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
-        return self._get_book_from_archive(request, options)
+        return self._get_book_from_archive(request, retry=retry, timeout=timeout)
 
     def get_book_from_anywhere(
             self,
             name,
             alt_book_name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Gets a book from a shelf or archive.
 
@@ -1973,25 +2027,33 @@ class LibraryServiceClient(object):
             name (str): The name of the book to retrieve.
             alt_book_name (str): An alternate book name, used to test restricting flattened field to a
                 single resource name type in a oneof.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name)
-        return self._get_book_from_anywhere(request, options)
+        return self._get_book_from_anywhere(request, retry=retry, timeout=timeout)
 
     def get_book_from_absolutely_anywhere(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test proper OneOf-Any resource name mapping
 
@@ -2006,26 +2068,34 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name)
-        return self._get_book_from_absolutely_anywhere(request, options)
+        return self._get_book_from_absolutely_anywhere(request, retry=retry, timeout=timeout)
 
     def update_book_index(
             self,
             name,
             index_name,
             index_map,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Updates the index of a book.
 
@@ -2045,22 +2115,30 @@ class LibraryServiceClient(object):
             name (str): The name of the book to update.
             index_name (str): The name of the index for the book
             index_map (dict[str -> str]): The index to update the book with
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.UpdateBookIndexRequest(
             name=name,
             index_name=index_name,
             index_map=index_map)
-        self._update_book_index(request, options)
+        self._update_book_index(request, retry=retry, timeout=timeout)
 
     def stream_shelves(
             self,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test server streaming
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2075,22 +2153,30 @@ class LibraryServiceClient(object):
             ...     pass
 
         Args:
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.StreamShelvesResponse].
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
         """
         request = library_pb2.StreamShelvesRequest()
-        return self._stream_shelves(request, options)
+        return self._stream_shelves(request, retry=retry, timeout=timeout)
 
     def stream_books(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test server streaming, non-paged responses.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2108,24 +2194,32 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the shelf whose books we'd like to list.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.Book].
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.StreamBooksRequest(
             name=name)
-        return self._stream_books(request, options)
+        return self._stream_books(request, retry=retry, timeout=timeout)
 
     def discuss_book(
             self,
             requests,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test bidi-streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2148,22 +2242,30 @@ class LibraryServiceClient(object):
         Args:
             requests (iterator[dict|google.cloud.example.library_v1.proto.library_pb2.DiscussBookRequest]): The input objects. If a dict is provided, it must be of the
                 same form as the protobuf message :class:`~google.cloud.example.library_v1.types.DiscussBookRequest`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.Comment].
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
-        return self._discuss_book(requests, options)
+        return self._discuss_book(requests, retry=retry, timeout=timeout)
 
     def monolog_about_book(
             self,
             requests,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test client streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2184,29 +2286,36 @@ class LibraryServiceClient(object):
         Args:
             requests (iterator[dict|google.cloud.example.library_v1.proto.library_pb2.DiscussBookRequest]): The input objects. If a dict is provided, it must be of the
                 same form as the protobuf message :class:`~google.cloud.example.library_v1.types.DiscussBookRequest`
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Comment` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
-        return self._monolog_about_book(requests, options)
+        return self._monolog_about_book(requests, retry=retry, timeout=timeout)
 
     def find_related_books(
             self,
             names,
             shelves,
             page_size=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
 
         Example:
             >>> from google.cloud.example import library_v1
-            >>> from google.gax import CallOptions, INITIAL_PAGE
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
@@ -2234,8 +2343,12 @@ class LibraryServiceClient(object):
                 resource, this parameter does not affect the return value. If page
                 streaming is performed per-page, this determines the maximum number
                 of resources in a page.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -2244,20 +2357,31 @@ class LibraryServiceClient(object):
             of the response through the `options` parameter.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.FindRelatedBooksRequest(
             names=names,
             shelves=shelves,
             page_size=page_size)
-        return self._find_related_books(request, options)
+        iterator = google.api_core.page_iterator.GRPCIterator(
+            client=None,
+            method=functools.partial(self._find_related_books, retry=retry, timeout=timeout),
+            request=request,
+            items_field='names',
+            request_token_field='page_token',
+            response_token_field='next_page_token')
+        return iterator
 
     def add_tag(
             self,
             resource,
             tag,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Adds a tag to the book. This RPC is a mixin.
 
@@ -2276,26 +2400,34 @@ class LibraryServiceClient(object):
                 Resource is usually specified as a path, such as,
                 projects/{project}/zones/{zone}/disks/{disk}.
             tag (str): REQUIRED: The tag to add.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.AddTagResponse` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = tagger_pb2.AddTagRequest(
             resource=resource,
             tag=tag)
-        return self._add_tag(request, options)
+        return self._add_tag(request, retry=retry, timeout=timeout)
 
     def add_label(
             self,
             resource,
             label,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Adds a label to the entity.
 
@@ -2314,25 +2446,33 @@ class LibraryServiceClient(object):
                 Resource is usually specified as a path, such as,
                 projects/{project}/zones/{zone}/disks/{disk}.
             label (str): REQUIRED: The label to add.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.AddLabelResponse` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
             label=label)
-        return self._add_label(request, options)
+        return self._add_label(request, retry=retry, timeout=timeout)
 
     def get_big_book(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test long-running operations
 
@@ -2356,29 +2496,37 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
-        return google.gax._OperationFuture(
-            self._get_big_book(request, options),
+        operation = self._get_big_book(request, retry=retry, timeout=timeout)
+        return google.api_core.operation.from_gapic(
+            operation,
             self.operations_client,
             library_pb2.Book,
-            library_pb2.GetBigBookMetadata,
-            options)
+            metadata_type=library_pb2.GetBigBookMetadata)
 
     def get_big_nothing(
             self,
             name,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test long-running operations with empty return type.
 
@@ -2402,24 +2550,31 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
-        return google.gax._OperationFuture(
-            self._get_big_nothing(request, options),
+        operation = self._get_big_nothing(request, retry=retry, timeout=timeout)
+        return google.api_core.operation.from_gapic(
+            operation,
             self.operations_client,
             empty_pb2.Empty,
-            library_pb2.GetBigBookMetadata,
-            options)
+            metadata_type=library_pb2.GetBigBookMetadata)
 
     def test_optional_required_flattening_params(
             self,
@@ -2477,7 +2632,8 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=None,
             optional_repeated_fixed64=None,
             optional_map=None,
-            options=None):
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT):
         """
         Test optional flattening parameters of all types
 
@@ -2576,15 +2732,22 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32 (list[int])
             optional_repeated_fixed64 (list[long])
             optional_map (dict[int -> str])
-            options (~google.gax.CallOptions): Overrides the default
-                settings for this call, e.g, timeout, retries etc.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.TestOptionalRequiredFlatteningParamsResponse` instance.
 
         Raises:
-            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-            :exc:`ValueError` if the parameters are invalid.
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
             required_singular_int32=required_singular_int32,
@@ -2641,7 +2804,7 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=optional_repeated_fixed32,
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map)
-        return self._test_optional_required_flattening_params(request, options)
+        return self._test_optional_required_flattening_params(request, retry=retry, timeout=timeout)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
@@ -2842,7 +3005,7 @@ config = {
 from __future__ import absolute_import
 import sys
 
-from google.gax.utils.messages import get_messages
+from google.api_core.protobuf_helpers import get_messages
 
 from google.api import http_pb2
 from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
@@ -2919,7 +3082,7 @@ def unit_tests(session, python_version):
 
     session.virtualenv_dirname = 'unit-' + python_version
 
-    session.install('mock', 'pytest')
+    session.install('pytest')
     session.install('-e', '.')
 
     session.run('py.test', '--quiet', os.path.join('tests', 'unit'))
@@ -2971,8 +3134,8 @@ import io
 import sys
 
 install_requires = [
+    'google-api-core>=0.1.0, <0.2.0dev',
     'google-auth>=1.0.2, <2.0dev',
-    'google-gax>=0.15.0, <0.16.0',
     'googleapis-common-protos[grpc]>=1.5.0, <2.0dev',
     'python-other-package>=12.1.0, <13.5.1',
     'requests>=2.18.4, <3.0dev',
@@ -3027,7 +3190,6 @@ setup(
 
 import os
 import time
-import unittest
 
 from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
@@ -3036,7 +3198,7 @@ from google.cloud.example.library_v1.proto import library_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
 
-class TestSystemLibraryService(unittest.TestCase):
+class TestSystemLibraryService(object):
 
     def test_update_book(self):
         project_id = os.environ['PROJECT_ID']
@@ -3066,10 +3228,8 @@ class TestSystemLibraryService(unittest.TestCase):
 
 """Unit tests."""
 
-import mock
-import unittest
+import pytest
 
-from google.gax import errors
 from google.rpc import status_pb2
 
 from google.cloud.example import library_v1
@@ -3081,656 +3241,528 @@ from google.longrunning import operations_pb2
 from google.protobuf import empty_pb2
 
 
+
+class MultiCallableStub(object):
+    """Stub for the grpc.UnaryUnaryMultiCallable interface."""
+    def __init__(self, method, channel_stub):
+        self.method = method
+        self.channel_stub = channel_stub
+
+    def __call__(self, request, timeout=None, metadata=None, credentials=None):
+        self.channel_stub.requests.append((self.method, request))
+
+        response = None
+        if self.channel_stub.responses:
+            response = self.channel_stub.responses.pop()
+
+        if isinstance(response, Exception):
+            raise response
+
+        if response:
+            return response
+
+
+class ChannelStub(object):
+    """Stub for the grpc.Channel interface."""
+    def __init__(self, responses = []):
+        self.responses = responses
+        self.requests = []
+
+    def unary_unary(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+    def unary_stream(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+    def stream_unary(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+    def stream_stream(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+
 class CustomException(Exception):
     pass
 
 
-class TestLibraryServiceClient(unittest.TestCase):
+class TestLibraryServiceClient(object):
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_create_shelf(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        shelf = {}
-
-        # Mock response
+    def test_create_shelf(self):
+        # Setup Expected Response
         name = 'name3373707'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
         expected_response = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
         expected_response = library_pb2.Shelf(**expected_response)
-        grpc_stub.CreateShelf.return_value = expected_response
 
-        response = client.create_shelf(shelf)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.CreateShelf.assert_called_once()
-        args, kwargs = grpc_stub.CreateShelf.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.CreateShelfRequest(shelf=shelf)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_create_shelf_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         shelf = {}
 
-        # Mock exception response
-        grpc_stub.CreateShelf.side_effect = CustomException()
+        response = client.create_shelf(shelf)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.create_shelf, shelf)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.CreateShelfRequest(shelf=shelf)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_shelf(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_create_shelf_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        shelf = {}
 
-        # Mock request
-        name = client.shelf_path('[SHELF_ID]')
-        options_ = 'options-1249474914'
+        with pytest.raises(CustomException):
+            client.create_shelf(shelf)
 
-        # Mock response
+    def test_get_shelf(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
         expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
         expected_response = library_pb2.Shelf(**expected_response)
-        grpc_stub.GetShelf.return_value = expected_response
 
-        response = client.get_shelf(name, options_)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetShelf.assert_called_once()
-        args, kwargs = grpc_stub.GetShelf.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetShelfRequest(name=name, options=options_)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_shelf_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.shelf_path('[SHELF_ID]')
         options_ = 'options-1249474914'
 
-        # Mock exception response
-        grpc_stub.GetShelf.side_effect = CustomException()
+        response = client.get_shelf(name, options_)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.get_shelf, name, options_)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetShelfRequest(name=name, options=options_)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_shelves(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_get_shelf_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.shelf_path('[SHELF_ID]')
+        options_ = 'options-1249474914'
 
-        # Mock response
+        with pytest.raises(CustomException):
+            client.get_shelf(name, options_)
+
+    def test_list_shelves(self):
+        # Setup Expected Response
         next_page_token = ''
         shelves_element = {}
         shelves = [shelves_element]
         expected_response = {'next_page_token': next_page_token, 'shelves': shelves}
         expected_response = library_pb2.ListShelvesResponse(**expected_response)
-        grpc_stub.ListShelves.return_value = expected_response
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
         paged_list_response = client.list_shelves()
         resources = list(paged_list_response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response.shelves[0], resources[0])
+        assert len(resources) == 1
 
-        grpc_stub.ListShelves.assert_called_once()
-        args, kwargs = grpc_stub.ListShelves.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
+        assert expected_response.shelves[0] == resources[0]
 
+        assert len(channel.requests) == 1
         expected_request = library_pb2.ListShelvesRequest()
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_shelves_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock exception response
-        grpc_stub.ListShelves.side_effect = CustomException()
+    def test_list_shelves_exception(self):
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
         paged_list_response = client.list_shelves()
-        self.assertRaises(errors.GaxError, list, paged_list_response)
+        with pytest.raises(CustomException):
+            list(paged_list_response)
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_delete_shelf(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_delete_shelf(self):
+        channel = ChannelStub()
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.shelf_path('[SHELF_ID]')
 
         client.delete_shelf(name)
 
-        grpc_stub.DeleteShelf.assert_called_once()
-        args, kwargs = grpc_stub.DeleteShelf.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.DeleteShelfRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_delete_shelf_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_delete_shelf_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.shelf_path('[SHELF_ID]')
 
-        # Mock exception response
-        grpc_stub.DeleteShelf.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.delete_shelf(name)
 
-        self.assertRaises(errors.GaxError, client.delete_shelf, name)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_merge_shelves(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = client.shelf_path('[SHELF_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
-
-        # Mock response
+    def test_merge_shelves(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
         expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
         expected_response = library_pb2.Shelf(**expected_response)
-        grpc_stub.MergeShelves.return_value = expected_response
 
-        response = client.merge_shelves(name, other_shelf_name)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.MergeShelves.assert_called_once()
-        args, kwargs = grpc_stub.MergeShelves.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.MergeShelvesRequest(name=name, other_shelf_name=other_shelf_name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_merge_shelves_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.shelf_path('[SHELF_ID]')
         other_shelf_name = client.shelf_path('[SHELF_ID]')
 
-        # Mock exception response
-        grpc_stub.MergeShelves.side_effect = CustomException()
+        response = client.merge_shelves(name, other_shelf_name)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.merge_shelves, name, other_shelf_name)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.MergeShelvesRequest(name=name, other_shelf_name=other_shelf_name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_create_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_merge_shelves_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.shelf_path('[SHELF_ID]')
-        book = {}
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
 
-        # Mock response
+        with pytest.raises(CustomException):
+            client.merge_shelves(name, other_shelf_name)
+
+    def test_create_book(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.Book(**expected_response)
-        grpc_stub.CreateBook.return_value = expected_response
 
-        response = client.create_book(name, book)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.CreateBook.assert_called_once()
-        args, kwargs = grpc_stub.CreateBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.CreateBookRequest(name=name, book=book)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_create_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.shelf_path('[SHELF_ID]')
         book = {}
 
-        # Mock exception response
-        grpc_stub.CreateBook.side_effect = CustomException()
+        response = client.create_book(name, book)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.create_book, name, book)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.CreateBookRequest(name=name, book=book)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_publish_series(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_create_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.shelf_path('[SHELF_ID]')
+        book = {}
 
-        # Mock request
-        shelf = {}
-        books = []
-        series_string = 'foobar'
-        series_uuid = {'series_string': series_string}
+        with pytest.raises(CustomException):
+            client.create_book(name, book)
 
-        # Mock response
+    def test_publish_series(self):
+        # Setup Expected Response
         book_names_element = 'bookNamesElement1491670575'
         book_names = [book_names_element]
         expected_response = {'book_names': book_names}
         expected_response = library_pb2.PublishSeriesResponse(**expected_response)
-        grpc_stub.PublishSeries.return_value = expected_response
 
-        response = client.publish_series(shelf, books, series_uuid)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.PublishSeries.assert_called_once()
-        args, kwargs = grpc_stub.PublishSeries.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.PublishSeriesRequest(shelf=shelf, books=books, series_uuid=series_uuid)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_publish_series_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         shelf = {}
         books = []
         series_string = 'foobar'
         series_uuid = {'series_string': series_string}
 
-        # Mock exception response
-        grpc_stub.PublishSeries.side_effect = CustomException()
+        response = client.publish_series(shelf, books, series_uuid)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.publish_series, shelf, books, series_uuid)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.PublishSeriesRequest(shelf=shelf, books=books, series_uuid=series_uuid)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_publish_series_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        shelf = {}
+        books = []
+        series_string = 'foobar'
+        series_uuid = {'series_string': series_string}
 
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        with pytest.raises(CustomException):
+            client.publish_series(shelf, books, series_uuid)
 
-        # Mock response
+    def test_get_book(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.Book(**expected_response)
-        grpc_stub.GetBook.return_value = expected_response
 
-        response = client.get_book(name)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetBook.assert_called_once()
-        args, kwargs = grpc_stub.GetBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetBookRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
-        grpc_stub.GetBook.side_effect = CustomException()
+        response = client.get_book(name)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.get_book, name)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookRequest(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_books(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_get_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock request
-        name = client.shelf_path('[SHELF_ID]')
+        with pytest.raises(CustomException):
+            client.get_book(name)
 
-        # Mock response
+    def test_list_books(self):
+        # Setup Expected Response
         next_page_token = ''
         books_element = {}
         books = [books_element]
         expected_response = {'next_page_token': next_page_token, 'books': books}
         expected_response = library_pb2.ListBooksResponse(**expected_response)
-        grpc_stub.ListBooks.return_value = expected_response
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
+        name = client.shelf_path('[SHELF_ID]')
 
         paged_list_response = client.list_books(name)
         resources = list(paged_list_response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response.books[0], resources[0])
+        assert len(resources) == 1
 
-        grpc_stub.ListBooks.assert_called_once()
-        args, kwargs = grpc_stub.ListBooks.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
+        assert expected_response.books[0] == resources[0]
 
+        assert len(channel.requests) == 1
         expected_request = library_pb2.ListBooksRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_books_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_list_books_exception(self):
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.shelf_path('[SHELF_ID]')
 
-        # Mock exception response
-        grpc_stub.ListBooks.side_effect = CustomException()
-
         paged_list_response = client.list_books(name)
-        self.assertRaises(errors.GaxError, list, paged_list_response)
+        with pytest.raises(CustomException):
+            list(paged_list_response)
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_delete_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_delete_book(self):
+        channel = ChannelStub()
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         client.delete_book(name)
 
-        grpc_stub.DeleteBook.assert_called_once()
-        args, kwargs = grpc_stub.DeleteBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.DeleteBookRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_delete_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_delete_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
-        grpc_stub.DeleteBook.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.delete_book(name)
 
-        self.assertRaises(errors.GaxError, client.delete_book, name)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_update_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        book = {}
-
-        # Mock response
+    def test_update_book(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.Book(**expected_response)
-        grpc_stub.UpdateBook.return_value = expected_response
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        book = {}
 
         response = client.update_book(name, book)
-        self.assertEqual(expected_response, response)
+        assert expected_response == response
 
-        grpc_stub.UpdateBook.assert_called_once()
-        args, kwargs = grpc_stub.UpdateBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.UpdateBookRequest(name=name, book=book)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_update_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_update_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         book = {}
 
-        # Mock exception response
-        grpc_stub.UpdateBook.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.update_book(name, book)
 
-        self.assertRaises(errors.GaxError, client.update_book, name, book)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_move_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
-
-        # Mock response
+    def test_move_book(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.Book(**expected_response)
-        grpc_stub.MoveBook.return_value = expected_response
 
-        response = client.move_book(name, other_shelf_name)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.MoveBook.assert_called_once()
-        args, kwargs = grpc_stub.MoveBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.MoveBookRequest(name=name, other_shelf_name=other_shelf_name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_move_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         other_shelf_name = client.shelf_path('[SHELF_ID]')
 
-        # Mock exception response
-        grpc_stub.MoveBook.side_effect = CustomException()
+        response = client.move_book(name, other_shelf_name)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.move_book, name, other_shelf_name)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.MoveBookRequest(name=name, other_shelf_name=other_shelf_name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_strings(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_move_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
 
-        # Mock response
+        with pytest.raises(CustomException):
+            client.move_book(name, other_shelf_name)
+
+    def test_list_strings(self):
+        # Setup Expected Response
         next_page_token = ''
         strings_element = 'stringsElement474465855'
         strings = [strings_element]
         expected_response = {'next_page_token': next_page_token, 'strings': strings}
         expected_response = library_pb2.ListStringsResponse(**expected_response)
-        grpc_stub.ListStrings.return_value = expected_response
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
         paged_list_response = client.list_strings()
         resources = list(paged_list_response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response.strings[0], resources[0])
+        assert len(resources) == 1
 
-        grpc_stub.ListStrings.assert_called_once()
-        args, kwargs = grpc_stub.ListStrings.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
+        assert expected_response.strings[0] == resources[0]
 
+        assert len(channel.requests) == 1
         expected_request = library_pb2.ListStringsRequest()
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_list_strings_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock exception response
-        grpc_stub.ListStrings.side_effect = CustomException()
+    def test_list_strings_exception(self):
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
         paged_list_response = client.list_strings()
-        self.assertRaises(errors.GaxError, list, paged_list_response)
+        with pytest.raises(CustomException):
+            list(paged_list_response)
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_comments(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_add_comments(self):
+        channel = ChannelStub()
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
@@ -3740,26 +3772,18 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         client.add_comments(name, comments)
 
-        grpc_stub.AddComments.assert_called_once()
-        args, kwargs = grpc_stub.AddComments.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.AddCommentsRequest(name=name, comments=comments)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_comments_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_add_comments_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
@@ -3767,172 +3791,128 @@ class TestLibraryServiceClient(unittest.TestCase):
         comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
         comments = [comments_element]
 
-        # Mock exception response
-        grpc_stub.AddComments.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.add_comments(name, comments)
 
-        self.assertRaises(errors.GaxError, client.add_comments, name, comments)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_archive(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
-
-        # Mock response
+    def test_get_book_from_archive(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.BookFromArchive(**expected_response)
-        grpc_stub.GetBookFromArchive.return_value = expected_response
 
-        response = client.get_book_from_archive(name)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetBookFromArchive.assert_called_once()
-        args, kwargs = grpc_stub.GetBookFromArchive.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_archive_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
 
-        # Mock exception response
-        grpc_stub.GetBookFromArchive.side_effect = CustomException()
+        response = client.get_book_from_archive(name)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.get_book_from_archive, name)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_anywhere(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_get_book_from_archive_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
 
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        with pytest.raises(CustomException):
+            client.get_book_from_archive(name)
 
-        # Mock response
+    def test_get_book_from_anywhere(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
-        grpc_stub.GetBookFromAnywhere.return_value = expected_response
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_book_from_anywhere(name, alt_book_name)
-        self.assertEqual(expected_response, response)
+        assert expected_response == response
 
-        grpc_stub.GetBookFromAnywhere.assert_called_once()
-        args, kwargs = grpc_stub.GetBookFromAnywhere.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_anywhere_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_get_book_from_anywhere_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
-        grpc_stub.GetBookFromAnywhere.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.get_book_from_anywhere(name, alt_book_name)
 
-        self.assertRaises(errors.GaxError, client.get_book_from_anywhere, name, alt_book_name)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_absolutely_anywhere(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-
-        # Mock response
+    def test_get_book_from_absolutely_anywhere(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
-        grpc_stub.GetBookFromAbsolutelyAnywhere.return_value = expected_response
 
-        response = client.get_book_from_absolutely_anywhere(name)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetBookFromAbsolutelyAnywhere.assert_called_once()
-        args, kwargs = grpc_stub.GetBookFromAbsolutelyAnywhere.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_book_from_absolutely_anywhere_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
-        grpc_stub.GetBookFromAbsolutelyAnywhere.side_effect = CustomException()
+        response = client.get_book_from_absolutely_anywhere(name)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.get_book_from_absolutely_anywhere, name)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_update_book_index(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_get_book_from_absolutely_anywhere_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock request
+        with pytest.raises(CustomException):
+            client.get_book_from_absolutely_anywhere(name)
+
+    def test_update_book_index(self):
+        channel = ChannelStub()
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
@@ -3940,402 +3920,301 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         client.update_book_index(name, index_name, index_map)
 
-        grpc_stub.UpdateBookIndex.assert_called_once()
-        args, kwargs = grpc_stub.UpdateBookIndex.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.UpdateBookIndexRequest(name=name, index_name=index_name, index_map=index_map)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_update_book_index_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_update_book_index_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
 
-        # Mock exception response
-        grpc_stub.UpdateBookIndex.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.update_book_index(name, index_name, index_map)
 
-        self.assertRaises(errors.GaxError, client.update_book_index, name, index_name, index_map)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_stream_shelves(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock response
+    def test_stream_shelves(self):
+        # Setup Expected Response
         shelves_element = {}
         shelves = [shelves_element]
         expected_response = {'shelves': shelves}
         expected_response = library_pb2.StreamShelvesResponse(**expected_response)
-        grpc_stub.StreamShelves.return_value = iter([expected_response])
+
+        # Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
 
         response = client.stream_shelves()
         resources = list(response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response, resources[0])
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
-        grpc_stub.StreamShelves.assert_called_once()
-        args, kwargs = grpc_stub.StreamShelves.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.StreamShelvesRequest()
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_stream_shelves_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_stream_shelves_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        with pytest.raises(CustomException):
+            client.stream_shelves()
 
-        # Mock exception response
-        grpc_stub.StreamShelves.side_effect = CustomException()
-
-        self.assertRaises(errors.GaxError, client.stream_shelves)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_stream_books(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = 'name3373707'
-
-        # Mock response
+    def test_stream_books(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
         expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
         expected_response = library_pb2.Book(**expected_response)
-        grpc_stub.StreamBooks.return_value = iter([expected_response])
+
+        # Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+
+        # Setup Request
+        name = 'name3373707'
 
         response = client.stream_books(name)
         resources = list(response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response, resources[0])
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
-        grpc_stub.StreamBooks.assert_called_once()
-        args, kwargs = grpc_stub.StreamBooks.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
+        assert len(channel.requests) == 1
         expected_request = library_pb2.StreamBooksRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_stream_books_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_stream_books_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = 'name3373707'
 
-        # Mock exception response
-        grpc_stub.StreamBooks.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.stream_books(name)
 
-        self.assertRaises(errors.GaxError, client.stream_books, name)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_discuss_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = 'name3373707'
-        request = {'name': name}
-        requests = [request]
-
-        # Mock response
+    def test_discuss_book(self):
+        # Setup Expected Response
         user_name = 'userName339340927'
         comment = b'95'
         expected_response = {'user_name': user_name, 'comment': comment}
         expected_response = library_pb2.Comment(**expected_response)
-        grpc_stub.DiscussBook.return_value = iter([expected_response])
+
+        # Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
+        name = 'name3373707'
+        request = {'name': name}
+        request = library_pb2.DiscussBookRequest(**request)
+        requests = [request]
 
         response = client.discuss_book(requests)
         resources = list(response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response, resources[0])
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
-        grpc_stub.DiscussBook.assert_called_once()
-        args, kwargs = grpc_stub.DiscussBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_requests = args[0]
-        self.assertEqual(1, len(actual_requests))
+        assert len(channel.requests) == 1
+        actual_requests = channel.requests[0][1]
+        assert len(actual_requests) == 1
         actual_request = list(actual_requests)[0]
-        self.assertEqual(request, actual_request)
+        assert request == actual_request
 
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_discuss_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_discuss_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         name = 'name3373707'
         request = {'name': name}
+
+        request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
 
-        # Mock exception response
-        grpc_stub.DiscussBook.side_effect = CustomException()
+        with pytest.raises(CustomException):
+            client.discuss_book(requests)
 
-        self.assertRaises(errors.GaxError, client.discuss_book, requests)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_monolog_about_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        name = 'name3373707'
-        request = {'name': name}
-        requests = [request]
-
-        # Mock response
+    def test_monolog_about_book(self):
+        # Setup Expected Response
         user_name = 'userName339340927'
         comment = b'95'
         expected_response = {'user_name': user_name, 'comment': comment}
         expected_response = library_pb2.Comment(**expected_response)
-        grpc_stub.MonologAboutBook.return_value = expected_response
 
-        response = client.monolog_about_book(requests)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.MonologAboutBook.assert_called_once()
-        args, kwargs = grpc_stub.MonologAboutBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_requests = args[0]
-        self.assertEqual(1, len(actual_requests))
-        actual_request = list(actual_requests)[0]
-        self.assertEqual(request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_monolog_about_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = 'name3373707'
         request = {'name': name}
+        request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
 
-        # Mock exception response
-        grpc_stub.MonologAboutBook.side_effect = CustomException()
+        response = client.monolog_about_book(requests)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.monolog_about_book, requests)
+        assert len(channel.requests) == 1
+        actual_requests = channel.requests[0][1]
+        assert len(actual_requests) == 1
+        actual_request = list(actual_requests)[0]
+        assert request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_find_related_books(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_monolog_about_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        name = 'name3373707'
+        request = {'name': name}
 
-        # Mock request
-        names_element = 'namesElement-249113339'
-        names = [names_element]
-        shelves = []
+        request = library_pb2.DiscussBookRequest(**request)
+        requests = [request]
 
-        # Mock response
+        with pytest.raises(CustomException):
+            client.monolog_about_book(requests)
+
+    def test_find_related_books(self):
+        # Setup Expected Response
         next_page_token = ''
         names_element_2 = 'namesElement21120252792'
         names_2 = [names_element_2]
         expected_response = {'next_page_token': next_page_token, 'names': names_2}
         expected_response = library_pb2.FindRelatedBooksResponse(**expected_response)
-        grpc_stub.FindRelatedBooks.return_value = expected_response
 
-        paged_list_response = client.find_related_books(names, shelves)
-        resources = list(paged_list_response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response.names[0], resources[0])
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.FindRelatedBooks.assert_called_once()
-        args, kwargs = grpc_stub.FindRelatedBooks.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.FindRelatedBooksRequest(names=names, shelves=shelves)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_find_related_books_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         names_element = 'namesElement-249113339'
         names = [names_element]
         shelves = []
 
-        # Mock exception response
-        grpc_stub.FindRelatedBooks.side_effect = CustomException()
+        paged_list_response = client.find_related_books(names, shelves)
+        resources = list(paged_list_response)
+        assert len(resources) == 1
+
+        assert expected_response.names[0] == resources[0]
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.FindRelatedBooksRequest(names=names, shelves=shelves)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_find_related_books_exception(self):
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup request
+        names_element = 'namesElement-249113339'
+        names = [names_element]
+        shelves = []
 
         paged_list_response = client.find_related_books(names, shelves)
-        self.assertRaises(errors.GaxError, list, paged_list_response)
+        with pytest.raises(CustomException):
+            list(paged_list_response)
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_tag(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        tag = 'tag114586'
-
-        # Mock response
+    def test_add_tag(self):
+        # Setup Expected Response
         expected_response = {}
         expected_response = tagger_pb2.AddTagResponse(**expected_response)
-        grpc_stub.AddTag.return_value = expected_response
 
-        response = client.add_tag(resource, tag)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.AddTag.assert_called_once()
-        args, kwargs = grpc_stub.AddTag.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = tagger_pb2.AddTagRequest(resource=resource, tag=tag)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_tag_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         tag = 'tag114586'
 
-        # Mock exception response
-        grpc_stub.AddTag.side_effect = CustomException()
+        response = client.add_tag(resource, tag)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.add_tag, resource, tag)
+        assert len(channel.requests) == 1
+        expected_request = tagger_pb2.AddTagRequest(resource=resource, tag=tag)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_label(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_add_tag_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        label = 'label102727412'
+        tag = 'tag114586'
 
-        # Mock response
+        with pytest.raises(CustomException):
+            client.add_tag(resource, tag)
+
+    def test_add_label(self):
+        # Setup Expected Response
         expected_response = {}
         expected_response = tagger_pb2.AddLabelResponse(**expected_response)
-        grpc_stub.AddLabel.return_value = expected_response
 
-        response = client.add_label(resource, label)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.AddLabel.assert_called_once()
-        args, kwargs = grpc_stub.AddLabel.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = tagger_pb2.AddLabelRequest(resource=resource, label=label)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_add_label_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         label = 'label102727412'
 
-        # Mock exception response
-        grpc_stub.AddLabel.side_effect = CustomException()
+        response = client.add_label(resource, label)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.add_label, resource, label)
+        assert len(channel.requests) == 1
+        expected_request = tagger_pb2.AddLabelRequest(resource=resource, label=label)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_big_book(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
+    def test_add_label_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
 
-        client = library_v1.LibraryServiceClient()
+        # Setup request
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        label = 'label102727412'
 
-        # Mock request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        with pytest.raises(CustomException):
+            client.add_label(resource, label)
 
-        # Mock response
+    def test_get_big_book(self):
+        # Setup Expected Response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
@@ -4344,157 +4223,97 @@ class TestLibraryServiceClient(unittest.TestCase):
         expected_response = library_pb2.Book(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
         operation.response.Pack(expected_response)
-        grpc_stub.GetBigBook.return_value = operation
 
-        response = client.get_big_book(name)
-        self.assertEqual(expected_response, response.result())
+        # Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetBigBook.assert_called_once()
-        args, kwargs = grpc_stub.GetBigBook.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetBookRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_big_book_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
+        response = client.get_big_book(name)
+        result = response.result()
+        assert expected_response == result
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookRequest(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+
+    def test_get_big_book_exception(self):
+        # Setup Response
         error = status_pb2.Status()
         operation = operations_pb2.Operation(name='operations/test_get_big_book_exception', done=True)
         operation.error.CopyFrom(error)
-        grpc_stub.GetBigBook.return_value = operation
 
-        response = client.get_big_book(name)
-        self.assertEqual(error, response.exception())
+        # Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_big_nothing(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock response
+        response = client.get_big_book(name)
+        exception = response.exception()
+        assert exception.errors[0] == error
+
+    def test_get_big_nothing(self):
+        # Setup Expected Response
         expected_response = {}
         expected_response = empty_pb2.Empty(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_nothing', done=True)
         operation.response.Pack(expected_response)
-        grpc_stub.GetBigNothing.return_value = operation
 
-        response = client.get_big_nothing(name)
-        self.assertEqual(expected_response, response.result())
+        # Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.GetBigNothing.assert_called_once()
-        args, kwargs = grpc_stub.GetBigNothing.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.GetBookRequest(name=name)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_get_big_nothing_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-        # Mock exception response
+        response = client.get_big_nothing(name)
+        result = response.result()
+        assert expected_response == result
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookRequest(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+
+    def test_get_big_nothing_exception(self):
+        # Setup Response
         error = status_pb2.Status()
         operation = operations_pb2.Operation(name='operations/test_get_big_nothing_exception', done=True)
         operation.error.CopyFrom(error)
-        grpc_stub.GetBigNothing.return_value = operation
+
+        # Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
+
+        # Setup Request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_big_nothing(name)
-        self.assertEqual(error, response.exception())
+        exception = response.exception()
+        assert exception.errors[0] == error
 
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_test_optional_required_flattening_params(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
-        required_singular_int32 = -72313594
-        required_singular_int64 = -72313499
-        required_singular_float = -7514705.0
-        required_singular_double = 1.9111005E8
-        required_singular_bool = True
-        required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
-        required_singular_string = 'requiredSingularString-1949894503'
-        required_singular_bytes = b'-29'
-        required_singular_message = {}
-        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
-        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
-        required_singular_fixed32 = 720656715
-        required_singular_fixed64 = 720656810
-        required_repeated_int32 = []
-        required_repeated_int64 = []
-        required_repeated_float = []
-        required_repeated_double = []
-        required_repeated_bool = []
-        required_repeated_enum = []
-        required_repeated_string = []
-        required_repeated_bytes = []
-        required_repeated_message = []
-        required_repeated_resource_name = []
-        required_repeated_resource_name_oneof = []
-        required_repeated_fixed32 = []
-        required_repeated_fixed64 = []
-        required_map = {}
-
-        # Mock response
+    def test_test_optional_required_flattening_params(self):
+        # Setup Expected Response
         expected_response = {}
         expected_response = library_pb2.TestOptionalRequiredFlatteningParamsResponse(**expected_response)
-        grpc_stub.TestOptionalRequiredFlatteningParams.return_value = expected_response
 
-        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
-        self.assertEqual(expected_response, response)
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        client = library_v1.LibraryServiceClient(
+            channel=channel)
 
-        grpc_stub.TestOptionalRequiredFlatteningParams.assert_called_once()
-        args, kwargs = grpc_stub.TestOptionalRequiredFlatteningParams.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
-
-        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
-        self.assertEqual(expected_request, actual_request)
-
-    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub', spec=True)
-    def test_test_optional_required_flattening_params_exception(self, mock_create_stub):
-        # Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = library_v1.LibraryServiceClient()
-
-        # Mock request
+        # Setup Request
         required_singular_int32 = -72313594
         required_singular_int64 = -72313499
         required_singular_float = -7514705.0
@@ -4523,8 +4342,49 @@ class TestLibraryServiceClient(unittest.TestCase):
         required_repeated_fixed64 = []
         required_map = {}
 
-        # Mock exception response
-        grpc_stub.TestOptionalRequiredFlatteningParams.side_effect = CustomException()
+        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+        assert expected_response == response
 
-        self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_test_optional_required_flattening_params_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = library_v1.LibraryServiceClient(
+             channel=channel)
+
+        # Setup request
+        required_singular_int32 = -72313594
+        required_singular_int64 = -72313499
+        required_singular_float = -7514705.0
+        required_singular_double = 1.9111005E8
+        required_singular_bool = True
+        required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
+        required_singular_string = 'requiredSingularString-1949894503'
+        required_singular_bytes = b'-29'
+        required_singular_message = {}
+        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
+        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_fixed32 = 720656715
+        required_singular_fixed64 = 720656810
+        required_repeated_int32 = []
+        required_repeated_int64 = []
+        required_repeated_float = []
+        required_repeated_double = []
+        required_repeated_bool = []
+        required_repeated_enum = []
+        required_repeated_string = []
+        required_repeated_bytes = []
+        required_repeated_message = []
+        required_repeated_resource_name = []
+        required_repeated_resource_name_oneof = []
+        required_repeated_fixed32 = []
+        required_repeated_fixed64 = []
+        required_map = {}
+
+        with pytest.raises(CustomException):
+            client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
 

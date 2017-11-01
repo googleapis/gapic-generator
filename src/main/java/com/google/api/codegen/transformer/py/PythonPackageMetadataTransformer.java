@@ -253,8 +253,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private List<PackageDependencyView> generateAdditionalDependencies() {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
-        PackageDependencyView.create(
-            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.PYTHON)));
+        PackageDependencyView.create("google-api-core", VersionBound.create("0.1.0", "0.2.0dev")));
     dependencies.add(
         PackageDependencyView.create(
             "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));
