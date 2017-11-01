@@ -56,6 +56,9 @@ public class BatchingTransformer {
 
     for (MethodModel method : context.getInterfaceConfigMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
+      if (methodConfig == null) {
+        continue;
+      }
       if (!methodConfig.isBatching()) {
         continue;
       }

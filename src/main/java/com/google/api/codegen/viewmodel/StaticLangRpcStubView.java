@@ -31,7 +31,7 @@ public abstract class StaticLangRpcStubView {
 
   public abstract List<ApiCallableView> apiCallables();
 
-  public abstract List<DirectCallableView> directCallables();
+  public abstract List<MethodDescriptorView> methodDescriptors();
 
   public abstract List<StaticLangApiMethodView> callableMethods();
 
@@ -62,7 +62,7 @@ public abstract class StaticLangRpcStubView {
 
     public abstract Builder apiCallables(List<ApiCallableView> val);
 
-    public abstract Builder directCallables(List<DirectCallableView> val);
+    public abstract Builder methodDescriptors(List<MethodDescriptorView> val);
 
     public abstract Builder callableMethods(List<StaticLangApiMethodView> val);
 

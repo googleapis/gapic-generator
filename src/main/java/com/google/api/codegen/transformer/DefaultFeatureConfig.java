@@ -42,4 +42,9 @@ public class DefaultFeatureConfig implements FeatureConfig {
   public boolean enableStringFormatFunctions() {
     return true;
   }
+
+  @Override
+  public boolean enableRawOperationCallSettings() {
+    return false;
+  }
 }
