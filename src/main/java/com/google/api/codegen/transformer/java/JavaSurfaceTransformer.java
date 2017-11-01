@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -401,11 +401,10 @@ public class JavaSurfaceTransformer {
     }
 
     xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
-    xsettingsClass.rpcTransportName(namer.getTransportName(productConfig.getTransportProtocol()));
+    xsettingsClass.rpcTransportName(
+        namer.getTransportClassName(productConfig.getTransportProtocol()));
     xsettingsClass.transportNameGetter(
         namer.getTransporNameGetMethod(productConfig.getTransportProtocol()));
-    xsettingsClass.defaultChannelProviderBuilder(
-        namer.getDefaultChannelProviderBuilder(productConfig.getTransportProtocol()));
     xsettingsClass.defaultTransportProviderBuilder(
         namer.getDefaultTransportProviderBuilder(productConfig.getTransportProtocol()));
     xsettingsClass.transportProvider(
@@ -540,8 +539,8 @@ public class JavaSurfaceTransformer {
     stubClass.settingsClassName(
         getAndSaveNicknameForRootType(
             apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
-    stubClass.directCallables(
-        apiCallableTransformer.generateStaticLangDirectCallables(apiMethodsContext));
+    stubClass.methodDescriptors(
+        apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
         apiCallableTransformer.generateStaticLangApiCallables(apiMethodsContext));
     stubClass.callableMethods(filterIncludeCallableMethods(methods));
@@ -634,7 +633,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationFuture");
+      typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationFuture");
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
     }
@@ -651,17 +650,19 @@ public class JavaSurfaceTransformer {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.HeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
-    typeTable.saveNicknameFor("com.google.api.gax.rpc.SimpleCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.rpc.TransportProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.TransportChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
@@ -702,27 +703,23 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
       typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationTimedPollAlgorithm");
+      typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationTimedPollAlgorithm");
     }
     switch (context.getApiModel().getApiSource()) {
       case PROTO:
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
-        typeTable.saveNicknameFor("io.grpc.ManagedChannel");
-        typeTable.saveNicknameFor("io.grpc.Status");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportChannel");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
+        if (interfaceConfig.hasLongRunningOperations()) {
+          typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
+        }
         break;
       case DISCOVERY:
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStatusCode");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransport");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportProvider");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
-        typeTable.saveNicknameFor("org.apache.http.HttpStatus");
         break;
     }
   }
@@ -759,12 +756,18 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.longrunning.Operation");
-      typeTable.saveNicknameFor("com.google.longrunning.stub.GrpcOperationsStub");
+      typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
     }
     switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");
+        typeTable.saveNicknameFor("io.grpc.MethodDescriptor");
+        typeTable.saveNicknameFor("io.grpc.protobuf.ProtoUtils");
+        if (interfaceConfig.hasLongRunningOperations()) {
+          typeTable.saveNicknameFor("com.google.longrunning.Operation");
+          typeTable.saveNicknameFor("com.google.longrunning.stub.GrpcOperationsStub");
+        }
         break;
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");

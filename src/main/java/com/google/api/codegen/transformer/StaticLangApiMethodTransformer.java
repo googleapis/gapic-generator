@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -489,6 +489,7 @@ public class StaticLangApiMethodTransformer {
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
+    methodViewBuilder.headerRequestParams(ApiCallableTransformer.getHeaderRequestParams(context));
   }
 
   protected void setServiceResponseTypeName(
@@ -690,8 +691,6 @@ public class StaticLangApiMethodTransformer {
       callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());
     } else if (methodConfig.isBatching()) {
       callableImplType = ApiCallableImplType.BatchingApiCallable;
-    } else if (methodConfig.isLongRunningOperation()) {
-      callableImplType = ApiCallableImplType.InitialOperationApiCallable;
     }
 
     methodViewBuilder.callableMethod(
