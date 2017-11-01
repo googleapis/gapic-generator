@@ -14,20 +14,26 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.common.base.CharMatcher.whitespace;
+
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.tools.framework.util.VisitsBefore;
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Generates the text of the gapic yaml file from a ConfigNode representation. */
 public class ConfigGenerator extends NodeVisitor {
   private static final int MAX_LINE_WIDTH = 78;
+
   private static final int TAB_WIDTH = 2;
+
   private final int indent;
+
   private final StringBuilder configBuilder = new StringBuilder();
 
   public ConfigGenerator(int indent) {
@@ -58,9 +64,9 @@ public class ConfigGenerator extends NodeVisitor {
     boolean isFirst = true;
     for (String line : Splitter.on(System.lineSeparator()).split(child)) {
       if (!isFirst) {
-        configBuilder.append(CharMatcher.whitespace().trimTrailingFrom(line));
-      } else if (line.trim().startsWith("# ")) {
-        appendIndent().append(CharMatcher.whitespace().trimTrailingFrom(line));
+        configBuilder.append(whitespace().trimTrailingFrom(line));
+      } else if (line.trim().startsWith("#")) {
+        appendIndent().append(whitespace().trimTrailingFrom(line));
       } else {
         configBuilder
             .append(Strings.repeat(" ", indent - TAB_WIDTH))
@@ -82,32 +88,50 @@ public class ConfigGenerator extends NodeVisitor {
       return;
     }
 
-    int maxWidth = MAX_LINE_WIDTH - indent;
-    for (String line : Splitter.on("\n").split(comment)) {
-      while (line.length() > maxWidth) {
-        int split = lineWrapIndex(line, maxWidth);
-        appendIndent().append("# ").append(line.substring(0, split)).append(System.lineSeparator());
-        line = line.substring(split + 1);
+    for (String commentLine : Splitter.on("\n").split(comment)) {
+      int startIndex = whitespace().negate().indexIn(commentLine);
+      if (startIndex < 0) {
+        appendIndent().append("#").append(System.lineSeparator());
+        continue;
       }
-      appendIndent().append("# ").append(line).append(System.lineSeparator());
+
+      for (String line : breakLine(commentLine.trim(), MAX_LINE_WIDTH - indent - startIndex)) {
+        appendIndent().append("# ");
+        appendIndent(startIndex).append(line).append(System.lineSeparator());
+      }
     }
   }
 
+  private List<String> breakLine(String line, int maxWidth) {
+    List<String> lines = new ArrayList<>();
+    while (line.length() > maxWidth) {
+      int split = lineWrapIndex(line, maxWidth);
+      lines.add(line.substring(0, split).trim());
+      line = line.substring(split).trim();
+    }
+    lines.add(line.trim());
+    return lines;
+  }
+
   private int lineWrapIndex(String line, int maxWidth) {
-    for (int i = maxWidth; i > 0; i--) {
-      if (Character.isWhitespace(line.charAt(i))) {
-        return i;
-      }
+    int index = whitespace().lastIndexIn(line.substring(0, maxWidth + 1));
+    if (index >= 0) {
+      return index;
     }
-    for (int i = maxWidth + 1; i < line.length(); i++) {
-      if (Character.isWhitespace(line.charAt(i))) {
-        return i;
-      }
+
+    index = whitespace().indexIn(line, maxWidth);
+    if (index >= 0) {
+      return index;
     }
+
     return line.length();
   }
 
   private StringBuilder appendIndent() {
+    return appendIndent(indent);
+  }
+
+  private StringBuilder appendIndent(int indent) {
     return configBuilder.append(Strings.repeat(" ", indent));
   }
 

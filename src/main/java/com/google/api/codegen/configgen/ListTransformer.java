@@ -36,6 +36,12 @@ public class ListTransformer {
         });
   }
 
+  /**
+   * @param elements The data to transform into ConfigNodes
+   * @param parentNode The parent of the generated list
+   * @param elementTransformer Determines how to transform an individual element
+   * @return The head of the list.
+   */
   public static <T> ConfigNode generateList(
       Iterable<T> elements, ConfigNode parentNode, ElementTransformer<T> elementTransformer) {
     ConfigNode elementNode = new NullConfigNode();

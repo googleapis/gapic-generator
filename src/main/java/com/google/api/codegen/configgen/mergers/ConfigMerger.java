@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
@@ -65,14 +64,14 @@ public class ConfigMerger {
   }
 
   private ConfigNode mergeType(ConfigNode configNode) {
-    FieldConfigNode typeNode = StringPairTransformer.generateStringPair("type", CONFIG_PROTO_TYPE);
+    FieldConfigNode typeNode = FieldConfigNode.createStringPair("type", CONFIG_PROTO_TYPE);
     configNode.setChild(typeNode);
     return typeNode;
   }
 
   private ConfigNode mergeVersion(ConfigNode prevNode) {
     FieldConfigNode versionNode =
-        StringPairTransformer.generateStringPair("config_schema_version", "1.0.0");
+        FieldConfigNode.createStringPair("config_schema_version", "1.0.0");
     prevNode.insertNext(versionNode);
     return versionNode;
   }
@@ -81,10 +80,10 @@ public class ConfigMerger {
     FieldConfigNode licenseHeaderNode = new FieldConfigNode("license_header");
     prevNode.insertNext(licenseHeaderNode);
     FieldConfigNode copyrightFileNode =
-        StringPairTransformer.generateStringPair("copyright_file", CONFIG_DEFAULT_COPYRIGHT_FILE)
+        FieldConfigNode.createStringPair("copyright_file", CONFIG_DEFAULT_COPYRIGHT_FILE)
             .setComment(new DefaultComment("The file containing the copyright line(s)."));
     FieldConfigNode licenseFileNode =
-        StringPairTransformer.generateStringPair("license_file", CONFIG_DEFAULT_LICENSE_FILE)
+        FieldConfigNode.createStringPair("license_file", CONFIG_DEFAULT_LICENSE_FILE)
             .setComment(
                 new DefaultComment(
                     "The file containing the raw license header without any copyright line(s)."));

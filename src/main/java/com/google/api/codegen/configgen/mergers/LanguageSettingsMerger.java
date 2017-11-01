@@ -25,13 +25,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.protobuf.Api;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,24 +36,22 @@ import java.util.Map;
 public class LanguageSettingsMerger {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
-  private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
+  private static final ImmutableList<RewriteRule> JAVA_REWRITE_RULES =
+      ImmutableList.of(new RewriteRule("^google(\\.cloud)?", "com.google.cloud"));
 
-  static {
-    List<RewriteRule> javaRewriteRules =
-        Arrays.asList(new RewriteRule("^google(\\.cloud)?", "com.google.cloud"));
-    List<RewriteRule> commonRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
-    LANGUAGE_FORMATTERS =
-        ImmutableMap.<String, LanguageFormatter>builder()
-            .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new PythonLanguageFormatter(commonRewriteRules))
-            .put("go", new GoLanguageFormatter())
-            .put("csharp", new SimpleLanguageFormatter(".", null, true))
-            .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
-            .put("php", new SimpleLanguageFormatter("\\", commonRewriteRules, true))
-            .put("nodejs", new NodeJSLanguageFormatter())
-            .build();
-  }
+  private static final ImmutableList<RewriteRule> COMMON_REWRITE_RULES =
+      ImmutableList.of(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
+
+  private static final ImmutableMap<String, LanguageFormatter> LANGUAGE_FORMATTERS =
+      ImmutableMap.<String, LanguageFormatter>builder()
+          .put("java", new SimpleLanguageFormatter(".", JAVA_REWRITE_RULES, false))
+          .put("python", new PythonLanguageFormatter())
+          .put("go", new GoLanguageFormatter())
+          .put("csharp", new SimpleLanguageFormatter(".", ImmutableList.of(), true))
+          .put("ruby", new SimpleLanguageFormatter("::", COMMON_REWRITE_RULES, true))
+          .put("php", new SimpleLanguageFormatter("\\", COMMON_REWRITE_RULES, true))
+          .put("nodejs", new NodeJSLanguageFormatter())
+          .build();
 
   public ConfigNode mergeLanguageSettings(Model model, ConfigNode configNode, ConfigNode prevNode) {
     final String packageName = getPackageName(model);
@@ -125,11 +120,7 @@ public class LanguageSettingsMerger {
     public SimpleLanguageFormatter(
         String separator, List<RewriteRule> rewriteRules, boolean shouldCapitalize) {
       this.separator = separator;
-      if (rewriteRules != null) {
-        this.rewriteRules = rewriteRules;
-      } else {
-        this.rewriteRules = new ArrayList<>();
-      }
+      this.rewriteRules = rewriteRules;
       this.shouldCapitalize = shouldCapitalize;
     }
 
@@ -138,34 +129,28 @@ public class LanguageSettingsMerger {
       for (RewriteRule rewriteRule : rewriteRules) {
         packageName = rewriteRule.rewrite(packageName);
       }
-      List<String> elements = new LinkedList<>();
-      for (String component : Splitter.on(DEFAULT_PACKAGE_SEPARATOR).split(packageName)) {
-        if (shouldCapitalize) {
-          elements.add(capitalize(component));
-        } else {
-          elements.add(component);
-        }
+      Iterable<String> elements = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).split(packageName);
+      if (shouldCapitalize) {
+        elements = Iterables.transform(elements, SimpleLanguageFormatter::capitalize);
       }
       return Joiner.on(separator).join(elements);
     }
 
-    private String capitalize(String string) {
+    private static String capitalize(String string) {
       return Character.toUpperCase(string.charAt(0)) + string.substring(1);
     }
   }
 
   private static class GoLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
-      List<String> nameComponents =
-          Lists.newArrayList(Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName));
+      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
 
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
       if (!isApiGoogleCloud(nameComponents)) {
-        nameComponents.add(0, "google.golang.org");
-        return Joiner.on("/").join(nameComponents);
+        return "google.golang.org/" + Joiner.on("/").join(nameComponents);
       }
       int size = nameComponents.size();
       return "cloud.google.com/go/"
@@ -211,15 +196,9 @@ public class LanguageSettingsMerger {
   }
 
   private static class PythonLanguageFormatter implements LanguageFormatter {
-    private List<RewriteRule> rewriteRules;
-
-    public PythonLanguageFormatter(List<RewriteRule> rewriteRules) {
-      this.rewriteRules = rewriteRules;
-    }
-
     @Override
     public String getFormattedPackageName(String packageName) {
-      for (RewriteRule rule : rewriteRules) {
+      for (RewriteRule rule : COMMON_REWRITE_RULES) {
         packageName = rule.rewrite(packageName);
       }
       List<String> names = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);

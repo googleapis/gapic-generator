@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.ListTransformer;
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -53,10 +52,9 @@ public class CollectionMerger {
 
   private ConfigNode generateCollectionNode(String namePattern, String entityName) {
     ConfigNode collectionNode = new ListItemConfigNode();
-    ConfigNode namePatternNode =
-        StringPairTransformer.generateStringPair("name_pattern", namePattern);
+    ConfigNode namePatternNode = FieldConfigNode.createStringPair("name_pattern", namePattern);
     collectionNode.setChild(namePatternNode);
-    ConfigNode entityNameNode = StringPairTransformer.generateStringPair("entity_name", entityName);
+    ConfigNode entityNameNode = FieldConfigNode.createStringPair("entity_name", entityName);
     namePatternNode.insertNext(entityNameNode);
     return collectionNode;
   }

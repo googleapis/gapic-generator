@@ -17,7 +17,6 @@ package com.google.api.codegen.configgen.mergers;
 import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -63,7 +62,7 @@ public class InterfaceMerger {
         getResourceToEntityNameMap(apiInterface.getReachableMethods());
     ListItemConfigNode interfaceNode = new ListItemConfigNode();
     FieldConfigNode nameNode =
-        StringPairTransformer.generateStringPair("name", apiName)
+        FieldConfigNode.createStringPair("name", apiName)
             .setComment(new DefaultComment("The fully qualified name of the API interface."));
     interfaceNode.setChild(nameNode);
     ConfigNode collectionsNode =

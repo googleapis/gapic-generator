@@ -17,7 +17,6 @@ package com.google.api.codegen.configgen.mergers;
 import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -49,32 +48,32 @@ public class MethodMerger {
           + "Common properties:\n\n"
           + "  name - The simple name of the method.\n\n"
           + "  flattening - Specifies the configuration for parameter flattening.\n"
-          + "    Describes the parameter groups for which a generator should produce method "
+          + "  Describes the parameter groups for which a generator should produce method "
           + "overloads which allow a client to directly pass request message fields as method "
           + "parameters. This information may or may not be used, depending on the target "
           + "language.\n"
-          + "    Consists of groups, which each represent a list of parameters to be "
+          + "  Consists of groups, which each represent a list of parameters to be "
           + "flattened. Each parameter listed must be a field of the request message.\n\n"
           + "  required_fields - Fields that are always required for a request to be valid.\n\n"
           + "  request_object_method - Turns on or off the generation of a method whose sole "
           + "parameter is a request object. Not all languages will generate this method.\n\n"
           + "  resource_name_treatment - An enum that specifies how to treat the resource name "
           + "formats defined in the field_name_patterns and response_field_name_patterns fields.\n"
-          + "    UNSET: default value\n"
-          + "    NONE: the collection configs will not be used by the generated code.\n"
-          + "    VALIDATE: string fields will be validated by the client against the specified "
+          + "  UNSET: default value\n"
+          + "  NONE: the collection configs will not be used by the generated code.\n"
+          + "  VALIDATE: string fields will be validated by the client against the specified "
           + "resource name formats.\n"
-          + "    STATIC_TYPES: the client will use generated types for resource names.\n\n"
+          + "  STATIC_TYPES: the client will use generated types for resource names.\n\n"
           + "  page_streaming - Specifies the configuration for paging.\n"
-          + "    Describes information for generating a method which transforms a paging list RPC "
+          + "  Describes information for generating a method which transforms a paging list RPC "
           + "into a stream of resources.\n"
-          + "    Consists of a request and a response.\n"
-          + "    The request specifies request information of the list method. It defines which "
+          + "  Consists of a request and a response.\n"
+          + "  The request specifies request information of the list method. It defines which "
           + "fields match the paging pattern in the request. The request consists of a "
           + "page_size_field and a token_field. The page_size_field is the name of the optional "
           + "field specifying the maximum number of elements to be returned in the response. The "
           + "token_field is the name of the field in the request containing the page token.\n"
-          + "    The response specifies response information of the list method. It defines which "
+          + "  The response specifies response information of the list method. It defines which "
           + "fields match the paging pattern in the response. The response consists of a "
           + "token_field and a resources_field. The token_field is the name of the field in the "
           + "response containing the next page token. The resources_field is the name of the field "
@@ -85,7 +84,7 @@ public class MethodMerger {
           + "name must be defined in interfaces.retry_params_def.\n\n"
           + "  field_name_patterns - Maps the field name of the request type to entity_name of "
           + "interfaces.collections.\n"
-          + "    Specifies the string pattern that the field must follow.\n\n"
+          + "  Specifies the string pattern that the field must follow.\n\n"
           + "  timeout_millis - Specifies the default timeout for a non-retrying call. If the call "
           + "is retrying, refer to retry_params_name instead.";
 
@@ -116,14 +115,14 @@ public class MethodMerger {
   private ListItemConfigNode generateMethodNode(
       Method method, Map<String, String> collectionNameMap) {
     ListItemConfigNode methodNode = new ListItemConfigNode();
-    ConfigNode nameNode = StringPairTransformer.generateStringPair("name", method.getSimpleName());
+    ConfigNode nameNode = FieldConfigNode.createStringPair("name", method.getSimpleName());
     methodNode.setChild(nameNode);
     ConfigNode prevNode = generateField(nameNode, method);
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
     ConfigNode timeoutMillisNode =
-        StringPairTransformer.generateStringPair("timeout_millis", "60000")
+        FieldConfigNode.createStringPair("timeout_millis", "60000")
             .setComment(new FixmeComment("Configure the default timeout for a non-retrying call."));
     prevNode.insertNext(timeoutMillisNode);
     return methodNode;
@@ -159,7 +158,7 @@ public class MethodMerger {
         (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
             && !method.getRequestStreaming();
     ConfigNode requestObjectMethodNode =
-        StringPairTransformer.generateStringPair(
+        FieldConfigNode.createStringPair(
             "request_object_method", String.valueOf(requestObjectMethod));
     prevNode.insertNext(requestObjectMethodNode);
     return requestObjectMethodNode;
@@ -192,7 +191,7 @@ public class MethodMerger {
             new ListTransformer.ElementTransformer<CollectionPattern>() {
               @Override
               public ConfigNode generateElement(CollectionPattern collectionPattern) {
-                return StringPairTransformer.generateStringPair(
+                return FieldConfigNode.createStringPair(
                     collectionPattern.getFieldPath(),
                     nameMap.get(collectionPattern.getTemplatizedResourcePath()));
               }

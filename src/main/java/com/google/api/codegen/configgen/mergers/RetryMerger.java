@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.ListTransformer;
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -61,7 +60,7 @@ public class RetryMerger {
 
   private ConfigNode generateRetryCodeDefNode(String name, List<String> codes) {
     ConfigNode retryCodeDefNode = new ListItemConfigNode();
-    ConfigNode nameNode = StringPairTransformer.generateStringPair("name", name);
+    ConfigNode nameNode = FieldConfigNode.createStringPair("name", name);
     retryCodeDefNode.setChild(nameNode);
     ConfigNode retryCodesNode = new FieldConfigNode("retry_codes");
     nameNode.insertNext(retryCodesNode);
@@ -76,28 +75,28 @@ public class RetryMerger {
 
   private ConfigNode generateRetryParamDefNode(String name) {
     ConfigNode retryParamDefNode = new ListItemConfigNode();
-    ConfigNode nameNode = StringPairTransformer.generateStringPair("name", name);
+    ConfigNode nameNode = FieldConfigNode.createStringPair("name", name);
     retryParamDefNode.setChild(nameNode);
     ConfigNode initialRetryDelayMillisNode =
-        StringPairTransformer.generateStringPair("initial_retry_delay_millis", "100");
+        FieldConfigNode.createStringPair("initial_retry_delay_millis", "100");
     nameNode.insertNext(initialRetryDelayMillisNode);
     ConfigNode retryDelayMultiplierNode =
-        StringPairTransformer.generateStringPair("retry_delay_multiplier", "1.3");
+        FieldConfigNode.createStringPair("retry_delay_multiplier", "1.3");
     initialRetryDelayMillisNode.insertNext(retryDelayMultiplierNode);
     ConfigNode maxRetryDelayMillisNode =
-        StringPairTransformer.generateStringPair("max_retry_delay_millis", "60000");
+        FieldConfigNode.createStringPair("max_retry_delay_millis", "60000");
     retryDelayMultiplierNode.insertNext(maxRetryDelayMillisNode);
     ConfigNode initialRpcTimeoutMillisNode =
-        StringPairTransformer.generateStringPair("initial_rpc_timeout_millis", "20000");
+        FieldConfigNode.createStringPair("initial_rpc_timeout_millis", "20000");
     maxRetryDelayMillisNode.insertNext(initialRpcTimeoutMillisNode);
     ConfigNode rpcTimeoutMultiplierNode =
-        StringPairTransformer.generateStringPair("rpc_timeout_multiplier", "1");
+        FieldConfigNode.createStringPair("rpc_timeout_multiplier", "1");
     initialRpcTimeoutMillisNode.insertNext(rpcTimeoutMultiplierNode);
     ConfigNode maxRpcTimeoutMillisNode =
-        StringPairTransformer.generateStringPair("max_rpc_timeout_millis", "20000");
+        FieldConfigNode.createStringPair("max_rpc_timeout_millis", "20000");
     rpcTimeoutMultiplierNode.insertNext(maxRpcTimeoutMillisNode);
     ConfigNode totalTimeoutMillisNode =
-        StringPairTransformer.generateStringPair("total_timeout_millis", "600000");
+        FieldConfigNode.createStringPair("total_timeout_millis", "600000");
     maxRpcTimeoutMillisNode.insertNext(totalTimeoutMillisNode);
     return retryParamDefNode;
   }
@@ -106,11 +105,11 @@ public class RetryMerger {
     String retryCodesName =
         isIdempotent(method) ? RETRY_CODES_IDEMPOTENT_NAME : RETRY_CODES_NON_IDEMPOTENT_NAME;
     ConfigNode retryCodesNameNode =
-        StringPairTransformer.generateStringPair("retry_codes_name", retryCodesName)
+        FieldConfigNode.createStringPair("retry_codes_name", retryCodesName)
             .setComment(new FixmeComment("Configure the retryable codes for this method."));
     prevNode.insertNext(retryCodesNameNode);
     ConfigNode retryParamsNameNode =
-        StringPairTransformer.generateStringPair("retry_params_name", RETRY_PARAMS_DEFAULT_NAME)
+        FieldConfigNode.createStringPair("retry_params_name", RETRY_PARAMS_DEFAULT_NAME)
             .setComment(new FixmeComment("Configure the retryable params for this method."));
     retryCodesNameNode.insertNext(retryParamsNameNode);
     return retryParamsNameNode;

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.configgen.StringPairTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
@@ -65,16 +64,14 @@ public class PageStreamingMerger {
 
     ConfigNode requestValueNode = null;
     if (hasPageSizeField) {
-      requestValueNode =
-          StringPairTransformer.generateStringPair("page_size_field", PARAMETER_PAGE_SIZE);
+      requestValueNode = FieldConfigNode.createStringPair("page_size_field", PARAMETER_PAGE_SIZE);
       if (hasTokenField) {
         ConfigNode tokenFieldNode =
-            StringPairTransformer.generateStringPair("token_field", PARAMETER_PAGE_TOKEN);
+            FieldConfigNode.createStringPair("token_field", PARAMETER_PAGE_TOKEN);
         requestValueNode.insertNext(tokenFieldNode);
       }
     } else if (hasTokenField) {
-      requestValueNode =
-          StringPairTransformer.generateStringPair("token_field", PARAMETER_PAGE_TOKEN);
+      requestValueNode = FieldConfigNode.createStringPair("token_field", PARAMETER_PAGE_TOKEN);
     } else {
       return new NullConfigNode();
     }
@@ -105,10 +102,10 @@ public class PageStreamingMerger {
     }
 
     ConfigNode tokenFieldNode =
-        StringPairTransformer.generateStringPair("token_field", PARAMETER_NEXT_PAGE_TOKEN);
+        FieldConfigNode.createStringPair("token_field", PARAMETER_NEXT_PAGE_TOKEN);
     parentNode.setChild(tokenFieldNode);
     ConfigNode resourcesFieldNode =
-        StringPairTransformer.generateStringPair("resources_field", resourcesFieldName);
+        FieldConfigNode.createStringPair("resources_field", resourcesFieldName);
     return tokenFieldNode.insertNext(resourcesFieldNode);
   }
 
