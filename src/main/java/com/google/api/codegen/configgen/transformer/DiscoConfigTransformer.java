@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public class DiscoConfigTransformer {
 
       retryTransformer.generateRetryDefinitions(
           interfaceView,
-          ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"),
+          ImmutableList.of("UNAVAILABLE", "DEADLINE_EXCEEDED"),
           ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
