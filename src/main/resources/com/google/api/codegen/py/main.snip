@@ -273,7 +273,7 @@
 
 @private optionalParams(apiMethod)
     @if apiMethod.headerRequestParams
-        , retry=retry, timeout=timeout, metadata=metadata
+        , retry=retry, timeout=timeout, metadata=[routing_header]
     @else
         , retry=retry, timeout=timeout
     @end
@@ -308,9 +308,8 @@
 
             @if apiMethod.headerRequestParams
 
-                metadata = [
-                    ('x-google-request-params',
-                     {@routingHeader(apiMethod.headerRequestParams)})]
+                routing_header = google.api_core.gapic_v1.routing_header(
+                    [{@routingHeader(apiMethod.headerRequestParams)}])
 
             @end
         @end
@@ -347,18 +346,8 @@
 @end
 
 @private routingHeader(params)
-  '{@routingHeaderFmtStr(params)}'.format({@routingHeaderFmtArgs(params)})
-@end
-
-@private routingHeaderFmtStr(params)
-    @join param : params on "&"
-        {@param.fullyQualifiedName}={}
-    @end
-@end
-
-@private routingHeaderFmtArgs(params)
     @join param : params on ", "
-        {@routingHeaderGetters(param.gettersChain)}
+        ('{@param.fullyQualifiedName}', {@routingHeaderGetters(param.gettersChain)})
     @end
 @end
 
