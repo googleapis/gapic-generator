@@ -184,7 +184,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     String gapicPackageName =
         surfaceNamer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON));
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
+        .generateMetadataView(
+            metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))

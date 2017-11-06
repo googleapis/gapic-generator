@@ -19,13 +19,26 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaPackageMetadataNamer;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /** Responsible for producing package meta-data related views for Java */
 public abstract class JavaPackageMetadataTransformer {
+  // TODO determine if an API uses resource names from GAPIC config
+  // https://github.com/googleapis/toolkit/issues/1668
+  private ImmutableSet<String> SERVICES_WITH_NO_RESOURCE_NAMES =
+      ImmutableSet.of(
+          "common-protos",
+          "longrunning",
+          "language",
+          "speech",
+          "trace",
+          "video-intelligence",
+          "vision");
 
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
@@ -48,17 +61,29 @@ public abstract class JavaPackageMetadataTransformer {
         new JavaPackageMetadataNamer(
             config.packageName(TargetLanguage.JAVA), config.generationLayer());
 
+    List<PackageDependencyView> additionalDependencies = new ArrayList<>();
+
+    if (!SERVICES_WITH_NO_RESOURCE_NAMES.contains(config.shortName())) {
+      PackageDependencyView packageDependency =
+          PackageDependencyView.newBuilder()
+              .group("com.google.api")
+              .name("api-common")
+              .versionBound(config.apiCommonVersionBound(TargetLanguage.JAVA))
+              .build();
+      additionalDependencies.add(packageDependency);
+    }
+
     ArrayList<PackageMetadataView.Builder> viewBuilders = new ArrayList<>();
     for (Map.Entry<String, String> entry : getSnippetsOutput().entrySet()) {
       PackageMetadataView.Builder viewBuilder =
           metadataTransformer
               .generateMetadataView(
-                  config, model, entry.getKey(), entry.getValue(), TargetLanguage.JAVA)
+                  namer, config, model, entry.getKey(), entry.getValue(), TargetLanguage.JAVA)
+              .additionalDependencies(additionalDependencies)
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())
-              .generationLayer(config.generationLayer())
-              .apiCommonVersionBound(config.apiCommonVersionBound(TargetLanguage.JAVA));
+              .generationLayer(config.generationLayer());
       viewBuilders.add(viewBuilder);
     }
     return viewBuilders;

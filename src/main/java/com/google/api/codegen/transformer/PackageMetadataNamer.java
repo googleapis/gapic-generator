@@ -64,4 +64,8 @@ public class PackageMetadataNamer {
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
+
+  public String getProtoPackageGroup() {
+    return getNotImplementedString("PackageMetadataNamer.getGrpcPackageName");
+  }
 }
