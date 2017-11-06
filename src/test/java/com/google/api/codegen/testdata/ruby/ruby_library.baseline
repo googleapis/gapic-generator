@@ -415,7 +415,7 @@ end
 # Acceptance tests
 desc "Run the library acceptance tests."
 task :acceptance do
-  puts "The library gem does not have acceptance tests."
+  Rake::Task["smoke_test"].invoke
 end
 
 namespace :acceptance do
@@ -493,21 +493,17 @@ task :ci do
 end
 
 namespace :ci do
-  desc "Run the CI build, with smoke_tests."
-  task :acceptance do
+  desc "Run the CI build, with smoke tests."
+  task :smoke_test do
     Rake::Task["ci"].invoke
     header "library smoke_test", "*"
     sh "bundle exec rake smoke_test -v"
-  end
-  task :a do
-    # This is a handy shortcut to save typing
-    Rake::Task["ci:acceptance"].invoke
   end
 end
 
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "library acceptance", "*"
     sh "bundle exec rake acceptance -v"
