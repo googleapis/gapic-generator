@@ -349,11 +349,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * LibrarySettings librarySettings =
- *     LibrarySettings.newBuilder()
- *         .setTransportChannelProvider(LibrarySettings.defaultGrpcTransportProviderBuilder()
- *             .setEndpoint(myEndpoint)
- *             .build())
- *         .build();
+ *     LibrarySettings.newBuilder().setEndpoint(myEndpoint).build();
  * LibraryClient libraryClient =
  *     LibraryClient.create(librarySettings);
  * </code>
@@ -387,7 +383,7 @@ public class LibraryClient implements BackgroundResource {
    * Constructs an instance of LibraryClient, using the given stub for making calls. This is for
    * advanced usage - prefer to use LibrarySettings}.
    */
-  @BetaApi
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public static final LibraryClient create(LibraryServiceStub stub) {
     return new LibraryClient(stub);
   }
@@ -403,6 +399,7 @@ public class LibraryClient implements BackgroundResource {
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   protected LibraryClient(LibraryServiceStub stub) {
     this.settings = null;
     this.stub = stub;
@@ -413,7 +410,7 @@ public class LibraryClient implements BackgroundResource {
     return settings;
   }
 
-  @BetaApi
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public LibraryServiceStub getStub() {
     return stub;
   }
@@ -3101,7 +3098,7 @@ import org.threeten.bp.Duration;
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
-public class LibrarySettings extends ClientSettings {
+public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * The default scopes of the service.
    */
@@ -3360,6 +3357,7 @@ public class LibrarySettings extends ClientSettings {
   }
 
 
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public LibraryServiceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -3405,14 +3403,14 @@ public class LibrarySettings extends ClientSettings {
 
   /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
-    return InstantiatingGrpcChannelProvider.newBuilder()
-        .setEndpoint(getDefaultEndpoint());
+    return InstantiatingGrpcChannelProvider.newBuilder();
   }
 
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  @BetaApi("The surface for customizing headers is not stable yet and my change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
@@ -3468,12 +3466,7 @@ public class LibrarySettings extends ClientSettings {
   }
 
   private LibrarySettings(Builder settingsBuilder) throws IOException {
-    super(
-        settingsBuilder.getExecutorProvider(),
-        settingsBuilder.getTransportChannelProvider(),
-        settingsBuilder.getCredentialsProvider(),
-        settingsBuilder.getHeaderProvider(),
-        settingsBuilder.getClock());
+    super(settingsBuilder);
 
     createShelfSettings = settingsBuilder.createShelfSettings().build();
     getShelfSettings = settingsBuilder.getShelfSettings().build();
@@ -3821,7 +3814,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Builder for LibrarySettings.
    */
-  public static class Builder extends ClientSettings.Builder {
+  public static class Builder extends ClientSettings.Builder<LibrarySettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
@@ -3996,6 +3989,7 @@ public class LibrarySettings extends ClientSettings {
       builder.setTransportChannelProvider(defaultTransportChannelProvider());
       builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
       builder.setHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
       return initDefaults(builder);
     }
 
@@ -4220,30 +4214,6 @@ public class LibrarySettings extends ClientSettings {
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings
       );
-    }
-
-    @Override
-    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
-      super.setExecutorProvider(executorProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setTransportChannelProvider(TransportChannelProvider transportProvider) {
-      super.setTransportChannelProvider(transportProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setHeaderProvider(HeaderProvider headerProvider) {
-      super.setHeaderProvider(headerProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
-      super.setCredentialsProvider(credentialsProvider);
-      return this;
     }
 
     /**
@@ -5192,7 +5162,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
-@BetaApi
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   private static final MethodDescriptor<CreateShelfRequest, Shelf> createShelfMethodDescriptor =
@@ -5876,6 +5846,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class LibraryServiceStub implements BackgroundResource {
 
   public OperationsStub getOperationsStub() {
