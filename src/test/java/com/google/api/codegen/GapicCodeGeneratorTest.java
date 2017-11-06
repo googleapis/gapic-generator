@@ -144,7 +144,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
   }
 
   @Test
-  public void library() throws Exception {
+  public void test() throws Exception {
     test(apiName);
   }
 }
