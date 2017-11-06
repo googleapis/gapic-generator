@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,9 +70,6 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract VersionBound protoVersionBound();
-
-  @Nullable
-  public abstract VersionBound apiCommonVersionBound();
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageDependencies();
@@ -195,8 +192,6 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder grpcVersionBound(VersionBound val);
 
     public abstract Builder protoVersionBound(VersionBound val);
-
-    public abstract Builder apiCommonVersionBound(VersionBound val);
 
     public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
 

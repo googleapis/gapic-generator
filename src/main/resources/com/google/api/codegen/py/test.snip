@@ -4,7 +4,11 @@
 @snippet generate(apiTest)
     {@header(apiTest.fileHeader)}
 
-    class {@apiTest.testClass.name}(unittest.TestCase):
+
+    {@helpers(apiTest.testClass)}
+
+
+    class {@apiTest.testClass.name}(object):
 
         @join test : apiTest.testClass.testCases
             {@testCase(test, apiTest.testClass.apiVariableName)}
@@ -17,14 +21,66 @@
 
     {@moduleDocstring()}
     {@renderImportSection(fileHeader.importSection)}
-
-    class CustomException(Exception):
-        pass
-
 @end
 
 @private moduleDocstring()
     """Unit tests."""
+@end
+
+@private helpers(testClass)
+class MultiCallableStub(object):
+    """Stub for the grpc.UnaryUnaryMultiCallable interface."""
+    def __init__(self, method, channel_stub):
+        self.method = method
+        self.channel_stub = channel_stub
+
+    def __call__(self, request, timeout=None, metadata=None, credentials=None):
+        self.channel_stub.requests.append((self.method, request))
+        
+        response = None
+        if self.channel_stub.responses:
+            response = self.channel_stub.responses.pop()
+
+        if isinstance(response, Exception):
+            raise response
+            
+        if response:
+            return response
+
+
+class ChannelStub(object):
+    """Stub for the grpc.Channel interface."""
+    def __init__(self, responses = []):
+        self.responses = responses
+        self.requests = []
+
+    @if testClass.apiHasUnaryUnaryMethod
+        def unary_unary(
+                self, method, request_serializer=None, response_deserializer=None):
+            return MultiCallableStub(method, self)
+
+    @end
+    @if testClass.apiHasUnaryStreamingMethod
+        def unary_stream(
+                self, method, request_serializer=None, response_deserializer=None):
+            return MultiCallableStub(method, self)
+
+    @end
+    @if testClass.apiHasStreamingUnaryMethod
+    def stream_unary(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+    @end
+    @if testClass.apiHasStreamingStreamingMethod
+    def stream_stream(
+            self, method, request_serializer=None, response_deserializer=None):
+        return MultiCallableStub(method, self)
+
+    @end
+
+class CustomException(Exception):
+    pass
 @end
 
 @private testCase(test, moduleName)
@@ -56,14 +112,26 @@
 @end
 
 @private serverStreamingOptionalArrayTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        {@responseStreamingTestResponse(test)}
+    def {@test.name}(self):
+        @if test.hasReturnValue
+            @# Setup Expected Response
+            {@responseInitCode(test)}
+
+        @end
+        @# Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        {@clientSetup(test, moduleName)}
+
+
+        @if test.hasRequestParameters
+            @# Setup Request
+            {@initCode(test.initCode)}
+
+        @end
         response = {@unaryTestMethodCall(test)}
         resources = list(response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response, resources[0])
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
         {@unaryTestSuccessAsserts(test)}
 
@@ -71,13 +139,24 @@
 @end
 
 @private clientStreamingOptionalArrayTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@requestStreamingTestSetup(test, moduleName)}
+    def {@test.name}(self):
         @if test.hasReturnValue
-            {@unaryTestResponse(test)}
+            @# Setup Expected Response
+            {@responseInitCode(test)}
+
+        @end
+        @# Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        {@clientSetup(test, moduleName)}
+
+        @# Setup Request
+        {@initCode(test.initCode)}
+        request = {@test.requestTypeName}(**request)
+        requests = [request]
+
+        @if test.hasReturnValue
             response = {@requestStreamingTestMethodCall(test)}
-            self.assertEqual(expected_response, response)
+            assert expected_response == response
         @else
             {@requestStreamingTestMethodCall(test)}
         @end
@@ -88,14 +167,24 @@
 @end
 
 @private bidiStreamingOptionalArrayTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@requestStreamingTestSetup(test, moduleName)}
-        {@responseStreamingTestResponse(test)}
+    def {@test.name}(self):
+        @# Setup Expected Response
+        {@responseInitCode(test)}
+
+        @# Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+            channel=channel)
+
+        @# Setup Request
+        {@initCode(test.initCode)}
+        request = {@test.requestTypeName}(**request)
+        requests = [request]
+
         response = {@requestStreamingTestMethodCall(test)}
         resources = list(response)
-        self.assertEqual(1, len(resources))
-        self.assertEqual(expected_response, resources[0])
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
         {@requestStreamingTestSuccessAsserts(test)}
 
@@ -103,13 +192,26 @@
 @end
 
 @private simpleTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
+    def {@test.name}(self):
         @if test.hasReturnValue
-            {@unaryTestResponse(test)}
+            @# Setup Expected Response
+            {@responseInitCode(test)}
+
+            @# Mock the API response
+            channel = ChannelStub(responses = [expected_response])
+        @else
+            channel = ChannelStub()
+        @end
+        {@clientSetup(test, moduleName)}
+
+        @if test.hasRequestParameters
+            @# Setup Request
+            {@initCode(test.initCode)}
+
+        @end
+        @if test.hasReturnValue
             response = {@unaryTestMethodCall(test)}
-            self.assertEqual(expected_response, response)
+            assert expected_response == response
         @else
             {@unaryTestMethodCall(test)}
         @end
@@ -120,20 +222,29 @@
 @end
 
 @private pagedStreamingTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        {@unaryTestResponse(test)}
+    def {@test.name}(self):
+        @# Setup Expected Response
+        {@responseInitCode(test)}
+
+        @# Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        {@clientSetup(test, moduleName)}
+
+        @if test.hasRequestParameters
+            @# Setup Request
+            {@initCode(test.initCode)}
+
+        @end
         paged_list_response = {@unaryTestMethodCall(test)}
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             {@pageStreamingResponseView.resourcesVarName} = \
                 list(paged_list_response)
-            self.assertEqual(1, \
-                len({@pageStreamingResponseView.resourcesVarName}))
-            self.assertEqual(\
+            assert len({@pageStreamingResponseView.resourcesVarName}) == 1
+
+            assert \
                 expected_response.\
-                    {@pageStreamingResponseView.resourcesFieldGetterName}[0], \
-                {@pageStreamingResponseView.resourcesVarName}[0])
+                    {@pageStreamingResponseView.resourcesFieldGetterName}[0] == \
+                {@pageStreamingResponseView.resourcesVarName}[0]
         @end
 
         {@unaryTestSuccessAsserts(test)}
@@ -142,113 +253,105 @@
 @end
 
 @private simpleTestWithException(test, moduleName)
-    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.nameWithException}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        @# Mock exception response
-        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+    def {@test.nameWithException}(self):
+        @# Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+             channel=channel)
 
-        self.assertRaises(\
-            errors.GaxError, \
-            client.{@test.clientMethodName}\
-            {@sampleMethodCallArgListAfterComma(test.initCode)})
+        @if test.hasRequestParameters
+            @# Setup request
+            {@initCode(test.initCode)}
+
+        @end
+        with pytest.raises(CustomException):
+            {@unaryTestMethodCall(test)}
 @end
 
 @private pagedStreamingTestWithException(test, moduleName)
-    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.nameWithException}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        @# Mock exception response
-        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+    def {@test.nameWithException}(self):
+        channel = ChannelStub(responses = [CustomException()])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+            channel=channel)
 
+        @if test.hasRequestParameters
+            @# Setup request
+            {@initCode(test.initCode)}
+
+        @end
         paged_list_response = {@unaryTestMethodCall(test)}
-        self.assertRaises(errors.GaxError, list, paged_list_response)
+        with pytest.raises(CustomException):
+            list(paged_list_response)
 @end
 
 @private requestStreamingTestWithException(test, moduleName)
-    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.nameWithException}(self, mock_create_stub):
-        {@requestStreamingTestSetup(test, moduleName)}
-        @# Mock exception response
-        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+    def {@test.nameWithException}(self):
+        @# Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+             channel=channel)
 
-        self.assertRaises(\
-            errors.GaxError, \
-            client.{@test.clientMethodName}, \
-            requests)
+        @if test.hasRequestParameters
+            @# Setup request
+            {@initCode(test.initCode)}
+
+        @end
+        request = {@test.requestTypeName}(**request)
+        requests = [request]
+
+        with pytest.raises(CustomException):
+            {@requestStreamingTestMethodCall(test)}
 @end
 
 @private operationTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.name}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        @# Mock response
+    def {@test.name}(self):
+        @# Setup Expected Response
         {@responseInitCode(test)}
         operation = operations_pb2.Operation(name='operations/{@test.name}', done=True)
         operation.response.Pack(expected_response)
-        grpc_stub.{@test.grpcStubCallString}.return_value = operation
 
+        @# Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+            channel=channel)
+
+        @if test.hasRequestParameters
+            @# Setup Request
+            {@initCode(test.initCode)}
+
+        @end
         response = {@unaryTestMethodCall(test)}
-        self.assertEqual(expected_response, response.result())
+        result = response.result()
+        assert expected_response == result
 
         {@unaryTestSuccessAsserts(test)}
 
-    @@mock.patch('google.gax.config.create_stub', spec=True)
-    def {@test.nameWithException}(self, mock_create_stub):
-        {@unaryTestSetup(test, moduleName)}
-        @# Mock exception response
+
+    def {@test.nameWithException}(self):
+        @# Setup Response
         error = status_pb2.Status()
         operation = operations_pb2.Operation(\
             name='operations/{@test.nameWithException}', done=True)
         operation.error.CopyFrom(error)
-        grpc_stub.{@test.grpcStubCallString}.return_value = operation
 
+        @# Mock the API response
+        channel = ChannelStub(responses=[operation])
+        client = {@moduleName}.{@test.serviceConstructorName}(
+            channel=channel)
+
+        @if test.hasRequestParameters
+            @# Setup Request
+            {@initCode(test.initCode)}
+
+        @end
         response = {@unaryTestMethodCall(test)}
-        self.assertEqual(error, response.exception())
+        exception = response.exception()
+        assert exception.errors[0] == error
 @end
 
-@private unaryTestSetup(test, moduleName)
-    @# Mock gRPC layer
-    grpc_stub = mock.Mock()
-    mock_create_stub.return_value = grpc_stub
-
-    client = {@moduleName}.{@test.serviceConstructorName}()
-
-    @if test.hasRequestParameters
-        @# Mock request
-        {@initCode(test.initCode)}
-
-    @end
-@end
-
-@private requestStreamingTestSetup(test, moduleName)
-    @# Mock gRPC layer
-    grpc_stub = mock.Mock()
-    mock_create_stub.return_value = grpc_stub
-
-    client = {@moduleName}.{@test.serviceConstructorName}()
-
-    @# Mock request
-    {@initCode(test.initCode)}
-    requests = [request]
-
-@end
-
-@private unaryTestResponse(test)
-    @# Mock response
-    {@responseInitCode(test)}
-    grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
-
-@end
-
-@private responseStreamingTestResponse(test)
-    @# Mock response
-    {@responseInitCode(test)}
-    grpc_stub.{@test.grpcStubCallString}.return_value = iter([expected_response])
-
+@private clientSetup(test, moduleName)
+    client = {@moduleName}.{@test.serviceConstructorName}(
+        channel=channel)
 @end
 
 @private responseInitCode(test)
@@ -266,15 +369,14 @@
 @end
 
 @private unaryTestSuccessAsserts(test)
-    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
-    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
-    self.assertEqual(len(args), 2)
-    self.assertEqual(len(kwargs), 1)
-    self.assertIn('metadata', kwargs)
-    actual_request = args[0]
-
-    expected_request = {@test.requestTypeName}({@requestParams(test.asserts)})
-    self.assertEqual(expected_request, actual_request)
+    assert len(channel.requests) == 1
+    @if test.hasRequestParameters
+        expected_request = {@test.requestTypeName}({@requestParams(test.asserts)})
+    @else
+        expected_request = {@test.requestTypeName}()
+    @end
+    actual_request = channel.requests[0][1]
+    assert expected_request == actual_request
 @end
 
 @private requestParams(asserts)
@@ -293,15 +395,11 @@
 @end
 
 @private requestStreamingTestSuccessAsserts(test)
-    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
-    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
-    self.assertEqual(len(args), 2)
-    self.assertEqual(len(kwargs), 1)
-    self.assertIn('metadata', kwargs)
-    actual_requests = args[0]
-    self.assertEqual(1, len(actual_requests))
+    assert len(channel.requests) == 1
+    actual_requests = channel.requests[0][1]
+    assert len(actual_requests) == 1
     actual_request = list(actual_requests)[0]
-    self.assertEqual(request, actual_request)
+    assert request == actual_request
 @end
 
 @private sampleMethodCallArgListAfterComma(initCode)

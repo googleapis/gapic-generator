@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,7 +184,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     String gapicPackageName =
         surfaceNamer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON));
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
+        .generateMetadataView(
+            metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
@@ -253,8 +254,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private List<PackageDependencyView> generateAdditionalDependencies() {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
-        PackageDependencyView.create(
-            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.PYTHON)));
+        PackageDependencyView.create("google-api-core", VersionBound.create("0.1.0", "0.2.0dev")));
     dependencies.add(
         PackageDependencyView.create(
             "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));

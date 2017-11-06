@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
@@ -190,6 +191,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     return metadataTransformer
         .generateMetadataView(
+            new PackageMetadataNamer(),
             packageMetadataConfig,
             context.getApiModel(),
             CSPROJ_TEMPLATE_FILENAME,
@@ -255,7 +257,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BatchingApiCallable
-          || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || call.type() == ApiCallableImplType.BidiStreamingApiCallable
           || call.type() == ApiCallableImplType.ServerStreamingApiCallable) {
         callables.add(call);

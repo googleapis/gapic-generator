@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,7 +156,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, GEMSPEC_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
+            namer,
+            packageConfig,
+            model,
+            GEMSPEC_FILE,
+            namer.getOutputFileName(),
+            TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .additionalDependencies(
             ImmutableList.of(
@@ -171,7 +176,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       ApiModel model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -279,7 +284,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
 
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(

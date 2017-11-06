@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     boolean hasMultipleServices = Iterables.size(services) > 1;
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -198,7 +198,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     boolean hasMultipleServices = Iterables.size(services) > 1;
 
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(hasMultipleServices)
         .additionalDependencies(generateAdditionalDependencies(model, productConfig))
