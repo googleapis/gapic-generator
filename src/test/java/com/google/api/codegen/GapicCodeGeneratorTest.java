@@ -58,7 +58,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     }
   }
 
-  @Parameters(name = "{0}")
+  @Parameters(name = "{5}")
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(

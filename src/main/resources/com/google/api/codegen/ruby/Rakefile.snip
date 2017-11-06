@@ -88,7 +88,11 @@
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
   task :acceptance do
-    puts "The {@metadata.identifier} gem does not have acceptance tests."
+    @if metadata.hasSmokeTests
+      Rake::Task["smoke_test"].invoke
+    @else
+      puts "The {@metadata.identifier} gem does not have acceptance tests."
+    @end
   end
 
   namespace :acceptance do
