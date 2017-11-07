@@ -17,6 +17,9 @@
         {
             @if smokeTest.requireProjectId
                 $projectId = getenv('PROJECT_ID');
+                if ($projectId === false) {
+                    $this->fail('Environment variable PROJECT_ID must be set for smoke test');
+                }
             @end
 
             ${@smokeTest.apiMethod.apiVariableName} = new {@smokeTest.apiMethod.apiClassName}();
