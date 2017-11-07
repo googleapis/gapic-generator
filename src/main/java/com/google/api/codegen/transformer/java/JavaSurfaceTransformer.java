@@ -650,7 +650,6 @@ public class JavaSurfaceTransformer {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.api.gax.core.ChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
@@ -675,6 +674,9 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("org.threeten.bp.Duration");
+
+    // TODO(andrealin): remove this from httpjson
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
@@ -710,7 +712,6 @@ public class JavaSurfaceTransformer {
     }
     switch (context.getApiModel().getApiSource()) {
       case PROTO:
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportChannel");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
         if (interfaceConfig.hasLongRunningOperations()) {
@@ -718,6 +719,8 @@ public class JavaSurfaceTransformer {
         }
         break;
       case DISCOVERY:
+        typeTable.saveNicknameFor(
+            "com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         break;
@@ -739,7 +742,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.RequestParamsExtractor");
-    typeTable.saveNicknameFor("com.google.api.gax.rpc.EmptyRequestParamsExtractor");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -772,6 +774,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
