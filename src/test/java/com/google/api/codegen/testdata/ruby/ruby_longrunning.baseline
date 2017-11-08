@@ -692,6 +692,7 @@ require "json"
 require "pathname"
 
 require "google/gax"
+require "googleauth"
 
 require "longrunning_pb"
 
@@ -787,7 +788,7 @@ module Google
           warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 
-        credentials ||= Google::Auth::Credentials.default
+        credentials ||= Google::Auth::Credentials.default(scopes: scopes)
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
           updater_proc = Google::Auth::Credentials.new(credentials).updater_proc

@@ -75,6 +75,10 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
       imports.add(createImport("google/longrunning/operations_client"));
     }
 
+    if (RubyUtil.isLongrunning(context.getProductConfig().getPackageName())) {
+      imports.add(createImport("googleauth"));
+    }
+
     return imports.build();
   }
 
