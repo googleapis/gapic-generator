@@ -107,7 +107,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    * Constructs an instance of NoTemplatesApiServiceClient, using the given stub for making calls. This is for
    * advanced usage - prefer to use NoTemplatesApiServiceSettings}.
    */
-  @BetaApi
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public static final NoTemplatesApiServiceClient create(NoTemplatesApiServiceStub stub) {
     return new NoTemplatesApiServiceClient(stub);
   }
@@ -122,6 +122,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
     this.stub = settings.createStub();
   }
 
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   protected NoTemplatesApiServiceClient(NoTemplatesApiServiceStub stub) {
     this.settings = null;
     this.stub = stub;
@@ -131,7 +132,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
     return settings;
   }
 
-  @BetaApi
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public NoTemplatesApiServiceStub getStub() {
     return stub;
   }
@@ -275,7 +276,7 @@ import org.threeten.bp.Duration;
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public class NoTemplatesApiServiceSettings extends ClientSettings {
+public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApiServiceSettings> {
 
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
@@ -295,6 +296,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   }
 
 
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public NoTemplatesApiServiceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -324,6 +326,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   }
 
 
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
@@ -338,23 +341,6 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
       gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults.
-   */
-  @Deprecated
-  public static Builder defaultBuilder() {
-    return Builder.createDefault();
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults for API methods, and the given
-   * ClientContext used for executor/transport/credentials.
-   */
-  @Deprecated
-  public static Builder defaultBuilder(ClientContext clientContext) {
-    return new Builder(clientContext);
   }
 
   /**
@@ -379,12 +365,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   }
 
   private NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
-    super(
-        settingsBuilder.getExecutorProvider(),
-        settingsBuilder.getTransportChannelProvider(),
-        settingsBuilder.getCredentialsProvider(),
-        settingsBuilder.getHeaderProvider(),
-        settingsBuilder.getClock());
+    super(settingsBuilder);
 
     incrementSettings = settingsBuilder.incrementSettings().build();
   }
@@ -395,7 +376,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   /**
    * Builder for NoTemplatesApiServiceSettings.
    */
-  public static class Builder extends ClientSettings.Builder {
+  public static class Builder extends ClientSettings.Builder<NoTemplatesApiServiceSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final UnaryCallSettings.Builder<IncrementRequest, Empty> incrementSettings;
@@ -453,30 +434,6 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           incrementSettings
       );
-    }
-
-    @Override
-    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
-      super.setExecutorProvider(executorProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setTransportChannelProvider(TransportChannelProvider transportProvider) {
-      super.setTransportChannelProvider(transportProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setHeaderProvider(HeaderProvider headerProvider) {
-      super.setHeaderProvider(headerProvider);
-      return this;
-    }
-
-    @Override
-    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
-      super.setCredentialsProvider(credentialsProvider);
-      return this;
     }
 
     /**
@@ -579,7 +536,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
-@BetaApi
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
 
   private static final MethodDescriptor<IncrementRequest, Empty> incrementMethodDescriptor =
@@ -689,7 +646,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
-@BetaApi
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class NoTemplatesApiServiceStub implements BackgroundResource {
 
 
@@ -716,12 +673,14 @@ public abstract class NoTemplatesApiServiceStub implements BackgroundResource {
  */
 package com.google.gcloud.example;
 
+import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
 @javax.annotation.Generated("by GAPIC")
+@BetaApi
 public class MockNoTemplatesAPIService implements MockGrpcService  {
   private final MockNoTemplatesAPIServiceImpl serviceImpl;
 
@@ -772,6 +731,7 @@ public class MockNoTemplatesAPIService implements MockGrpcService  {
  */
 package com.google.gcloud.example;
 
+import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.example.noPathTemplates.v1.NoTemplatesAPIServiceGrpc.NoTemplatesAPIServiceImplBase;
@@ -784,6 +744,7 @@ import java.util.List;
 import java.util.Queue;
 
 @javax.annotation.Generated("by GAPIC")
+@BetaApi
 public class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceImplBase {
   private ArrayList<GeneratedMessageV3> requests;
   private Queue<Object> responses;

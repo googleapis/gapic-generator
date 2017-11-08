@@ -170,11 +170,13 @@
     @switch metadata.generationLayer
     @case "PROTO"
       compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
-      compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
+      @join dependency : metadata.additionalDependencies
+        compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
+      @end
       @join dependency : metadata.protoPackageDependencies
         @switch metadata.dependencyType
         @case "RELEASE"
-          compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
+          compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
         @case "LOCAL"
           compile project(":{@dependency.name}")
         @default

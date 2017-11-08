@@ -53,4 +53,8 @@ public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   public String getMetadataIdentifier() {
     return getMetadataIdentifier(packageName, generationLayer);
   }
+
+  public String getProtoPackageGroup() {
+    return "com.google.api.grpc";
+  }
 }

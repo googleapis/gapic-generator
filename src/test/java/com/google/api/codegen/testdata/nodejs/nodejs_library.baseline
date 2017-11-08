@@ -4136,7 +4136,7 @@ describe('LibraryServiceClient', () => {
       client._innerApiCalls.streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
       var stream = client.streamShelves(request);
-      stream.on('data', response => {
+      stream.on('data', () => {
         assert.fail();
       });
       stream.on('error', err =>){
@@ -4205,7 +4205,7 @@ describe('LibraryServiceClient', () => {
       client._innerApiCalls.streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
       var stream = client.streamBooks(request);
-      stream.on('data', response => {
+      stream.on('data', () => {
         assert.fail();
       });
       stream.on('error', err =>){
@@ -4267,7 +4267,7 @@ describe('LibraryServiceClient', () => {
       // Mock Grpc layer
       client._innerApiCalls.discussBook = mockBidiStreamingGrpcMethod(request, null, error);
 
-      var stream = client.discussBook().on('data', response => {
+      var stream = client.discussBook().on('data', () => {
         assert.fail();
       }).on('error', err => {
         assert(err instanceof Error);
@@ -4527,7 +4527,7 @@ describe('LibraryServiceClient', () => {
       client.getBigBook(request).then(responses => {
         var operation = responses[0];
         return operation.promise();
-      }).then(responses => {
+      }).then(() => {
         assert.fail();
       }).catch(err => {
         assert(err instanceof Error);
@@ -4594,7 +4594,7 @@ describe('LibraryServiceClient', () => {
       client.getBigNothing(request).then(responses => {
         var operation = responses[0];
         return operation.promise();
-      }).then(responses => {
+      }).then(() => {
         assert.fail();
       }).catch(err => {
         assert(err instanceof Error);
