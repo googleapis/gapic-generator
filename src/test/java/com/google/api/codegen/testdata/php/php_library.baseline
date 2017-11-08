@@ -2762,6 +2762,9 @@ class LibraryServiceSmokeTest extends GeneratedTest
     public function updateBookTest()
     {
         $projectId = getenv('PROJECT_ID');
+        if ($projectId === false) {
+            $this->fail('Environment variable PROJECT_ID must be set for smoke test');
+        }
 
         $libraryServiceClient = new LibraryServiceClient();
         $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
