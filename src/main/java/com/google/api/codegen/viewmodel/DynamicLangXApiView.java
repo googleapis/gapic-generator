@@ -129,6 +129,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String fullyQualifiedCredentialsClassName();
 
   @Nullable
+  public abstract String defaultCredentialsInitializerCall();
+
+  @Nullable
   public abstract String servicePhraseName();
 
   @Nullable
@@ -226,6 +229,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder isGcloud(boolean val);
 
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
+
+    public abstract Builder defaultCredentialsInitializerCall(String val);
 
     public abstract Builder servicePhraseName(String val);
 
