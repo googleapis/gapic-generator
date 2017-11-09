@@ -719,8 +719,7 @@ public class JavaSurfaceTransformer {
         }
         break;
       case DISCOVERY:
-        typeTable.saveNicknameFor(
-            "com.google.api.gax.httpjson.HttpJsonTransportChannel");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         break;
