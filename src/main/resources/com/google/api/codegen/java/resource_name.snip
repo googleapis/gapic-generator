@@ -43,7 +43,7 @@
   public static {@resourceName.typeName} parse(String formattedString) {
     Map<String, String> matchMap =
         PATH_TEMPLATE.validatedMatch(formattedString, "{@resourceName.typeName}.parse: formattedString not in valid format");
-    return create(
+    return of(
       @join param : resourceName.pathParams on ",".add(BREAK)
         matchMap.get("{@param.name}")
       @end
@@ -131,7 +131,7 @@
     @end
   }
 
-  public static {@resourceName.typeName} create(
+  public static {@resourceName.typeName} of(
       @join param : resourceName.pathParams on ",".add(BREAK)
         {@param.typeName} {@param.name}
       @end
