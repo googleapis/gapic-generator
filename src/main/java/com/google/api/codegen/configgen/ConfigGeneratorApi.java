@@ -14,13 +14,10 @@
  */
 package com.google.api.codegen.configgen;
 
-import com.google.api.codegen.configgen.transformer.ConfigTransformer;
-import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.util.CommonRenderingUtil;
-import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.configgen.mergers.ConfigMerger;
+import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.stages.Merged;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
@@ -51,13 +48,14 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     }
 
     String outputPath = options.get(OUTPUT_FILE);
-    Map<String, Doc> outputFiles = generateConfig(outputPath);
+    Map<String, String> outputFiles = generateConfig(outputPath);
     ToolUtil.writeFiles(outputFiles, "");
   }
 
-  private Map<String, Doc> generateConfig(String outputPath) {
-    ViewModel viewModel = new ConfigTransformer().generateConfig(model, outputPath);
-    return ImmutableMap.of(
-        outputPath, new CommonSnippetSetRunner(new CommonRenderingUtil()).generate(viewModel));
+  private Map<String, String> generateConfig(String outputPath) {
+    ConfigNode node = new ConfigMerger().mergeConfig(model);
+    ConfigGenerator configGenerator = new ConfigGenerator(0);
+    configGenerator.visit(node);
+    return ImmutableMap.of(outputPath, configGenerator.toString());
   }
 }
