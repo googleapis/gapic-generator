@@ -68,7 +68,7 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
                 "google/protobuf", packageConfig.protoVersionBound(TargetLanguage.PHP)));
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
+            namer, packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
         .additionalDependencies(dependencies)
         .hasMultipleServices(hasMultipleServices)
         .identifier(namer.getMetadataIdentifier())

@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
@@ -190,6 +191,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     return metadataTransformer
         .generateMetadataView(
+            new PackageMetadataNamer(),
             packageMetadataConfig,
             context.getApiModel(),
             CSPROJ_TEMPLATE_FILENAME,
