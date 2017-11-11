@@ -16,7 +16,7 @@
 @end
 
 @private renderClass(classView)
-  public class {@classView.name} extends ClientSettings {
+  public class {@classView.name} extends ClientSettings<{@classView.name}> {
     {@constants(classView)}
     {@members(classView)}
     {@constructors(classView)}
@@ -84,6 +84,7 @@
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -149,8 +150,7 @@
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
     public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
-      return {@xsettingsClass.instantiatingChannelProvider}.newBuilder()
-          .setEndpoint(getDefaultEndpoint());
+      return {@xsettingsClass.instantiatingChannelProvider}.newBuilder();
     }
 
     public static TransportChannelProvider defaultTransportChannelProvider() {
@@ -158,6 +158,7 @@
     }
   @end
 
+  @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
@@ -172,23 +173,6 @@
       gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults.
-   */
-  @@Deprecated
-  public static Builder defaultBuilder() {
-    return Builder.createDefault();
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults for API methods, and the given
-   * ClientContext used for executor/transport/credentials.
-   */
-  @@Deprecated
-  public static Builder defaultBuilder(ClientContext clientContext) {
-    return new Builder(clientContext);
   }
 
   /**
@@ -288,12 +272,7 @@
 
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
-    super(
-        settingsBuilder.getExecutorProvider(),
-        settingsBuilder.getTransportChannelProvider(),
-        settingsBuilder.getCredentialsProvider(),
-        settingsBuilder.getHeaderProvider(),
-        settingsBuilder.getClock());
+    super(settingsBuilder);
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -464,7 +443,7 @@
   /**
    * Builder for {@xsettingsClass.name}.
    */
-  public static class Builder extends ClientSettings.Builder {
+  public static class Builder extends ClientSettings.Builder<{@xsettingsClass.name}, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
@@ -590,6 +569,7 @@
       builder.setTransportChannelProvider(defaultTransportChannelProvider());
       builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
       builder.setHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
     @end
     return initDefaults(builder);
   }
@@ -608,10 +588,10 @@
             .setFlowControlSettings(
               FlowControlSettings.newBuilder()
                 @if settings.batchingConfig.hasFlowControlElementLimit
-                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit})
+                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit}L)
                 @end
                 @if settings.batchingConfig.hasFlowControlByteLimit
-                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit})
+                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit}L)
                 @end
                 .setLimitExceededBehavior(LimitExceededBehavior.{@settings.batchingConfig.flowControlLimitExceededBehavior})
                 .build())
@@ -665,30 +645,6 @@
 @end
 
 @private builderMethods(xsettingsClass)
-  @@Override
-  public Builder setExecutorProvider(ExecutorProvider executorProvider) {
-    super.setExecutorProvider(executorProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setTransportChannelProvider(TransportChannelProvider transportProvider) {
-    super.setTransportChannelProvider(transportProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setHeaderProvider(HeaderProvider headerProvider) {
-    super.setHeaderProvider(headerProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
-    super.setCredentialsProvider(credentialsProvider);
-    return this;
-  }
-
   /**
    * Applies the given settings updater function to all of the unary API methods in this service.
    *

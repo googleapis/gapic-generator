@@ -16,10 +16,14 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.config.VersionBound;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** Represents a dependency of the package being generated. */
 @AutoValue
 public abstract class PackageDependencyView implements Comparable<PackageDependencyView> {
+
+  @Nullable
+  public abstract String group();
 
   /** The name of the dependency package */
   public abstract String name();
@@ -28,11 +32,27 @@ public abstract class PackageDependencyView implements Comparable<PackageDepende
   public abstract VersionBound versionBound();
 
   public static PackageDependencyView create(String name, VersionBound versionBound) {
-    return new AutoValue_PackageDependencyView(name, versionBound);
+    return newBuilder().name(name).versionBound(versionBound).build();
   }
 
   @Override
   public int compareTo(PackageDependencyView other) {
     return this.name().compareTo(other.name());
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_PackageDependencyView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder group(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder versionBound(VersionBound val);
+
+    public abstract PackageDependencyView build();
   }
 }

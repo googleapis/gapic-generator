@@ -189,6 +189,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
 
     xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
+    xapiClass.defaultCredentialsInitializerCall(
+        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
+            ? "default(scopes: scopes)"
+            : "default");
     return xapiClass.build();
   }
 
