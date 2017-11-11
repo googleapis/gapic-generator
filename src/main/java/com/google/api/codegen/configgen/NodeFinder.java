@@ -15,12 +15,41 @@
 package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.configgen.nodes.ConfigNode;
+import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
+import com.google.api.codegen.configgen.nodes.NullConfigNode;
 import com.google.common.collect.Iterables;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** Utilities for finding and traversing ConfigNodes. */
 public class NodeFinder {
+  public static ConfigNode findByValue(ConfigNode parentNode, String value) {
+    for (ConfigNode childNode : getChildren(parentNode)) {
+      if (value.equals(childNode.getText())) {
+        return childNode;
+      }
+    }
+
+    return new NullConfigNode();
+  }
+
+  public static boolean hasChild(ConfigNode parentNode) {
+    ConfigNode childNode = parentNode.getChild();
+    if (!childNode.isPresent()) {
+      return false;
+    }
+
+    if (!childNode.getText().isEmpty()) {
+      return true;
+    }
+
+    if (!(childNode instanceof ListItemConfigNode)) {
+      return false;
+    }
+
+    return ((ListItemConfigNode) childNode).getChild().isPresent();
+  }
+
   public static ConfigNode getLastChild(ConfigNode parentNode) {
     return Iterables.getLast(getChildren(parentNode));
   }

@@ -15,7 +15,9 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
@@ -37,9 +39,12 @@ public class InterfaceMerger {
   private final RetryMerger retryMerger = new RetryMerger();
   private final MethodMerger methodMerger = new MethodMerger();
 
-  public void mergeInterfaces(final Model model, ConfigNode configNode) {
-    FieldConfigNode interfacesNode = new FieldConfigNode("interfaces");
-    NodeFinder.getLastChild(configNode).insertNext(interfacesNode);
+  public void mergeInterfaces(final Model model, ConfigNode configNode, final ConfigHelper helper) {
+    FieldConfigNode interfacesNode =
+        MissingFieldTransformer.append("interfaces", configNode).generate();
+    if (NodeFinder.hasChild(interfacesNode)) {
+      return;
+    }
 
     ConfigNode interfacesValueNode =
         ListTransformer.generateList(
@@ -48,7 +53,7 @@ public class InterfaceMerger {
             new ListTransformer.ElementTransformer<Api>() {
               @Override
               public ConfigNode generateElement(Api api) {
-                return generateInterfaceNode(model, api.getName());
+                return generateInterfaceNode(model, api.getName(), helper);
               }
             });
     interfacesNode
@@ -56,7 +61,8 @@ public class InterfaceMerger {
         .setComment(new DefaultComment("A list of API interface configurations."));
   }
 
-  private ListItemConfigNode generateInterfaceNode(Model model, String apiName) {
+  private ListItemConfigNode generateInterfaceNode(
+      Model model, String apiName, ConfigHelper helper) {
     Interface apiInterface = model.getSymbolTable().lookupInterface(apiName);
     Map<String, String> collectionNameMap =
         getResourceToEntityNameMap(apiInterface.getReachableMethods());
@@ -68,7 +74,7 @@ public class InterfaceMerger {
     ConfigNode collectionsNode =
         collectionMerger.generateCollectionsNode(nameNode, collectionNameMap);
     ConfigNode retryParamsDefNode = retryMerger.generateRetryDefinitionsNode(collectionsNode);
-    methodMerger.generateMethodsNode(interfaceNode, apiInterface, collectionNameMap);
+    methodMerger.generateMethodsNode(interfaceNode, apiInterface, collectionNameMap, helper);
     return interfaceNode;
   }
 

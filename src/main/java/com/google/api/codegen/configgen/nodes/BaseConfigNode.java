@@ -17,7 +17,7 @@ package com.google.api.codegen.configgen.nodes;
 /** Base class for the ConfigNode types. */
 public abstract class BaseConfigNode implements ConfigNode {
   private final String text;
-  private ConfigNode next;
+  private ConfigNode next = new NullConfigNode();
 
   protected BaseConfigNode(String text) {
     this.text = text;
@@ -30,7 +30,7 @@ public abstract class BaseConfigNode implements ConfigNode {
 
   @Override
   public ConfigNode getNext() {
-    return next == null ? new NullConfigNode() : next;
+    return next;
   }
 
   @Override
@@ -46,10 +46,11 @@ public abstract class BaseConfigNode implements ConfigNode {
   @Override
   public ConfigNode insertNext(ConfigNode next) {
     if (next != null) {
-      next.insertNext(this.next);
+      this.next = next.insertNext(this.next);
+    } else {
+      this.next = new NullConfigNode();
     }
 
-    this.next = next;
     return this;
   }
 

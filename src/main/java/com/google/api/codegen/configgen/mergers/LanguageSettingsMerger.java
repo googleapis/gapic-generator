@@ -14,13 +14,15 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.MissingFieldTransformer;
+import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.util.VersionMatcher;
-import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
@@ -53,14 +55,19 @@ public class LanguageSettingsMerger {
           .put("nodejs", new NodeJSLanguageFormatter())
           .build();
 
-  public ConfigNode mergeLanguageSettings(Model model, ConfigNode configNode, ConfigNode prevNode) {
-    final String packageName = getPackageName(model);
+  public ConfigNode mergeLanguageSettings(
+      Model model, ConfigNode configNode, ConfigNode prevNode, ConfigHelper helper) {
+    final String packageName = getPackageName(model, helper);
     if (packageName == null) {
       return null;
     }
 
-    FieldConfigNode languageSettingsNode = new FieldConfigNode("language_settings");
-    prevNode.insertNext(languageSettingsNode);
+    FieldConfigNode languageSettingsNode =
+        MissingFieldTransformer.insert("language_settings", configNode, prevNode).generate();
+    if (NodeFinder.hasChild(languageSettingsNode)) {
+      return languageSettingsNode;
+    }
+
     ConfigNode languageSettingsValueNode =
         ListTransformer.generateList(
             LANGUAGE_FORMATTERS.entrySet(),
@@ -78,7 +85,7 @@ public class LanguageSettingsMerger {
         .setComment(new DefaultComment("The settings of generated code in a specific language."));
   }
 
-  private String getPackageName(Model model) {
+  private String getPackageName(Model model, ConfigHelper helper) {
     if (model.getServiceConfig().getApisCount() > 0) {
       Api api = model.getServiceConfig().getApis(0);
       Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
@@ -87,7 +94,7 @@ public class LanguageSettingsMerger {
       }
     }
 
-    model.getDiagCollector().addDiag(Diag.error(model.getLocation(), "No interface found"));
+    helper.error(model.getLocation(), "No interface found");
     return null;
   }
 

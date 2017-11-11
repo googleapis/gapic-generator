@@ -15,17 +15,26 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.configgen.ConfigHelper;
+import com.google.api.codegen.configgen.ConfigYamlReader;
+import com.google.api.codegen.configgen.InitialConfigLocationGenerator;
+import com.google.api.codegen.configgen.MissingFieldTransformer;
+import com.google.api.codegen.configgen.NodeFinder;
+import com.google.api.codegen.configgen.RefreshConfigLocationGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
+import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 import com.google.api.tools.framework.model.Model;
+import java.io.File;
 
 /** Merges the gapic config from a Model into a ConfigNode. */
 public class ConfigMerger {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
+  private static final String CONFIG_SCHEMA_VERSION = "1.0.0";
   private static final String CONFIG_COMMENT =
       "Address all the FIXMEs in this generated config before using it for client generation. "
           + "Remove this paragraph after you closed all the FIXMEs."
@@ -36,7 +45,9 @@ public class ConfigMerger {
   private final InterfaceMerger interfaceMerger = new InterfaceMerger();
 
   public ConfigNode mergeConfig(Model model) {
-    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""));
+    ConfigHelper helper =
+        new ConfigHelper(model.getDiagCollector(), new InitialConfigLocationGenerator());
+    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""), helper);
     if (configNode == null) {
       return null;
     }
@@ -44,41 +55,81 @@ public class ConfigMerger {
     return configNode.setComment(new FixmeComment(CONFIG_COMMENT));
   }
 
-  private FieldConfigNode mergeConfig(Model model, FieldConfigNode configNode) {
-    ConfigNode typeNode = mergeType(configNode);
+  public ConfigNode mergeConfig(Model model, File file) {
+    ConfigHelper helper =
+        new ConfigHelper(
+            model.getDiagCollector(), new RefreshConfigLocationGenerator(file.getName()));
+    FieldConfigNode configNode = new ConfigYamlReader().generateConfigNode(file, helper);
+    if (configNode == null) {
+      return null;
+    }
+
+    return mergeConfig(model, configNode, helper);
+  }
+
+  private FieldConfigNode mergeConfig(
+      Model model, FieldConfigNode configNode, ConfigHelper helper) {
+    ConfigNode typeNode = mergeType(configNode, helper);
     if (typeNode == null) {
       return null;
     }
 
-    ConfigNode versionNode = mergeVersion(typeNode);
+    ConfigNode versionNode = mergeVersion(configNode, typeNode, helper);
+    if (versionNode == null) {
+      return null;
+    }
+
     ConfigNode languageSettingsNode =
-        languageSettingsMerger.mergeLanguageSettings(model, configNode, versionNode);
+        languageSettingsMerger.mergeLanguageSettings(model, configNode, versionNode, helper);
     if (languageSettingsNode == null) {
       return null;
     }
 
     mergeLicenseHeader(configNode, languageSettingsNode);
-    interfaceMerger.mergeInterfaces(model, configNode);
+    interfaceMerger.mergeInterfaces(model, configNode, helper);
 
     return configNode;
   }
 
-  private ConfigNode mergeType(ConfigNode configNode) {
-    FieldConfigNode typeNode = FieldConfigNode.createStringPair("type", CONFIG_PROTO_TYPE);
-    configNode.setChild(typeNode);
-    return typeNode;
+  private ConfigNode mergeType(ConfigNode configNode, ConfigHelper helper) {
+    FieldConfigNode typeNode = MissingFieldTransformer.prepend("type", configNode).generate();
+    if (!NodeFinder.hasChild(typeNode)) {
+      return typeNode.setChild(new ScalarConfigNode(CONFIG_PROTO_TYPE));
+    }
+
+    String type = typeNode.getChild().getText();
+    if (CONFIG_PROTO_TYPE.equals(type)) {
+      return typeNode;
+    }
+
+    helper.error("The specified configuration type '%s' is unknown.", type);
+    return null;
   }
 
-  private ConfigNode mergeVersion(ConfigNode prevNode) {
+  private ConfigNode mergeVersion(ConfigNode configNode, ConfigNode prevNode, ConfigHelper helper) {
     FieldConfigNode versionNode =
-        FieldConfigNode.createStringPair("config_schema_version", "1.0.0");
-    prevNode.insertNext(versionNode);
-    return versionNode;
+        MissingFieldTransformer.insert("config_schema_version", configNode, prevNode).generate();
+    if (!NodeFinder.hasChild(versionNode)) {
+      return versionNode.setChild(new ScalarConfigNode(CONFIG_SCHEMA_VERSION));
+    }
+
+    String version = versionNode.getChild().getText();
+    if (CONFIG_SCHEMA_VERSION.equals(version)) {
+      return versionNode;
+    }
+
+    helper.error("The specified configuration schema version '%s' is unsupported.", version);
+    return null;
   }
 
   private void mergeLicenseHeader(ConfigNode configNode, ConfigNode prevNode) {
-    FieldConfigNode licenseHeaderNode = new FieldConfigNode("license_header");
-    prevNode.insertNext(licenseHeaderNode);
+    FieldConfigNode licenseHeaderNode =
+        MissingFieldTransformer.insert("license_header", configNode, prevNode).generate();
+
+    if (NodeFinder.hasChild(licenseHeaderNode)) {
+      return;
+    }
+
     FieldConfigNode copyrightFileNode =
         FieldConfigNode.createStringPair("copyright_file", CONFIG_DEFAULT_COPYRIGHT_FILE)
             .setComment(new DefaultComment("The file containing the copyright line(s)."));

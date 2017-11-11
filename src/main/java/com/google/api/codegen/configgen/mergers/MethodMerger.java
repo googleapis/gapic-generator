@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
@@ -92,33 +93,39 @@ public class MethodMerger {
   private final PageStreamingMerger pageStreamingMerger = new PageStreamingMerger();
 
   public void generateMethodsNode(
-      ConfigNode parentNode, Interface apiInterface, Map<String, String> collectionNameMap) {
+      ConfigNode parentNode,
+      Interface apiInterface,
+      Map<String, String> collectionNameMap,
+      ConfigHelper helper) {
     FieldConfigNode methodsNode =
         new FieldConfigNode("methods").setComment(new DefaultComment(METHODS_COMMENT));
     NodeFinder.getLastChild(parentNode).insertNext(methodsNode);
-    generateMethodsValueNode(methodsNode, apiInterface, collectionNameMap);
+    generateMethodsValueNode(methodsNode, apiInterface, collectionNameMap, helper);
   }
 
   private ConfigNode generateMethodsValueNode(
-      ConfigNode parentNode, Interface apiInterface, final Map<String, String> collectionNameMap) {
+      ConfigNode parentNode,
+      Interface apiInterface,
+      final Map<String, String> collectionNameMap,
+      final ConfigHelper helper) {
     return ListTransformer.generateList(
         apiInterface.getReachableMethods(),
         parentNode,
         new ListTransformer.ElementTransformer<Method>() {
           @Override
           public ConfigNode generateElement(Method method) {
-            return generateMethodNode(method, collectionNameMap);
+            return generateMethodNode(method, collectionNameMap, helper);
           }
         });
   }
 
   private ListItemConfigNode generateMethodNode(
-      Method method, Map<String, String> collectionNameMap) {
+      Method method, Map<String, String> collectionNameMap, ConfigHelper helper) {
     ListItemConfigNode methodNode = new ListItemConfigNode();
     ConfigNode nameNode = FieldConfigNode.createStringPair("name", method.getSimpleName());
     methodNode.setChild(nameNode);
     ConfigNode prevNode = generateField(nameNode, method);
-    prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
+    prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method, helper);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
     ConfigNode timeoutMillisNode =

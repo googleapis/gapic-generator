@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
-import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 
@@ -27,14 +27,15 @@ public class PageStreamingMerger {
   private static final String PARAMETER_PAGE_SIZE = "page_size";
   private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
 
-  public ConfigNode generatePageStreamingNode(ConfigNode prevNode, Method method) {
+  public ConfigNode generatePageStreamingNode(
+      ConfigNode prevNode, Method method, ConfigHelper helper) {
     ConfigNode pageStreamingNode = new FieldConfigNode("page_streaming");
     ConfigNode requestNode = generatePageStreamingRequestNode(pageStreamingNode, method);
     if (requestNode == null) {
       return prevNode;
     }
 
-    ConfigNode responseNode = generatePageStreamingResponseNode(requestNode, method);
+    ConfigNode responseNode = generatePageStreamingResponseNode(requestNode, method, helper);
     if (responseNode == null) {
       return prevNode;
     }
@@ -80,9 +81,11 @@ public class PageStreamingMerger {
     return requestValueNode;
   }
 
-  private ConfigNode generatePageStreamingResponseNode(ConfigNode prevNode, Method method) {
+  private ConfigNode generatePageStreamingResponseNode(
+      ConfigNode prevNode, Method method, ConfigHelper helper) {
     ConfigNode responseNode = new FieldConfigNode("response");
-    ConfigNode responseValueNode = generatePageStreamingResponseValueNode(responseNode, method);
+    ConfigNode responseValueNode =
+        generatePageStreamingResponseValueNode(responseNode, method, helper);
     if (!responseValueNode.isPresent()) {
       return null;
     }
@@ -91,12 +94,13 @@ public class PageStreamingMerger {
     return responseNode;
   }
 
-  private ConfigNode generatePageStreamingResponseValueNode(ConfigNode parentNode, Method method) {
+  private ConfigNode generatePageStreamingResponseValueNode(
+      ConfigNode parentNode, Method method, ConfigHelper helper) {
     if (!hasResponseTokenField(method)) {
       return new NullConfigNode();
     }
 
-    String resourcesFieldName = getResourcesFieldName(method);
+    String resourcesFieldName = getResourcesFieldName(method, helper);
     if (resourcesFieldName == null) {
       return new NullConfigNode();
     }
@@ -114,7 +118,7 @@ public class PageStreamingMerger {
     return tokenField != null;
   }
 
-  private String getResourcesFieldName(Method method) {
+  private String getResourcesFieldName(Method method, ConfigHelper helper) {
     String resourcesField = null;
     for (Field field : method.getOutputMessage().getReachableFields()) {
       if (!field.getType().isRepeated()) {
@@ -122,16 +126,11 @@ public class PageStreamingMerger {
       }
 
       if (resourcesField != null) {
-        method
-            .getModel()
-            .getDiagCollector()
-            .addDiag(
-                Diag.error(
-                    method.getLocation(),
-                    String.format(
-                        "Page streaming resources field could not be heuristically determined for "
-                            + "method '%s'%n",
-                        method.getSimpleName())));
+        helper.error(
+            method.getLocation(),
+            "Page streaming resources field could not be heuristically determined for "
+                + "method '%s'%n",
+            method.getSimpleName());
         return null;
       }
 

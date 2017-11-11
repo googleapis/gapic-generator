@@ -19,7 +19,7 @@ import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 
-/** Transforms an Iterable of elements into a linked list of ConfigNodes. */
+/** Transforms an Iterable of arbitrary elements into a linked list of ConfigNodes. */
 public class ListTransformer {
   /**
    * Convenience method for transforming an Iterable of Strings into a linked list of ConfigNodes.
