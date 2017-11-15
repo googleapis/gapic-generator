@@ -56,6 +56,8 @@ public class StaticLangApiMethodTransformer {
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final StaticLangResourceObjectTransformer resourceObjectTransformer =
       new StaticLangResourceObjectTransformer();
+  private final HeaderRequestParamTransformer headerRequestParamTransformer =
+      new HeaderRequestParamTransformer();
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {
     return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
@@ -489,7 +491,8 @@ public class StaticLangApiMethodTransformer {
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
-    methodViewBuilder.headerRequestParams(ApiCallableTransformer.getHeaderRequestParams(context));
+    methodViewBuilder.headerRequestParams(
+        headerRequestParamTransformer.generateHeaderRequestParams(context));
   }
 
   protected void setServiceResponseTypeName(

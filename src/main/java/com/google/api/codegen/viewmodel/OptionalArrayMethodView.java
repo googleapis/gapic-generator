@@ -104,6 +104,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract Iterable<Iterable<String>> oneofParams();
 
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -181,6 +183,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder oneofParams(Iterable<Iterable<String>> val);
 
     public abstract Builder localPackageName(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract OptionalArrayMethodView build();
   }

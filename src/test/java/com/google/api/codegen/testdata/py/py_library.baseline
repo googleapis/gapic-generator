@@ -974,6 +974,7 @@ import pkg_resources
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
+import google.api_core.gapic_v1.routing_header
 import google.api_core.grpc_helpers
 import google.api_core.operation
 import google.api_core.operations_v1
@@ -1532,7 +1533,11 @@ class LibraryServiceClient(object):
         request = library_pb2.CreateBookRequest(
             name=name,
             book=book)
-        return self._create_book(request, retry=retry, timeout=timeout)
+
+        routing_header = google.api_core.gapic_v1.routing_header(
+            [('name', name), ('book.read', book.read)])
+
+        return self._create_book(request, retry=retry, timeout=timeout, metadata=[routing_header])
 
     def publish_series(
             self,
