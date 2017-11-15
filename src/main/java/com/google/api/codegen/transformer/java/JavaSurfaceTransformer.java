@@ -675,9 +675,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("org.threeten.bp.Duration");
 
-    // TODO(andrealin): remove this from httpjson
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
-
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
@@ -717,6 +714,7 @@ public class JavaSurfaceTransformer {
         if (interfaceConfig.hasLongRunningOperations()) {
           typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
         }
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
         break;
       case DISCOVERY:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
