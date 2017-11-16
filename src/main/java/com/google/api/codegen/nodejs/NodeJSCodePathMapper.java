@@ -26,7 +26,7 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
     if (packages.size() > 2) {
       String parentName = packages.get(packages.size() - 2);
-      if (parentName.matches("v[0-9]+((alpha|beta)[0-9]+)?")) {
+      if (parentName.matches("v[0-9]+(p[0-9]+)?((alpha|beta)[0-9]+)?")) {
         apiVersion = parentName;
       }
     }
