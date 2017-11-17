@@ -14,20 +14,18 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
-import com.google.api.tools.framework.aspects.http.model.MethodKind;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.List;
 
-/** Merges retry properties from a Model into a ConfigNode. */
+/** Merges retry properties from an API interface into a ConfigNode. */
 public class RetryMerger {
   private static final String RETRY_CODES_IDEMPOTENT_NAME = "idempotent";
   private static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";
@@ -101,9 +99,9 @@ public class RetryMerger {
     return retryParamDefNode;
   }
 
-  public ConfigNode generateRetryNamesNode(ConfigNode prevNode, Method method) {
+  public ConfigNode generateRetryNamesNode(ConfigNode prevNode, MethodModel method) {
     String retryCodesName =
-        isIdempotent(method) ? RETRY_CODES_IDEMPOTENT_NAME : RETRY_CODES_NON_IDEMPOTENT_NAME;
+        method.isIdempotent() ? RETRY_CODES_IDEMPOTENT_NAME : RETRY_CODES_NON_IDEMPOTENT_NAME;
     ConfigNode retryCodesNameNode =
         FieldConfigNode.createStringPair("retry_codes_name", retryCodesName)
             .setComment(new FixmeComment("Configure the retryable codes for this method."));
@@ -113,17 +111,5 @@ public class RetryMerger {
             .setComment(new FixmeComment("Configure the retryable params for this method."));
     retryCodesNameNode.insertNext(retryParamsNameNode);
     return retryParamsNameNode;
-  }
-
-  /**
-   * Returns true if the method is idempotent according to the http method kind (GET, PUT, DELETE).
-   */
-  private boolean isIdempotent(Method method) {
-    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-    if (httpAttr == null) {
-      return false;
-    }
-    MethodKind methodKind = httpAttr.getMethodKind();
-    return methodKind.isIdempotent();
   }
 }

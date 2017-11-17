@@ -66,7 +66,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
     ProtoApiModel apiModel = new ProtoApiModel(model);
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,

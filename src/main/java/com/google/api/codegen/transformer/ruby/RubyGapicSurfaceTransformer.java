@@ -15,11 +15,10 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -59,7 +58,6 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +118,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
               new RubyTypeTable(productConfig.getPackageName()),
@@ -198,12 +196,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
-    boolean packageHasMultipleServices =
-        new InterfaceView().hasMultipleServices(context.getModel());
     for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(
           apiMethodTransformer.generateMethod(
-              context.asDynamicMethodContext(method), packageHasMultipleServices));
+              context.asDynamicMethodContext(method), context.getApiModel().hasMultipleServices()));
     }
     return apiMethods.build();
   }
@@ -212,10 +208,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
     for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
@@ -301,14 +297,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     List<String> modules = namer.getTopLevelApiModules();
-    boolean hasMultipleServices = Iterables.size(interfaces) > 1;
-    for (InterfaceModel apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String clientName = namer.getPackageName();
       String serviceName = namer.getPackageServiceName(context.getInterfaceModel());
-      if (hasMultipleServices) {
+      if (model.hasMultipleServices()) {
         clientName += "::" + serviceName;
       }
       String topLevelNamespace = namer.getTopLevelNamespace();

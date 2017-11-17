@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import java.util.ArrayList;
 
@@ -34,9 +33,5 @@ public class InterfaceView implements InputElementView<Interface> {
       interfaces.add(model.getSymbolTable().lookupInterface(api.getName()));
     }
     return interfaces;
-  }
-
-  public boolean hasMultipleServices(Model model) {
-    return Iterables.size(getElementIterable(model)) > 1;
   }
 }
