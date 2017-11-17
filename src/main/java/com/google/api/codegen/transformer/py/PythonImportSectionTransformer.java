@@ -151,7 +151,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     SurfaceNamer namer = context.getNamer();
     imports.add(
         createImport(
-            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceModel())));
+            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;
