@@ -165,7 +165,7 @@
       warn "`service_path` and `port` parameters are deprecated and will be removed"
     end
 
-    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
+    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.{@xapiClass.defaultCredentialsInitializerCall}
 
     @if xapiClass.hasLongRunningOperations
       @@operations_client = Google::Longrunning::OperationsClient.new(
@@ -215,15 +215,33 @@
       )
     @end
 
-    @join stub : xapiClass.stubs
-      @join methodName : stub.methodNames
-        @@{@methodName} = Google::Gax.create_api_call(
-          @@{@stub.name}.method(:{@methodName}),
-          defaults["{@methodName}"]
-        )
-      @end
+    @join apiMethod : xapiClass.apiMethods
+      @@{@apiMethod.name} = Google::Gax.create_api_call(
+        @@{@apiMethod.stubName}.method(:{@apiMethod.name}),
+        @if apiMethod.headerRequestParams
+          defaults["{@apiMethod.name}"],
+          params_extractor: proc do |request|
+            {{@extractedRequestParams(apiMethod.headerRequestParams)}}
+          end
+        @else
+          defaults["{@apiMethod.name}"]
+        @end
+      )
     @end
   end
+@end
+
+@private extractedRequestParams(params)
+  @join param : params on ", "
+    '{@param.fullyQualifiedName}' => \
+    request.{@requestParamGetter(param.gettersChain)}
+  @end
+@end
+
+@private requestParamGetter(getters)
+  @join getter : getters on "."
+    {@getter}
+  @end
 @end
 
 @private batchDescriptorBody(descriptor)

@@ -30,11 +30,8 @@
     public void setUp() throws IOException {
       serviceHelper.reset();
       {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
-          .setTransportProvider(
-                GrpcTransportProvider.newBuilder()
-                    .setChannelProvider(serviceHelper.createChannelProvider())
-                    .build())
-          .setCredentialsProvider(new NoCredentialsProvider())
+          .setTransportChannelProvider(serviceHelper.createChannelProvider())
+          .setCredentialsProvider(NoCredentialsProvider.create())
           .build();
       client = {@xapiTest.testClass.apiClassName}.create(settings);
     }
@@ -174,7 +171,7 @@
     } catch (ExecutionException e) {
       Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
       InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), ((GrpcStatusCode) apiException.getStatusCode()).getCode());
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
 

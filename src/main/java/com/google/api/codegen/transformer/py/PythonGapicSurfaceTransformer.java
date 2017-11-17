@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,7 +189,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
 
     xapiClass.name(name);
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    xapiClass.doc(
+        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();

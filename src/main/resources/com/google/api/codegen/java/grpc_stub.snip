@@ -16,9 +16,11 @@
   @else
     @@Generated("by GAPIC")
   @end
-  @if classFile.classView.releaseLevelAnnotation
-    {@classFile.classView.releaseLevelAnnotation}
-  @end
+  # TODO once stub classes are stable, start using releaseLevelAnnotation
+  #@if classFile.classView.releaseLevelAnnotation
+  #  {@classFile.classView.releaseLevelAnnotation}
+  #@end
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   {@renderClass(classFile.classView)}
 @end
 
@@ -43,32 +45,33 @@
 @end
 
 @private constants(stubClass)
-  @join callable : stubClass.directCallables
-    {@grpcMethodCallable(callable)}
+
+  @join methodDescriptor : stubClass.methodDescriptors
+    {@grpcMethodDescriptor(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private grpcMethodCallable(callable)
-  private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
-      GrpcCallableFactory.{@callable.createCallableFunctionName}(
-          io.grpc.MethodDescriptor.create(
-              {@streamingTypeEnum(callable.grpcStreamingType)},
-              "{@callable.fullServiceName}/{@callable.protoMethodName}",
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+@private grpcMethodDescriptor(methodDescriptor)
+  private static final MethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+      MethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+          .setType({@streamingTypeEnum(methodDescriptor.grpcStreamingType)})
+          .setFullMethodName("{@methodDescriptor.fullServiceName}/{@methodDescriptor.protoMethodName}")
+          .setRequestMarshaller(ProtoUtils.marshaller({@methodDescriptor.requestTypeName}.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller({@methodDescriptor.responseTypeName}.getDefaultInstance()))
+          .build();
 @end
 
 @private streamingTypeEnum(streamingType)
   @switch streamingType
   @case "NonStreaming"
-    io.grpc.MethodDescriptor.MethodType.UNARY
+    MethodDescriptor.MethodType.UNARY
   @case "ServerStreaming"
-    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
+    MethodDescriptor.MethodType.SERVER_STREAMING
   @case "ClientStreaming"
-    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
+    MethodDescriptor.MethodType.CLIENT_STREAMING
   @case "BidiStreaming"
-    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
+    MethodDescriptor.MethodType.BIDI_STREAMING
   @default
     $unhandledCase: {@streamingType}$
   @end
@@ -98,14 +101,36 @@
         {@callable.responseTypeName}> {@callable.name};
     @case "LongRunningMethod"
       private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-        {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
+        {@callable.responseTypeName}, {@callable.metadataTypeName}> {@callable.name};
     @default
       $unhandledCase: {@callable.type.serviceMethodType}$
     @end
   @end
 @end
 
+@private createCallableMethodName(callable)
+  @switch callable.type
+  @case "SimpleApiCallable"
+    createUnaryCallable
+  @case "PagedApiCallable"
+    createPagedCallable
+  @case "BatchingApiCallable"
+    createBatchingCallable
+  @case "BidiStreamingApiCallable"
+    createBidiStreamingCallable
+  @case "ServerStreamingApiCallable"
+    createServerStreamingCallable
+  @case "ClientStreamingApiCallable"
+    createClientStreamingCallable
+  @case "OperationApiCallable"
+    createOperationCallable
+  @default
+    $unhandledCase: {@callable.type}$
+  @end
+@end
+
 @private constructors(stubClass)
+
   public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
     return new {@stubClass.name}(settings, ClientContext.create(settings));
   }
@@ -124,37 +149,54 @@
       this.operationsStub = GrpcOperationsStub.create(clientContext);
     @end
 
+    @join methodDescriptor : stubClass.methodDescriptors
+      GrpcCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
+          GrpcCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+              .setMethodDescriptor({@methodDescriptor.name})
+              @if methodDescriptor.hasHeaderRequestParams
+                .setParamsExtractor(
+                    {@requestParamsExtractor(methodDescriptor)})
+              @end
+              .build();
+    @end
+
     @join callable : stubClass.apiCallables
-      @if callable.isStreaming
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-                settings.{@callable.settingsFunctionName}(), clientContext);
+      @if callable.isLongRunning
+        this.{@callable.name} = GrpcCallableFactory.createOperationCallable(
+            {@callable.transportSettingsVar},\
+            settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
       @else
-        @switch callable.type
-        @case "SimpleApiCallable"
-          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-              settings.{@callable.settingsFunctionName}(), clientContext);
-        @case "PagedApiCallable"
-          this.{@callable.name} =
-              GrpcCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
-              settings.{@callable.settingsFunctionName}(), clientContext);
-        @case "BatchingApiCallable"
-          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-              settings.{@callable.settingsFunctionName}(), clientContext);
-        @case "InitialOperationApiCallable"
-          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-              settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
-        @case "OperationApiCallable"
-          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-              settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
-        @default
-          $unhandledCase: {@callable.type}$
-        @end
+        this.{@callable.name} = GrpcCallableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+            settings.{@callable.settingsFunctionName}(), clientContext);
       @end
     @end
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
   {@""}
+@end
+
+@private requestParamsExtractor(methodDescriptor)
+  new RequestParamsExtractor<{@methodDescriptor.requestTypeName}>() {
+    @@Override
+    public Map<String, String> extract({@methodDescriptor.requestTypeName} request) {
+      ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+      {@requestParamExtractor(methodDescriptor.headerRequestParams)}
+      return params.build();
+    }
+  }
+@end
+
+@private requestParamExtractor(headerRequestParams)
+  @join headerRequestParam : @headerRequestParams
+    params.put("{@headerRequestParam.fullyQualifiedName}", String.valueOf(request.{@requestParamGetter(headerRequestParam.gettersChain)}));
+  @end
+@end
+
+@private requestParamGetter(gettersChain)
+  @join getter : gettersChain on "."
+    {@getter}()
+  @end
 @end
 
 @private memberMethods(xapiClass)
@@ -218,7 +260,7 @@
 
   @end
   public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }

@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
@@ -34,14 +35,17 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
 
-  private TypeNameConverter typeNameConverter;
-  private JavaNameFormatter nameFormatter;
-  private String implicitPackageName;
+  private final TypeNameConverter typeNameConverter;
+  private final JavaNameFormatter nameFormatter;
+  private final String implicitPackageName;
+  private final DiscoGapicNamer discoGapicNamer;
 
   public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
     this.nameFormatter = nameFormatter;
     this.implicitPackageName = implicitPackageName;
+    this.discoGapicNamer =
+        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
@@ -84,6 +88,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
       return "\"\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
+  }
+
+  @Override
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
   }
 
   @Override
@@ -206,6 +215,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
       return "\"" + value + "\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
+  }
+
+  @Override
+  public String renderValueAsString(String value) {
+    return "\"" + value + "\"";
   }
 
   /**

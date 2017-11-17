@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,29 @@ public abstract class ClientTestClassView {
 
   public abstract boolean apiHasLongRunningMethods();
 
+  /**
+   * Indicates that the api has a method that makes a unary request and returns a unary response.
+   */
+  public abstract boolean apiHasUnaryUnaryMethod();
+
+  /**
+   * Indicates that the api has a method that makes a unary request and returns a streaming
+   * response.
+   */
+  public abstract boolean apiHasUnaryStreamingMethod();
+
+  /**
+   * Indicates that the api has a method that makes a streaming request and returns a unary
+   * response.
+   */
+  public abstract boolean apiHasStreamingUnaryMethod();
+
+  /**
+   * Indicates that the api has a method that makes a streaming request and returns a streaming
+   * response.
+   */
+  public abstract boolean apiHasStreamingStreamingMethod();
+
   @Nullable
   public abstract String packageServiceName();
 
@@ -50,13 +73,20 @@ public abstract class ClientTestClassView {
   public abstract String apiVersion();
 
   @Nullable
+  public abstract String mockCredentialsClassName();
+
+  @Nullable
   public abstract String fullyQualifiedCredentialsClassName();
 
   @Nullable
   public abstract List<ClientInitParamView> clientInitOptionalParams();
 
   public static Builder newBuilder() {
-    return new AutoValue_ClientTestClassView.Builder();
+    return new AutoValue_ClientTestClassView.Builder()
+        .apiHasUnaryUnaryMethod(false)
+        .apiHasUnaryStreamingMethod(false)
+        .apiHasStreamingUnaryMethod(false)
+        .apiHasStreamingStreamingMethod(false);
   }
 
   @AutoValue.Builder
@@ -78,6 +108,14 @@ public abstract class ClientTestClassView {
 
     public abstract Builder apiHasLongRunningMethods(boolean val);
 
+    public abstract Builder apiHasUnaryUnaryMethod(boolean val);
+
+    public abstract Builder apiHasUnaryStreamingMethod(boolean val);
+
+    public abstract Builder apiHasStreamingUnaryMethod(boolean val);
+
+    public abstract Builder apiHasStreamingStreamingMethod(boolean val);
+
     /** The name of the property of the api export that exports this service. Used in Node.js. */
     public abstract Builder packageServiceName(String val);
 
@@ -86,6 +124,8 @@ public abstract class ClientTestClassView {
     public abstract Builder missingDefaultServiceScopes(boolean val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder mockCredentialsClassName(String val);
 
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
 

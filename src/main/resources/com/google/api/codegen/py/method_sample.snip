@@ -169,7 +169,7 @@
     client.{@apiMethod.name}(requests)
   @else
     client.{@apiMethod.name}(\
-      {@fieldSettingArgList(apiMethod.initCode.fieldSettings)}\
+      {@sampleMethodCallArgList(apiMethod.initCode)}\
     )
   @end
 @end
@@ -177,7 +177,7 @@
 # Render the API method call for page streaming
 @private pagedMethodCallSampleCode(apiMethod)
   client.{@apiMethod.name}(\
-    {@fieldSettingArgListAndComma(apiMethod.initCode.fieldSettings)}\
+    {@sampleMethodCallArgListAndComma(apiMethod.initCode)}\
     options=CallOptions(page_token=INITIAL_PAGE))
 @end
 
@@ -188,15 +188,22 @@
   @end
 @end
 
-# Generate comma-separated argument list for field settings
-@snippet fieldSettingArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
+@snippet sampleMethodCallArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
     {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}={@fieldSetting.identifier}
+    @end
   @end
 @end
 
-@private fieldSettingArgListAndComma(fieldSettings)
-  @if fieldSettings
-    {@fieldSettingArgList(fieldSettings)}, {@""}
+@private sampleMethodCallArgListAndComma(initCode)
+  @if initCode.fieldSettings
+    {@sampleMethodCallArgList(initCode)}, {@""}
   @end
 @end

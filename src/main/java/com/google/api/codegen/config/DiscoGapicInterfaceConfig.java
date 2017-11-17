@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,8 +121,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
-
     ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       String entityName = collectionConfigProto.getEntityName();
@@ -139,6 +137,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       resourcesBuilder.add((SingleResourceNameConfig) resourceName);
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+
+    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
 
     String interfaceName =
         interfaceNameOverride != null

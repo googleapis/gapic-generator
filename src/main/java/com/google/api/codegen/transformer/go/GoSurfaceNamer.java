@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,18 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoCommentReformatter;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 
@@ -96,8 +95,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return valueType(((ModelTypeTable) typeTable).getAndSaveNicknameFor(type));
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return valueType(typeTable.getAndSaveNicknameFor(type));
   }
 
   @Override

@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangResourceObjectTransformer;
@@ -263,7 +264,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
       FieldModel requestBody =
-          new DiscoveryField(requestBodyDef.dereference(), context.getDiscoGapicNamer());
+          DiscoveryField.create(requestBodyDef.dereference(), context.getDiscoGapicNamer());
       requestView.requestBodyType(
           schemaToParamView(
               context,
@@ -320,9 +321,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    JavaTypeTable typeTable = new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH);
+    SchemaTypeNameConverter typeNameConverter =
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter);
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
-        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+        typeTable,
+        typeNameConverter,
+        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
   }
 
   public enum EscapeName {

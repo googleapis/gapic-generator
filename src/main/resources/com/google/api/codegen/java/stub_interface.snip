@@ -16,9 +16,11 @@
   @else
     @@Generated("by GAPIC")
   @end
-  @if classFile.classView.releaseLevelAnnotation
-    {@classFile.classView.releaseLevelAnnotation}
-  @end
+  # TODO once stub classes are stable, start using releaseLevelAnnotation
+  #@if classFile.classView.releaseLevelAnnotation
+  #  {@classFile.classView.releaseLevelAnnotation}
+  #@end
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   {@renderClass(classFile.classView)}
 @end
 
@@ -96,7 +98,7 @@
   @end
 
   public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}() {
     throw new UnsupportedOperationException("Not implemented: {@apiMethod.name}()");
   }

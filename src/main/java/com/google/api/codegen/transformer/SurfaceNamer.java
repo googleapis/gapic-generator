@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,12 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.CommentReformatter;
@@ -43,6 +45,7 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -280,9 +283,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  // TODO(andrealin): Remove this method.
   /** The function name to set a field having the given type and name. */
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     if (type.isMap()) {
       return publicMethodName(Name.from("put", "all").join(identifier));
     } else if (type.isRepeated()) {
@@ -304,7 +306,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to add an element to a map or repeated field. */
-  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+  public String getFieldAddFunctionName(TypeModel type, Name identifier) {
     return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
@@ -349,7 +351,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get a field having the given type and name. */
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
     } else if (type.isMap()) {
@@ -560,8 +562,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(method.asName().join(Name.from("operation", "callable")));
   }
 
-  public String getDirectCallableName(MethodModel method) {
-    return privateFieldName(Name.anyCamel("Direct", method.getSimpleName(), "Callable"));
+  public String getMethodDescriptorName(MethodModel method) {
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "MethodDescriptor"));
+  }
+
+  public String getTransportSettingsVar(MethodModel method) {
+    return localVarName(Name.anyCamel(method.getSimpleName(), "TransportSettings"));
   }
 
   /** The name of the settings member name for the given method. */
@@ -569,9 +575,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(method.asName().join("settings"));
   }
 
+  /** The name of the settings member name for the given method. */
+  public String getOperationSettingsMemberName(MethodModel method) {
+    return getSettingsMemberName(method);
+  }
+
   /** The getter function name for the settings for the given method. */
   public String getSettingsFunctionName(MethodModel method) {
     return getSettingsMemberName(method);
+  }
+
+  /** The getter function name for the settings for the given method. */
+  public String getOperationSettingsFunctionName(MethodModel method) {
+    return getOperationSettingsMemberName(method);
   }
 
   /** The name of a method to apply modifications to this method request. */
@@ -870,7 +886,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     // TODO(andrealin): Remove the switch statement and getProtoTypeRef().
     switch (type.getApiSource()) {
       case PROTO:
-        return getParamTypeName(typeTable, type.getProtoTypeRef());
+        return getParamTypeName(typeTable, ((ProtoField) type).getType().getProtoType());
       default:
         return getNotImplementedString("SurfaceNamer.getParamTypeName");
     }
@@ -1051,10 +1067,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
   }
 
-  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
-    return getNotImplementedString("SurfaceNamer.getDirectCallableTypeName");
-  }
-
   public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getCreateCallableFunctionName");
   }
@@ -1068,7 +1080,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The formatted name of a type used in long running operations, i.e. the operation payload and
    * metadata,
    */
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return getNotImplementedString("SurfaceNamer.getLongRunningOperationTypeName");
   }
 
@@ -1087,6 +1099,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
+  public String getMockCredentialsClassName(Interface anInterface) {
+    return getNotImplementedString("SurfaceNamer.getMockCredentialsClassName");
   }
 
   public String getFullyQualifiedCredentialsClassName() {
@@ -1138,7 +1154,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to format the entity for the given collection. */
   public String getFormatFunctionName(
       InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from("format", resourceNameConfig.getEntityName(), "name"));
+    return staticFunctionName(Name.anyLower("format", resourceNameConfig.getEntityName(), "name"));
   }
 
   /**
@@ -1356,7 +1372,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getTypeNameDoc(ImportTypeTable typeTable, FieldModel type) {
     switch (type.getApiSource()) {
       case PROTO:
-        return getTypeNameDoc(typeTable, type.getProtoTypeRef());
+        return getTypeNameDoc(typeTable, ((ProtoField) type).getType().getProtoType());
       default:
         return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
     }
@@ -1520,11 +1536,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getInstantiatingChannelProvider(TransportProtocol protocol) {
-    Name name = Name.from("instantiating");
-    if (protocol.equals(TransportProtocol.HTTP)) {
-      name = name.join("http").join("json");
-    }
-    return publicClassName(name.join(Name.from("channel", "provider")));
+    return publicClassName(
+        Name.from("instantiating")
+            .join(getTransportProtocolName(protocol).join("channel").join("provider")));
   }
 
   public String getTransportProvider(TransportProtocol protocol) {
@@ -1549,9 +1563,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateMethodName(Name.from("get").join(protocolName).join("transport").join("name"));
   }
 
-  public String getTransportName(TransportProtocol protocol) {
+  public String getTransportClassName(TransportProtocol protocol) {
     Name protocolName = getTransportProtocolName(protocol);
-    return publicClassName(protocolName.join("transport"));
+    return publicClassName(protocolName.join(Name.anyCamel("TransportChannel")));
   }
 
   ////////////////////////////////////////// Utility /////////////////////////////////////////////
@@ -1579,7 +1593,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Is this type a primitive, according to target language. */
-  public boolean isPrimitive(TypeRef type) {
+  public boolean isPrimitive(TypeModel type) {
     return type.isPrimitive();
   }
 

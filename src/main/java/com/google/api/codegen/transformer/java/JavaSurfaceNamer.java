@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
@@ -36,7 +37,6 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import java.io.File;
@@ -127,15 +127,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metadataTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
   }
 
@@ -243,22 +243,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
-    switch (serviceMethodType) {
-      case UnaryMethod:
-        return "UnaryCallable";
-      case GrpcBidiStreamingMethod:
-        return "BidiStreamingCallable";
-      case GrpcServerStreamingMethod:
-        return "ServerStreamingCallable";
-      case GrpcClientStreamingMethod:
-        return "ClientStreamingCallable";
-      default:
-        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
-    }
-  }
-
-  @Override
   public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
     switch (serviceMethodType) {
       case UnaryMethod:
@@ -292,6 +276,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getBatchingDescriptorConstName(MethodModel method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  /** The name of the settings member name for the given method. */
+  public String getOperationSettingsMemberName(MethodModel method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
   }
 
   @Override

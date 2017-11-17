@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,27 @@
  */
 package com.google.api.codegen.util.testing;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /** A utility class used by a test generator to populate values for primitive fields. */
 public class StandardValueProducer implements ValueProducer {
   @Override
-  public String produce(TypeRef typeRef, Name identifier) {
-    Type type = typeRef.getKind();
-    if (type == Type.TYPE_STRING) {
+  public String produce(TypeModel typeRef, Name identifier) {
+    if (typeRef.isStringType()) {
       return identifier.toLowerCamel() + Integer.toString(identifier.hashCode());
-    } else if (type == Type.TYPE_BOOL) {
+    } else if (typeRef.isBooleanType()) {
       return identifier.hashCode() % 2 == 0 ? "true" : "false";
-    } else if (type == Type.TYPE_BYTES) {
+    } else if (typeRef.isBytesType()) {
       byte lowByte = (byte) (identifier.hashCode());
       return Byte.toString(lowByte);
     } else if (typeRef.getPrimitiveTypeName().contains("int")
         || typeRef.getPrimitiveTypeName().contains("fixed")) {
       return Integer.toString(identifier.hashCode());
-    } else if (type == Type.TYPE_DOUBLE || type == Type.TYPE_FLOAT) {
+    } else if (typeRef.isDoubleType() || typeRef.isFloatType()) {
       return Double.toString(identifier.hashCode() / 10);
     } else {
-      throw new RuntimeException("Unknown type in ValueProducer: " + type);
+      throw new RuntimeException("Unknown type in ValueProducer: " + typeRef.getTypeName());
     }
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -25,6 +24,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -53,7 +53,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -128,7 +127,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
 
     xapiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    xapiClass.doc(
+        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
@@ -242,15 +242,15 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     for (MethodModel method : context.getLongRunningMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
-      TypeRef returnType = lroConfig.getReturnType();
-      TypeRef metadataType = lroConfig.getMetadataType();
+      TypeModel returnType = lroConfig.getReturnType();
+      TypeModel metadataType = lroConfig.getMetadataType();
       result.add(
           LongRunningOperationDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
-              .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
+              .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
@@ -289,7 +289,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .localName(localName)
               .doc(
                   serviceTransformer.generateServiceDoc(
-                      context, generateApiMethods(context, packageHasMultipleServices).get(0)))
+                      context,
+                      generateApiMethods(context, packageHasMultipleServices).get(0),
+                      productConfig))
               .fileName(namer.getClientFileName(context.getInterfaceModel()))
               .build();
       requireViews.add(require);

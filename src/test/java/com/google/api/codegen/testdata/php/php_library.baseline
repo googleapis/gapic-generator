@@ -2,7 +2,7 @@
 {
   "name": "library/library",
   "version": "0.1.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "url": "https://github.com/googleapis/googleapis",
   "description": "Google Example Library API client for PHP",
   "require": {
@@ -32,7 +32,7 @@
 ============== file: src/Example/Library/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -726,8 +726,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1068,8 +1068,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1203,6 +1203,8 @@ class LibraryServiceGapicClient
      * @param Book $book The book to update with.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $optionalFoo
+     *          An optional foo.
      *     @type FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
      *     @type \Google\Example\Library\V1\FieldMask $physicalMask
@@ -1224,6 +1226,9 @@ class LibraryServiceGapicClient
         $request = new UpdateBookRequest();
         $request->setName($name);
         $request->setBook($book);
+        if (isset($optionalArgs['optionalFoo'])) {
+            $request->setOptionalFoo($optionalArgs['optionalFoo']);
+        }
         if (isset($optionalArgs['updateMask'])) {
             $request->setUpdateMask($optionalArgs['updateMask']);
         }
@@ -1314,8 +1319,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1601,7 +1606,7 @@ class LibraryServiceGapicClient
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $indexName = 'default index';
      *     $indexMapItem = '';
-     *     $indexMap = ['default_key' => $indexMapItem,];
+     *     $indexMap = ['default_key' => $indexMapItem];
      *     $libraryServiceClient->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1922,8 +1927,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -2502,7 +2507,7 @@ class LibraryServiceGapicClient
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2716,7 +2721,7 @@ class LibraryServiceClient extends LibraryServiceGapicClient
 ============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2743,6 +2748,7 @@ use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\Book_Rating as Rating;
 use Google\Example\Library\V1\UpdateBookRequest;
 use Google\GAX\Testing\GeneratedTest;
+use Google\Protobuf\FieldMask;
 
 /**
  * @group library
@@ -2756,19 +2762,25 @@ class LibraryServiceSmokeTest extends GeneratedTest
     public function updateBookTest()
     {
         $projectId = getenv('PROJECT_ID');
+        if ($projectId === false) {
+            $this->fail('Environment variable PROJECT_ID must be set for smoke test');
+        }
 
         $libraryServiceClient = new LibraryServiceClient();
         $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
+        $optionalFoo = '';
         $rating = Rating::GOOD;
         $book = new Book();
         $book->setRating($rating);
-        $libraryServiceClient->updateBook($formattedName, $book);
+        $updateMask = new FieldMask();
+        $physicalMask = new \Google\Example\Library\V1\FieldMask();
+        $libraryServiceClient->updateBook($formattedName, $book, ['optionalFoo' => $optionalFoo, 'updateMask' => $updateMask, 'physicalMask' => $physicalMask]);
     }
 }
 ============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4215,7 +4227,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
-        $indexMap = ['default_key' => $indexMapItem,];
+        $indexMap = ['default_key' => $indexMapItem];
 
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -4257,7 +4269,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
-        $indexMap = ['default_key' => $indexMapItem,];
+        $indexMap = ['default_key' => $indexMapItem];
 
         try {
             $client->updateBookIndex($formattedName, $indexName, $indexMap);
@@ -5254,7 +5266,7 @@ class LibraryServiceClientTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/MockLabelerImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5299,7 +5311,7 @@ class MockLabelerImpl extends LabelerGrpcClient
 ============== file: tests/unit/Example/Library/V1/MockLibraryServiceImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

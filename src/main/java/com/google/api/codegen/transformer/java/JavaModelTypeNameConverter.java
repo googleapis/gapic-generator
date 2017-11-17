@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -256,19 +257,17 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
+    TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getProtoTypeRef(),
-        typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), typeRef, typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
+    TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getProtoTypeRef().makeOptional(),
-        typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), typeRef.makeOptional(), typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {

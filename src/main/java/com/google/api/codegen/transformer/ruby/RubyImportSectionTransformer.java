@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,10 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("google/gax/operation"));
       imports.add(createImport("google/longrunning/operations_client"));
+    }
+
+    if (RubyUtil.isLongrunning(context.getProductConfig().getPackageName())) {
+      imports.add(createImport("googleauth"));
     }
 
     return imports.build();

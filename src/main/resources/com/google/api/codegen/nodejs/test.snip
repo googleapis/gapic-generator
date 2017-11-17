@@ -197,7 +197,7 @@
       client.{@test.clientMethodName}(request).then(responses => {
         var operation = responses[0];
         return operation.promise();
-      }).then(responses => {
+      }).then(() => {
         assert.fail();
       }).catch(err => {
         {@assertError()}
@@ -298,7 +298,7 @@
       @switch test.grpcStreamingType
       @case "ServerStreaming"
         var stream = client.{@test.clientMethodName}(request);
-        stream.on('data', response => {
+        stream.on('data', () => {
           assert.fail();
         });
         stream.on('error', err =>){
@@ -308,7 +308,7 @@
 
         stream.write();
       @case "BidiStreaming"
-        var stream = client.{@test.clientMethodName}().on('data', response => {
+        var stream = client.{@test.clientMethodName}().on('data', () => {
           assert.fail();
         }).on('error', err => {
           {@assertError()}
@@ -358,9 +358,15 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @else
-    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @end
 @end
 

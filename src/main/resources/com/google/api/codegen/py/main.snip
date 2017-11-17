@@ -8,11 +8,11 @@
     {@moduleDocstring(xapiClass)}
     {@renderImportSection(xapiClass.fileHeader.importSection)}
 
-    @if xapiClass.hasPageStreamingMethods
-        _PageDesc = google.gax.PageDescriptor
+    _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
+        '{@xapiClass.gapicPackageName}',
+    ).version
 
 
-    @end
     {@serviceClass(xapiClass)}
 @end
 
@@ -63,31 +63,21 @@
 @end
 
 @private constantSection(xapiClass)
-    SERVICE_ADDRESS = '{@xapiClass.serviceAddress}'
+    SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
     """The default address of the service."""
-
-    DEFAULT_SERVICE_PORT = {@xapiClass.servicePort}
-    """The default port of the service."""
-    @if xapiClass.hasPageStreamingMethods
-
-        _PAGE_DESCRIPTORS = {
-            @join descriptor : xapiClass.pageStreamingDescriptors on {@", "}.add(BREAK)
-                '{@descriptor.methodName}': _PageDesc(
-                    '{@descriptor.requestTokenFieldName}',
-                    '{@descriptor.responseTokenFieldName}',
-                    '{@descriptor.resourcesFieldName}'
-                )
-            @end
-        }
-    @end
 
     @# The scopes needed to make gRPC calls to all of the methods defined in
     @# this service
-    _ALL_SCOPES = (
+    _DEFAULT_SCOPES = (
         @join auth_scope : xapiClass.authScopes on BREAK
             '{@auth_scope}',
         @end
     )
+
+    @# The name of the interface for this client. This is the key used to find
+    @# method configuration in the client_config dictionary
+    _INTERFACE_NAME = (
+        '{@xapiClass.interfaceKey}')
 @end
 
 @private constructDefaults(xapiClass)
@@ -107,110 +97,79 @@
     def __init__(self,
             channel=None,
             credentials=None,
-            ssl_credentials=None,
-            scopes=None,
-            client_config=None,
-            lib_name=None,
-            lib_version='',
-            metrics_headers=()):
+            client_config={@xapiClass.clientConfigName}.config,
+            client_info=None):
         """Constructor.
 
         Args:
-            channel (~grpc.Channel): A ``Channel`` instance through
-                which to make calls.
-            credentials (~google.auth.credentials.Credentials): The authorization
-                credentials to attach to requests. These credentials identify this
-                application to the service.
-            ssl_credentials (~grpc.ChannelCredentials): A
-                ``ChannelCredentials`` instance for use with an SSL-enabled
-                channel.
-            scopes (Sequence[str]): A list of OAuth2 scopes to attach to requests.
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. If specified, then the ``credentials``
+                argument is ignored.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
             client_config (dict):
-                A dictionary for call options for each method. See
-                :func:`google.gax.construct_settings` for the structure of
-                this data. Falls back to the default config if not specified
-                or the specified config is missing data points.
-            lib_name (str): The API library software used for calling
-                the service. (Unless you are writing an API client itself,
-                leave this as default.)
-            lib_version (str): The API library software version used
-                for calling the service. (Unless you are writing an API client
-                itself, leave this as default.)
-            metrics_headers (dict): A dictionary of values for tracking
-                client library metrics. Ultimately serializes to a string
-                (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
-                considered private.
+                A dictionary of call options for each method. If not specified
+                the default configuration is used. Generally, you only need
+                to set this if you're developing your own client library.
+            client_info (google.api_core.gapic_v1.client_info.ClientInfo):
+                The client info used to send a user-agent string along with
+                API requests. If ``None``, then default info will be used.
+                Generally, you only need to set this if you're developing
+                your own client library.
         """
-        @# Unless the calling application specifically requested
-        @# OAuth scopes, request everything.
-        if scopes is None:
-            scopes = self._ALL_SCOPES
+        # gRPC channel & client stub initialization.
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'channel and credentials arguments to {} are mutually '
+                'exclusive.'.format(self.__class__.__name__))
 
-        @# Initialize an empty client config, if none is set.
-        if client_config is None:
-            client_config = {}
+        if channel is None:
+            channel = google.api_core.grpc_helpers.create_channel(
+                self.SERVICE_ADDRESS,
+                credentials=credentials,
+                scopes=self._DEFAULT_SCOPES)
 
-        @# Initialize metrics_headers as an ordered dictionary
-        @# (cuts down on cardinality of the resulting string slightly).
-        metrics_headers = collections.OrderedDict(metrics_headers)
-        metrics_headers['gl-python'] = platform.python_version()
-
-        @# The library may or may not be set, depending on what is
-        @# calling this client. Newer client libraries set the library name
-        @# and version.
-        if lib_name:
-            metrics_headers[lib_name] = lib_version
-
-        @# Finally, track the GAPIC package version.
-        metrics_headers['gapic'] = pkg_resources.get_distribution(
-            '{@xapiClass.gapicPackageName}',
-        ).version
-
-        @# Load the configuration defaults.
-        {@constructDefaults(xapiClass)}
         @join stub : xapiClass.stubs
-            self.{@stub.name} = config.create_stub(
-                {@stub.grpcClientTypeName},
-                channel=channel,
-                service_path=self.SERVICE_ADDRESS,
-                service_port=self.DEFAULT_SERVICE_PORT,
-                credentials=credentials,
-                scopes=scopes,
-                ssl_credentials=ssl_credentials)
+            self.{@stub.name} = (
+                {@stub.grpcClientTypeName}(channel))
         @end
-        @if xapiClass.hasLongRunningOperations
 
-            self.operations_client = operations_client.OperationsClient(
-                service_path=self.SERVICE_ADDRESS,
-                channel=channel,
-                credentials=credentials,
-                ssl_credentials=ssl_credentials,
-                scopes=scopes,
-                client_config=client_config,
-                metrics_headers=metrics_headers,
-            )
+        @if xapiClass.hasLongRunningOperations
+            @# Operations client for methods that return long-running operations
+            @# futures.
+            self.operations_client = (
+                google.api_core.operations_v1.OperationsClient(channel))
         @end
+
+        # Client information initialization.
+        if client_info is None:
+            client_info = (
+                google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
+
+        client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+
+        # The interface config contains all of the default settings for retry
+        # and timeout for each RPC method.
+        interface_config = client_config['interfaces'][self._INTERFACE_NAME]
+        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+            interface_config)
 
         @join apiMethod : xapiClass.apiMethods
-            self._{@apiMethod.name} = api_callable.create_api_call(
+            self._{@apiMethod.name} = google.api_core.gapic_v1.method.wrap_method(
                 self.{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
-                settings=defaults['{@apiMethod.name}'])
+                default_retry=method_configs['{@apiMethod.grpcMethodName}'].retry,
+                default_timeout=method_configs['{@apiMethod.grpcMethodName}'].timeout,
+                client_info=client_info)
         @end
 @end
 
 @private pathTemplateSection(xapiClass)
-    @join pathTemplate : xapiClass.pathTemplates
-        {@pathTemplate.name} = path_template.PathTemplate(
-            '{@pathTemplate.pattern}')
-    @end
-
     @join function : xapiClass.formatResourceFunctions
 
         {@createResourceFunction(function)}
-    @end
-    @join function : xapiClass.parseResourceFunctions
-
-        {@createMatchFunctions(function)}
     @end
 @end
 
@@ -218,24 +177,10 @@
     @@classmethod
     def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
         """Returns a fully-qualified {@function.entityName} resource name string."""
-        return cls.{@function.pathTemplateName}.render({
-            {@createRenderDictionary(function.resourceIdParams)}
-        })
-@end
-
-@private createMatchFunctions(function)
-    @@classmethod
-    def {@function.name}(cls, {@function.entityNameParamName}):
-        """Parses the {@function.outputResourceId} from a {@function.entityName} resource.
-
-        Args:
-            {@function.entityNameParamName} (str): A fully-qualified path representing a {@function.entityName}
-                resource.
-
-        Returns:
-            A string representing the {@function.outputResourceId}.
-        """
-        return cls.{@function.pathTemplateName}.match({@function.entityNameParamName}).get('{@function.outputResourceId}')
+        return google.api_core.path_template.expand(
+            '{@function.pattern}',
+            {@createRenderParams(function.resourceIdParams)}
+        )
 @end
 
 @private createResourceFunctionParams(params)
@@ -244,9 +189,9 @@
     @end
 @end
 
-@private createRenderDictionary(params)
+@private createRenderParams(params)
     @join param: params on BREAK
-        '{@param.templateKey}': {@param.name},
+        {@param.templateKey}={@param.name},
     @end
 @end
 
@@ -297,18 +242,40 @@
 
 @private callLine(apiMethod)
     @if apiMethod.isLongRunningOperation
-        return google.gax._OperationFuture(
-            self._{@apiMethod.name}({@apiMethod.requestVariableName}, options),
+        operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+        return google.api_core.operation.from_gapic(
+            operation,
             self.operations_client,
             {@apiMethod.longRunningView.operationPayloadTypeName},
-            {@apiMethod.longRunningView.metadataTypeName},
-            options)
+            metadata_type={@apiMethod.longRunningView.metadataTypeName})
     @else
-        @if apiMethod.hasReturnValue
-            return self._{@apiMethod.name}({@apiMethod.requestVariableName}, options)
-        @else
-            self._{@apiMethod.name}({@apiMethod.requestVariableName}, options)
+        @switch apiMethod.type
+        @case "OptionalArrayMethod"
+            @if apiMethod.hasReturnValue
+                return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+            @else
+                self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+            @end
+        @case "PagedOptionalArrayMethod"
+            iterator = google.api_core.page_iterator.GRPCIterator(
+                client=None,
+                method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
+                request={@apiMethod.requestVariableName},
+                items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
+                request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
+                response_token_field='{@apiMethod.pageStreamingView.responseTokenFieldName}')
+            return iterator
+        @default
+            {@unhandledCase()}
         @end
+    @end
+@end
+
+@private optionalParams(apiMethod)
+    @if apiMethod.headerRequestParams
+        , retry=retry, timeout=timeout, metadata=[routing_header]
+    @else
+        , retry=retry, timeout=timeout
     @end
 @end
 
@@ -338,6 +305,13 @@
                     request = {@apiMethod.requestTypeName}()
                 @end
             @end
+
+            @if apiMethod.headerRequestParams
+
+                routing_header = google.api_core.gapic_v1.routing_header(
+                    [{@routingHeader(apiMethod.headerRequestParams)}])
+
+            @end
         @end
         {@callLine(apiMethod)}
 @end
@@ -345,7 +319,7 @@
 @private renderMethodParams(params)
     @join param : params on ",".add(BREAK)
         @if param.defaultValue
-            {@param.name}=None
+            {@param.name}={@param.defaultValue}
         @else
             {@param.name}
         @end
@@ -356,7 +330,7 @@
     @join oneOf : oneOfs on BREAK
         @# Sanity check: We have some fields which are mutually exclusive;
         @# raise ValueError if more than one is sent.
-        oneof.check_oneof(
+        google.api_core.protobuf_helpers.check_oneof(
             @join oneOfField : oneOf on BREAK
                 {@oneOfField}={@oneOfField},
             @end
@@ -368,5 +342,17 @@
 @private requestObjectParams(params)
     @join param : params on ",".add(BREAK)
         {@param.keyName}={@param.name}
+    @end
+@end
+
+@private routingHeader(params)
+    @join param : params on ", "
+        ('{@param.fullyQualifiedName}', {@routingHeaderGetters(param.gettersChain)})
+    @end
+@end
+
+@private routingHeaderGetters(getters)
+    @join getter : getters on "."
+        {@getter}
     @end
 @end

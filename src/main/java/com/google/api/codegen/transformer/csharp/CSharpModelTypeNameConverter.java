@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -248,20 +249,18 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getProtoTypeRef(), typedResourceShortName);
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig,
-        fieldConfig.getField().getProtoTypeRef().makeOptional(),
-        typedResourceShortName);
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, TypeModel type, String typedResourceShortName) {
     TypeName simpleTypeName = new TypeName(typedResourceShortName);
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");

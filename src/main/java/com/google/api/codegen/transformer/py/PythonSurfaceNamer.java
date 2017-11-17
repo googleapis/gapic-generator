@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -33,6 +35,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -152,7 +155,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
@@ -256,9 +259,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    lines.add(
+        "google.api_core.exceptions.GoogleAPICallError: If the request",
+        "        failed for any reason.",
+        "google.api_core.exceptions.RetryError: If the request failed due",
+        "        to a retryable error and retry attempts failed.");
     if (hasParams(methodConfig)) {
-      lines.add(":exc:`ValueError` if the parameters are invalid.");
+      lines.add("ValueError: If the parameters are invalid.");
     }
     return lines.build();
   }
@@ -294,7 +301,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getProtoTypeRef();
+      ProtoField fieldModel = (ProtoField) methodConfig.getPageStreaming().getResourcesField();
+      TypeRef resourceType = fieldModel.getType().getProtoType();
       return ImmutableList.of(
           "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "
@@ -340,7 +348,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     return publicFieldName(identifier);
   }
 
@@ -382,6 +390,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
+    // "randomString" -> 'randomString'.
+    randomString = '\'' + CommonRenderingUtil.stripQuotes(randomString) + '\'';
     Matcher m = InitFieldConfig.RANDOM_TOKEN_PATTERN.matcher(randomString);
     StringBuffer sb = new StringBuffer();
     List<String> stringParts = new ArrayList<>();

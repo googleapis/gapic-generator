@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -31,6 +32,9 @@ import com.google.auto.value.AutoValue;
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class GapicMethodContext implements MethodContext {
+
+  private TypeModel typeModel;
+
   public static GapicMethodContext create(
       GapicInterfaceContext surfaceTransformerContext,
       Interface apiInterface,

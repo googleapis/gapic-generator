@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,24 +76,23 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   private ParamDocView generateRequestObjectParamDoc(GapicMethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-    paramDoc.paramName(context.getNamer().localVarName(Name.from("request")));
     paramDoc.lines(ImmutableList.of("The request object that will be sent."));
 
-    String typeName = "Object";
+    String paramName = context.getNamer().localVarName(Name.from("request"));
     Iterable<FieldModel> optionalParams = removePageTokenFromFields(methodConfig);
     if (!methodConfig.getRequiredFieldConfigs().iterator().hasNext()
         && !optionalParams.iterator().hasNext()) {
-      typeName += "=";
+      paramName = String.format("[%s]", paramName);
     }
-
-    paramDoc.typeName(typeName);
+    paramDoc.paramName(paramName);
+    paramDoc.typeName("Object");
     return paramDoc.build();
   }
 
   private ParamDocView generateOptionsParamDoc() {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-    paramDoc.paramName("options");
-    paramDoc.typeName("Object=");
+    paramDoc.paramName("[options]");
+    paramDoc.typeName("Object");
     paramDoc.lines(
         ImmutableList.of(
             "Optional parameters. You can override the default settings for this call, e.g, timeout,",
@@ -125,10 +124,14 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       }
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-      paramDoc.paramName("request." + namer.getVariableName(field));
+      String paramName = "request." + namer.getVariableName(field);
+      if (isOptional) {
+        paramName = String.format("[%s]", paramName);
+      }
+      paramDoc.paramName(paramName);
 
       String typeName = namer.getParamTypeName(context.getTypeTable(), field);
-      paramDoc.typeName(typeName + (isOptional ? "=" : ""));
+      paramDoc.typeName(typeName);
       List<String> fieldDocLines = namer.getDocLines(field);
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {

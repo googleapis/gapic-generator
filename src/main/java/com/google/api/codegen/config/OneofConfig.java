@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -26,20 +24,5 @@ public abstract class OneofConfig {
 
   public abstract MessageType parentType();
 
-  public abstract Field field();
-
-  /**
-   * Returns oneof config for the field of a given type, or null if the field is not a part of any
-   * oneofs
-   */
-  public static OneofConfig of(MessageType message, String fieldName) {
-    for (Oneof oneof : message.getOneofs()) {
-      for (Field field : oneof.getFields()) {
-        if (field.getSimpleName().equals(fieldName)) {
-          return new AutoValue_OneofConfig(Name.from(oneof.getName()), message, field);
-        }
-      }
-    }
-    return null;
-  }
+  public abstract FieldModel field();
 }

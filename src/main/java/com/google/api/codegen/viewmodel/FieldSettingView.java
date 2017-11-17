@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@ public abstract class FieldSettingView {
 
   public abstract String elementTypeName();
 
+  public abstract Boolean required();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
   }
@@ -70,6 +72,8 @@ public abstract class FieldSettingView {
     public abstract Builder oneofConfig(OneofConfigView val);
 
     public abstract Builder elementTypeName(String val);
+
+    public abstract Builder required(Boolean val);
 
     public abstract FieldSettingView build();
   }

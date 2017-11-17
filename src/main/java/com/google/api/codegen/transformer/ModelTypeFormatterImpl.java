@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -56,6 +59,18 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameFor(TypeModel type) {
+    return typeNameConverter.getTypeName(type).getFullName();
+  }
+
+  @Override
+  public String getFullNameForMessageType(TypeModel type) {
+    return typeNameConverter
+        .getTypeName(((ProtoTypeRef) type).getProtoType().getMessageType())
+        .getFullName();
+  }
+
+  @Override
   public String getNicknameFor(TypeRef type) {
     return typeNameConverter.getTypeName(type).getNickname();
   }
@@ -67,21 +82,36 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldModel type) {
-    return getFullNameFor(type.getProtoTypeRef());
+    return getFullNameFor((((ProtoField) type).getType().getProtoType()));
   }
 
   @Override
   public String getFullNameForElementType(FieldModel type) {
-    return getFullNameForElementType(type.getProtoTypeRef());
+    return getFullNameForElementType((((ProtoField) type).getType().getProtoType()));
   }
 
   @Override
   public String getNicknameFor(FieldModel type) {
-    return getNicknameFor(type.getProtoTypeRef());
+    return getNicknameFor((((ProtoField) type).getType().getProtoType()));
+  }
+
+  @Override
+  public String getNicknameFor(TypeModel type) {
+    return getNicknameFor(((ProtoTypeRef) type).getProtoType());
   }
 
   @Override
   public String renderPrimitiveValue(FieldModel type, String key) {
-    return renderPrimitiveValue(type.getProtoTypeRef(), key);
+    return renderPrimitiveValue((((ProtoField) type).getType().getProtoType()), key);
+  }
+
+  @Override
+  public String renderPrimitiveValue(TypeModel type, String key) {
+    return renderPrimitiveValue(((ProtoTypeRef) type).getProtoType(), key);
+  }
+
+  @Override
+  public String renderValueAsString(String key) {
+    return typeNameConverter.renderValueAsString(key);
   }
 }

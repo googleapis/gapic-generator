@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class DiscoConfigTransformer {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
+  private static final String DEFAULT_CONFIG_SCHEMA_VERSION = "1.0.0";
 
   private final LanguageTransformer languageTransformer = new LanguageTransformer();
   private final RetryTransformer retryTransformer = new RetryTransformer();
@@ -75,6 +76,7 @@ public class DiscoConfigTransformer {
         .templateFileName(CONFIG_TEMPLATE_FILE)
         .outputPath(outputPath)
         .type(CONFIG_PROTO_TYPE)
+        .configSchemaVersion(DEFAULT_CONFIG_SCHEMA_VERSION)
         .languageSettings(generateLanguageSettings(model))
         .license(generateLicense())
         .interfaces(generateInterfaces(model, resourceToNamePatternMap, methodToNamePatternMap))
@@ -121,7 +123,7 @@ public class DiscoConfigTransformer {
 
       retryTransformer.generateRetryDefinitions(
           interfaceView,
-          ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"),
+          ImmutableList.of("UNAVAILABLE", "DEADLINE_EXCEEDED"),
           ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(

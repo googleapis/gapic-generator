@@ -64,6 +64,8 @@ option java_package = "com.google.api.codegen";
 //         request_object_method: true
 //         field_name_patterns:
 //           name: book
+//         header_request_params:
+//           - name
 //       - name: GetBook
 //       ...
 //     ...
@@ -94,6 +96,11 @@ message ConfigProto {
 
   // A list of message resource name configurations.
   repeated ResourceNameMessageConfigProto resource_name_generation = 20;
+
+  // A required field to specify the version of GAPIC config schema.
+  // It is versioned using Semantic Versioning 2.0.0 (semver) and follows the
+  // semver specification. Currently, the only valid value is "1.0.0".
+  string config_schema_version = 21;
 }
 
 message LanguageSettingsProto {
@@ -114,7 +121,7 @@ message LanguageSettingsProto {
   LicenseHeaderProto license_header_override = 5;
 
   // The release level of the client in the language
-  ReleaseLevel release_level = 6; 
+  ReleaseLevel release_level = 6;
 }
 
 // ReleaseLevel indicates the stage of development of a piece of code and
@@ -270,6 +277,11 @@ message MethodConfigProto {
   // IAM methods to IamPolicy for Pub/Sub.
   string reroute_to_grpc_interface = 12;
 
+  // Specifies the list of the method's input message fields (including nested
+  // ones, using the dot notation), which should be url-encoded in
+  // "x-goog-request-params" header
+  repeated string header_request_params = 14;
+
   repeated SurfaceTreatmentProto surface_treatments = 20;
 
   // Set the resource name treatment for fields
@@ -277,6 +289,7 @@ message MethodConfigProto {
 
   // Long-running settings.
   LongRunningConfigProto long_running = 30;
+
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a

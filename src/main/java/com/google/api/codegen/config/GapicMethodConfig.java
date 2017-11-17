@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
   public Method getMethod() {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
   }
+
+  public abstract Iterable<String> getHeaderRequestParams();
 
   /**
    * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
@@ -215,6 +217,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
+    List<String> headerRequestParams =
+        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+
     if (error) {
       return null;
     } else {
@@ -236,7 +241,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          headerRequestParams);
     }
   }
 

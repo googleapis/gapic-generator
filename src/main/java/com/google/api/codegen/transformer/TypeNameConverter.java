@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
 
-/** ModelTypeNameConverter maps FieldModel instances to TypeName instances. */
+/** ModelTypeNameConverter maps FieldModel and TypeModel instances to TypeName instances. */
 public interface TypeNameConverter {
   /** Provides a TypeName for the given FieldModel. */
   TypeName getTypeName(FieldModel type);
@@ -33,6 +34,9 @@ public interface TypeNameConverter {
 
   /** Provides a TypeName for the element type of the given FieldModel. */
   TypeName getTypeNameForElementType(FieldModel type);
+
+  /** Provides a TypeName for the element type of the given FieldModel. */
+  TypeName getTypeName(TypeModel type);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);

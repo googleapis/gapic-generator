@@ -18,6 +18,7 @@
   task :default => :test
 
   {@helpers()}
+
 @end
 
 @private header(fileHeader)
@@ -87,7 +88,11 @@
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
   task :acceptance do
-    puts "The {@metadata.identifier} gem does not have acceptance tests."
+    @if metadata.hasSmokeTests
+      Rake::Task["smoke_test"].invoke
+    @else
+      puts "The {@metadata.identifier} gem does not have acceptance tests."
+    @end
   end
 
   namespace :acceptance do
@@ -170,22 +175,18 @@
 
   @if metadata.hasSmokeTests
     namespace :ci do
-      desc "Run the CI build, with smoke_tests."
+      desc "Run the CI build, with smoke tests."
       task :smoke_test do
         Rake::Task["ci"].invoke
         header "{@metadata.identifier} smoke_test", "*"
         sh "bundle exec rake smoke_test -v"
-      end
-      task :a do
-        @# This is a handy shortcut to save typing
-        Rake::Task["ci:smoke_test"].invoke
       end
     end
   @end
 
   namespace :ci do
     desc "Run the CI build, with acceptance tests."
-    task :smoke_test do
+    task :acceptance do
       Rake::Task["ci"].invoke
       header "{@metadata.identifier} acceptance", "*"
       sh "bundle exec rake acceptance -v"

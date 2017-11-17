@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,9 @@ public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
   private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
+  private final HeaderRequestParamTransformer headerRequestParamTransformer =
+      new HeaderRequestParamTransformer();
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
     this(apiMethodParamTransformer, new InitCodeTransformer());
@@ -65,6 +68,9 @@ public class DynamicLangApiMethodTransformer {
 
     if (context.getMethodConfig().isPageStreaming()) {
       apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
+      apiMethod.pageStreamingView(
+          pageStreamingTransformer.generateDescriptor(
+              context.getSurfaceInterfaceContext(), method));
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }
@@ -135,6 +141,8 @@ public class DynamicLangApiMethodTransformer {
             : null);
 
     apiMethod.oneofParams(context.getMethodConfig().getOneofNames(namer));
+    apiMethod.headerRequestParams(
+        headerRequestParamTransformer.generateHeaderRequestParams(context));
 
     return apiMethod.build();
   }
@@ -222,11 +230,11 @@ public class DynamicLangApiMethodTransformer {
   }
 
   private InitCodeContext createInitCodeContext(
-      GapicMethodContext context,
+      MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType) {
     return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
+        .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))

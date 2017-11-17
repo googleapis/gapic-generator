@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,9 +177,5 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     Files.createDirectories(baselinePath.getParent());
     Files.copy(generatedPath, baselinePath, StandardCopyOption.REPLACE_EXISTING);
     return FileVisitResult.CONTINUE;
-  }
-
-  private static String quote(String s) {
-    return "\"" + s + "\"";
   }
 }

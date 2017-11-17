@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -126,6 +127,10 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                           context.getInterfaceModel().getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
+              .apiHasUnaryUnaryMethod(hasUnaryUnary(context.getInterfaceConfig()))
+              .apiHasUnaryStreamingMethod(hasUnaryStreaming(context.getInterfaceConfig()))
+              .apiHasStreamingUnaryMethod(hasStreamingUnary(context.getInterfaceConfig()))
+              .apiHasStreamingStreamingMethod(hasStreamingStreaming(context.getInterfaceConfig()))
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
@@ -150,6 +155,46 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
     return models.build();
+  }
+
+  private boolean hasUnaryUnary(GapicInterfaceConfig interfaceConfig) {
+    return interfaceConfig
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(method -> !method.isGrpcStreaming());
+  }
+
+  private boolean hasUnaryStreaming(GapicInterfaceConfig interfaceConfig) {
+    return interfaceConfig
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(
+            method ->
+                method.isGrpcStreaming()
+                    && method.getGrpcStreaming().getType()
+                        == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming);
+  }
+
+  private boolean hasStreamingUnary(GapicInterfaceConfig interfaceConfig) {
+    return interfaceConfig
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(
+            method ->
+                method.isGrpcStreaming()
+                    && method.getGrpcStreaming().getType()
+                        == GrpcStreamingConfig.GrpcStreamingType.ClientStreaming);
+  }
+
+  private boolean hasStreamingStreaming(GapicInterfaceConfig interfaceConfig) {
+    return interfaceConfig
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(
+            method ->
+                method.isGrpcStreaming()
+                    && method.getGrpcStreaming().getType()
+                        == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming);
   }
 
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
@@ -180,7 +225,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                 : InitCodeOutputType.FieldList;
         InitCodeContext initCodeContext =
             InitCodeContext.newBuilder()
-                .initObjectType(methodContext.getMethod().getInputType())
+                .initObjectType(methodContext.getMethodModel().getInputType())
                 .suggestedName(Name.from("request"))
                 .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
                 .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
@@ -225,8 +270,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
