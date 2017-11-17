@@ -49,7 +49,7 @@ public final class AddressName implements ResourceName {
     region = Preconditions.checkNotNull(builder.getRegion());
   }
 
-  public static AddressName create(
+  public static AddressName of(
       String address,
       String project,
       String region
@@ -77,7 +77,7 @@ public final class AddressName implements ResourceName {
   public static AddressName parse(String formattedString) {
     Map<String, String> matchMap =
         PATH_TEMPLATE.validatedMatch(formattedString, "AddressName.parse: formattedString not in valid format");
-    return create(
+    return of(
       matchMap.get("address"),
       matchMap.get("project"),
       matchMap.get("region")
@@ -252,7 +252,7 @@ public final class RegionName implements ResourceName {
     region = Preconditions.checkNotNull(builder.getRegion());
   }
 
-  public static RegionName create(
+  public static RegionName of(
       String project,
       String region
       ) {
@@ -274,7 +274,7 @@ public final class RegionName implements ResourceName {
   public static RegionName parse(String formattedString) {
     Map<String, String> matchMap =
         PATH_TEMPLATE.validatedMatch(formattedString, "RegionName.parse: formattedString not in valid format");
-    return create(
+    return of(
       matchMap.get("project"),
       matchMap.get("region")
     );
@@ -3116,7 +3116,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     }
 
     public final AddressName getAddressAsAddressName() {
-      return AddressName.create(
+      return AddressName.of(
           getAddress(),
           getProject(),
           getRegion()
@@ -3584,7 +3584,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
     }
 
     public final AddressName getAddressAsAddressName() {
-      return AddressName.create(
+      return AddressName.of(
           getAddress(),
           getProject(),
           getRegion()
@@ -4048,7 +4048,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     }
 
     public final RegionName getRegionAsRegionName() {
-      return RegionName.create(
+      return RegionName.of(
           getProject(),
           getRegion()
           );
@@ -4595,7 +4595,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     }
 
     public final RegionName getRegionAsRegionName() {
-      return RegionName.create(
+      return RegionName.of(
           getProject(),
           getRegion()
           );
@@ -5201,12 +5201,12 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.BetaApi;
-import com.google.api.gax.core.ChannelProvider;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.core.PropertiesProvider;
+import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
@@ -5386,7 +5386,7 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setApiClientHeaderLineKey("x-goog-api-client")
-        .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData());
+        ;
   }
 
   private static String getGapicVersion() {
@@ -5729,9 +5729,9 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
-import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
@@ -5780,7 +5780,7 @@ public class HttpJsonAddressStub extends AddressStub {
                              ))
           .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
           .setHttpMethod(HttpMethods.DELETE)
-          .build());
+          .build();
   private static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
       ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
           .setMethodName("compute.addresses.get")
@@ -5794,7 +5794,7 @@ public class HttpJsonAddressStub extends AddressStub {
                              ))
           .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
           .setHttpMethod(HttpMethods.GET)
-          .build());
+          .build();
   private static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
       ApiMethodDescriptor.<InsertAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.insert")
@@ -5808,7 +5808,7 @@ public class HttpJsonAddressStub extends AddressStub {
                              ))
           .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
           .setHttpMethod(HttpMethods.POST)
-          .build());
+          .build();
   private static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
       ApiMethodDescriptor.<ListAddressesHttpRequest, AddressList>newBuilder()
           .setMethodName("compute.addresses.list")
@@ -5823,7 +5823,7 @@ public class HttpJsonAddressStub extends AddressStub {
                              ))
           .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
           .setHttpMethod(HttpMethods.GET)
-          .build());
+          .build();
 
   private final BackgroundResource backgroundResources;
 

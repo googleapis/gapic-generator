@@ -2974,7 +2974,6 @@ import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.batching.PartitionKey;
 import com.google.api.gax.batching.RequestBuilder;
-import com.google.api.gax.core.ChannelProvider;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
@@ -3415,7 +3414,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setApiClientHeaderLineKey("x-goog-api-client")
-        .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData());
+        .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData())
+        ;
   }
 
   private static String getGapicVersion() {
@@ -5064,7 +5064,6 @@ import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
-import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
@@ -5424,15 +5423,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<CreateBookRequest, Book> createBookTransportSettings =
         GrpcCallSettings.<CreateBookRequest, Book>newBuilder()
             .setMethodDescriptor(createBookMethodDescriptor)
-            .setRequestParamsExtractor(new RequestParamsExtractor<CreateBookRequest>() {
-                                         @Override
-                                         public Map<String, String> extract(CreateBookRequest request) {
-                                           ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
-                                           params.put("name", String.valueOf(request.getName()));
-                                           params.put("book.read", String.valueOf(request.getBook().getRead()));
-                                           return params.build();
-                                         }
-                                       })
+            .setParamsExtractor(
+                new RequestParamsExtractor<CreateBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(CreateBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    params.put("book.read", String.valueOf(request.getBook().getRead()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesTransportSettings =
         GrpcCallSettings.<PublishSeriesRequest, PublishSeriesResponse>newBuilder()

@@ -95,20 +95,22 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
   }
 
   @Override
   public String getPathTemplateName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
-  public String getClientConfigPath(InterfaceModel apiInterface) {
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
     return "../resources/"
-        + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join("client_config")
+            .toLowerUnderscore()
         + ".json";
   }
 

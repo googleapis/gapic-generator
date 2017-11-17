@@ -677,8 +677,8 @@ module Library
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/library"
     ].freeze
-    PATH_ENV_VARS = %w(LIBRARY_KEYFILE, GOOGLE_CLOUD_KEYFILE, GCLOUD_KEYFILE)
-    JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON, GOOGLE_CLOUD_KEYFILE_JSON, GCLOUD_KEYFILE_JSON)
+    PATH_ENV_VARS = %w(LIBRARY_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+    JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
     DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
   end
 end
@@ -1125,7 +1125,10 @@ module Library
         )
         @create_book = Google::Gax.create_api_call(
           @library_service_stub.method(:create_book),
-          defaults["create_book"]
+          defaults["create_book"],
+          params_extractor: proc do |request|
+            {'name' => request.name, 'book.read' => request.book.read}
+          end
         )
         @publish_series = Google::Gax.create_api_call(
           @library_service_stub.method(:publish_series),
@@ -1199,6 +1202,10 @@ module Library
           @library_service_stub.method(:add_tag),
           defaults["add_tag"]
         )
+        @add_label = Google::Gax.create_api_call(
+          @labeler_stub.method(:add_label),
+          defaults["add_label"]
+        )
         @get_big_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_book),
           defaults["get_big_book"]
@@ -1210,10 +1217,6 @@ module Library
         @test_optional_required_flattening_params = Google::Gax.create_api_call(
           @library_service_stub.method(:test_optional_required_flattening_params),
           defaults["test_optional_required_flattening_params"]
-        )
-        @add_label = Google::Gax.create_api_call(
-          @labeler_stub.method(:add_label),
-          defaults["add_label"]
         )
       end
 

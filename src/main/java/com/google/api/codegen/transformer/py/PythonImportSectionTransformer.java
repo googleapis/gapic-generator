@@ -104,6 +104,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("google.api_core.gapic_v1.config"));
     imports.add(createImport("google.api_core.gapic_v1.method"));
 
+    if (hasRequestHeaderParams((GapicInterfaceContext) context)) {
+      imports.add(createImport("google.api_core.gapic_v1.routing_header"));
+    }
+
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("google.api_core.operations_v1"));
       imports.add(createImport("google.api_core.operation"));
@@ -125,6 +129,14 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return imports;
   }
 
+  private boolean hasRequestHeaderParams(GapicInterfaceContext context) {
+    return context
+        .getInterfaceConfig()
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(config -> config.getHeaderRequestParams().iterator().hasNext());
+  }
+
   private boolean hasOneOf(InterfaceContext context) {
     return context
         .getInterfaceConfig()
@@ -139,7 +151,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     SurfaceNamer namer = context.getNamer();
     imports.add(
         createImport(
-            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceModel())));
+            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;

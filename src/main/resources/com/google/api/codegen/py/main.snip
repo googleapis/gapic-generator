@@ -242,7 +242,7 @@
 
 @private callLine(apiMethod)
     @if apiMethod.isLongRunningOperation
-        operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}, retry=retry, timeout=timeout)
+        operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
@@ -252,14 +252,14 @@
         @switch apiMethod.type
         @case "OptionalArrayMethod"
             @if apiMethod.hasReturnValue
-                return self._{@apiMethod.name}({@apiMethod.requestVariableName}, retry=retry, timeout=timeout)
+                return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
             @else
-                self._{@apiMethod.name}({@apiMethod.requestVariableName}, retry=retry, timeout=timeout)
+                self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
             @end
         @case "PagedOptionalArrayMethod"
             iterator = google.api_core.page_iterator.GRPCIterator(
                 client=None,
-                method=functools.partial(self._{@apiMethod.name}, retry=retry, timeout=timeout),
+                method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
                 request={@apiMethod.requestVariableName},
                 items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
                 request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
@@ -268,6 +268,14 @@
         @default
             {@unhandledCase()}
         @end
+    @end
+@end
+
+@private optionalParams(apiMethod)
+    @if apiMethod.headerRequestParams
+        , retry=retry, timeout=timeout, metadata=[routing_header]
+    @else
+        , retry=retry, timeout=timeout
     @end
 @end
 
@@ -296,6 +304,13 @@
                 @else
                     request = {@apiMethod.requestTypeName}()
                 @end
+            @end
+
+            @if apiMethod.headerRequestParams
+
+                routing_header = google.api_core.gapic_v1.routing_header(
+                    [{@routingHeader(apiMethod.headerRequestParams)}])
+
             @end
         @end
         {@callLine(apiMethod)}
@@ -327,5 +342,17 @@
 @private requestObjectParams(params)
     @join param : params on ",".add(BREAK)
         {@param.keyName}={@param.name}
+    @end
+@end
+
+@private routingHeader(params)
+    @join param : params on ", "
+        ('{@param.fullyQualifiedName}', {@routingHeaderGetters(param.gettersChain)})
+    @end
+@end
+
+@private routingHeaderGetters(getters)
+    @join getter : getters on "."
+        {@getter}
     @end
 @end

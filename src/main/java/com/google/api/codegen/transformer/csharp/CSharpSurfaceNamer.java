@@ -212,9 +212,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
+  public String getApiSnippetsClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(
-        Name.upperCamel("Generated", apiInterface.getSimpleName(), "ClientSnippets"));
+        Name.upperCamel(
+            "Generated", interfaceConfig.getInterfaceModel().getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -235,7 +236,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
   }
 
@@ -313,7 +314,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 
