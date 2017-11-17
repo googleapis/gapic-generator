@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
     if (packages.size() > 2) {
       String parentName = packages.get(packages.size() - 2);
-      if (parentName.matches("v[0-9]+((alpha|beta)[0-9]+)?")) {
+      if (parentName.matches("v[0-9]+(p[0-9]+)?((alpha|beta)[0-9]+)?")) {
         apiVersion = parentName;
       }
     }

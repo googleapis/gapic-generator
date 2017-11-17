@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -103,7 +102,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     boolean hasMultipleServices = Iterables.size(services) > 1;
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -146,8 +145,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        MethodModel method =
-            new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
         FlatteningConfig flatteningGroup =
             testCaseTransformer.getSmokeTestFlatteningGroup(
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
@@ -200,7 +198,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     boolean hasMultipleServices = Iterables.size(services) > 1;
 
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(hasMultipleServices)
         .additionalDependencies(generateAdditionalDependencies(model, productConfig))

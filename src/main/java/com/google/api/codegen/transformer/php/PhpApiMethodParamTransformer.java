@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         // For enums, we alter the param type to int, and document where to find the relevant
         // const values
         String typeNameSingular =
-            context.getTypeTable().getFullNameFor(field.getProtoTypeRef().makeOptional());
+            context.getTypeTable().getFullNameFor(field.getType().makeOptional());
         if (field.isRepeated()) {
           paramDoc.typeName("int[]");
         } else {

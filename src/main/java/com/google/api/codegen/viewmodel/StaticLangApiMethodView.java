@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,8 @@ public abstract class StaticLangApiMethodView
 
   public abstract String releaseLevelAnnotation();
 
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
   }
@@ -153,6 +155,8 @@ public abstract class StaticLangApiMethodView
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder releaseLevelAnnotation(String value);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract StaticLangApiMethodView build();
   }

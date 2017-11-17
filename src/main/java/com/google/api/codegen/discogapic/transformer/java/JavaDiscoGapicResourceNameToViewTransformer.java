@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,6 @@ import java.util.Set;
 /* Creates the ViewModel for Discovery-Doc-based ResourceName and ResourceTypeName Java classes. */
 public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -80,8 +79,6 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   public JavaDiscoGapicResourceNameToViewTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageMetadataConfig;
-    // TODO use packageMetadataConfig
   }
 
   @Override
@@ -100,9 +97,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
         DiscoGapicInterfaceContext.createWithoutInterface(
             document,
             productConfig,
-            createTypeTable(productConfig.getPackageName()),
+            createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
     Set<String> namePatterns = new HashSet<>();
@@ -240,9 +237,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
-  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+  private SchemaTypeTable createTypeTable(
+      String implicitPackageName, DiscoGapicNamer discoGapicNamer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
-        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
+        discoGapicNamer);
   }
 }

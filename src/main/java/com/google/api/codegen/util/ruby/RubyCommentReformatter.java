@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class RubyCommentReformatter implements CommentReformatter {
               return String.format(
                   "{%s %s}",
                   Matcher.quoteReplacement(protoToRubyDoc(ref)),
-                  Matcher.quoteReplacement(protoToRubyDoc(title)));
+                  Matcher.quoteReplacement(protoToRubyDoc(title, false)));
             }
           });
 
@@ -91,24 +91,30 @@ public class RubyCommentReformatter implements CommentReformatter {
   }
 
   private static String protoToRubyDoc(String comment) {
+    return protoToRubyDoc(comment, true);
+  }
+
+  private static String protoToRubyDoc(String comment, boolean changeCase) {
     boolean messageFound = false;
     boolean isFirstSegment = true;
-    String result = "";
-    for (String name : Splitter.on(".").splitToList(comment)) {
+    StringBuilder builder = new StringBuilder();
+    for (String name : Splitter.on(".").split(comment)) {
       char firstChar = name.charAt(0);
       if (Character.isUpperCase(firstChar)) {
+        builder.append(isFirstSegment ? "" : "::").append(name);
         messageFound = true;
-        result += (isFirstSegment ? "" : "::") + name;
       } else if (messageFound) {
         // Lowercase segment after message is found is field.
         // In Ruby, it is referred as "Message#field" format.
-        result += "#" + name;
+        builder.append("#").append(name);
       } else {
-        result +=
-            (isFirstSegment ? "" : "::") + Character.toUpperCase(firstChar) + name.substring(1);
+        builder
+            .append(isFirstSegment ? "" : "::")
+            .append(changeCase ? Character.toUpperCase(firstChar) : firstChar)
+            .append(name.substring(1));
       }
       isFirstSegment = false;
     }
-    return result;
+    return builder.toString();
   }
 }

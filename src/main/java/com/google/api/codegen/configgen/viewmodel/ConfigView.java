@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ public abstract class ConfigView implements ViewModel {
   /** The type of the config's proto. */
   public abstract String type();
 
+  /** The version of the config schema. */
+  public abstract String configSchemaVersion();
+
   /** The settings of generated code in a specific language. */
   public abstract List<LanguageSettingView> languageSettings();
 
@@ -61,6 +64,8 @@ public abstract class ConfigView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder type(String val);
+
+    public abstract Builder configSchemaVersion(String val);
 
     public abstract Builder languageSettings(List<LanguageSettingView> val);
 

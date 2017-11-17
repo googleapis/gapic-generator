@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.TypeModel;
 
 /**
  * A read-only interface for mapping TypeRef instances to a corresponding String representation for
@@ -31,14 +32,29 @@ public interface TypeFormatter {
   String getFullNameFor(FieldModel type);
 
   /** Get the full name for the given type. */
+  String getFullNameFor(TypeModel type);
+
+  /** Get the full name for the given type. */
   String getFullNameFor(InterfaceModel type);
 
   /** Get the full name for the element type of the given type. */
   String getFullNameForElementType(FieldModel type);
 
+  /** Get the full name for the message type of the given type. */
+  String getFullNameForMessageType(TypeModel type);
+
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   String getNicknameFor(FieldModel type);
 
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  String getNicknameFor(TypeModel type);
+
   /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(FieldModel type, String key);
+
+  /** Renders the primitive value of the given type. */
+  String renderPrimitiveValue(TypeModel type, String key);
+
+  /** Renders the value as a string. */
+  String renderValueAsString(String key);
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public abstract class InitCodeContext {
   }
 
   /** The type of the output object. */
-  public abstract TypeRef initObjectType();
+  public abstract TypeModel initObjectType();
 
   /** The suggested name for the output object */
   public abstract Name suggestedName();
@@ -87,7 +87,7 @@ public abstract class InitCodeContext {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder initObjectType(TypeRef type);
+    public abstract Builder initObjectType(TypeModel type);
 
     public abstract Builder suggestedName(Name name);
 

@@ -2,7 +2,7 @@
 {
   "name": "library/library",
   "version": "0.1.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "url": "https://github.com/googleapis/googleapis",
   "description": "Google Example Library API client for PHP",
   "require": {
@@ -32,7 +32,7 @@
 ============== file: src/Example/Library/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2507,7 +2507,7 @@ class LibraryServiceGapicClient
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2721,7 +2721,7 @@ class LibraryServiceClient extends LibraryServiceGapicClient
 ============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2762,6 +2762,9 @@ class LibraryServiceSmokeTest extends GeneratedTest
     public function updateBookTest()
     {
         $projectId = getenv('PROJECT_ID');
+        if ($projectId === false) {
+            $this->fail('Environment variable PROJECT_ID must be set for smoke test');
+        }
 
         $libraryServiceClient = new LibraryServiceClient();
         $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
@@ -2777,7 +2780,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5263,7 +5266,7 @@ class LibraryServiceClientTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/MockLabelerImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5308,7 +5311,7 @@ class MockLabelerImpl extends LabelerGrpcClient
 ============== file: tests/unit/Example/Library/V1/MockLibraryServiceImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

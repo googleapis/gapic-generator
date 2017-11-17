@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,17 @@ import java.util.Map;
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
-  private List<FieldModel> inputFields;
-  private Iterable<FieldModel> outputFields;
+  private List<ProtoField> inputFields;
+  private Iterable<ProtoField> outputFields;
+  private final TypeModel inputType;
+  private final TypeModel outputType;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoMethodModel(Method method) {
     Preconditions.checkNotNull(method);
     this.method = method;
+    this.inputType = new ProtoTypeRef(method.getInputType());
+    this.outputType = new ProtoTypeRef(method.getOutputType());
   }
 
   @Override
@@ -54,12 +58,12 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldModel getInputField(String fieldName) {
+  public ProtoField getInputField(String fieldName) {
     return new ProtoField(method.getInputType().getMessageType().lookupField(fieldName));
   }
 
   @Override
-  public FieldModel getOutputField(String fieldName) {
+  public ProtoField getOutputField(String fieldName) {
     return new ProtoField(method.getOutputType().getMessageType().lookupField(fieldName));
   }
 
@@ -128,8 +132,6 @@ public final class ProtoMethodModel implements MethodModel {
     return method.getResponseStreaming();
   }
 
-  // TODO(andrealin): Eliminate all uses of this function.
-  @Deprecated
   public Method getProtoMethod() {
     return method;
   }
@@ -177,12 +179,12 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public List<FieldModel> getInputFields() {
+  public List<ProtoField> getInputFields() {
     if (inputFields != null) {
       return inputFields;
     }
 
-    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ProtoField> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       fieldsBuilder.add(new ProtoField(field));
     }
@@ -191,17 +193,17 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public List<FieldModel> getInputFieldsForResourceNameMethod() {
+  public List<ProtoField> getInputFieldsForResourceNameMethod() {
     return getInputFields();
   }
 
   @Override
-  public Iterable<FieldModel> getOutputFields() {
+  public Iterable<ProtoField> getOutputFields() {
     if (outputFields != null) {
       return outputFields;
     }
 
-    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ProtoField> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getOutputType().getMessageType().getFields()) {
       fieldsBuilder.add(new ProtoField(field));
     }
@@ -210,7 +212,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<FieldModel> getResourceNameInputFields() {
+  public Iterable<ProtoField> getResourceNameInputFields() {
     return new ArrayList<>();
   }
 
@@ -238,5 +240,15 @@ public final class ProtoMethodModel implements MethodModel {
       resources.put(collectionPattern.getFieldPath(), nameMap.get(resourceNameString));
     }
     return resources;
+  }
+
+  @Override
+  public TypeModel getInputType() {
+    return inputType;
+  }
+
+  @Override
+  public TypeModel getOutputType() {
+    return outputType;
   }
 }

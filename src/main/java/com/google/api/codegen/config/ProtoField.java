@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ import static com.google.api.codegen.config.ApiSource.PROTO;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -28,7 +27,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -36,9 +34,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/** Created by andrealin on 7/31/17. */
+/** A field declaration wrapper around a protobuf Field. */
 public class ProtoField implements FieldModel {
   private final Field protoField;
+  private final ProtoTypeRef protoTypeRef;
 
   @Override
   /* @return the type of the underlying model resource. */
@@ -50,6 +49,7 @@ public class ProtoField implements FieldModel {
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
+    this.protoTypeRef = new ProtoTypeRef(protoField.getType());
   }
 
   @Override
@@ -104,8 +104,7 @@ public class ProtoField implements FieldModel {
 
   @Override
   public boolean isRequired() {
-    // TODO(andrealin): implement.
-    return false;
+    return protoField.getType().getCardinality().equals(Cardinality.REQUIRED);
   }
 
   @Override
@@ -147,28 +146,6 @@ public class ProtoField implements FieldModel {
   @Override
   public boolean isPrimitive() {
     return protoField.getType().isPrimitive();
-  }
-
-  @Override
-  public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
-  }
-
-  @Override
-  public TypeRef getProtoTypeRef() {
-    return protoField.getType();
-  }
-
-  @Override
-  public Schema getDiscoveryField() {
-    throw new IllegalArgumentException("Protobuf model types have no Discovery Field types.");
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoField
-        && ((ProtoField) o).protoField.equals(this.protoField);
   }
 
   @Override
@@ -232,5 +209,27 @@ public class ProtoField implements FieldModel {
     String resourceFieldGetFunctionName =
         namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
     return ImmutableList.of(resourceFieldGetFunctionName);
+  }
+
+  @Override
+  public ProtoTypeRef getType() {
+    return protoTypeRef;
+  }
+
+  @Override
+  public int hashCode() {
+    return 5 + 31 * protoField.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null
+        && o instanceof ProtoField
+        && ((ProtoField) o).protoField.equals(this.protoField);
   }
 }

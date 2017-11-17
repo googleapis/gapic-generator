@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,11 @@ public class ProtoDocumentLinkTest {
         .isEqualTo("{Google::Example::Library::V1::Shelf Shelf}");
     Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("{Google::Example::Library::V1::Shelf $Shelf}");
+    Truth.assertThat(
+            commentReformatter.reformat(
+                "[next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]"))
+        .isEqualTo(
+            "{Google::Example::Library::V1::ListShelvesResponse#next_page_token next_page_token}");
 
     // Cloud link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))

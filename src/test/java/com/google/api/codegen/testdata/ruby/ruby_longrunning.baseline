@@ -12,12 +12,12 @@ jsondoc/*
 # IDE settings
 .idea
 *.iml
+
 ============== file: .rubocop.yml ==============
 AllCops:
   Exclude:
     - "google.gemspec"
-    - "lib/google/longrunning/**/*"
-    - "lib/google/longrunning/**/*"
+    - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
 
@@ -66,6 +66,7 @@ Style/TrivialAccessors:
   Enabled: false
 Style/FileName:
   Enabled: false
+
 ============== file: .yardopts ==============
 --no-private
 --title=Google Long Running Operations API
@@ -75,8 +76,9 @@ Style/FileName:
 ./lib/**/*.rb
 -
 README.md
+
 ============== file: Gemfile ==============
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -85,9 +87,14 @@ gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
 
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
 # TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
 # so pinning to 2.1 for now.
 gem "rainbow", "~> 2.1.0"
+
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
@@ -322,8 +329,9 @@ $ gem install google
 
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google/latest/google/longrunning
 [Product Documentation]: https://cloud.google.com/longrunning
+
 ============== file: Rakefile ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
 # met:
@@ -334,7 +342,7 @@ $ gem install google
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -461,7 +469,7 @@ end
 
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "google acceptance", "*"
     sh "bundle exec rake acceptance -v"
@@ -482,6 +490,7 @@ def header str, token = "#"
   puts token * line_length
   puts ""
 end
+
 ============== file: google.gemspec ==============
 # -*- ruby -*-
 # encoding: utf-8
@@ -490,7 +499,7 @@ Gem::Specification.new do |gem|
   gem.name          = "google"
   gem.version       = "0.6.8"
 
-  gem.authors       = ["Google, Inc."]
+  gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
   gem.description   = "google is the official library for Google Long Running Operations API."
   gem.summary       = "API Client library for Google Long Running Operations API"
@@ -515,7 +524,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: lib/google/longrunning.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -527,7 +536,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -641,7 +650,7 @@ module Google
 end
 
 ============== file: lib/google/longrunning/operations_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -653,7 +662,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -683,6 +692,7 @@ require "json"
 require "pathname"
 
 require "google/gax"
+require "googleauth"
 
 require "longrunning_pb"
 
@@ -778,7 +788,7 @@ module Google
           warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 
-        credentials ||= Google::Auth::Credentials.default
+        credentials ||= Google::Auth::Credentials.default(scopes: scopes)
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
           updater_proc = Google::Auth::Credentials.new(credentials).updater_proc
@@ -1051,7 +1061,7 @@ end
 }
 
 ============== file: test/google/longrunning/operations_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -1063,7 +1073,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,7 +201,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto) {
     if (interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
-          apiInterface, interfaceConfigProto.getSmokeTest(), diagCollector);
+          new ProtoInterfaceModel(apiInterface),
+          interfaceConfigProto.getSmokeTest(),
+          diagCollector);
     } else {
       return null;
     }
@@ -263,20 +265,16 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   /** Returns the GapicMethodConfig for the given method. */
   @Override
   public GapicMethodConfig getMethodConfig(MethodModel method) {
-    return getMethodConfig(method.getSimpleName(), method.getFullName());
+    return getMethodConfig(method.getSimpleName());
   }
 
   /** Returns the GapicMethodConfig for the given method. */
   public GapicMethodConfig getMethodConfig(Method method) {
-    return getMethodConfig(method.getSimpleName(), method.getFullName());
+    return getMethodConfig(method.getSimpleName());
   }
 
-  public GapicMethodConfig getMethodConfig(String methodSimpleName, String fullName) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(methodSimpleName);
-    if (methodConfig == null) {
-      throw new IllegalArgumentException("no method config for method '" + fullName + "'");
-    }
-    return methodConfig;
+  public GapicMethodConfig getMethodConfig(String methodSimpleName) {
+    return getMethodConfigMap().get(methodSimpleName);
   }
 
   @Override

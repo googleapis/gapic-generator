@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     }
   }
 
-  @Parameters(name = "{0}")
+  @Parameters(name = "{5}")
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
@@ -144,7 +144,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
   }
 
   @Test
-  public void library() throws Exception {
+  public void test() throws Exception {
     test(apiName);
   }
 }

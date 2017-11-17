@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.DiscoveryField;
+import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.HttpPagingParameters;
 import com.google.api.codegen.configgen.PagingParameters;
@@ -44,10 +45,11 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
    */
   @Nullable
   @Override
-  public PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
+  public PageStreamingResponseView generatePageStreamingResponse(MethodModel methodModel) {
+    DiscoveryMethodModel method = (DiscoveryMethodModel) methodModel;
     String resourcesField = null;
     boolean hasNextPageToken = false;
-    for (FieldModel field : method.getOutputFields()) {
+    for (DiscoveryField field : method.getOutputFields()) {
       String fieldName = field.getSimpleName();
       if (!fieldName.equals(pagingParameters.getNameForNextPageToken())) {
         for (Schema property : field.getDiscoveryField().properties().values()) {

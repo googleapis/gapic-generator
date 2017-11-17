@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,9 +101,8 @@ public abstract class FieldConfig {
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
-  public static FieldConfig createDefaultFieldConfig(Field field) {
-    return FieldConfig.createFieldConfig(
-        new ProtoField(field), ResourceNameTreatment.NONE, null, null);
+  public static FieldConfig createDefaultFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 
   static FieldConfig createMessageFieldConfig(
@@ -161,9 +160,12 @@ public abstract class FieldConfig {
         && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
       // We support the case of the flattenedField using a specific resource name type when the
       // messageField uses a oneof containing that type, or when the messageField accepts any
-      // resource name.
+      // resource name, or for Discovery fields.
       ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
-      boolean ok = resourceTypeName == ResourceNameType.ANY;
+      boolean ok =
+          resourceTypeName == ResourceNameType.ANY
+              || (resourceTypeName == ResourceNameType.SINGLE
+                  && field.getApiSource().equals(ApiSource.DISCOVERY));
       if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
@@ -237,7 +239,8 @@ public abstract class FieldConfig {
   public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig())
+        && getField().getApiSource() != ApiSource.DISCOVERY;
   }
 
   public boolean requiresParamTransformationFromAny() {
@@ -263,6 +266,10 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
+    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+      // There are no proto messages in Discovery.
+      return;
+    }
     switch (treatment) {
       case NONE:
         break;

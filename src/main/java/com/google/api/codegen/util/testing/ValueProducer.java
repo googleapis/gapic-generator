@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util.testing;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.TypeRef;
 
 /** A utility interface used by TestValueGenerator. */
 public interface ValueProducer {
-  public String produce(TypeRef typeRef, Name identifier);
+  String produce(TypeModel typeRef, Name identifier);
 }

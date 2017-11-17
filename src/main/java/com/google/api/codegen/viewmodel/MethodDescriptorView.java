@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,13 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class DirectCallableView {
+public abstract class MethodDescriptorView {
 
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
+
+  public abstract boolean hasResponse();
 
   public abstract GrpcStreamingType grpcStreamingType();
 
@@ -34,9 +36,7 @@ public abstract class DirectCallableView {
 
   public abstract String fullServiceName();
 
-  public abstract String interfaceTypeName();
-
-  public abstract String createCallableFunctionName();
+  public abstract String transportSettingsVar();
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
@@ -48,7 +48,7 @@ public abstract class DirectCallableView {
   public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
-    return new AutoValue_DirectCallableView.Builder()
+    return new AutoValue_MethodDescriptorView.Builder()
         .grpcStreamingType(GrpcStreamingType.NonStreaming);
   }
 
@@ -59,6 +59,8 @@ public abstract class DirectCallableView {
 
     public abstract Builder responseTypeName(String name);
 
+    public abstract Builder hasResponse(boolean val);
+
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder name(String directCallableName);
@@ -67,14 +69,12 @@ public abstract class DirectCallableView {
 
     public abstract Builder fullServiceName(String val);
 
-    public abstract Builder interfaceTypeName(String val);
-
-    public abstract Builder createCallableFunctionName(String val);
+    public abstract Builder transportSettingsVar(String val);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder httpMethod(HttpMethodView val);
 
-    public abstract DirectCallableView build();
+    public abstract MethodDescriptorView build();
   }
 }

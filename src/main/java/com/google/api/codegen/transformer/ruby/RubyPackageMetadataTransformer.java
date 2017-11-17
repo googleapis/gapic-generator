@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -157,7 +156,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, GEMSPEC_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
+            namer,
+            packageConfig,
+            model,
+            GEMSPEC_FILE,
+            namer.getOutputFileName(),
+            TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .additionalDependencies(
             ImmutableList.of(
@@ -172,7 +176,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       ApiModel model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -199,8 +203,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        MethodModel method =
-            new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
         FlatteningConfig flatteningGroup =
             testCaseTransformer.getSmokeTestFlatteningGroup(
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
@@ -281,7 +284,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
 
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(

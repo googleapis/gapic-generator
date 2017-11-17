@@ -12,12 +12,12 @@ jsondoc/*
 # IDE settings
 .idea
 *.iml
+
 ============== file: .rubocop.yml ==============
 AllCops:
   Exclude:
     - "google-example.gemspec"
-    - "lib/google/multiple_services/**/*"
-    - "lib/google/example/v1/**/*"
+    - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
 
@@ -66,6 +66,7 @@ Style/TrivialAccessors:
   Enabled: false
 Style/FileName:
   Enabled: false
+
 ============== file: .yardopts ==============
 --no-private
 --title=Google Example API
@@ -75,8 +76,9 @@ Style/FileName:
 ./lib/**/*.rb
 -
 README.md
+
 ============== file: Gemfile ==============
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -85,9 +87,14 @@ gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
 
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
 # TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
 # so pinning to 2.1 for now.
 gem "rainbow", "~> 2.1.0"
+
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
@@ -323,8 +330,9 @@ $ gem install google-example
 
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/multiple_services
 [Product Documentation]: https://cloud.google.com/multiple_services
+
 ============== file: Rakefile ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -448,7 +456,7 @@ end
 
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "google-example acceptance", "*"
     sh "bundle exec rake acceptance -v"
@@ -469,6 +477,7 @@ def header str, token = "#"
   puts token * line_length
   puts ""
 end
+
 ============== file: google-example.gemspec ==============
 # -*- ruby -*-
 # encoding: utf-8
@@ -477,7 +486,7 @@ Gem::Specification.new do |gem|
   gem.name          = "google-example"
   gem.version       = "0.6.8"
 
-  gem.authors       = ["Google, Inc."]
+  gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
   gem.description   = "google-example is the official library for Google Example API."
   gem.summary       = "API Client library for Google Example API"
@@ -503,7 +512,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: lib/google/example.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -564,7 +573,7 @@ module Google
       # @param version [Symbol, String]
       #   The major version of the service to be used. By default :v1
       #   is used.
-      # @overload
+      # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
       #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #     Provides the means for authenticating requests made by the client. This parameter can
       #     be many types.
@@ -609,7 +618,7 @@ module Google
       # @param version [Symbol, String]
       #   The major version of the service to be used. By default :v1
       #   is used.
-      # @overload
+      # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
       #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #     Provides the means for authenticating requests made by the client. This parameter can
       #     be many types.
@@ -652,7 +661,7 @@ module Google
 end
 
 ============== file: lib/google/example/credentials.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -673,14 +682,15 @@ module Google
     class Credentials < Google::Auth::Credentials
       SCOPE = [
       ].freeze
-      PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE, GOOGLE_CLOUD_KEYFILE, GCLOUD_KEYFILE)
-      JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON, GOOGLE_CLOUD_KEYFILE_JSON, GCLOUD_KEYFILE_JSON)
+      PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+      JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
       DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
     end
   end
 end
+
 ============== file: lib/google/example/v1.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -843,7 +853,7 @@ module Google
 end
 
 ============== file: lib/google/example/v1/decrementer_service_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1044,7 +1054,7 @@ end
 }
 
 ============== file: lib/google/example/v1/incrementer_service_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1245,7 +1255,7 @@ end
 }
 
 ============== file: test/google/example/v1/decrementer_service_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1368,7 +1378,7 @@ describe Google::Example::V1::DecrementerServiceClient do
   end
 end
 ============== file: test/google/example/v1/incrementer_service_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

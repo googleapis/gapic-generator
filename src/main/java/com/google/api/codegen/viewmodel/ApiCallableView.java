@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -41,6 +42,10 @@ public abstract class ApiCallableView {
     return grpcStreamingType() != GrpcStreamingType.NonStreaming;
   }
 
+  public boolean isLongRunning() {
+    return type() == ApiCallableImplType.OperationApiCallable;
+  }
+
   public abstract String name();
 
   public abstract String methodName();
@@ -54,7 +59,16 @@ public abstract class ApiCallableView {
   // Used in C#
   public abstract String grpcClientVarName();
 
-  public abstract String grpcDirectCallableName();
+  public abstract String methodDescriptorName();
+
+  public abstract String transportSettingsVar();
+
+  @Nullable
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
+  public boolean anyHeaderRequestParams() {
+    return headerRequestParams() != null && headerRequestParams().size() > 0;
+  }
 
   @Nullable
   public abstract HttpMethodView httpMethod();
@@ -90,7 +104,11 @@ public abstract class ApiCallableView {
 
     public abstract Builder grpcClientVarName(String name);
 
-    public abstract Builder grpcDirectCallableName(String name);
+    public abstract Builder methodDescriptorName(String name);
+
+    public abstract Builder transportSettingsVar(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder httpMethod(HttpMethodView val);
 

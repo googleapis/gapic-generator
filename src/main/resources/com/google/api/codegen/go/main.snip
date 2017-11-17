@@ -68,8 +68,8 @@
         // The call options for this service.
         CallOptions *{@view.callOptionsTypeName}
 
-        // The metadata to be sent with each request.
-        xGoogHeader []string
+        // The x-goog-* metadata to be sent with each request.
+        xGoogMetadata metadata.MD
     }
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
@@ -124,7 +124,7 @@
     func (c *{@view.clientTypeName}) {@setClientInfoFunc(view)}(keyval ...string) {
         kv := append([]string{"gl-go", version.Go()}, keyval...)
         kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
-        c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
+        c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
     }
 
     @join getter : view.pathTemplateGetters
@@ -191,7 +191,7 @@
 
 @private simpleMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -208,7 +208,7 @@
 
 @private lroMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) (*{@method.operationMethod.clientReturnTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -229,7 +229,7 @@
 # The function is not accept a request, but otherwise the same with simpleMethod.
 @private noRequestStreamMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -246,7 +246,7 @@
 
 @private emptyReturnMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) error {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
@@ -259,7 +259,7 @@
 
 @private pageStreamingMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) *{@method.responseTypeName} {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         it := &{@method.responseTypeName}{}
         it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
@@ -455,8 +455,34 @@
     @end
 @end
 
-@private mergeMetadata()
-    ctx = insertXGoog(ctx, c.xGoogHeader)
+@private requestParamGetter(gettersChain)
+    @join getter : gettersChain on "."
+        Get{@getter}()
+    @end
+@end
+
+@private headerRequestParamString(headerRequestParams) horizontal on EMPTY
+    # This if block prevents a space from being printed after '"'.
+    @if TRUE
+        fmt.Sprintf("
+    @end
+    @join headerRequestParam : headerRequestParams on "&"
+        %s=%v
+    @end
+    ",
+    @join headerRequestParam : headerRequestParams on ", "
+        "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}
+    @end
+    )
+@end
+
+@private mergeMetadata(method)
+    @if method.headerRequestParams
+        md := metadata.Pairs("x-goog-request-params", {@headerRequestParamString(method.headerRequestParams)})
+        ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    @else
+        ctx = insertMetadata(ctx, c.xGoogMetadata)
+    @end
 @end
 
 @private mergeOptions(getterName)

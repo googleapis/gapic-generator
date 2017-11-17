@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -32,6 +31,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -132,18 +132,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
    * <p>A helper method that creates a partially initialized builder that can be customized and
    * build the smoke test class view later.
    */
-  SmokeTestClassView.Builder createSmokeTestClassViewBuilder(GapicInterfaceContext context) {
+  SmokeTestClassView.Builder createSmokeTestClassViewBuilder(InterfaceContext context) {
     addSmokeTestImports(context);
 
-    // TODO(andrealin): The SmokeTestConfig should return a MethodModel, instead of creating one here.
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
@@ -341,7 +339,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
@@ -393,6 +391,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.LinkedList");
     typeTable.saveNicknameFor("java.util.Queue");
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
@@ -401,6 +400,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addMockServiceImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
