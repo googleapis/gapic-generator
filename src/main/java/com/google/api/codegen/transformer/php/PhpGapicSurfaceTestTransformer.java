@@ -336,14 +336,14 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private void addUnitTestImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("\\Google\\GAX\\ApiException");
-    typeTable.saveNicknameFor("\\Google\\GAX\\BidiStream");
-    typeTable.saveNicknameFor("\\Google\\GAX\\ServerStream");
-    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\MockStubTrait");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\LongRunning\\MockOperationsImpl");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\GeneratedTest");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\BidiStream");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ServerStream");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\MockStubTrait");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\LongRunning\\MockOperationsImpl");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
     typeTable.saveNicknameFor("\\PHPUnit_Framework_TestCase");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\Any");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\GPBEmpty");
@@ -353,6 +353,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private void addSmokeTestImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\GeneratedTest");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
   }
 }

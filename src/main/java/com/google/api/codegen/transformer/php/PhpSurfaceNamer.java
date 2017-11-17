@@ -121,7 +121,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getRetrySettingsTypeName() {
-    return "\\Google\\GAX\\RetrySettings";
+    return "\\Google\\ApiCore\\RetrySettings";
   }
 
   @Override
@@ -137,20 +137,20 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "\\Google\\GAX\\PagedListResponse";
+      return "\\Google\\ApiCore\\PagedListResponse";
     }
     if (methodConfig.isLongRunningOperation()) {
-      return "\\Google\\GAX\\OperationResponse";
+      return "\\Google\\ApiCore\\OperationResponse";
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
         return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       case BidiStreaming:
-        return "\\Google\\GAX\\BidiStream";
+        return "\\Google\\ApiCore\\BidiStream";
       case ClientStreaming:
-        return "\\Google\\GAX\\ClientStream";
+        return "\\Google\\ApiCore\\ClientStream";
       case ServerStreaming:
-        return "\\Google\\GAX\\ServerStream";
+        return "\\Google\\ApiCore\\ServerStream";
       default:
         return getNotImplementedString(
             "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"

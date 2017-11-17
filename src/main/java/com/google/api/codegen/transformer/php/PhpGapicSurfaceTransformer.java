@@ -253,22 +253,22 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addApiImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getImportTypeTable();
-    typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
-    typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
-    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcConstants");
-    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
-    typeTable.saveNicknameFor("\\Google\\GAX\\ValidationException");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\AgentHeaderDescriptor");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiCallable");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\CallSettings");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcConstants");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
     typeTable.saveNicknameFor("\\Google\\Cloud\\Version");
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
-      typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\PageStreamingDescriptor");
     }
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
-      typeTable.saveNicknameFor("\\Google\\GAX\\OperationResponse");
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\OperationResponse");
     }
   }
 

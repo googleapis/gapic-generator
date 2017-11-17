@@ -162,9 +162,9 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       StringBuilder retrySettingsDocTextBuilder =
           new StringBuilder(
               "Retry settings to use for this call. Can be a\n"
-                  + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
+                  + "{@see Google\\ApiCore\\RetrySettings} object, or an associative array\n"
                   + "of retry settings parameters. See the documentation on\n"
-                  + "{@see Google\\GAX\\RetrySettings} for example usage.");
+                  + "{@see Google\\ApiCore\\RetrySettings} for example usage.");
       if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
         retrySettingsDocTextBuilder.append(
             String.format(
