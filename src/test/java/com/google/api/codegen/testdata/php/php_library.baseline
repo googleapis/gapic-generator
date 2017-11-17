@@ -62,6 +62,15 @@
 
 namespace Google\Example\Library\V1\Gapic;
 
+use Google\ApiCore\AgentHeaderDescriptor;
+use Google\ApiCore\ApiCallable;
+use Google\ApiCore\CallSettings;
+use Google\ApiCore\GrpcConstants;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\OperationResponse;
+use Google\ApiCore\PageStreamingDescriptor;
+use Google\ApiCore\PathTemplate;
+use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
@@ -99,16 +108,7 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_Requir
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry as IndexMapEntry;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\ApiCore\AgentHeaderDescriptor;
-use Google\ApiCore\ApiCallable;
-use Google\ApiCore\CallSettings;
-use Google\ApiCore\GrpcConstants;
-use Google\ApiCore\GrpcCredentialsHelper;
 use Google\LongRunning\OperationsClient;
-use Google\ApiCore\OperationResponse;
-use Google\ApiCore\PageStreamingDescriptor;
-use Google\ApiCore\PathTemplate;
-use Google\ApiCore\ValidationException;
 use Google\Protobuf\FieldMask;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
@@ -2544,7 +2544,8 @@ use Google\Example\Library\V1\Gapic\LibraryServiceGapicClient;
  */
 class LibraryServiceClient extends LibraryServiceGapicClient
 {
-    // This class is intentionally empty, and is intended to hold manual additions to the generated {@see LibraryServiceClientImpl} class.
+    // This class is intentionally empty, and is intended to hold manual
+    // additions to the generated {@see LibraryServiceClientImpl} class.
 }
 ============== file: src/Example/Library/V1/resources/library_service_client_config.json ==============
 {
@@ -2744,10 +2745,10 @@ class LibraryServiceClient extends LibraryServiceGapicClient
 namespace Google\Tests\System\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\Testing\GeneratedTest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\Book_Rating as Rating;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\ApiCore\Testing\GeneratedTest;
 use Google\Protobuf\FieldMask;
 
 /**
@@ -2803,6 +2804,13 @@ class LibraryServiceSmokeTest extends GeneratedTest
 namespace Google\Tests\Unit\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\LongRunning\MockOperationsImpl;
+use Google\ApiCore\Testing\MockStubTrait;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -2844,14 +2852,7 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerM
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\ApiCore\ApiException;
-use Google\ApiCore\BidiStream;
-use Google\ApiCore\GrpcCredentialsHelper;
 use Google\LongRunning\OperationsClient;
-use Google\ApiCore\ServerStream;
-use Google\ApiCore\Testing\GeneratedTest;
-use Google\ApiCore\Testing\LongRunning\MockOperationsImpl;
-use Google\ApiCore\Testing\MockStubTrait;
 use Google\Longrunning\GetOperationRequest;
 use Google\Longrunning\Operation;
 use Google\Protobuf\Any;
@@ -2862,7 +2863,7 @@ use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -5291,17 +5292,17 @@ namespace Google\Tests\Unit\Example\Library\V1;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
 use Google\ApiCore\GrpcCredentialsHelper;
-use Google\LongRunning\OperationsClient;
 use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\ApiCore\Testing\LongRunning\MockOperationsImpl;
 use Google\ApiCore\Testing\MockStubTrait;
+use Google\LongRunning\OperationsClient;
 use Google\Longrunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLabelerImpl extends LabelerGrpcClient
@@ -5333,20 +5334,20 @@ class MockLabelerImpl extends LabelerGrpcClient
 
 namespace Google\Tests\Unit\Example\Library\V1;
 
-use Google\Example\Library\V1\LibraryServiceGrpcClient;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
 use Google\ApiCore\GrpcCredentialsHelper;
-use Google\LongRunning\OperationsClient;
 use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\ApiCore\Testing\LongRunning\MockOperationsImpl;
 use Google\ApiCore\Testing\MockStubTrait;
+use Google\Example\Library\V1\LibraryServiceGrpcClient;
+use Google\LongRunning\OperationsClient;
 use Google\Longrunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLibraryServiceImpl extends LibraryServiceGrpcClient
