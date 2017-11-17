@@ -64,7 +64,7 @@ public class PathTemplateTransformer {
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
       pathTemplate.name(
-          context.getNamer().getPathTemplateName(context.getInterfaceModel(), resourceNameConfig));
+          context.getNamer().getPathTemplateName(context.getInterfaceConfig(), resourceNameConfig));
       pathTemplate.pattern(resourceNameConfig.getNamePattern());
       pathTemplates.add(pathTemplate.build());
     }
@@ -233,10 +233,10 @@ public class PathTemplateTransformer {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
               .entityName(resourceNameConfig.getEntityName())
-              .name(namer.getFormatFunctionName(apiInterface, resourceNameConfig))
-              .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+              .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
+              .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
               .pathTemplateGetterName(
-                  namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
+                  namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
@@ -272,9 +272,9 @@ public class PathTemplateTransformer {
             ParseResourceFunctionView.newBuilder()
                 .entityName(resourceNameConfig.getEntityName())
                 .name(namer.getParseFunctionName(var, resourceNameConfig))
-                .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+                .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
                 .pathTemplateGetterName(
-                    namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
+                    namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
                 .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
                 .outputResourceId(var);
         functions.add(function.build());
@@ -295,10 +295,10 @@ public class PathTemplateTransformer {
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateGetterFunctionView.Builder function =
           PathTemplateGetterFunctionView.newBuilder()
-              .name(namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
+              .name(namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
               .resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig))
               .entityName(namer.getEntityName(resourceNameConfig))
-              .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+              .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());
 
       List<PathTemplateArgumentView> args = new ArrayList<>();

@@ -137,7 +137,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()))
+              .packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()))
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
