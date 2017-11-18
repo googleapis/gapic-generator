@@ -29,6 +29,7 @@ import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 
+/** Reads YAML into a FieldConfigNode. */
 public class ConfigYamlReader {
   public FieldConfigNode generateConfigNode(File file, ConfigHelper helper) {
     int initialErrorCount = helper.getErrorCount();
@@ -69,7 +70,7 @@ public class ConfigYamlReader {
     List<String> lines = Splitter.on(System.lineSeparator()).splitToList(input);
     ConfigNode configNode =
         new ConfigYamlNodeReader(lines, helper)
-            .readMessageNode(0, (MappingNode) tree, ConfigProto.getDescriptor());
+            .readMessageNode((MappingNode) tree, ConfigProto.getDescriptor());
     return helper.getErrorCount() == initialErrorCount
         ? new FieldConfigNode("").setChild(configNode)
         : null;

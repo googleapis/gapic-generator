@@ -26,6 +26,12 @@ public class MissingFieldTransformer {
   /**
    * Creates a MissingFieldTransformer that prepends a FieldConfigNode to the given parent if one
    * with the given name could not be found in the parent.
+   *
+   * <p>Example: <code>
+   * // parent contains nodeB and nodeC
+   * MissingFieldTransformer.prepend("nodeA", parent).generate();
+   * // parent contains nodeA, nodeB, and nodeC
+   * </code>
    */
   public static MissingFieldTransformer prepend(String name, ConfigNode parent) {
     return new MissingFieldTransformer(name, parent, null);
@@ -34,6 +40,12 @@ public class MissingFieldTransformer {
   /**
    * Creates a MissingFieldTransformer that inserts a FieldConfigNode after the given prev node if
    * one with the given name could not be found in the given parent.
+   *
+   * <p>Example: <code>
+   * // parent contains nodeA and nodeC
+   * MissingFieldTransformer.insert("nodeB", parent, nodeA).generate();
+   * // parent contains nodeA, nodeB, and nodeC
+   * </code>
    */
   public static MissingFieldTransformer insert(String name, ConfigNode parent, ConfigNode prev) {
     return new MissingFieldTransformer(name, parent, prev);
@@ -42,6 +54,12 @@ public class MissingFieldTransformer {
   /**
    * Creates a MissingFieldTransformer that appends a FieldConfigNode to the given parent if one
    * with the given name could not be found in the parent.
+   *
+   * <p>Example: <code>
+   * // parent contains nodeA and nodeB
+   * MissingFieldTransformer.append("nodeC", parent).generate();
+   * // parent contains nodeA, nodeB, and nodeC
+   * </code>
    */
   public static MissingFieldTransformer append(String name, ConfigNode parent) {
     return new MissingFieldTransformer(name, parent, NodeFinder.getLastChild(parent));

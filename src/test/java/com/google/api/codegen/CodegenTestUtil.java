@@ -17,7 +17,6 @@ package com.google.api.codegen;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
-import com.google.api.codegen.configgen.RefreshConfigLocationGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
@@ -57,9 +56,7 @@ public class CodegenTestUtil {
         continue;
       }
 
-      ConfigHelper helper =
-          new ConfigHelper(
-              diagCollector, new RefreshConfigLocationGenerator(gapicConfigFile.getName()));
+      ConfigHelper helper = new ConfigHelper(diagCollector, gapicConfigFile.getName());
       ConfigNode configNode = yamlReader.generateConfigNode(gapicConfigFile, helper);
       if (configNode == null) {
         continue;

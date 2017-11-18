@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Location;
+import com.google.api.tools.framework.model.SimpleLocation;
 import org.yaml.snakeyaml.error.Mark;
 import org.yaml.snakeyaml.nodes.Node;
 
@@ -26,11 +27,11 @@ import org.yaml.snakeyaml.nodes.Node;
  */
 public class ConfigHelper {
   private final DiagCollector diag;
-  private final LocationGenerator locationGenerator;
+  private final String fileName;
 
-  public ConfigHelper(DiagCollector diag, LocationGenerator locationGenerator) {
+  public ConfigHelper(DiagCollector diag, String fileName) {
     this.diag = diag;
-    this.locationGenerator = locationGenerator;
+    this.fileName = fileName;
   }
 
   public int getErrorCount() {
@@ -46,7 +47,7 @@ public class ConfigHelper {
   }
 
   public void error(String message, Object... params) {
-    error(locationGenerator.getLocation(), message, params);
+    error(getLocation("?"), message, params);
   }
 
   public void error(Location location, String message, Object... params) {
@@ -61,7 +62,11 @@ public class ConfigHelper {
     return mark.getLine() + 1;
   }
 
-  public Location getLocation(int startLine) {
-    return locationGenerator.getLocation(startLine);
+  public Location getLocation(int line) {
+    return getLocation(line);
+  }
+
+  private Location getLocation(Object line) {
+    return new SimpleLocation(String.format("%s:%s", fileName, line), fileName);
   }
 }

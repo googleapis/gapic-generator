@@ -106,7 +106,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
     model.establishStage(Merged.KEY);
 
     ConfigProto configProto = loadConfigFromFiles(configFileNames);
-    if (ConfigProto.getDefaultInstance().equals(configProto)) {
+    if (configProto == null) {
       return;
     }
 
@@ -195,13 +195,19 @@ public class CodeGeneratorApi extends ToolDriverBase {
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
+
     ConfigMerger configMerger = new ConfigMerger();
     MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (File file : configFiles) {
       ConfigNode configNode = configMerger.mergeConfig(model, file);
       messageGenerator.visit(configNode.getChild());
     }
-    return (ConfigProto) messageGenerator.getValue();
+    ConfigProto configProto = (ConfigProto) messageGenerator.getValue();
+    if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
+      return null;
+    }
+
+    return configProto;
   }
 
   private List<File> pathsToFiles(List<String> configFileNames) {

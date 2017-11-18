@@ -23,7 +23,6 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
-import com.google.api.codegen.configgen.RefreshConfigLocationGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
@@ -124,7 +123,7 @@ public class DiscoGapicGeneratorApi {
     }
 
     ConfigProto configProto = loadConfigFromFiles(configFileNames);
-    if (ConfigProto.getDefaultInstance().equals(configProto)) {
+    if (configProto == null) {
       throw new IOException("Failed to load config proto.");
     }
 
@@ -214,8 +213,7 @@ public class DiscoGapicGeneratorApi {
     ConfigYamlReader yamlReader = new ConfigYamlReader();
     MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (File file : pathsToFiles(configFileNames)) {
-      ConfigHelper helper =
-          new ConfigHelper(diagCollector, new RefreshConfigLocationGenerator(file.getName()));
+      ConfigHelper helper = new ConfigHelper(diagCollector, file.getName());
       ConfigNode configNode = yamlReader.generateConfigNode(file, helper);
       if (configNode == null) {
         continue;
@@ -223,6 +221,11 @@ public class DiscoGapicGeneratorApi {
 
       messageGenerator.visit(configNode.getChild());
     }
-    return (ConfigProto) messageGenerator.getValue();
+    ConfigProto configProto = (ConfigProto) messageGenerator.getValue();
+    if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
+      return null;
+    }
+
+    return configProto;
   }
 }

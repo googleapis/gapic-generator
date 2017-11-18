@@ -17,10 +17,8 @@ package com.google.api.codegen.configgen.mergers;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
-import com.google.api.codegen.configgen.InitialConfigLocationGenerator;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
-import com.google.api.codegen.configgen.RefreshConfigLocationGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
@@ -44,9 +42,8 @@ public class ConfigMerger {
   private final LanguageSettingsMerger languageSettingsMerger = new LanguageSettingsMerger();
   private final InterfaceMerger interfaceMerger = new InterfaceMerger();
 
-  public ConfigNode mergeConfig(Model model) {
-    ConfigHelper helper =
-        new ConfigHelper(model.getDiagCollector(), new InitialConfigLocationGenerator());
+  public ConfigNode mergeConfig(Model model, String fileName) {
+    ConfigHelper helper = new ConfigHelper(model.getDiagCollector(), fileName);
     FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""), helper);
     if (configNode == null) {
       return null;
@@ -56,9 +53,7 @@ public class ConfigMerger {
   }
 
   public ConfigNode mergeConfig(Model model, File file) {
-    ConfigHelper helper =
-        new ConfigHelper(
-            model.getDiagCollector(), new RefreshConfigLocationGenerator(file.getName()));
+    ConfigHelper helper = new ConfigHelper(model.getDiagCollector(), file.getName());
     FieldConfigNode configNode = new ConfigYamlReader().generateConfigNode(file, helper);
     if (configNode == null) {
       return null;

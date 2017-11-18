@@ -29,6 +29,7 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/** Recursively reads a YAML MappingNode and all its children into a ConfigNode. */
 public class ConfigYamlNodeReader {
   private static final String TYPE_KEY = "type";
 
@@ -40,7 +41,16 @@ public class ConfigYamlNodeReader {
     this.helper = helper;
   }
 
-  public ConfigNode readMessageNode(int prevLine, MappingNode node, Descriptor messageType) {
+  /**
+   * @param node A YAML node representing a protobuf message.
+   * @param messageType A descriptor for the message the YAML node represents.
+   * @return A ConfigNode containing the data read from the given node.
+   */
+  public ConfigNode readMessageNode(MappingNode node, Descriptor messageType) {
+    return readMessageNode(0, node, messageType);
+  }
+
+  private ConfigNode readMessageNode(int prevLine, MappingNode node, Descriptor messageType) {
     ConfigNode configNode = new NullConfigNode();
     ConfigNode prev = new NullConfigNode();
     for (NodeTuple entry : node.getValue()) {

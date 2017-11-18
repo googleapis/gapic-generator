@@ -53,7 +53,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private Map<String, String> generateConfig(String outputPath) {
-    ConfigNode node = new ConfigMerger().mergeConfig(model);
+    ConfigNode node = new ConfigMerger().mergeConfig(model, outputPath);
     ConfigGenerator configGenerator = new ConfigGenerator(0);
     configGenerator.visit(node);
     return ImmutableMap.of(outputPath, configGenerator.toString());

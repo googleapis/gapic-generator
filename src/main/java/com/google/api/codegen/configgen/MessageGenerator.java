@@ -25,7 +25,7 @@ import com.google.protobuf.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Generates a Message from a ConfigNode representation. */
+/** Generates a protobuf Message from a ConfigNode representation. */
 public class MessageGenerator extends NodeVisitor {
   private static final String TYPE_KEY = "type";
 
