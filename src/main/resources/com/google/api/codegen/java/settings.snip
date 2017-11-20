@@ -163,7 +163,10 @@
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setApiClientHeaderLineKey("x-goog-api-client")
-        .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData());
+        @if xsettingsClass.transportProtocol == "GRPC"
+          .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData())
+        @end
+        ;
   }
 
   private static String getGapicVersion() {
