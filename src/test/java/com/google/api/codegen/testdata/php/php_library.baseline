@@ -62,6 +62,15 @@
 
 namespace Google\Example\Library\V1\Gapic;
 
+use Google\ApiCore\AgentHeaderDescriptor;
+use Google\ApiCore\ApiCallable;
+use Google\ApiCore\CallSettings;
+use Google\ApiCore\GrpcConstants;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\OperationResponse;
+use Google\ApiCore\PageStreamingDescriptor;
+use Google\ApiCore\PathTemplate;
+use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
@@ -99,16 +108,7 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_Requir
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry as IndexMapEntry;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\GAX\AgentHeaderDescriptor;
-use Google\GAX\ApiCallable;
-use Google\GAX\CallSettings;
-use Google\GAX\GrpcConstants;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\OperationResponse;
-use Google\GAX\PageStreamingDescriptor;
-use Google\GAX\PathTemplate;
-use Google\GAX\ValidationException;
+use Google\LongRunning\OperationsClient;
 use Google\Protobuf\FieldMask;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
@@ -417,7 +417,7 @@ class LibraryServiceGapicClient
     /**
      * Return an OperationsClient object with the same endpoint as $this.
      *
-     * @return \Google\GAX\LongRunning\OperationsClient
+     * @return \Google\LongRunning\OperationsClient
      * @experimental
      */
     public function getOperationsClient()
@@ -434,7 +434,7 @@ class LibraryServiceGapicClient
      *
      * @param string $operationName The name of the long running operation
      * @param string $methodName The name of the method used to start the operation
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      * @experimental
      */
     public function resumeOperation($operationName, $methodName = null)
@@ -483,8 +483,8 @@ class LibraryServiceGapicClient
      *     @type array $retryingOverride
      *           An associative array in which the keys are method names (e.g. 'createFoo'), and
      *           the values are retry settings to use for that method. The retry settings for each
-     *           method can be a {@see Google\GAX\RetrySettings} object, or an associative array
-     *           of retry settings parameters. See the documentation on {@see Google\GAX\RetrySettings}
+     *           method can be a {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *           of retry settings parameters. See the documentation on {@see Google\ApiCore\RetrySettings}
      *           for example usage. Passing a value of null is equivalent to a value of
      *           ['retriesEnabled' => false]. Retry settings provided in this setting override the
      *           settings in $clientConfigPath.
@@ -617,16 +617,16 @@ class LibraryServiceGapicClient
      * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function createShelf($shelf, $optionalArgs = [])
@@ -672,16 +672,16 @@ class LibraryServiceGapicClient
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getShelf($name, $options, $optionalArgs = [])
@@ -745,16 +745,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listShelves($optionalArgs = [])
@@ -797,14 +797,14 @@ class LibraryServiceGapicClient
      * @param string $name The name of the shelf to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function deleteShelf($name, $optionalArgs = [])
@@ -849,16 +849,16 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
@@ -902,16 +902,16 @@ class LibraryServiceGapicClient
      * @param Book $book The book to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function createBook($name, $book, $optionalArgs = [])
@@ -963,16 +963,16 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\PublishSeriesResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
@@ -1021,16 +1021,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBook($name, $optionalArgs = [])
@@ -1094,16 +1094,16 @@ class LibraryServiceGapicClient
      *          been generated by a previous call to the API.
      *     @type string $filter
      *          To test python built-in wrapping.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listBooks($name, $optionalArgs = [])
@@ -1153,14 +1153,14 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function deleteBook($name, $optionalArgs = [])
@@ -1209,16 +1209,16 @@ class LibraryServiceGapicClient
      *          A field mask to apply, rendered as an HTTP parameter.
      *     @type \Google\Example\Library\V1\FieldMask $physicalMask
      *          To test Python import clash resolution.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function updateBook($name, $book, $optionalArgs = [])
@@ -1271,16 +1271,16 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the destination shelf.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
@@ -1343,16 +1343,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listStrings($optionalArgs = [])
@@ -1410,14 +1410,14 @@ class LibraryServiceGapicClient
      * @param Comment[] $comments
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addComments($name, $comments, $optionalArgs = [])
@@ -1459,16 +1459,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromArchive
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromArchive($name, $optionalArgs = [])
@@ -1512,16 +1512,16 @@ class LibraryServiceGapicClient
      * single resource name type in a oneof.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
@@ -1563,16 +1563,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromAbsolutelyAnywhere($name, $optionalArgs = [])
@@ -1618,14 +1618,14 @@ class LibraryServiceGapicClient
      * @param array $indexMap The index to update the book with
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
@@ -1676,9 +1676,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStream
+     * @return \Google\ApiCore\ServerStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function streamShelves($optionalArgs = [])
@@ -1734,9 +1734,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStream
+     * @return \Google\ApiCore\ServerStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function streamBooks($name, $optionalArgs = [])
@@ -1815,9 +1815,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\BidiStream
+     * @return \Google\ApiCore\BidiStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function discussBook($optionalArgs = [])
@@ -1881,9 +1881,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ClientStream
+     * @return \Google\ApiCore\ClientStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function monologAboutBook($optionalArgs = [])
@@ -1952,16 +1952,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
@@ -2013,16 +2013,16 @@ class LibraryServiceGapicClient
      * @param string $tag REQUIRED: The tag to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddTagResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addTag($resource, $tag, $optionalArgs = [])
@@ -2068,16 +2068,16 @@ class LibraryServiceGapicClient
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddLabelResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addLabel($resource, $label, $optionalArgs = [])
@@ -2144,16 +2144,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBigBook($name, $optionalArgs = [])
@@ -2217,16 +2217,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBigNothing($name, $optionalArgs = [])
@@ -2348,16 +2348,16 @@ class LibraryServiceGapicClient
      *     @type int[] $optionalRepeatedFixed32
      *     @type int[] $optionalRepeatedFixed64
      *     @type array $optionalMap
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
@@ -2544,7 +2544,8 @@ use Google\Example\Library\V1\Gapic\LibraryServiceGapicClient;
  */
 class LibraryServiceClient extends LibraryServiceGapicClient
 {
-    // This class is intentionally empty, and is intended to hold manual additions to the generated {@see LibraryServiceClientImpl} class.
+    // This class is intentionally empty, and is intended to hold manual
+    // additions to the generated {@see LibraryServiceClientImpl} class.
 }
 ============== file: src/Example/Library/V1/resources/library_service_client_config.json ==============
 {
@@ -2744,10 +2745,10 @@ class LibraryServiceClient extends LibraryServiceGapicClient
 namespace Google\Tests\System\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\Testing\GeneratedTest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\Book_Rating as Rating;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\GAX\Testing\GeneratedTest;
 use Google\Protobuf\FieldMask;
 
 /**
@@ -2803,6 +2804,13 @@ class LibraryServiceSmokeTest extends GeneratedTest
 namespace Google\Tests\Unit\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -2844,15 +2852,7 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerM
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\LongRunning\GetOperationRequest;
 use Google\Longrunning\Operation;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
@@ -2862,7 +2862,7 @@ use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -5288,20 +5288,19 @@ class LibraryServiceClientTest extends GeneratedTest
 
 namespace Google\Tests\Unit\Example\Library\V1;
 
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLabelerImpl extends LabelerGrpcClient
@@ -5333,23 +5332,66 @@ class MockLabelerImpl extends LabelerGrpcClient
 
 namespace Google\Tests\Unit\Example\Library\V1;
 
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLibraryServiceImpl extends LibraryServiceGrpcClient
+{
+    use MockStubTrait;
+}
+============== file: tests/unit/Example/Library/V1/MockOperationsImpl.php ==============
+<?php
+/*
+ * Copyright 2017, Google LLC All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Unit\Example\Library\V1;
+
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\LongRunning\GetOperationRequest;
+use Google\Longrunning\OperationsGrpcClient;
+use Google\Protobuf\Any;
+use Google\Protobuf\GPBEmpty;
+use Grpc;
+use PHPUnit\Framework\TestCase;
+use stdClass;
+
+class MockOperationsImpl extends OperationsGrpcClient
 {
     use MockStubTrait;
 }
