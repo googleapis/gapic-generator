@@ -95,8 +95,19 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         views.add(createSmokeTestClassView(context));
       }
     }
+    boolean hasLongRunningOperations = false;
     for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(apiModel, productConfig)) {
+      GapicInterfaceContext context =
+          createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
+      views.add(createMockServiceImplView(context));
+      if (context.getInterfaceConfig() != null
+          && context.getInterfaceConfig().hasLongRunningOperations()) {
+        hasLongRunningOperations = true;
+      }
+    }
+    if (hasLongRunningOperations) {
+      InterfaceModel apiInterface = apiModel.getInterface("google.longrunning.Operations");
       GapicInterfaceContext context =
           createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
       views.add(createMockServiceImplView(context));
@@ -342,7 +353,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\LongRunning\\OperationsClient");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\MockStubTrait");
-    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\LongRunning\\MockOperationsImpl");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
     typeTable.saveNicknameFor("\\PHPUnit\\Framework\\TestCase");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\Any");
