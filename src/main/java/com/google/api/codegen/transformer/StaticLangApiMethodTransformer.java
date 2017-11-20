@@ -169,14 +169,16 @@ public class StaticLangApiMethodTransformer {
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(method), methodViewBuilder);
 
-    String getResourceListCallName =
-        namer.getFieldGetFunctionName(
-            context.getFeatureConfig(),
-            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+    FieldConfig resourceFieldConfig =
+        context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourceFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
 
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
-            .resourceListGetFunction(getResourceListCallName)
+            .resourceListGetFunction(resourcesFieldGetFunctionList.build())
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 
