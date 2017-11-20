@@ -351,13 +351,13 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\ApiCore\\BidiStream");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ServerStream");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("\\Google\\LongRunning\\OperationsClient");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\MockStubTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
     typeTable.saveNicknameFor("\\PHPUnit\\Framework\\TestCase");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\Any");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\GPBEmpty");
-    typeTable.saveNicknameFor("\\Google\\Longrunning\\GetOperationRequest");
+    typeTable.saveNicknameFor("\\Google\\LongRunning\\GetOperationRequest");
     typeTable.saveNicknameFor("\\Grpc");
     typeTable.saveNicknameFor("\\stdClass");
   }
