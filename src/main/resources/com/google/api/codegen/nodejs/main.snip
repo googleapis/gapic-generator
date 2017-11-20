@@ -419,6 +419,14 @@
     @default
     @end
     options = options || {};
+    @if method.headerRequestParams
+      options.otherArgs = options.otherArgs || {};
+      options.otherArgs.headers = options.otherArgs.headers || {};
+      options.otherArgs.headers['x-goog-request-params'] =
+        gax.routingHeader.fromParams({
+          {@headerRequestParams(method.headerRequestParams)}
+        });
+    @end
     {@maybeHandleRequest(method)}
     return this._innerApiCalls.{@method.name}({@requestObject(method)}options{@callbackParams(method)});
   }
@@ -504,6 +512,19 @@
     callback = options;
     options = {};
   }
+@end
+
+@private headerRequestParams(params)
+  @join param : params on ", "
+    '{@param.fullyQualifiedName}': \
+    request.{@headerParamGetter(param.gettersChain)}
+  @end
+@end
+
+@private headerParamGetter(getters)
+  @join getter : getters on "."
+    {@getter}
+  @end
 @end
 
 @private maybeHandleRequest(method)

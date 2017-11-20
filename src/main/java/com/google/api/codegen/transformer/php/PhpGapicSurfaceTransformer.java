@@ -148,7 +148,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     apiImplClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
     apiImplClass.methodKeys(generateMethodKeys(context));
-    apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
+    apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(

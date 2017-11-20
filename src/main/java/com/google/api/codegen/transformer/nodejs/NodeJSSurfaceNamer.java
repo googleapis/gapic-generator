@@ -101,13 +101,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(InterfaceModel apiInterface) {
-    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
+  public String getPackageServiceName(InterfaceConfig interfaceConfig) {
+    return getReducedServiceName(interfaceConfig.getInterfaceModel().getSimpleName())
+        .toLowerCamel();
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
-    return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
+  public String getApiWrapperClassConstructorName(InterfaceConfig interfaceConfig) {
+    return publicFieldName(
+        Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "Client"));
   }
 
   @Override
@@ -121,7 +123,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -133,17 +135,21 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   @Override
-  public String getClientConfigPath(InterfaceModel apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore();
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+        .join("client_config")
+        .toLowerUnderscore();
   }
 
-  public String getClientFileName(InterfaceModel apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client").toLowerUnderscore();
+  public String getClientFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+        .join("client")
+        .toLowerUnderscore();
   }
 
   @Override
