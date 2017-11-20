@@ -108,6 +108,12 @@
       "{@authScopes}"
     @end
   ].freeze
+  
+  @if xapiClass.hasLongRunningOperations
+    class OperationsClient < Google::Longrunning::OperationsClient
+      SERVICE_ADDRESS = SERVICE_ADDRESS
+    end
+  @end
 @end
 
 @private constructDefaults(xapiClass)
@@ -136,11 +142,6 @@
 @private initMethodSection(xapiClass)
   {@toComments(util.getDocLines(initMethodComments()))}
   def initialize @\
-      service_path: SERVICE_ADDRESS,
-      port: DEFAULT_SERVICE_PORT,
-      channel: nil,
-      chan_creds: nil,
-      updater_proc: nil,
       credentials: nil,
       scopes: ALL_SCOPES,
       client_config: {},
@@ -154,22 +155,10 @@
       require "{@import.moduleName}"
     @end
 
-    if channel || chan_creds || updater_proc
-      warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " @\
-        "on 2017/09/08"
-      credentials ||= channel
-      credentials ||= chan_creds
-      credentials ||= updater_proc
-    end
-    if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-      warn "`service_path` and `port` parameters are deprecated and will be removed"
-    end
-
     credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.{@xapiClass.defaultCredentialsInitializerCall}
 
     @if xapiClass.hasLongRunningOperations
-      @@operations_client = Google::Longrunning::OperationsClient.new(
-        service_path: service_path,
+      @@operations_client = OperationsClient.new(
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
@@ -203,6 +192,10 @@
 
     headers = { :"x-goog-api-client" => google_api_client }
     {@constructDefaults(xapiClass)}
+    
+    @# Allow overriding the service path/port in subclasses.
+    service_path = self.class::SERVICE_ADDRESS
+    port = self.class::DEFAULT_SERVICE_PORT
     @join stub : xapiClass.stubs
       @@{@stub.name} = Google::Gax::Grpc.create_stub(
         service_path,
