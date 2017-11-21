@@ -26,28 +26,23 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
@@ -75,7 +70,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
-  private SurfaceNamer namer;
 
   public JavaSurfaceTestTransformer(GapicCodePathMapper javaPathMapper, SurfaceTransformer surfaceTransformer) {
     this.surfaceTransformer = surfaceTransformer;
@@ -94,7 +88,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
-    this.namer = surfaceTransformer.createSurfaceNamer(productConfig);
+    SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
 
     List<ViewModel> views = new ArrayList<>();
@@ -104,7 +98,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       InterfaceContext context = surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        context = surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+        context = surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable.cloneEmpty(), enableStringFormatFunctions);
         views.add(createSmokeTestClassView(context));
       }
     }
@@ -116,7 +110,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       InterfaceContext context =  surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       views.add(createMockServiceImplFileView(context));
 
-      context =  surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+      context =  surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable.cloneEmpty(), enableStringFormatFunctions);
       views.add(createMockServiceView(context));
     }
     return views;
@@ -330,7 +324,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   /** Package-private */
   InterfaceContext createContext(
       InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    return surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, surfaceTransformer.createTypeTable(productConfig.getPackageName()), productConfig.getResourceNameMessageConfigs().isEmpty() );
+    return surfaceTransformer.createInterfaceContext(apiInterface, productConfig, surfaceTransformer.createSurfaceNamer(productConfig), surfaceTransformer.createTypeTable(productConfig.getPackageName()), productConfig.getResourceNameMessageConfigs().isEmpty() );
   }
 
 
