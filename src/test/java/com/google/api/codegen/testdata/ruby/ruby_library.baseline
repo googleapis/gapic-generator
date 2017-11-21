@@ -389,9 +389,9 @@ end
 
 desc "Runs the smoke tests."
 task :smoke_test do
-  if ENV["SMOKE_TEST_PROJECT"].nil?
-    fail "The SMOKE_TEST_PROJECT environment variable must be set. "\
-      "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
+  if ENV["LIBRARY_TEST_PROJECT"].nil?
+    fail "The LIBRARY_TEST_PROJECT environment variable must be set. "\
+      "e.g LIBRARY_TEST_PROJECT=test123 rake smoke_test"
   end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
@@ -415,12 +415,12 @@ end
 # Acceptance tests
 desc "Run the library acceptance tests."
 task :acceptance do
-  Rake::Task["smoke_test"].invoke
+  Rake::Task["acceptance:run"].invoke
 end
 
 namespace :acceptance do
   task :run do
-    puts "This gem does not have acceptance tests."
+    Rake::Task["smoke_test"].invoke
   end
 
   desc "Run acceptance tests with coverage."

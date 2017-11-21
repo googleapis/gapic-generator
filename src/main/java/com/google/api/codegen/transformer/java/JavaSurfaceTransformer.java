@@ -111,7 +111,7 @@ public class JavaSurfaceTransformer {
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
@@ -228,7 +228,7 @@ public class JavaSurfaceTransformer {
     pagedResponseWrappers.name(name);
 
     List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       InterfaceContext context =
           surfaceTransformer.createInterfaceContext(
               apiInterface,
@@ -256,7 +256,7 @@ public class JavaSurfaceTransformer {
     pagedResponseWrappers.fileHeader(
         fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
 
-    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     pagedResponseWrappers.outputPath(outputPath + File.separator + name + ".java");
 
@@ -613,7 +613,7 @@ public class JavaSurfaceTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
 
-    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
     packageInfo.releaseLevel(productConfig.getReleaseLevel());

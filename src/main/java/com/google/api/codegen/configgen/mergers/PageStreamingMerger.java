@@ -14,20 +14,30 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.configgen.PageStreamingTransformer;
+import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.DiagCollector;
 
-/** Merges page streaming properties from a Model into a ConfigNode. */
+/** Merges page streaming properties from a MethodModel into a ConfigNode. */
 public class PageStreamingMerger {
-  private static final String PARAMETER_PAGE_TOKEN = "page_token";
-  private static final String PARAMETER_PAGE_SIZE = "page_size";
-  private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
+  private final PageStreamingTransformer pageStreamingTransformer;
+  private final PagingParameters pagingParameters;
+  private final DiagCollector diagCollector;
 
-  public ConfigNode generatePageStreamingNode(ConfigNode prevNode, Method method) {
+  public PageStreamingMerger(
+      PageStreamingTransformer pageStreamingTransformer,
+      PagingParameters pagingParameters,
+      DiagCollector diagCollector) {
+    this.pageStreamingTransformer = pageStreamingTransformer;
+    this.pagingParameters = pagingParameters;
+    this.diagCollector = diagCollector;
+  }
+
+  public ConfigNode generatePageStreamingNode(ConfigNode prevNode, MethodModel method) {
     ConfigNode pageStreamingNode = new FieldConfigNode("page_streaming");
     ConfigNode requestNode = generatePageStreamingRequestNode(pageStreamingNode, method);
     if (requestNode == null) {
@@ -43,35 +53,28 @@ public class PageStreamingMerger {
     return pageStreamingNode;
   }
 
-  private ConfigNode generatePageStreamingRequestNode(ConfigNode parentNode, Method method) {
+  private ConfigNode generatePageStreamingRequestNode(ConfigNode parentNode, MethodModel method) {
     ConfigNode requestNode = new FieldConfigNode("request");
     parentNode.setChild(requestNode);
     ConfigNode requestValueNode = generatePageStreamingRequestValueNode(requestNode, method);
     return requestValueNode.isPresent() ? requestNode : null;
   }
 
-  private ConfigNode generatePageStreamingRequestValueNode(ConfigNode parentNode, Method method) {
-    boolean hasTokenField = false;
-    boolean hasPageSizeField = false;
-    for (Field field : method.getInputMessage().getReachableFields()) {
-      String fieldName = field.getSimpleName();
-      if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
-        hasTokenField = true;
-      } else if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
-        hasPageSizeField = true;
-      }
-    }
-
+  private ConfigNode generatePageStreamingRequestValueNode(
+      ConfigNode parentNode, MethodModel method) {
+    String pageTokenName = pagingParameters.getNameForPageToken();
+    String pageSizeName = pagingParameters.getNameForPageSize();
+    boolean hasTokenField = method.getInputField(pageTokenName) != null;
+    boolean hasPageSizeField = method.getInputField(pageSizeName) != null;
     ConfigNode requestValueNode = null;
     if (hasPageSizeField) {
-      requestValueNode = FieldConfigNode.createStringPair("page_size_field", PARAMETER_PAGE_SIZE);
+      requestValueNode = FieldConfigNode.createStringPair("page_size_field", pageSizeName);
       if (hasTokenField) {
-        ConfigNode tokenFieldNode =
-            FieldConfigNode.createStringPair("token_field", PARAMETER_PAGE_TOKEN);
+        ConfigNode tokenFieldNode = FieldConfigNode.createStringPair("token_field", pageTokenName);
         requestValueNode.insertNext(tokenFieldNode);
       }
     } else if (hasTokenField) {
-      requestValueNode = FieldConfigNode.createStringPair("token_field", PARAMETER_PAGE_TOKEN);
+      requestValueNode = FieldConfigNode.createStringPair("token_field", pageTokenName);
     } else {
       return new NullConfigNode();
     }
@@ -80,7 +83,7 @@ public class PageStreamingMerger {
     return requestValueNode;
   }
 
-  private ConfigNode generatePageStreamingResponseNode(ConfigNode prevNode, Method method) {
+  private ConfigNode generatePageStreamingResponseNode(ConfigNode prevNode, MethodModel method) {
     ConfigNode responseNode = new FieldConfigNode("response");
     ConfigNode responseValueNode = generatePageStreamingResponseValueNode(responseNode, method);
     if (!responseValueNode.isPresent()) {
@@ -91,52 +94,14 @@ public class PageStreamingMerger {
     return responseNode;
   }
 
-  private ConfigNode generatePageStreamingResponseValueNode(ConfigNode parentNode, Method method) {
-    if (!hasResponseTokenField(method)) {
-      return new NullConfigNode();
+  private ConfigNode generatePageStreamingResponseValueNode(
+      ConfigNode parentNode, MethodModel method) {
+    ConfigNode responseValueNode =
+        pageStreamingTransformer.generateResponseValueNode(method, diagCollector);
+    if (responseValueNode.isPresent()) {
+      parentNode.setChild(responseValueNode);
     }
 
-    String resourcesFieldName = getResourcesFieldName(method);
-    if (resourcesFieldName == null) {
-      return new NullConfigNode();
-    }
-
-    ConfigNode tokenFieldNode =
-        FieldConfigNode.createStringPair("token_field", PARAMETER_NEXT_PAGE_TOKEN);
-    parentNode.setChild(tokenFieldNode);
-    ConfigNode resourcesFieldNode =
-        FieldConfigNode.createStringPair("resources_field", resourcesFieldName);
-    return tokenFieldNode.insertNext(resourcesFieldNode);
-  }
-
-  private boolean hasResponseTokenField(Method method) {
-    Field tokenField = method.getOutputMessage().lookupField(PARAMETER_NEXT_PAGE_TOKEN);
-    return tokenField != null;
-  }
-
-  private String getResourcesFieldName(Method method) {
-    String resourcesField = null;
-    for (Field field : method.getOutputMessage().getReachableFields()) {
-      if (!field.getType().isRepeated()) {
-        continue;
-      }
-
-      if (resourcesField != null) {
-        method
-            .getModel()
-            .getDiagCollector()
-            .addDiag(
-                Diag.error(
-                    method.getLocation(),
-                    String.format(
-                        "Page streaming resources field could not be heuristically determined for "
-                            + "method '%s'%n",
-                        method.getSimpleName())));
-        return null;
-      }
-
-      resourcesField = field.getSimpleName();
-    }
-    return resourcesField;
+    return responseValueNode;
   }
 }

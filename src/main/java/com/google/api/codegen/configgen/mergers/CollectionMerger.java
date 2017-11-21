@@ -21,7 +21,7 @@ import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import java.util.Map;
 
-/** Merges collection properties from a Model into a ConfigNode. */
+/** Merges a collection name map into a ConfigNode. */
 public class CollectionMerger {
   private static final String COLLECTIONS_COMMENT =
       "A list of resource collection configurations.\n"
@@ -41,12 +41,7 @@ public class CollectionMerger {
     ListTransformer.generateList(
         nameMap.entrySet(),
         collectionsNode,
-        new ListTransformer.ElementTransformer<Map.Entry<String, String>>() {
-          @Override
-          public ConfigNode generateElement(Map.Entry<String, String> entry) {
-            return generateCollectionNode(entry.getKey(), entry.getValue());
-          }
-        });
+        entry -> generateCollectionNode(entry.getKey(), entry.getValue()));
     return collectionsNode;
   }
 
