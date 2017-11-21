@@ -23,7 +23,6 @@
 
 @private header(fileHeader)
   {@toComments(fileHeader.copyrightLines)}
-  #
   {@toComments(fileHeader.licenseLines)}
 
   require "bundler/setup"
@@ -60,9 +59,9 @@
 @private smokeTestsTask(metadata)
   desc "Runs the smoke tests."
   task :smoke_test do
-    if ENV["SMOKE_TEST_PROJECT"].nil?
-      fail "The SMOKE_TEST_PROJECT environment variable must be set. "@\
-        "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
+    if ENV["{@metadata.smokeTestProjectVariable}"].nil?
+      fail "The {@metadata.smokeTestProjectVariable} environment variable must be set. "@\
+        "e.g {@metadata.smokeTestProjectVariable}=test123 rake smoke_test"
     end
 
     $LOAD_PATH.unshift "lib", "smoke_test"
@@ -88,16 +87,16 @@
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
   task :acceptance do
-    @if metadata.hasSmokeTests
-      Rake::Task["smoke_test"].invoke
-    @else
-      puts "The {@metadata.identifier} gem does not have acceptance tests."
-    @end
+    Rake::Task["acceptance:run"].invoke
   end
 
   namespace :acceptance do
     task :run do
-      puts "This gem does not have acceptance tests."
+      @if metadata.hasSmokeTests
+        Rake::Task["smoke_test"].invoke
+      @else
+        puts "The {@metadata.identifier} gem does not have acceptance tests."
+      @end
     end
 
     desc "Run acceptance tests with coverage."

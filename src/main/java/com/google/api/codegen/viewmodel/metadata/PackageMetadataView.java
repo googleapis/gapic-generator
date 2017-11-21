@@ -163,6 +163,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String sampleAppPackage();
 
+  @Nullable
+  public abstract String smokeTestProjectVariable();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -278,6 +281,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Package name of the sample application. */
     public abstract Builder sampleAppPackage(String s);
+
+    /** Environment variable to determine the Google Cloud project used to run smoke tests. */
+    public abstract Builder smokeTestProjectVariable(String s);
 
     public abstract PackageMetadataView build();
   }
