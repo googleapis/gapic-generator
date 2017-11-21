@@ -83,7 +83,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     ProtoApiModel apiModel = new ProtoApiModel(model);
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
               new PhpTypeTable(productConfig.getPackageName()),

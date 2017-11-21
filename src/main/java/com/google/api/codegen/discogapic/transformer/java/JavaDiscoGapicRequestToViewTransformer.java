@@ -123,7 +123,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
     DiscoApiModel model = new DiscoApiModel(document);
 
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       DiscoGapicInterfaceContext context =
           JavaDiscoGapicSurfaceTransformer.newInterfaceContext(

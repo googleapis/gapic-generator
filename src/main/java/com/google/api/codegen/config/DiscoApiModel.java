@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.util.Name;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -38,30 +39,32 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public boolean hasMultipleServices(GapicProductConfig productConfig) {
-    return interfaceModels.size() > 1;
+  public boolean hasMultipleServices() {
+    return document.resources().size() > 1;
   }
 
   @Override
-  public Iterable<DiscoInterfaceModel> getInterfaces(GapicProductConfig productConfig) {
+  public Iterable<DiscoInterfaceModel> getInterfaces() {
     if (interfaceModels != null) {
       return interfaceModels;
     }
-    if (productConfig == null) {
-      throw new NullPointerException("GapicProductConfig has not been set in DiscoApiModel.");
-    }
 
-    ImmutableList.Builder<DiscoInterfaceModel> intfModels = ImmutableList.builder();
-    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
-      intfModels.add(new DiscoInterfaceModel(interfaceName, document));
+    ImmutableList.Builder<DiscoInterfaceModel> builder = ImmutableList.builder();
+    for (String resource : document.resources().keySet()) {
+      String ownerName = document.ownerDomain().split("\\.")[0];
+      String resourceName = Name.anyCamel(resource).toUpperCamel();
+      String interfaceName =
+          String.format(
+              "%s.%s.%s.%s", ownerName, document.name(), document.version(), resourceName);
+      builder.add(new DiscoInterfaceModel(interfaceName, document));
     }
-    interfaceModels = intfModels.build();
+    interfaceModels = builder.build();
     return interfaceModels;
   }
 
   @Override
   public InterfaceModel getInterface(String interfaceName) {
-    for (InterfaceModel interfaceModel : interfaceModels) {
+    for (InterfaceModel interfaceModel : getInterfaces()) {
       if (interfaceModel.getSimpleName().equals(interfaceName)
           || interfaceModel.getFullName().equals(interfaceName)) {
         return interfaceModel;

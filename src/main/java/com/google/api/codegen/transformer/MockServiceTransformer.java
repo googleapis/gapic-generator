@@ -15,11 +15,11 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -31,11 +31,10 @@ import java.util.Map;
 
 /** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
-  public List<InterfaceModel> getGrpcInterfacesToMock(
-      ApiModel model, GapicProductConfig productConfig) {
+  public List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig) {
     Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
 
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       if (!apiInterface.isReachable()) {
         continue;
       }
@@ -46,7 +45,7 @@ public class MockServiceTransformer {
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(
-      ApiModel model, GapicProductConfig productConfig, InterfaceModel apiInterface) {
+      ApiModel model, ProductConfig productConfig, InterfaceModel apiInterface) {
     Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
     interfaces.put(apiInterface.getFullName(), apiInterface);
     InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
@@ -86,7 +85,7 @@ public class MockServiceTransformer {
   }
 
   public List<MockServiceUsageView> createMockServices(
-      SurfaceNamer namer, ApiModel model, GapicProductConfig productConfig) {
+      SurfaceNamer namer, ApiModel model, ProductConfig productConfig) {
     List<MockServiceUsageView> mockServices = new ArrayList<>();
 
     for (InterfaceModel apiInterface : getGrpcInterfacesToMock(model, productConfig)) {
