@@ -18,12 +18,14 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.gapic.GapicProvider;
 import java.util.List;
 
 public interface DiscoGapicProviderFactory {
-  List<DiscoGapicProvider> create(
+  List<GapicProvider<? extends Object>> create(
       Document document,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig);
+      PackageMetadataConfig packageConfig,
+      String outputPath);
 }

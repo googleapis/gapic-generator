@@ -12,29 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.stages.Merged;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ViewModelGapicProvider implements GapicProvider<Interface> {
-  private final Model model;
+public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
+  private final Document model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final ModelToViewTransformer modelToViewTransformer;
+  private final DiagCollector diagCollector;
 
-  private ViewModelGapicProvider(
-      Model model,
+  private ViewModelDiscoGapicProvider(
+      Document model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
       ModelToViewTransformer modelToViewTransformer) {
@@ -42,6 +44,7 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.modelToViewTransformer = modelToViewTransformer;
+    this.diagCollector = new BoundedDiagCollector();
   }
 
   @Override
@@ -56,15 +59,9 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
 
   @Override
   public Map<String, Doc> generate(String snippetFileName) {
-    // Establish required stage for generation.
-    model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      return null;
-    }
-
     List<ViewModel> surfaceDocs =
-        modelToViewTransformer.transform(new ProtoApiModel(model), productConfig);
-    if (model.getDiagCollector().getErrorCount() > 0) {
+        modelToViewTransformer.transform(new DiscoApiModel(model), productConfig);
+    if (diagCollector.getErrorCount() > 0) {
       return null;
     }
 
@@ -89,14 +86,14 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
   }
 
   public static class Builder {
-    private Model model;
+    private Document model;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private ModelToViewTransformer modelToViewTransformer;
 
     private Builder() {}
 
-    public Builder setModel(Model model) {
+    public Builder setModel(Document model) {
       this.model = model;
       return this;
     }
@@ -116,8 +113,8 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public ViewModelGapicProvider build() {
-      return new ViewModelGapicProvider(
+    public ViewModelDiscoGapicProvider build() {
+      return new ViewModelDiscoGapicProvider(
           model, productConfig, snippetSetRunner, modelToViewTransformer);
     }
   }

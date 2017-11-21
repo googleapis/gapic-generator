@@ -14,21 +14,20 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Lists;
 import java.util.List;
 
@@ -40,18 +39,18 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
   private static String SAMPLE_TEMPLATE_FILE = "java/smoke_test.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final JavaGapicSurfaceTestTransformer testTransformer;
+  private final JavaSurfaceTestTransformer testTransformer;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
 
   public JavaGapicSampleAppTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
-    this.testTransformer = new JavaGapicSurfaceTestTransformer(javaPathMapper);
+    this.testTransformer = new JavaSurfaceTestTransformer(javaPathMapper, new JavaGapicSurfaceTransformer(javaPathMapper, PackageMetadataConfig.createDummyPackageMetadataConfig()));
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    GapicInterfaceContext context = getSampleContext(model, productConfig);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+    InterfaceContext context = getSampleContext(model, productConfig);
     return Lists.newArrayList(createSampleClassView(context));
   }
 
@@ -60,10 +59,9 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     return Lists.newArrayList(SAMPLE_TEMPLATE_FILE);
   }
 
-  GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      GapicInterfaceContext context =
-          testTransformer.createContext(new ProtoInterfaceModel(apiInterface), productConfig);
+  InterfaceContext getSampleContext(ApiModel model, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+      InterfaceContext context = testTransformer.createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         // We use the first encountered smoke test config as the sample application
         return testTransformer.createContext(context.getInterfaceModel(), productConfig);
@@ -71,12 +69,11 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     }
 
     // Use the first interface as the default one if no smoke test config is found
-    InterfaceModel defaultInterface =
-        new ProtoInterfaceModel(new InterfaceView().getElementIterable(model).iterator().next());
+    InterfaceModel defaultInterface = model.getInterfaces(productConfig).iterator().next();
     return testTransformer.createContext(defaultInterface, productConfig);
   }
 
-  private ViewModel createSampleClassView(GapicInterfaceContext context) {
+  private ViewModel createSampleClassView(InterfaceContext context) {
     if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
       String outputPath =
           pathMapper.getOutputPath(
@@ -96,7 +93,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     }
   }
 
-  private SmokeTestClassView createSmokeTestClassViewNoMethod(GapicInterfaceContext context) {
+  private SmokeTestClassView createSmokeTestClassViewNoMethod(InterfaceContext context) {
     testTransformer.addSmokeTestImports(context);
 
     SurfaceNamer namer = context.getNamer();

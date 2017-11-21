@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -56,7 +55,6 @@ import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -105,11 +103,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    ApiModel apiModel = new ProtoApiModel(model);
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);
@@ -120,7 +117,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
-    models.add(generatePackageInfo(apiModel, productConfig, namer));
+    models.add(generatePackageInfo(model, productConfig, namer));
     return models;
   }
 

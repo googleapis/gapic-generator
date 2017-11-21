@@ -23,7 +23,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -52,7 +51,6 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -92,12 +90,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    ApiModel apiModel = new ProtoApiModel(model);
-    Iterable<? extends InterfaceModel> apiInterfaces = apiModel.getInterfaces(productConfig);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces(productConfig);
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
-    models.addAll(generateApiClasses(apiModel, productConfig));
+    models.addAll(generateApiClasses(model, productConfig));
     return models.build();
   }
 

@@ -15,17 +15,16 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -62,14 +61,13 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     String packageName = packageConfig.packageName(TargetLanguage.JAVA);
     JavaSurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName);
-    ProtoApiModel apiModel = new ProtoApiModel(model);
 
     List<ViewModel> viewModels = Lists.newArrayList();
     for (PackageMetadataView.Builder builder :
-        this.generateMetadataViewBuilders(apiModel, packageConfig)) {
+        this.generateMetadataViewBuilders(model, packageConfig)) {
       if (generatorConfig.enableSampleAppGenerator()) {
         builder
             .sampleAppName(namer.getSampleAppClassName())
@@ -90,10 +88,10 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
     return snippetsOutput;
   }
 
-  private String getSamplePackageName(Model model) {
+  private String getSamplePackageName(ApiModel model) {
     JavaGapicSampleAppTransformer sampleAppTransformer =
         new JavaGapicSampleAppTransformer(pathMapper);
-    GapicInterfaceContext context = sampleAppTransformer.getSampleContext(model, productConfig);
+    InterfaceContext context = sampleAppTransformer.getSampleContext(model, productConfig);
     return context.getNamer().getPackageName();
   }
 }
