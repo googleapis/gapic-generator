@@ -127,7 +127,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     FeatureConfig featureConfig = new DefaultFeatureConfig();
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
@@ -186,7 +186,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
+    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
 
     xapiClass.name(name);
     xapiClass.doc(
@@ -218,8 +218,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
-    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceModel()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
+    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));

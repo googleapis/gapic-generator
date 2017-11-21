@@ -21,6 +21,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Input-agnostic model of a method. */
 public interface MethodModel {
@@ -29,9 +30,11 @@ public interface MethodModel {
   ApiSource getApiSource();
 
   /* @return find a nested field in the method's input type by the nested field's name. */
+  @Nullable
   FieldModel getInputField(String fieldName);
 
   /* @return find a nested field in the method's output type by the nested field's name. */
+  @Nullable
   FieldModel getOutputField(String fieldName);
 
   /* @return the full name of this method. */

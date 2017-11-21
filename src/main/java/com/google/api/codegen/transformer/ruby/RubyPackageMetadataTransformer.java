@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -200,7 +201,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
@@ -210,8 +211,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         GapicMethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
         exampleMethods.add(
-            createExampleApiMethodView(
-                flattenedMethodContext, model.hasMultipleServices(productConfig)));
+            createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
       }
     }
     return exampleMethods.build();
@@ -270,10 +270,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
     boolean hasSmokeTests = false;
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     List<InterfaceModel> interfaceModels = new LinkedList<>();
-    for (InterfaceModel apiInterface : interfaces) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceContext context = createContext(apiInterface, productConfig);
       interfaceModels.add(context.getInterfaceModel());
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;

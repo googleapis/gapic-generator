@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
@@ -23,18 +22,14 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.util.VersionMatcher;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.protobuf.Api;
 import java.util.List;
-import java.util.Map;
 
-/** Merges the language_settings property from a Model into a ConfigNode. */
+/** Merges the language_settings property from a package into a ConfigNode. */
 public class LanguageSettingsMerger {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
@@ -56,12 +51,7 @@ public class LanguageSettingsMerger {
           .build();
 
   public ConfigNode mergeLanguageSettings(
-      Model model, ConfigNode configNode, ConfigNode prevNode, ConfigHelper helper) {
-    final String packageName = getPackageName(model, helper);
-    if (packageName == null) {
-      return null;
-    }
-
+      final String packageName, ConfigNode configNode, ConfigNode prevNode) {
     FieldConfigNode languageSettingsNode =
         MissingFieldTransformer.insert("language_settings", configNode, prevNode).generate();
     if (NodeFinder.hasChild(languageSettingsNode)) {
@@ -72,30 +62,14 @@ public class LanguageSettingsMerger {
         ListTransformer.generateList(
             LANGUAGE_FORMATTERS.entrySet(),
             languageSettingsNode,
-            new ListTransformer.ElementTransformer<Map.Entry<String, LanguageFormatter>>() {
-              @Override
-              public ConfigNode generateElement(Map.Entry<String, LanguageFormatter> entry) {
-                ConfigNode languageNode = new FieldConfigNode(entry.getKey());
-                mergeLanguageSetting(languageNode, entry.getValue(), packageName);
-                return languageNode;
-              }
+            entry -> {
+              ConfigNode languageNode = new FieldConfigNode(entry.getKey());
+              mergeLanguageSetting(languageNode, entry.getValue(), packageName);
+              return languageNode;
             });
     return languageSettingsNode
         .setChild(languageSettingsValueNode)
         .setComment(new DefaultComment("The settings of generated code in a specific language."));
-  }
-
-  private String getPackageName(Model model, ConfigHelper helper) {
-    if (model.getServiceConfig().getApisCount() > 0) {
-      Api api = model.getServiceConfig().getApis(0);
-      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-      if (apiInterface != null) {
-        return apiInterface.getFile().getFullName();
-      }
-    }
-
-    helper.error(model.getLocation(), "No interface found");
-    return null;
   }
 
   private ConfigNode mergeLanguageSetting(

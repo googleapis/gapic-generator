@@ -18,7 +18,7 @@ import com.google.api.codegen.advising.Adviser;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.configgen.MessageGenerator;
-import com.google.api.codegen.configgen.mergers.ConfigMerger;
+import com.google.api.codegen.configgen.mergers.ProtoConfigMerger;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
@@ -196,7 +196,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return null;
     }
 
-    ConfigMerger configMerger = new ConfigMerger();
+    ProtoConfigMerger configMerger = new ProtoConfigMerger();
     MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (File file : configFiles) {
       ConfigNode configNode = configMerger.mergeConfig(model, file);

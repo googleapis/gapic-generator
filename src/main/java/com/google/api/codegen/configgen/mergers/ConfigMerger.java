@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
@@ -24,10 +25,9 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.api.tools.framework.model.Model;
 import java.io.File;
 
-/** Merges the gapic config from a Model into a ConfigNode. */
+/** Merges the gapic config from an ApiModel into a ConfigNode. */
 public class ConfigMerger {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
@@ -39,12 +39,24 @@ public class ConfigMerger {
           + " The retry_codes_name, required_fields, flattening, and timeout properties cannot be "
           + "precisely decided by the tooling and may require some configuration.";
 
-  private final LanguageSettingsMerger languageSettingsMerger = new LanguageSettingsMerger();
-  private final InterfaceMerger interfaceMerger = new InterfaceMerger();
+  private final LanguageSettingsMerger languageSettingsMerger;
+  private final InterfaceMerger interfaceMerger;
+  private final String packageName;
+  private final ConfigHelper helper;
 
-  public ConfigNode mergeConfig(Model model, String fileName) {
-    ConfigHelper helper = new ConfigHelper(model.getDiagCollector(), fileName);
-    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""), helper);
+  public ConfigMerger(
+      LanguageSettingsMerger languageSettingsMerger,
+      InterfaceMerger interfaceMerger,
+      String packageName,
+      ConfigHelper helper) {
+    this.languageSettingsMerger = languageSettingsMerger;
+    this.interfaceMerger = interfaceMerger;
+    this.packageName = packageName;
+    this.helper = helper;
+  }
+
+  public ConfigNode mergeConfig(ApiModel model) {
+    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""));
     if (configNode == null) {
       return null;
     }
@@ -52,41 +64,36 @@ public class ConfigMerger {
     return configNode.setComment(new FixmeComment(CONFIG_COMMENT));
   }
 
-  public ConfigNode mergeConfig(Model model, File file) {
-    ConfigHelper helper = new ConfigHelper(model.getDiagCollector(), file.getName());
+  public ConfigNode mergeConfig(ApiModel model, File file) {
     FieldConfigNode configNode = new ConfigYamlReader().generateConfigNode(file, helper);
     if (configNode == null) {
       return null;
     }
 
-    return mergeConfig(model, configNode, helper);
+    return mergeConfig(model, configNode);
   }
 
-  private FieldConfigNode mergeConfig(
-      Model model, FieldConfigNode configNode, ConfigHelper helper) {
-    ConfigNode typeNode = mergeType(configNode, helper);
+  private FieldConfigNode mergeConfig(ApiModel model, FieldConfigNode configNode) {
+    ConfigNode typeNode = mergeType(configNode);
     if (typeNode == null) {
       return null;
     }
 
-    ConfigNode versionNode = mergeVersion(configNode, typeNode, helper);
+    ConfigNode versionNode = mergeVersion(configNode, typeNode);
     if (versionNode == null) {
       return null;
     }
 
     ConfigNode languageSettingsNode =
-        languageSettingsMerger.mergeLanguageSettings(model, configNode, versionNode, helper);
-    if (languageSettingsNode == null) {
-      return null;
-    }
+        languageSettingsMerger.mergeLanguageSettings(packageName, configNode, versionNode);
 
     mergeLicenseHeader(configNode, languageSettingsNode);
-    interfaceMerger.mergeInterfaces(model, configNode, helper);
+    interfaceMerger.mergeInterfaces(model, configNode);
 
     return configNode;
   }
 
-  private ConfigNode mergeType(ConfigNode configNode, ConfigHelper helper) {
+  private ConfigNode mergeType(ConfigNode configNode) {
     FieldConfigNode typeNode = MissingFieldTransformer.prepend("type", configNode).generate();
     if (!NodeFinder.hasChild(typeNode)) {
       return typeNode.setChild(new ScalarConfigNode(CONFIG_PROTO_TYPE));
@@ -101,7 +108,7 @@ public class ConfigMerger {
     return null;
   }
 
-  private ConfigNode mergeVersion(ConfigNode configNode, ConfigNode prevNode, ConfigHelper helper) {
+  private ConfigNode mergeVersion(ConfigNode configNode, ConfigNode prevNode) {
     FieldConfigNode versionNode =
         MissingFieldTransformer.insert("config_schema_version", configNode, prevNode).generate();
     if (!NodeFinder.hasChild(versionNode)) {

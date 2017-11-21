@@ -111,7 +111,7 @@ public class JavaSurfaceTransformer {
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
@@ -228,7 +228,7 @@ public class JavaSurfaceTransformer {
     pagedResponseWrappers.name(name);
 
     List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       InterfaceContext context =
           surfaceTransformer.createInterfaceContext(
               apiInterface,
@@ -256,7 +256,7 @@ public class JavaSurfaceTransformer {
     pagedResponseWrappers.fileHeader(
         fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
 
-    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     pagedResponseWrappers.outputPath(outputPath + File.separator + name + ".java");
 
@@ -613,7 +613,7 @@ public class JavaSurfaceTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
 
-    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
@@ -650,7 +650,6 @@ public class JavaSurfaceTransformer {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.api.gax.core.ChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
@@ -710,14 +709,15 @@ public class JavaSurfaceTransformer {
     }
     switch (context.getApiModel().getApiSource()) {
       case PROTO:
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportChannel");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
         if (interfaceConfig.hasLongRunningOperations()) {
           typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
         }
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
         break;
       case DISCOVERY:
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         break;
@@ -739,7 +739,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.RequestParamsExtractor");
-    typeTable.saveNicknameFor("com.google.api.gax.rpc.EmptyRequestParamsExtractor");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -772,6 +771,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");

@@ -95,20 +95,22 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
   }
 
   @Override
   public String getPathTemplateName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
-  public String getClientConfigPath(InterfaceModel apiInterface) {
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
     return "../resources/"
-        + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join("client_config")
+            .toLowerUnderscore()
         + ".json";
   }
 
@@ -119,7 +121,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getRetrySettingsTypeName() {
-    return "\\Google\\GAX\\RetrySettings";
+    return "\\Google\\ApiCore\\RetrySettings";
   }
 
   @Override
@@ -135,20 +137,20 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "\\Google\\GAX\\PagedListResponse";
+      return "\\Google\\ApiCore\\PagedListResponse";
     }
     if (methodConfig.isLongRunningOperation()) {
-      return "\\Google\\GAX\\OperationResponse";
+      return "\\Google\\ApiCore\\OperationResponse";
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
         return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       case BidiStreaming:
-        return "\\Google\\GAX\\BidiStream";
+        return "\\Google\\ApiCore\\BidiStream";
       case ClientStreaming:
-        return "\\Google\\GAX\\ClientStream";
+        return "\\Google\\ApiCore\\ClientStream";
       case ServerStreaming:
-        return "\\Google\\GAX\\ServerStream";
+        return "\\Google\\ApiCore\\ServerStream";
       default:
         return getNotImplementedString(
             "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"

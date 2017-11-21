@@ -3053,6 +3053,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name, 'book.read': request.book.read
+      });
 
     return this._innerApiCalls.createBook(request, options, callback);
   }

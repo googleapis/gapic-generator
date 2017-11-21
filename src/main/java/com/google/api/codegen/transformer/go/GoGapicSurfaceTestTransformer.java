@@ -83,7 +83,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ProtoApiModel apiModel = new ProtoApiModel(model);
     models.add(generateMockServiceView(apiModel, productConfig, namer));
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -116,7 +116,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       // We don't need any import here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(

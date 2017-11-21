@@ -86,7 +86,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ProtoApiModel apiModel = new ProtoApiModel(model);
     List<ViewModel> views = new ArrayList<>();
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
       views.add(createUnitTestFileView(context));
@@ -95,8 +95,19 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         views.add(createSmokeTestClassView(context));
       }
     }
+    boolean hasLongRunningOperations = false;
     for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(apiModel, productConfig)) {
+      GapicInterfaceContext context =
+          createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
+      views.add(createMockServiceImplView(context));
+      if (context.getInterfaceConfig() != null
+          && context.getInterfaceConfig().hasLongRunningOperations()) {
+        hasLongRunningOperations = true;
+      }
+    }
+    if (hasLongRunningOperations) {
+      InterfaceModel apiInterface = apiModel.getInterface("google.longrunning.Operations");
       GapicInterfaceContext context =
           createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
       views.add(createMockServiceImplView(context));
@@ -336,23 +347,22 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private void addUnitTestImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("\\Google\\GAX\\ApiException");
-    typeTable.saveNicknameFor("\\Google\\GAX\\BidiStream");
-    typeTable.saveNicknameFor("\\Google\\GAX\\ServerStream");
-    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\MockStubTrait");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\LongRunning\\MockOperationsImpl");
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\GeneratedTest");
-    typeTable.saveNicknameFor("\\PHPUnit_Framework_TestCase");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\BidiStream");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\ServerStream");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\MockStubTrait");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
+    typeTable.saveNicknameFor("\\PHPUnit\\Framework\\TestCase");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\Any");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\GPBEmpty");
-    typeTable.saveNicknameFor("\\Google\\Longrunning\\GetOperationRequest");
+    typeTable.saveNicknameFor("\\Google\\LongRunning\\GetOperationRequest");
     typeTable.saveNicknameFor("\\Grpc");
     typeTable.saveNicknameFor("\\stdClass");
   }
 
   private void addSmokeTestImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\GeneratedTest");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
   }
 }

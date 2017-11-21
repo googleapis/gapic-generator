@@ -66,7 +66,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
     ProtoApiModel apiModel = new ProtoApiModel(model);
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -91,7 +91,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
   private SnippetsFileView generateSnippets(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String name = namer.getApiSnippetsClassName(context.getInterfaceModel());
+    String name = namer.getApiSnippetsClassName(context.getInterfaceConfig());
     SnippetsFileView.Builder snippetsBuilder = SnippetsFileView.newBuilder();
 
     snippetsBuilder.templateFileName(SNIPPETS_TEMPLATE_FILENAME);
