@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;

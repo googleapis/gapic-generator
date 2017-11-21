@@ -99,7 +99,10 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setModel(document)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new JavaSurfaceTestTransformer(javaTestPathMapper, new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
                 .build();
         providers.add(testProvider);
       }

@@ -221,7 +221,10 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new JavaSurfaceTestTransformer(javaTestPathMapper, new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
                 .build();
         providers.add(testProvider);
       }

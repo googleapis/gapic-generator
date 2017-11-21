@@ -71,7 +71,8 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
-  public JavaSurfaceTestTransformer(GapicCodePathMapper javaPathMapper, SurfaceTransformer surfaceTransformer) {
+  public JavaSurfaceTestTransformer(
+      GapicCodePathMapper javaPathMapper, SurfaceTransformer surfaceTransformer) {
     this.surfaceTransformer = surfaceTransformer;
     this.pathMapper = javaPathMapper;
   }
@@ -89,16 +90,24 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
+    boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
 
     List<ViewModel> views = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
-      InterfaceContext context = surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+      InterfaceContext context =
+          surfaceTransformer.createInterfaceContext(
+              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        context = surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable.cloneEmpty(), enableStringFormatFunctions);
+        context =
+            surfaceTransformer.createInterfaceContext(
+                apiInterface,
+                productConfig,
+                namer,
+                typeTable.cloneEmpty(),
+                enableStringFormatFunctions);
         views.add(createSmokeTestClassView(context));
       }
     }
@@ -107,10 +116,18 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
-      InterfaceContext context =  surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+      InterfaceContext context =
+          surfaceTransformer.createInterfaceContext(
+              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       views.add(createMockServiceImplFileView(context));
 
-      context =  surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable.cloneEmpty(), enableStringFormatFunctions);
+      context =
+          surfaceTransformer.createInterfaceContext(
+              apiInterface,
+              productConfig,
+              namer,
+              typeTable.cloneEmpty(),
+              enableStringFormatFunctions);
       views.add(createMockServiceView(context));
     }
     return views;
@@ -176,7 +193,8 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     addUnitTestImports(context);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getUnitTestClassName(context.getInterfaceConfig());
 
@@ -188,7 +206,9 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     testClass.mockServices(
         mockServiceTransformer.createMockServices(
-            context.getNamer(), context.getApiModel(), (GapicProductConfig) context.getProductConfig()));
+            context.getNamer(),
+            context.getApiModel(),
+            (GapicProductConfig) context.getProductConfig()));
 
     testClass.missingDefaultServiceAddress(
         !context.getInterfaceConfig().hasDefaultServiceAddress());
@@ -239,8 +259,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext =
-              context.asFlattenedMethodContext(method, flatteningGroup);
+          MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
@@ -322,11 +341,14 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
   /** Package-private */
-  InterfaceContext createContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    return surfaceTransformer.createInterfaceContext(apiInterface, productConfig, surfaceTransformer.createSurfaceNamer(productConfig), surfaceTransformer.createTypeTable(productConfig.getPackageName()), productConfig.getResourceNameMessageConfigs().isEmpty() );
+  InterfaceContext createContext(InterfaceModel apiInterface, GapicProductConfig productConfig) {
+    return surfaceTransformer.createInterfaceContext(
+        apiInterface,
+        productConfig,
+        surfaceTransformer.createSurfaceNamer(productConfig),
+        surfaceTransformer.createTypeTable(productConfig.getPackageName()),
+        productConfig.getResourceNameMessageConfigs().isEmpty());
   }
-
 
   /////////////////////////////////// Imports //////////////////////////////////////
 
