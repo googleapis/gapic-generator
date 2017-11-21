@@ -20,7 +20,7 @@ package com.google.api.codegen.configgen.nodes;
  * <p>Can represent a comment if the text starts with "#".
  */
 public class ScalarConfigNode extends BaseConfigNode {
-  public ScalarConfigNode(String text) {
-    super(text);
+  public ScalarConfigNode(int startLine, String text) {
+    super(startLine, text);
   }
 }

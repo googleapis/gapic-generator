@@ -26,7 +26,8 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
 
   @Override
-  public ConfigNode generateResponseValueNode(MethodModel method, ConfigHelper helper) {
+  public ConfigNode generateResponseValueNode(
+      ConfigNode parentNode, MethodModel method, ConfigHelper helper) {
     if (!hasResponseTokenField(method)) {
       return new NullConfigNode();
     }
@@ -38,9 +39,13 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
 
     ConfigNode tokenFieldNode =
         FieldConfigNode.createStringPair(
-            "token_field", PAGING_PARAMETERS.getNameForNextPageToken());
+            NodeFinder.getNextLine(parentNode),
+            "token_field",
+            PAGING_PARAMETERS.getNameForNextPageToken());
+    parentNode.setChild(tokenFieldNode);
     ConfigNode resourcesFieldNode =
-        FieldConfigNode.createStringPair("resources_field", resourcesFieldName);
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(tokenFieldNode), "resources_field", resourcesFieldName);
     return tokenFieldNode.insertNext(resourcesFieldNode);
   }
 

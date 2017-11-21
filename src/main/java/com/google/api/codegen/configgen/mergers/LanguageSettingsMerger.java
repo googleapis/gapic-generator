@@ -62,8 +62,8 @@ public class LanguageSettingsMerger {
         ListTransformer.generateList(
             LANGUAGE_FORMATTERS.entrySet(),
             languageSettingsNode,
-            entry -> {
-              ConfigNode languageNode = new FieldConfigNode(entry.getKey());
+            (startLine, entry) -> {
+              ConfigNode languageNode = new FieldConfigNode(startLine, entry.getKey());
               mergeLanguageSetting(languageNode, entry.getValue(), packageName);
               return languageNode;
             });
@@ -74,7 +74,8 @@ public class LanguageSettingsMerger {
 
   private ConfigNode mergeLanguageSetting(
       ConfigNode languageNode, LanguageFormatter languageFormatter, String packageName) {
-    ConfigNode packageNameNode = new FieldConfigNode("package_name");
+    ConfigNode packageNameNode =
+        new FieldConfigNode(NodeFinder.getNextLine(languageNode), "package_name");
     languageNode.setChild(packageNameNode);
     mergePackageNameValue(packageNameNode, languageFormatter, packageName);
     return packageNameNode;
@@ -83,7 +84,8 @@ public class LanguageSettingsMerger {
   private ConfigNode mergePackageNameValue(
       ConfigNode packageNameNode, LanguageFormatter languageFormatter, String packageName) {
     ConfigNode packageNameValueNode =
-        new ScalarConfigNode(languageFormatter.getFormattedPackageName(packageName));
+        new ScalarConfigNode(
+            packageNameNode.getStartLine(), languageFormatter.getFormattedPackageName(packageName));
     packageNameNode.setChild(packageNameValueNode);
     return packageNameValueNode;
   }

@@ -19,5 +19,6 @@ import com.google.api.codegen.configgen.nodes.ConfigNode;
 
 /** Generates API source specific page streaming nodes. */
 public interface PageStreamingTransformer {
-  ConfigNode generateResponseValueNode(MethodModel method, ConfigHelper helper);
+  ConfigNode generateResponseValueNode(
+      ConfigNode parentNode, MethodModel method, ConfigHelper helper);
 }

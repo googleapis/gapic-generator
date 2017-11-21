@@ -50,6 +50,10 @@ public class NodeFinder {
     return ((ListItemConfigNode) childNode).getChild().isPresent();
   }
 
+  public static int getNextLine(ConfigNode node) {
+    return node.getChild().isPresent() ? getNextLine(node.getChild()) : node.getStartLine() + 1;
+  }
+
   public static ConfigNode getLastChild(ConfigNode parentNode) {
     return Iterables.getLast(getChildren(parentNode));
   }

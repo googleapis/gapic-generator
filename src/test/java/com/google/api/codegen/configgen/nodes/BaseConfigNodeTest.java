@@ -19,35 +19,41 @@ import org.junit.Test;
 
 public class BaseConfigNodeTest {
   private static class TestConfigNode extends BaseConfigNode {
-    TestConfigNode(String text) {
-      super(text);
+    TestConfigNode(int startLine, String text) {
+      super(startLine, text);
     }
   }
 
   @Test
   public void testIsPresent() throws Exception {
-    TestConfigNode node = new TestConfigNode("foo");
+    TestConfigNode node = new TestConfigNode(0, "foo");
     Truth.assertThat(node.isPresent()).isTrue();
   }
 
   @Test
+  public void testGetStartLine() throws Exception {
+    TestConfigNode node = new TestConfigNode(1, "foo");
+    Truth.assertThat(node.getStartLine()).isEqualTo(1);
+  }
+
+  @Test
   public void testGetText() throws Exception {
-    TestConfigNode node = new TestConfigNode("foo");
+    TestConfigNode node = new TestConfigNode(0, "foo");
     Truth.assertThat(node.getText()).isEqualTo("foo");
   }
 
   @Test
   public void testChild() throws Exception {
-    TestConfigNode node = new TestConfigNode("foo");
-    ConfigNode child = new ScalarConfigNode("bar");
+    TestConfigNode node = new TestConfigNode(0, "foo");
+    ConfigNode child = new ScalarConfigNode(0, "bar");
     Truth.assertThat(node.setChild(child)).isSameAs(node);
     Truth.assertThat(node.getChild().isPresent()).isFalse();
   }
 
   @Test
   public void testNext() throws Exception {
-    TestConfigNode node = new TestConfigNode("foo");
-    ConfigNode next = new ScalarConfigNode("bar");
+    TestConfigNode node = new TestConfigNode(0, "foo");
+    ConfigNode next = new ScalarConfigNode(0, "bar");
     Truth.assertThat(node.getNext().isPresent()).isFalse();
     Truth.assertThat(node.insertNext(next)).isSameAs(node);
     Truth.assertThat(node.getNext()).isSameAs(next);

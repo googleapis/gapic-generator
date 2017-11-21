@@ -77,12 +77,14 @@ public class MissingFieldTransformer {
       return (FieldConfigNode) node;
     }
 
-    node = new FieldConfigNode(name);
     if (prev == null) {
       ConfigNode next = parent.getChild();
+      int startLine = next.isPresent() ? next.getStartLine() : parent.getStartLine() + 1;
+      node = new FieldConfigNode(startLine, name);
       parent.setChild(node.insertNext(next));
     } else {
       ConfigNode next = node.getNext();
+      node = new FieldConfigNode(NodeFinder.getNextLine(prev), name);
       prev.insertNext(node.insertNext(next));
     }
 

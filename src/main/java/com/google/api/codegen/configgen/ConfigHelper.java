@@ -43,7 +43,11 @@ public class ConfigHelper {
   }
 
   public void error(Mark mark, String message, Object... params) {
-    error(getLocation(getStartLine(mark)), message, params);
+    error(getStartLine(mark), message, params);
+  }
+
+  public void error(int line, String message, Object... params) {
+    error(getLocation(line), message, params);
   }
 
   public void error(String message, Object... params) {

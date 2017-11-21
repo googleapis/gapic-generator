@@ -22,8 +22,8 @@ import org.junit.Test;
 public class ListItemConfigNodeTest {
   @Test
   public void testChild() throws Exception {
-    ListItemConfigNode node = new ListItemConfigNode();
-    ConfigNode child = new ScalarConfigNode("foo");
+    ListItemConfigNode node = new ListItemConfigNode(0);
+    ConfigNode child = new ScalarConfigNode(0, "foo");
     Truth.assertThat(node.getChild().isPresent()).isFalse();
     Truth.assertThat(node.setChild(child)).isSameAs(node);
     Truth.assertThat(node.getChild()).isSameAs(child);
@@ -31,7 +31,7 @@ public class ListItemConfigNodeTest {
 
   @Test
   public void testComment() throws Exception {
-    ListItemConfigNode node = new ListItemConfigNode();
+    ListItemConfigNode node = new ListItemConfigNode(0);
     Comment comment = new DefaultComment("Lorem ispum");
     Truth.assertThat(node.getComment().generate()).isEqualTo("");
     Truth.assertThat(node.setComment(comment)).isSameAs(node);

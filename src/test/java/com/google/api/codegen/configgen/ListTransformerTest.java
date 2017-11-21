@@ -27,13 +27,14 @@ public class ListTransformerTest {
   @Test
   public void testGenerateList() throws Exception {
     List<Integer> elements = Arrays.asList(1, 2);
-    ConfigNode parent = new FieldConfigNode("parent");
+    ConfigNode parent = new FieldConfigNode(0, "parent");
     ConfigNode listNode =
         ListTransformer.generateList(
             elements,
             parent,
-            element ->
-                new ListItemConfigNode().setChild(new ScalarConfigNode(String.valueOf(element))));
+            (startLine, element) ->
+                new ListItemConfigNode(startLine)
+                    .setChild(new ScalarConfigNode(startLine, String.valueOf(element))));
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
       Truth.assertThat(node.getChild().getText()).isEqualTo(String.valueOf(elements.get(index++)));
@@ -43,7 +44,7 @@ public class ListTransformerTest {
   @Test
   public void testGenerateStringList() throws Exception {
     List<String> elements = Arrays.asList("1", "2");
-    ConfigNode parent = new FieldConfigNode("parent");
+    ConfigNode parent = new FieldConfigNode(0, "parent");
     ConfigNode listNode = ListTransformer.generateStringList(elements, parent);
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {

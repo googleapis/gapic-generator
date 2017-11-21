@@ -25,6 +25,12 @@ public class NullConfigNodeTest {
   }
 
   @Test
+  public void testGetStartLine() throws Exception {
+    NullConfigNode node = new NullConfigNode();
+    Truth.assertThat(node.getStartLine()).isEqualTo(0);
+  }
+
+  @Test
   public void testGetText() throws Exception {
     NullConfigNode node = new NullConfigNode();
     Truth.assertThat(node.getText()).isEqualTo("");
@@ -45,14 +51,14 @@ public class NullConfigNodeTest {
   @Test
   public void testSetChild() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    ConfigNode child = new ScalarConfigNode("foo");
+    ConfigNode child = new ScalarConfigNode(0, "foo");
     Truth.assertThat(node.setChild(child)).isSameAs(node);
   }
 
   @Test
   public void testInsertNext() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    ConfigNode next = new ScalarConfigNode("foo");
+    ConfigNode next = new ScalarConfigNode(0, "foo");
     Truth.assertThat(node.insertNext(next)).isSameAs(next);
   }
 }

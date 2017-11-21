@@ -59,12 +59,12 @@ public class InterfaceMerger {
         .setComment(new DefaultComment("A list of API interface configurations."));
   }
 
-  private ListItemConfigNode generateInterfaceNode(InterfaceModel apiInterface) {
+  private ListItemConfigNode generateInterfaceNode(int startLine, InterfaceModel apiInterface) {
     Map<String, String> collectionNameMap =
         interfaceTransformer.getResourceToEntityNameMap(apiInterface);
-    ListItemConfigNode interfaceNode = new ListItemConfigNode();
+    ListItemConfigNode interfaceNode = new ListItemConfigNode(startLine);
     FieldConfigNode nameNode =
-        FieldConfigNode.createStringPair("name", apiInterface.getFullName())
+        FieldConfigNode.createStringPair(startLine, "name", apiInterface.getFullName())
             .setComment(new DefaultComment("The fully qualified name of the API interface."));
     interfaceNode.setChild(nameNode);
     ConfigNode collectionsNode =

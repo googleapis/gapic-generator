@@ -56,7 +56,7 @@ public class ConfigMerger {
   }
 
   public ConfigNode mergeConfig(ApiModel model) {
-    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""));
+    FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(0, ""));
     if (configNode == null) {
       return null;
     }
@@ -96,7 +96,7 @@ public class ConfigMerger {
   private ConfigNode mergeType(ConfigNode configNode) {
     FieldConfigNode typeNode = MissingFieldTransformer.prepend("type", configNode).generate();
     if (!NodeFinder.hasChild(typeNode)) {
-      return typeNode.setChild(new ScalarConfigNode(CONFIG_PROTO_TYPE));
+      return typeNode.setChild(new ScalarConfigNode(typeNode.getStartLine(), CONFIG_PROTO_TYPE));
     }
 
     String type = typeNode.getChild().getText();
@@ -104,7 +104,8 @@ public class ConfigMerger {
       return typeNode;
     }
 
-    helper.error("The specified configuration type '%s' is unknown.", type);
+    helper.error(
+        typeNode.getStartLine(), "The specified configuration type '%s' is unknown.", type);
     return null;
   }
 
@@ -112,7 +113,8 @@ public class ConfigMerger {
     FieldConfigNode versionNode =
         MissingFieldTransformer.insert("config_schema_version", configNode, prevNode).generate();
     if (!NodeFinder.hasChild(versionNode)) {
-      return versionNode.setChild(new ScalarConfigNode(CONFIG_SCHEMA_VERSION));
+      return versionNode.setChild(
+          new ScalarConfigNode(versionNode.getStartLine(), CONFIG_SCHEMA_VERSION));
     }
 
     String version = versionNode.getChild().getText();
@@ -120,7 +122,10 @@ public class ConfigMerger {
       return versionNode;
     }
 
-    helper.error("The specified configuration schema version '%s' is unsupported.", version);
+    helper.error(
+        versionNode.getStartLine(),
+        "The specified configuration schema version '%s' is unsupported.",
+        version);
     return null;
   }
 
@@ -133,10 +138,16 @@ public class ConfigMerger {
     }
 
     FieldConfigNode copyrightFileNode =
-        FieldConfigNode.createStringPair("copyright_file", CONFIG_DEFAULT_COPYRIGHT_FILE)
+        FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(licenseHeaderNode),
+                "copyright_file",
+                CONFIG_DEFAULT_COPYRIGHT_FILE)
             .setComment(new DefaultComment("The file containing the copyright line(s)."));
     FieldConfigNode licenseFileNode =
-        FieldConfigNode.createStringPair("license_file", CONFIG_DEFAULT_LICENSE_FILE)
+        FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(copyrightFileNode),
+                "license_file",
+                CONFIG_DEFAULT_LICENSE_FILE)
             .setComment(
                 new DefaultComment(
                     "The file containing the raw license header without any copyright line(s)."));

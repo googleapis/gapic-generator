@@ -24,8 +24,8 @@ public class ListItemConfigNode extends BaseConfigNode {
   private ConfigNode child;
   private Comment comment;
 
-  public ListItemConfigNode() {
-    super("");
+  public ListItemConfigNode(int startLine) {
+    super(startLine, "");
   }
 
   @Override

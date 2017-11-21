@@ -16,11 +16,18 @@ package com.google.api.codegen.configgen.nodes;
 
 /** Base class for the ConfigNode types. */
 public abstract class BaseConfigNode implements ConfigNode {
+  private final int startLine;
   private final String text;
   private ConfigNode next = new NullConfigNode();
 
-  protected BaseConfigNode(String text) {
+  protected BaseConfigNode(int startLine, String text) {
+    this.startLine = startLine;
     this.text = text;
+  }
+
+  @Override
+  public int getStartLine() {
+    return startLine;
   }
 
   @Override

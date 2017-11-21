@@ -26,12 +26,13 @@ import org.junit.Test;
 public class MissingFieldTransformerTest {
   @Test
   public void testPrepend() throws Exception {
-    ConfigNode parent = new FieldConfigNode("parent");
+    ConfigNode parent = new FieldConfigNode(0, "parent");
     Map<String, String> fields = ImmutableMap.of("B", "2", "C", "3");
     ListTransformer.generateList(
         fields.entrySet(),
         parent,
-        entry -> FieldConfigNode.createStringPair(entry.getKey(), entry.getValue()));
+        (startLine, entry) ->
+            FieldConfigNode.createStringPair(startLine, entry.getKey(), entry.getValue()));
     MissingFieldTransformer.prepend("A", parent).generate();
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;
@@ -42,13 +43,14 @@ public class MissingFieldTransformerTest {
 
   @Test
   public void testInsert() throws Exception {
-    ConfigNode parent = new FieldConfigNode("parent");
+    ConfigNode parent = new FieldConfigNode(0, "parent");
     Map<String, String> fields = ImmutableMap.of("A", "1", "C", "3");
     ConfigNode fieldA =
         ListTransformer.generateList(
             fields.entrySet(),
             parent,
-            entry -> FieldConfigNode.createStringPair(entry.getKey(), entry.getValue()));
+            (startLine, entry) ->
+                FieldConfigNode.createStringPair(startLine, entry.getKey(), entry.getValue()));
     MissingFieldTransformer.insert("B", parent, fieldA).generate();
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;
@@ -59,12 +61,13 @@ public class MissingFieldTransformerTest {
 
   @Test
   public void testAppend() throws Exception {
-    ConfigNode parent = new FieldConfigNode("parent");
+    ConfigNode parent = new FieldConfigNode(0, "parent");
     Map<String, String> fields = ImmutableMap.of("A", "1", "B", "2");
     ListTransformer.generateList(
         fields.entrySet(),
         parent,
-        entry -> FieldConfigNode.createStringPair(entry.getKey(), entry.getValue()));
+        (startLine, entry) ->
+            FieldConfigNode.createStringPair(startLine, entry.getKey(), entry.getValue()));
     MissingFieldTransformer.append("C", parent).generate();
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;

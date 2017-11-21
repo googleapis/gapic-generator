@@ -16,6 +16,7 @@ package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ConfigHelper;
+import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.PageStreamingTransformer;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
@@ -38,7 +39,8 @@ public class PageStreamingMerger {
   }
 
   public ConfigNode generatePageStreamingNode(ConfigNode prevNode, MethodModel method) {
-    ConfigNode pageStreamingNode = new FieldConfigNode("page_streaming");
+    ConfigNode pageStreamingNode =
+        new FieldConfigNode(NodeFinder.getNextLine(prevNode), "page_streaming");
     ConfigNode requestNode = generatePageStreamingRequestNode(pageStreamingNode, method);
     if (requestNode == null) {
       return prevNode;
@@ -54,27 +56,32 @@ public class PageStreamingMerger {
   }
 
   private ConfigNode generatePageStreamingRequestNode(ConfigNode parentNode, MethodModel method) {
-    ConfigNode requestNode = new FieldConfigNode("request");
+    ConfigNode requestNode = new FieldConfigNode(NodeFinder.getNextLine(parentNode), "request");
     parentNode.setChild(requestNode);
-    ConfigNode requestValueNode = generatePageStreamingRequestValueNode(requestNode, method);
+    ConfigNode requestValueNode =
+        generatePageStreamingRequestValueNode(
+            requestNode, NodeFinder.getNextLine(requestNode), method);
     return requestValueNode.isPresent() ? requestNode : null;
   }
 
   private ConfigNode generatePageStreamingRequestValueNode(
-      ConfigNode parentNode, MethodModel method) {
+      ConfigNode parentNode, int startLine, MethodModel method) {
     String pageTokenName = pagingParameters.getNameForPageToken();
     String pageSizeName = pagingParameters.getNameForPageSize();
     boolean hasTokenField = method.getInputField(pageTokenName) != null;
     boolean hasPageSizeField = method.getInputField(pageSizeName) != null;
     ConfigNode requestValueNode = null;
     if (hasPageSizeField) {
-      requestValueNode = FieldConfigNode.createStringPair("page_size_field", pageSizeName);
+      requestValueNode =
+          FieldConfigNode.createStringPair(startLine, "page_size_field", pageSizeName);
       if (hasTokenField) {
-        ConfigNode tokenFieldNode = FieldConfigNode.createStringPair("token_field", pageTokenName);
+        ConfigNode tokenFieldNode =
+            FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(requestValueNode), "token_field", pageTokenName);
         requestValueNode.insertNext(tokenFieldNode);
       }
     } else if (hasTokenField) {
-      requestValueNode = FieldConfigNode.createStringPair("token_field", pageTokenName);
+      requestValueNode = FieldConfigNode.createStringPair(startLine, "token_field", pageTokenName);
     } else {
       return new NullConfigNode();
     }
@@ -84,24 +91,14 @@ public class PageStreamingMerger {
   }
 
   private ConfigNode generatePageStreamingResponseNode(ConfigNode prevNode, MethodModel method) {
-    ConfigNode responseNode = new FieldConfigNode("response");
-    ConfigNode responseValueNode = generatePageStreamingResponseValueNode(responseNode, method);
+    ConfigNode responseNode = new FieldConfigNode(NodeFinder.getNextLine(prevNode), "response");
+    ConfigNode responseValueNode =
+        pageStreamingTransformer.generateResponseValueNode(responseNode, method, helper);
     if (!responseValueNode.isPresent()) {
       return null;
     }
 
     prevNode.insertNext(responseNode);
     return responseNode;
-  }
-
-  private ConfigNode generatePageStreamingResponseValueNode(
-      ConfigNode parentNode, MethodModel method) {
-    ConfigNode responseValueNode =
-        pageStreamingTransformer.generateResponseValueNode(method, helper);
-    if (responseValueNode.isPresent()) {
-      parentNode.setChild(responseValueNode);
-    }
-
-    return responseValueNode;
   }
 }

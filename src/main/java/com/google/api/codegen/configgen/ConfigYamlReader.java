@@ -72,7 +72,7 @@ public class ConfigYamlReader {
         new ConfigYamlNodeReader(lines, helper)
             .readMessageNode((MappingNode) tree, ConfigProto.getDescriptor());
     return helper.getErrorCount() == initialErrorCount
-        ? new FieldConfigNode("").setChild(configNode)
+        ? new FieldConfigNode(0, "").setChild(configNode)
         : null;
   }
 }
