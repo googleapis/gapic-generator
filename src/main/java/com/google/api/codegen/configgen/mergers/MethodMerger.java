@@ -14,29 +14,24 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
+import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Merges the methods property from a Model into a ConfigNode. */
+/** Merges the methods property from an API interface into a ConfigNode. */
 public class MethodMerger {
-  private static final ImmutableSet<String> IGNORED_FIELDS =
-      ImmutableSet.of("page_token", "page_size");
-
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(garrettjones): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
@@ -88,11 +83,21 @@ public class MethodMerger {
           + "  timeout_millis - Specifies the default timeout for a non-retrying call. If the call "
           + "is retrying, refer to retry_params_name instead.";
 
-  private final RetryMerger retryMerger = new RetryMerger();
-  private final PageStreamingMerger pageStreamingMerger = new PageStreamingMerger();
+  private final RetryMerger retryMerger;
+  private final PageStreamingMerger pageStreamingMerger;
+  private final PagingParameters pagingParameters;
+
+  public MethodMerger(
+      RetryMerger retryMerger,
+      PageStreamingMerger pageStreamingMerger,
+      PagingParameters pagingParameters) {
+    this.retryMerger = retryMerger;
+    this.pageStreamingMerger = pageStreamingMerger;
+    this.pagingParameters = pagingParameters;
+  }
 
   public void generateMethodsNode(
-      ConfigNode parentNode, Interface apiInterface, Map<String, String> collectionNameMap) {
+      ConfigNode parentNode, InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
     FieldConfigNode methodsNode =
         new FieldConfigNode("methods").setComment(new DefaultComment(METHODS_COMMENT));
     NodeFinder.getLastChild(parentNode).insertNext(methodsNode);
@@ -100,20 +105,17 @@ public class MethodMerger {
   }
 
   private ConfigNode generateMethodsValueNode(
-      ConfigNode parentNode, Interface apiInterface, final Map<String, String> collectionNameMap) {
+      ConfigNode parentNode,
+      InterfaceModel apiInterface,
+      final Map<String, String> collectionNameMap) {
     return ListTransformer.generateList(
-        apiInterface.getReachableMethods(),
+        apiInterface.getMethods(),
         parentNode,
-        new ListTransformer.ElementTransformer<Method>() {
-          @Override
-          public ConfigNode generateElement(Method method) {
-            return generateMethodNode(method, collectionNameMap);
-          }
-        });
+        method -> generateMethodNode(method, collectionNameMap));
   }
 
   private ListItemConfigNode generateMethodNode(
-      Method method, Map<String, String> collectionNameMap) {
+      MethodModel method, Map<String, String> collectionNameMap) {
     ListItemConfigNode methodNode = new ListItemConfigNode();
     ConfigNode nameNode = FieldConfigNode.createStringPair("name", method.getSimpleName());
     methodNode.setChild(nameNode);
@@ -128,12 +130,12 @@ public class MethodMerger {
     return methodNode;
   }
 
-  private ConfigNode generateField(ConfigNode prevNode, Method method) {
+  private ConfigNode generateField(ConfigNode prevNode, MethodModel method) {
     List<String> parameterList = new ArrayList<>();
-    MessageType message = method.getInputMessage();
-    for (Field field : message.getReachableFields()) {
+    for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
+      if (field.getOneof() == null
+          && !pagingParameters.getIgnoredParameters().contains(fieldName)) {
         parameterList.add(fieldName);
       }
     }
@@ -153,7 +155,7 @@ public class MethodMerger {
 
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
-    int fieldCount = Iterables.size(message.getReachableFields());
+    int fieldCount = Iterables.size(method.getInputFields());
     boolean requestObjectMethod =
         (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
             && !method.getRequestStreaming();
@@ -182,20 +184,13 @@ public class MethodMerger {
   }
 
   private ConfigNode generateFieldNamePatterns(
-      ConfigNode prevNode, Method method, final Map<String, String> nameMap) {
+      ConfigNode prevNode, MethodModel method, final Map<String, String> nameMap) {
     ConfigNode fieldNamePatternsNode = new FieldConfigNode("field_name_patterns");
     ConfigNode fieldNamePatternsValueNode =
         ListTransformer.generateList(
-            CollectionPattern.getCollectionPatternsFromMethod(method),
+            method.getResourcePatternNameMap(nameMap).entrySet(),
             fieldNamePatternsNode,
-            new ListTransformer.ElementTransformer<CollectionPattern>() {
-              @Override
-              public ConfigNode generateElement(CollectionPattern collectionPattern) {
-                return FieldConfigNode.createStringPair(
-                    collectionPattern.getFieldPath(),
-                    nameMap.get(collectionPattern.getTemplatizedResourcePath()));
-              }
-            });
+            entry -> FieldConfigNode.createStringPair(entry.getKey(), entry.getValue()));
     if (!fieldNamePatternsValueNode.isPresent()) {
       return prevNode;
     }

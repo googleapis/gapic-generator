@@ -92,7 +92,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> views = new ArrayList<>();
     ProtoApiModel apiModel = new ProtoApiModel(model);
-    for (ProtoInterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (ProtoInterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {

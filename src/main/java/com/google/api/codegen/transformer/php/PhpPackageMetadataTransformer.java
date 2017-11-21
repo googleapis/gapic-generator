@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -49,17 +48,15 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    boolean hasMultipleInterfaces = new InterfaceView().hasMultipleServices(model);
     List<ViewModel> models = new ArrayList<>();
     PhpPackageMetadataNamer namer =
         new PhpPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(new ProtoApiModel(model), namer, hasMultipleInterfaces));
+    models.add(generateMetadataView(new ProtoApiModel(model), namer));
     return models;
   }
 
-  private ViewModel generateMetadataView(
-      ApiModel model, PackageMetadataNamer namer, boolean hasMultipleServices) {
+  private ViewModel generateMetadataView(ApiModel model, PackageMetadataNamer namer) {
     List<PackageDependencyView> dependencies =
         ImmutableList.of(
             PackageDependencyView.create(
@@ -70,7 +67,7 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
         .generateMetadataView(
             namer, packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
         .additionalDependencies(dependencies)
-        .hasMultipleServices(hasMultipleServices)
+        .hasMultipleServices(model.hasMultipleServices())
         .identifier(namer.getMetadataIdentifier())
         .build();
   }
