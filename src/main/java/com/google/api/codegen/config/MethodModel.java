@@ -61,7 +61,7 @@ public interface MethodModel {
   /* @return the type of the input field. */
   TypeModel getInputType();
 
-  /* @return the type of the input field. */
+  /* @return the type of the output field. */
   TypeModel getOutputType();
 
   /* @return theTypeName for the output type. Save it in the table. */

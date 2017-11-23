@@ -18,8 +18,8 @@ import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -212,7 +212,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))

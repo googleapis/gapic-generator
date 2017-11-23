@@ -30,7 +30,8 @@ public abstract class TestCaseView {
 
   public abstract ClientMethodType clientMethodType();
 
-  public abstract MockGrpcResponseView mockResponse();
+  @Nullable
+  public abstract MockRpcResponseView mockResponse();
 
   public abstract List<ClientTestAssertView> asserts();
 
@@ -102,7 +103,7 @@ public abstract class TestCaseView {
 
     public abstract Builder clientMethodType(ClientMethodType val);
 
-    public abstract Builder mockResponse(MockGrpcResponseView val);
+    public abstract Builder mockResponse(MockRpcResponseView val);
 
     public abstract Builder asserts(List<ClientTestAssertView> val);
 

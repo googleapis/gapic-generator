@@ -14,11 +14,13 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -306,7 +308,7 @@ public class InitCodeNode {
       InitCodeLineType lineType, TypeModel typeRef, Set<String> childKeys) {
     switch (lineType) {
       case StructureInitLine:
-        if (!typeRef.isMessage() || typeRef.isRepeated()) {
+        if (typeRef.isPrimitive() || typeRef.isRepeated()) {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
@@ -383,6 +385,14 @@ public class InitCodeNode {
           return field.getType();
         }
       }
+      // TODO(andrealin): this is super hacky
+      if (parentType instanceof DiscoveryField) {
+        for (Schema field :((DiscoveryField) parentType).getDiscoveryField().properties().values() ) {
+          if (field.additionalProperties() != null) {
+            return DiscoveryField.create(field.additionalProperties().dereference(), ((DiscoveryField) parentType).getDiscoGapicNamer());
+          }
+        }
+      }
       throw new IllegalArgumentException(
           "Message type " + parentType + " does not have field " + key);
     } else {
@@ -408,6 +418,14 @@ public class InitCodeNode {
             fieldConfig = FieldConfig.createDefaultFieldConfig(field);
           }
           return fieldConfig;
+        }
+      }
+      if (parentType instanceof DiscoveryField) {
+        for (Schema field :((DiscoveryField) parentType).getDiscoveryField().properties().values() ) {
+          if (field.additionalProperties() != null) {
+            FieldModel fieldModel = DiscoveryField.create(field.additionalProperties().dereference(), ((DiscoveryField) parentType).getDiscoGapicNamer());
+            return FieldConfig.createDefaultFieldConfig(fieldModel);
+          }
         }
       }
       throw new IllegalArgumentException(

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -43,6 +44,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
+  private final TypeModel returnType = new EmptyTypeModel();
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method, DiscoGapicNamer discoGapicNamer) {
@@ -115,9 +117,14 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
     // Maybe use Discogapic namer for this?
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    if (method.response() != null) {
+      return typeTable
+          .getTypeTable()
+          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    } else {
+      // TODO(andrealin): make this language-agnostic
+      return new TypeName("java.lang.Void");
+    }
   }
 
   @Override
@@ -127,9 +134,13 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    if (method.request() != null) {
+      return typeTable
+          .getTypeTable()
+          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    } else {
+      return discoGapicNamer.getRequestTypeName(method);
+    }
   }
 
   @Override
@@ -320,6 +331,12 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeModel getOutputType() {
-    return null;
+    if (method.response() != null) {
+      if (!Strings.isNullOrEmpty(method.response().reference())) {
+        return DiscoveryField.create(method.response().dereference(), discoGapicNamer);
+      }
+      return DiscoveryField.create(method.response(), discoGapicNamer);
+    }
+    return returnType;
   }
 }

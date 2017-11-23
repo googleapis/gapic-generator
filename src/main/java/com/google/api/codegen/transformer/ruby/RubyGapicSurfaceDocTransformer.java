@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -156,7 +156,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
-      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       tocContents.add(
           metadataTransformer.generateTocContent(
               model, packageNamer, packageFilePath, namer.getApiWrapperClassName(interfaceConfig)));

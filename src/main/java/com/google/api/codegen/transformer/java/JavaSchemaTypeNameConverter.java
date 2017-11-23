@@ -211,7 +211,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
         || primitiveType.equals("float")) {
       return value;
     }
-    if (primitiveType.equals("String")) {
+    if (primitiveType.equals("java.lang.String")) {
       return "\"" + value + "\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");

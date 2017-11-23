@@ -44,7 +44,7 @@ import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
-import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
+import com.google.api.codegen.viewmodel.testing.MockRpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.collect.ImmutableMap;
@@ -121,8 +121,10 @@ public class TestCaseTransformer {
 
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
-    MockGrpcResponseView mockGrpcResponseView =
-        createMockResponseView(methodContext, responseInitCodeContext);
+    MockRpcResponseView mockRpcResponseView = null;
+    //    if (methodConfig.getMethodModel().getApiSource().equals(ApiSource.PROTO)) {
+    mockRpcResponseView = createMockResponseView(methodContext, responseInitCodeContext);
+    //    }
 
     GrpcStreamingView grpcStreamingView = null;
     if (methodConfig.isGrpcStreaming()) {
@@ -145,7 +147,7 @@ public class TestCaseTransformer {
                   createGrpcStreamingInitCodeViews(methodContext, initCodeContext, initCode))
               .responseInitCodeList(
                   createGrpcStreamingInitCodeViews(
-                      methodContext, responseInitCodeContext, mockGrpcResponseView.initCode()))
+                      methodContext, responseInitCodeContext, mockRpcResponseView.initCode()))
               .build();
     }
 
@@ -156,7 +158,7 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
-        .mockResponse(mockGrpcResponseView)
+        .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
@@ -242,7 +244,7 @@ public class TestCaseTransformer {
     return requestInitCodeList;
   }
 
-  private MockGrpcResponseView createMockResponseView(
+  private MockRpcResponseView createMockResponseView(
       MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
     InitCodeView initCodeView =
@@ -251,7 +253,7 @@ public class TestCaseTransformer {
         methodContext
             .getMethodModel()
             .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
-    return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
+    return MockRpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
   private InitCodeContext createResponseInitCodeContext(
