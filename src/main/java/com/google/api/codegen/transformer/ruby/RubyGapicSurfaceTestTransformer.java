@@ -63,7 +63,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String SMOKE_TEST_TEMPLATE_FILE = "ruby/smoke_test.snip";
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
 
-  private final GapicCodePathMapper pathMapper;
+  private final GapicCodePathMapper unitTestPathMapper;
+  private final GapicCodePathMapper smokeTestPathMapper;
   private PackageMetadataConfig packageConfig;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
@@ -72,8 +73,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final ValueProducer valueProducer = new StandardValueProducer();
 
   public RubyGapicSurfaceTestTransformer(
-      GapicCodePathMapper rubyPathMapper, PackageMetadataConfig packageConfig) {
-    this.pathMapper = rubyPathMapper;
+      GapicCodePathMapper rubyUnitTestPathMapper,
+      GapicCodePathMapper rubySmokeTestPathMapper,
+      PackageMetadataConfig packageConfig) {
+    this.unitTestPathMapper = rubyUnitTestPathMapper;
+    this.smokeTestPathMapper = rubySmokeTestPathMapper;
     this.packageConfig = packageConfig;
   }
 
@@ -101,7 +105,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
       String outputPath =
-          pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig);
+          unitTestPathMapper.getOutputPath(
+              context.getInterfaceModel().getFullName(), productConfig);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
       views.add(
           ClientTestFileView.newBuilder()
@@ -220,7 +225,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
     boolean packageHasMultipleServices = context.getApiModel().hasMultipleServices();
     String outputPath =
-        pathMapper.getOutputPath(
+        smokeTestPathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
