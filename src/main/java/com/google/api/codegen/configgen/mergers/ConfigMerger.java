@@ -95,7 +95,7 @@ public class ConfigMerger {
 
   private ConfigNode mergeType(ConfigNode configNode) {
     FieldConfigNode typeNode = MissingFieldTransformer.prepend("type", configNode).generate();
-    if (!NodeFinder.hasChild(typeNode)) {
+    if (!NodeFinder.hasContent(typeNode.getChild())) {
       return typeNode.setChild(new ScalarConfigNode(typeNode.getStartLine(), CONFIG_PROTO_TYPE));
     }
 
@@ -112,7 +112,7 @@ public class ConfigMerger {
   private ConfigNode mergeVersion(ConfigNode configNode, ConfigNode prevNode) {
     FieldConfigNode versionNode =
         MissingFieldTransformer.insert("config_schema_version", configNode, prevNode).generate();
-    if (!NodeFinder.hasChild(versionNode)) {
+    if (!NodeFinder.hasContent(versionNode.getChild())) {
       return versionNode.setChild(
           new ScalarConfigNode(versionNode.getStartLine(), CONFIG_SCHEMA_VERSION));
     }
@@ -133,7 +133,7 @@ public class ConfigMerger {
     FieldConfigNode licenseHeaderNode =
         MissingFieldTransformer.insert("license_header", configNode, prevNode).generate();
 
-    if (NodeFinder.hasChild(licenseHeaderNode)) {
+    if (NodeFinder.hasContent(licenseHeaderNode.getChild())) {
       return;
     }
 

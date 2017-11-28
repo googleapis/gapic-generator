@@ -54,7 +54,7 @@ public class LanguageSettingsMerger {
       final String packageName, ConfigNode configNode, ConfigNode prevNode) {
     FieldConfigNode languageSettingsNode =
         MissingFieldTransformer.insert("language_settings", configNode, prevNode).generate();
-    if (NodeFinder.hasChild(languageSettingsNode)) {
+    if (NodeFinder.hasContent(languageSettingsNode.getChild())) {
       return languageSettingsNode;
     }
 

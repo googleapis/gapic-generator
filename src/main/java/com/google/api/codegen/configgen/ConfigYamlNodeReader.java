@@ -29,7 +29,7 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
-/** Recursively reads a YAML MappingNode and all its children into a ConfigNode. */
+/** Recursively reads a snakeyaml MappingNode and all its children into a ConfigNode. */
 public class ConfigYamlNodeReader {
   private static final String TYPE_KEY = "type";
 

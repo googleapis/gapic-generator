@@ -33,21 +33,19 @@ public class NodeFinder {
     return new NullConfigNode();
   }
 
-  public static boolean hasChild(ConfigNode parentNode) {
-    ConfigNode childNode = parentNode.getChild();
-    if (!childNode.isPresent()) {
-      return false;
-    }
-
-    if (!childNode.getText().isEmpty()) {
+  /**
+   * Returns true if the given node has text content. If the node is a list item, checks its child.
+   */
+  public static boolean hasContent(ConfigNode node) {
+    if (!node.getText().isEmpty()) {
       return true;
     }
 
-    if (!(childNode instanceof ListItemConfigNode)) {
+    if (!(node instanceof ListItemConfigNode)) {
       return false;
     }
 
-    return ((ListItemConfigNode) childNode).getChild().isPresent();
+    return hasContent(node.getChild());
   }
 
   public static int getNextLine(ConfigNode node) {

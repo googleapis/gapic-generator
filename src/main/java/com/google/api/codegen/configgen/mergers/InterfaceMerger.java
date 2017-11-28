@@ -47,7 +47,7 @@ public class InterfaceMerger {
   public void mergeInterfaces(ApiModel model, ConfigNode configNode) {
     FieldConfigNode interfacesNode =
         MissingFieldTransformer.append("interfaces", configNode).generate();
-    if (NodeFinder.hasChild(interfacesNode)) {
+    if (NodeFinder.hasContent(interfacesNode.getChild())) {
       return;
     }
 
