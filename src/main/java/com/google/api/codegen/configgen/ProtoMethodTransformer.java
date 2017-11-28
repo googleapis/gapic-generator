@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.Model;
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
   private static final String WILDCARD = "*";
+  private static final int MILLIS_PER_SECOND = 1000;
 
   @Override
   public boolean isIgnoredParameter(String parameter) {
@@ -34,7 +35,7 @@ public class ProtoMethodTransformer implements MethodTransformer {
     Model model = ((ProtoMethodModel) method).getProtoMethod().getModel();
     for (BackendRule backendRule : model.getServiceConfig().getBackend().getRulesList()) {
       if (backendRule.getSelector().equals(method.getFullName())) {
-        return String.valueOf((int) Math.ceil(backendRule.getDeadline()));
+        return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
       }
     }
     return "60000";
