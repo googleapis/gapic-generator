@@ -18,10 +18,15 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 
 public class RubyUtil {
+  private static final String GOOGLE_CLOUD_PACKAGE_NAME = "Google::Cloud";
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
 
   public static boolean isLongrunning(String packageName) {
     return packageName.equals(LONGRUNNING_PACKAGE_NAME);
+  }
+
+  public static boolean isGoogleCloudPackage(String packageName) {
+    return packageName.startsWith(GOOGLE_CLOUD_PACKAGE_NAME);
   }
 
   public static boolean hasMajorVersion(String packageName) {

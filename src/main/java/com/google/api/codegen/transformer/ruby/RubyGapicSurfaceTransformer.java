@@ -67,12 +67,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String VERSION_INDEX_TEMPLATE_FILE = "ruby/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
   private static final String CREDENTIALS_CLASS_TEMPLATE_FILE = "ruby/credentials.snip";
-  // This assumes the api is a google-cloud api.
-  private static final List<String> DEFAULT_PATH_ENV_VARS =
+
+  private static final List<String> GOOGLE_CLOUD_PATH_ENV_VARS =
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
-  private static final List<String> DEFAULT_JSON_ENV_VARS =
+  private static final List<String> GOOGLE_CLOUD_JSON_ENV_VARS =
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
-  private static final List<String> DEFAULT_PATHS =
+  private static final List<String> GOOGLE_CLOUD_PATHS =
       ImmutableList.of("~/.config/gcloud/application_default_credentials.json");
 
   private final GapicCodePathMapper pathMapper;
@@ -274,21 +274,24 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.inittedConstantName(
             Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json"));
 
-    List<String> pathEnvVars =
-        ImmutableList.<String>builder()
-            .add(apiSpecificPathEnvVar)
-            .addAll(DEFAULT_PATH_ENV_VARS)
-            .build();
-    List<String> jsonEnvVars =
-        ImmutableList.<String>builder()
-            .add(apiSpecificJsonEnvVar)
-            .addAll(DEFAULT_JSON_ENV_VARS)
-            .build();
+    ImmutableList.Builder<String> pathEnvVars =
+        ImmutableList.<String>builder().add(apiSpecificPathEnvVar);
 
-    return CredentialsClassView.newBuilder()
-        .pathEnvVars(pathEnvVars)
-        .jsonEnvVars(jsonEnvVars)
-        .defaultPaths(DEFAULT_PATHS)
+    ImmutableList.Builder<String> jsonEnvVars =
+        ImmutableList.<String>builder().add(apiSpecificJsonEnvVar);
+
+    CredentialsClassView.Builder credentialsClassView = CredentialsClassView.newBuilder();
+    if (RubyUtil.isGoogleCloudPackage(productConfig.getPackageName())) {
+      pathEnvVars.addAll(GOOGLE_CLOUD_PATH_ENV_VARS);
+      jsonEnvVars.addAll(GOOGLE_CLOUD_JSON_ENV_VARS);
+      credentialsClassView.defaultPaths(GOOGLE_CLOUD_PATHS);
+    } else {
+      credentialsClassView.defaultPaths(ImmutableList.of());
+    }
+
+    return credentialsClassView
+        .pathEnvVars(pathEnvVars.build())
+        .jsonEnvVars(jsonEnvVars.build())
         .scopes(model.getAuthScopes())
         .build();
   }
