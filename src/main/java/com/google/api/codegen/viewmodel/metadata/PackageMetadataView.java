@@ -93,6 +93,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract List<PackageDependencyView> protoPackageTestDependencies();
 
   @Nullable
+  public abstract List<PackageDependencyView> devDependencies();
+
+  @Nullable
   public abstract VersionBound authVersionBound();
 
   @Nullable
@@ -203,6 +206,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Additional dependencies. Used for conditionally added dependencies. */
     public abstract Builder additionalDependencies(List<PackageDependencyView> val);
+
+    @Nullable
+    public abstract Builder devDependencies(List<PackageDependencyView> val);
 
     public abstract Builder authVersionBound(VersionBound val);
 

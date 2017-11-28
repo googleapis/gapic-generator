@@ -29,7 +29,6 @@ import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -49,6 +48,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 /** Responsible for producing package metadata related views for NodeJS */
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
@@ -196,6 +196,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(model.hasMultipleServices())
         .additionalDependencies(generateAdditionalDependencies(model, productConfig))
+        .devDependencies(generateDevDependencies(model, productConfig))
         .build();
   }
 
@@ -218,34 +219,34 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     return dependencies.build();
   }
 
-  private boolean hasLongrunning(ApiModel model, ProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
-        return true;
-      }
+  private List<PackageDependencyView> generateDevDependencies(
+      ApiModel model, ProductConfig productConfig) {
+    ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
+    dependencies.add(PackageDependencyView.create("mocha", VersionBound.create("3.2.0", "")));
+    if (hasStreaming(model, productConfig)) {
+      dependencies.add(PackageDependencyView.create("through2", VersionBound.create("2.0.3", "")));
     }
-    return false;
+    return dependencies.build();
+  }
+
+  private boolean hasStreaming(ApiModel model, ProductConfig productConfig) {
+    return StreamSupport.stream(model.getInterfaces().spliterator(), true)
+        .anyMatch(
+            apiInterface ->
+                productConfig.getInterfaceConfig(apiInterface).hasGrpcStreamingMethods());
+  }
+
+  private boolean hasLongrunning(ApiModel model, ProductConfig productConfig) {
+    return StreamSupport.stream(model.getInterfaces().spliterator(), true)
+        .anyMatch(
+            apiInterface ->
+                productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations());
   }
 
   private boolean hasBatching(ApiModel model, ProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (productConfig.getInterfaceConfig(apiInterface).hasBatchingMethods()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (new GrpcStubTransformer()
-              .generateGrpcStubs(createContext(apiInterface, productConfig))
-              .size()
-          > 1) {
-        return true;
-      }
-    }
-    return false;
+    return StreamSupport.stream(model.getInterfaces().spliterator(), true)
+        .anyMatch(
+            apiInterface -> productConfig.getInterfaceConfig(apiInterface).hasBatchingMethods());
   }
 
   private GapicInterfaceContext createContext(
