@@ -119,8 +119,7 @@ public class MethodMerger {
   private ListItemConfigNode generateMethodNode(
       int startLine, MethodModel method, Map<String, String> collectionNameMap) {
     ListItemConfigNode methodNode = new ListItemConfigNode(startLine);
-    ConfigNode nameNode =
-        FieldConfigNode.createStringPair(startLine, "name", method.getSimpleName());
+    ConfigNode nameNode = FieldConfigNode.createStringPair(startLine, "name", method.getRawName());
     methodNode.setChild(nameNode);
     ConfigNode prevNode = generateField(nameNode, method);
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
@@ -132,22 +131,24 @@ public class MethodMerger {
 
   private ConfigNode generateField(ConfigNode prevNode, MethodModel method) {
     List<String> parameterList = new ArrayList<>();
+    List<FieldModel> fieldList = new ArrayList<>();
     for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null && !methodTransformer.isIgnoredParameter(fieldName)) {
         parameterList.add(fieldName);
+        fieldList.add(field);
       }
     }
-
-    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
-      prevNode = generateFlatteningNode(prevNode, parameterList);
+    List<String> parameters = filteredInputFields(method, fieldList);
+    if (parameters.size() > 0 && parameters.size() <= FLATTENING_THRESHOLD) {
+      prevNode = generateFlatteningNode(prevNode, parameters);
     }
 
     FieldConfigNode requiredFieldsNode =
         new FieldConfigNode(NodeFinder.getNextLine(prevNode), "required_fields");
     requiredFieldsNode.setComment(new FixmeComment("Configure which fields are required."));
     ConfigNode requiredFieldsValueNode =
-        ListTransformer.generateStringList(parameterList, requiredFieldsNode);
+        ListTransformer.generateStringList(parameters, requiredFieldsNode);
     if (requiredFieldsValueNode.isPresent()) {
       prevNode.insertNext(requiredFieldsNode);
       prevNode = requiredFieldsNode;
@@ -165,7 +166,31 @@ public class MethodMerger {
             "request_object_method",
             String.valueOf(requestObjectMethod));
     prevNode.insertNext(requestObjectMethodNode);
-    return requestObjectMethodNode;
+    String resourceNameTreatment = methodTransformer.getResourceNameTreatment();
+    if (!resourceNameTreatment.isEmpty()) {
+      prevNode = requestObjectMethodNode;
+      ConfigNode resourceNameTreatmentNode =
+          FieldConfigNode.createStringPair(
+              NodeFinder.getNextLine(requestObjectMethodNode),
+              "resource_name_treatment",
+              resourceNameTreatment);
+      prevNode.insertNext(resourceNameTreatmentNode);
+    }
+
+    return prevNode.getNext();
+  }
+
+  /** Get the filtered input fields for a model, from a list of candidates. */
+  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<? extends FieldModel> parametersForResourceNameMethod =
+        method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        parameterNames.add(field.getNameAsParameter());
+      }
+    }
+    return parameterNames;
   }
 
   private ConfigNode generateFlatteningNode(ConfigNode prevNode, List<String> parameterList) {

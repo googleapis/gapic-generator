@@ -21,4 +21,6 @@ public interface MethodTransformer {
   boolean isIgnoredParameter(String parameter);
 
   String getTimeoutMillis(MethodModel method);
+
+  String getResourceNameTreatment();
 }

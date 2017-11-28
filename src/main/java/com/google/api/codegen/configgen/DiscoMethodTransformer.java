@@ -12,24 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.configgen.transformer;
+package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.configgen.PagingParameters;
-import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
-import javax.annotation.Nullable;
 
-/** A transformer that does implementations that vary by API source. */
-public interface InputSpecificMethodTransformer {
+/** MethodTransformer implementation for discovery Methods. */
+public class DiscoMethodTransformer implements MethodTransformer {
+  private static final PagingParameters PAGING_PARAMETERS = new HttpPagingParameters();
 
-  PagingParameters getPagingParameters();
+  @Override
+  public boolean isIgnoredParameter(String parameter) {
+    return PAGING_PARAMETERS.getIgnoredParameters().contains(parameter);
+  }
 
-  /** Get the ResourceNameTreatment for a method. */
-  @Nullable
-  ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel);
+  @Override
+  public String getTimeoutMillis(MethodModel method) {
+    return "60000";
+  }
 
-  /** Make the page streaming response view for a method. */
-  @Nullable
-  PageStreamingResponseView generatePageStreamingResponse(MethodModel method);
+  @Override
+  public String getResourceNameTreatment() {
+    return ResourceNameTreatment.STATIC_TYPES.toString();
+  }
 }

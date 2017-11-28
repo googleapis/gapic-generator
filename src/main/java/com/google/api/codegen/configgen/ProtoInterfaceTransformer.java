@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.configgen;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableMap;
@@ -55,5 +57,10 @@ public class ProtoInterfaceTransformer implements InterfaceTransformer {
       nameMapBuilder.put(resourceNameString, entityNameString);
     }
     return nameMapBuilder.build();
+  }
+
+  @Override
+  public void generateResourceNameGenerations(ConfigNode parentNode, ApiModel model) {
+    // Do nothing
   }
 }

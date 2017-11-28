@@ -17,6 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.util.Name;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -75,13 +77,19 @@ public class DiscoInterfaceModel implements InterfaceModel {
   @Override
   public List<MethodModel> getMethods() {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
-    if (!apiModel.getDocument().resources().containsKey(interfaceName)) {
+    if (!apiModel.getDocument().resources().containsKey(getResourceName())) {
+      System.out.println(getSimpleName());
       return ImmutableList.of();
     }
-    for (Method method : apiModel.getDocument().resources().get(interfaceName)) {
+    for (Method method : apiModel.getDocument().resources().get(getResourceName())) {
       methods.add(new DiscoveryMethodModel(method, null));
     }
     return methods.build();
+  }
+
+  private String getResourceName() {
+    List<String> pieces = Splitter.on(".").splitToList(interfaceName);
+    return Name.anyCamel(pieces.get(pieces.size() - 1)).toLowerCamel();
   }
 
   @Override
