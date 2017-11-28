@@ -16,10 +16,9 @@ package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.configgen.InterfaceTransformer;
-import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.ProtoInterfaceTransformer;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
-import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Interface;
@@ -31,12 +30,10 @@ public class ProtoConfigMerger {
   public ConfigNode mergeConfig(Model model) {
     CollectionMerger collectionMerger = new CollectionMerger();
     RetryMerger retryMerger = new RetryMerger();
-    PagingParameters pagingParameters = new ProtoPagingParameters();
     PageStreamingMerger pageStreamingMerger =
-        new PageStreamingMerger(
-            new ProtoPageStreamingTransformer(), pagingParameters, model.getDiagCollector());
+        new PageStreamingMerger(new ProtoPageStreamingTransformer(), model.getDiagCollector());
     MethodMerger methodMerger =
-        new MethodMerger(retryMerger, pageStreamingMerger, pagingParameters);
+        new MethodMerger(retryMerger, pageStreamingMerger, new ProtoMethodTransformer());
     LanguageSettingsMerger languageSettingsMerger = new LanguageSettingsMerger();
     InterfaceTransformer interfaceTranformer = new ProtoInterfaceTransformer();
     InterfaceMerger interfaceMerger =

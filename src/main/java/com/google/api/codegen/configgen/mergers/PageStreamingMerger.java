@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PageStreamingTransformer;
-import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
@@ -25,15 +24,11 @@ import com.google.api.tools.framework.model.DiagCollector;
 /** Merges page streaming properties from a MethodModel into a ConfigNode. */
 public class PageStreamingMerger {
   private final PageStreamingTransformer pageStreamingTransformer;
-  private final PagingParameters pagingParameters;
   private final DiagCollector diagCollector;
 
   public PageStreamingMerger(
-      PageStreamingTransformer pageStreamingTransformer,
-      PagingParameters pagingParameters,
-      DiagCollector diagCollector) {
+      PageStreamingTransformer pageStreamingTransformer, DiagCollector diagCollector) {
     this.pageStreamingTransformer = pageStreamingTransformer;
-    this.pagingParameters = pagingParameters;
     this.diagCollector = diagCollector;
   }
 
@@ -62,8 +57,8 @@ public class PageStreamingMerger {
 
   private ConfigNode generatePageStreamingRequestValueNode(
       ConfigNode parentNode, MethodModel method) {
-    String pageTokenName = pagingParameters.getNameForPageToken();
-    String pageSizeName = pagingParameters.getNameForPageSize();
+    String pageTokenName = pageStreamingTransformer.getNameForPageToken();
+    String pageSizeName = pageStreamingTransformer.getNameForPageSize();
     boolean hasTokenField = method.getInputField(pageTokenName) != null;
     boolean hasPageSizeField = method.getInputField(pageSizeName) != null;
     ConfigNode requestValueNode = null;
