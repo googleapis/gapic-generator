@@ -33,7 +33,7 @@ public class JSCommentReformatter implements CommentReformatter {
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
                   .toFormat("[$TITLE]($URL)"))
-          .replace(CLOSE_COMMENT_PATTERN, "&#42;/")
+          .replace(CLOSE_COMMENT_PATTERN, "* /")
           .build();
 
   @Override
