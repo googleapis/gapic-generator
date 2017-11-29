@@ -5,7 +5,7 @@
 @snippet generate(apiTest)
   {@header(apiTest.fileHeader)}
 
-  {@helpers(apiTest.testClass.fullyQualifiedCredentialsClassName)}
+  {@helpers(apiTest.testClass)}
 
   {@testClass(apiTest.apiVersion, apiTest.testClass)}
 @end
@@ -20,7 +20,7 @@
   {@importList(fileHeader.importSection.appImports)}
 @end
 
-@private helpers(credentialsClassName)
+@private helpers(testClass)
   class CustomTestError < StandardError; end
 
   @# Mock for the GRPC::ClientStub class.
@@ -52,7 +52,7 @@
     end
   end
   
-  class MockCredentialsClass < {@credentialsClassName}
+  class {@testClass.mockCredentialsClassName} < {@testClass.fullyQualifiedCredentialsClassName}
     def initialize(method_name)
       @@method_name = method_name
     end
@@ -140,7 +140,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -176,7 +176,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -220,7 +220,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -256,7 +256,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -289,7 +289,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -322,7 +322,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -356,7 +356,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -385,7 +385,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -413,7 +413,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
-    {@mockAuth(test.clientMethodName)}
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
       {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
@@ -529,8 +529,8 @@
   end
 @end
 
-@private mockAuth(methodName)
-  mock_credentials = MockCredentialsClass.new("{@methodName}")
+@private mockAuth(methodName, mockCredentialsClassName)
+  mock_credentials = {@mockCredentialsClassName}.new("{@methodName}")
 @end
 
 @private requestAsserts(test)

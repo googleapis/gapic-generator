@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String fullyQualifiedCredentialsClassName();
 
   @Nullable
+  public abstract String defaultCredentialsInitializerCall();
+
+  @Nullable
   public abstract String servicePhraseName();
 
   @Nullable
@@ -226,6 +229,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder isGcloud(boolean val);
 
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
+
+    public abstract Builder defaultCredentialsInitializerCall(String val);
 
     public abstract Builder servicePhraseName(String val);
 

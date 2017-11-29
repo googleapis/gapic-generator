@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ public abstract class CredentialsClassView {
 
   public abstract List<String> jsonEnvVars();
 
+  public abstract List<String> defaultPaths();
+
   public static Builder newBuilder() {
     return new AutoValue_CredentialsClassView.Builder();
   }
@@ -36,6 +38,8 @@ public abstract class CredentialsClassView {
     public abstract Builder pathEnvVars(List<String> vals);
 
     public abstract Builder jsonEnvVars(List<String> vals);
+
+    public abstract Builder defaultPaths(List<String> vals);
 
     public abstract CredentialsClassView build();
   }

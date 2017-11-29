@@ -185,7 +185,7 @@
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -214,7 +214,7 @@
         // Mock request
         {@initCode(test.initCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
         $responses = iterator_to_array($serverStream->readAll());
@@ -243,13 +243,13 @@
         // Mock request
         {@initCode(test.initCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $results = $serverStream->readAll();
 
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -283,10 +283,10 @@
     $status->details = 'internal error';
 
     $expectedExceptionMessage = json_encode([
-       "message" => "internal error",
-       "code" => Grpc\STATUS_DATA_LOSS,
-       "status" => "DATA_LOSS",
-       "details" => [],
+       'message' => 'internal error',
+       'code' => Grpc\STATUS_DATA_LOSS,
+       'status' => 'DATA_LOSS',
+       'details' => [],
     ], JSON_PRETTY_PRINT);
 @end
 
@@ -298,10 +298,10 @@
     {
         {@singleCallTestSetup(test)}
         @if test.hasReturnValue
-            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
             $this->assertEquals($expectedResponse, $response);
         @else
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         @end
         {@singleCallSuccessAsserts(test)}
 
@@ -316,7 +316,7 @@
     public function {@test.name}()
     {
         {@singleCallTestSetup(test)}
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -350,9 +350,9 @@
 
         @end
         try {
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -409,7 +409,7 @@
           {@initCode(test.initCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
         {@lroCallSuccessAsserts(test)}
@@ -472,7 +472,7 @@
           {@initCode(test.initCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
 
@@ -482,7 +482,7 @@
         try {
             $response->pollUntilComplete();
             // If the pollUntilComplete() method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());

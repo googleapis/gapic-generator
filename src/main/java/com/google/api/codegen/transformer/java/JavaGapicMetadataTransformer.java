@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
@@ -64,10 +65,11 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     String packageName = packageConfig.packageName(TargetLanguage.JAVA);
     JavaSurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName);
+    ProtoApiModel apiModel = new ProtoApiModel(model);
 
     List<ViewModel> viewModels = Lists.newArrayList();
     for (PackageMetadataView.Builder builder :
-        this.generateMetadataViewBuilders(model, packageConfig)) {
+        this.generateMetadataViewBuilders(apiModel, packageConfig)) {
       if (generatorConfig.enableSampleAppGenerator()) {
         builder
             .sampleAppName(namer.getSampleAppClassName())

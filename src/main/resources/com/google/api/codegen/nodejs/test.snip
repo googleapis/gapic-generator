@@ -5,7 +5,7 @@
   {@lineComments(apiTest.fileHeader.copyrightLines)}
   //
   {@lineComments(apiTest.fileHeader.licenseLines)}
-  
+
   'use strict';
 
   {@header(apiTest)}
@@ -42,11 +42,9 @@
       assert.deepStrictEqual(actualRequest, expectedRequest);
       if (error) {
         callback(error);
-      }
-      else if (response) {
+      } else if (response) {
         callback(null, response);
-      }
-      else {
+      } else {
         callback(null);
       }
     };
@@ -142,7 +140,10 @@
       @end
       // Mock Grpc layer
       @if test.hasReturnValue
-        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request, expectedResponse);
+        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+          request,
+          expectedResponse
+        );
       @else
         client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request);
       @end
@@ -196,7 +197,7 @@
       client.{@test.clientMethodName}(request).then(responses => {
         var operation = responses[0];
         return operation.promise();
-      }).then(responses => {
+      }).then(() => {
         assert.fail();
       }).catch(err => {
         {@assertError()}
@@ -297,7 +298,7 @@
       @switch test.grpcStreamingType
       @case "ServerStreaming"
         var stream = client.{@test.clientMethodName}(request);
-        stream.on('data', response => {
+        stream.on('data', () => {
           assert.fail();
         });
         stream.on('error', err =>){
@@ -307,7 +308,7 @@
 
         stream.write();
       @case "BidiStreaming"
-        var stream = client.{@test.clientMethodName}().on('data', response => {
+        var stream = client.{@test.clientMethodName}().on('data', () => {
           assert.fail();
         }).on('error', err => {
           {@assertError()}
@@ -327,11 +328,16 @@
     {@commonInit(test, testClass, apiTest)}
 
     // Mock Grpc layer
-    client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request, null, error);
+    client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+      request,
+      null,
+      error
+    );
 
     @if test.hasReturnValue
       client.{@test.clientMethodName}(request, (err, response) => {
         {@assertError()}
+        assert(typeof response === 'undefined');
         done();
       });
     @else
@@ -352,9 +358,15 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @else
-    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @end
 @end
 

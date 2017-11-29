@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ import org.threeten.bp.Duration;
 public abstract class LongRunningConfig {
 
   /** Returns the message type returned from a completed operation. */
-  public abstract TypeRef getReturnType();
+  public abstract TypeModel getReturnType();
 
   /** Returns the message type for the metadata field of an operation. */
-  public abstract TypeRef getMetadataType();
+  public abstract TypeModel getMetadataType();
 
   /** Reports whether or not the service implements delete. */
   public abstract boolean implementsDelete();
@@ -87,14 +87,14 @@ public abstract class LongRunningConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     }
 
@@ -144,8 +144,8 @@ public abstract class LongRunningConfig {
       return null;
     } else {
       return new AutoValue_LongRunningConfig(
-          returnType,
-          metadataType,
+          new ProtoTypeRef(returnType),
+          new ProtoTypeRef(metadataType),
           longRunningConfigProto.getImplementsDelete(),
           longRunningConfigProto.getImplementsCancel(),
           initialPollDelay,

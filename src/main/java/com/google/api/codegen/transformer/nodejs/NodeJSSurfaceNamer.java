@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,34 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -97,17 +101,19 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
-    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
+  public String getPackageServiceName(InterfaceConfig interfaceConfig) {
+    return getReducedServiceName(interfaceConfig.getInterfaceModel().getSimpleName())
+        .toLowerCamel();
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
-    return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
+  public String getApiWrapperClassConstructorName(InterfaceConfig interfaceConfig) {
+    return publicFieldName(
+        Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "Client"));
   }
 
   @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
       return publicMethodName(Name.from("add").join(identifier));
     } else {
@@ -117,7 +123,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -129,22 +135,26 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore();
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+        .join("client_config")
+        .toLowerUnderscore();
   }
 
-  public String getClientFileName(Interface apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client").toLowerUnderscore();
+  public String getClientFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+        .join("client")
+        .toLowerUnderscore();
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(Field field) {
-    return field.getType().isMap();
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
+    return field.isMap();
   }
 
   @Override
@@ -153,44 +163,51 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
-    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     return getModelTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
-  public String getGrpcClientImportName(Interface apiInterface) {
-    return "grpc-" + NamePath.dotted(apiInterface.getFile().getFullName()).toDashed();
+  public String getGrpcClientImportName(InterfaceModel apiInterface) {
+    return "grpc-" + NamePath.dotted(apiInterface.getFileFullName()).toDashed();
   }
 
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    Field field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel field) {
+    return Name.from(field.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return identifier.toLowerCamel();
   }
 
   @Override
-  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    GapicMethodConfig methodConfig = (GapicMethodConfig) methodContext.getMethodConfig();
     Method method = methodConfig.getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
@@ -198,9 +215,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines = returnCallbackDocLines(context.getModelTypeTable(), methodConfig);
+    List<String> callbackLines = returnCallbackDocLines(context.getImportTypeTable(), methodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getModelTypeTable(), methodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), methodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 
@@ -229,7 +246,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef typeRef) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, TypeRef typeRef) {
     if (typeRef.isMessage()) {
       return "an object representing "
           + commentReformatter.getLinkedElementName(typeRef.getMessageType());
@@ -241,7 +258,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnCallbackDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     String classInfo = getParamTypeName(typeTable, method.getOutputType());
@@ -255,7 +272,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     ImmutableList.Builder<String> callbackLines = ImmutableList.builder();
     callbackLines.add(
-        "@param {" + callbackType + "=} callback",
+        "@param {" + callbackType + "} [callback]",
         "  The function which will be called with the result of the API call.");
     if (!isProtobufEmpty(method.getOutputMessage())) {
       callbackLines.add("", "  The second parameter to the callback is " + returnTypeDoc + ".");
@@ -274,7 +291,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnObjectDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
@@ -311,18 +328,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        String keyType = getParamTypeName(typeTable, new ProtoField(type.getMapKeyField()));
+        String valueType = getParamTypeName(typeTable, new ProtoField(type.getMapValueField()));
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";
       }
     }
-
     return String.format("%s%s", getParamTypeNoCardinality(typeTable, type), cardinalityComment);
   }
 
@@ -330,18 +346,25 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private String returnTypeDoc(ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      TypeRef resourcesType = methodConfig.getPageStreaming().getResourcesField().getType();
+      FieldModel resourcesType = methodConfig.getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getMessageType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getMessageType());
       } else if (resourcesType.isEnum()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getEnumType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
-        returnTypeDoc += getParamTypeNoCardinality(typeTable, resourcesType).toLowerCase();
+        returnTypeDoc +=
+            getParamTypeNoCardinality(
+                    typeTable, ((ProtoTypeRef) resourcesType.getType()).getProtoType())
+                .toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -352,13 +375,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return returnTypeDoc;
   }
 
-  private String getParamTypeNoCardinality(ModelTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNoCardinality(ImportTypeTable typeTable, TypeRef type) {
     if (type.isMessage()) {
       return "Object";
     } else if (type.isEnum()) {
       return "number";
     } else {
-      return typeTable.getFullNameForElementType(type);
+      return ((ModelTypeTable) typeTable).getFullNameForElementType(type);
     }
   }
 
@@ -373,9 +396,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(Field field) {
+  public List<String> getDocLines(FieldModel field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    List<String> fieldDocLines = getDocLines(DocumentationUtil.getScopedDescription(field));
+    List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
 
     lines.addAll(fieldDocLines);
@@ -389,43 +412,44 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private String getExtraFieldDescription(Field field) {
-    boolean fieldIsMessage = field.getType().isMessage() && !field.getType().isMap();
-    boolean fieldIsEnum = field.getType().isEnum();
+  private String getExtraFieldDescription(FieldModel field) {
+    boolean fieldIsMessage = field.isMessage() && !field.isMap();
+    boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(field.getType().getMessageType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(field.getType().getEnumType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getEnumType());
     }
     return "";
   }
 
   @Override
-  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+  public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the message type name.
     List<String> messageNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(message)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(message)).split("\\."));
     return messageNames.get(messageNames.size() - 1);
   }
 
   @Override
-  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+  public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the enum type name.
     List<String> enumNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(enumType)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(enumType)).split("\\."));
     return enumNames.get(enumNames.size() - 1);
   }
 
   @Override
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
-    return Name.upperCamel(interfaceConfig.getInterface().getSimpleName())
-            .join("client")
-            .toLowerUnderscore()
-        + ".js";
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client").toLowerUnderscore() + ".js";
   }
 
   @Override
@@ -442,20 +466,18 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(TypeRef typeRef) {
-    switch (typeRef.getKind()) {
-      case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(protos."
-            + typeRef.getMessageType().getFullName()
-            + ")";
-      case TYPE_STRING:
-      case TYPE_BYTES:
-        return "s => s.length";
-      default:
-        // There is no easy way to say the actual length of the numeric fields.
-        // For now throwing an exception.
-        throw new IllegalArgumentException(
-            "Can't determine the byte length function for " + typeRef.getKind());
+  public String getByteLengthFunctionName(FieldModel typeRef) {
+    if (typeRef.isMessage()) {
+      return "gax.createByteLengthFunction(protoFilesRoot.lookup('"
+          + typeRef.getTypeFullName()
+          + "'))";
+    } else if (typeRef.isString() || typeRef.isBytes()) {
+      return "s => s.length";
+    } else {
+      // There is no easy way to say the actual length of the numeric fields.
+      // For now throwing an exception.
+      throw new IllegalArgumentException(
+          "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 

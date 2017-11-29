@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -34,13 +33,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import io.grpc.Status;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.threeten.bp.Duration;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the
@@ -57,25 +52,38 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
-  public abstract Interface getInterface();
+  public Interface getInterface() {
+    return getInterfaceModel().getInterface();
+  }
 
+  @Override
+  public abstract ProtoInterfaceModel getInterfaceModel();
+
+  @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
 
   @Nullable
+  @Override
   public abstract SmokeTestConfig getSmokeTestConfig();
 
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
-  public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
+  @Override
+  public abstract ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
+  @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
-  public abstract ImmutableList<Field> getIamResources();
+  @Override
+  public abstract ImmutableList<FieldModel> getIamResources();
 
+  @Override
   public abstract ImmutableList<String> getRequiredConstructorParams();
 
+  @Override
   public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
+  @Override
   public abstract String getManualDoc();
 
   @Nullable
@@ -91,6 +99,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return getInterface().getSimpleName();
   }
 
+  @Override
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }
@@ -101,7 +110,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
    * diagnostics are reported to the model.
    */
   @Nullable
-  public static GapicInterfaceConfig createInterfaceConfig(
+  static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
@@ -110,10 +119,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
-        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
+        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(
+            diagCollector, interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
@@ -134,7 +144,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
-    ImmutableList<Field> iamResources =
+    ImmutableList<FieldModel> iamResources =
         createIamResources(
             apiInterface.getModel(),
             interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
@@ -171,7 +181,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return new AutoValue_GapicInterfaceConfig(
-          apiInterface,
+          new ProtoInterfaceModel(apiInterface),
           methodConfigs,
           smokeTestConfig,
           methodConfigMap,
@@ -191,68 +201,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto) {
     if (interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
-          apiInterface, interfaceConfigProto.getSmokeTest(), diagCollector);
+          new ProtoInterfaceModel(apiInterface),
+          interfaceConfigProto.getSmokeTest(),
+          diagCollector);
     } else {
       return null;
     }
-  }
-
-  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
-        ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
-    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      EnumSet<Status.Code> codes = EnumSet.noneOf(Status.Code.class);
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(Status.Code.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
-      builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
-  }
-
-  private static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetrySettings> builder =
-        ImmutableMap.<String, RetrySettings>builder();
-    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      try {
-        RetrySettings settings =
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.ofMillis(retryDef.getInitialRetryDelayMillis()))
-                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxRetryDelay(Duration.ofMillis(retryDef.getMaxRetryDelayMillis()))
-                .setInitialRpcTimeout(Duration.ofMillis(retryDef.getInitialRpcTimeoutMillis()))
-                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxRpcTimeout(Duration.ofMillis(retryDef.getMaxRpcTimeoutMillis()))
-                .setTotalTimeout(Duration.ofMillis(retryDef.getTotalTimeoutMillis()))
-                .build();
-        builder.put(retryDef.getName(), settings);
-      } catch (IllegalStateException | NullPointerException e) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "error while creating retry params: %s (in interface %s)",
-                e,
-                interfaceConfigProto.getName()));
-      }
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
   }
 
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
@@ -299,10 +253,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static List<GapicMethodConfig> createMethodConfigs(
-      ImmutableMap<String, GapicMethodConfig> methodConfigMap,
-      InterfaceConfigProto interfaceConfigProto) {
-    List<GapicMethodConfig> methodConfigs = new ArrayList<>();
+  static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
+    List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
     }
@@ -310,23 +263,31 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   /** Returns the GapicMethodConfig for the given method. */
-  public GapicMethodConfig getMethodConfig(Method method) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
-    if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
-    }
-    return methodConfig;
+  @Override
+  public GapicMethodConfig getMethodConfig(MethodModel method) {
+    return getMethodConfig(method.getSimpleName());
   }
 
+  /** Returns the GapicMethodConfig for the given method. */
+  public GapicMethodConfig getMethodConfig(Method method) {
+    return getMethodConfig(method.getSimpleName());
+  }
+
+  public GapicMethodConfig getMethodConfig(String methodSimpleName) {
+    return getMethodConfigMap().get(methodSimpleName);
+  }
+
+  @Override
   public boolean hasDefaultServiceAddress() {
     return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
   }
 
+  @Override
   public boolean hasDefaultServiceScopes() {
     return !getRequiredConstructorParams().contains(SCOPES_PARAM);
   }
 
+  @Override
   public boolean hasDefaultInstance() {
     return getRequiredConstructorParams().size() == 0;
   }
@@ -350,9 +311,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   /** Creates a list of fields that can be turned into IAM resources */
-  private static ImmutableList<Field> createIamResources(
+  private static ImmutableList<FieldModel> createIamResources(
       Model model, List<IamResourceProto> resources) {
-    ImmutableList.Builder<Field> fields = ImmutableList.builder();
+    ImmutableList.Builder<FieldModel> fields = ImmutableList.builder();
     for (IamResourceProto resource : resources) {
       TypeRef type = model.getSymbolTable().lookupType(resource.getType());
       if (type == null) {
@@ -367,13 +328,14 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             String.format(
                 "type %s does not have field %s", resource.getType(), resource.getField()));
       }
-      fields.add(field);
+      fields.add(new ProtoField(field));
     }
     return fields.build();
   }
 
+  @Override
   public boolean hasPageStreamingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isPageStreaming()) {
         return true;
       }
@@ -381,8 +343,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasBatchingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isBatching()) {
         return true;
       }
@@ -390,8 +353,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasGrpcStreamingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming()) {
         return true;
       }
@@ -399,6 +363,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType) {
     for (GapicMethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming() && methodConfig.getGrpcStreamingType() == streamingType) {
@@ -408,8 +373,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasLongRunningOperations() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isLongRunningOperation()) {
         return true;
       }

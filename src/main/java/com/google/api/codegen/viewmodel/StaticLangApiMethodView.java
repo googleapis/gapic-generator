@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import javax.annotation.Nullable;
  * type of static api method; the type is maintained as a value of the ClientMethodType enum.
  */
 @AutoValue
-public abstract class StaticLangApiMethodView implements ApiMethodView {
+public abstract class StaticLangApiMethodView
+    implements ApiMethodView, Comparable<StaticLangApiMethodView> {
   public abstract ClientMethodType type();
 
   public abstract String apiClassName();
@@ -91,6 +92,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String releaseLevelAnnotation();
 
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
   }
@@ -153,6 +156,13 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder releaseLevelAnnotation(String value);
 
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
     public abstract StaticLangApiMethodView build();
+  }
+
+  @Override
+  public int compareTo(StaticLangApiMethodView o) {
+    return this.name().compareTo(o.name());
   }
 }

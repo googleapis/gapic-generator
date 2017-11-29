@@ -16,7 +16,7 @@
 @end
 
 @private renderClass(classView)
-  public class {@classView.name} extends ClientSettings {
+  public class {@classView.name} extends ClientSettings<{@classView.name}> {
     {@constants(classView)}
     {@members(classView)}
     {@constructors(classView)}
@@ -84,12 +84,15 @@
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
-      return {@xsettingsClass.grpcStubClassName}.create(this);
+    if (getTransportChannelProvider()
+        .getTransportName()
+        .equals({@xsettingsClass.rpcTransportName}.{@xsettingsClass.transportNameGetter}())) {
+      return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
-          "Transport not supported: " + getTransportProvider().getTransportName());
+          "Transport not supported: " + getTransportChannelProvider().getTransportName());
     }
   }
 
@@ -104,9 +107,22 @@
     /**
      * Returns the default service endpoint.
      */
-    public static String getDefaultEndpoint() {
-      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
-    }
+    @if xsettingsClass.useDefaultServicePortInEndpoint
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
+      }
+    @else
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}";
+      }
+
+      /**
+       * Returns the default service port.
+       */
+      public static int getDefaultServicePort() {
+        return {@xsettingsClass.servicePort};
+      }
+    @end
 
   @end
 
@@ -131,26 +147,27 @@
         ;
   }
 
-  /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
-    return InstantiatingChannelProvider.newBuilder()
-        @if xsettingsClass.hasDefaultServiceAddress
-            .setEndpoint(getDefaultEndpoint())
-        @end
-        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
-  }
-
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
-    public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
-      return GrpcTransportProvider.newBuilder()
-          .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+    public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
+      return {@xsettingsClass.instantiatingChannelProvider}.newBuilder();
     }
 
-    public static TransportProvider defaultTransportProvider() {
-      return defaultGrpcTransportProviderBuilder().build();
+    public static TransportChannelProvider defaultTransportChannelProvider() {
+      return {@xsettingsClass.defaultTransportProviderBuilder}().build();
     }
   @end
+
+  @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
+        .setApiClientHeaderLineKey("x-goog-api-client")
+        @if xsettingsClass.transportProtocol == "GRPC"
+          .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData())
+        @end
+        ;
+  }
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
@@ -159,23 +176,6 @@
       gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults.
-   */
-  @@Deprecated
-  public static Builder defaultBuilder() {
-    return Builder.createDefault();
-  }
-
-  /**
-   * Returns a builder for this class with recommended defaults for API methods, and the given
-   * ClientContext used for executor/transport/credentials.
-   */
-  @@Deprecated
-  public static Builder defaultBuilder(ClientContext clientContext) {
-    return new Builder(clientContext);
   }
 
   /**
@@ -209,7 +209,7 @@
     @else
       @switch settings.type
       @case "SimpleApiCallable"
-        private final SimpleCallSettings<{@settings.requestTypeName}, \
+        private final UnaryCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.memberName};
       @case "PagedApiCallable"
         private final PagedCallSettings<{@settings.requestTypeName}, \
@@ -221,7 +221,7 @@
       @case "OperationApiCallable"
         private final OperationCallSettings<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
-            {@settings.operationMethod.metadataTypeName}, Operation> {@settings.memberName};
+            {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
       @default
         $unhandledCase: {@settings.type}$
       @end
@@ -243,7 +243,7 @@
     @else
       @switch settings.type
       @case "SimpleApiCallable"
-          public SimpleCallSettings<{@settings.requestTypeName}, \
+          public UnaryCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
             return {@settings.memberName};
          }
@@ -261,7 +261,7 @@
       @case "OperationApiCallable"
         public OperationCallSettings<{@settings.requestTypeName}, \
               {@settings.operationMethod.operationPayloadTypeName}, \
-              {@settings.operationMethod.metadataTypeName}, Operation> \
+              {@settings.operationMethod.metadataTypeName}> \
               {@settings.settingsGetFunction}() {
           return {@settings.memberName};
         }
@@ -275,11 +275,7 @@
 
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
-    super(
-        settingsBuilder.getExecutorProvider(),
-        settingsBuilder.getTransportProvider(),
-        settingsBuilder.getCredentialsProvider(),
-        settingsBuilder.getClock());
+    super(settingsBuilder);
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -334,7 +330,7 @@
           }
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
-            return payload.{@desc.resourcesFieldGetFunction}();
+            return payload.{@functionChain(desc.resourcesFieldGetFunctions)};
           }
         };
     {@""}
@@ -450,8 +446,8 @@
   /**
    * Builder for {@xsettingsClass.name}.
    */
-  public static class Builder extends ClientSettings.Builder {
-    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+  public static class Builder extends ClientSettings.Builder<{@xsettingsClass.name}, Builder> {
+    private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
 
@@ -471,7 +467,7 @@
     @else
       @switch settings.type.toString
       @case "SimpleApiCallable"
-        private final SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+        private final UnaryCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.memberName};
       @case "PagedApiCallable"
         private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
@@ -483,7 +479,7 @@
       @case "OperationApiCallable"
             private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
                 {@settings.operationMethod.operationPayloadTypeName}, \
-                {@settings.operationMethod.metadataTypeName}, Operation> {@settings.memberName};
+                {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
       @default
         $unhandledCase: {@settings.type.toString}$
       @end
@@ -492,14 +488,14 @@
 @end
 
 @private builderConstants(xsettingsClass)
-  private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
+  private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
   static {
-    ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
     @join retryCodesDef : xsettingsClass.retryCodesDefinitions
       definitions.put(
           "{@retryCodesDef.key}",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes)})));
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList({@statusCodes(retryCodesDef.codes)})));
     @end
     RETRYABLE_CODE_DEFINITIONS = definitions.build();
   }
@@ -527,7 +523,7 @@
 
 @private statusCodes(codes)
   @join code : codes on ", "
-    GrpcStatusCode.of(Status.Code.{@code})
+    StatusCode.Code.{@code}
   @end
 @end
 
@@ -545,7 +541,7 @@
       @else
         @switch settings.type.toString
         @case "SimpleApiCallable"
-          {@settings.memberName} = SimpleCallSettings.newBuilder();
+          {@settings.memberName} = UnaryCallSettings.newUnaryCallSettingsBuilder();
         @case "PagedApiCallable"
           {@settings.memberName} = PagedCallSettings.newBuilder(
               {@settings.pagedListResponseFactoryName});
@@ -561,7 +557,7 @@
       @end
       {@BREAK}
     @end
-    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
         @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
@@ -573,8 +569,10 @@
   private static Builder createDefault() {
     Builder builder = new Builder((ClientContext) null);
     @if xsettingsClass.hasDefaultInstance
-      builder.setTransportProvider(defaultTransportProvider());
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
       builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
     @end
     return initDefaults(builder);
   }
@@ -593,10 +591,10 @@
             .setFlowControlSettings(
               FlowControlSettings.newBuilder()
                 @if settings.batchingConfig.hasFlowControlElementLimit
-                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit})
+                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit}L)
                 @end
                 @if settings.batchingConfig.hasFlowControlByteLimit
-                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit})
+                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit}L)
                 @end
                 .setLimitExceededBehavior(LimitExceededBehavior.{@settings.batchingConfig.flowControlLimitExceededBehavior})
                 .build())
@@ -612,12 +610,12 @@
       builder
           .{@settings.settingsGetFunction}()
           .setInitialCallSettings(
-              SimpleCallSettings.<{@settings.requestTypeName}, {@settings.responseTypeName}> newBuilder()
+              UnaryCallSettings.<{@settings.requestTypeName}, OperationSnapshot>newUnaryCallSettingsBuilder()
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseClass({@settings.operationMethod.operationPayloadTypeName}.class)
-          .setMetadataClass({@settings.operationMethod.metadataTypeName}.class)
+          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create({@settings.operationMethod.operationPayloadTypeName}.class))
+          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create({@settings.operationMethod.metadataTypeName}.class))
           .setPollingAlgorithm(
               OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()
@@ -641,7 +639,7 @@
       {@settings.memberName} = settings.{@settings.memberName}.toBuilder();
     @end
 
-    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
         @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
@@ -650,30 +648,12 @@
 @end
 
 @private builderMethods(xsettingsClass)
-  @@Override
-  public Builder setExecutorProvider(ExecutorProvider executorProvider) {
-    super.setExecutorProvider(executorProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setTransportProvider(TransportProvider transportProvider) {
-    super.setTransportProvider(transportProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
-    super.setCredentialsProvider(credentialsProvider);
-    return this;
-  }
-
   /**
    * Applies the given settings updater function to all of the unary API methods in this service.
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder, Void> settingsUpdater) throws Exception {
+  public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
     super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
     return this;
   }
@@ -690,7 +670,7 @@
     @else
       @switch settings.type
       @case "SimpleApiCallable"
-        public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+        public UnaryCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return {@settings.memberName};
         }
@@ -707,7 +687,7 @@
       @case "OperationApiCallable"
         public OperationCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
-            {@settings.operationMethod.metadataTypeName}, Operation> \
+            {@settings.operationMethod.metadataTypeName}> \
             {@settings.settingsGetFunction}() {
           return {@settings.memberName};
         }

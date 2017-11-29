@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,88 +15,90 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 /** PageStreamingTransformer generates view objects for page streaming from a service model. */
 public class PageStreamingTransformer {
 
-  public List<PageStreamingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
+  public PageStreamingDescriptorView generateDescriptor(
+      InterfaceContext context, MethodModel method) {
+    MethodConfig methodConfig = context.getMethodConfig(method);
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+
+    PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
+    descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
+    descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
+    descriptor.requestTokenGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getRequestTokenField()));
+    descriptor.requestTokenSetMethodName(
+        context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+    if (pageStreaming.hasPageSizeField()) {
+      descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
+      descriptor.requestPageSizeGetMethodName(
+          context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+      descriptor.requestPageSizeSetMethodName(
+          context.getNamer().getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+    }
+    descriptor.responseTokenFieldName(context.getNamer().getResponseTokenFieldName(pageStreaming));
+    descriptor.responseTokenGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+    descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
+    descriptor.resourcesGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
+    descriptor.methodName(context.getNamer().getMethodKey(method));
+    return descriptor.build();
+  }
+
+  public List<PageStreamingDescriptorView> generateDescriptors(InterfaceContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getPageStreamingMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
-      PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
-
-      PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
-      descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
-      descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
-      descriptor.requestTokenGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getRequestTokenField()));
-      descriptor.requestTokenSetMethodName(
-          context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
-      if (pageStreaming.hasPageSizeField()) {
-        descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
-        descriptor.requestPageSizeGetMethodName(
-            context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
-        descriptor.requestPageSizeSetMethodName(
-            context.getNamer().getFieldSetFunctionName(pageStreaming.getPageSizeField()));
-      }
-      descriptor.responseTokenFieldName(
-          context.getNamer().getResponseTokenFieldName(pageStreaming));
-      descriptor.responseTokenGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
-      descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
-      descriptor.resourcesGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
-      descriptor.methodName(context.getNamer().getMethodKey(method));
-
-      descriptors.add(descriptor.build());
+    for (MethodModel method : context.getPageStreamingMethods()) {
+      descriptors.add(generateDescriptor(context, method));
     }
 
     return descriptors;
   }
 
   public List<PageStreamingDescriptorClassView> generateDescriptorClasses(
-      GapicInterfaceContext context) {
+      InterfaceContext context) {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getPageStreamingMethods()) {
+    for (MethodModel method : context.getPageStreamingMethods()) {
       descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
     }
 
     return descriptors;
   }
 
-  private PageStreamingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
+  private PageStreamingDescriptorClassView generateDescriptorClass(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
-    Method method = context.getMethod();
+    ImportTypeTable typeTable = context.getTypeTable();
+    MethodModel method = context.getMethodModel();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    Field resourceField = pageStreaming.getResourcesField();
+    FieldModel resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-    TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
-    desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
-    desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
-    desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    desc.typeName(namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
+    desc.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    desc.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
+    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
 
-    TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
-    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
-    desc.defaultTokenValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(tokenType));
+    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
+    desc.defaultTokenValue(
+        typeTable.getSnippetZeroValueAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
@@ -108,40 +110,43 @@ public class PageStreamingTransformer {
     }
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
-    desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
+
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourceFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
+    desc.resourcesFieldGetFunctions(resourcesFieldGetFunctionList.build());
 
     return desc.build();
   }
 
-  public List<PagedListResponseFactoryClassView> generateFactoryClasses(
-      GapicInterfaceContext context) {
+  public List<PagedListResponseFactoryClassView> generateFactoryClasses(InterfaceContext context) {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
-    for (Method method : context.getPageStreamingMethods()) {
+    for (MethodModel method : context.getPageStreamingMethods()) {
       factories.add(generateFactoryClass(context.asRequestMethodContext(method)));
     }
 
     return factories;
   }
 
-  private PagedListResponseFactoryClassView generateFactoryClass(GapicMethodContext context) {
+  private PagedListResponseFactoryClassView generateFactoryClass(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
-    Method method = context.getMethod();
+    MethodModel method = context.getMethodModel();
+    ImportTypeTable typeTable = context.getTypeTable();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField();
+    FieldModel resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();
 
     factory.name(namer.getPagedListResponseFactoryConstName(method));
-    factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
-    factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    factory.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    factory.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
+    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
     factory.pagedListResponseTypeName(
-        namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
+        namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
 
     return factory.build();

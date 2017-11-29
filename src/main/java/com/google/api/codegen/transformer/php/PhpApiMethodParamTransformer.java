@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.util.Name;
@@ -22,7 +23,6 @@ import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -57,11 +57,11 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       GapicMethodContext context) {
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.<DynamicLangDefaultableParamView>of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    for (Field field : context.getMethodConfig().getRequiredFields()) {
+    for (FieldModel field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =
           DynamicLangDefaultableParamView.newBuilder()
               .name(context.getNamer().getVariableName(field))
@@ -73,16 +73,16 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private List<ParamDocView> getMethodParamDocs(
-      GapicMethodContext context, Iterable<Field> fields) {
-    if (context.getMethod().getRequestStreaming()) {
-      return ImmutableList.<ParamDocView>of();
+      GapicMethodContext context, Iterable<FieldModel> fields) {
+    if (context.getMethodModel().getRequestStreaming()) {
+      return ImmutableList.of();
     }
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldModel field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
-      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
 
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (methodConfig.isPageStreaming()
@@ -103,12 +103,12 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         docLines.addAll(context.getNamer().getDocLines(field));
       }
 
-      if (field.getType().isEnum()) {
+      if (field.isEnum()) {
         // For enums, we alter the param type to int, and document where to find the relevant
         // const values
         String typeNameSingular =
             context.getTypeTable().getFullNameFor(field.getType().makeOptional());
-        if (field.getType().isRepeated()) {
+        if (field.isRepeated()) {
           paramDoc.typeName("int[]");
         } else {
           paramDoc.typeName("int");
@@ -125,7 +125,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private ParamDocView getOptionalArrayParamDoc(
-      GapicMethodContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<FieldModel> fields) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
     Name optionalArgsName = Name.from("optional", "args");
@@ -162,14 +162,14 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       StringBuilder retrySettingsDocTextBuilder =
           new StringBuilder(
               "Retry settings to use for this call. Can be a\n"
-                  + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
+                  + "{@see Google\\ApiCore\\RetrySettings} object, or an associative array\n"
                   + "of retry settings parameters. See the documentation on\n"
-                  + "{@see Google\\GAX\\RetrySettings} for example usage.");
+                  + "{@see Google\\ApiCore\\RetrySettings} for example usage.");
       if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
         retrySettingsDocTextBuilder.append(
             String.format(
                 "\nIf specified, then %s is ignored.",
-                context.getNamer().varReference(timeoutMillisName)));
+                context.getNamer().localVarReference(timeoutMillisName)));
       }
       List<String> retrySettingsDocLines =
           context.getNamer().getDocLines(retrySettingsDocTextBuilder.toString());
@@ -190,7 +190,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         timeoutMillisDocTextBuilder.append(
             String.format(
                 " Only used if %s\nis not set.",
-                context.getNamer().varReference(retrySettingsName)));
+                context.getNamer().localVarReference(retrySettingsName)));
       }
       List<String> timeoutMillisDocLines =
           context.getNamer().getDocLines(timeoutMillisDocTextBuilder.toString());

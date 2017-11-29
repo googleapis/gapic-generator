@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
+public class RubyModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types to its default value. */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =

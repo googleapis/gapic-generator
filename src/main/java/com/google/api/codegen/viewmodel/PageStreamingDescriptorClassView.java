@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -43,7 +44,7 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String responseTokenGetFunction();
 
-  public abstract String resourcesFieldGetFunction();
+  public abstract List<String> resourcesFieldGetFunctions();
 
   public boolean requestHasPageSize() {
     return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
@@ -78,7 +79,7 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder responseTokenGetFunction(String val);
 
-    public abstract Builder resourcesFieldGetFunction(String val);
+    public abstract Builder resourcesFieldGetFunctions(List<String> val);
 
     public abstract PageStreamingDescriptorClassView build();
   }

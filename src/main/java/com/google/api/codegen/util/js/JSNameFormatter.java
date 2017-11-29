@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class JSNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
+  public String localVarReference(Name name) {
     return localVarName(name);
   }
 

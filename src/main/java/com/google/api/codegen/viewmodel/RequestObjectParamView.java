@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class RequestObjectParamView {
+public abstract class RequestObjectParamView implements Comparable<RequestObjectParamView> {
   public abstract String name();
 
   public abstract String keyName();
@@ -69,8 +71,12 @@ public abstract class RequestObjectParamView {
     return transformParamFunctionName() != null;
   }
 
+  // Methods for getting/setting the fields of the generated class.
+  public abstract List<FieldCopyView> fieldCopyMethods();
+
   public static Builder newBuilder() {
-    return new AutoValue_RequestObjectParamView.Builder();
+    return new AutoValue_RequestObjectParamView.Builder()
+        .fieldCopyMethods(new ArrayList<FieldCopyView>());
   }
 
   @AutoValue.Builder
@@ -105,6 +111,13 @@ public abstract class RequestObjectParamView {
 
     public abstract Builder optionalDefault(String val);
 
+    public abstract Builder fieldCopyMethods(List<FieldCopyView> val);
+
     public abstract RequestObjectParamView build();
+  }
+
+  @Override
+  public int compareTo(RequestObjectParamView o) {
+    return this.name().compareTo(o.name());
   }
 }

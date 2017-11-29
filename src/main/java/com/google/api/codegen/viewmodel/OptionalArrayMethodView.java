@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   @Nullable
   public abstract LongRunningOperationDetailView longRunningView();
 
+  @Nullable
+  public abstract PageStreamingDescriptorView pageStreamingView();
+
   public boolean isLongRunningOperation() {
     return longRunningView() != null;
   }
@@ -99,7 +102,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return apiVersion() != null;
   }
 
-  public abstract List<List<String>> oneofParams();
+  public abstract Iterable<Iterable<String>> oneofParams();
+
+  public abstract List<HeaderRequestParamView> headerRequestParams();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -158,6 +163,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder longRunningView(LongRunningOperationDetailView val);
 
+    public abstract Builder pageStreamingView(PageStreamingDescriptorView val);
+
     public abstract Builder isSingularRequestMethod(boolean val);
 
     public abstract Builder packageName(String val);
@@ -173,9 +180,11 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder versionAliasedApiClassName(String val);
 
-    public abstract Builder oneofParams(List<List<String>> val);
+    public abstract Builder oneofParams(Iterable<Iterable<String>> val);
 
     public abstract Builder localPackageName(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract OptionalArrayMethodView build();
   }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +80,11 @@ public class GoTypeTable implements TypeTable {
 
   @Override
   public Map<String, TypeAlias> getImports() {
+    return imports;
+  }
+
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
     return imports;
   }
 

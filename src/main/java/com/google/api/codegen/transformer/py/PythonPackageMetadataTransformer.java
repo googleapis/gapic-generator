@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -27,6 +30,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
@@ -43,8 +47,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -101,11 +103,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     return ImmutableList.<ViewModel>builder()
         .addAll(computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer))
-        .addAll(generateTopLevelFiles(model, productConfig))
-        .addAll(generateDocFiles(model, productConfig))
-        .add(generateNoxFile(model, productConfig))
+        .addAll(generateTopLevelFiles(apiModel, productConfig))
+        .addAll(generateDocFiles(apiModel, productConfig))
+        .add(generateNoxFile(apiModel, productConfig))
         .build();
   }
 
@@ -121,7 +124,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return templates;
   }
 
-  private List<ViewModel> generateDocFiles(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> generateDocFiles(ApiModel model, GapicProductConfig productConfig) {
     PackageMetadataNamer namer = new PackageMetadataNamer();
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     String docsGapicPath = docsGapicPath(packageConfig.apiVersion());
@@ -144,7 +147,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .build();
   }
 
-  private ViewModel generateNoxFile(Model model, GapicProductConfig productConfig) {
+  private ViewModel generateNoxFile(ApiModel model, GapicProductConfig productConfig) {
     PackageMetadataNamer namer = new PackageMetadataNamer();
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     String outputPath = "nox.py";
@@ -158,7 +161,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .build();
   }
 
-  private List<ViewModel> generateTopLevelFiles(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> generateTopLevelFiles(ApiModel model, GapicProductConfig productConfig) {
     PackageMetadataNamer namer = new PackageMetadataNamer();
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     ImmutableList.Builder<ViewModel> metadata = ImmutableList.builder();
@@ -172,7 +175,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private PackageMetadataView.Builder generateMetadataView(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       String template,
       PackageMetadataNamer metadataNamer,
@@ -182,7 +185,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     String gapicPackageName =
         surfaceNamer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON));
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
+        .generateMetadataView(
+            metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
@@ -198,8 +202,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
                 .shortName(packageConfig.shortName())
-                .fullName(model.getServiceConfig().getTitle())
-                .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
+                .fullName(model.getTitle())
+                .apiSummary(model.getDocumentationSummary())
                 .hasMultipleServices(false)
                 .gapicPackageName(gapicPackageName)
                 .majorVersion(packageConfig.apiVersion())
@@ -216,10 +220,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .build());
   }
 
-  private boolean hasSmokeTests(Model model, GapicProductConfig productConfig) {
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : interfaces) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+  private boolean hasSmokeTests(ApiModel apiModel, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      InterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         return true;
       }
@@ -252,8 +255,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private List<PackageDependencyView> generateAdditionalDependencies() {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
-        PackageDependencyView.create(
-            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.PYTHON)));
+        PackageDependencyView.create("google-api-core", VersionBound.create("0.1.0", "0.2.0dev")));
     dependencies.add(
         PackageDependencyView.create(
             "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));
@@ -285,12 +287,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   // This currently generates a list of methods that have smoke test configuration. In the future,
   //  the example methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
-      Model model, GapicProductConfig productConfig) {
+      ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
         FlatteningConfig flatteningGroup =
             testCaseTransformer.getSmokeTestFlatteningGroup(
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
@@ -370,7 +372,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

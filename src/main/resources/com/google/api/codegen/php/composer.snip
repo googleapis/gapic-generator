@@ -2,13 +2,14 @@
   {
     "name": "{@metadata.identifier}",
     "version": "{@metadata.packageVersionBound.lower}",
-    "author": "Google Inc.",
+    "author": "Google LLC",
     "url": "{@metadata.homepage}",
     "description": "{@metadata.fullName} client for PHP",
     "require": {
-      "php" : "^5.5 || ^7.0",
-      "google/protobuf": "^{@metadata.protoVersionBound.lower}",
-      "google/gax": "^{@metadata.gaxVersionBound.lower}"
+      @join packageDep : metadata.dependencies
+          "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
+      @end
+      "php" : "^5.5 || ^7.0"
     },
     "require-dev": {
       "phpunit/phpunit": "^5.7"
@@ -17,7 +18,9 @@
     "autoload": {
       "psr-4": {
         "Google\\Cloud\\": "src",
-        "Google\\Cloud\\Tests\\": "tests/unit",
+        "Google\\Cloud\\Tests\\": "tests",
+        "Google\\Cloud\\Tests\\System\\": "tests/system",
+        "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
         "": "proto/src"
       }
     },

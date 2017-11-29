@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -26,21 +25,26 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   @Override
   protected void setServiceResponseTypeName(
-      GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+      MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     String responseTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
+        context
+            .getMethodModel()
+            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer());
     methodViewBuilder.serviceResponseTypeName(responseTypeName);
   }
 
   @Override
-  public List<SimpleParamDocView> getRequestObjectParamDocs(
-      GapicMethodContext context, TypeRef typeRef) {
+  public List<SimpleParamDocView> getRequestObjectParamDocs(MethodContext context) {
+    String requestTypeName =
+        context
+            .getMethodModel()
+            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
     switch (context.getMethodConfig().getGrpcStreamingType()) {
       case NonStreaming:
         SimpleParamDocView nonStreamingDoc =
             SimpleParamDocView.newBuilder()
                 .paramName("request")
-                .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+                .typeName(requestTypeName)
                 .lines(
                     ImmutableList.of(
                         "The request object containing all of the parameters for the API call."))
@@ -50,7 +54,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         SimpleParamDocView serverStreamingDoc =
             SimpleParamDocView.newBuilder()
                 .paramName("request")
-                .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+                .typeName(requestTypeName)
                 .lines(
                     ImmutableList.of(
                         "The request object containing all of the parameters for the API call."))

@@ -12,12 +12,12 @@ jsondoc/*
 # IDE settings
 .idea
 *.iml
+
 ============== file: .rubocop.yml ==============
 AllCops:
   Exclude:
     - "google.gemspec"
-    - "lib/google/longrunning/**/*"
-    - "lib/google/longrunning/**/*"
+    - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
 
@@ -66,6 +66,7 @@ Style/TrivialAccessors:
   Enabled: false
 Style/FileName:
   Enabled: false
+
 ============== file: .yardopts ==============
 --no-private
 --title=Google Long Running Operations API
@@ -75,8 +76,9 @@ Style/FileName:
 ./lib/**/*.rb
 -
 README.md
+
 ============== file: Gemfile ==============
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -85,9 +87,14 @@ gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
 
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
 # TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
 # so pinning to 2.1 for now.
 gem "rainbow", "~> 2.1.0"
+
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
@@ -304,8 +311,9 @@ In order to use this library, you first need to go through the following
 steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
-3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
 ```
@@ -322,8 +330,9 @@ $ gem install google
 
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google/latest/google/longrunning
 [Product Documentation]: https://cloud.google.com/longrunning
+
 ============== file: Rakefile ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
 # met:
@@ -334,7 +343,7 @@ $ gem install google
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -381,12 +390,12 @@ end
 # Acceptance tests
 desc "Run the google acceptance tests."
 task :acceptance do
-  puts "The google gem does not have acceptance tests."
+  Rake::Task["acceptance:run"].invoke
 end
 
 namespace :acceptance do
   task :run do
-    puts "This gem does not have acceptance tests."
+    puts "The google gem does not have acceptance tests."
   end
 
   desc "Run acceptance tests with coverage."
@@ -461,7 +470,7 @@ end
 
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "google acceptance", "*"
     sh "bundle exec rake acceptance -v"
@@ -482,6 +491,7 @@ def header str, token = "#"
   puts token * line_length
   puts ""
 end
+
 ============== file: google.gemspec ==============
 # -*- ruby -*-
 # encoding: utf-8
@@ -490,7 +500,7 @@ Gem::Specification.new do |gem|
   gem.name          = "google"
   gem.version       = "0.6.8"
 
-  gem.authors       = ["Google, Inc."]
+  gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
   gem.description   = "google is the official library for Google Long Running Operations API."
   gem.summary       = "API Client library for Google Long Running Operations API"
@@ -507,6 +517,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "rubocop", "<= 0.35.1"
@@ -514,7 +525,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: lib/google/longrunning.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -526,7 +537,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -559,8 +570,9 @@ module Google
   # steps:
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-  # 2. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
-  # 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  # 3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+  # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Next Steps
   # - Read the [Google Long Running Operations API Product documentation][Product Documentation]
@@ -585,10 +597,10 @@ module Google
     # returns long-running operations should implement the +Operations+ interface
     # so developers can have a consistent client experience.
     #
-    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
     #   Provides the means for authenticating requests made by the client. This parameter can
     #   be many types.
-    #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+    #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
     #   authenticating requests made by this client.
     #   A `String` will be treated as the path to the keyfile to be used for the construction of
     #   credentials for this client.
@@ -640,7 +652,7 @@ module Google
 end
 
 ============== file: lib/google/longrunning/operations_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -652,7 +664,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -682,6 +694,7 @@ require "json"
 require "pathname"
 
 require "google/gax"
+require "googleauth"
 
 require "longrunning_pb"
 
@@ -724,10 +737,10 @@ module Google
       ALL_SCOPES = [
       ].freeze
 
-      # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
       #   be many types.
-      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
       #   authenticating requests made by this client.
       #   A `String` will be treated as the path to the keyfile to be used for the construction of
       #   credentials for this client.
@@ -777,10 +790,10 @@ module Google
           warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 
-        credentials ||= Google::Gax::Credentials.default
+        credentials ||= Google::Auth::Credentials.default(scopes: scopes)
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
-          updater_proc = Google::Gax::Credentials.new(credentials).updater_proc
+          updater_proc = Google::Auth::Credentials.new(credentials).updater_proc
         end
         if credentials.is_a?(GRPC::Core::Channel)
           channel = credentials
@@ -791,7 +804,7 @@ module Google
         if credentials.is_a?(Proc)
           updater_proc = credentials
         end
-        if credentials.is_a?(Google::Gax::Credentials)
+        if credentials.is_a?(Google::Auth::Credentials)
           updater_proc = credentials.updater_proc
         end
 
@@ -1050,7 +1063,7 @@ end
 }
 
 ============== file: test/google/longrunning/operations_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -1062,7 +1075,7 @@ end
 # copyright notice, this list of conditions and the following disclaimer
 # in the documentation and/or other materials provided with the
 # distribution.
-#     * Neither the name of Google Inc. nor the names of its
+#     * Neither the name of Google LLC nor the names of its
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
@@ -1081,6 +1094,7 @@ end
 require "minitest/autorun"
 require "minitest/spec"
 
+require "googleauth"
 require "google/gax"
 
 require "google/longrunning"
@@ -1118,7 +1132,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Google::Gax::Credentials
+class MockOperationsCredentials < Google::Auth::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1155,10 +1169,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_operation")
+      mock_credentials = MockOperationsCredentials.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1183,10 +1197,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_operation")
+      mock_credentials = MockOperationsCredentials.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1226,10 +1240,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_operations")
+      mock_credentials = MockOperationsCredentials.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1259,10 +1273,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_operations")
+      mock_credentials = MockOperationsCredentials.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1293,10 +1307,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1321,10 +1335,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1355,10 +1369,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_operation")
+      mock_credentials = MockOperationsCredentials.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1383,10 +1397,10 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_operation")
+      mock_credentials = MockOperationsCredentials.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method

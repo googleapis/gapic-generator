@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ public abstract class TestCaseView {
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
+
+  public abstract String callerResponseTypeName();
 
   public abstract String fullyQualifiedRequestTypeName();
 
@@ -107,6 +109,8 @@ public abstract class TestCaseView {
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
+
+    public abstract Builder callerResponseTypeName(String val);
 
     public abstract Builder fullyQualifiedRequestTypeName(String val);
 

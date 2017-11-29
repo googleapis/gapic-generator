@@ -1,0 +1,263 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  # TODO once stub classes are stable, start using releaseLevelAnnotation
+  #@if classFile.classView.releaseLevelAnnotation
+  #  {@classFile.classView.releaseLevelAnnotation}
+  #@end
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} extends {@classView.parentName} {
+    {@constants(classView)}
+    {@members(classView)}
+    {@constructors(classView)}
+    {@callableMethods(classView)}
+    {@cleanupSection()}
+  }
+@end
+
+@private classDoc(doc)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * HTTP stub implementation for {@doc.serviceTitle}.
+   *
+   * <p>This class is for advanced usage and reflects the underlying API directly.
+   */
+@end
+
+@private constants(stubClass)
+  private static final String BASE_URL = "{@stubClass.baseUrl}";
+
+  @join methodDescriptor : stubClass.methodDescriptors
+    {@httpMethodCallable(methodDescriptor)}
+  @end
+  {@""}
+@end
+
+@private httpMethodCallable(methodDescriptor)
+  private static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+      ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+          .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
+          .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
+          @if methodDescriptor.hasResponse
+            .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+          @end
+          .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
+          .setPathParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.pathParams)})
+          .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+          .build();
+@end
+
+@private paramsInMethodDescriptor(params)
+   Sets.<String>newHashSet(
+      @join param : params on ", "
+        "{@param}"
+      @end
+      )
+@end
+
+@private streamingTypeEnum(streamingType)
+  @switch streamingType
+  @case "NonStreaming"
+    io.grpc.MethodDescriptor.MethodType.UNARY
+  @case "ServerStreaming"
+    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
+  @case "ClientStreaming"
+    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
+  @case "BidiStreaming"
+    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
+  @default
+    $unhandledCase: {@streamingType}$
+  @end
+@end
+
+@private members(stubClass)
+  private final BackgroundResource backgroundResources;
+  @if stubClass.hasLongRunningOperations
+    private final GrpcOperationsStub operationsStub;
+  @end
+
+  @join apiCallable : stubClass.apiCallables
+    {@apiCallableMember(apiCallable)}
+  @end
+  {@""}
+@end
+
+@private apiCallableMember(callable)
+  @switch callable.type.serviceMethodType
+  @case "UnaryMethod"
+    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+      {@callable.responseTypeName}> {@callable.name};
+  @case "GrpcStreamingMethod"
+    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+      {@callable.responseTypeName}> {@callable.name};
+  @case "LongRunningMethod"
+    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+      {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
+  @default
+    $unhandledCase: {@callable.type.serviceMethodType}$
+  @end
+@end
+
+@private createCallableMethodName(callable)
+  @switch callable.type
+  @case "SimpleApiCallable"
+    createUnaryCallable
+  @case "PagedApiCallable"
+    createPagedCallable
+  @case "UnpagedApiCallable"
+    createUnpagedCallable
+  @case "BatchingApiCallable"
+    createBatchingCallable
+  @default
+    $unhandledCase: {@callable.type}$
+  @end
+@end
+
+@private constructors(stubClass)
+  public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
+    return new {@stubClass.name}(settings, ClientContext.create(settings));
+  }
+
+  public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
+    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
+  }
+
+  /**
+   * Constructs an instance of {@stubClass.name}, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
+    @if stubClass.hasLongRunningOperations
+      # TODO reference a real class for httpjson when it is created
+      this.operationsStub = GrpcOperationsStub.create(clientContext);
+    @end
+
+    @join methodDescriptor : stubClass.methodDescriptors
+      HttpJsonCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
+          HttpJsonCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+              .setMethodDescriptor({@methodDescriptor.name})
+              .build();
+    @end
+
+    @join callable : stubClass.apiCallables
+      this.{@callable.name} = HttpJsonCallableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+          settings.{@callable.settingsFunctionName}(), clientContext);
+    @end
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+  {@""}
+@end
+
+@private callableMethods(classView)
+  @join apiMethod : classView.callableMethods
+    @switch apiMethod.type
+    @case "PagedCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "UnpagedListCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "CallableMethod"
+    # TODO create a GrpcStreaming ApiMethodType
+      @if apiMethod.isStreaming
+        {@streamingCallableMethod(apiMethod)}
+      @else
+        {@callableMethod(apiMethod)}
+      @end
+    @case "OperationCallableMethod"
+      {@operationCallableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.type}$
+    @end
+    {@BREAK}
+  @end
+  {@""}
+@end
+
+@private callableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private streamingCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private operationCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private cleanupSection()
+  @@Override
+  public final void close() throws Exception {
+    shutdown();
+  }
+
+  @@Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @@Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @@Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @@Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @@Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+@end

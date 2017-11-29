@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,14 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.*;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
@@ -31,7 +37,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
 
   // Reuse the smoke test template since the sample application is almost the same as the smoke test class.
   // (with a few exceptions such as class name)
-  private static String SAMPLE_TEMPLATE_FILE = "java/smoke_sample.snip";
+  private static String SAMPLE_TEMPLATE_FILE = "java/smoke_test.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final JavaGapicSurfaceTestTransformer testTransformer;
@@ -54,24 +60,27 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     return Lists.newArrayList(SAMPLE_TEMPLATE_FILE);
   }
 
-  public GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
+  GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      GapicInterfaceContext context = testTransformer.createContext(apiInterface, productConfig);
+      GapicInterfaceContext context =
+          testTransformer.createContext(new ProtoInterfaceModel(apiInterface), productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         // We use the first encountered smoke test config as the sample application
-        return testTransformer.createContext(apiInterface, productConfig);
+        return testTransformer.createContext(context.getInterfaceModel(), productConfig);
       }
     }
 
     // Use the first interface as the default one if no smoke test config is found
-    Interface defaultInterface = new InterfaceView().getElementIterable(model).iterator().next();
+    InterfaceModel defaultInterface =
+        new ProtoInterfaceModel(new InterfaceView().getElementIterable(model).iterator().next());
     return testTransformer.createContext(defaultInterface, productConfig);
   }
 
   private ViewModel createSampleClassView(GapicInterfaceContext context) {
     if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
       String outputPath =
-          pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+          pathMapper.getOutputPath(
+              context.getInterfaceModel().getFullName(), context.getProductConfig());
       SurfaceNamer namer = context.getNamer();
       String name = namer.getSampleAppClassName();
 
@@ -91,9 +100,9 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     testTransformer.addSmokeTestImports(context);
 
     SurfaceNamer namer = context.getNamer();
-    SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getSampleAppClassName();
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
 

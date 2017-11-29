@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,20 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -37,14 +41,14 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.codegen.viewmodel.metadata.TocContentView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -92,22 +96,23 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
-        .add(generateGemspecView(model, namer))
-        .add(generateReadmeView(model, productConfig, namer))
-        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
-        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
+        .add(generateGemspecView(apiModel, namer))
+        .add(generateReadmeView(apiModel, productConfig, namer))
+        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_FILES))
+        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
   }
 
   public ReadmeMetadataView.Builder generateReadmeMetadataView(
-      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     return ReadmeMetadataView.newBuilder()
         .identifier(namer.getMetadataIdentifier())
         .shortName(packageConfig.shortName())
-        .fullName(model.getServiceConfig().getTitle())
-        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
+        .fullName(model.getTitle())
+        .apiSummary(model.getDocumentationSummary())
         .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.RUBY))
         .majorVersion(packageConfig.apiVersion())
         .hasMultipleServices(false)
@@ -122,46 +127,57 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   public TocContentView generateTocContent(
-      Model model, RubyPackageMetadataNamer namer, String version, String clientName) {
-    String description = model.getServiceConfig().getDocumentation().getSummary();
+      ApiModel model, RubyPackageMetadataNamer namer, String packageFilePath, String clientName) {
+    String description = model.getDocumentationSummary();
     description = description.replace("\n", " ").trim();
-    return generateTocContent(description, namer, version, clientName);
+    return generateTocContent(description, namer, packageFilePath, clientName);
   }
 
   public TocContentView generateDataTypeTocContent(
-      String apiModule, RubyPackageMetadataNamer namer, String version) {
-    return generateTocContent("Data types for " + apiModule, namer, version, "Data Types");
+      String apiModule, RubyPackageMetadataNamer namer, String packageFilePath) {
+    return generateTocContent("Data types for " + apiModule, namer, packageFilePath, "Data Types");
   }
 
   private TocContentView generateTocContent(
-      String description, RubyPackageMetadataNamer namer, String version, String clientName) {
+      String description,
+      RubyPackageMetadataNamer namer,
+      String packageFilePath,
+      String clientName) {
     return TocContentView.newBuilder()
         .name(clientName)
         .description(description)
         .link(
             GITHUB_DOC_HOST
-                + String.format(
-                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath())
-                + '/'
-                + version
+                + String.format(LIB_DOC_PATH, namer.getMetadataIdentifier(), packageFilePath)
                 + '/'
                 + clientName.replace(" ", "").toLowerCase())
         .build();
   }
 
-  private ViewModel generateGemspecView(Model model, RubyPackageMetadataNamer namer) {
+  private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, GEMSPEC_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
+            namer,
+            packageConfig,
+            model,
+            GEMSPEC_FILE,
+            namer.getOutputFileName(),
+            TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
+        .additionalDependencies(
+            ImmutableList.of(
+                PackageDependencyView.create(
+                    "googleauth", packageConfig.authVersionBound(TargetLanguage.RUBY)),
+                PackageDependencyView.create(
+                    "google-gax", packageConfig.gaxVersionBound(TargetLanguage.RUBY))))
         .build();
   }
 
   private ViewModel generateReadmeView(
-      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -183,21 +199,19 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   // This currently generates a list of methods that have smoke test configuration. In the future,
   //  the example methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
-      Model model, GapicProductConfig productConfig) {
+      ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    InterfaceView interfaceView = new InterfaceView();
-    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
         FlatteningConfig flatteningGroup =
             testCaseTransformer.getSmokeTestFlatteningGroup(
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
         GapicMethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
         exampleMethods.add(
-            createExampleApiMethodView(
-                flattenedMethodContext, interfaceView.hasMultipleServices(model)));
+            createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
       }
     }
     return exampleMethods.build();
@@ -221,7 +235,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       RubyPackageMetadataNamer namer,
       List<String> snippets) {
@@ -229,7 +243,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       RubyPackageMetadataNamer namer,
       List<String> snippets,
@@ -242,7 +256,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel generateMetadataView(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       String template,
       RubyPackageMetadataNamer namer,
@@ -256,9 +270,10 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
     boolean hasSmokeTests = false;
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : interfaces) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+    List<InterfaceModel> interfaceModels = new LinkedList<>();
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceContext context = createContext(apiInterface, productConfig);
+      interfaceModels.add(context.getInterfaceModel());
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
         break;
@@ -268,20 +283,22 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
 
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
-        .versionNamespace(validVersionNamespace(interfaces, surfaceNamer))
+        .versionNamespace(validVersionNamespace(interfaceModels, surfaceNamer))
+        .smokeTestProjectVariable(namer.getSmokeTestProjectVariable(packageConfig.shortName()))
         .build();
   }
 
-  private String validVersionNamespace(Iterable<Interface> interfaces, SurfaceNamer namer) {
+  private String validVersionNamespace(Iterable<InterfaceModel> interfaces, SurfaceNamer namer) {
     Set<String> versionNamespaces = new HashSet<>();
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : interfaces) {
       versionNamespaces.add(namer.getNamespace(apiInterface));
     }
     if (versionNamespaces.size() > 1) {
@@ -291,7 +308,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

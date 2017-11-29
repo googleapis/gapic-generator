@@ -12,12 +12,12 @@ jsondoc/*
 # IDE settings
 .idea
 *.iml
+
 ============== file: .rubocop.yml ==============
 AllCops:
   Exclude:
     - "library.gemspec"
-    - "lib/google/library/**/*"
-    - "lib/library/v1/**/*"
+    - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
 
@@ -66,6 +66,7 @@ Style/TrivialAccessors:
   Enabled: false
 Style/FileName:
   Enabled: false
+
 ============== file: .yardopts ==============
 --no-private
 --title=Google Example Library API
@@ -75,8 +76,9 @@ Style/FileName:
 ./lib/**/*.rb
 -
 README.md
+
 ============== file: Gemfile ==============
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -85,9 +87,14 @@ gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
 
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
 # TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
 # so pinning to 2.1 for now.
 gem "rainbow", "~> 2.1.0"
+
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
@@ -304,8 +311,9 @@ In order to use this library, you first need to go through the following
 steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
 ```
@@ -319,9 +327,12 @@ require "library"
 
 library_service_client = Library.new
 formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+optional_foo = ''
 rating = :GOOD
 book = { rating: rating }
-response = library_service_client.update_book(formatted_name, book)
+update_mask = {}
+physical_mask = {}
+response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 ```
 
 ### Next Steps
@@ -334,8 +345,9 @@ response = library_service_client.update_book(formatted_name, book)
 
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library
 [Product Documentation]: https://cloud.google.com/library
+
 ============== file: Rakefile ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -378,13 +390,13 @@ end
 
 desc "Runs the smoke tests."
 task :smoke_test do
-  if ENV["SMOKE_TEST_PROJECT"].nil?
-    fail "The SMOKE_TEST_PROJECT environment variable must be set. "\
-      "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
+  if ENV["LIBRARY_TEST_PROJECT"].nil?
+    fail "The LIBRARY_TEST_PROJECT environment variable must be set. "\
+      "e.g LIBRARY_TEST_PROJECT=test123 rake smoke_test"
   end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
-  Dir.glob("test/**/*smoke_test.rb").each { |file| require_relative file }
+  Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
 end
 
 namespace :smoke_test do
@@ -404,12 +416,12 @@ end
 # Acceptance tests
 desc "Run the library acceptance tests."
 task :acceptance do
-  puts "The library gem does not have acceptance tests."
+  Rake::Task["acceptance:run"].invoke
 end
 
 namespace :acceptance do
   task :run do
-    puts "This gem does not have acceptance tests."
+    Rake::Task["smoke_test"].invoke
   end
 
   desc "Run acceptance tests with coverage."
@@ -482,21 +494,17 @@ task :ci do
 end
 
 namespace :ci do
-  desc "Run the CI build, with smoke_tests."
+  desc "Run the CI build, with smoke tests."
   task :smoke_test do
     Rake::Task["ci"].invoke
     header "library smoke_test", "*"
     sh "bundle exec rake smoke_test -v"
   end
-  task :a do
-    # This is a handy shortcut to save typing
-    Rake::Task["ci:smoke_test"].invoke
-  end
 end
 
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "library acceptance", "*"
     sh "bundle exec rake acceptance -v"
@@ -517,8 +525,49 @@ def header str, token = "#"
   puts token * line_length
   puts ""
 end
+
+============== file: acceptance/library/v1/library_service_smoke_test.rb ==============
+# Copyright 2017, Google LLC All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# AUTO GENERATED BY GAPIC
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "library"
+
+describe "LibraryServiceSmokeTest" do
+  it "runs one smoke test with update_book" do
+    unless ENV["SMOKE_TEST_PROJECT"]
+      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
+    end
+    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
+
+    library_service_client = Library.new
+    formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+    optional_foo = ''
+    rating = :GOOD
+    book = { rating: rating }
+    update_mask = {}
+    physical_mask = {}
+    response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+  end
+end
+
 ============== file: lib/library.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -549,8 +598,9 @@ require "pathname"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -559,9 +609,12 @@ require "pathname"
 #
 # library_service_client = Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# response = library_service_client.update_book(formatted_name, book)
+# update_mask = {}
+# physical_mask = {}
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -603,11 +656,11 @@ module Library
   # @param version [Symbol, String]
   #   The major version of the service to be used. By default :v1
   #   is used.
-  # @overload
-  #   @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+  # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
+  #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
   #     Provides the means for authenticating requests made by the client. This parameter can
   #     be many types.
-  #     A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+  #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
   #     authenticating requests made by this client.
   #     A `String` will be treated as the path to the keyfile to be used for the construction of
   #     credentials for this client.
@@ -644,7 +697,7 @@ module Library
 end
 
 ============== file: lib/library/credentials.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -658,20 +711,22 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "google/gax"
+require "googleauth"
 
 module Library
-  class Credentials < Google::Gax::Credentials
+  class Credentials < Google::Auth::Credentials
     SCOPE = [
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/library"
     ].freeze
-    PATH_ENV_VARS = %w(LIBRARY_KEYFILE, GOOGLE_CLOUD_KEYFILE, GCLOUD_KEYFILE)
-    JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON, GOOGLE_CLOUD_KEYFILE_JSON, GCLOUD_KEYFILE_JSON)
+    PATH_ENV_VARS = %w(LIBRARY_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+    JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+    DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
   end
 end
+
 ============== file: lib/library/v1.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -701,8 +756,9 @@ require "library/v1/library_service_client"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -711,9 +767,12 @@ require "library/v1/library_service_client"
 #
 # library_service_client = Library::V1.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# response = library_service_client.update_book(formatted_name, book)
+# update_mask = {}
+# physical_mask = {}
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -745,10 +804,10 @@ module Library
     #
     # Service comment may include special characters: <>&"+'@.
     #
-    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
     #   Provides the means for authenticating requests made by the client. This parameter can
     #   be many types.
-    #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+    #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
     #   authenticating requests made by this client.
     #   A `String` will be treated as the path to the keyfile to be used for the construction of
     #   credentials for this client.
@@ -800,7 +859,7 @@ module Library
 end
 
 ============== file: lib/library/v1/library_service_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -963,10 +1022,10 @@ module Library
         )
       end
 
-      # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
       #   be many types.
-      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
       #   authenticating requests made by this client.
       #   A `String` will be treated as the path to the keyfile to be used for the construction of
       #   credentials for this client.
@@ -1041,7 +1100,7 @@ module Library
         if credentials.is_a?(Proc)
           updater_proc = credentials
         end
-        if credentials.is_a?(Google::Gax::Credentials)
+        if credentials.is_a?(Google::Auth::Credentials)
           updater_proc = credentials.updater_proc
         end
 
@@ -1109,7 +1168,10 @@ module Library
         )
         @create_book = Google::Gax.create_api_call(
           @library_service_stub.method(:create_book),
-          defaults["create_book"]
+          defaults["create_book"],
+          params_extractor: proc do |request|
+            {'name' => request.name, 'book.read' => request.book.read}
+          end
         )
         @publish_series = Google::Gax.create_api_call(
           @library_service_stub.method(:publish_series),
@@ -1183,6 +1245,10 @@ module Library
           @library_service_stub.method(:add_tag),
           defaults["add_tag"]
         )
+        @add_label = Google::Gax.create_api_call(
+          @labeler_stub.method(:add_label),
+          defaults["add_label"]
+        )
         @get_big_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_book),
           defaults["get_big_book"]
@@ -1194,10 +1260,6 @@ module Library
         @test_optional_required_flattening_params = Google::Gax.create_api_call(
           @library_service_stub.method(:test_optional_required_flattening_params),
           defaults["test_optional_required_flattening_params"]
-        )
-        @add_label = Google::Gax.create_api_call(
-          @labeler_stub.method(:add_label),
-          defaults["add_label"]
         )
       end
 
@@ -1565,6 +1627,8 @@ module Library
       #   The book to update with.
       #   A hash of the same form as `Google::Example::Library::V1::Book`
       #   can also be provided.
+      # @param optional_foo [String]
+      #   An optional foo.
       # @param update_mask [Google::Protobuf::FieldMask | Hash]
       #   A field mask to apply, rendered as an HTTP parameter.
       #   A hash of the same form as `Google::Protobuf::FieldMask`
@@ -1589,12 +1653,14 @@ module Library
       def update_book \
           name,
           book,
+          optional_foo: nil,
           update_mask: nil,
           physical_mask: nil,
           options: nil
         req = {
           name: name,
           book: book,
+          optional_foo: optional_foo,
           update_mask: update_mask,
           physical_mask: physical_mask
         }.delete_if { |_, v| v.nil? }
@@ -2610,7 +2676,7 @@ Gem::Specification.new do |gem|
   gem.name          = "library"
   gem.version       = "0.6.8"
 
-  gem.authors       = ["Google, Inc."]
+  gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
   gem.description   = "library is the official library for Google Example Library API."
   gem.summary       = "API Client library for Google Example Library API"
@@ -2628,6 +2694,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
   gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "rubocop", "<= 0.35.1"
@@ -2635,7 +2702,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: test/library/v1/library_service_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -2691,7 +2758,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Library::Credentials
+class MockLibraryServiceCredentials < Library::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -2733,7 +2800,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("create_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2761,7 +2828,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("create_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2808,7 +2875,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2838,7 +2905,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2874,7 +2941,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2900,7 +2967,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2934,7 +3001,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -2962,7 +3029,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_shelf")
+      mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3009,7 +3076,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("merge_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3039,7 +3106,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("merge_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3088,7 +3155,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("create_book")
+      mock_credentials = MockLibraryServiceCredentials.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3118,7 +3185,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("create_book")
+      mock_credentials = MockLibraryServiceCredentials.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3166,7 +3233,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("publish_series")
+      mock_credentials = MockLibraryServiceCredentials.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3206,7 +3273,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("publish_series")
+      mock_credentials = MockLibraryServiceCredentials.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3257,7 +3324,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3285,7 +3352,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3326,7 +3393,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_books")
+      mock_credentials = MockLibraryServiceCredentials.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3357,7 +3424,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_books")
+      mock_credentials = MockLibraryServiceCredentials.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3391,7 +3458,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_book")
+      mock_credentials = MockLibraryServiceCredentials.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3419,7 +3486,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_book")
+      mock_credentials = MockLibraryServiceCredentials.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3468,7 +3535,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("update_book")
+      mock_credentials = MockLibraryServiceCredentials.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3498,7 +3565,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("update_book")
+      mock_credentials = MockLibraryServiceCredentials.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3547,7 +3614,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("move_book")
+      mock_credentials = MockLibraryServiceCredentials.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3577,7 +3644,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("move_book")
+      mock_credentials = MockLibraryServiceCredentials.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3613,7 +3680,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_strings")
+      mock_credentials = MockLibraryServiceCredentials.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3639,7 +3706,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_strings")
+      mock_credentials = MockLibraryServiceCredentials.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3686,7 +3753,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_comments")
+      mock_credentials = MockLibraryServiceCredentials.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3727,7 +3794,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_comments")
+      mock_credentials = MockLibraryServiceCredentials.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3774,7 +3841,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_archive")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3802,7 +3869,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_archive")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3851,7 +3918,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_anywhere")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3881,7 +3948,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_anywhere")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3928,7 +3995,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_absolutely_anywhere")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3956,7 +4023,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_book_from_absolutely_anywhere")
+      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -3995,7 +4062,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("update_book_index")
+      mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4032,7 +4099,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("update_book_index")
+      mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4071,7 +4138,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("stream_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4095,7 +4162,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("stream_shelves")
+      mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4142,7 +4209,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("stream_books")
+      mock_credentials = MockLibraryServiceCredentials.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4171,7 +4238,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("stream_books")
+      mock_credentials = MockLibraryServiceCredentials.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4213,7 +4280,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("discuss_book")
+      mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4244,7 +4311,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("discuss_book")
+      mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4286,7 +4353,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("monolog_about_book")
+      mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4316,7 +4383,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("monolog_about_book")
+      mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4360,7 +4427,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("find_related_books")
+      mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4394,7 +4461,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("find_related_books")
+      mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4434,7 +4501,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_tag")
+      mock_credentials = MockLibraryServiceCredentials.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4464,7 +4531,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_tag")
+      mock_credentials = MockLibraryServiceCredentials.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4504,7 +4571,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_label")
+      mock_credentials = MockLibraryServiceCredentials.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4534,7 +4601,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("add_label")
+      mock_credentials = MockLibraryServiceCredentials.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4588,7 +4655,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4626,7 +4693,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4655,7 +4722,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4700,7 +4767,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4738,7 +4805,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4767,7 +4834,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4860,7 +4927,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("test_optional_required_flattening_params")
+      mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -4971,7 +5038,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("test_optional_required_flattening_params")
+      mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::Credentials.stub(:default, mock_credentials) do
@@ -5015,41 +5082,5 @@ describe Library::V1::LibraryServiceClient do
         end
       end
     end
-  end
-end
-============== file: test/library/v1/library_service_smoke_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# AUTO GENERATED BY GAPIC
-
-require "minitest/autorun"
-require "minitest/spec"
-
-require "library"
-
-describe "LibraryServiceSmokeTest" do
-  it "runs one smoke test with update_book" do
-    unless ENV["SMOKE_TEST_PROJECT"]
-      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
-    end
-    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
-
-    library_service_client = Library.new
-    formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-    rating = :GOOD
-    book = { rating: rating }
-    response = library_service_client.update_book(formatted_name, book)
   end
 end

@@ -2,13 +2,13 @@
 {
   "name": "library/library",
   "version": "0.1.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "url": "https://github.com/googleapis/googleapis",
   "description": "Google Example Library API client for PHP",
   "require": {
-    "php" : "^5.5 || ^7.0",
+    "google/gax": "^0.6.*",
     "google/protobuf": "^0.7.*",
-    "google/gax": "^0.6.*"
+    "php" : "^5.5 || ^7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7"
@@ -17,7 +17,9 @@
   "autoload": {
     "psr-4": {
       "Google\\Cloud\\": "src",
-      "Google\\Cloud\\Tests\\": "tests/unit",
+      "Google\\Cloud\\Tests\\": "tests",
+      "Google\\Cloud\\Tests\\System\\": "tests/system",
+      "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
       "": "proto/src"
     }
   },
@@ -30,7 +32,7 @@
 ============== file: src/Example/Library/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +62,16 @@
 
 namespace Google\Example\Library\V1\Gapic;
 
+use Google\ApiCore\AgentHeaderDescriptor;
+use Google\ApiCore\ApiCallable;
+use Google\ApiCore\CallSettings;
+use Google\ApiCore\GrpcConstants;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\OperationResponse;
+use Google\ApiCore\PageStreamingDescriptor;
+use Google\ApiCore\PathTemplate;
+use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
@@ -97,16 +109,6 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_Requir
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry as IndexMapEntry;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\GAX\AgentHeaderDescriptor;
-use Google\GAX\ApiCallable;
-use Google\GAX\CallSettings;
-use Google\GAX\GrpcConstants;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\OperationResponse;
-use Google\GAX\PageStreamingDescriptor;
-use Google\GAX\PathTemplate;
-use Google\GAX\ValidationException;
 use Google\Protobuf\FieldMask;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
@@ -220,9 +222,9 @@ class LibraryServiceGapicClient
     {
         if (self::$pathTemplateMap == null) {
             self::$pathTemplateMap = [
-                "shelf" => self::getShelfNameTemplate(),
-                "book" => self::getBookNameTemplate(),
-                "return" => self::getReturnNameTemplate(),
+                'shelf' => self::getShelfNameTemplate(),
+                'book' => self::getBookNameTemplate(),
+                'return' => self::getReturnNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
@@ -310,8 +312,8 @@ class LibraryServiceGapicClient
     private static function getGapicVersion()
     {
         if (!self::$gapicVersionLoaded) {
-            if (file_exists(__DIR__ . "/../VERSION")) {
-              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            if (file_exists(__DIR__ . '/../VERSION')) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . '/../VERSION'));
             } elseif (class_exists(Version::class)) {
               self::$gapicVersion = Version::VERSION;
             }
@@ -415,7 +417,7 @@ class LibraryServiceGapicClient
     /**
      * Return an OperationsClient object with the same endpoint as $this.
      *
-     * @return \Google\GAX\LongRunning\OperationsClient
+     * @return \Google\ApiCore\LongRunning\OperationsClient
      * @experimental
      */
     public function getOperationsClient()
@@ -432,7 +434,7 @@ class LibraryServiceGapicClient
      *
      * @param string $operationName The name of the long running operation
      * @param string $methodName The name of the method used to start the operation
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      * @experimental
      */
     public function resumeOperation($operationName, $methodName = null)
@@ -481,8 +483,8 @@ class LibraryServiceGapicClient
      *     @type array $retryingOverride
      *           An associative array in which the keys are method names (e.g. 'createFoo'), and
      *           the values are retry settings to use for that method. The retry settings for each
-     *           method can be a {@see Google\GAX\RetrySettings} object, or an associative array
-     *           of retry settings parameters. See the documentation on {@see Google\GAX\RetrySettings}
+     *           method can be a {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *           of retry settings parameters. See the documentation on {@see Google\ApiCore\RetrySettings}
      *           for example usage. Passing a value of null is equivalent to a value of
      *           ['retriesEnabled' => false]. Retry settings provided in this setting override the
      *           settings in $clientConfigPath.
@@ -615,16 +617,16 @@ class LibraryServiceGapicClient
      * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function createShelf($shelf, $optionalArgs = [])
@@ -655,8 +657,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
-     *     $options = "";
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $options = '';
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
      *     $libraryServiceClient->close();
@@ -670,16 +672,16 @@ class LibraryServiceGapicClient
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getShelf($name, $options, $optionalArgs = [])
@@ -724,8 +726,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -743,16 +745,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listShelves($optionalArgs = [])
@@ -785,7 +787,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -795,14 +797,14 @@ class LibraryServiceGapicClient
      * @param string $name The name of the shelf to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function deleteShelf($name, $optionalArgs = [])
@@ -835,8 +837,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
-     *     $formattedOtherShelfName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -847,16 +849,16 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
@@ -888,7 +890,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
@@ -900,16 +902,16 @@ class LibraryServiceGapicClient
      * @param Book $book The book to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function createBook($name, $book, $optionalArgs = [])
@@ -943,7 +945,7 @@ class LibraryServiceGapicClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $seriesString = "foobar";
+     *     $seriesString = 'foobar';
      *     $seriesUuid = new SeriesUuid();
      *     $seriesUuid->setSeriesString($seriesString);
      *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
@@ -961,16 +963,16 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\PublishSeriesResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
@@ -1009,7 +1011,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1019,16 +1021,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBook($name, $optionalArgs = [])
@@ -1059,15 +1061,15 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1092,16 +1094,16 @@ class LibraryServiceGapicClient
      *          been generated by a previous call to the API.
      *     @type string $filter
      *          To test python built-in wrapping.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listBooks($name, $optionalArgs = [])
@@ -1141,7 +1143,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1151,14 +1153,14 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function deleteBook($name, $optionalArgs = [])
@@ -1189,7 +1191,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -1201,20 +1203,22 @@ class LibraryServiceGapicClient
      * @param Book $book The book to update with.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $optionalFoo
+     *          An optional foo.
      *     @type FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
      *     @type \Google\Example\Library\V1\FieldMask $physicalMask
      *          To test Python import clash resolution.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function updateBook($name, $book, $optionalArgs = [])
@@ -1222,6 +1226,9 @@ class LibraryServiceGapicClient
         $request = new UpdateBookRequest();
         $request->setName($name);
         $request->setBook($book);
+        if (isset($optionalArgs['optionalFoo'])) {
+            $request->setOptionalFoo($optionalArgs['optionalFoo']);
+        }
         if (isset($optionalArgs['updateMask'])) {
             $request->setUpdateMask($optionalArgs['updateMask']);
         }
@@ -1252,8 +1259,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1264,16 +1271,16 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the destination shelf.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
@@ -1312,8 +1319,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1336,16 +1343,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function listStrings($optionalArgs = [])
@@ -1384,8 +1391,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $comment = "";
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $comment = '';
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
      *     $commentsElement = new Comment();
@@ -1403,14 +1410,14 @@ class LibraryServiceGapicClient
      * @param Comment[] $comments
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addComments($name, $comments, $optionalArgs = [])
@@ -1442,7 +1449,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1452,16 +1459,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromArchive
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromArchive($name, $optionalArgs = [])
@@ -1492,8 +1499,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedAltBookName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedAltBookName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1505,16 +1512,16 @@ class LibraryServiceGapicClient
      * single resource name type in a oneof.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
@@ -1546,7 +1553,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1556,16 +1563,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBookFromAbsolutelyAnywhere($name, $optionalArgs = [])
@@ -1596,10 +1603,10 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $indexName = "default index";
-     *     $indexMapItem = "";
-     *     $indexMap = ["default_key" => $indexMapItem,];
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $indexName = 'default index';
+     *     $indexMapItem = '';
+     *     $indexMap = ['default_key' => $indexMapItem];
      *     $libraryServiceClient->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1611,14 +1618,14 @@ class LibraryServiceGapicClient
      * @param array $indexMap The index to update the book with
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
@@ -1669,9 +1676,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStream
+     * @return \Google\ApiCore\ServerStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function streamShelves($optionalArgs = [])
@@ -1709,7 +1716,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $name = "";
+     *     $name = '';
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamBooks($name);
      *     foreach ($stream->readAll() as $element) {
@@ -1727,9 +1734,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStream
+     * @return \Google\ApiCore\ServerStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function streamBooks($name, $optionalArgs = [])
@@ -1768,7 +1775,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $name = "";
+     *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
      *     $requests = [$request];
@@ -1808,9 +1815,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\BidiStream
+     * @return \Google\ApiCore\BidiStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function discussBook($optionalArgs = [])
@@ -1846,7 +1853,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $name = "";
+     *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
      *     $requests = [$request];
@@ -1874,9 +1881,9 @@ class LibraryServiceGapicClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ClientStream
+     * @return \Google\ApiCore\ClientStream
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function monologAboutBook($optionalArgs = [])
@@ -1911,7 +1918,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $namesElement = "";
+     *     $namesElement = '';
      *     $names = [$namesElement];
      *     $shelves = [];
      *     // Iterate through all elements
@@ -1920,8 +1927,8 @@ class LibraryServiceGapicClient
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR iterate over pages of elements, with the maximum page size set to 5
-     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
+     *     // OR iterate over pages of elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1945,16 +1952,16 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\PagedListResponse
+     * @return \Google\ApiCore\PagedListResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
@@ -1992,8 +1999,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $tag = "";
+     *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $tag = '';
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
      *     $libraryServiceClient->close();
@@ -2006,16 +2013,16 @@ class LibraryServiceGapicClient
      * @param string $tag REQUIRED: The tag to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddTagResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addTag($resource, $tag, $optionalArgs = [])
@@ -2047,8 +2054,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $label = "";
+     *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $label = '';
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
      *     $libraryServiceClient->close();
@@ -2061,16 +2068,16 @@ class LibraryServiceGapicClient
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddLabelResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function addLabel($resource, $label, $optionalArgs = [])
@@ -2102,7 +2109,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2137,16 +2144,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBigBook($name, $optionalArgs = [])
@@ -2177,7 +2184,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2210,16 +2217,16 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\GAX\OperationResponse
+     * @return \Google\ApiCore\OperationResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function getBigNothing($name, $optionalArgs = [])
@@ -2256,11 +2263,11 @@ class LibraryServiceGapicClient
      *     $requiredSingularDouble = 0.0;
      *     $requiredSingularBool = false;
      *     $requiredSingularEnum = InnerEnum::ZERO;
-     *     $requiredSingularString = "";
-     *     $requiredSingularBytes = "";
+     *     $requiredSingularString = '';
+     *     $requiredSingularBytes = '';
      *     $requiredSingularMessage = new InnerMessage();
-     *     $requiredSingularResourceName = "";
-     *     $requiredSingularResourceNameOneof = "";
+     *     $requiredSingularResourceName = '';
+     *     $requiredSingularResourceNameOneof = '';
      *     $requiredSingularFixed32 = 0;
      *     $requiredSingularFixed64 = 0;
      *     $requiredRepeatedInt32 = [];
@@ -2341,16 +2348,16 @@ class LibraryServiceGapicClient
      *     @type int[] $optionalRepeatedFixed32
      *     @type int[] $optionalRepeatedFixed64
      *     @type array $optionalMap
-     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
-     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
      *          of retry settings parameters. See the documentation on
-     *          {@see Google\GAX\RetrySettings} for example usage.
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse
      *
-     * @throws \Google\GAX\ApiException if the remote call fails
+     * @throws \Google\ApiCore\ApiException if the remote call fails
      * @experimental
      */
     public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
@@ -2500,7 +2507,7 @@ class LibraryServiceGapicClient
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2537,7 +2544,8 @@ use Google\Example\Library\V1\Gapic\LibraryServiceGapicClient;
  */
 class LibraryServiceClient extends LibraryServiceGapicClient
 {
-    // This class is intentionally empty, and is intended to hold manual additions to the generated {@see LibraryServiceClientImpl} class.
+    // This class is intentionally empty, and is intended to hold manual
+    // additions to the generated {@see LibraryServiceClientImpl} class.
 }
 ============== file: src/Example/Library/V1/resources/library_service_client_config.json ==============
 {
@@ -2711,10 +2719,10 @@ class LibraryServiceClient extends LibraryServiceGapicClient
   }
 }
 
-============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
+============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2734,9 +2742,75 @@ class LibraryServiceClient extends LibraryServiceGapicClient
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\Example\Library\V1;
+namespace Google\Tests\System\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\Book_Rating as Rating;
+use Google\Example\Library\V1\UpdateBookRequest;
+use Google\Protobuf\FieldMask;
+
+/**
+ * @group library
+ * @group grpc
+ */
+class LibraryServiceSmokeTest extends GeneratedTest
+{
+    /**
+     * @test
+     */
+    public function updateBookTest()
+    {
+        $projectId = getenv('PROJECT_ID');
+        if ($projectId === false) {
+            $this->fail('Environment variable PROJECT_ID must be set for smoke test');
+        }
+
+        $libraryServiceClient = new LibraryServiceClient();
+        $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
+        $optionalFoo = '';
+        $rating = Rating::GOOD;
+        $book = new Book();
+        $book->setRating($rating);
+        $updateMask = new FieldMask();
+        $physicalMask = new \Google\Example\Library\V1\FieldMask();
+        $libraryServiceClient->updateBook($formattedName, $book, ['optionalFoo' => $optionalFoo, 'updateMask' => $updateMask, 'physicalMask' => $physicalMask]);
+    }
+}
+============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
+<?php
+/*
+ * Copyright 2017, Google LLC All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Unit\Example\Library\V1;
+
+use Google\Example\Library\V1\LibraryServiceClient;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -2778,15 +2852,7 @@ use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerM
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookRequest;
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\LongRunning\GetOperationRequest;
 use Google\Longrunning\Operation;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
@@ -2796,7 +2862,7 @@ use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -2852,9 +2918,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name = "name3373707";
-        $theme = "theme110327241";
-        $internalTheme = "internalTheme792518087";
+        $name = 'name3373707';
+        $theme = 'theme110327241';
+        $internalTheme = 'internalTheme792518087';
         $expectedResponse = new Shelf();
         $expectedResponse->setName($name);
         $expectedResponse->setTheme($theme);
@@ -2892,10 +2958,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
@@ -2905,7 +2971,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             $client->createShelf($shelf);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -2927,9 +2993,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $theme = "theme110327241";
-        $internalTheme = "internalTheme792518087";
+        $name2 = 'name2-1052831874';
+        $theme = 'theme110327241';
+        $internalTheme = 'internalTheme792518087';
         $expectedResponse = new Shelf();
         $expectedResponse->setName($name2);
         $expectedResponse->setTheme($theme);
@@ -2937,8 +3003,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
-        $options = "options-1249474914";
+        $formattedName = $client->shelfName('[SHELF_ID]');
+        $options = 'options-1249474914';
 
         $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
@@ -2969,21 +3035,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
-        $options = "options-1249474914";
+        $formattedName = $client->shelfName('[SHELF_ID]');
+        $options = 'options-1249474914';
 
         try {
             $client->getShelf($formattedName, $options);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3005,7 +3071,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $nextPageToken = "";
+        $nextPageToken = '';
         $shelvesElement = new Shelf();
         $shelves = [$shelvesElement];
         $expectedResponse = new ListShelvesResponse();
@@ -3043,17 +3109,17 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         try {
             $client->listShelves();
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3079,7 +3145,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -3108,20 +3174,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         try {
             $client->deleteShelf($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3143,9 +3209,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $theme = "theme110327241";
-        $internalTheme = "internalTheme792518087";
+        $name2 = 'name2-1052831874';
+        $theme = 'theme110327241';
+        $internalTheme = 'internalTheme792518087';
         $expectedResponse = new Shelf();
         $expectedResponse->setName($name2);
         $expectedResponse->setTheme($theme);
@@ -3153,8 +3219,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
-        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3185,21 +3251,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
-        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
 
         try {
             $client->mergeShelves($formattedName, $formattedOtherShelfName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3221,9 +3287,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -3233,7 +3299,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
         $book = new Book();
 
         $response = $client->createBook($formattedName, $book);
@@ -3265,21 +3331,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
         $book = new Book();
 
         try {
             $client->createBook($formattedName, $book);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3301,7 +3367,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $bookNamesElement = "bookNamesElement1491670575";
+        $bookNamesElement = 'bookNamesElement1491670575';
         $bookNames = [$bookNamesElement];
         $expectedResponse = new PublishSeriesResponse();
         $expectedResponse->setBookNames($bookNames);
@@ -3310,7 +3376,7 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $shelf = new Shelf();
         $books = [];
-        $seriesString = "foobar";
+        $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
@@ -3344,24 +3410,24 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
         $shelf = new Shelf();
         $books = [];
-        $seriesString = "foobar";
+        $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
         try {
             $client->publishSeries($shelf, $books, $seriesUuid);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3383,9 +3449,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -3395,7 +3461,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3425,20 +3491,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         try {
             $client->getBook($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3460,7 +3526,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $nextPageToken = "";
+        $nextPageToken = '';
         $booksElement = new Book();
         $books = [$booksElement];
         $expectedResponse = new ListBooksResponse();
@@ -3469,7 +3535,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         $response = $client->listBooks($formattedName);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
@@ -3502,20 +3568,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         try {
             $client->listBooks($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3541,7 +3607,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -3570,20 +3636,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         try {
             $client->deleteBook($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3605,9 +3671,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -3617,7 +3683,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
@@ -3649,21 +3715,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $book = new Book();
 
         try {
             $client->updateBook($formattedName, $book);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3685,9 +3751,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -3697,8 +3763,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3729,21 +3795,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
 
         try {
             $client->moveBook($formattedName, $formattedOtherShelfName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3765,8 +3831,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $nextPageToken = "";
-        $stringsElement = "stringsElement474465855";
+        $nextPageToken = '';
+        $stringsElement = 'stringsElement474465855';
         $strings = [$stringsElement];
         $expectedResponse = new ListStringsResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
@@ -3803,17 +3869,17 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         try {
             $client->listStrings();
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3839,8 +3905,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $comment = "95";
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
         $commentsElement = new Comment();
@@ -3877,16 +3943,16 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $comment = "95";
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
         $commentsElement = new Comment();
@@ -3898,7 +3964,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             $client->addComments($formattedName, $comments);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3920,9 +3986,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new BookFromArchive();
         $expectedResponse->setName($name2);
@@ -3932,7 +3998,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
 
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3962,20 +4028,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
 
         try {
             $client->getBookFromArchive($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -3997,9 +4063,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new BookFromAnywhere();
         $expectedResponse->setName($name2);
@@ -4009,8 +4075,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedAltBookName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
@@ -4041,21 +4107,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedAltBookName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         try {
             $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4077,9 +4143,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new BookFromAnywhere();
         $expectedResponse->setName($name2);
@@ -4089,7 +4155,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -4119,20 +4185,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         try {
             $client->getBookFromAbsolutelyAnywhere($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4158,10 +4224,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $indexName = "default index";
-        $indexMapItem = "indexMapItem1918721251";
-        $indexMap = ["default_key" => $indexMapItem,];
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $indexName = 'default index';
+        $indexMapItem = 'indexMapItem1918721251';
+        $indexMap = ['default_key' => $indexMapItem];
 
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -4192,23 +4258,23 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $indexName = "default index";
-        $indexMapItem = "indexMapItem1918721251";
-        $indexMap = ["default_key" => $indexMapItem,];
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $indexName = 'default index';
+        $indexMapItem = 'indexMapItem1918721251';
+        $indexMap = ['default_key' => $indexMapItem];
 
         try {
             $client->updateBookIndex($formattedName, $indexName, $indexMap);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4283,10 +4349,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
 
         $grpcStub->setStreamingStatus($status);
@@ -4302,7 +4368,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4324,9 +4390,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -4334,9 +4400,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedResponse->setTitle($title);
         $expectedResponse->setRead($read);
         $grpcStub->addResponse($expectedResponse);
-        $name5 = "name5-1052831871";
-        $author2 = "author21433073278";
-        $title2 = "title2-1307248629";
+        $name5 = 'name5-1052831871';
+        $author2 = 'author21433073278';
+        $title2 = 'title2-1307248629';
         $read2 = false;
         $expectedResponse2 = new Book();
         $expectedResponse2->setName($name5);
@@ -4344,9 +4410,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedResponse2->setTitle($title2);
         $expectedResponse2->setRead($read2);
         $grpcStub->addResponse($expectedResponse2);
-        $name6 = "name6-1052831870";
-        $author3 = "author31433073279";
-        $title3 = "title3-1307248628";
+        $name6 = 'name6-1052831870';
+        $author3 = 'author31433073279';
+        $title3 = 'title3-1307248628';
         $read3 = true;
         $expectedResponse3 = new Book();
         $expectedResponse3->setName($name6);
@@ -4356,7 +4422,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse3);
 
         // Mock request
-        $name = "name3373707";
+        $name = 'name3373707';
 
         $serverStream = $client->streamBooks($name);
         $this->assertInstanceOf(ServerStream::class, $serverStream);
@@ -4393,10 +4459,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
 
         $grpcStub->setStreamingStatus($status);
@@ -4404,7 +4470,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock request
-        $name = "name3373707";
+        $name = 'name3373707';
 
         $serverStream = $client->streamBooks($name);
         $results = $serverStream->readAll();
@@ -4412,7 +4478,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4434,33 +4500,33 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $userName = "userName339340927";
-        $comment = "95";
+        $userName = 'userName339340927';
+        $comment = '95';
         $expectedResponse = new Comment();
         $expectedResponse->setUserName($userName);
         $expectedResponse->setComment($comment);
         $grpcStub->addResponse($expectedResponse);
-        $userName2 = "userName2-310880654";
-        $comment2 = "82";
+        $userName2 = 'userName2-310880654';
+        $comment2 = '82';
         $expectedResponse2 = new Comment();
         $expectedResponse2->setUserName($userName2);
         $expectedResponse2->setComment($comment2);
         $grpcStub->addResponse($expectedResponse2);
-        $userName3 = "userName3-310880653";
-        $comment3 = "83";
+        $userName3 = 'userName3-310880653';
+        $comment3 = '83';
         $expectedResponse3 = new Comment();
         $expectedResponse3->setUserName($userName3);
         $expectedResponse3->setComment($comment3);
         $grpcStub->addResponse($expectedResponse3);
 
         // Mock request
-        $name = "name3373707";
+        $name = 'name3373707';
         $request = new DiscussBookRequest();
         $request->setName($name);
-        $name2 = "name2-1052831874";
+        $name2 = 'name2-1052831874';
         $request2 = new DiscussBookRequest();
         $request2->setName($name2);
-        $name3 = "name3-1052831873";
+        $name3 = 'name3-1052831873';
         $request3 = new DiscussBookRequest();
         $request3->setName($name3);
 
@@ -4516,10 +4582,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
 
         $grpcStub->setStreamingStatus($status);
@@ -4532,7 +4598,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4554,8 +4620,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $nextPageToken = "";
-        $namesElement2 = "namesElement21120252792";
+        $nextPageToken = '';
+        $namesElement2 = 'namesElement21120252792';
         $names2 = [$namesElement2];
         $expectedResponse = new FindRelatedBooksResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
@@ -4563,7 +4629,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $namesElement = "namesElement-249113339";
+        $namesElement = 'namesElement-249113339';
         $names = [$namesElement];
         $shelves = [];
 
@@ -4599,22 +4665,22 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $namesElement = "namesElement-249113339";
+        $namesElement = 'namesElement-249113339';
         $names = [$namesElement];
         $shelves = [];
 
         try {
             $client->findRelatedBooks($names, $shelves);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4640,8 +4706,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $tag = "tag114586";
+        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $tag = 'tag114586';
 
         $response = $client->addTag($formattedResource, $tag);
         $this->assertEquals($expectedResponse, $response);
@@ -4672,21 +4738,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $tag = "tag114586";
+        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $tag = 'tag114586';
 
         try {
             $client->addTag($formattedResource, $tag);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4712,8 +4778,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $label = "label102727412";
+        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $label = 'label102727412';
 
         $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
@@ -4744,21 +4810,21 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
-        $label = "label102727412";
+        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $label = 'label102727412';
 
         try {
             $client->addLabel($formattedResource, $label);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4795,9 +4861,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $incompleteOperation->setName('operations/getBigBookTest');
         $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
+        $name2 = 'name2-1052831874';
+        $author = 'author-1406328437';
+        $title = 'title110371416';
         $read = true;
         $expectedResponse = new Book();
         $expectedResponse->setName($name2);
@@ -4813,7 +4879,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4880,15 +4946,15 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4900,7 +4966,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             $response->pollUntilComplete();
             // If the pollUntilComplete() method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -4949,7 +5015,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -5016,15 +5082,15 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -5036,7 +5102,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             $response->pollUntilComplete();
             // If the pollUntilComplete() method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -5070,11 +5136,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
         $requiredSingularEnum = InnerEnum::ZERO;
-        $requiredSingularString = "requiredSingularString-1949894503";
-        $requiredSingularBytes = "-29";
+        $requiredSingularString = 'requiredSingularString-1949894503';
+        $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $requiredSingularResourceName = "requiredSingularResourceName-1701575020";
-        $requiredSingularResourceNameOneof = "requiredSingularResourceNameOneof-25303726";
+        $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+        $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -5146,10 +5212,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
-           "message" => "internal error",
-           "code" => Grpc\STATUS_DATA_LOSS,
-           "status" => "DATA_LOSS",
-           "details" => [],
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
         ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
@@ -5160,11 +5226,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
         $requiredSingularEnum = InnerEnum::ZERO;
-        $requiredSingularString = "requiredSingularString-1949894503";
-        $requiredSingularBytes = "-29";
+        $requiredSingularString = 'requiredSingularString-1949894503';
+        $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $requiredSingularResourceName = "requiredSingularResourceName-1701575020";
-        $requiredSingularResourceNameOneof = "requiredSingularResourceNameOneof-25303726";
+        $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+        $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -5185,7 +5251,7 @@ class LibraryServiceClientTest extends GeneratedTest
         try {
             $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -5200,7 +5266,7 @@ class LibraryServiceClientTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/MockLabelerImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5220,22 +5286,21 @@ class LibraryServiceClientTest extends GeneratedTest
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\Example\Library\V1;
+namespace Google\Tests\Unit\Example\Library\V1;
 
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLabelerImpl extends LabelerGrpcClient
@@ -5245,7 +5310,7 @@ class MockLabelerImpl extends LabelerGrpcClient
 ============== file: tests/unit/Example/Library/V1/MockLibraryServiceImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2017, Google LLC All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5265,25 +5330,68 @@ class MockLabelerImpl extends LabelerGrpcClient
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\Example\Library\V1;
+namespace Google\Tests\Unit\Example\Library\V1;
 
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
-use Google\GAX\ApiException;
-use Google\GAX\BidiStream;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\LongRunning\OperationsClient;
-use Google\GAX\ServerStream;
-use Google\GAX\Testing\GeneratedTest;
-use Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use Google\GAX\Testing\MockStubTrait;
-use Google\Longrunning\GetOperationRequest;
+use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
 use Grpc;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MockLibraryServiceImpl extends LibraryServiceGrpcClient
+{
+    use MockStubTrait;
+}
+============== file: tests/unit/Example/Library/V1/MockOperationsImpl.php ==============
+<?php
+/*
+ * Copyright 2017, Google LLC All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Unit\Example\Library\V1;
+
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\LongRunning\GetOperationRequest;
+use Google\Longrunning\OperationsGrpcClient;
+use Google\Protobuf\Any;
+use Google\Protobuf\GPBEmpty;
+use Grpc;
+use PHPUnit\Framework\TestCase;
+use stdClass;
+
+class MockOperationsImpl extends OperationsGrpcClient
 {
     use MockStubTrait;
 }

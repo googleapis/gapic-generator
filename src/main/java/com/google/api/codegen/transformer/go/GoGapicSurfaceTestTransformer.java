@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -24,6 +27,8 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -44,8 +49,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
@@ -77,9 +80,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> models = new ArrayList<ViewModel>();
-    models.add(generateMockServiceView(model, productConfig, namer));
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+    models.add(generateMockServiceView(apiModel, productConfig, namer));
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -95,24 +99,24 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private MockCombinedView generateMockServiceView(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ModelTypeTable typeTable = GoGapicSurfaceTransformer.createTypeTable();
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
 
-    for (Interface apiInterface :
+    for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(apiInterface))
+              .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       // We don't need any import here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -150,7 +154,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
@@ -172,11 +176,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testCaseViews;
   }
 
-  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+  private SmokeTestClassView createSmokeTestClassView(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
 
-    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext methodContext = context.asRequestMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
@@ -199,8 +203,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     // The shared code above add imports both for input and output.
     // Since we use short decls, we don't need to import anything for output.
-    context.getModelTypeTable().getImports().clear();
-    context.getModelTypeTable().getAndSaveNicknameFor(method.getInputType());
+    context.getImportTypeTable().getImports().clear();
+    method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
 
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);

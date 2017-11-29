@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -23,8 +24,6 @@ import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -37,56 +36,59 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     if (context.getMethod().getRequestStreaming()) {
       methodParams.add(
           DynamicLangDefaultableParamView.newBuilder()
-              .name(context.getNamer().getRequestVariableName(context.getMethod()))
+              .name(context.getNamer().getRequestVariableName(context.getMethodModel()))
               .defaultValue("")
               .build());
     } else {
-      for (Field field : context.getMethodConfig().getRequiredFields()) {
+      for (FieldModel field : context.getMethodConfig().getRequiredFields()) {
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
         param.defaultValue("");
         methodParams.add(param.build());
       }
-      for (Field field : context.getMethodConfig().getOptionalFields()) {
+      for (FieldModel field : context.getMethodConfig().getOptionalFields()) {
         if (isRequestTokenParam(context.getMethodConfig(), field)) {
           continue;
         }
-        TypeRef type = field.getType();
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
-        if (type.isRepeated() || type.isMessage() || type.isEnum() || field.getOneof() != null) {
-          param.defaultValue("None");
-        } else {
-          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(type));
-        }
+        param.defaultValue("None");
         methodParams.add(param.build());
       }
     }
     methodParams.add(
-        DynamicLangDefaultableParamView.newBuilder().name("options").defaultValue("None").build());
+        DynamicLangDefaultableParamView.newBuilder()
+            .name("retry")
+            .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
+            .build());
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder()
+            .name("timeout")
+            .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
+            .build());
     return methodParams.build();
   }
 
   @Override
   public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       docs.add(generateRequestStreamingParamDoc(context));
     } else {
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getOptionalFields()));
     }
-    docs.add(generateOptionsParamDoc());
+    docs.addAll(generateOptionsParamDocs());
     return docs.build();
   }
 
   private ParamDocView generateRequestStreamingParamDoc(GapicMethodContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("requests")));
-    TypeRef inputType = context.getMethod().getInputType();
-    String requestTypeName = context.getTypeTable().getFullNameFor(inputType);
+    String requestTypeName =
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
     paramDoc.lines(
         ImmutableList.of(
             "The input objects. If a dict is provided, it must be of the",
@@ -100,18 +102,18 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      GapicMethodContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<FieldModel> fields) {
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldModel field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
         continue;
       }
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(namer.getVariableName(field));
-      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field.getType()));
+      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field));
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(
@@ -122,18 +124,15 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             "of resources in a page.");
       } else {
         docLines.addAll(namer.getDocLines(field));
-        boolean isMessageField = field.getType().isMessage() && !field.getType().isMap();
-        boolean isMapContainingMessage =
-            field.getType().isMap() && field.getType().getMapValueField().getType().isMessage();
+        boolean isMessageField = field.isMessage() && !field.isMap();
+        boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {
             messageType =
-                context
-                    .getTypeTable()
-                    .getFullNameForElementType(field.getType().getMapValueField().getType());
+                context.getTypeTable().getFullNameForElementType(field.getMapValueField());
           } else {
-            messageType = context.getTypeTable().getFullNameForElementType(field.getType());
+            messageType = context.getTypeTable().getFullNameForElementType(field);
           }
           docLines.add(
               "If a dict is provided, it must be of the same form as the protobuf",
@@ -149,24 +148,35 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 
-  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }
 
-  private ParamDocView generateOptionsParamDoc() {
-    SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-    paramDoc.paramName("options");
-    paramDoc.typeName("~google.gax.CallOptions");
-    paramDoc.lines(
+  private List<ParamDocView> generateOptionsParamDocs() {
+    SimpleParamDocView.Builder retryParamDoc = SimpleParamDocView.newBuilder();
+    retryParamDoc.paramName("retry");
+    retryParamDoc.typeName("Optional[google.api_core.retry.Retry]");
+    retryParamDoc.lines(
         ImmutableList.of(
-            "Overrides the default", "settings for this call, e.g, timeout, retries etc."));
-    return paramDoc.build();
+            " A retry object used",
+            "to retry requests. If ``None`` is specified, requests will not",
+            "be retried."));
+
+    SimpleParamDocView.Builder timeoutParamDoc = SimpleParamDocView.newBuilder();
+    timeoutParamDoc.paramName("timeout");
+    timeoutParamDoc.typeName("Optional[float]");
+    timeoutParamDoc.lines(
+        ImmutableList.of(
+            "The amount of time, in seconds, to wait",
+            "for the request to complete. Note that if ``retry`` is",
+            "specified, the timeout applies to each individual attempt."));
+    return ImmutableList.<ParamDocView>of(retryParamDoc.build(), timeoutParamDoc.build());
   }
 }

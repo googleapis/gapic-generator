@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,17 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import com.google.api.tools.framework.model.Model;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Constructs a partial ViewModel for producing package metadata related views */
 public class PackageMetadataTransformer {
@@ -30,12 +35,13 @@ public class PackageMetadataTransformer {
    * dependencies specified in the package config.
    */
   public PackageMetadataView.Builder generateMetadataView(
+      PackageMetadataNamer namer,
       PackageMetadataConfig packageConfig,
-      Model model,
+      ApiModel model,
       String template,
       String outputPath,
       TargetLanguage language) {
-    return generateMetadataView(packageConfig, model, template, outputPath, language, null);
+    return generateMetadataView(namer, packageConfig, model, template, outputPath, language, null);
   }
 
   /**
@@ -43,8 +49,9 @@ public class PackageMetadataTransformer {
    * dependencies are included only if whitelisted.
    */
   public PackageMetadataView.Builder generateMetadataView(
+      PackageMetadataNamer namer,
       PackageMetadataConfig packageConfig,
-      Model model,
+      ApiModel model,
       String template,
       String outputPath,
       TargetLanguage language,
@@ -52,25 +59,10 @@ public class PackageMetadataTransformer {
     // Note that internally, this is overridable in the service config, but the component is not
     // available externally. See:
     //   https://github.com/googleapis/toolkit/issues/933
-    String discoveryApiName = model.getServiceConfig().getName();
+    String discoveryApiName = model.getServiceName();
     int dotIndex = discoveryApiName.indexOf(".");
     if (dotIndex > 0) {
       discoveryApiName = discoveryApiName.substring(0, dotIndex).replace("-", "_");
-    }
-
-    List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
-    if (packageConfig.protoPackageDependencies(language) != null) {
-      for (Map.Entry<String, VersionBound> entry :
-          packageConfig.protoPackageDependencies(language).entrySet()) {
-        if (entry.getValue() != null
-            && (whitelistedDependencies == null
-                || whitelistedDependencies.contains(entry.getKey()))) {
-          protoPackageDependencies.add(
-              PackageDependencyView.create(entry.getKey(), entry.getValue()));
-        }
-      }
-      // Ensures deterministic test results.
-      Collections.sort(protoPackageDependencies);
     }
 
     return PackageMetadataView.newBuilder()
@@ -88,10 +80,12 @@ public class PackageMetadataTransformer {
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .protoPackageDependencies(
             getDependencies(
-                packageConfig.protoPackageDependencies(language), whitelistedDependencies))
+                namer, packageConfig.protoPackageDependencies(language), whitelistedDependencies))
         .protoPackageTestDependencies(
             getDependencies(
-                packageConfig.protoPackageTestDependencies(language), whitelistedDependencies))
+                namer,
+                packageConfig.protoPackageTestDependencies(language),
+                whitelistedDependencies))
         .authVersionBound(packageConfig.authVersionBound(language))
         .protoPackageName("proto-" + packageConfig.packageName(language))
         .gapicPackageName("gapic-" + packageConfig.packageName(language))
@@ -100,22 +94,30 @@ public class PackageMetadataTransformer {
         .email(packageConfig.email())
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
-        .fullName(model.getServiceConfig().getTitle())
+        .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false);
   }
 
   private List<PackageDependencyView> getDependencies(
-      Map<String, VersionBound> dependencies, Set<String> whitelistedDependencies) {
+      PackageMetadataNamer namer,
+      Map<String, VersionBound> dependencies,
+      Set<String> whitelistedDependencies) {
     List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
     if (dependencies != null) {
       Map<String, VersionBound> dependenciesCopy = new HashMap<>(dependencies);
       if (whitelistedDependencies != null) {
         dependenciesCopy.keySet().retainAll(whitelistedDependencies);
       }
-      for (Map.Entry<String, VersionBound> entry : dependenciesCopy.entrySet())
-        protoPackageDependencies.add(
-            PackageDependencyView.create(entry.getKey(), entry.getValue()));
+      for (Map.Entry<String, VersionBound> entry : dependenciesCopy.entrySet()) {
+        PackageDependencyView packageDependency =
+            PackageDependencyView.newBuilder()
+                .group(namer.getProtoPackageGroup())
+                .name(entry.getKey())
+                .versionBound(entry.getValue())
+                .build();
+        protoPackageDependencies.add(packageDependency);
+      }
       // Ensures deterministic test results.
       Collections.sort(protoPackageDependencies);
     }

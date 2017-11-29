@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
 public abstract class ListMethodDetailView {
@@ -28,7 +29,7 @@ public abstract class ListMethodDetailView {
 
   public abstract String iterateMethodName();
 
-  public abstract String resourcesFieldGetFunction();
+  public abstract List<String> resourcesFieldGetFunctions();
 
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
@@ -46,7 +47,7 @@ public abstract class ListMethodDetailView {
 
     public abstract Builder iterateMethodName(String name);
 
-    public abstract Builder resourcesFieldGetFunction(String name);
+    public abstract Builder resourcesFieldGetFunctions(List<String> name);
 
     public abstract ListMethodDetailView build();
   }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -32,7 +33,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
 
-public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
+public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -259,7 +260,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, TypeModel type, String typedResourceShortName) {
     TypeName simpleTypeName = new TypeName(typedResourceShortName);
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,9 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       // Note on usage of instanceof: there is one case (as of this writing)
       // where the element is an Iterable<> instead of a ProtoElement.
       if (element instanceof ProtoElement) {
-        subPath = pathMapper.getOutputPath((ProtoElement) element, context.getApiConfig());
+        subPath =
+            pathMapper.getOutputPath(
+                ((ProtoElement) element).getFullName(), context.getApiConfig());
       } else {
         subPath = pathMapper.getOutputPath(null, context.getApiConfig());
       }

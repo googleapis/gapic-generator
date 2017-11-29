@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,11 @@ public class RubyTypeTable implements TypeTable {
     TreeMap<TypeAlias, String> inverseMap = new TreeMap<>(TypeAlias.getNicknameComparator());
     inverseMap.putAll(dynamicTypeTable.getImportsBimap().inverse());
     return HashBiMap.create(inverseMap).inverse();
+  }
+
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getAllImports();
   }
 
   public boolean hasImports() {

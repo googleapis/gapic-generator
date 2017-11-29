@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,69 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.util.TypeTable;
+import java.util.List;
 
 /**
  * The context for transforming an API interface, in an input-agnostic way, into a view model to use
  * for client library generation.
  */
-public interface InterfaceContext {
+public interface InterfaceContext extends TransformationContext {
 
+  ApiModel getApiModel();
+
+  InterfaceConfig getInterfaceConfig();
+
+  InterfaceModel getInterfaceModel();
+
+  FeatureConfig getFeatureConfig();
+
+  Iterable<MethodModel> getSupportedMethods();
+
+  Iterable<MethodModel> getPublicMethods();
+
+  Iterable<MethodModel> getPageStreamingMethods();
+
+  Iterable<MethodModel> getBatchingMethods();
+
+  MethodConfig getMethodConfig(MethodModel method);
+
+  MethodContext asRequestMethodContext(MethodModel method);
+
+  MethodContext asDynamicMethodContext(MethodModel method);
+
+  String getInterfaceDescription();
+
+  @Override
+  InterfaceContext withNewTypeTable();
+
+  @Override
+  InterfaceContext withNewTypeTable(String newPackageName);
+
+  MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
+
+  /* @return the methods in the interface. */
+  List<MethodModel> getInterfaceMethods();
+
+  /* @return the methods in the interface that have method configs. */
+  List<MethodModel> getInterfaceConfigMethods();
+
+  Iterable<MethodModel> getLongRunningMethods();
+
+  String serviceTitle();
+
+  @Override
   ProductConfig getProductConfig();
 
-  TypeTable getTypeTable();
-
+  @Override
   SurfaceNamer getNamer();
+
+  @Override
+  ImportTypeTable getImportTypeTable();
 }

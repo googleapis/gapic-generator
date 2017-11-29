@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -41,11 +45,8 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,22 +86,21 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.addAll(generateMetadataViews(model, productConfig, namer));
-    models.add(generateReadmeView(model, productConfig, namer));
+    models.addAll(generateMetadataViews(apiModel, productConfig, namer));
+    models.add(generateReadmeView(apiModel, productConfig, namer));
     return models;
   }
 
   private ViewModel generateReadmeView(
-      Model model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
     List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
-    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
-    boolean hasMultipleServices = Iterables.size(services) > 1;
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
+            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -108,15 +108,15 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 ImportSectionView.newBuilder().build(),
                 new NodeJSSurfaceNamer(
                     productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig))))
-        .hasMultipleServices(hasMultipleServices)
+        .hasMultipleServices(model.hasMultipleServices())
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
                 .identifier(namer.getMetadataIdentifier())
                 .shortName(packageConfig.shortName())
-                .fullName(model.getServiceConfig().getTitle())
-                .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
-                .hasMultipleServices(hasMultipleServices)
+                .fullName(model.getTitle())
+                .apiSummary(model.getDocumentationSummary())
+                .hasMultipleServices(model.hasMultipleServices())
                 .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.NODEJS))
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
@@ -136,21 +136,19 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   // Note: This is based on sample gen method calls. In the future, the example
   // methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
-      Model model, GapicProductConfig productConfig) {
+      ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    boolean packageHasMultipleServices = Iterables.size(interfaces) > 1;
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
         FlatteningConfig flatteningGroup =
             testCaseTransformer.getSmokeTestFlatteningGroup(
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
         GapicMethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
         exampleMethods.add(
-            createExampleApiMethodView(flattenedMethodContext, packageHasMultipleServices));
+            createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
       }
     }
     return exampleMethods.build();
@@ -174,7 +172,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
+      ApiModel model, ProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     for (String template : TOP_LEVEL_FILES) {
       views.add(generateMetadataView(model, productConfig, template, namer));
@@ -183,8 +181,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private ViewModel generateMetadataView(
-      Model model,
-      GapicProductConfig productConfig,
+      ApiModel model,
+      ProductConfig productConfig,
       String template,
       NodeJSPackageMetadataNamer namer) {
     String noLeadingNodeDir =
@@ -192,38 +190,36 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     int extensionIndex = noLeadingNodeDir.lastIndexOf(".");
     String outputPath = noLeadingNodeDir.substring(0, extensionIndex);
 
-    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
-    boolean hasMultipleServices = Iterables.size(services) > 1;
-
     return metadataTransformer
-        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
+        .generateMetadataView(
+            namer, packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
-        .hasMultipleServices(hasMultipleServices)
+        .hasMultipleServices(model.hasMultipleServices())
         .additionalDependencies(generateAdditionalDependencies(model, productConfig))
         .build();
   }
 
   private List<PackageDependencyView> generateAdditionalDependencies(
-      Model model, GapicProductConfig productConfig) {
+      ApiModel model, ProductConfig productConfig) {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
         PackageDependencyView.create(
             "google-gax", packageConfig.gaxVersionBound(TargetLanguage.NODEJS)));
-    if (new InterfaceView().hasMultipleServices(model)) {
+    if (model.hasMultipleServices()) {
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
     }
     dependencies.add(
         PackageDependencyView.create("lodash.merge", VersionBound.create("4.6.0", "")));
-    if (hasLongrunning(model, productConfig)) {
+    if (hasLongrunning(model, productConfig) || hasBatching(model, productConfig)) {
       dependencies.add(
           PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
     }
     return dependencies.build();
   }
 
-  private boolean hasLongrunning(Model model, GapicProductConfig productConfig) {
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+  private boolean hasLongrunning(ApiModel model, ProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
         return true;
       }
@@ -231,8 +227,17 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     return false;
   }
 
-  private boolean hasMixinApis(Model model, GapicProductConfig productConfig) {
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+  private boolean hasBatching(ApiModel model, ProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (productConfig.getInterfaceConfig(apiInterface).hasBatchingMethods()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       if (new GrpcStubTransformer()
               .generateGrpcStubs(createContext(apiInterface, productConfig))
               .size()
@@ -244,7 +249,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,9 +70,6 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract VersionBound protoVersionBound();
-
-  @Nullable
-  public abstract VersionBound apiCommonVersionBound();
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageDependencies();
@@ -166,6 +163,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String sampleAppPackage();
 
+  @Nullable
+  public abstract String smokeTestProjectVariable();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -195,8 +195,6 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder grpcVersionBound(VersionBound val);
 
     public abstract Builder protoVersionBound(VersionBound val);
-
-    public abstract Builder apiCommonVersionBound(VersionBound val);
 
     public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
 
@@ -283,6 +281,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Package name of the sample application. */
     public abstract Builder sampleAppPackage(String s);
+
+    /** Environment variable to determine the Google Cloud project used to run smoke tests. */
+    public abstract Builder smokeTestProjectVariable(String s);
 
     public abstract PackageMetadataView build();
   }

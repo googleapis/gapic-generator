@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,10 @@ public abstract class InitCodeView {
 
   public abstract List<FieldSettingView> fieldSettings();
 
+  public abstract List<FieldSettingView> optionalFieldSettings();
+
+  public abstract List<FieldSettingView> requiredFieldSettings();
+
   /** Used to hold information about the types used in method samples. */
   public abstract ImportSectionView importSection();
 
@@ -50,6 +54,10 @@ public abstract class InitCodeView {
     public abstract Builder topLevelLines(List<InitCodeLineView> val);
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
+
+    public abstract Builder optionalFieldSettings(List<FieldSettingView> val);
+
+    public abstract Builder requiredFieldSettings(List<FieldSettingView> val);
 
     public abstract Builder importSection(ImportSectionView val);
 

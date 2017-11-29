@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,9 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext transformationContext) {
+    // TODO support non-Gapic inputs
+    GapicInterfaceContext context = (GapicInterfaceContext) transformationContext;
     Set<String> importFilenames = generateImportFilenames(context);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
@@ -45,7 +48,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
@@ -53,7 +56,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
-    importSection.externalImports(generateTestExternalImports());
+    importSection.externalImports(generateTestExternalImports(context));
     importSection.appImports(generateTestAppImports(context));
     importSection.serviceImports(none);
     return importSection.build();
@@ -70,6 +73,10 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("google/gax/operation"));
       imports.add(createImport("google/longrunning/operations_client"));
+    }
+
+    if (RubyUtil.isLongrunning(context.getProductConfig().getPackageName())) {
+      imports.add(createImport("googleauth"));
     }
 
     return imports.build();
@@ -100,8 +107,9 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   private Set<String> generateImportFilenames(GapicInterfaceContext context) {
     Set<String> filenames = new TreeSet<>();
     filenames.add(context.getInterface().getFile().getSimpleName());
-    for (Method method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+    for (MethodModel method : context.getSupportedMethods()) {
+      Interface targetInterface =
+          context.asRequestMethodContext(method).getTargetInterface().getInterface();
       filenames.add(targetInterface.getFile().getSimpleName());
     }
     return filenames;
@@ -111,8 +119,13 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
   }
 
-  private List<ImportFileView> generateTestExternalImports() {
-    return ImmutableList.of(createImport("google/gax"));
+  private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    if (RubyUtil.isLongrunning(context.getNamer().getPackageName())) {
+      imports.add(createImport("googleauth"));
+    }
+    imports.add(createImport("google/gax"));
+    return imports.build();
   }
 
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
@@ -144,7 +157,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return fileImport.build();
   }
 
-  public ImportSectionView generateSmokeTestImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateSmokeTestImportSection(TransformationContext context) {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
@@ -154,7 +167,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return importSection.build();
   }
 
-  private List<ImportFileView> generateSmokeTestAppImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateSmokeTestAppImports(TransformationContext context) {
     return ImmutableList.of(createImport(context.getNamer().getTopLevelIndexFileImportName()));
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ public interface NameFormatter {
   /** Formats the name as a local variable name. */
   String localVarName(Name name);
 
-  /** Formats the name as a reference to a variable name. */
-  String varReference(Name name);
+  /** Formats the name as a reference to a local variable name. */
+  String localVarReference(Name name);
 
   /** Formats the name as a public method name. */
   String publicMethodName(Name name);

@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,17 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -35,7 +38,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,19 +48,20 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context) {
+    InterfaceContext interfaceContext = (InterfaceContext) context;
     return ImportSectionView.newBuilder()
-        .standardImports(generateFileHeaderStandardImports())
-        .externalImports(generateFileHeaderExternalImports(context))
-        .appImports(generateMainAppImports(context))
+        .standardImports(generateFileHeaderStandardImports(interfaceContext))
+        .externalImports(generateFileHeaderExternalImports(interfaceContext))
+        .appImports(generateMainAppImports(interfaceContext))
         .build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImportSectionView.newBuilder()
-        .appImports(generateInitCodeAppImports(context, specItemNodes))
+        .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
         .build();
   }
 
@@ -85,45 +88,70 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
-  private List<ImportFileView> generateFileHeaderStandardImports() {
-    return ImmutableList.of(
-        createImport("collections"),
-        createImport("json"),
-        createImport("os"),
-        createImport("pkg_resources"),
-        createImport("platform"));
+  private List<ImportFileView> generateFileHeaderStandardImports(InterfaceContext context) {
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      imports.add(createImport("functools"));
+    }
+    imports.add(createImport("pkg_resources"));
+    return imports.build();
   }
 
-  private List<ImportFileView> generateFileHeaderExternalImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateFileHeaderExternalImports(InterfaceContext context) {
     List<ImportFileView> imports = new ArrayList<>();
-    imports.add(createImport("google.gax"));
-    imports.add(createImport("google.gax", "api_callable"));
-    imports.add(createImport("google.gax", "config"));
-    imports.add(createImport("google.gax", "path_template"));
+    imports.add(createImport("google.api_core.grpc_helpers"));
+    imports.add(createImport("google.api_core.gapic_v1.client_info"));
+    imports.add(createImport("google.api_core.gapic_v1.config"));
+    imports.add(createImport("google.api_core.gapic_v1.method"));
 
-    if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      imports.add(createImport("google.gapic.longrunning", "operations_client"));
+    if (hasRequestHeaderParams((GapicInterfaceContext) context)) {
+      imports.add(createImport("google.api_core.gapic_v1.routing_header"));
     }
 
-    for (GapicMethodConfig methodConfig : context.getInterfaceConfig().getMethodConfigs()) {
-      // Add the import for gax.utils.oneof if and only if there is at
-      // least one "one of" argument set.
-      if (!Iterables.isEmpty(methodConfig.getOneofs())) {
-        imports.add(createImport("google.gax.utils", "oneof"));
-        break;
-      }
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("google.api_core.operations_v1"));
+      imports.add(createImport("google.api_core.operation"));
+    }
+
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      imports.add(createImport("google.api_core.page_iterator"));
+    }
+
+    if (!context.getInterfaceConfig().getSingleResourceNameConfigs().isEmpty()) {
+      imports.add(createImport("google.api_core.path_template"));
+    }
+
+    if (hasOneOf(context)) {
+      imports.add(createImport("google.api_core.protobuf_helpers"));
     }
 
     Collections.sort(imports, importFileViewComparator());
     return imports;
   }
 
-  private List<ImportFileView> generateMainAppImports(GapicInterfaceContext context) {
+  private boolean hasRequestHeaderParams(GapicInterfaceContext context) {
+    return context
+        .getInterfaceConfig()
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(config -> config.getHeaderRequestParams().iterator().hasNext());
+  }
+
+  private boolean hasOneOf(InterfaceContext context) {
+    return context
+        .getInterfaceConfig()
+        .getMethodConfigs()
+        .stream()
+        .anyMatch(config -> config.getOneofNames(context.getNamer()).iterator().hasNext());
+  }
+
+  private List<ImportFileView> generateMainAppImports(InterfaceContext context) {
     List<ImportFileView> imports =
-        generateFileHeaderAppImports(context.getModelTypeTable().getImports());
+        generateFileHeaderAppImports(context.getImportTypeTable().getImports());
     SurfaceNamer namer = context.getNamer();
     imports.add(
-        createImport(namer.getPackageName(), namer.getClientConfigName(context.getInterface())));
+        createImport(
+            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;
@@ -143,7 +171,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.<ImportFileView>builder()
         .add(generateApiImport(context.getNamer()))
         .addAll(generateProtoImports(context, specItemNodes))
-        .addAll(generatePageStreamingImports(context))
         .build();
   }
 
@@ -160,7 +187,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     Set<ImportFileView> protoImports = new TreeSet<>(importFileViewComparator());
     for (InitCodeNode item : specItemNodes) {
-      TypeRef type = item.getType();
+      TypeModel type = item.getType();
       // Exclude map entry types
       // Exclude message types since the samples show the use of dicts rather than protobufs.
       if (type.isEnum()) {
@@ -171,25 +198,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return new ArrayList<>(protoImports);
   }
 
-  private List<ImportFileView> generatePageStreamingImports(GapicMethodContext context) {
-    ImmutableList.Builder<ImportFileView> pageStreamingImports = ImmutableList.builder();
-    if (context.getMethodConfig().isPageStreaming()) {
-      ImportTypeView callOptionsImport =
-          ImportTypeView.newBuilder().fullName("CallOptions").nickname("").build();
-      ImportTypeView initialPageImport =
-          ImportTypeView.newBuilder().fullName("INITIAL_PAGE").nickname("").build();
-      ImportFileView fileImport =
-          ImportFileView.newBuilder()
-              .moduleName("google.gax")
-              .types(ImmutableList.of(callOptionsImport, initialPageImport))
-              .build();
-      pageStreamingImports.add(fileImport);
-    }
-    return pageStreamingImports.build();
-  }
-
   private List<ImportFileView> generateTestStandardImports() {
-    return ImmutableList.of(createImport("mock"), createImport("unittest"));
+    return ImmutableList.of(createImport("pytest"));
   }
 
   private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {
@@ -197,13 +207,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     if (requireProjectId) {
       imports.add(createImport("os"));
     }
-    imports.add(createImport("time"), createImport("unittest"));
+    imports.add(createImport("time"));
     return imports.build();
   }
 
   private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> externalImports = ImmutableList.builder();
-    externalImports.add(createImport("google.gax", "errors"));
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       externalImports.add(createImport("google.rpc", "status_pb2"));
     }
@@ -212,7 +221,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
-    for (Map.Entry<String, TypeAlias> entry : context.getModelTypeTable().getImports().entrySet()) {
+    for (Map.Entry<String, TypeAlias> entry :
+        context.getImportTypeTable().getImports().entrySet()) {
       String fullName = entry.getKey();
       if (fullName.startsWith(context.getNamer().getTestPackageName() + ".enums")) {
         appImports.add(createImport(context.getNamer().getVersionedDirectoryNamespace(), "enums"));
@@ -349,7 +359,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTypesExternalImports() {
-    return ImmutableList.of(createImport("google.gax.utils.messages", "get_messages"));
+    return ImmutableList.of(createImport("google.api_core.protobuf_helpers", "get_messages"));
   }
 
   private List<ImportFileView> generateTypesStandardImports() {

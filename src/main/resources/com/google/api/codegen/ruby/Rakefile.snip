@@ -18,11 +18,11 @@
   task :default => :test
 
   {@helpers()}
+
 @end
 
 @private header(fileHeader)
   {@toComments(fileHeader.copyrightLines)}
-  #
   {@toComments(fileHeader.licenseLines)}
 
   require "bundler/setup"
@@ -59,13 +59,13 @@
 @private smokeTestsTask(metadata)
   desc "Runs the smoke tests."
   task :smoke_test do
-    if ENV["SMOKE_TEST_PROJECT"].nil?
-      fail "The SMOKE_TEST_PROJECT environment variable must be set. "@\
-        "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
+    if ENV["{@metadata.smokeTestProjectVariable}"].nil?
+      fail "The {@metadata.smokeTestProjectVariable} environment variable must be set. "@\
+        "e.g {@metadata.smokeTestProjectVariable}=test123 rake smoke_test"
     end
 
     $LOAD_PATH.unshift "lib", "smoke_test"
-    Dir.glob("test/**/*smoke_test.rb").each { |file| require_relative file }
+    Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
   end
 
   namespace :smoke_test do
@@ -87,12 +87,16 @@
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
   task :acceptance do
-    puts "The {@metadata.identifier} gem does not have acceptance tests."
+    Rake::Task["acceptance:run"].invoke
   end
 
   namespace :acceptance do
     task :run do
-      puts "This gem does not have acceptance tests."
+      @if metadata.hasSmokeTests
+        Rake::Task["smoke_test"].invoke
+      @else
+        puts "The {@metadata.identifier} gem does not have acceptance tests."
+      @end
     end
 
     desc "Run acceptance tests with coverage."
@@ -170,22 +174,18 @@
 
   @if metadata.hasSmokeTests
     namespace :ci do
-      desc "Run the CI build, with smoke_tests."
+      desc "Run the CI build, with smoke tests."
       task :smoke_test do
         Rake::Task["ci"].invoke
         header "{@metadata.identifier} smoke_test", "*"
         sh "bundle exec rake smoke_test -v"
-      end
-      task :a do
-        @# This is a handy shortcut to save typing
-        Rake::Task["ci:smoke_test"].invoke
       end
     end
   @end
 
   namespace :ci do
     desc "Run the CI build, with acceptance tests."
-    task :smoke_test do
+    task :acceptance do
       Rake::Task["ci"].invoke
       header "{@metadata.identifier} acceptance", "*"
       sh "bundle exec rake acceptance -v"

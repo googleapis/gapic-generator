@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
-import com.google.api.tools.framework.model.Method;
+import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +29,14 @@ import java.util.List;
 
 public class CSharpCommonTransformer {
 
+  public ModelTypeTable createTypeTable(String implicitPackageName) {
+    return new ModelTypeTable(
+        new CSharpTypeTable(implicitPackageName),
+        new CSharpModelTypeNameConverter(implicitPackageName));
+  }
+
   public void addCommonImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    ModelTypeTable typeTable = context.getImportTypeTable();
     // Common imports, only one class per required namespace is needed.
     typeTable.saveNicknameFor("Google.Api.Gax.GaxPreconditions");
     typeTable.saveNicknameFor("Google.Api.Gax.Grpc.ServiceSettingsBase");
@@ -42,16 +50,17 @@ public class CSharpCommonTransformer {
     typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
   }
 
-  public List<Method> getSupportedMethods(GapicInterfaceContext context) {
-    List<Method> result = new ArrayList<>();
+  public List<MethodModel> getSupportedMethods(InterfaceContext context) {
+    List<MethodModel> result = new ArrayList<>();
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
         // Client-streaming not yet supported
+
         continue;
       }
       result.add(method);

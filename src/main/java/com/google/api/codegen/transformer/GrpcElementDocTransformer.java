@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumValueDocView;
@@ -22,7 +24,6 @@ import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -52,7 +53,9 @@ public class GrpcElementDocTransformer {
       doc.fullName(typeTable.getFullNameFor(TypeRef.of(message)));
       doc.fileUrl(namer.getFileUrl(message.getFile()));
       doc.lines(namer.getDocLines(message));
-      doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
+      doc.properties(
+          generateMessagePropertyDocs(
+              typeTable, namer, FieldConfig.toFieldTypeIterableFromField(message.getFields())));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
       doc.packageName(message.getFile().getFullName());
       messageDocs.add(doc.build());
@@ -61,12 +64,12 @@ public class GrpcElementDocTransformer {
   }
 
   private List<ParamDocView> generateMessagePropertyDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, Iterable<Field> fields) {
+      ModelTypeTable typeTable, SurfaceNamer namer, Iterable<FieldModel> fields) {
     ImmutableList.Builder<ParamDocView> propertyDocs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldModel field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
       doc.paramName(namer.getFieldKey(field));
-      doc.typeName(namer.getMessagePropertyTypeName(typeTable, field.getType()));
+      doc.typeName(namer.getMessagePropertyTypeName(typeTable, field));
       doc.lines(namer.getDocLines(field));
       propertyDocs.add(doc.build());
     }

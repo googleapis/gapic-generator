@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
-import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.viewmodel.FieldNamePatternView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningGroupView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningView;
@@ -22,24 +24,19 @@ import com.google.api.codegen.configgen.viewmodel.MethodView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
-import com.google.api.tools.framework.aspects.http.model.MethodKind;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
-  private static final String PARAMETER_PAGE_TOKEN = "page_token";
-  private static final String PARAMETER_PAGE_SIZE = "page_size";
-  private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
-  private static final ImmutableList<String> IGNORED_FIELDS =
-      ImmutableList.of(PARAMETER_PAGE_TOKEN, PARAMETER_PAGE_SIZE);
+  private final InputSpecificMethodTransformer helperTransformer;
+
+  public MethodTransformer(InputSpecificMethodTransformer helperTransformer) {
+    this.helperTransformer = helperTransformer;
+  }
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
@@ -48,11 +45,11 @@ public class MethodTransformer {
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   public List<MethodView> generateMethods(
-      Interface apiInterface, Map<String, String> collectionNameMap) {
+      InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
     ImmutableList.Builder<MethodView> methods = ImmutableList.builder();
-    for (Method method : apiInterface.getMethods()) {
+    for (MethodModel method : apiInterface.getMethods()) {
       MethodView.Builder methodView = MethodView.newBuilder();
-      methodView.name(method.getSimpleName());
+      methodView.name(method.getRawName());
       generateField(method, methodView);
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
@@ -63,27 +60,46 @@ public class MethodTransformer {
     return methods.build();
   }
 
-  private void generateField(Method method, MethodView.Builder methodView) {
+  private void generateField(MethodModel method, MethodView.Builder methodView) {
     List<String> parameterList = new ArrayList<>();
-    MessageType message = method.getInputMessage();
-    for (Field field : message.getFields()) {
+    List<FieldModel> fieldList = new ArrayList<>();
+    Iterable<? extends FieldModel> inputFields = method.getInputFields();
+    for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
-      if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
+      if (field.getOneof() == null
+          && !helperTransformer.getPagingParameters().getIgnoredParameters().contains(fieldName)) {
         parameterList.add(fieldName);
+        fieldList.add(field);
       }
     }
 
-    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
-      methodView.flattening(generateFlattening(parameterList));
+    List<String> parameters = filteredInputFields(method, fieldList);
+
+    if (parameters.size() > 0 && parameters.size() <= FLATTENING_THRESHOLD) {
+      methodView.flattening(generateFlattening(parameters));
     }
 
-    methodView.requiredFields(parameterList);
+    methodView.requiredFields(parameters);
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
-        (message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
-                || message.getFields().size() != parameterList.size())
+        (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
+                || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
+    methodView.resourceNameTreatment(helperTransformer.getResourceNameTreatment(method));
+  }
+
+  /** Get the filtered input fields for a model, from a list of candidates. */
+  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<? extends FieldModel> parametersForResourceNameMethod =
+        method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        parameterNames.add(field.getNameAsParameter());
+      }
+    }
+    return parameterNames;
   }
 
   private FlatteningView generateFlattening(List<String> parameterList) {
@@ -93,13 +109,13 @@ public class MethodTransformer {
         .build();
   }
 
-  private void generatePageStreaming(Method method, MethodView.Builder methodView) {
+  private void generatePageStreaming(MethodModel method, MethodView.Builder methodView) {
     PageStreamingRequestView request = generatePageStreamingRequest(method);
     if (request == null) {
       return;
     }
 
-    PageStreamingResponseView response = generatePageStreamingResponse(method);
+    PageStreamingResponseView response = helperTransformer.generatePageStreamingResponse(method);
     if (response == null) {
       return;
     }
@@ -108,14 +124,14 @@ public class MethodTransformer {
         PageStreamingView.newBuilder().request(request).response(response).build());
   }
 
-  private PageStreamingRequestView generatePageStreamingRequest(Method method) {
+  private PageStreamingRequestView generatePageStreamingRequest(MethodModel method) {
     PageStreamingRequestView.Builder requestBuilder = PageStreamingRequestView.newBuilder();
 
-    for (Field field : method.getInputMessage().getFields()) {
+    for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
+      if (fieldName.equals(helperTransformer.getPagingParameters().getNameForPageToken())) {
         requestBuilder.tokenField(fieldName);
-      } else if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
+      } else if (fieldName.equals(helperTransformer.getPagingParameters().getNameForPageSize())) {
         requestBuilder.pageSizeField(fieldName);
       }
     }
@@ -124,67 +140,23 @@ public class MethodTransformer {
     return request.tokenField() == null && request.pageSizeField() == null ? null : request;
   }
 
-  private PageStreamingResponseView generatePageStreamingResponse(Method method) {
-    boolean hasTokenField = false;
-    String resourcesField = null;
-    for (Field field : method.getOutputMessage().getFields()) {
-      String fieldName = field.getSimpleName();
-      if (fieldName.equals(PARAMETER_NEXT_PAGE_TOKEN)) {
-        hasTokenField = true;
-      } else if (field.getType().isRepeated()) {
-        if (resourcesField == null) {
-          resourcesField = fieldName;
-        } else {
-          // TODO(shinfan): Add a warning system that is used when heuristic decision cannot be made.
-          System.err.printf(
-              "Warning: Page Streaming resource field could not be heuristically"
-                  + " determined for method %s\n",
-              method.getSimpleName());
-          break;
-        }
-      }
-    }
-
-    if (!hasTokenField || resourcesField == null) {
-      return null;
-    }
-
-    return PageStreamingResponseView.newBuilder()
-        .tokenField(PARAMETER_NEXT_PAGE_TOKEN)
-        .resourcesField(resourcesField)
-        .build();
-  }
-
-  private void generateRetry(Method method, MethodView.Builder methodView) {
+  private void generateRetry(MethodModel method, MethodView.Builder methodView) {
     methodView.retryCodesName(
-        isIdempotent(method)
+        method.isIdempotent()
             ? RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME
             : RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME);
     methodView.retryParamsName(RetryTransformer.RETRY_PARAMS_DEFAULT_NAME);
   }
 
-  /**
-   * Returns true if the method is idempotent according to the http method kind (GET, PUT, DELETE).
-   */
-  private boolean isIdempotent(Method method) {
-    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-    if (httpAttr == null) {
-      return false;
-    }
-    MethodKind methodKind = httpAttr.getMethodKind();
-    return methodKind.isIdempotent();
-  }
-
   private void generateFieldNamePatterns(
-      Method method, MethodView.Builder methodView, Map<String, String> nameMap) {
+      MethodModel method, MethodView.Builder methodView, Map<String, String> nameMap) {
     ImmutableList.Builder<FieldNamePatternView> fieldNamePatterns = ImmutableList.builder();
-    for (CollectionPattern collectionPattern :
-        CollectionPattern.getCollectionPatternsFromMethod(method)) {
-      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
+    Map<String, String> resourcePatternNameMap = method.getResourcePatternNameMap(nameMap);
+    for (String resourcePattern : resourcePatternNameMap.keySet()) {
       fieldNamePatterns.add(
           FieldNamePatternView.newBuilder()
-              .pathTemplate(collectionPattern.getFieldPath())
-              .entityName(nameMap.get(resourceNameString))
+              .pathTemplate(resourcePattern)
+              .entityName(resourcePatternNameMap.get(resourcePattern))
               .build());
     }
 

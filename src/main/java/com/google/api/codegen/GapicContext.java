@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
@@ -39,7 +40,6 @@ public class GapicContext extends CodegenContext {
   private final GapicProductConfig productConfig;
 
   private final ServiceMessages serviceMessages;
-  private final ProductServiceConfig productServiceConfig;
 
   public static final String API_WRAPPER_SUFFIX = "Client";
 
@@ -48,7 +48,6 @@ public class GapicContext extends CodegenContext {
     this.model = Preconditions.checkNotNull(model);
     this.productConfig = Preconditions.checkNotNull(productConfig);
     this.serviceMessages = new ServiceMessages();
-    this.productServiceConfig = new ProductServiceConfig();
   }
 
   /** Returns the associated model. */
@@ -67,13 +66,6 @@ public class GapicContext extends CodegenContext {
 
   public ServiceMessages messages() {
     return serviceMessages;
-  }
-
-  /*
-   * NOTE: The name here is out of date, but this whole class will be deprecated soon.
-   */
-  public ProductServiceConfig getServiceConfig() {
-    return productServiceConfig;
   }
 
   /** Return the name of the class which is the GAPIC wrapper for this API interface. */
@@ -95,10 +87,10 @@ public class GapicContext extends CodegenContext {
    * Returns the list of optional fields from the given GapicMethodConfig, excluding the Page Token
    * field
    */
-  public List<Field> removePageTokenFromFields(
-      Iterable<Field> fields, GapicMethodConfig methodConfig) {
-    List<Field> newFields = new ArrayList<>();
-    for (Field field : fields) {
+  public List<FieldModel> removePageTokenFromFields(
+      Iterable<FieldModel> fields, MethodConfig methodConfig) {
+    List<FieldModel> newFields = new ArrayList<>();
+    for (FieldModel field : fields) {
       if (methodConfig.isPageStreaming()
           && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
         continue;
@@ -147,8 +139,8 @@ public class GapicContext extends CodegenContext {
           "Service not configured in GAPIC config: " + apiInterface.getFullName());
     }
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
-    for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
-      Method method = methodConfig.getMethod();
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+      Method method = ((GapicMethodConfig) methodConfig).getMethod();
       if (isSupported(method)) {
         methods.add(method);
       }

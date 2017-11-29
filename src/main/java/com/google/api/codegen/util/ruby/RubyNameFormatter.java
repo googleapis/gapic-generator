@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,8 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
-    return "@" + name.toLowerUnderscore();
+  public String localVarReference(Name name) {
+    return name.toLowerUnderscore();
   }
 
   @Override
