@@ -44,13 +44,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
 import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   private static final String DOC_TEMPLATE_FILENAME = "ruby/message.snip";
-
-  private static final Pattern SENTENCE_PATTERN = Pattern.compile("^([^.]+)\\.(?: |$)");
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -189,12 +185,19 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   private String getTocDescription(List<String> lines) {
     StringBuilder builder = new StringBuilder();
     for (String line : lines) {
-      Matcher matcher = SENTENCE_PATTERN.matcher(line);
-      if (matcher.find()) {
-        builder.append(matcher.group(1));
-        break;
-      } else if (!line.isEmpty()) {
-        builder.append(line).append(" ");
+      if (!line.isEmpty()) {
+        int dotIndex = line.indexOf(".");
+        if (dotIndex == line.length() - 1) {
+          builder.append(line);
+          break;
+        }
+
+        if (line.charAt(dotIndex + 1) == ' ') {
+          builder.append(line.substring(0, dotIndex + 1));
+          break;
+        }
+
+        builder.append(line);
       } else if (builder.length() > 0) {
         break;
       }
