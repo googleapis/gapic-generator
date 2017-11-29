@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Model;
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
-  private static final String WILDCARD = "*";
   private static final int MILLIS_PER_SECOND = 1000;
 
   @Override
