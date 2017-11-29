@@ -84,29 +84,6 @@ public class InitCodeTransformer {
     }
   }
 
-  /** Generates initialization code from the given MethodContext and InitCodeContext objects. */
-  public InitCodeView generateInitCode(
-      DiscoGapicMethodContext methodContext, InitCodeContext initCodeContext) {
-    // TODO(andrealin): Implementation.
-    return InitCodeView.newBuilder()
-        .apiFileName("apiFileName")
-        .fieldSettings(new LinkedList<>())
-        .optionalFieldSettings(new ArrayList<>())
-        .requiredFieldSettings(new ArrayList<>())
-        .importSection(
-            ImportSectionView.newBuilder()
-                .appImports(new LinkedList<>())
-                .externalImports(new LinkedList<>())
-                .serviceImports(new LinkedList<>())
-                .standardImports(new LinkedList<>())
-                .build())
-        .lines(new LinkedList<>())
-        .topLevelLines(new LinkedList<>())
-        .versionIndexFileImportName("versionIndexFileImportName")
-        .topLevelIndexFileImportName("topLevelIndexFileImportName")
-        .build();
-  }
-
   public InitCodeContext createRequestInitCodeContext(
       MethodContext context,
       SymbolTable symbolTable,
