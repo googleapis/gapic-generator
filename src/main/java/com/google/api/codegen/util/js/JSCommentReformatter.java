@@ -18,8 +18,10 @@ import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LinkPattern;
 import com.google.api.tools.framework.model.ProtoElement;
+import java.util.regex.Pattern;
 
 public class JSCommentReformatter implements CommentReformatter {
+  public static final Pattern CLOSE_COMMENT_PATTERN = Pattern.compile("\\*/");
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
@@ -31,6 +33,7 @@ public class JSCommentReformatter implements CommentReformatter {
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
                   .toFormat("[$TITLE]($URL)"))
+          .replace(CLOSE_COMMENT_PATTERN, "* /")
           .build();
 
   @Override
