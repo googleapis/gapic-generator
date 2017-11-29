@@ -24,12 +24,12 @@ public class FieldConfigNode extends BaseConfigNode {
   private ConfigNode child;
   private Comment comment;
 
-  public static FieldConfigNode createStringPair(String key, String value) {
-    return new FieldConfigNode(key).setChild(new ScalarConfigNode(value));
+  public static FieldConfigNode createStringPair(int startLine, String key, String value) {
+    return new FieldConfigNode(startLine, key).setChild(new ScalarConfigNode(startLine, value));
   }
 
-  public FieldConfigNode(String text) {
-    super(text);
+  public FieldConfigNode(int startLine, String text) {
+    super(startLine, text);
   }
 
   @Override

@@ -16,6 +16,7 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Splitter;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
     if (packages.size() > 2) {
       String parentName = packages.get(packages.size() - 2);
-      if (parentName.matches("v[0-9]+(p[0-9]+)?((alpha|beta)[0-9]+)?")) {
+      if (VersionMatcher.isVersion(parentName)) {
         apiVersion = parentName;
       }
     }
