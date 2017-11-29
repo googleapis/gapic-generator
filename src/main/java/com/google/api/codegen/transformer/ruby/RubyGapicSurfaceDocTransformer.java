@@ -23,6 +23,7 @@ import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -157,7 +158,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     for (Interface apiInterface : file.getReachableInterfaces()) {
-      String description = getTocDescription(namer.getDocLines(apiInterface));
+      String description = RubyUtil.getSentence(namer.getDocLines(apiInterface));
       InterfaceConfig interfaceConfig =
           productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface));
       tocContents.add(
@@ -180,29 +181,6 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         .fullName(model.getTitle())
         .contents(tocContents.build())
         .build();
-  }
-
-  private String getTocDescription(List<String> lines) {
-    StringBuilder builder = new StringBuilder();
-    for (String line : lines) {
-      if (!line.isEmpty()) {
-        int dotIndex = line.indexOf(".");
-        if (dotIndex == line.length() - 1) {
-          builder.append(line);
-          break;
-        }
-
-        if (line.charAt(dotIndex + 1) == ' ') {
-          builder.append(line.substring(0, dotIndex + 1));
-          break;
-        }
-
-        builder.append(line);
-      } else if (builder.length() > 0) {
-        break;
-      }
-    }
-    return builder.toString();
   }
 
   private ModuleView generateOverviewView(ApiModel model, GapicProductConfig productConfig) {

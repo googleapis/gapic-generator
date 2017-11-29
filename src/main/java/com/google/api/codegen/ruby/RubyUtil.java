@@ -16,6 +16,7 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
+import java.util.List;
 
 public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
@@ -26,5 +27,34 @@ public class RubyUtil {
 
   public static boolean hasMajorVersion(String packageName) {
     return VersionMatcher.isVersion(NamePath.doubleColoned(packageName).getHead());
+  }
+
+  public static String getSentence(List<String> lines) {
+    StringBuilder builder = new StringBuilder();
+    for (String line : lines) {
+      if (findSentenceEnd(line.trim(), builder)) {
+        break;
+      }
+    }
+    return builder.toString().trim();
+  }
+
+  private static boolean findSentenceEnd(String line, StringBuilder builder) {
+    int startIndex = 0;
+    while (startIndex < line.length()) {
+      int dotIndex = line.indexOf(".", startIndex);
+      if (dotIndex < 0) {
+        builder.append(line.substring(startIndex)).append(" ");
+        return false;
+      }
+
+      builder.append(line.substring(startIndex, dotIndex + 1));
+      startIndex = dotIndex + 1;
+      if (startIndex == line.length() || line.charAt(startIndex) == ' ') {
+        return true;
+      }
+    }
+
+    return builder.length() > 0;
   }
 }
