@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.clientconfig;
+package com.google.api.codegen.clientconfig.viewmodel;
 
-import com.google.api.tools.framework.snippet.Doc;
+import com.google.auto.value.AutoValue;
 
-/** Entry points for a client config snippet set. */
-interface ClientConfigSnippetSet<Element> {
+/** Represents a key-value pair. */
+@AutoValue
+public abstract class PairView {
+  public abstract String key();
 
-  /** Generates the result filename for the generated document. */
-  Doc generateFilename(Element service);
+  public abstract String value();
 
-  /** Generates the body of the config for the service interface. */
-  Doc generateBody(Element service);
+  public static Builder newBuilder() {
+    return new AutoValue_PairView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder key(String val);
+
+    public abstract Builder value(String val);
+
+    public abstract PairView build();
+  }
 }

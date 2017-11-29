@@ -1,0 +1,96 @@
+@extends "common.snip"
+
+@snippet generate(config)
+    @if config.hasVariable
+        config = {
+    @else
+        {
+    @end
+
+      "interfaces": {
+        {@interfaceSection(config)}
+      }
+    }
+
+@end
+
+@private interfaceSection(config)
+    "{@config.name}": {
+      @if config.retryCodesDef
+          "retry_codes": {
+            {@retryCodesSection(config.retryCodesDef)}
+          },
+      @else
+          "retry_codes": {},
+      @end
+      @if config.retryParamsDef
+          "retry_params": {
+            {@retryParamsSection(config.retryParamsDef)}
+          },
+      @else
+          "retry_params": {},
+      @end
+      @if config.methods
+          "methods": {
+            {@methodsSection(config.methods)}
+          }
+      @else
+          "methods": {}
+      @end
+    }
+@end
+
+@private retryCodesSection(retryCodesDef)
+    @join retryCodeDef : retryCodesDef on ",".add(BREAK)
+        @if retryCodeDef.codes
+            "{@retryCodeDef.name}": [
+              @join code : retryCodeDef.codes on ",".add(BREAK)
+                  "{@code}"
+              @end
+            ]
+        @else
+            "{@retryCodeDef.name}": []
+        @end
+    @end
+@end
+
+@private retryParamsSection(retryParamsDef)
+    @join retryParamDef : retryParamsDef on ",".add(BREAK)
+        "{@retryParamDef.name}": {
+          "initial_retry_delay_millis": {@retryParamDef.initialRetryDelayMillis},
+          "retry_delay_multiplier": {@retryParamDef.retryDelayMultiplier},
+          "max_retry_delay_millis": {@retryParamDef.maxRetryDelayMillis},
+          "initial_rpc_timeout_millis": {@retryParamDef.initialRpcTimeoutMillis},
+          "rpc_timeout_multiplier": {@retryParamDef.rpcTimeoutMultiplier},
+          "max_rpc_timeout_millis": {@retryParamDef.maxRpcTimeoutMillis},
+          "total_timeout_millis": {@retryParamDef.totalTimeoutMillis}
+        }
+    @end
+@end
+
+@private methodsSection(methods)
+    @join method : methods on ",".add(BREAK)
+        "{@method.name}": {
+          @if or(method.isRetryingSupported, method.batching)
+            "timeout_millis": {@method.timeoutMillis},
+          @else
+            "timeout_millis": {@method.timeoutMillis}
+          @end
+          @if method.isRetryingSupported
+              "retry_codes_name": "{@method.retryCodesName}",
+              @if method.batching
+                  "retry_params_name": "{@method.retryParamsName}",
+              @else
+                  "retry_params_name": "{@method.retryParamsName}"
+              @end
+          @end
+          @if method.batching
+              "bundling": {
+                @join param : method.batching on ",".add(BREAK)
+                    "{@param.key}": {@param.value}
+                @end
+              }
+          @end
+        }
+    @end
+@end

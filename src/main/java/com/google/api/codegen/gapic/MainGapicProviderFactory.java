@@ -14,11 +14,9 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
-import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
-import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
+import com.google.api.codegen.clientconfig.transformer.CommonClientConfigTransformer;
+import com.google.api.codegen.clientconfig.transformer.php.PhpClientConfigTransformer;
+import com.google.api.codegen.clientconfig.transformer.py.PythonClientConfigTransformer;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
@@ -54,12 +52,10 @@ import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.py.PythonRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -99,15 +95,12 @@ public class MainGapicProviderFactory
     // Please keep the following IDs in alphabetical order
     if (id.equals(CLIENT_CONFIG)) {
       GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, productConfig))
-              .setSnippetSetRunner(
-                  new ClientConfigSnippetSetRunner<Interface>(
-                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
-              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
+              .setProductConfig(productConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(
+                  new CommonClientConfigTransformer(CommonGapicCodePathMapper.defaultInstance()))
               .build();
       providers.add(provider);
     } else if (id.equals(CSHARP)) {
@@ -268,15 +261,11 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new ClientConfigGapicContext(model, productConfig))
-                .setSnippetSetRunner(
-                    new ClientConfigSnippetSetRunner<Interface>(
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
-                .setCodePathMapper(nodeJSPathMapper)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new CommonClientConfigTransformer(nodeJSPathMapper))
                 .build();
 
         providers.add(mainProvider);
@@ -321,15 +310,12 @@ public class MainGapicProviderFactory
         GapicCodePathMapper phpClientConfigPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").setSuffix("resources").build();
         GapicProvider<? extends Object> clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new PhpClientConfigGapicContext(model, productConfig))
-                .setSnippetSetRunner(
-                    new ClientConfigSnippetSetRunner<Interface>(
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
-                .setCodePathMapper(phpClientConfigPathMapper)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PhpClientConfigTransformer(phpClientConfigPathMapper))
                 .build();
 
         GapicProvider<? extends Object> metadataProvider =
@@ -368,15 +354,11 @@ public class MainGapicProviderFactory
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new ClientConfigGapicContext(model, productConfig))
-                .setSnippetSetRunner(
-                    new ClientConfigSnippetSetRunner<Interface>(
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("clientconfig/python_clientconfig.snip"))
-                .setCodePathMapper(pythonPathMapper)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
+                .setModelToViewTransformer(new PythonClientConfigTransformer(pythonPathMapper))
                 .build();
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
@@ -424,15 +406,11 @@ public class MainGapicProviderFactory
                     new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new ClientConfigGapicContext(model, productConfig))
-                .setSnippetSetRunner(
-                    new ClientConfigSnippetSetRunner<Interface>(
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
-                .setCodePathMapper(rubyPathMapper)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new CommonClientConfigTransformer(rubyPathMapper))
                 .build();
         GapicProvider<? extends Object> metadataProvider =
             ViewModelGapicProvider.newBuilder()
