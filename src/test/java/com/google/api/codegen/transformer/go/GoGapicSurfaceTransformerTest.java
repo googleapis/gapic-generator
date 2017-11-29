@@ -181,17 +181,13 @@ public class GoGapicSurfaceTransformerTest {
   }
 
   private Method getMethod(Interface apiInterface, String methodName) {
-    for (Method method : apiInterface.getMethods()) {
-      String name = method.getFullName();
-      int dot = name.lastIndexOf('.');
-      if (dot >= 0) {
-        name = name.substring(dot + 1);
-      }
-      if (name.equals(methodName)) {
-        return method;
-      }
+    Method method = apiInterface.lookupMethod(methodName);
+    if (method == null) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Method %s not found, available: %s", methodName, apiInterface.getMethods()));
     }
-    throw new IllegalArgumentException(
-        String.format("Method %s not found, available: %s", methodName, apiInterface.getMethods()));
+
+    return method;
   }
 }
