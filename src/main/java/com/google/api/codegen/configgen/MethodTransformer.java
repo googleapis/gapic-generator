@@ -15,14 +15,10 @@
 package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.tools.framework.model.DiagCollector;
 
-/** Generates API source specific page streaming nodes. */
-public interface PageStreamingTransformer {
-  String getNameForPageToken();
+/** Generates API source specific method data. */
+public interface MethodTransformer {
+  boolean isIgnoredParameter(String parameter);
 
-  String getNameForPageSize();
-
-  ConfigNode generateResponseValueNode(MethodModel method, DiagCollector diagCollector);
+  String getTimeoutMillis(MethodModel method);
 }
