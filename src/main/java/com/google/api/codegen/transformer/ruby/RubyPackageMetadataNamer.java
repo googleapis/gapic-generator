@@ -46,4 +46,8 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
   public String getOutputFileName() {
     return getMetadataIdentifier() + ".gemspec";
   }
+
+  public String getSmokeTestProjectVariable(String productName) {
+    return Name.from(productName, "test", "project").toUpperUnderscore();
+  }
 }

@@ -18,8 +18,8 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.MethodTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
-import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -85,15 +85,15 @@ public class MethodMerger {
 
   private final RetryMerger retryMerger;
   private final PageStreamingMerger pageStreamingMerger;
-  private final PagingParameters pagingParameters;
+  private final MethodTransformer methodTransformer;
 
   public MethodMerger(
       RetryMerger retryMerger,
       PageStreamingMerger pageStreamingMerger,
-      PagingParameters pagingParameters) {
+      MethodTransformer methodTransformer) {
     this.retryMerger = retryMerger;
     this.pageStreamingMerger = pageStreamingMerger;
-    this.pagingParameters = pagingParameters;
+    this.methodTransformer = methodTransformer;
   }
 
   public void generateMethodsNode(
@@ -126,11 +126,7 @@ public class MethodMerger {
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
-    ConfigNode timeoutMillisNode =
-        FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(prevNode), "timeout_millis", "60000")
-            .setComment(new FixmeComment("Configure the default timeout for a non-retrying call."));
-    prevNode.insertNext(timeoutMillisNode);
+    generateTimeout(prevNode, method);
     return methodNode;
   }
 
@@ -138,8 +134,7 @@ public class MethodMerger {
     List<String> parameterList = new ArrayList<>();
     for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (field.getOneof() == null
-          && !pagingParameters.getIgnoredParameters().contains(fieldName)) {
+      if (field.getOneof() == null && !methodTransformer.isIgnoredParameter(fieldName)) {
         parameterList.add(fieldName);
       }
     }
@@ -207,5 +202,15 @@ public class MethodMerger {
 
     prevNode.insertNext(fieldNamePatternsNode);
     return fieldNamePatternsNode;
+  }
+
+  private void generateTimeout(ConfigNode prevNode, MethodModel method) {
+    ConfigNode timeoutMillisNode =
+        FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(prevNode),
+                "timeout_millis",
+                methodTransformer.getTimeoutMillis(method))
+            .setComment(new FixmeComment("Configure the default timeout for a non-retrying call."));
+    prevNode.insertNext(timeoutMillisNode);
   }
 }

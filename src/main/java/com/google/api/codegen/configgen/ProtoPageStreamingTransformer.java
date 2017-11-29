@@ -26,6 +26,16 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
 
   @Override
+  public String getNameForPageToken() {
+    return PAGING_PARAMETERS.getNameForPageToken();
+  }
+
+  @Override
+  public String getNameForPageSize() {
+    return PAGING_PARAMETERS.getNameForPageSize();
+  }
+
+  @Override
   public ConfigNode generateResponseValueNode(
       ConfigNode parentNode, MethodModel method, ConfigHelper helper) {
     if (!hasResponseTokenField(method)) {
