@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.tools.framework.model.DiagCollector;
 
 /** Generates API source specific page streaming nodes. */
 public interface PageStreamingTransformer {
@@ -24,5 +23,6 @@ public interface PageStreamingTransformer {
 
   String getNameForPageSize();
 
-  ConfigNode generateResponseValueNode(MethodModel method, DiagCollector diagCollector);
+  ConfigNode generateResponseValueNode(
+      ConfigNode parentNode, MethodModel method, ConfigHelper helper);
 }
