@@ -26,12 +26,7 @@ public class NodeFinder {
   }
 
   public static Iterable<ConfigNode> getChildren(final ConfigNode parentNode) {
-    return new Iterable<ConfigNode>() {
-      @Override
-      public Iterator<ConfigNode> iterator() {
-        return new NodeIterator(parentNode.getChild());
-      }
-    };
+    return () -> new NodeIterator(parentNode.getChild());
   }
 
   private static class NodeIterator implements Iterator<ConfigNode> {

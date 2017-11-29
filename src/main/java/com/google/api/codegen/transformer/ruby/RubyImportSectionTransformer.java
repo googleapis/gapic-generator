@@ -157,7 +157,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return fileImport.build();
   }
 
-  public ImportSectionView generateSmokeTestImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateSmokeTestImportSection(TransformationContext context) {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
@@ -167,7 +167,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return importSection.build();
   }
 
-  private List<ImportFileView> generateSmokeTestAppImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateSmokeTestAppImports(TransformationContext context) {
     return ImmutableList.of(createImport(context.getNamer().getTopLevelIndexFileImportName()));
   }
 }

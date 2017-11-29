@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
@@ -217,8 +218,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private boolean hasSmokeTests(ApiModel apiModel, GapicProductConfig productConfig) {
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      InterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         return true;
       }
@@ -285,7 +286,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();

@@ -21,7 +21,6 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -89,8 +88,8 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public boolean hasMultipleServices(GapicProductConfig productConfig) {
-    return Iterables.size(getInterfaces(productConfig)) > 1;
+  public boolean hasMultipleServices() {
+    return protoModel.getServiceConfig().getApisCount() > 1;
   }
 
   @Override
@@ -104,7 +103,7 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public Iterable<ProtoInterfaceModel> getInterfaces(GapicProductConfig productConfig) {
+  public Iterable<ProtoInterfaceModel> getInterfaces() {
     if (interfaceModels != null) {
       return interfaceModels;
     }

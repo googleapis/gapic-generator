@@ -106,7 +106,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);

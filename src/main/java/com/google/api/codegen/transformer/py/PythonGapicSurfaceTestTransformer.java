@@ -103,7 +103,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -245,7 +245,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(

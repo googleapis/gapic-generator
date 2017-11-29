@@ -93,7 +93,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
 
     List<ViewModel> views = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =

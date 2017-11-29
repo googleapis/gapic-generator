@@ -462,19 +462,20 @@ public class MainGapicProviderFactory
         }
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicCodePathMapper rubyTestPathMapper =
+        CommonGapicCodePathMapper.Builder rubyTestPathMapperBuilder =
             CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("test")
                 .setShouldAppendPackage(true)
-                .setPackageFilePathNameFormatter(new RubyNameFormatter())
-                .build();
+                .setPackageFilePathNameFormatter(new RubyNameFormatter());
         GapicProvider<? extends Object> testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
-                    new RubyGapicSurfaceTestTransformer(rubyTestPathMapper, packageConfig))
+                    new RubyGapicSurfaceTestTransformer(
+                        rubyTestPathMapperBuilder.setPrefix("test").build(),
+                        rubyTestPathMapperBuilder.setPrefix("acceptance").build(),
+                        packageConfig))
                 .build();
         providers.add(testProvider);
       }

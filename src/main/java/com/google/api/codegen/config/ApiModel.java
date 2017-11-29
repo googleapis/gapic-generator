@@ -39,9 +39,9 @@ public interface ApiModel {
   /** Return a list of scopes for authentication. */
   List<String> getAuthScopes();
 
-  Iterable<? extends InterfaceModel> getInterfaces(GapicProductConfig productConfig);
+  Iterable<? extends InterfaceModel> getInterfaces();
 
-  boolean hasMultipleServices(GapicProductConfig productConfig);
+  boolean hasMultipleServices();
 
   InterfaceModel getInterface(String interfaceName);
 

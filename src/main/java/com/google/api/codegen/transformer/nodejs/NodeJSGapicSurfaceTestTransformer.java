@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -117,8 +116,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    InterfaceView interfaceView = new InterfaceView();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -151,7 +149,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .localPackageName(namer.getLocalPackageName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .packageHasMultipleServices(model.hasMultipleServices(productConfig))
+        .packageHasMultipleServices(model.hasMultipleServices())
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }
@@ -214,10 +212,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        views.add(createSmokeTestClassView(context, model.hasMultipleServices(productConfig)));
+        views.add(createSmokeTestClassView(context, model.hasMultipleServices()));
       }
     }
     return views.build();

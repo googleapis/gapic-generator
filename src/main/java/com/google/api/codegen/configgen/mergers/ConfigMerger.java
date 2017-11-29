@@ -15,13 +15,13 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.api.tools.framework.model.Model;
 
-/** Merges the gapic config from a Model into a ConfigNode. */
+/** Merges the gapic config from an ApiModel into a ConfigNode. */
 public class ConfigMerger {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
@@ -32,10 +32,20 @@ public class ConfigMerger {
           + " The retry_codes_name, required_fields, flattening, and timeout properties cannot be "
           + "precisely decided by the tooling and may require some configuration.";
 
-  private final LanguageSettingsMerger languageSettingsMerger = new LanguageSettingsMerger();
-  private final InterfaceMerger interfaceMerger = new InterfaceMerger();
+  private final LanguageSettingsMerger languageSettingsMerger;
+  private final InterfaceMerger interfaceMerger;
+  private final String packageName;
 
-  public ConfigNode mergeConfig(Model model) {
+  public ConfigMerger(
+      LanguageSettingsMerger languageSettingsMerger,
+      InterfaceMerger interfaceMerger,
+      String packageName) {
+    this.languageSettingsMerger = languageSettingsMerger;
+    this.interfaceMerger = interfaceMerger;
+    this.packageName = packageName;
+  }
+
+  public ConfigNode mergeConfig(ApiModel model) {
     FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(""));
     if (configNode == null) {
       return null;
@@ -44,7 +54,7 @@ public class ConfigMerger {
     return configNode.setComment(new FixmeComment(CONFIG_COMMENT));
   }
 
-  private FieldConfigNode mergeConfig(Model model, FieldConfigNode configNode) {
+  private FieldConfigNode mergeConfig(ApiModel model, FieldConfigNode configNode) {
     ConfigNode typeNode = mergeType(configNode);
     if (typeNode == null) {
       return null;
@@ -52,10 +62,7 @@ public class ConfigMerger {
 
     ConfigNode versionNode = mergeVersion(typeNode);
     ConfigNode languageSettingsNode =
-        languageSettingsMerger.mergeLanguageSettings(model, configNode, versionNode);
-    if (languageSettingsNode == null) {
-      return null;
-    }
+        languageSettingsMerger.mergeLanguageSettings(packageName, configNode, versionNode);
 
     mergeLicenseHeader(configNode, languageSettingsNode);
     interfaceMerger.mergeInterfaces(model, configNode);

@@ -52,7 +52,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -91,7 +90,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
-    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces(productConfig);
+    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
     models.addAll(generateApiClasses(model, productConfig));
@@ -100,11 +99,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateApiClasses(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
-    boolean hasMultipleServices = Iterables.size(interfaces) > 1;
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
     for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.add(generateApiClass(context, hasMultipleServices));
+      models.add(generateApiClass(context, model.hasMultipleServices()));
     }
     return models.build();
   }
@@ -273,23 +271,20 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
-    boolean packageHasMultipleServices = Iterables.size(apiInterfaces) > 1;
     for (InterfaceModel apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      ApiMethodView exampleMethod =
+          generateApiMethods(context, apiInterface.getApiModel().hasMultipleServices()).get(0);
       VersionIndexRequireView require =
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
               .serviceName(namer.getPackageServiceName(context.getInterfaceConfig()))
               .localName(localName)
-              .doc(
-                  serviceTransformer.generateServiceDoc(
-                      context,
-                      generateApiMethods(context, packageHasMultipleServices).get(0),
-                      productConfig))
+              .doc(serviceTransformer.generateServiceDoc(context, exampleMethod, productConfig))
               .fileName(namer.getClientFileName(context.getInterfaceConfig()))
               .build();
       requireViews.add(require);

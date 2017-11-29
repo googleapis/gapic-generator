@@ -128,7 +128,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     FeatureConfig featureConfig = new DefaultFeatureConfig();
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
