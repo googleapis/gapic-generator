@@ -63,7 +63,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
   }
 
   InterfaceContext getSampleContext(ApiModel model, GapicProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       InterfaceContext context = testTransformer.createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         // We use the first encountered smoke test config as the sample application
@@ -72,7 +72,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     }
 
     // Use the first interface as the default one if no smoke test config is found
-    InterfaceModel defaultInterface = model.getInterfaces(productConfig).iterator().next();
+    InterfaceModel defaultInterface = model.getInterfaces().iterator().next();
     return testTransformer.createContext(defaultInterface, productConfig);
   }
 
