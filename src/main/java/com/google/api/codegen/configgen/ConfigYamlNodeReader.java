@@ -22,6 +22,7 @@ import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
@@ -246,11 +247,22 @@ public class ConfigYamlNodeReader {
 
   private ConfigNode readCommentNode(int prevLine, Node node, ConfigNode configNode) {
     int startLine = node.getStartMark().getLine();
-    if (startLine <= prevLine) {
+    int endLine = node.getEndMark().getLine();
+    List<String> commentLines =
+        startLine <= prevLine
+            ? new ArrayList<>()
+            : new ArrayList<>(lines.subList(prevLine, startLine));
+    for (String line : lines.subList(startLine, endLine + 1)) {
+      int commentIndex = line.indexOf("#");
+      if (commentIndex >= 0) {
+        commentLines.add(line.substring(commentIndex));
+      }
+    }
+
+    if (commentLines.isEmpty()) {
       return configNode;
     }
 
-    List<String> commentLines = lines.subList(prevLine, startLine);
     String comment = Joiner.on(System.lineSeparator()).join(commentLines);
     return new ScalarConfigNode(startLine + 1, comment).insertNext(configNode);
   }
