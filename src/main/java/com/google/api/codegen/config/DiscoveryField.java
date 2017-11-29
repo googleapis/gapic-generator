@@ -195,7 +195,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEnum() {
-    return schema.isEnum();
+    // TODO: handle enums.
+    return false;
   }
 
   @Override
@@ -329,7 +330,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
             return "double";
         }
       case BOOLEAN:
-        return "boolean";
+        return "bool";
       case STRING:
         if (schema.format() == null) {
           return "string";

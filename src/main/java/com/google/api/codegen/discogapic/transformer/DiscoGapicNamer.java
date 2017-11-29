@@ -148,7 +148,7 @@ public class DiscoGapicNamer {
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
     String[] pieces = paramString.split("_");
     Name param = Name.anyCamel(pieces);
-    if (Strings.isNullOrEmpty(schema.location())) {
+    if (Strings.isNullOrEmpty(schema.location()) && schema.type().equals(Schema.Type.OBJECT)) {
       param = param.join("resource");
     }
     return param;

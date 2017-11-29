@@ -387,10 +387,20 @@ public class InitCodeNode {
       }
       // TODO(andrealin): this is super hacky
       if (parentType instanceof DiscoveryField) {
-        for (Schema field :((DiscoveryField) parentType).getDiscoveryField().properties().values() ) {
+        for (Schema field :
+            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
           if (field.additionalProperties() != null) {
-            return DiscoveryField.create(field.additionalProperties().dereference(), ((DiscoveryField) parentType).getDiscoGapicNamer());
+            return DiscoveryField.create(
+                field.additionalProperties().dereference(),
+                ((DiscoveryField) parentType).getDiscoGapicNamer());
           }
+        }
+        Schema additionalProperties =
+            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
+        if (additionalProperties != null) {
+          return DiscoveryField.create(
+              additionalProperties.dereference(),
+              ((DiscoveryField) parentType).getDiscoGapicNamer());
         }
       }
       throw new IllegalArgumentException(
@@ -421,11 +431,23 @@ public class InitCodeNode {
         }
       }
       if (parentType instanceof DiscoveryField) {
-        for (Schema field :((DiscoveryField) parentType).getDiscoveryField().properties().values() ) {
+        for (Schema field :
+            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
           if (field.additionalProperties() != null) {
-            FieldModel fieldModel = DiscoveryField.create(field.additionalProperties().dereference(), ((DiscoveryField) parentType).getDiscoGapicNamer());
+            FieldModel fieldModel =
+                DiscoveryField.create(
+                    field.additionalProperties().dereference(),
+                    ((DiscoveryField) parentType).getDiscoGapicNamer());
             return FieldConfig.createDefaultFieldConfig(fieldModel);
           }
+        }
+        Schema additionalProperties =
+            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
+        if (additionalProperties != null) {
+          return FieldConfig.createDefaultFieldConfig(
+              DiscoveryField.create(
+                  additionalProperties.dereference(),
+                  ((DiscoveryField) parentType).getDiscoGapicNamer()));
         }
       }
       throw new IllegalArgumentException(

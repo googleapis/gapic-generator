@@ -269,7 +269,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           schemaToParamView(
               context,
               requestBody,
-              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
+              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef.dereference()).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }

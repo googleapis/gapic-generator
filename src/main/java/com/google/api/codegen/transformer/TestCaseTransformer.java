@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.metacode.InitCodeLineType.SimpleInitLine;
+import static com.google.api.codegen.metacode.InitCodeLineType.StructureInitLine;
+
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -25,7 +28,6 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
-import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.metacode.InitValue;
@@ -48,7 +50,9 @@ import com.google.api.codegen.viewmodel.testing.MockRpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /** TestCaseTransformer contains helper methods useful for creating test views. */
@@ -286,8 +290,22 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesFieldName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      if (config.getResourcesFieldConfig().getFieldPath().size() == 1) {
+        String resourceFieldName = config.getResourcesFieldName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      } else {
+        Iterator<FieldModel> it =
+            Lists.reverse(config.getResourcesFieldConfig().getFieldPath()).iterator();
+        InitCodeNode initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
+        it.next();
+        while (it.hasNext()) {
+          FieldModel field = it.next();
+          initCodeNode =
+              InitCodeNode.createWithChildren(
+                  field.getSimpleName(), StructureInitLine, initCodeNode);
+        }
+        additionalSubTrees.add(initCodeNode);
+      }
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available
@@ -339,7 +357,7 @@ public class TestCaseTransformer {
   public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
     for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
       InitCodeLineView line = settingsView.initCodeLine();
-      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
+      if (line.lineType() == SimpleInitLine) {
         SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
         String projectVarName =
             namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
