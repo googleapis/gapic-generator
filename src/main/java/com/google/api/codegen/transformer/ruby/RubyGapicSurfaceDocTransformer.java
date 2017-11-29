@@ -18,10 +18,10 @@ import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -44,9 +44,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   private static final String DOC_TEMPLATE_FILENAME = "ruby/message.snip";
+
+  private static final Pattern SENTENCE_PATTERN = Pattern.compile("^([^.]+)\\.(?: |$)");
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -156,22 +160,46 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         new RubyPackageMetadataNamer(productConfig.getPackageName());
     String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+    for (Interface apiInterface : file.getReachableInterfaces()) {
+      String description = getTocDescription(namer.getDocLines(apiInterface));
+      InterfaceConfig interfaceConfig =
+          productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface));
       tocContents.add(
           metadataTransformer.generateTocContent(
-              model, packageNamer, packageFilePath, namer.getApiWrapperClassName(interfaceConfig)));
+              description,
+              packageNamer,
+              packageFilePath,
+              namer.getApiWrapperClassName(interfaceConfig)));
     }
 
     tocContents.add(
-        metadataTransformer.generateDataTypeTocContent(
-            productConfig.getPackageName(), packageNamer, packageFilePath));
+        metadataTransformer.generateTocContent(
+            "Data types for " + productConfig.getPackageName(),
+            packageNamer,
+            packageFilePath,
+            "Data Types"));
 
     return TocModuleView.newBuilder()
         .moduleName(moduleName)
         .fullName(model.getTitle())
         .contents(tocContents.build())
         .build();
+  }
+
+  private String getTocDescription(List<String> lines) {
+    StringBuilder builder = new StringBuilder();
+    for (String line : lines) {
+      Matcher matcher = SENTENCE_PATTERN.matcher(line);
+      if (matcher.find()) {
+        builder.append(matcher.group(1));
+        break;
+      } else if (!line.isEmpty()) {
+        builder.append(line).append(" ");
+      } else if (builder.length() > 0) {
+        break;
+      }
+    }
+    return builder.toString();
   }
 
   private ModuleView generateOverviewView(ApiModel model, GapicProductConfig productConfig) {
