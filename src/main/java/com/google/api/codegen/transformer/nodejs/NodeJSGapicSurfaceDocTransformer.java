@@ -48,7 +48,7 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
+    for (ProtoFile file : new ProtoFileView().getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
     return surfaceDocs.build();
