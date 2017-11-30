@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiSource;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -22,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
@@ -54,6 +56,13 @@ public interface MethodContext {
   boolean isFlattenedMethodContext();
 
   SingleResourceNameConfig getSingleResourceNameConfig(String entityName);
+
+  /**
+   * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
+   * resource name type specified. This is the default field config for each field, and should be
+   * used when not in the context of a particular method or flattening configuration.
+   */
+  ImmutableMap<String, FieldConfig> getDefaultResourceNameConfigMap();
 
   MethodContext cloneWithEmptyTypeTable();
 

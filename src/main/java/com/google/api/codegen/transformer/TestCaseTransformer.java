@@ -279,7 +279,7 @@ public class TestCaseTransformer {
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
-        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
+        .fieldConfigMap(context.getDefaultResourceNameConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();

@@ -20,6 +20,7 @@ import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -28,6 +29,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -118,6 +120,11 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   @Override
   public String getGrpcContainerTypeName() {
     return "";
+  }
+
+  @Override
+  public ImmutableMap<String, FieldConfig> getDefaultResourceNameConfigMap() {
+    return ImmutableMap.of();
   }
 
   @Override
