@@ -250,7 +250,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     mockServiceImplFile.serviceImpl(
         MockServiceImplView.newBuilder()
             .name(name)
-            .grpcClassName(grpcClassName)
+            .mockRpcClassName(grpcClassName)
             .grpcMethods(new ArrayList<MockGrpcMethodView>())
             .build());
 

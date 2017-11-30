@@ -321,7 +321,10 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
               .getImportTypeTable()
               .getAndSaveNicknameFor(namer.getGrpcServiceClassName(context.getInterfaceModel()));
     } else {
-      grpcClassName = "grpcClassName";
+      grpcClassName =
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor(namer.getGrpcServiceClassName(context.getInterfaceModel()));
     }
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
@@ -329,7 +332,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     mockServiceImplFile.serviceImpl(
         MockServiceImplView.newBuilder()
             .name(name)
-            .grpcClassName(grpcClassName)
+            .mockRpcClassName(grpcClassName)
             .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
             .build());
 

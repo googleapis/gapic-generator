@@ -35,7 +35,7 @@ public abstract class MockServiceImplView {
 
     public abstract Builder name(String val);
 
-    public abstract Builder grpcClassName(String val);
+    public abstract Builder mockRpcClassName(String val);
 
     public abstract Builder grpcMethods(List<MockGrpcMethodView> val);
 
