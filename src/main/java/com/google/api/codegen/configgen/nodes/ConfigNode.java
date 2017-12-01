@@ -22,6 +22,9 @@ package com.google.api.codegen.configgen.nodes;
  * <p>Some implementations have a child node.
  */
 public interface ConfigNode {
+  /** Returns the line this node starts on. */
+  int getStartLine();
+
   /**
    * Returns the text value of this node.
    *

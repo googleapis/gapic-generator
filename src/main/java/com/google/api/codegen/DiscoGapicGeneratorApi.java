@@ -20,6 +20,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.configgen.ConfigHelper;
+import com.google.api.codegen.configgen.ConfigYamlReader;
+import com.google.api.codegen.configgen.MessageGenerator;
+import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
@@ -30,7 +34,6 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
-import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
@@ -40,10 +43,8 @@ import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.TypeLiteral;
-import com.google.protobuf.Message;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -121,14 +122,9 @@ public class DiscoGapicGeneratorApi {
       throw new IOException(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
     }
 
-    ConfigSource configSource = loadConfigFromFiles(configFileNames);
-    if (configSource == null) {
-      throw new IOException("Failed to load config source.");
-    }
-
-    ConfigProto configProto = (ConfigProto) configSource.getConfig();
+    ConfigProto configProto = loadConfigFromFiles(configFileNames);
     if (configProto == null) {
-      throw new IOException("Failed to cast config proto.");
+      throw new IOException("Failed to load config proto.");
     }
 
     PackageMetadataConfig packageConfig = null;
@@ -212,12 +208,24 @@ public class DiscoGapicGeneratorApi {
     return files;
   }
 
-  private static ConfigSource loadConfigFromFiles(List<String> configFileNames) {
-    List<File> configFiles = pathsToFiles(configFileNames);
+  private static ConfigProto loadConfigFromFiles(List<String> configFileNames) {
     DiagCollector diagCollector = new SimpleDiagCollector();
-    ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(
-            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    return MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
+    ConfigYamlReader yamlReader = new ConfigYamlReader();
+    MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
+    for (File file : pathsToFiles(configFileNames)) {
+      ConfigHelper helper = new ConfigHelper(diagCollector, file.getName());
+      ConfigNode configNode = yamlReader.generateConfigNode(file, helper);
+      if (configNode == null) {
+        continue;
+      }
+
+      messageGenerator.visit(configNode.getChild());
+    }
+    ConfigProto configProto = (ConfigProto) messageGenerator.getValue();
+    if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
+      return null;
+    }
+
+    return configProto;
   }
 }
