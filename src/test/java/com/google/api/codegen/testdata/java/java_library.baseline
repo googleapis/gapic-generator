@@ -3448,7 +3448,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     return new Builder(this);
   }
 
-  private LibrarySettings(Builder settingsBuilder) throws IOException {
+  protected LibrarySettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
     createShelfSettings = settingsBuilder.createShelfSettings().build();
@@ -3862,11 +3862,11 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
 
-    private Builder() {
+    protected Builder() {
       this((ClientContext) null);
     }
 
-    private Builder(ClientContext clientContext) {
+    protected Builder(ClientContext clientContext) {
       super(clientContext);
 
       createShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -4137,7 +4137,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       return builder;
     }
 
-    private Builder(LibrarySettings settings) {
+    protected Builder(LibrarySettings settings) {
       super(settings);
 
       createShelfSettings = settings.createShelfSettings.toBuilder();
