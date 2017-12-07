@@ -187,7 +187,7 @@
 @private methodMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
     @if settings.isStreaming
-      private final StreamingCallSettings<{@settings.requestTypeName}, \
+      private final ServerStreamingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @else
       @switch settings.type
@@ -219,7 +219,7 @@
      * Returns the object with the settings used for calls to {@settings.methodName}.
      */
     @if settings.isStreaming
-      public StreamingCallSettings<{@settings.requestTypeName}, \
+      public ServerStreamingCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
@@ -445,7 +445,7 @@
 @private builderMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
     @if settings.isStreaming
-      private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
+      private final ServerStreamingCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.memberName};
     @else
       @switch settings.type.toString
@@ -520,7 +520,7 @@
 
     @join settings : xsettingsClass.callSettings
       @if settings.isStreaming
-        {@settings.memberName} = StreamingCallSettings.newBuilder();
+        {@settings.memberName} = ServerStreamingCallSettings.newBuilder();
       @else
         @switch settings.type.toString
         @case "SimpleApiCallable"
@@ -646,7 +646,7 @@
      * Returns the builder for the settings used for calls to {@settings.methodName}.
      */
     @if settings.isStreaming
-      public StreamingCallSettings.Builder<{@settings.requestTypeName}, \
+      public ServerStreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
