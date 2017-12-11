@@ -57,9 +57,13 @@
             Console.WriteLine(item);
         }
     @case "FlattenedMethod"
-        {@method.callerResponseTypeName} response = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
-        // Show the result
-        Console.WriteLine(response);
+        @if method.hasReturnValue
+            {@method.callerResponseTypeName} response = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            // Show the result
+            Console.WriteLine(response);
+        @else
+            client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        @end
     @end
 @end
 
