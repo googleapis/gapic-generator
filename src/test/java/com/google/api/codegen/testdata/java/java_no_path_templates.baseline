@@ -789,9 +789,12 @@ public class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceImplBase
 package com.google.gcloud.example;
 
 import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.GrpcClientHeaderProvider;
 import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.grpc.testing.LocalChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.common.collect.Lists;
@@ -816,6 +819,7 @@ public class NoTemplatesApiServiceClientTest {
   private static MockNoTemplatesAPIService mockNoTemplatesAPIService;
   private static MockServiceHelper serviceHelper;
   private NoTemplatesApiServiceClient client;
+  private LocalChannelProvider channelProvider;
 
   @BeforeClass
   public static void startStaticServer() {
@@ -832,8 +836,9 @@ public class NoTemplatesApiServiceClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.newBuilder()
-        .setTransportChannelProvider(serviceHelper.createChannelProvider())
+        .setTransportChannelProvider(channelProvider)
         .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
     client = NoTemplatesApiServiceClient.create(settings);
