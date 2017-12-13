@@ -52,6 +52,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.nio.file.Paths;
@@ -59,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
@@ -85,6 +87,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private static final String API_DOC_TEMPLATE_FILE = "py/docs/api.rst.snip";
   private static final String TYPES_DOC_TEMPLATE_FILE = "py/docs/types.rst.snip";
   private static final String NOX_TEMPLATE_FILE = "py/nox.py.snip";
+
+  private static final Set<String> GOOGLE_CLOUD_NAMESPACE_PACKAGES =
+      ImmutableSet.of("google", "google.cloud");
 
   private final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
@@ -187,7 +192,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return metadataTransformer
         .generateMetadataView(
             metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
-        .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
+        .namespacePackages(computeNamespacePackages(productConfig.getPackageName()))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .clientModules(clientModules(surfaceNamer))
@@ -326,10 +331,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return packages;
   }
 
-  private List<String> computeNamespacePackages(String packageName, SurfaceNamer namer) {
+  private List<String> computeNamespacePackages(String packageName) {
     List<String> namespacePackages = new ArrayList<>();
     for (String subPackage : computePackages(packageName)) {
-      if (isNamespacePackage(namer, subPackage)) {
+      if (isNamespacePackage(subPackage)) {
         namespacePackages.add(subPackage);
       }
     }
@@ -337,10 +342,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   /** Set all packages to be namespace packages except for the version package (if present) */
-  private boolean isNamespacePackage(SurfaceNamer namer, String packageName) {
-    return !namer.getPackageName().equals(packageName)
-        && !namer.getVersionedDirectoryNamespace().equals(packageName)
-        && !namer.getTopLevelNamespace().equals(packageName);
+  private boolean isNamespacePackage(String packageName) {
+    // TODO: Provide a way for a library producer to manually specific the namespace packages.
+    return GOOGLE_CLOUD_NAMESPACE_PACKAGES.contains(packageName);
   }
 
   /**
@@ -352,7 +356,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     List<ViewModel> initFiles = new ArrayList<>();
     for (String packageName : packages) {
       final String template;
-      if (isNamespacePackage(namer, packageName)) {
+      if (isNamespacePackage(packageName)) {
         template = NAMESPACE_INIT_TEMPLATE_FILE;
       } else if (isVersionedDirectoryPackage(namer, packageName)) {
         continue;
