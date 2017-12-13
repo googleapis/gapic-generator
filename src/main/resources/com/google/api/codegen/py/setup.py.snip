@@ -1,6 +1,7 @@
-@extends "common.snip"
+@extends "py/common.snip"
 
 @snippet generate(metadata)
+  #{@licenseSection(metadata.fileHeader)}
   """A setup module for the GAPIC {@metadata.fullName} library.
 
   See:
@@ -38,16 +39,16 @@
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
-          'Programming Language :: Python :: Implementation :: CPython',
       ],
       description='GAPIC library for the {@metadata.fullName}',
       include_package_data=True,
       long_description=long_description,
       install_requires=install_requires,
       license='{@metadata.licenseName}',
-      packages=find_packages(),
+      packages=find_packages(exclude=('tests*',)),
       namespace_packages=[{@quotedList(metadata.namespacePackages)}],
-      url='{@metadata.homepage}'
+      url='{@metadata.homepage}',
+      zip_safe=False,
   )
 
 @end
