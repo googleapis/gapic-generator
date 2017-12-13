@@ -68,8 +68,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
   private static final String GITHUB_REPO_HOST =
       "https://github.com/GoogleCloudPlatform/google-cloud-python";
-  private static final String AUTH_DOC_PATH = "/google-cloud-auth";
-  private static final String LIB_DOC_PATH = "/%s-usage";
+  private static final String AUTH_DOC_PATH = "/core/auth.html";
+  private static final String LIB_DOC_PATH = "/%s/usage.html";
   private static final String MAIN_README_PATH = "/blob/master/README.rst";
 
   private static final Map<String, String> TOP_LEVEL_TEMPLATE_FILES =
