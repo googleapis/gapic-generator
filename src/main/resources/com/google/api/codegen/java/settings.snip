@@ -274,7 +274,7 @@
 @end
 
 @private constructors(xsettingsClass)
-  private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
+  protected {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
     @join settings : xsettingsClass.callSettings
@@ -528,11 +528,11 @@
 @end
 
 @private builderConstructors(xsettingsClass)
-  private Builder() {
+  protected Builder() {
     this((ClientContext) null);
   }
 
-  private Builder(ClientContext clientContext) {
+  protected Builder(ClientContext clientContext) {
     super(clientContext);
 
     @join settings : xsettingsClass.callSettings
@@ -632,7 +632,7 @@
     return builder;
   }
 
-  private Builder({@xsettingsClass.name} settings) {
+  protected Builder({@xsettingsClass.name} settings) {
     super(settings);
 
     @join settings : xsettingsClass.callSettings
