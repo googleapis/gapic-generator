@@ -18,6 +18,7 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.configgen.InterfaceTransformer;
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
@@ -44,8 +45,11 @@ public class InterfaceMerger {
   }
 
   public void mergeInterfaces(ApiModel model, ConfigNode configNode) {
-    FieldConfigNode interfacesNode = new FieldConfigNode("interfaces");
-    NodeFinder.getLastChild(configNode).insertNext(interfacesNode);
+    FieldConfigNode interfacesNode =
+        MissingFieldTransformer.append("interfaces", configNode).generate();
+    if (NodeFinder.hasContent(interfacesNode.getChild())) {
+      return;
+    }
 
     ConfigNode interfacesValueNode =
         ListTransformer.generateList(
@@ -55,12 +59,12 @@ public class InterfaceMerger {
         .setComment(new DefaultComment("A list of API interface configurations."));
   }
 
-  private ListItemConfigNode generateInterfaceNode(InterfaceModel apiInterface) {
+  private ListItemConfigNode generateInterfaceNode(int startLine, InterfaceModel apiInterface) {
     Map<String, String> collectionNameMap =
         interfaceTransformer.getResourceToEntityNameMap(apiInterface);
-    ListItemConfigNode interfaceNode = new ListItemConfigNode();
+    ListItemConfigNode interfaceNode = new ListItemConfigNode(startLine);
     FieldConfigNode nameNode =
-        FieldConfigNode.createStringPair("name", apiInterface.getFullName())
+        FieldConfigNode.createStringPair(startLine, "name", apiInterface.getFullName())
             .setComment(new DefaultComment("The fully qualified name of the API interface."));
     interfaceNode.setChild(nameNode);
     ConfigNode collectionsNode =
