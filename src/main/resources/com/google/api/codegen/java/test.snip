@@ -11,6 +11,7 @@
     @end
     private static MockServiceHelper serviceHelper;
     private {@xapiTest.testClass.apiClassName} client;
+    private LocalChannelProvider channelProvider;
 
     @@BeforeClass
     public static void startStaticServer() {
@@ -29,8 +30,9 @@
     @@Before
     public void setUp() throws IOException {
       serviceHelper.reset();
+      channelProvider = serviceHelper.createChannelProvider();
       {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
-          .setTransportChannelProvider(serviceHelper.createChannelProvider())
+          .setTransportChannelProvider(channelProvider)
           .setCredentialsProvider(NoCredentialsProvider.create())
           .build();
       client = {@xapiTest.testClass.apiClassName}.create(settings);
@@ -287,6 +289,10 @@
       @end
     @end
   @end
+  Assert.assertTrue(
+      channelProvider.isHeaderSent(
+          ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+          GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
