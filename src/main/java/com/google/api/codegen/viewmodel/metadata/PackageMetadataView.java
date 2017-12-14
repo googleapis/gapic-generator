@@ -136,8 +136,8 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract boolean hasSmokeTests();
 
-  // TODO(landrito) Currently only Ruby supports using fileHeaderView. Switch all metadata gen to
-  // use this field.
+  // TODO(landrito) Currently only Ruby/Python supports using fileHeaderView. Switch all metadata
+  // gen to use this field.
   @Nullable
   public abstract FileHeaderView fileHeader();
 

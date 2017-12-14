@@ -204,6 +204,7 @@
 ============== file: MANIFEST.in ==============
 include README.rst LICENSE
 recursive-include google *.json *.proto
+recursive-include tests *
 global-exclude *.py[co]
 global-exclude __pycache__
 
@@ -218,7 +219,7 @@ Python Client for Google Example Library API (`Alpha`_)
 
 .. _Alpha: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library-usage
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -234,7 +235,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/google-cloud-auth
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -644,7 +645,7 @@ Python Client for Google Example Library API (`Alpha`_)
 
 .. _Alpha: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library-usage
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -660,7 +661,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/google-cloud-auth
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -960,15 +961,6 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# EDITING INSTRUCTIONS
-# This file was generated from the file
-# https://github.com/google/googleapis/blob/master/library.proto,
-# and updates to that file get reflected here through a refresh process.
-# For the short term, the refresh process will only be runnable by Google engineers.
-#
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
 
 """Accesses the google.example.library.v1 LibraryService API."""
 
@@ -993,6 +985,7 @@ from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
+
 
 
 _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
@@ -1029,14 +1022,13 @@ class LibraryServiceClient(object):
     )
 
     # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary
-    _INTERFACE_NAME = (
-        'google.example.library.v1.LibraryService')
+    # method configuration in the client_config dictionary.
+    _INTERFACE_NAME = 'google.example.library.v1.LibraryService'
 
 
     @classmethod
     def shelf_path(cls, shelf_id):
-        """Returns a fully-qualified shelf resource name string."""
+        """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}',
             shelf_id=shelf_id,
@@ -1044,7 +1036,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def book_path(cls, shelf_id, book_id):
-        """Returns a fully-qualified book resource name string."""
+        """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}/books/{book_id}',
             shelf_id=shelf_id,
@@ -1053,7 +1045,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def return_path(cls, shelf, book, return_):
-        """Returns a fully-qualified return resource name string."""
+        """Return a fully-qualified return string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf}/books/{book}/returns/{return}',
             shelf=shelf,
@@ -1061,43 +1053,45 @@ class LibraryServiceClient(object):
             return=return_,
         )
 
-    def __init__(self,
-            channel=None,
-            credentials=None,
+    def __init__(self, channel=None, credentials=None,
             client_config=library_service_client_config.config,
             client_info=None):
         """Constructor.
 
         Args:
             channel (grpc.Channel): A ``Channel`` instance through
-                which to make calls. If specified, then the ``credentials``
-                argument is ignored.
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
             credentials (google.auth.credentials.Credentials): The
                 authorization credentials to attach to requests. These
                 credentials identify this application to the service. If none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
-            client_config (dict):
-                A dictionary of call options for each method. If not specified
-                the default configuration is used. Generally, you only need
-                to set this if you're developing your own client library.
+            client_config (dict): A dictionary of call options for each
+                method. If not specified, the default configuration is used.
             client_info (google.api_core.gapic_v1.client_info.ClientInfo):
                 The client info used to send a user-agent string along with
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
         if channel is not None and credentials is not None:
             raise ValueError(
-                'channel and credentials arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__))
+                'The `channel` and `credentials` arguments to {} are mutually '
+                'exclusive.'.format(self.__class__.__name__),
+            )
 
+        # Create the channel.
         if channel is None:
             channel = google.api_core.grpc_helpers.create_channel(
                 self.SERVICE_ADDRESS,
                 credentials=credentials,
-                scopes=self._DEFAULT_SCOPES)
+                scopes=self._DEFAULT_SCOPES,
+            )
 
+        # Create the gRPC stubs.
         self.library_service_stub = (
             library_pb2.LibraryServiceStub(channel))
         self.labeler_stub = (
@@ -1111,153 +1105,188 @@ class LibraryServiceClient(object):
         if client_info is None:
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
-
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
 
-        interface_config = client_config['interfaces'][self._INTERFACE_NAME]
+        # Parse out the default settings for retry and timeout for each RPC
+        # from the client configuration.
+        # (Ordinarily, these are the defaults specified in the `*_config.py`
+        # file next to this one.)
         method_configs = google.api_core.gapic_v1.config.parse_method_configs(
-            interface_config)
+            client_config['interfaces'][self._INTERFACE_NAME],
+        )
 
+        # Write the "inner API call" methods to the class.
+        # These are wrapped versions of the gRPC stub methods, with retry and
+        # timeout configuration applied, called by the public methods on
+        # this class.
         self._create_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.CreateShelf,
             default_retry=method_configs['CreateShelf'].retry,
             default_timeout=method_configs['CreateShelf'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetShelf,
             default_retry=method_configs['GetShelf'].retry,
             default_timeout=method_configs['GetShelf'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._list_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListShelves,
             default_retry=method_configs['ListShelves'].retry,
             default_timeout=method_configs['ListShelves'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._delete_shelf = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DeleteShelf,
             default_retry=method_configs['DeleteShelf'].retry,
             default_timeout=method_configs['DeleteShelf'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._merge_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MergeShelves,
             default_retry=method_configs['MergeShelves'].retry,
             default_timeout=method_configs['MergeShelves'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._create_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.CreateBook,
             default_retry=method_configs['CreateBook'].retry,
             default_timeout=method_configs['CreateBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._publish_series = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.PublishSeries,
             default_retry=method_configs['PublishSeries'].retry,
             default_timeout=method_configs['PublishSeries'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBook,
             default_retry=method_configs['GetBook'].retry,
             default_timeout=method_configs['GetBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._list_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListBooks,
             default_retry=method_configs['ListBooks'].retry,
             default_timeout=method_configs['ListBooks'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._delete_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DeleteBook,
             default_retry=method_configs['DeleteBook'].retry,
             default_timeout=method_configs['DeleteBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._update_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.UpdateBook,
             default_retry=method_configs['UpdateBook'].retry,
             default_timeout=method_configs['UpdateBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._move_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MoveBook,
             default_retry=method_configs['MoveBook'].retry,
             default_timeout=method_configs['MoveBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._list_strings = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.ListStrings,
             default_retry=method_configs['ListStrings'].retry,
             default_timeout=method_configs['ListStrings'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._add_comments = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.AddComments,
             default_retry=method_configs['AddComments'].retry,
             default_timeout=method_configs['AddComments'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_book_from_archive = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromArchive,
             default_retry=method_configs['GetBookFromArchive'].retry,
             default_timeout=method_configs['GetBookFromArchive'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_book_from_anywhere = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromAnywhere,
             default_retry=method_configs['GetBookFromAnywhere'].retry,
             default_timeout=method_configs['GetBookFromAnywhere'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_book_from_absolutely_anywhere = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBookFromAbsolutelyAnywhere,
             default_retry=method_configs['GetBookFromAbsolutelyAnywhere'].retry,
             default_timeout=method_configs['GetBookFromAbsolutelyAnywhere'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._update_book_index = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.UpdateBookIndex,
             default_retry=method_configs['UpdateBookIndex'].retry,
             default_timeout=method_configs['UpdateBookIndex'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._stream_shelves = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.StreamShelves,
             default_retry=method_configs['StreamShelves'].retry,
             default_timeout=method_configs['StreamShelves'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._stream_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.StreamBooks,
             default_retry=method_configs['StreamBooks'].retry,
             default_timeout=method_configs['StreamBooks'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._discuss_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.DiscussBook,
             default_retry=method_configs['DiscussBook'].retry,
             default_timeout=method_configs['DiscussBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._monolog_about_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.MonologAboutBook,
             default_retry=method_configs['MonologAboutBook'].retry,
             default_timeout=method_configs['MonologAboutBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._find_related_books = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.FindRelatedBooks,
             default_retry=method_configs['FindRelatedBooks'].retry,
             default_timeout=method_configs['FindRelatedBooks'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._add_tag = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.AddTag,
             default_retry=method_configs['AddTag'].retry,
             default_timeout=method_configs['AddTag'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._add_label = google.api_core.gapic_v1.method.wrap_method(
             self.labeler_stub.AddLabel,
             default_retry=method_configs['AddLabel'].retry,
             default_timeout=method_configs['AddLabel'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_big_book = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBigBook,
             default_retry=method_configs['GetBigBook'].retry,
             default_timeout=method_configs['GetBigBook'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._get_big_nothing = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.GetBigNothing,
             default_retry=method_configs['GetBigNothing'].retry,
             default_timeout=method_configs['GetBigNothing'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
         self._test_optional_required_flattening_params = google.api_core.gapic_v1.method.wrap_method(
             self.library_service_stub.TestOptionalRequiredFlatteningParams,
             default_retry=method_configs['TestOptionalRequiredFlatteningParams'].retry,
             default_timeout=method_configs['TestOptionalRequiredFlatteningParams'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
 
     # Service calls
     def create_shelf(
@@ -1300,7 +1329,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.CreateShelfRequest(
-            shelf=shelf)
+            shelf=shelf,
+        )
         return self._create_shelf(request, retry=retry, timeout=timeout)
 
     def get_shelf(
@@ -1353,7 +1383,8 @@ class LibraryServiceClient(object):
             name=name,
             options=options_,
             message=message,
-            string_builder=string_builder)
+            string_builder=string_builder,
+        )
         return self._get_shelf(request, retry=retry, timeout=timeout)
 
     def list_shelves(
@@ -1407,7 +1438,8 @@ class LibraryServiceClient(object):
             request=request,
             items_field='shelves',
             request_token_field='page_token',
-            response_token_field='next_page_token')
+            response_token_field='next_page_token',
+        )
         return iterator
 
     def delete_shelf(
@@ -1444,7 +1476,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.DeleteShelfRequest(
-            name=name)
+            name=name,
+        )
         self._delete_shelf(request, retry=retry, timeout=timeout)
 
     def merge_shelves(
@@ -1490,7 +1523,8 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.MergeShelvesRequest(
             name=name,
-            other_shelf_name=other_shelf_name)
+            other_shelf_name=other_shelf_name,
+        )
         return self._merge_shelves(request, retry=retry, timeout=timeout)
 
     def create_book(
@@ -1536,10 +1570,12 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.CreateBookRequest(
             name=name,
-            book=book)
+            book=book,
+        )
 
         routing_header = google.api_core.gapic_v1.routing_header(
-            [('name', name), ('book.read', book.read)])
+            [('name', name), ('book.read', book.read)],
+        )
 
         return self._create_book(request, retry=retry, timeout=timeout, metadata=[routing_header])
 
@@ -1608,7 +1644,8 @@ class LibraryServiceClient(object):
             books=books,
             series_uuid=series_uuid,
             edition=edition,
-            review_copy=review_copy)
+            review_copy=review_copy,
+        )
         return self._publish_series(request, retry=retry, timeout=timeout)
 
     def get_book(
@@ -1648,7 +1685,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
-            name=name)
+            name=name,
+        )
         return self._get_book(request, retry=retry, timeout=timeout)
 
     def list_books(
@@ -1711,14 +1749,16 @@ class LibraryServiceClient(object):
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
-            filter=filter_)
+            filter=filter_,
+        )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._list_books, retry=retry, timeout=timeout),
             request=request,
             items_field='books',
             request_token_field='page_token',
-            response_token_field='next_page_token')
+            response_token_field='next_page_token',
+        )
         return iterator
 
     def delete_book(
@@ -1755,7 +1795,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.DeleteBookRequest(
-            name=name)
+            name=name,
+        )
         self._delete_book(request, retry=retry, timeout=timeout)
 
     def update_book(
@@ -1814,7 +1855,8 @@ class LibraryServiceClient(object):
             book=book,
             optional_foo=optional_foo,
             update_mask=update_mask,
-            physical_mask=physical_mask)
+            physical_mask=physical_mask,
+        )
         return self._update_book(request, retry=retry, timeout=timeout)
 
     def move_book(
@@ -1858,7 +1900,8 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.MoveBookRequest(
             name=name,
-            other_shelf_name=other_shelf_name)
+            other_shelf_name=other_shelf_name,
+        )
         return self._move_book(request, retry=retry, timeout=timeout)
 
     def list_strings(
@@ -1916,14 +1959,16 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.ListStringsRequest(
             name=name,
-            page_size=page_size)
+            page_size=page_size,
+        )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._list_strings, retry=retry, timeout=timeout),
             request=request,
             items_field='strings',
             request_token_field='page_token',
-            response_token_field='next_page_token')
+            response_token_field='next_page_token',
+        )
         return iterator
 
     def add_comments(
@@ -1970,7 +2015,8 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.AddCommentsRequest(
             name=name,
-            comments=comments)
+            comments=comments,
+        )
         self._add_comments(request, retry=retry, timeout=timeout)
 
     def get_book_from_archive(
@@ -2010,7 +2056,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookFromArchiveRequest(
-            name=name)
+            name=name,
+        )
         return self._get_book_from_archive(request, retry=retry, timeout=timeout)
 
     def get_book_from_anywhere(
@@ -2055,7 +2102,8 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
-            alt_book_name=alt_book_name)
+            alt_book_name=alt_book_name,
+        )
         return self._get_book_from_anywhere(request, retry=retry, timeout=timeout)
 
     def get_book_from_absolutely_anywhere(
@@ -2095,7 +2143,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
-            name=name)
+            name=name,
+        )
         return self._get_book_from_absolutely_anywhere(request, retry=retry, timeout=timeout)
 
     def update_book_index(
@@ -2141,7 +2190,8 @@ class LibraryServiceClient(object):
         request = library_pb2.UpdateBookIndexRequest(
             name=name,
             index_name=index_name,
-            index_map=index_map)
+            index_map=index_map,
+        )
         self._update_book_index(request, retry=retry, timeout=timeout)
 
     def stream_shelves(
@@ -2221,7 +2271,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.StreamBooksRequest(
-            name=name)
+            name=name,
+        )
         return self._stream_books(request, retry=retry, timeout=timeout)
 
     def discuss_book(
@@ -2375,14 +2426,16 @@ class LibraryServiceClient(object):
         request = library_pb2.FindRelatedBooksRequest(
             names=names,
             shelves=shelves,
-            page_size=page_size)
+            page_size=page_size,
+        )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._find_related_books, retry=retry, timeout=timeout),
             request=request,
             items_field='names',
             request_token_field='page_token',
-            response_token_field='next_page_token')
+            response_token_field='next_page_token',
+        )
         return iterator
 
     def add_tag(
@@ -2428,7 +2481,8 @@ class LibraryServiceClient(object):
         """
         request = tagger_pb2.AddTagRequest(
             resource=resource,
-            tag=tag)
+            tag=tag,
+        )
         return self._add_tag(request, retry=retry, timeout=timeout)
 
     def add_label(
@@ -2474,7 +2528,8 @@ class LibraryServiceClient(object):
         """
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
-            label=label)
+            label=label,
+        )
         return self._add_label(request, retry=retry, timeout=timeout)
 
     def get_big_book(
@@ -2523,13 +2578,15 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
-            name=name)
+            name=name,
+        )
         operation = self._get_big_book(request, retry=retry, timeout=timeout)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
             library_pb2.Book,
-            metadata_type=library_pb2.GetBigBookMetadata)
+            metadata_type=library_pb2.GetBigBookMetadata,
+        )
 
     def get_big_nothing(
             self,
@@ -2577,13 +2634,15 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
-            name=name)
+            name=name,
+        )
         operation = self._get_big_nothing(request, retry=retry, timeout=timeout)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
             empty_pb2.Empty,
-            metadata_type=library_pb2.GetBigBookMetadata)
+            metadata_type=library_pb2.GetBigBookMetadata,
+        )
 
     def test_optional_required_flattening_params(
             self,
@@ -2812,7 +2871,8 @@ class LibraryServiceClient(object):
             optional_repeated_resource_name_oneof=optional_repeated_resource_name_oneof,
             optional_repeated_fixed32=optional_repeated_fixed32,
             optional_repeated_fixed64=optional_repeated_fixed64,
-            optional_map=optional_map)
+            optional_map=optional_map,
+        )
         return self._test_optional_required_flattening_params(request, retry=retry, timeout=timeout)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
@@ -3131,6 +3191,20 @@ def lint_setup_py(session):
 universal = 1
 
 ============== file: setup.py ==============
+# Copyright 2017, Google LLC All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """A setup module for the GAPIC Google Example Library API library.
 
 See:
@@ -3170,16 +3244,16 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
     ],
     description='GAPIC library for the Google Example Library API',
     include_package_data=True,
     long_description=long_description,
     install_requires=install_requires,
     license='Apache 2.0',
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests*',)),
     namespace_packages=['google', 'google.cloud'],
-    url='https://github.com/googleapis/googleapis'
+    url='https://github.com/googleapis/googleapis',
+    zip_safe=False,
 )
 
 ============== file: tests/system/gapic/v1/test_system_library_service_v1.py ==============
@@ -4323,8 +4397,8 @@ class TestLibraryServiceClient(object):
             channel=channel)
 
         # Setup Request
-        required_singular_int32 = -72313594
-        required_singular_int64 = -72313499
+        required_singular_int32 = 72313594
+        required_singular_int64 = 72313499
         required_singular_float = -7514705.0
         required_singular_double = 1.9111005E8
         required_singular_bool = True
@@ -4366,8 +4440,8 @@ class TestLibraryServiceClient(object):
              channel=channel)
 
         # Setup request
-        required_singular_int32 = -72313594
-        required_singular_int64 = -72313499
+        required_singular_int32 = 72313594
+        required_singular_int64 = 72313499
         required_singular_float = -7514705.0
         required_singular_double = 1.9111005E8
         required_singular_bool = True
