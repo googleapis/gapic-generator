@@ -1,20 +1,21 @@
 @extends "php/common.snip"
 
 @snippet decorateSampleCode(xapiClass, apiMethod, coreSampleCode)
+    @if xapiClass.hasMissingDefaultOptions
+        $options = [
+            @if xapiClass.missingDefaultServiceAddress
+                'serviceAddress' => 'my-service-address',
+            @end
+            @if xapiClass.missingDefaultServiceScopes
+                'scopes' => ['my-service-scope'],
+            @end
+        ];
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+    @else
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+    @end
+
     try {
-        @if xapiClass.hasMissingDefaultOptions
-            $options = [
-                @if xapiClass.missingDefaultServiceAddress
-                    'serviceAddress' => 'my-service-address',
-                @end
-                @if xapiClass.missingDefaultServiceScopes
-                    'scopes' => ['my-service-scope'],
-                @end
-            ];
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
-        @else
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-        @end
         {@initCode(apiMethod.initCode, apiMethod.apiVariableName)}
         {@coreSampleCode}
     } finally {
