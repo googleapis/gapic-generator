@@ -41,6 +41,7 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.util.testing.PythonValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -203,6 +204,11 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .additionalDependencies(generateAdditionalDependencies())
         .hasSmokeTests(hasSmokeTests(model, productConfig))
         .licenseName(packageConfig.licenseName().replace("-", " "))
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(
+                productConfig,
+                ImportSectionView.newBuilder().build(),
+                new PythonSurfaceNamer(productConfig.getPackageName())))
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
