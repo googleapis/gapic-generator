@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -72,7 +73,7 @@ public interface InterfaceContext extends TransformationContext {
   String serviceTitle();
 
   @Override
-  ProductConfig getProductConfig();
+  GapicProductConfig getProductConfig();
 
   @Override
   SurfaceNamer getNamer();

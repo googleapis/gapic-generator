@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -314,17 +315,17 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getMockGrpcServiceImplName(context.getInterfaceModel());
-    String grpcClassName;
+    String rpcClassName;
     if (context.getApiModel().getApiSource().equals(ApiSource.PROTO)) {
-      grpcClassName =
+      rpcClassName =
           context
               .getImportTypeTable()
-              .getAndSaveNicknameFor(namer.getGrpcServiceClassName(context.getInterfaceModel()));
+              .getAndSaveNicknameFor(namer.getRpcServiceClassName(context.getInterfaceModel(), context.getProductConfig()));
     } else {
-      grpcClassName =
+      rpcClassName =
           context
               .getImportTypeTable()
-              .getAndSaveNicknameFor(namer.getGrpcServiceClassName(context.getInterfaceModel()));
+              .getAndSaveNicknameFor(namer.getRpcServiceClassName(context.getInterfaceModel(), context.getProductConfig()));
     }
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
@@ -332,7 +333,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     mockServiceImplFile.serviceImpl(
         MockServiceImplView.newBuilder()
             .name(name)
-            .mockRpcClassName(grpcClassName)
+            .mockRpcClassName(rpcClassName)
             .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
             .build());
 
@@ -370,8 +371,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
-    typeTable.saveNicknameFor("io.grpc.Status");
-    typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.Arrays");
@@ -389,6 +388,10 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     }
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.protobuf.Any");
+    }
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      typeTable.saveNicknameFor("io.grpc.Status");
+      typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
     }
   }
 
@@ -418,8 +421,10 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Queue");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
-    typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
-    typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+      typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
+    }
   }
 
   private void addMockServiceImports(InterfaceContext context) {
@@ -427,8 +432,10 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
-    typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
-    typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+      typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
+    }
   }
 
   private void addGrpcStreamingTestImports(

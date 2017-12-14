@@ -18,6 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -784,14 +785,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
    */
-  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
+  public String getRpcServiceClassName(InterfaceModel apiInterface, GapicProductConfig productConfig) {
     NamePath namePath =
-        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
-    String grpcContainerName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+        typeNameConverter.getNamePath(getTypeFormatter().getFullNameFor(apiInterface));
+    String rpcContainerName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), Name.from(productConfig.getTransportProtocol().name().toLowerCase()).toUpperCamel()));
     String serviceClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName(), "ImplBase"));
-    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
+    return qualifiedName(namePath.withHead(rpcContainerName).append(serviceClassName));
   }
 
   /**
