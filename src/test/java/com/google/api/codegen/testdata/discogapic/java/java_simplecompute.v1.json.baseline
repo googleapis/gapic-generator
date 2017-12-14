@@ -5206,7 +5206,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.httpjson.HttpJsonClientHeaderProvider;
+import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -5376,8 +5376,9 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
 
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
-    return HttpJsonClientHeaderProvider.newBuilder()
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(AddressSettings.class));
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(AddressSettings.class))
+        .setTransportToken(GaxHttpJsonProperties.getHttpJsonTokenName(), GaxHttpJsonProperties.getHttpJsonVersion());
   }
 
   /**

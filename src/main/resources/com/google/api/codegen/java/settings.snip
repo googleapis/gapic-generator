@@ -152,12 +152,13 @@
 
   @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
-    @if xsettingsClass.transportProtocol == "GRPC"
-      return GrpcClientHeaderProvider.newBuilder()
-    @else
-      return HttpJsonClientHeaderProvider.newBuilder()
-    @end
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion({@xsettingsClass.name}.class));
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion({@xsettingsClass.name}.class))
+        @if xsettingsClass.transportProtocol == "GRPC"
+          .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
+        @else
+          .setTransportToken(GaxHttpJsonProperties.getHttpJsonTokenName(), GaxHttpJsonProperties.getHttpJsonVersion());
+        @end
   }
 
   /**

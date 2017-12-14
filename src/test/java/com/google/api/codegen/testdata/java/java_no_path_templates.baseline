@@ -241,7 +241,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.GrpcClientHeaderProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -319,8 +319,9 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
 
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
-    return GrpcClientHeaderProvider.newBuilder()
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(NoTemplatesApiServiceSettings.class));
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(NoTemplatesApiServiceSettings.class))
+        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
   /**
@@ -789,7 +790,7 @@ public class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceImplBase
 package com.google.gcloud.example;
 
 import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.api.gax.grpc.GrpcClientHeaderProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.grpc.testing.LocalChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;

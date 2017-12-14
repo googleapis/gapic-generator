@@ -341,7 +341,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcClientHeaderProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");

@@ -714,13 +714,13 @@ public class JavaSurfaceTransformer {
         if (interfaceConfig.hasLongRunningOperations()) {
           typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
         }
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcClientHeaderProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
         break;
       case DISCOVERY:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonClientHeaderProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
         break;
     }
   }

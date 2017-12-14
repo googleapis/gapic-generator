@@ -2979,7 +2979,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.GrpcClientHeaderProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.grpc.OperationFuture;
@@ -3403,8 +3403,9 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
-    return GrpcClientHeaderProvider.newBuilder()
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(LibrarySettings.class));
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(LibrarySettings.class))
+        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
   /**
@@ -5976,7 +5977,7 @@ package com.google.gcloud.pubsub.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.grpc.GrpcClientHeaderProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.grpc.testing.LocalChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
@@ -6128,9 +6129,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(shelf, actualRequest.getShelf());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6174,9 +6175,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsShelfName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6222,9 +6223,9 @@ public class LibraryClientTest {
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6273,9 +6274,9 @@ public class LibraryClientTest {
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6321,9 +6322,9 @@ public class LibraryClientTest {
     ListShelvesRequest actualRequest = (ListShelvesRequest)actualRequests.get(0);
 
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6358,9 +6359,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsShelfName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6406,9 +6407,9 @@ public class LibraryClientTest {
     Assert.assertEquals(name, actualRequest.getNameAsShelfName());
     Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsShelfName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6457,9 +6458,9 @@ public class LibraryClientTest {
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6510,9 +6511,9 @@ public class LibraryClientTest {
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6564,9 +6565,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6613,9 +6614,9 @@ public class LibraryClientTest {
     Assert.assertEquals(name, actualRequest.getNameAsShelfName());
     Assert.assertEquals(filter, actualRequest.getFilter());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6651,9 +6652,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6701,9 +6702,9 @@ public class LibraryClientTest {
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6758,9 +6759,9 @@ public class LibraryClientTest {
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
     Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6812,9 +6813,9 @@ public class LibraryClientTest {
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsShelfName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6862,9 +6863,9 @@ public class LibraryClientTest {
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6912,9 +6913,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -6959,9 +6960,9 @@ public class LibraryClientTest {
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(comments, actualRequest.getCommentsList());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7016,9 +7017,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsArchivedBookName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7066,9 +7067,9 @@ public class LibraryClientTest {
     Assert.assertEquals(name, actualRequest.getNameAsBookNameOneof());
     Assert.assertEquals(BookNameOneof.from(altBookName), actualRequest.getAltBookNameAsBookNameOneof());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7115,9 +7116,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7158,9 +7159,9 @@ public class LibraryClientTest {
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMapMap());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7375,9 +7376,9 @@ public class LibraryClientTest {
     Assert.assertEquals(names, actualRequest.getNamesListAsBookNameList());
     Assert.assertEquals(shelves, actualRequest.getShelvesListAsShelfNameList());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7418,9 +7419,9 @@ public class LibraryClientTest {
     Assert.assertEquals(formattedResource, actualRequest.getResource());
     Assert.assertEquals(tag, actualRequest.getTag());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7460,9 +7461,9 @@ public class LibraryClientTest {
     Assert.assertEquals(formattedResource, actualRequest.getResource());
     Assert.assertEquals(label, actualRequest.getLabel());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7515,9 +7516,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7563,9 +7564,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7604,9 +7605,9 @@ public class LibraryClientTest {
     TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
 
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
@@ -7749,9 +7750,9 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());
     Assert.assertTrue(
-        channelProvider.validateSentHeader(
+        channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GrpcClientHeaderProvider.getDefaultApiClientHeaderPattern()));
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
