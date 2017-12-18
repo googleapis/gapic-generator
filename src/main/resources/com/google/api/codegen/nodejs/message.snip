@@ -1,108 +1,109 @@
 @extends "nodejs/common.snip"
 
-@snippet generateFilename(file)
-  {@context.getDocFilename(file)}
-@end
+@snippet generate(doc)
+  {@licenseSection(doc.fileHeader)}
 
-@snippet generateBody(file)
-  {@licenseSection()}
-
-  @if context.isExternalFile(file)
-    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
-      {@externalMessageDocument(message)}
-    @end
-  @else
-    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
-      {@messageDocument(message, toplevelHeader(message))}
-    @end
+  @join elementDoc : doc.elementDocs on BREAK.add(BREAK)
+    {@documentElement(elementDoc, toplevelHeader(elementDoc), semicolon())}
   @end
 @end
 
-@private licenseSection()
-  /*
-   {@copyright()}
-   */
+@private licenseSection(fileHeader)
+  {@lineComments(fileHeader.copyrightLines)}
+  //
+  {@lineComments(fileHeader.licenseLines)}
 
-  /*
-   * Note: this file is purely for documentation. Any contents are not expected
-   * to be loaded as the JS file.
-   */
+  // Note: this file is purely for documentation. Any contents are not expected
+  // to be loaded as the JS file.
 @end
 
-@private toplevelHeader(message)
-  var {@message.getSimpleName} = {
+@private toplevelHeader(elementDoc)
+  var {@elementDoc.name} = {
 @end
 
-@private subHeader(message)
-  {@message.getSimpleName}: {
+@private semicolon()
+  ;
 @end
 
-@private messageDocument(message, header)
-  @let documentation = context.defaultComments(message)
-    /**
-     @if documentation
-       {@comments(documentation)}
+@private empty()
+
+@end
+
+@private subHeader(elementDoc)
+  {@elementDoc.name}: {
+@end
+
+@private documentMessage(message, header, footer)
+  /**
+   @if message.lines
+     {@comments(message.lines)}
+     @if message.properties
        *
      @end
+   @end
+   @if properties(message)
      {@properties(message)}
-     * @@class
-     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
-     */
-    {@header}
-      // This is for documentation. Actual contents will be loaded by gRPC.
-      @join subMessage : context.filterDocumentingMessages(message) on ",".add(BREAK)
+   @end
+   * @@typedef {@message.name}
+   * @@memberof {@message.packageName}
+   * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
+   */
+  {@header}
+    // This is for documentation. Actual contents will be loaded by gRPC.
+    @join child : message.elementDocs on ",".add(BREAK)
 
-        {@messageDocument(subMessage, subHeader(subMessage))}
-      @end
-      @join subEnum : message.getEnums() on ",".add(BREAK)
-
-        {@enumDocument(subEnum, subHeader(subEnum))}
-      @end
-    # Note that the opening brace should be included in the header.
-    }
-  @end
+      {@documentElement(child, subHeader(child), empty())}
+    @end
+  # Note that the opening brace should be included in the header.
+  }{@footer}
 @end
 
-@private enumDocument(enum, header)
-  @let documentation = context.defaultComments(enum)
-    /**
-     @if documentation
-       {@comments(documentation)}
-       *
-     @end
-     * @@enum {number}
-     */
-    {@header}
-      @join value : enum.getValues() on ",".add(BREAK).add(BREAK)
-        @let valueDoc = context.defaultComments(value)
-          @if documentation
-            /**
-             {@comments(documentation)}
-             */
-          @end
-          {@value.getSimpleName}: {@value.getNumber}
-        @end
-      @end
-    }
-  @end
-@end
+@private documentEnum(enum, header, footer)
+  /**
+   @if enum.lines
+     {@comments(enum.lines)}
+     *
+   @end
+   * @@enum {number}
+   * @@memberof {@enum.packageName}
+   */
+  {@header}
+    @join value : enum.values() on ",".add(BREAK)
+      @if value.lines
 
-@private externalMessageDocument(message)
-  @let documentation = context.defaultComments(message)
-    /**
-     @if documentation
-       {@comments(documentation)}
-       *
-     @end
-     * @@external "{@message.getFullName}"
-     {@properties(message)}
-     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
-     */
-  @end
+        /**
+         {@comments(value.lines)}
+         */
+
+      @end
+      {@value.name}: {@value.number}
+    @end
+  }{@footer}
 @end
 
 @private properties(message)
-  @join field : message.getFields()
-    {@comments(context.fieldPropertyComment(field))}
+  @join property : message.properties
+    * @@property {{@property.typeName}} {@property.paramName}
+    @if propertyComments(property)
+      {@propertyComments(property)}
+    @end
+    *
+  @end
+@end
+
+@private propertyComments(property)
+  @join line : property.lines
+    *   {@line}
+  @end
+@end
+
+@private documentElement(doc, header, footer)
+  @switch doc.type
+  @case "GrpcMessageDocView"
+    {@documentMessage(doc, header, footer)}
+  @case "GrpcEnumDocView"
+    {@documentEnum(doc, header, footer)}
+  @default
+    {@unhandledCase()}
   @end
 @end

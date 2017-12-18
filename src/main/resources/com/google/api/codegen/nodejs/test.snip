@@ -1,0 +1,376 @@
+@extends "nodejs/method_sample.snip"
+@extends "nodejs/common.snip"
+
+@snippet generate(apiTest)
+  {@lineComments(apiTest.fileHeader.copyrightLines)}
+  //
+  {@lineComments(apiTest.fileHeader.licenseLines)}
+
+  'use strict';
+
+  {@header(apiTest)}
+
+  @join testClass : apiTest.testClasses
+    describe('{@testClass.apiClassName}', () => {
+      @join test : testClass.testCases
+        {@testCase(test, testClass, apiTest)}
+
+      @end
+    });
+  @end
+
+  {@helpers(apiTest)}
+
+@end
+
+@private header(apiTest)
+  const assert = require('assert');
+  @if apiTest.hasGrpcStreaming
+    const through2 = require('through2');
+  @end
+
+  const {@apiTest.localPackageName}Module = require('../src');
+
+  var FAKE_STATUS_CODE = 1;
+  var error = new Error();
+  error.code = FAKE_STATUS_CODE;
+@end
+
+@private helpers(apiTest)
+  function mockSimpleGrpcMethod(expectedRequest, response, error) {
+    return function(actualRequest, options, callback) {
+      assert.deepStrictEqual(actualRequest, expectedRequest);
+      if (error) {
+        callback(error);
+      } else if (response) {
+        callback(null, response);
+      } else {
+        callback(null);
+      }
+    };
+  }
+  @if apiTest.hasServerStreaming
+
+    function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
+      return actualRequest => {
+        assert.deepStrictEqual(actualRequest, expectedRequest);
+        var mockStream = through2.obj((chunk, enc, callback) => {
+          if (error) {
+            callback(error);
+          }
+          else {
+            callback(null, response);
+          }
+        });
+        return mockStream;
+      };
+    }
+  @end
+  @if apiTest.hasBidiStreaming
+
+    function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
+      return () => {
+        var mockStream = through2.obj((chunk, enc, callback) => {
+          assert.deepStrictEqual(chunk, expectedRequest);
+          if (error) {
+            callback(error);
+          }
+          else {
+            callback(null, response);
+          }
+        });
+        return mockStream;
+      }
+    }
+  @end
+  @if apiTest.hasLongRunning
+
+    function mockLongRunningGrpcMethod(expectedRequest, response, error) {
+      return request => {
+        assert.deepStrictEqual(request, expectedRequest);
+        var mockOperation = {
+          promise: function() {
+            return new Promise((resolve, reject) => {
+              if (error) {
+                reject(error);
+              }
+              else {
+                resolve([response]);
+              }
+            });
+          }
+        };
+        return Promise.resolve([mockOperation]);
+      };
+    }
+  @end
+@end
+
+@private testCase(test, testClass, apiTest)
+  @switch test.grpcStreamingType
+  @case "NonStreaming"
+    @switch test.clientMethodType
+    @case "RequestObjectMethod"
+      {@requestObjectTestCase(test, testClass, apiTest)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectTestCase(test, testClass, apiTest)}
+    @case "OperationCallableMethod"
+      {@operationTestCase(test, testClass, apiTest)}
+    @default
+      $unhandled case: {@test.clientMethodType.toString}$
+    @end
+  @case "ServerStreaming"
+    {@streamingTestCase(test, testClass, apiTest)}
+  @case "BidiStreaming"
+    {@streamingTestCase(test, testClass, apiTest)}
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private requestObjectTestCase(test, testClass, apiTest)
+  describe('{@test.clientMethodName}', () => {
+    it('invokes {@test.clientMethodName} without error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      @if test.hasReturnValue
+        // Mock response
+        {@initCodeLines(test.mockResponse.initCode)}
+
+      @end
+      // Mock Grpc layer
+      @if test.hasReturnValue
+        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+          request,
+          expectedResponse
+        );
+      @else
+        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request);
+      @end
+
+      @if test.hasReturnValue
+        client.{@test.clientMethodName}(request, (err, response) => {
+          assert.ifError(err);
+          assert.deepStrictEqual(response, expectedResponse);
+          done();
+        });
+      @else
+        client.{@test.clientMethodName}(request, err => {
+          assert.ifError(err);
+          done();
+        });
+      @end
+    });
+
+    {@simpleTestWithError(test, testClass, apiTest)}
+  });
+@end
+
+@private operationTestCase(test, testClass, apiTest)
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} without error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._innerApiCalls.{@test.clientMethodName} = mockLongRunningGrpcMethod(request, expectedResponse);
+
+      client.{@test.clientMethodName}(request).then(responses => {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(responses => {
+        assert.deepStrictEqual(responses[0], expectedResponse);
+        done();
+      }).catch(err => {
+        done(err);
+      });
+    });
+
+    it('invokes {@test.clientMethodName} with error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      // Mock Grpc layer
+      client._innerApiCalls.{@test.clientMethodName} = mockLongRunningGrpcMethod(request, null, error);
+
+      client.{@test.clientMethodName}(request).then(responses => {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(() => {
+        assert.fail();
+      }).catch(err => {
+        {@assertError()}
+        done();
+      });
+    });
+
+    it('has longrunning decoder functions', () => {
+      {@clientInit(testClass, apiTest)}
+      assert(client._descriptors.longrunning.{@test.clientMethodName}.responseDecoder instanceof Function);
+      assert(client._descriptors.longrunning.{@test.clientMethodName}.metadataDecoder instanceof Function);
+    });
+  });
+@end
+
+@private pagedRequestObjectTestCase(test, testClass, apiTest)
+  describe('{@test.clientMethodName}', () => {
+    it('invokes {@test.clientMethodName} without error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._innerApiCalls.{@test.clientMethodName} = (actualRequest, options, callback) => {
+        assert.deepStrictEqual(actualRequest, request);
+        @join pagedResponse : test.pageStreamingResponseViews
+          callback(null, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
+        @end
+      };
+
+      client.{@test.clientMethodName}(request, (err, response) => {
+        assert.ifError(err);
+        @join pagedResponse : test.pageStreamingResponseViews
+          assert.deepStrictEqual(response, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
+        @end
+        done();
+      });
+    });
+
+    {@simpleTestWithError(test, testClass, apiTest)}
+  });
+@end
+
+@private streamingTestCase(test, testClass, apiTest)
+  describe('{@test.clientMethodName}', () => {
+    it('invokes {@test.clientMethodName} without error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client._innerApiCalls.{@test.clientMethodName} = mockServerStreamingGrpcMethod(request, expectedResponse);
+      @case "BidiStreaming"
+        client._innerApiCalls.{@test.clientMethodName} = mockBidiStreamingGrpcMethod(request, expectedResponse);
+      @end
+
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', response => {
+          assert.deepStrictEqual(response, expectedResponse);
+          done();
+        });
+        stream.on('error', err => {
+          done(err);
+        });
+
+        stream.write();
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', response => {
+          assert.deepStrictEqual(response, expectedResponse);
+          done();
+        }).on('error', err => {
+          done(err);
+        });
+
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
+    });
+
+    it('invokes {@test.clientMethodName} with error', done => {
+      {@commonInit(test, testClass, apiTest)}
+
+      // Mock Grpc layer
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client._innerApiCalls.{@test.clientMethodName} = mockServerStreamingGrpcMethod(request, null, error);
+      @case "BidiStreaming"
+        client._innerApiCalls.{@test.clientMethodName} = mockBidiStreamingGrpcMethod(request, null, error);
+      @end
+
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', () => {
+          assert.fail();
+        });
+        stream.on('error', err =>){
+          {@assertError()}
+          done();
+        });
+
+        stream.write();
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', () => {
+          assert.fail();
+        }).on('error', err => {
+          {@assertError()}
+          done();
+        });
+
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
+    });
+  });
+@end
+
+@private simpleTestWithError(test, testClass, apiTest)
+  it('invokes {@test.clientMethodName} with error', done => {
+    {@commonInit(test, testClass, apiTest)}
+
+    // Mock Grpc layer
+    client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+      request,
+      null,
+      error
+    );
+
+    @if test.hasReturnValue
+      client.{@test.clientMethodName}(request, (err, response) => {
+        {@assertError()}
+        assert(typeof response === 'undefined');
+        done();
+      });
+    @else
+      client.{@test.clientMethodName}(request, err => {
+        {@assertError()}
+        done();
+      });
+    @end
+  });
+@end
+
+@private commonInit(test, testClass, apiTest)
+  {@clientInit(testClass, apiTest)}
+
+  // Mock request
+  {@initCodeLines(test.initCode)}
+@end
+
+@private clientInit(testClass, apiTest)
+  @if apiTest.fileHeader.hasVersion
+    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
+  @else
+    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
+  @end
+@end
+
+@private assertError()
+  assert(err instanceof Error);
+  assert.equal(err.code, FAKE_STATUS_CODE);
+@end

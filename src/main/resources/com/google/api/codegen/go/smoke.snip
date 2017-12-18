@@ -1,0 +1,76 @@
+@extends "go/header.snip"
+@extends "go/initcode.snip"
+
+@snippet generate(view)
+  {@headerComment(view.fileHeader)}
+
+  package {@view.fileHeader.localPackageName}
+
+  import (
+    {@renderImportSection(view.fileHeader.importSection)}
+  )
+
+  import (
+    "strconv"
+    "testing"
+    "time"
+
+    "cloud.google.com/go/internal/testutil"
+    "golang.org/x/net/context"
+    "google.golang.org/api/iterator"
+    "google.golang.org/api/option"
+  )
+
+  var _ = iterator.Done
+  var _ = strconv.FormatUint
+  var _ = time.Now
+
+  func {@view.name}(t *testing.T) {
+    if testing.Short() {
+      t.Skip("skipping smoke test in short mode")
+    }
+    ctx := context.Background()
+    ts := testutil.TokenSource(ctx, DefaultAuthScopes()...)
+    if ts == nil {
+      t.Skip("Integration tests skipped. See CONTRIBUTING.md for details")
+    }
+
+    projectId := testutil.ProjID()
+    _ = projectId
+
+    c, err := {@view.method.serviceConstructorName}(ctx, option.WithTokenSource(ts))
+    if err != nil {
+      t.Fatal(err)
+    }
+
+    {@initCode(view.method.initCode)}
+
+    @switch view.method.clientMethodType
+    @case "PagedRequestObjectMethod"
+      iter := {@call(view.method)}
+      if _, err := iter.Next(); err != nil && err != iterator.Done {
+        t.Error(err)
+      }
+    @case "RequestObjectMethod"
+      @if view.method.hasReturnValue
+        if _, err := {@call(view.method)}; err != nil {
+          t.Error(err)
+        }
+      @else
+        if err := {@call(view.method)}; err != nil {
+          t.Error(err)
+        }
+      @end
+    @end
+  }
+@end
+
+@private call(method)
+  c.{@method.clientMethodName}(ctx, {@args(method.initCode.fieldSettings)})
+@end
+
+@private args(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end

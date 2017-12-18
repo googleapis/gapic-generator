@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.api.client.util.Joiner;
 import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
 import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +41,23 @@ public class Name {
   }
 
   /**
+   * Creates a Name from a String that is either a sequence of underscore strings or a sequence of
+   * camel strings. The first letter of the String must be lowercase.
+   *
+   * @throws IllegalArgumentException if any of the strings do not follow the camel format or
+   *     contain characters that are not underscores.
+   */
+  public static Name anyLower(String... pieces) {
+    Name name;
+    try {
+      name = Name.from(pieces);
+    } catch (IllegalArgumentException e) {
+      name = Name.lowerCamel(pieces);
+    }
+    return name;
+  }
+
+  /**
    * Creates a Name from a sequence of upper-underscore strings.
    *
    * @throws IllegalArgumentException if any of the strings contain any characters that are not
@@ -61,16 +78,7 @@ public class Name {
    * @throws IllegalArgumentException if any of the strings do not follow the camel format.
    */
   public static Name anyCamel(String... pieces) {
-    List<NamePiece> namePieces = new ArrayList<>();
-    for (String piece : pieces) {
-      validateCamel(piece, CheckCase.NO_CHECK);
-      CaseFormat format = CaseFormat.LOWER_CAMEL;
-      if (Character.isUpperCase(piece.charAt(0))) {
-        format = CaseFormat.UPPER_CAMEL;
-      }
-      namePieces.add(new NamePiece(piece, format));
-    }
-    return new Name(namePieces);
+    return camelInternal(CheckCase.NO_CHECK, AcronymMode.CAMEL_CASE, pieces);
   }
 
   /**
@@ -79,12 +87,7 @@ public class Name {
    * @throws IllegalArgumentException if any of the strings do not follow the lower-camel format.
    */
   public static Name lowerCamel(String... pieces) {
-    List<NamePiece> namePieces = new ArrayList<>();
-    for (String piece : pieces) {
-      validateCamel(piece, CheckCase.LOWER);
-      namePieces.add(new NamePiece(piece, CaseFormat.LOWER_CAMEL));
-    }
-    return new Name(namePieces);
+    return camelInternal(CheckCase.LOWER, AcronymMode.CAMEL_CASE, pieces);
   }
 
   /**
@@ -93,19 +96,32 @@ public class Name {
    * @throws IllegalArgumentException if any of the strings do not follow the upper-camel format.
    */
   public static Name upperCamel(String... pieces) {
-    return upperCamelInternal(AcronymMode.CAMEL_CASE, pieces);
+    return camelInternal(CheckCase.UPPER, AcronymMode.CAMEL_CASE, pieces);
+  }
+
+  public static Name anyCamelKeepUpperAcronyms(String... pieces) {
+    return camelInternal(CheckCase.NO_CHECK, AcronymMode.UPPER_CASE, pieces);
   }
 
   public static Name upperCamelKeepUpperAcronyms(String... pieces) {
-    return upperCamelInternal(AcronymMode.UPPER_CASE, pieces);
+    return camelInternal(CheckCase.UPPER, AcronymMode.UPPER_CASE, pieces);
   }
 
-  private static Name upperCamelInternal(AcronymMode acronymMode, String... pieces) {
+  private static CaseFormat getCamelCaseFormat(String piece) {
+    if (Character.isUpperCase(piece.charAt(0))) {
+      return CaseFormat.UPPER_CAMEL;
+    } else {
+      return CaseFormat.LOWER_CAMEL;
+    }
+  }
+
+  private static Name camelInternal(
+      CheckCase checkCase, AcronymMode acronymMode, String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
-      validateCamel(piece, CheckCase.UPPER);
+      validateCamel(piece, checkCase);
       for (SubNamePiece subPiece : CommonAcronyms.splitByUpperAcronyms(piece)) {
-        CaseFormat caseFormat = CaseFormat.UPPER_CAMEL;
+        CaseFormat caseFormat = getCamelCaseFormat(subPiece.namePieceString());
         CasingMode casingMode = CasingMode.NORMAL;
         if (subPiece.type().equals(NamePieceCasingType.UPPER_ACRONYM)) {
           caseFormat = CaseFormat.UPPER_UNDERSCORE;
@@ -241,6 +257,11 @@ public class Name {
   /** Returns the name in human readable form, useful in comments. */
   public String toPhrase() {
     return toLowerUnderscore().replace('_', ' ');
+  }
+
+  /** Returns the name in lower case, with a custom separator between components. */
+  public String toSeparatedString(String separator) {
+    return toLowerUnderscore().replace("_", separator);
   }
 
   /**

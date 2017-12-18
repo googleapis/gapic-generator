@@ -1,63 +1,46 @@
 @extends "py/common.snip"
 
 # Generate code samples for method-level documentation.
-@snippet generateMethodSampleCode(docConfig)
-  @let prompt = ">>>", \
-       ApiName = docConfig.getApiName, \
-       initCode = {@initCode(prompt, docConfig.getInitCode)}
-    Example:
-      @join import : docConfig.getAppImports
-        {@prompt} {@import}
+@snippet sampleCode(apiMethod)
+  Example:
+      @join line : util.getDocLines(sampleCode_(apiMethod))
+          {@util.exampleLine(line)}
       @end
-      @if docConfig.isPageStreaming
-        {@prompt} from google.gax import CallOptions, INITIAL_PAGE
-      @end
-      {@prompt} api = {@context.upperCamelToLowerUnderscore(ApiName)}.{@ApiName}()
-      @if initCode
-        {@initCode}
-        @if docConfig.isRequestGrpcStreaming
-          {@prompt} requests = [request]
-        @end
-      @end
-      @if docConfig.isResponseGrpcStreaming
-        {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
-        {@prompt}   # process element
-        {@prompt}   pass
-      @else
-        @if docConfig.isPageStreaming
-          {@prompt}
-          {@prompt} # Iterate over all results
-          {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
-          {@prompt}   # process element
-          {@prompt}   pass
-          {@prompt}
-          {@prompt} # Or iterate over results one page at a time
-          {@prompt} for page in {@methodCallSampleCode(docConfig, {@TRUE})}:
-          {@prompt}   for element in page:
-          {@prompt}     # process element
-          {@prompt}     pass
-        @else
-          {@prompt} {@callResultSampleCode(docConfig.getReturnType)}\
-          {@methodCallSampleCode(docConfig, {@FALSE})}
-        @end
-      @end
+@end
+
+@snippet sampleCode_(apiMethod)
+  {@importList(apiMethod.initCode.importSection.appImports)}
+
+  client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+
+  @if apiMethod.initCode.lines
+    {@initCode(apiMethod.initCode)}
+
+  @end
+  @switch apiMethod.type.toString
+  @case "OptionalArrayMethod"
+    {@optionalArrayMethodSampleCode(apiMethod)}
+  @case "PagedOptionalArrayMethod"
+    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+  @default
+    {@unhandledCase()}
   @end
 @end
 
-# Helper functions for generateMethodSampleCode()
+# Helper functions for sampleCode()
 
 # Generate argument initialization code for API call
-@private initCode(prompt, initCodeSpec)
-  @join line : initCodeSpec.getLines()
-    @switch line.getLineType.toString()
+@snippet initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
     @case "StructureInitLine"
-      {@prompt} {@initLineStructure(line)}
+      {@initLineStructure(line)}
     @case "ListInitLine"
-      {@prompt} {@initLineList(line)}
+      {@initLineList(line)}
     @case "SimpleInitLine"
-      {@prompt} {@initLineSimple(line)}
+      {@initLineSimple(line)}
     @case "MapInitLine"
-      {@prompt} {@initLineMap(line)}
+      {@initLineMap(line)}
     @default
       {@unhandledCase()}
     @end
@@ -66,119 +49,161 @@
 
 # Generate a Protobuf message argument
 @private initLineStructure(line)
-  @let messageType = line.getType.getMessageType, \
-       initLineStructureClass = importHandler.elementPath(messageType, {@FALSE})
-    {@formattedIdentifier(line)} = {@initLineStructureClass}(\
-      {@initLineStructureArgs(line)}\
-    )
-  @end
+  {@line.identifier} = {{@fieldSettingKwargs(line.fieldSettings)}}
 @end
 
 # Helper method for initLineStructure()
-@private initLineStructureArgs(line)
-  @join fieldSetting : line.getFieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
-  @end
+@private fieldSettingKwargs(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        '{@fieldSetting.fieldName}': {@fieldSetting.identifier}
+    @end
 @end
 
 # Generate a List argument
 @private initLineList(line)
-  {@formattedIdentifier(line)} = [{@initList(line)}]
+  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
 @end
 
 # Generate a Map argument
 @private initLineMap(line)
-  {@formattedIdentifier(line)} = {{@initMap(line)}}
-@end
-
-# Helper method for initLineList()
-@private initList(line)
-  @join identifier : line.getElementIdentifiers on ", "
-    {@identifier.toLowerUnderscore}
-  @end
+  {@line.identifier} = {{@renderInitMap(line)}}
 @end
 
 # Helper method for initLineMap()
-@private initMap(line)
-  @join key : line.getElementIdentifierKeys vertical on ","
-    @let identifierValue = line.getElementIdentifierValue(key)
-      {@context.renderPrimitiveValue(line.getKeyType, key)}: {@identifierValue.toLowerUnderscore}
-    @end
+@private renderInitMap(line)
+  @join entry : line.initEntries vertical on ","
+    {@entry.key}: {@entry.valueString}
   @end
 @end
 
 # Generate a simple argument
 @private initLineSimple(line)
-  {@formattedIdentifier(line)} = {@initValue(line)}
-@end
-
-# Properly format an identifier for this language
-@private formattedIdentifier(lineOrFieldSetting)
-  {@context.python.wrapIfKeywordOrBuiltIn(lineOrFieldSetting.getIdentifier.toLowerUnderscore)}
+  {@line.identifier} = {@renderInitValue(line.initValue)}
 @end
 
 # Value for simple argument
-@private initValue(line)
-  @let metadata = line.getInitValueConfig
-    @if metadata.hasFormattingConfig()
-      api.{@formatResourceFunctionName(metadata.getSingleResourceNameConfig)}(\
-        {@formatResourceFunctionArgs(metadata.getSingleResourceNameConfig)}\
-      )
-    @else
-      {@context.defaultValue(line.getType, importHandler)}
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+  @default
+    {@unhandledCase()}
+  @end
+@end
+
+@private optionalArrayMethodSampleCode(apiMethod)
+  @switch apiMethod.grpcStreamingType.toString
+  @case "NonStreaming"
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod)}
+  @case "ServerStreaming"
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod)}
+  @case "ClientStreaming"
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod)}
+  @case "BidiStreaming"
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod)}
+  @default
+    {@unhandledCase()}
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod)
+  {@singularResponseSampleCode(apiMethod)}
+@end
+
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod)
+  {@responseStreamingSampleCode(apiMethod)}
+@end
+
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod)
+  requests = [request]
+  {@singularResponseSampleCode(apiMethod)}
+@end
+
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod)
+  requests = [request]
+  {@responseStreamingSampleCode(apiMethod)}
+@end
+
+@private pagedOptionalArrayMethodSampleCode(apiMethod)
+
+  @# Iterate over all results
+  {@responseStreamingSampleCode(apiMethod)}
+
+  @# Or iterate over results one page at a time
+  for page in {@pagedMethodCallSampleCode(apiMethod)}:
+      for element in page:
+          @# process element
+          pass
+@end
+
+@private responseStreamingSampleCode(apiMethod)
+  for element in {@methodCallSampleCode(apiMethod)}:
+      @# process element
+      pass
+@end
+
+@private singularResponseSampleCode(apiMethod)
+  @if apiMethod.hasReturnValue
+    response = {@methodCallSampleCode(apiMethod)}
+    @if apiMethod.isLongRunningOperation
+
+      def callback(operation_future):
+          @# Handle result.
+          result = operation_future.result()
+
+      response.add_done_callback(callback)
+
+      @# Handle metadata.
+      metadata = response.metadata()
     @end
-  @end
-@end
-
-# Format arguments for resource function call in sample
-@private formatResourceFunctionArgs(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    '[{@context.lowerUnderscoreToUpperUnderscore(param)}]'
-  @end
-@end
-
-# Optionally render the return value from the API method call
-@private callResultSampleCode(returnType)
-  @if returnType.isEmpty
   @else
-    response = {@""}
+    {@methodCallSampleCode(apiMethod)}
   @end
 @end
 
 # Render the API method call itself
-@private methodCallSampleCode(docConfig, isPageStreaming)
-  @if docConfig.isRequestGrpcStreaming()
-    api.{@methodCallName(docConfig)}(requests)
+@private methodCallSampleCode(apiMethod)
+  @if apiMethod.hasRequestStreaming
+    client.{@apiMethod.name}(requests)
   @else
-    @let argFields = {@docConfig.getInitCode.getArgFields}
-      api.{@methodCallName(docConfig)}(\
-        {@argList(argFields)}\
-        {@pageStreamingArg(argFields, isPageStreaming)}\
-      )
-    @end
+    client.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode)}\
+    )
   @end
 @end
 
-# Optionally render the options argument for page streaming
-@private pageStreamingArg(argFields, isPageStreaming)
-  @if isPageStreaming
-    @if argFields.isEmpty
-    @else
-      , {@""}
-    @end
-    options=CallOptions(page_token=INITIAL_PAGE)
-  @else
-  @end
-@end
-
-# Render the name of the method call
-@private methodCallName(docConfig)
-  {@docConfig.getMethodName}
+# Render the API method call for page streaming
+@private pagedMethodCallSampleCode(apiMethod)
+  client.{@apiMethod.name}(\
+    {@sampleMethodCallArgListAndComma(apiMethod.initCode)}\
+    options=CallOptions(page_token=INITIAL_PAGE))
 @end
 
 # Generate comma-separated argument list
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
+@private varList(params)
+  @join param : params on ", "
+    {@param}
+  @end
+@end
+
+@snippet sampleMethodCallArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}={@fieldSetting.identifier}
+    @end
+  @end
+@end
+
+@private sampleMethodCallArgListAndComma(initCode)
+  @if initCode.fieldSettings
+    {@sampleMethodCallArgList(initCode)}, {@""}
   @end
 @end

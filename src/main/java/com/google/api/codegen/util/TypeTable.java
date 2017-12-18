@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,8 @@ public interface TypeTable extends TypeNameConverter {
 
   /** Return a new TypeTable with the same concrete type as this one. */
   TypeTable cloneEmpty();
+
+  TypeTable cloneEmpty(String packageName);
 
   /**
    * Computes the nickname for the given full name, adds the full name to the import set, and
@@ -57,4 +59,7 @@ public interface TypeTable extends TypeNameConverter {
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();
+
+  /** Returns the imports accumulated so far, including implicit imports. */
+  Map<String, TypeAlias> getAllImports();
 }

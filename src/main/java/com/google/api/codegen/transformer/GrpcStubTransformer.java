@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class GrpcStubTransformer {
-  public List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
+  public List<GrpcStubView> generateGrpcStubs(InterfaceContext context) {
     List<GrpcStubView> stubs = new ArrayList<>();
-    Map<String, Interface> interfaces = new TreeMap<>();
-    Map<String, List<Method>> methods = new TreeMap<>();
-    for (Method method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+    Map<String, InterfaceModel> interfaces = new TreeMap<>();
+    Map<String, List<MethodModel>> methods = new TreeMap<>();
+    for (MethodModel method : context.getSupportedMethods()) {
+      InterfaceModel targetInterface = context.asRequestMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
       if (methods.containsKey(targetInterface.getFullName())) {
         methods.get(targetInterface.getFullName()).add(method);
@@ -38,29 +38,31 @@ public class GrpcStubTransformer {
       }
     }
 
-    for (Map.Entry<String, Interface> entry : interfaces.entrySet()) {
-      Interface service = entry.getValue();
-      stubs.add(generateGrpcStub(context, service, methods.get(entry.getKey())));
+    for (Map.Entry<String, InterfaceModel> entry : interfaces.entrySet()) {
+      InterfaceModel apiInterface = entry.getValue();
+      stubs.add(generateGrpcStub(context, apiInterface, methods.get(entry.getKey())));
     }
 
     return stubs;
   }
 
-  public GrpcStubView generateGrpcStub(
-      SurfaceTransformerContext context, Interface targetInterface, List<Method> methods) {
+  GrpcStubView generateGrpcStub(
+      InterfaceContext context, InterfaceModel targetInterface, List<MethodModel> methods) {
     SurfaceNamer namer = context.getNamer();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
 
     stub.name(namer.getStubName(targetInterface));
     stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
     stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
-    String grpcClientTypeName = namer.getGrpcClientTypeName(targetInterface);
-    stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
+    String grpcClientTypeName =
+        namer.getAndSaveNicknameForGrpcClientTypeName(
+            context.getImportTypeTable(), targetInterface);
+    stub.grpcClientTypeName(grpcClientTypeName);
     stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
     stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
 
     List<String> methodNames = new ArrayList<>();
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       methodNames.add(
           namer.getApiMethodName(method, context.getMethodConfig(method).getVisibility()));
     }
@@ -68,7 +70,7 @@ public class GrpcStubTransformer {
 
     stub.stubMethodsArrayName(namer.getStubMethodsArrayName(targetInterface));
     stub.namespace(namer.getNamespace(targetInterface));
-    stub.protoFileName(targetInterface.getFile().getSimpleName());
+    stub.protoFileName(targetInterface.getFileSimpleName());
 
     return stub.build();
   }

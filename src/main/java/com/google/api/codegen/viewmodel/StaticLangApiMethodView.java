@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,8 @@ import javax.annotation.Nullable;
  * type of static api method; the type is maintained as a value of the ClientMethodType enum.
  */
 @AutoValue
-public abstract class StaticLangApiMethodView implements ApiMethodView {
+public abstract class StaticLangApiMethodView
+    implements ApiMethodView, Comparable<StaticLangApiMethodView> {
   public abstract ClientMethodType type();
 
   public abstract String apiClassName();
@@ -42,6 +43,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   public abstract String serviceResponseTypeName();
 
   public abstract String responseTypeName();
+
+  public abstract String visibility();
 
   public abstract String name();
 
@@ -87,7 +90,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable
   public abstract LongRunningOperationDetailView operationMethod();
 
-  public abstract Builder toBuilder();
+  public abstract String releaseLevelAnnotation();
+
+  public abstract List<HeaderRequestParamView> headerRequestParams();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
@@ -112,6 +117,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder serviceResponseTypeName(String val);
 
     public abstract Builder responseTypeName(String responseTypeName);
+
+    public abstract Builder visibility(String visibility);
 
     public abstract Builder name(String name);
 
@@ -147,6 +154,15 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
+    public abstract Builder releaseLevelAnnotation(String value);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
     public abstract StaticLangApiMethodView build();
+  }
+
+  @Override
+  public int compareTo(StaticLangApiMethodView o) {
+    return this.name().compareTo(o.name());
   }
 }

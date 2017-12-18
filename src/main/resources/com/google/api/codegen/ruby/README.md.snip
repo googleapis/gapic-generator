@@ -1,0 +1,24 @@
+@extends "readme.snip"
+@extends "ruby/method_sample.snip"
+
+@snippet generate(metadata)
+  {@generateReadme(metadata.readmeMetadata)}
+
+@end
+
+@private generateReadme(metadata)
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@end
+
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+    {@sampleCodeWithTopLevelImport(method)}
+    ```
+  @end
+@end
+
+@private installationLines(metadata)
+  $ gem install {@metadata.identifier}
+@end

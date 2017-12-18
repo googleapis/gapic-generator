@@ -1,0 +1,37 @@
+@snippet generate(metadata)
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  apply plugin: 'java'
+
+  description = 'GAPIC library for {@metadata.identifier}'
+  group = "com.google.api"
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+
+  dependencies {
+    compile project(":{@metadata.protoPackageName}")
+    compile libraries.gax, libraries.gaxGrpc
+    testCompile project(":{@metadata.grpcPackageName}")
+    @join dependency : metadata.protoPackageTestDependencies
+      testCompile project(":{@dependency.name}")
+    @end
+  }
+
+  sourceSets {
+    main {
+      java {
+        srcDir 'src/main/java'
+      }
+    }
+  }
+
+@end

@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +23,7 @@ import com.google.api.tools.framework.model.TypeRef;
  *
  * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */
-public interface ModelTypeFormatter {
-  /** Get the full name for the given short name, using the default package. */
-  String getImplicitPackageFullNameFor(String shortName);
-
+public interface ModelTypeFormatter extends TypeFormatter {
   /** Get the full name for the given type. */
   String getFullNameFor(TypeRef type);
 

@@ -1,527 +1,361 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-@snippet generateFilename(service)
-    {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.py
+@snippet generate(xapiClass)
+    {@licenseSection(xapiClass.fileHeader)}
+
+    {@moduleDocstring(xapiClass)}
+    {@renderImportSection(xapiClass.fileHeader.importSection)}
+
+
+    _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
+        '{@xapiClass.gapicPackageName}',
+    ).version
+
+
+    {@serviceClass(xapiClass)}
 @end
 
-@snippet generateBody(service)
+
+@private moduleDocstring(xapiClass)
+    """Accesses the {@xapiClass.servicePhraseName}."""
 @end
 
-@snippet generateModule(service, body, imports)
-    {@licenseSection(service)}
 
-    {@moduleDocstring(service)}
+@private serviceClass(xapiClass)
+    class {@xapiClass.name}(object):
+        @if xapiClass.doc.lines
+            {@documentation(xapiClass.doc)}
 
-    {@importSection(imports)}
-
-
-    @if aliasSection(service)
-        {@aliasSection(service)}
-
-
-    @end
-    {@serviceClass(service)}
-@end
-
-@private licenseSection(service)
-    @# Copyright 2016 Google Inc. All rights reserved.
-    @#
-    @# Licensed under the Apache License, Version 2.0 (the "License");
-    @# you may not use this file except in compliance with the License.
-    @# You may obtain a copy of the License at
-    @#
-    @# http://www.apache.org/licenses/LICENSE-2.0
-    @#
-    @# Unless required by applicable law or agreed to in writing, software
-    @# distributed under the License is distributed on an "AS IS" BASIS,
-    @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    @# See the License for the specific language governing permissions and
-    @# limitations under the License.
-    @#
-    @# EDITING INSTRUCTIONS
-    @# This file was generated from the file
-    @# https://github.com/google/googleapis/blob/master/{@service.getFile().getSimpleName()},
-    @# and updates to that file get reflected here through a refresh process.
-    @# For the short term, the refresh process will only be runnable by Google engineers.
-    @#
-    @# The only allowed edits are to method and file documentation. A 3-way
-    @# merge preserves those additions if the generated source changes.
-@end
-
-@private moduleDocstring(service)
-    """Accesses the {@service.getParent.getFullName} {@service.getSimpleName} API."""
-@end
-
-@private importSection(imports)
-    @join import : imports
-        {@import}
-    @end
-@end
-
-@private aliasSection(service)
-    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            bundling = context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)), \
-            pageStreaming = context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-        @if bundling
-            _BundleDesc = google.gax.BundleDescriptor
         @end
-        # Note that this should be inside the page streaming conditional. But a snippets bug
-        # causes the indentation to render improperly if so. The result is that sometimes we
-        # generate too much whitespace, which can be removed by yapf in the pipeline.
-        {@BREAK}
-        @if pageStreaming
+        {@constantSection(xapiClass)}
 
-            _PageDesc = google.gax.PageDescriptor
+        @if xapiClass.pathTemplates
+            {@pathTemplateSection(xapiClass)}
+
+        @end
+        {@initMethodSection(xapiClass)}
+
+        {@serviceMethodsSection(xapiClass)}
+
+@end
+
+@private documentation(doc)
+    @if doc.remainingLines
+        """
+        @join line : doc.lines
+            {@line}
+        @end
+        """
+    @else
+        """{@doc.firstLine}"""
+    @end
+@end
+
+@private constantSection(xapiClass)
+    SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
+    """The default address of the service."""
+
+    @# The scopes needed to make gRPC calls to all of the methods defined in
+    @# this service
+    _DEFAULT_SCOPES = (
+        @join auth_scope : xapiClass.authScopes on BREAK
+            '{@auth_scope}',
+        @end
+    )
+
+    @# The name of the interface for this client. This is the key used to find
+    @# method configuration in the client_config dictionary.
+    _INTERFACE_NAME = '{@xapiClass.interfaceKey}'
+@end
+
+@private constructDefaults(xapiClass)
+    defaults = api_callable.construct_settings(
+        '{@xapiClass.interfaceKey}',
+        {@xapiClass.clientConfigName}.config,
+        client_config,
+        config.STATUS_CODE_NAMES,
+        metrics_headers=metrics_headers,
+        @if xapiClass.hasPageStreamingMethods
+            page_descriptors=self._PAGE_DESCRIPTORS,
+        @end
+    )
+@end
+
+@private initMethodSection(xapiClass)
+    def __init__(self, channel=None, credentials=None,
+            client_config={@xapiClass.clientConfigName}.config,
+            client_info=None):
+        """Constructor.
+
+        Args:
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
+            client_config (dict): A dictionary of call options for each
+                method. If not specified, the default configuration is used.
+            client_info (google.api_core.gapic_v1.client_info.ClientInfo):
+                The client info used to send a user-agent string along with
+                API requests. If ``None``, then default info will be used.
+                Generally, you only need to set this if you're developing
+                your own client library.
+        """
+        # gRPC channel & client stub initialization.
+        @# If both `channel` and `credentials` are specified, raise an
+        @# exception (channels come with credentials baked in already).
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'The `channel` and `credentials` arguments to {} are mutually '
+                'exclusive.'.format(self.__class__.__name__),
+            )
+
+        @# Create the channel.
+        if channel is None:
+            channel = google.api_core.grpc_helpers.create_channel(
+                self.SERVICE_ADDRESS,
+                credentials=credentials,
+                scopes=self._DEFAULT_SCOPES,
+            )
+
+        @# Create the gRPC stubs.
+        @join stub : xapiClass.stubs
+            self.{@stub.name} = (
+                {@stub.grpcClientTypeName}(channel))
+        @end
+
+        @if xapiClass.hasLongRunningOperations
+            @# Operations client for methods that return long-running operations
+            @# futures.
+            self.operations_client = (
+                google.api_core.operations_v1.OperationsClient(channel))
+        @end
+
+        # Client information initialization.
+        if client_info is None:
+            client_info = (
+                google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
+        client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+
+        @# Parse out the default settings for retry and timeout for each RPC
+        @# from the client configuration.
+        @# (Ordinarily, these are the defaults specified in the `*_config.py`
+        @# file next to this one.)
+        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+            client_config['interfaces'][self._INTERFACE_NAME],
+        )
+
+        @# Write the "inner API call" methods to the class.
+        @# These are wrapped versions of the gRPC stub methods, with retry and
+        @# timeout configuration applied, called by the public methods on
+        @# this class.
+        @join apiMethod : xapiClass.apiMethods
+            self._{@apiMethod.name} = google.api_core.gapic_v1.method.wrap_method(
+                self.{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
+                default_retry=method_configs['{@apiMethod.grpcMethodName}'].retry,
+                default_timeout=method_configs['{@apiMethod.grpcMethodName}'].timeout,
+                client_info=client_info,
+            )
+        @end
+@end
+
+@private pathTemplateSection(xapiClass)
+    @join function : xapiClass.formatResourceFunctions
+
+        {@createResourceFunction(function)}
+    @end
+@end
+
+@private createResourceFunction(function)
+    @@classmethod
+    def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
+        """Return a fully-qualified {@function.entityName} string."""
+        return google.api_core.path_template.expand(
+            '{@function.pattern}',
+            {@createRenderParams(function.resourceIdParams)}
+        )
+@end
+
+@private createResourceFunctionParams(params)
+    @join param : params on ", "
+        {@param.name}
+    @end
+@end
+
+@private createRenderParams(params)
+    @join param: params on BREAK
+        {@param.templateKey}={@param.name},
+    @end
+@end
+
+@private methodComments(apiMethod, apiMethodDoc)
+    """
+    @join line : util.trimDocs(apiMethodDoc.mainDocLines)
+        {@line}
+    @end
+
+    @if apiMethod.hasRequestStreaming
+        EXPERIMENTAL: This method interface might change in the future.
+
+    @end
+    {@sampleCode(apiMethod)}
+
+    Args:
+        @join paramDoc : apiMethodDoc.paramDocs
+            @if paramDoc.lines
+                {@paramDoc.paramName} ({@paramDoc.typeName}): {@paramDoc.firstLine}
+                    @join line : paramDoc.remainingLines
+                        {@line}
+                    @end
+            @else
+                {@paramDoc.paramName} ({@paramDoc.typeName})
+            @end
+        @end
+    @if apiMethodDoc.returnsDocLines
+
+        Returns:
+            @join line : apiMethodDoc.returnsDocLines
+                  {@line}
+            @end
+    @end
+
+    Raises:
+        @join line : apiMethodDoc.throwsDocLines
+            {@line}
+        @end
+    """
+@end
+
+@private serviceMethodsSection(xapiClass)
+    @# Service calls
+    @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+        {@flattenedMethod(apiMethod)}
+    @end
+@end
+
+@private callLine(apiMethod)
+    @if apiMethod.isLongRunningOperation
+        operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+        return google.api_core.operation.from_gapic(
+            operation,
+            self.operations_client,
+            {@apiMethod.longRunningView.operationPayloadTypeName},
+            metadata_type={@apiMethod.longRunningView.metadataTypeName},
+        )
+    @else
+        @switch apiMethod.type
+        @case "OptionalArrayMethod"
+            @if apiMethod.hasReturnValue
+                return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+            @else
+                self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+            @end
+        @case "PagedOptionalArrayMethod"
+            iterator = google.api_core.page_iterator.GRPCIterator(
+                client=None,
+                method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
+                request={@apiMethod.requestVariableName},
+                items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
+                request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
+                response_token_field='{@apiMethod.pageStreamingView.responseTokenFieldName}',
+            )
+            return iterator
+        @default
+            {@unhandledCase()}
         @end
     @end
 @end
 
-@private serviceClass(service)
-    @let path_templates = {@pathTemplateSection(service)}, \
-         documentation = {@defaultComments(service)}
-        class {@context.getApiWrapperName(service)}(object):
-            @if documentation
-                {@documentation}
+@private optionalParams(apiMethod)
+    @if apiMethod.headerRequestParams
+        , retry=retry, timeout=timeout, metadata=[routing_header]
+    @else
+        , retry=retry, timeout=timeout
+    @end
+@end
+
+@private flattenedMethod(apiMethod)
+    def {@apiMethod.name}(
+            {@renderMethodParams(apiMethod.methodParams)}):
+        {@methodComments(apiMethod, apiMethod.doc)}
+        @if apiMethod.isSingularRequestMethod
+            @if apiMethod.oneofParams
+                {@checkOneOfParams(apiMethod.oneofParams)}
 
             @end
-            {@constantSection(service)}
+            @if apiMethod.optionalRequestObjectParamsNoPageToken
+                @if apiMethod.requiredRequestObjectParams
+                    request = {@apiMethod.requestTypeName}(
+                        {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
+                        {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)},
+                    )
+                @else
+                    request = {@apiMethod.requestTypeName}(
+                        {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)},
+                    )
+                @end
+            @else
+                @if apiMethod.requiredRequestObjectParams
+                    request = {@apiMethod.requestTypeName}(
+                        {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
+                    )
+                @else
+                    request = {@apiMethod.requestTypeName}()
+                @end
+            @end
 
-            @if path_templates
-                {@path_templates}
+            @if apiMethod.headerRequestParams
+
+                routing_header = google.api_core.gapic_v1.routing_header(
+                    [{@routingHeader(apiMethod.headerRequestParams)}],
+                )
 
             @end
-            {@initMethodSection(service)}
+        @end
+        {@callLine(apiMethod)}
+@end
 
-            {@serviceMethodsSection(service)}
-
+@private renderMethodParams(params)
+    @join param : params on ",".add(BREAK)
+        @if param.defaultValue
+            {@param.name}={@param.defaultValue}
+        @else
+            {@param.name}
+        @end
     @end
 @end
 
-@private constantSection(service)
-    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}'
-        """The default address of the service."""
-
-        DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
-        """The default port of the service."""
-
-        _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
-
-        _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-
-            _PAGE_DESCRIPTORS = {
-                @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service)) on {@", "}.add(BREAK)
-                    @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-                         requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-                         responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-                         resources = pageStreaming.getResourcesFieldName
-                        '{@methodName(method)}': _PageDesc(
-                            '{@requestToken}',
-                            '{@responseToken}',
-                            '{@resources}'
-                        )
-                    @end
-                @end
-            }
-        @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-
-            _BUNDLE_DESCRIPTORS = {
-                @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-                    @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)) on {@", "}.add(BREAK)
-                        @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-                            '{@methodName(method)}': _BundleDesc(
-                                {@bundleDescriptorBody(bundling, method)}
-                            )
-                        @end
-                    @end
-                @end
-            }
-        @end
-
-        @# The scopes needed to make gRPC calls to all of the methods defined in
-        @# this service
-        _ALL_SCOPES = (
-            @join auth_scope : context.getServiceConfig.getAuthScopes(service) on BREAK
-                '{@auth_scope}',
+@private checkOneOfParams(oneOfs)
+    @join oneOf : oneOfs on BREAK
+        @# Sanity check: We have some fields which are mutually exclusive;
+        @# raise ValueError if more than one is sent.
+        google.api_core.protobuf_helpers.check_oneof(
+            @join oneOfField : oneOf on BREAK
+                {@oneOfField}={@oneOfField},
             @end
         )
+
     @end
 @end
 
-@private constructDefaults(service)
-    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-         jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-        default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, '{@jsonBaseName}_client_config.json').decode())
-        @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service)), \
-               context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)))
-            defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                default_client_config,
-                client_config,
-                config.STATUS_CODE_NAMES,
-                kwargs={'metadata': metadata},
-                @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS,
-                    @else
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS)
-                    @end
-                @end
-                @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                    page_descriptors=self._PAGE_DESCRIPTORS)
-                @end
-        @else
-            defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                default_client_config,
-                client_config,
-                config.STATUS_CODE_NAMES,
-                kwargs={'metadata': metadata})
-        @end
+@private requestObjectParams(params)
+    @join param : params on ",".add(BREAK)
+        {@param.keyName}={@param.name}
     @end
 @end
 
-@private initMethodSection(service)
-    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        def __init__(
-                self,
-                service_path=SERVICE_ADDRESS,
-                port=DEFAULT_SERVICE_PORT,
-                channel=None,
-                credentials=None,
-                ssl_credentials=None,
-                scopes=None,
-                client_config=None,
-                app_name='gax',
-                app_version=_GAX_VERSION):
-            """Constructor.
-
-            Args:
-              service_path (string): The domain name of the API remote host.
-              port (int): The port on which to connect to the remote host.
-              channel (:class:`grpc.Channel`): A ``Channel`` instance through
-                which to make calls.
-              credentials (object): The authorization credentials to attach to
-                requests. These credentials identify this application to the
-                service.
-              ssl_credentials (:class:`grpc.ChannelCredentials`): A
-                ``ChannelCredentials`` instance for use with an SSL-enabled
-                channel.
-              scopes (list[string]): A list of OAuth2 scopes to attach to requests.
-              client_config (dict):
-                A dictionary for call options for each method. See
-                :func:`google.gax.construct_settings` for the structure of
-                this data. Falls back to the default config if not specified
-                or the specified config is missing data points.
-              app_name (string): The codename of the calling service.
-              app_version (string): The version of the calling service.
-
-            Returns:
-              A {@context.getApiWrapperName(service)} object.
-            """
-            if scopes is None:
-                scopes = self._ALL_SCOPES
-            if client_config is None:
-                client_config = {}
-            goog_api_client = '{}/{} {} gax/{} python/{}'.format(
-                app_name,
-                app_version,
-                self._CODE_GEN_NAME_VERSION,
-                self._GAX_VERSION,
-                platform.python_version()
-            )
-            metadata = [('x-goog-api-client', goog_api_client)]
-            {@constructDefaults(service)}
-            @join stubInterface : context.getStubInterfaces(service)
-                @let stubName = context.stubName(stubInterface), \
-                        stubModule = importHandler.fileToModule(stubInterface.getFile()), \
-                        stubService = stubInterface.getSimpleName
-                    self.{@stubName} = config.create_stub(
-                        {@stubModule}.{@stubService}Stub,
-                        channel=channel,
-                        service_path=service_path,
-                        service_port=port,
-                        credentials=credentials,
-                        scopes=scopes,
-                        ssl_credentials=ssl_credentials)
-                @end
-            @end
-
-            @join method : context.getSupportedMethodsV2(service)
-                self._{@methodName(method)} = api_callable.create_api_call(
-                    self.{@context.stubNameForMethod(service, method)}.{@method.getSimpleName()},
-                    settings=defaults['{@methodName(method)}'])
-            @end
+@private routingHeader(params)
+    @join param : params on ", "
+        ('{@param.fullyQualifiedName}', {@routingHeaderGetters(param.gettersChain)})
     @end
 @end
 
-@private bundleDescriptorBody(bundling, method)
-    @let bundledField = bundling.getBundledField().getSimpleName(), \
-            discriminatorFields = bundling.getDiscriminatorFields()
-        @if {@bundling.hasSubresponseField}
-                '{@bundledField}',
-                [
-                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                        '{@fieldSelector.getParamName}'
-                    @end
-                ],
-                subresponse_field='{@bundling.getSubresponseField().getSimpleName()}',
-        @else
-                '{@bundledField}',
-                [
-                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                        '{@fieldSelector.getParamName}'
-                    @end
-                ]
-        @end
-    @end
-@end
-
-@private pathTemplateName(collectionConfig)
-    _{@context.lowerUnderscoreToUpperUnderscore(entityName(collectionConfig))}_PATH_TEMPLATE
-@end
-
-@private pathTemplateSection(service)
-    @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-            {@pathTemplateName(collectionConfig)} = path_template.PathTemplate(
-                '{@collectionConfig.getNamePattern}')
-        @end
-
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-
-            {@createResourceFunction(collectionConfig)}
-        @end
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-
-            {@createMatchFunctions(collectionConfig)}
-        @end
-    @end
-@end
-
-@private createResourceFunction(collectionConfig)
-    @@classmethod
-    def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
-        """Returns a fully-qualified {@entityName(collectionConfig)} resource name string."""
-        return cls.{@pathTemplateName(collectionConfig)}.render({
-            {@createRenderDictionary(collectionConfig)}
-        })
-@end
-
-@private createMatchFunctions(collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig)
-      @@classmethod
-      def match_{@subField}_from_{@fieldPath}(cls, {@fieldPath}):
-          """Parses the {@subField} from a {@entityName(collectionConfig)} resource.
-
-          Args:
-            {@fieldPath} (string): A fully-qualified path representing a {@entityName(collectionConfig)}
-              resource.
-
-          Returns:
-            A string representing the {@subField}.
-          """
-          return cls.{@pathTemplateName(collectionConfig)}.match({@fieldPath}).get('{@subField}')
-    @end
-  @end
-@end
-
-@private resourceName(collectionConfig)
-  {@entityName(collectionConfig)}_name
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        {@context.python.wrapIfKeywordOrBuiltIn(param)}
-    @end
-@end
-
-@private createRenderDictionary(collectionConfig)
-    @join param: collectionConfig.getNameTemplate.vars() on BREAK
-        '{@param}': {@context.python.wrapIfKeywordOrBuiltIn(param)},
-    @end
-@end
-
-@private defaultComments(element)
-    @join comment : context.defaultComments(element)
-        {@comment}
-    @end
-@end
-
-@private methodComments(service, method)
-  @let descriptionComments = context.methodDescriptionComments(method), \
-       signatureComments = context.methodSignatureComments(service, method, importHandler)
-    """
-    @join comment : descriptionComments
-      {@comment}
-    @end
-    @if descriptionComments.isEmpty
-    @else
-
-
-    @end
-    @if method.getRequestStreaming()
-      EXPERIMENTAL: This method interface might change in the future.
-
-    @end
-    {@methodSample(service, method)}
-    @if signatureComments.isEmpty
-    @else
-
-
-    @end
-    @join comment : signatureComments
-      {@comment}
-    @end
-    """
-  @end
-@end
-
-@private methodSample(service, method)
-  @let apiConfig = context.getApiConfig, \
-       apiName = context.getApiWrapperName(service), \
-       returnType = context.returnTypeOrEmpty(method, importHandler), \
-       fields = context.getRequiredFields(service, method), \
-       builder = context.newDocConfigBuilder \
-         .setInterface(service) \
-         .setApiConfig(apiConfig) \
-         .setApiName(apiName) \
-         .setImportHandler(importHandler) \
-         .setMethod(method) \
-         .setReturnType(returnType)
-    @if method.getRequestStreaming()
-      {@generateMethodSampleCode(builder \
-        .setRequestObjectInitCode(context, service, method) \
-        .setEmptyParams() \
-        .build)}
-    @else
-      {@generateMethodSampleCode(builder \
-        .setFieldInitCode(context, service, method, fields) \
-        .setFieldParams(context, fields) \
-        .build)}
-    @end
-  @end
-@end
-
-@private serviceMethodsSection(service)
-    @# Service calls
-    @join method : context.getSupportedMethodsV2(service) on BREAK.add(BREAK)
-        {@flattenedMethod(service, method)}
-    @end
-@end
-
-@private callLine(method, request)
-    @if pyproto.isEmptyMessage(method.getOutputMessage)
-        self._{@methodName(method)}({@request}, options)
-    @else
-        return self._{@methodName(method)}({@request}, options)
-    @end
-@end
-
-@private methodName(method)
-    {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
-@end
-
-@private flattenedMethod(service, method)
-    @let methodInputElementPath = importHandler.elementPath(method.getInputMessage, FALSE), \
-             documentation = methodComments(service, method), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
-        @if method.getRequestStreaming
-            def {@methodName(method)}(
-                    self,
-                    requests,
-                    options=None):
-                @if documentation
-                    {@documentation}
-                @end
-                {@callLine(method, "requests")}
-        @else
-            @if or(requiredParams, optionalParams)
-                def {@methodName(method)}(
-                        self,
-                        @if requiredParams
-                            @if optionalParams
-                                {@requiredParameterNames(requiredParams)},
-                                {@optionalParameterValues(optionalParams)},
-                            @else
-                                {@requiredParameterNames(requiredParams)},
-                            @end
-                        @else
-                            {@optionalParameterValues(optionalParams)},
-                        @end
-                        options=None):
-                    @if documentation
-                        {@documentation}
-                    @end
-                    @if {@defaultMutableValues(optionalParams)}
-                        {@defaultMutableValues(optionalParams)}
-                    @end
-                    @if requiredParams
-                        @if optionalParams
-                            request = {@methodInputElementPath}(
-                                {@namedParameters(requiredParams)},
-                                {@namedParameters(optionalParams)})
-                        @else
-                            request = {@methodInputElementPath}(
-                                {@namedParameters(requiredParams)})
-                        @end
-                    @else
-                        request = {@methodInputElementPath}(
-                            {@namedParameters(optionalParams)})
-                    @end
-                    {@callLine(method, "request")}
-            @else
-                def {@methodName(method)}(
-                        self,
-                        options=None):
-                    @if documentation
-                        {@documentation}
-                    @end
-                    request = {@methodInputElementPath}()
-                    {@callLine(method, "request")}
-            @end
-        @end
-    @end
-@end
-
-@private requiredParameterNames(params)
-    @join field : params on ",".add(BREAK)
-        {@context.python.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
-    @end
-@end
-
-@private optionalParameterValues(params)
-    @join field : params on ",".add(BREAK)
-        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            @if or(context.isDefaultValueMutable(field), context.isOneof(field))
-                {@paramName}=None
-            @else
-                {@paramName}={@context.defaultValue(field, importHandler)}
-            @end
-        @end
-    @end
-@end
-
-@private defaultMutableValues(params)
-    @join field : params if and(context.isDefaultValueMutable(field), not(context.isOneof(field))) on BREAK
-        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            if {@paramName} is None:
-                {@paramName} = {@context.defaultValue(field, importHandler)}
-        @end
-    @end
-@end
-
-@private namedParameters(params)
-    @join field : params on ",".add(BREAK)
-        @let paramName = {@field.getSimpleName()}
-            {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-        @end
+@private routingHeaderGetters(getters)
+    @join getter : getters on "."
+        {@getter}
     @end
 @end

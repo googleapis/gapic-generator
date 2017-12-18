@@ -51,11 +51,17 @@
     {@renderResourceName(initValue)}
   @case "ResourceNameOneofInitValueView"
     {@initValue.resourceOneofTypeName}.from({@renderResourceName(initValue.specificResourceNameView)})
+  @case "RepeatedResourceNameInitValueView"
+    new ArrayList<>()
   @default
     $unhandledCase: {@initValue.type}$
   @end
 @end
 
 @private renderResourceName(initValue)
-  {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)})
+  @if {@initValue.convertToString}
+    {@initValue.resourceTypeName}.of({@argList(initValue.formatArgs)}).toString()
+  @else
+    {@initValue.resourceTypeName}.of({@argList(initValue.formatArgs)})
+  @end
 @end

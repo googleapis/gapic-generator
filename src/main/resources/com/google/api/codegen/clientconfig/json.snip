@@ -1,4 +1,5 @@
 @extends "common.snip"
+@extends "clientconfig/common.snip"
 
 @snippet generateFilename(service)
     {@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config.json
@@ -6,111 +7,7 @@
 
 @snippet generateBody(service)
     {
-      "interfaces": {
-        {@interfaceSection(service)}
-      }
+      {@clientConfig(service)}
     }
 
-@end
-
-@private interfaceSection(service)
-    @let retryCodes = retryCodesSection(service), \
-            retryParams = retryParamsSection(service), \
-            methods = methodsSection(service)
-      "{@service.getFullName}": {
-        @if retryCodes
-            "retry_codes": {
-              {@retryCodes}
-            },
-        @else
-            "retry_codes": {},
-        @end
-        @if retryParams
-            "retry_params": {
-              {@retryParams}
-            },
-        @else
-            "retry_params": {},
-        @end
-        @if methods
-            "methods": {
-              {@methods}
-            }
-        @else
-            "methods": {}
-        @end
-      }
-    @end
-@end
-
-@private retryCodesSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            codes = context.entrySet(interfaceConfig.getRetryCodesDefinition)
-        @if codes
-            "retry_codes_def": {
-              @join retryDef : codes on ",".add(BREAK)
-                  @if retryDef.getValue
-                      "{@retryDef.getKey}": [
-                        @join code : retryDef.getValue on ",".add(BREAK)
-                            "{@code}"
-                        @end
-                      ]
-                  @else
-                      "{@retryDef.getKey}": []
-                  @end
-              @end
-            }
-        @else
-        @end
-    @end
-@end
-
-@private retryParamsSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        @join retryDef : context.entrySet(interfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
-            "{@retryDef.getKey}": {
-              "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelay.getMillis()},
-              "retry_delay_multiplier": {@retryDef.getValue.getRetryDelayMultiplier},
-              "max_retry_delay_millis": {@retryDef.getValue.getMaxRetryDelay.getMillis()},
-              "initial_rpc_timeout_millis": {@retryDef.getValue.getInitialRpcTimeout.getMillis()},
-              "rpc_timeout_multiplier": {@retryDef.getValue.getRpcTimeoutMultiplier},
-              "max_rpc_timeout_millis": {@retryDef.getValue.getMaxRpcTimeout.getMillis()},
-              "total_timeout_millis": {@retryDef.getValue.getTotalTimeout.getMillis()}
-            }
-        @end
-    @end
-@end
-
-@private methodsSection(service)
-    @join method : context.getSupportedMethods(service) on ",".add(BREAK)
-        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
-                isBundling = methodConfig.isBundling, \
-                timeout = methodConfig.getTimeout.getMillis, \
-                retryCodesName = methodConfig.getRetryCodesConfigName, \
-                retryParamsName = methodConfig.getRetrySettingsConfigName
-            "{@method.getSimpleName}": {
-              @if or(and(retryCodesName, retryParamsName), isBundling)
-                "timeout_millis": {@timeout},
-              @else
-                "timeout_millis": {@timeout}
-              @end
-              @if and(retryCodesName, retryParamsName)
-                  "retry_codes_name": "{@retryCodesName}",
-                  @if isBundling
-                      "retry_params_name": "{@retryParamsName}",
-                  @else
-                      "retry_params_name": "{@retryParamsName}"
-                  @end
-              @end
-              @if isBundling
-                  "bundling": {
-                    @join param : context.entrySet(context.bundlingParams(methodConfig.getBundling)) on ",".add(BREAK)
-                        "{@param.getKey}": {@param.getValue}
-                    @end
-                  }
-              @end
-            }
-        @end
-    @end
 @end

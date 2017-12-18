@@ -1,0 +1,29 @@
+@extends "php/common.snip"
+
+@snippet generate(xapiClass)
+    {@renderFileHeader(xapiClass.fileHeader, generatedCodeWarning(xapiClass))}
+
+    /**
+     * {@@inheritdoc}
+     */
+    class {@xapiClass.name} extends {@xapiClass.parentName}
+    {
+        // This class is intentionally empty, and is intended to hold manual
+        // additions to the generated {@@see {@xapiClass.name}Impl} class.
+    }
+@end
+
+@private generatedCodeWarning(xapiClass)
+    /*
+     * GENERATED CODE WARNING
+     * This file was generated from the file
+     * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
+     * and updates to that file get reflected here through a refresh process.
+     *
+     * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+     * more frequently than those which have been declared beta or 1.0, including changes which break
+     * backwards compatibility.
+     *
+     * @@experimental
+     */
+@end

@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Interface;
@@ -43,7 +44,7 @@ public class SampleInitCodeTest {
   private TestDataLocator testDataLocator;
   private TestConfig testConfig;
   private Model model;
-  private Interface interfaze;
+  private Interface apiInterface;
   private Method method;
 
   @Before
@@ -56,14 +57,14 @@ public class SampleInitCodeTest {
     StandardSetup.registerStandardProcessors(model);
     StandardSetup.registerStandardConfigAspects(model);
     model.establishStage(Merged.KEY);
-    interfaze = model.getSymbolTable().getInterfaces().asList().get(0);
-    method = interfaze.getMethods().get(0);
+    apiInterface = model.getSymbolTable().getInterfaces().asList().get(0);
+    method = apiInterface.getMethods().get(0);
   }
 
   private InitCodeContext.Builder getContextBuilder() {
     return InitCodeContext.newBuilder()
         .symbolTable(new SymbolTable())
-        .initObjectType(method.getInputType())
+        .initObjectType(new ProtoTypeRef(method.getInputType()))
         .suggestedName(Name.from("request"));
   }
 
@@ -458,10 +459,7 @@ public class SampleInitCodeTest {
             : first.getType().equals(second.getType()))
         && (first.getIdentifier() == null
             ? second.getIdentifier() == null
-            : first.getIdentifier().equals(second.getIdentifier()))
-        && (first.getInitCodeLine() == null
-            ? second.getInitCodeLine() == null
-            : first.getInitCodeLine().equals(second.getInitCodeLine())))) {
+            : first.getIdentifier().equals(second.getIdentifier())))) {
       return false;
     }
     for (String key : first.getChildren().keySet()) {

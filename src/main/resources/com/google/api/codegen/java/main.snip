@@ -1,53 +1,72 @@
 @extends "java/common.snip"
 @extends "java/method_sample.snip"
 
-@snippet generate(apiFile)
-  {@renderFileHeader(apiFile.fileHeader)}
+@snippet generate(classFile)
+  {@renderFileHeader(classFile.fileHeader)}
 
-  {@serviceDoc(apiFile.api)}
-  @@Generated("by GAPIC")
-  @@ExperimentalApi
-  public class {@apiFile.api.name} implements AutoCloseable {
-    {@members(apiFile.api)}
-    {@statics(apiFile.api)}
-    {@staticFunctions(apiFile.api)}
-    {@constructors(apiFile.api)}
-    {@memberMethods(apiFile.api)}
-    {@apiMethods(apiFile.api)}
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  @if classFile.classView.releaseLevelAnnotation
+    {@classFile.classView.releaseLevelAnnotation}
+  @end
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} implements BackgroundResource {
+    {@members(classView)}
+    {@statics(classView)}
+    {@staticFunctions(classView)}
+    {@constructors(classView)}
+    {@memberMethods(classView)}
+    {@apiMethods(classView)}
     {@cleanupSection()}
   }
 @end
 
-@private serviceDoc(xapiClass)
-  @switch xapiClass.doc.exampleApiMethod.type
+@private classDoc(doc)
+  @switch doc.exampleApiMethod.type
   @case "FlattenedMethod"
-    @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
-         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
-      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "PagedFlattenedMethod"
-    @let coreSampleCode = pagedIterableMethodSampleCode(xapiClass.doc.exampleApiMethod), \
-         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
-      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "RequestObjectMethod"
-    @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
-         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
-      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
+  @case "AsyncOperationFlattenedMethod"
+    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @default
-    $unhandledCase: {@xapiClass.doc.exampleApiMethod.type}$
+    $unhandledCase: {@doc.exampleApiMethod.type}$
   @end
 @end
 
 @private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND SERVICE
   /**
-   * Service Description: {@xapiClassDoc.firstLine}
-  @if xapiClassDoc.remainingLines
-    @join commentLine : xapiClassDoc.remainingLines
-      {@""} * {@commentLine}
+  @if xapiClassDoc.lines
+    {@""} * Service Description: {@xapiClassDoc.firstLine}
+    @if xapiClassDoc.remainingLines
+      @join commentLine : xapiClassDoc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * Service Description:
   @end
    *
    * <p>This class provides the ability to make remote calls to the backing service through method
@@ -88,18 +107,31 @@
    * <p>This class can be customized by passing in a custom instance of {@xapiClassDoc.settingsClassName} to
    * create(). For example:
    *
+   * To customize credentials:
+   *
    * <pre>
    * <code>
-   * InstantiatingChannelProvider channelProvider =
-   *     {@xapiClassDoc.settingsClassName}.defaultChannelProviderBuilder()
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
    *         .build();
-   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder().setChannelProvider(channelProvider).build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
+  @if xapiClassDoc.hasDefaultInstance
+    {@""} *
+     * To customize the endpoint:
+     *
+     * <pre>
+     * <code>
+     * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+     *     {@xapiClassDoc.settingsClassName}.newBuilder().setEndpoint(myEndpoint).build();
+     * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+     *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+     * </code>
+     * </pre>
+  @end
    */
 @end
 
@@ -160,22 +192,11 @@
 
 @private members(xapiClass)
   private final {@xapiClass.settingsClassName} settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
+  private final {@xapiClass.stubInterfaceName} stub;
   @if xapiClass.hasLongRunningOperations
     private final OperationsClient operationsClient;
   @end
-  private final List<AutoCloseable> closeables = new ArrayList<>();
-
-  @join apiCallable : xapiClass.apiCallableMembers
-    {@apiCallableMember(apiCallable)}
-  @end
   {@""}
-@end
-
-@private apiCallableMember(apiCallable)
-  private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
-    {@apiCallable.responseTypeName}> {@apiCallable.name};
 @end
 
 @private constructors(xapiClass)
@@ -184,7 +205,7 @@
      * Constructs an instance of {@xapiClass.name} with default settings.
      */
     public static final {@xapiClass.name} create() throws IOException {
-      return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+      return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
   @end
@@ -199,69 +220,34 @@
   }
 
   /**
+   * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
+   * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
+   */
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
+    return new {@xapiClass.name}(stub);
+  }
+
+  /**
    * Constructs an instance of {@xapiClass.name}, using the given settings.
-   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
-
+    this.stub = settings.createStub();
     @if xapiClass.hasLongRunningOperations
-      FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
-      FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
-      OperationsSettings operationsSettings =
-          OperationsSettings.defaultBuilder()
-              .setExecutorProvider(executorProvider)
-              .setChannelProvider(channelProvider)
-              .build();
-      this.operationsClient = OperationsClient.create(operationsSettings);
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end
+  }
 
-    @join apiCallable : xapiClass.apiCallableMembers
-      @switch apiCallable.type
-      @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "PagedApiCallable"
-        this.{@apiCallable.name} =
-            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "BundlingApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-        if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
-          closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
-        }
-      @case "StreamingApiCallable"
-        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
-      @case "InitialOperationApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
-      @case "OperationApiCallable"
-        this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
-            this.channel, this.executor, this.operationsClient);
-      @default
-        $unhandledCase: {@apiCallable.type}$
-      @end
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  protected {@xapiClass.name}({@xapiClass.stubInterfaceName} stub) {
+    this.settings = null;
+    this.stub = stub;
+    @if xapiClass.hasLongRunningOperations
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end
-
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @@Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @@Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
   }
   {@""}
 @end
@@ -271,7 +257,16 @@
     return settings;
   }
 
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public {@xapiClass.stubInterfaceName} getStub() {
+    return stub;
+  }
+
   @if xapiClass.hasLongRunningOperations
+    /**
+     * Returns the OperationsClient that can be used to query the status of a long-running
+     * operation returned by another API method call.
+     */
     public final OperationsClient getOperationsClient() {
       return operationsClient;
     }
@@ -295,7 +290,6 @@
     @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
     @case "CallableMethod"
-    # TODO create a GrpcStreaming ApiMethodType
       @if apiMethod.isStreaming
         {@streamingCallableMethod(apiMethod)}
       @else
@@ -315,15 +309,34 @@
 @end
 
 @private cleanupSection()
-  /**
-   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
-   * cancelled.
-   */
   @@Override
   public final void close() throws Exception {
-    for (AutoCloseable closeable : closeables) {
-      closeable.close();
-    }
+    stub.close();
+  }
+
+  @@Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @@Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @@Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @@Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @@Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
   }
 
 @end
@@ -332,7 +345,11 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
     @end
@@ -347,6 +364,10 @@
 @private pagedRequestObjectMethod(apiMethod)
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -373,7 +394,11 @@
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     @if apiMethod.hasReturnValue
@@ -387,6 +412,10 @@
 @private requestObjectMethod(apiMethod)
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -406,9 +435,13 @@
 @end
 
 @private callableMethodImpl(apiMethod)
-  public final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
+    return stub.{@apiMethod.callableMethod.callableName}();
   }
 @end
 
@@ -416,9 +449,14 @@
   @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.callableMethod.interfaceTypeName}\
+      <{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
+    return stub.{@apiMethod.callableMethod.callableName}();
   }
 @end
 
@@ -426,8 +464,13 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
-       {@paramList(apiMethod.methodParams)}) {
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
+      {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
   }
@@ -437,7 +480,12 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
   }
@@ -447,9 +495,14 @@
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+      {@apiMethod.name}() {
+    return stub.{@apiMethod.callableMethod.callableName}();
   }
 @end
 
@@ -467,8 +520,12 @@
 @private methodDoc(apiMethodDoc, methodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-  @join commentLine : apiMethodDoc.mainDocLines
-    {@""} * {@commentLine}
+  @if apiMethodDoc.mainDocLines
+    @join commentLine : apiMethodDoc.mainDocLines
+      {@""} * {@commentLine}
+    @end
+  @else
+    {@""} *
   @end
    *
    * Sample code:
@@ -502,11 +559,15 @@
 @end
 
 @private simpleParamDoc(doc)
-  {@""} * @@param {@doc.paramName} {@doc.firstLine}
-  @if doc.remainingLines
-    @join commentLine : doc.remainingLines
-      {@""} * {@commentLine}
+  @if doc.lines
+    {@""} * @@param {@doc.paramName} {@doc.firstLine}
+    @if doc.remainingLines
+      @join commentLine : doc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * @@param {@doc.paramName}
   @end
 @end
 
@@ -514,6 +575,7 @@
   @join requestObjectParam : requestObjectParams
     @if requestObjectParam.hasTransformParamFunction
       .{@requestObjectParam.setCallName}(\
+        {@requestObjectParam.name} == null ? null : \
         {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
     @else
       .{@requestObjectParam.setCallName}({@requestObjectParam.name})

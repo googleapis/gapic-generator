@@ -1,5 +1,7 @@
-@snippet generate(context)
-    """A setup module for the GRPC google-{@context.getApiNameInfo.shortName} service.
+@extends "common.snip"
+
+@snippet generate(metadata)
+    """A setup module for the GRPC {@metadata.fullName} service.
 
     See:
     https://packaging.python.org/en/latest/distributing.html
@@ -11,19 +13,31 @@
     from setuptools import setup, find_packages
 
     install_requires = [
-      'oauth2client>={@context.getDependencyValue("auth.python.version")}, <{@context.getDependencyValue("auth.python.next_version")}',
-      'grpcio>={@context.getDependencyValue("grpc.python.version")}, <{@context.getDependencyValue("grpc.python.next_version")}',
-      'googleapis-common-protos[grpc]>={@context.getDependencyValue("googleapis_common_protos.python.version")}, <{@context.getDependencyValue("googleapis_common_protos.python.next_version")}'
+      @join packageDep : metadata.protoPackageDependencies
+        '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+      @end
+      'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
     ]
 
+    extras_require = {
+      'grpc': [
+        @join packageDep : metadata.protoPackageDependencies
+          @if packageDep.name == "googleapis-common-protos"
+            '{@packageDep.name}[grpc]>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+          @end
+        @end
+        'grpcio>={@metadata.grpcVersionBound.lower}, <{@metadata.grpcVersionBound.upper}',
+      ],
+    }
+
     setuptools.setup(
-      name='{@context.getPackageName}',
-      version='{@context.getDefaultsValue("semver.python")}',
-      author='{@context.getDefaultsValue("author")}',
-      author_email='{@context.getDefaultsValue("email")}',
+      name='{@metadata.protoPackageName}',
+      version='{@metadata.packageVersionBound.lower}',
+      author='{@metadata.author}',
+      author_email='{@metadata.email}',
       classifiers=[
         'Intended Audience :: Developers',
-        'Development Status :: 3 - Alpha',
+        'Development Status :: {@metadata.developmentStatus}',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
@@ -34,19 +48,14 @@
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
       ],
-      description='GRPC library for the {@context.getApiNameInfo.fullName} service',
+      description='GRPC library for the {@metadata.fullName}',
       long_description=open('README.rst').read(),
       install_requires=install_requires,
-      license='{@context.getDefaultsValue("license")}',
+      extras_require=extras_require,
+      license='{@metadata.licenseName}',
       packages=find_packages(),
-      namespace_packages=[{@quotedList(context.getCopierMetadata.pythonNamespacePackages)}],
-      url='{@context.getDefaultsValue("homepage")}'
+      namespace_packages=[{@quotedList(metadata.namespacePackages)}],
+      url='{@metadata.homepage}'
     )
 
-@end
-
-@snippet quotedList(list)
-    @join element : list on ", "
-        '{@element}'
-    @end
 @end

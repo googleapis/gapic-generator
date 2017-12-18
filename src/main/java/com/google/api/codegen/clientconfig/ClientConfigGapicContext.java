@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,8 @@
 package com.google.api.codegen.clientconfig;
 
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.BundlingConfig;
+import com.google.api.codegen.config.BatchingConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -27,26 +27,26 @@ import java.util.Map;
 public class ClientConfigGapicContext extends GapicContext {
 
   /** Constructs the client config codegen context. */
-  public ClientConfigGapicContext(Model model, ApiConfig config) {
+  public ClientConfigGapicContext(Model model, GapicProductConfig config) {
     super(model, config);
   }
 
-  public Map<String, String> bundlingParams(BundlingConfig bundling) {
+  public Map<String, String> batchingParams(BatchingConfig batching) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder();
-    if (bundling.getElementCountThreshold() > 0) {
-      builder.put("element_count_threshold", Integer.toString(bundling.getElementCountThreshold()));
+    if (batching.getElementCountThreshold() > 0) {
+      builder.put("element_count_threshold", Integer.toString(batching.getElementCountThreshold()));
     }
-    if (bundling.getElementCountLimit() > 0) {
-      builder.put("element_count_limit", Integer.toString(bundling.getElementCountLimit()));
+    if (batching.getElementCountLimit() > 0) {
+      builder.put("element_count_limit", Integer.toString(batching.getElementCountLimit()));
     }
-    if (bundling.getRequestByteThreshold() > 0) {
-      builder.put("request_byte_threshold", Long.toString(bundling.getRequestByteThreshold()));
+    if (batching.getRequestByteThreshold() > 0) {
+      builder.put("request_byte_threshold", Long.toString(batching.getRequestByteThreshold()));
     }
-    if (bundling.getRequestByteLimit() > 0) {
-      builder.put("request_byte_limit", Long.toString(bundling.getRequestByteLimit()));
+    if (batching.getRequestByteLimit() > 0) {
+      builder.put("request_byte_limit", Long.toString(batching.getRequestByteLimit()));
     }
-    if (bundling.getDelayThresholdMillis() > 0) {
-      builder.put("delay_threshold_millis", Long.toString(bundling.getDelayThresholdMillis()));
+    if (batching.getDelayThresholdMillis() > 0) {
+      builder.put("delay_threshold_millis", Long.toString(batching.getDelayThresholdMillis()));
     }
     return builder.build();
   }
@@ -57,7 +57,7 @@ public class ClientConfigGapicContext extends GapicContext {
   }
 
   @Override
-  public List<Method> getSupportedMethods(Interface service) {
-    return getSupportedMethodsV2(service);
+  public List<Method> getSupportedMethods(Interface apiInterface) {
+    return getSupportedMethodsV2(apiInterface);
   }
 }

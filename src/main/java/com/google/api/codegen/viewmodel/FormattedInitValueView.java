@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,8 @@ import java.util.List;
 public abstract class FormattedInitValueView implements InitValueView {
   public abstract String apiWrapperName();
 
+  public abstract String fullyQualifiedApiWrapperName();
+
   public abstract String formatFunctionName();
 
   public abstract List<String> formatArgs();
@@ -36,6 +38,8 @@ public abstract class FormattedInitValueView implements InitValueView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder apiWrapperName(String val);
+
+    public abstract Builder fullyQualifiedApiWrapperName(String val);
 
     public abstract Builder formatFunctionName(String val);
 

@@ -11,15 +11,17 @@
    */
 @end
 
-@snippet importList(imports)
-  @join import : imports
-    @switch import.type
-    @case "SimpleImport"
-      import {@import.fullName};
-    @case "StaticImport"
-      import static {@import.fullName};
-    @default
-      $unhandledCase: {@import.type.toString}$
+@snippet importList(fileImports)
+  @join fileImport : fileImports
+    @join import : fileImport.types
+      @switch import.type
+      @case "SimpleImport"
+        import {@import.fullName};
+      @case "StaticImport"
+        import static {@import.fullName};
+      @default
+        $unhandledCase: {@import.type.toString}$
+      @end
     @end
   @end
 @end
@@ -28,7 +30,7 @@
   {@license(fileHeader)}
   package {@fileHeader.packageName};
 
-  {@importList(fileHeader.imports)}
+  {@importList(fileHeader.importSection.appImports)}
 @end
 
 @snippet paramList(params)
@@ -40,5 +42,17 @@
 @snippet argList(args)
   @join arg : args on ", "
     {@arg}
+  @end
+@end
+
+@private functionChainHelper(list)
+  @join element : list on "()."
+    {@element}
+  @end
+@end
+
+@snippet functionChain(list)
+  @let chain = functionChainHelper(list)
+    {@chain}()
   @end
 @end

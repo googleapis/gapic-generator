@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,14 +19,14 @@ import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
+public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to NodeJS counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -44,8 +44,8 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SINT32, "number")
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "String")
-          .put(Type.TYPE_BYTES, "String")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "string")
           .build();
 
   /** A map from primitive types in proto to zero value in NodeJS */
@@ -71,7 +71,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
 
   public NodeJSModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new NodeJSTypeTable(implicitPackageName);
+    this.typeNameConverter = new JSTypeTable(implicitPackageName);
   }
 
   @Override
@@ -120,7 +120,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the NodeJS representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("Object"), "{}");
@@ -135,10 +135,14 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "{}");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "null");
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override
@@ -179,7 +183,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by NodeJS");
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), String.format("'%s'", value.getSimpleName()));
   }
 }

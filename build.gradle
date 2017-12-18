@@ -25,29 +25,31 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "com.google.protobuf:protobuf-gradle-plugin:0.7.3"
-    classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.4.1"
-    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+    classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    classpath 'net.ltgt.gradle:gradle-apt-plugin:0.10'
   }
 }
 
 
 apply plugin: 'jacoco'
-apply plugin: "java"
-apply plugin: "maven"
-apply plugin: "idea"
-apply plugin: "eclipse"
-apply plugin: "com.google.protobuf"
-apply plugin: "com.github.sherter.google-java-format"
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "signing"
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'com.github.sherter.google-java-format'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'signing'
+apply plugin: 'net.ltgt.apt'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
-group = "com.google.api"
-version = "0.0.5-SNAPSHOT"
+group = 'com.google.api'
+project.version = file('version.txt').text.trim()
 
-def protoVersion = "3.0.0-beta-3"
+def protoVersion = '3.4.0'
 
 // Dependencies
 // ------------
@@ -56,33 +58,31 @@ ext {
   // Shortcuts for libraries we are using
   libraries = [
     // General
-    guava: 'com.google.guava:guava:19.0',
+
+    // Guava 23.0 is for Java 8, Java 7 needs to use 23.0-android.
+    guava: 'com.google.guava:guava:23.0-android',
     jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    autovalue: 'com.google.auto.value:auto-value:1.3',
-    cglib: 'cglib:cglib:3.1',
-    guice: 'com.google.inject:guice:4.0',
-    commonsLang: 'org.apache.commons:commons-lang3:3.4',
-    commonsCli: 'commons-cli:commons-cli:1.3',
-    snakeyaml: 'org.yaml:snakeyaml:1.16',
-    gax: 'com.google.api:gax:0.0.8',
+    autovalue: 'com.google.auto.value:auto-value:1.4',
+    commonsLang: 'org.apache.commons:commons-lang3:3.6',
+    commonsCli: 'commons-cli:commons-cli:1.4',
+    snakeyaml: 'org.yaml:snakeyaml:1.18',
+    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
+    gax: 'com.google.api:gax:1.5.1',
 
     // Gapi
-    toolsFx: 'com.google.api:api-compiler:0.0.6',
+    toolsFx: 'com.google.api:api-compiler:0.0.7',
 
     // Testing
-    junit: 'junit:junit:4.11',
-    mockito: 'org.mockito:mockito-core:1.10.19',
-    truth: 'com.google.truth:truth:0.27',
+    junit: 'junit:junit:4.12',
+    truth: 'com.google.truth:truth:0.34',
     toolsFxTesting: 'com.google.api:api-compiler:0.0.6:testing',
 
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
     protoc:  'com.google.protobuf:protoc:' + protoVersion,
-    protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.3',
 
     // JSON
-    jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0',
-    jacksonGuava: 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.7.0',
+    jackson: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
 
     // Formatter
     javaFomatter: 'com.google.googlejavaformat:google-java-format:1.1'
@@ -97,36 +97,30 @@ repositories {
 dependencies {
   compile libraries.guava,
     libraries.autovalue,
-    libraries.cglib,
     libraries.commonsCli,
     libraries.commonsLang,
     libraries.gax,
-    libraries.guice,
     libraries.jackson,
-    libraries.jacksonGuava,
     libraries.javaFomatter,
     libraries.jsr305,
     libraries.protobuf,
     libraries.snakeyaml,
     libraries.toolsFx,
-    libraries.toolsFxTesting
+    libraries.toolsFxTesting,
+    libraries.commonmark
 
   testCompile libraries.junit,
-    libraries.mockito,
     libraries.truth,
     libraries.toolsFxTesting
 }
 
-task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-  archiveName = "discoGen-${version}.jar"
-  manifest {
-    attributes "Main-Class": "com.google.api.codegen.DiscoveryFragmentGeneratorTool"
-  }
+task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveName = "gapic.jar"
   from sourceSets.main.output
   configurations = [ project.configurations.runtime ]
-  exclude "META-INF/*.SF"
-  exclude "META-INF/*.DSA"
-  exclude "META-INF/*.RSA"
+  exclude 'META-INF/*.SF'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
 }
 
 jacocoTestReport {
@@ -151,7 +145,7 @@ sourceSets {
   main {
     proto {
       // Include proto sources for GAPIC generator config.
-      srcDir "src/main/proto"
+      srcDir 'src/main/proto'
     }
     java {
       // Include location where proto plugin puts generated sources.
@@ -185,9 +179,10 @@ javadoc.options {
 sourceSets {
   test {
     resources {
-      // Include all resources from testdata folders.
+      // Include all resources from testdata and testsrc folders.
       srcDir 'src/test/java'
       include '**/testdata/**'
+      include '**/testsrc/**'
     }
     resources {
       // Include protos of core platform and toolkit,
@@ -198,21 +193,29 @@ sourceSets {
   }
 }
 
-task setupProtocEnvironment << {
-  test.setEnvironment(PROTOC_COMPILER: project.protobuf.tools.protoc.path)
+task setupProtocEnvironment {
+  doLast {
+    def protocPath = project.configurations.protobufToolsLocator_protoc.resolve().getAt(0)
+    if (protocPath == null) {
+      throw new RuntimeException("protoc path is null")
+    }
+    test.setEnvironment(PROTOC_COMPILER: protocPath)
+  }
 }
 
 test.dependsOn setupProtocEnvironment
 
-task showRuntimeClassPath << {
-  println 'output: ' + sourceSets.main.runtimeClasspath.asPath
+task showRuntimeClassPath {
+  doLast {
+    println 'output: ' + sourceSets.main.runtimeClasspath.asPath
+  }
 }
 
 // Test Logging
 // ============
 test {
   testLogging {
-      events "passed", "skipped", "failed", "standardOut", "standardError"
+      events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
   }
 }
 
@@ -283,7 +286,7 @@ artifacts {
 }
 
 signing {
-  required { gradle.taskGraph.hasTask("uploadArchives") }
+  required { gradle.taskGraph.hasTask('uploadArchives') }
   sign configurations.archives
 }
 
@@ -293,11 +296,11 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
       mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
           authentication(userName: ossrhUsername, password: ossrhPassword)
         }
 
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
           authentication(userName: ossrhUsername, password: ossrhPassword)
         }
 
@@ -316,7 +319,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
           licenses {
             license {
               name 'The Apache License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
             }
           }
 
@@ -326,7 +329,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
               name 'GoogleAPIs'
               email 'googleapis@googlegroups.com'
               url 'https://github.com/googleapis'
-              organization 'Google, Inc.'
+              organization 'Google LLC'
               organizationUrl 'https://www.google.com'
             }
           }
@@ -335,9 +338,11 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
     }
   }
 } else {
-  task failUploadArchives << {
-    throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
-      + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
+  task failUploadArchives {
+    doLast {
+      throw new GradleException('uploadArchives needs ossrhUsername and ossrhPassword '
+        + 'to be set. They can be set inside your ~/.gradle/gradle.properties file.')
+    }
   }
   tasks.uploadArchives.dependsOn(failUploadArchives)
 }
@@ -345,9 +350,23 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
 allprojects {
   gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
-      options.compilerArgs << "-Xlint:unchecked"
+      options.compilerArgs << '-Xlint:unchecked'
     }
   }
+}
+
+task createProperties(dependsOn: processResources) {
+  doLast{
+    new File("$buildDir/resources/main/com/google/api/codegen/").mkdirs()
+    Properties p = new Properties()
+    p['version'] = project.version.toString()
+    p.store(new PrintWriter("$buildDir/resources/main/com/google/api/codegen/codegen.properties", 'UTF-8'), null)
+  }
+  outputs.file("$buildDir/resources/main/com/google/api/codegen/codegen.properties")
+}
+
+classes {
+  dependsOn createProperties
 }
 
 // Task to run CodeGeneratorTool
@@ -356,16 +375,6 @@ allprojects {
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runCodeGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.CodeGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-// old task being retained for backwards-friendliness
-// TODO delete after 1 Oct 2016 (or before if all artman users are using runCodeGen)
-task runVGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.CodeGeneratorTool'
   if (project.hasProperty('clargs')) {
@@ -387,24 +396,30 @@ task runSynchronizer(type: JavaExec) {
 }
 
 // Task to display the cache path of GRPC Java plugin
-task showGrpcJavaPluginPath << {
-  DependencyResolver resolver = new DependencyResolver(project)
-  println 'output: ' + resolver.resolveExecutable(
-    'io.grpc:protoc-gen-grpc-java:0.12.0')
+task showGrpcJavaPluginPath {
+  doLast {
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.resolveExecutable(
+      'io.grpc:protoc-gen-grpc-java:1.2.0')
+  }
 }
 
 // Task to display the cache path of protobuf
-task showProtobufPath() << {
-  DependencyResolver resolver = new DependencyResolver(project)
-  println 'output: ' + resolver.extractArchive(
-    'com.google.protobuf:protobuf-java:' + protoVersion);
+task showProtobufPath() {
+  doLast {
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.extractArchive(
+      'com.google.protobuf:protobuf-java:' + protoVersion);
+  }
 }
 
 // Task to display the cache path of Google Java formatter
-task showJavaFormatterPath << {
-  DependencyResolver resolver = new DependencyResolver(project)
-  println 'output: ' + resolver.locateArchive(
-    'com.google.googlejavaformat:google-java-format:1.1:all-deps')
+task showJavaFormatterPath {
+  doLast {
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.locateArchive(
+      'com.google.googlejavaformat:google-java-format:1.1:all-deps')
+  }
 }
 
 // Task to run ConfigGeneratorTool
@@ -419,50 +434,28 @@ task runConfigGen(type: JavaExec) {
     args = clargs.split(',').toList()
   }
 }
-
-// Task to run PackageMetadataGeneratorTool
-// =============================
-//
-// Command line args can be passed to the tool as a comma-separated list:
-//   ./gradlew runPackageMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
-task runPackageMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.metadatagen.PackageMetadataGeneratorTool'
+  main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
 }
 
-// Task to run DiscoveryFragmentGeneratorTool
-// =================================================================
-task runDiscoGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-task runDiscoBatch(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorBatch'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-task verifyLicense << {
-  def licenseText = new File(rootProject.rootDir, 'license-header-javadoc.txt').text
-  def srcFiles = []
-  sourceSets
-      .collectMany{it.allJava.getSrcDirs()}
-      .each{it.eachFileRecurse(FileType.FILES, {srcFiles << it})}
-  srcFiles = srcFiles
-      .findAll{!it.path.contains("/generated/") && it.path.endsWith(".java")}
-      .findAll{!it.text.startsWith(licenseText)}
-  if (srcFiles.asList().size() > 0) {
-    srcFiles.each({println 'missing license: ' + it})
-    throw new IllegalStateException("Above files do not have licenses")
+task verifyLicense {
+  doLast {
+    def licenseText = new File(rootProject.rootDir, 'license-header-javadoc.txt').text
+    def srcFiles = []
+    sourceSets
+        .collectMany{it.allJava.getSrcDirs()}
+        .each{it.eachFileRecurse(FileType.FILES, {srcFiles << new Tuple(it, it.text)})}
+    srcFiles = srcFiles
+        .findAll{!it.get(0).path.contains('/generated/') && it.get(0).path.endsWith('.java')}
+        .collect{new Tuple(it.get(0), it.get(1).replaceAll("Copyright 20[0-9]{2}", 'Copyright 20xx'))}
+        .findAll{!it.get(1).startsWith(licenseText)}
+    if (srcFiles.asList().size() > 0) {
+      srcFiles.each({println 'missing license: ' + it.get(0)})
+      throw new IllegalStateException('Above files do not have licenses')
+    }
   }
 }
 
@@ -472,14 +465,12 @@ tasks.googleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
+  exclude 'benchmark/**'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
+  exclude 'benchmark/**'
 }
 test.dependsOn verifyGoogleJavaFormat

@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
@@ -33,7 +35,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 
 /** The ModelTypeTable for Java. */
-public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
+public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
@@ -112,13 +114,8 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    for (EnumValue enumValue : type.getEnumType().getValues()) {
-      if (enumValue.getSimpleName().equals(value)) {
-        return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
   }
 
   @Override
@@ -190,7 +187,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
    * initialization.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call importAndGetShortestName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
@@ -205,10 +202,14 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(type), "null");
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override
@@ -221,8 +222,8 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
-    String packageName = getResourceNamePackage(fieldConfig);
+      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
+    String packageName = getResourceNamePackage(resourceNameConfig);
     String longName = packageName + "." + typedResourceShortName;
 
     TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
@@ -238,15 +239,15 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     }
   }
 
-  private static String getResourceNamePackage(FieldConfig fieldConfig) {
-    ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
+  private static String getResourceNamePackage(ResourceNameConfig resourceNameConfig) {
+    ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
     switch (resourceNameType) {
       case ANY:
         return "com.google.api.resourcenames";
       case FIXED:
       case SINGLE:
       case ONEOF:
-        return getJavaPackage(fieldConfig.getField().getFile());
+        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
       case NONE:
       default:
         throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
@@ -256,15 +257,17 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
+    TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), typeRef, typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
+    TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), typeRef.makeOptional(), typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {

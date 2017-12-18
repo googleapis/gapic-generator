@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract Iterable<String> authScopes();
+  public abstract String domainLayerLocation();
 
   public abstract List<PathTemplateView> pathTemplates();
 
@@ -71,6 +71,12 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
+  public abstract List<LongRunningOperationDetailView> lroDetailViews();
+
+  public boolean hasLongRunningOperations() {
+    return !lroDetailViews().isEmpty();
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangClientFileView.Builder();
   }
@@ -82,7 +88,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder authScopes(Iterable<String> val);
+    public abstract Builder domainLayerLocation(String val);
 
     public abstract Builder clientTypeName(String val);
 
@@ -122,6 +128,8 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);
+
+    public abstract Builder lroDetailViews(List<LongRunningOperationDetailView> val);
 
     public abstract StaticLangClientFileView build();
   }

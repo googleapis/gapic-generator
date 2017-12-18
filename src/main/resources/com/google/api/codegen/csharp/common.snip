@@ -10,23 +10,35 @@
 
     // Generated code. DO NOT EDIT!
 
-    @join import : fileHeader.imports
-        using {@import.fullName};
+    @join fileImport : fileHeader.importSection.appImports
+        @join import : fileImport.types
+            using {@import.fullName};
+        @end
     @end
 @end
 
+# doc: ApiMethodDocView
 @snippet xmlDoc(doc)
     /// <summary>
-    @join line : doc.mainDocLines
-        /// {@line}
+    @if doc.mainDocLines
+        @join line : doc.mainDocLines
+            /// {@line}
+        @end
+    @else
+        ///
     @end
     /// </summary>
+    # param: ParamDocView
     @join param : doc.paramDocs
         @switch param.type.toString
         @case "SimpleParamDocView"
-            /// <param name="{@param.paramName}">
-            @join line : param.lines
-                /// {@line}
+            /// <param name="{@skipAtSign(param.paramName)}">
+            @if param.lines
+                @join line : param.lines
+                    /// {@line}
+                @end
+            @else
+                ///
             @end
             /// </param>
         @default
@@ -38,6 +50,22 @@
         /// {@line}
     @end
     /// </returns>
+@end
+
+@private skipAtSign(s)
+    @if s.startsWith("@")
+        {@s.substring(1)}
+    @else
+        {@s}
+    @end
+@end
+
+@snippet if(c, t, f)
+    @if c
+        {@t}
+    @else
+        {@f}
+    @end
 @end
 
 @snippet retryCodes(codes)

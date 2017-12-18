@@ -1,0 +1,24 @@
+@extends "common.snip"
+@extends "readme_rst.snip"
+@extends "py/readme_common.snip"
+
+@snippet generate(metadata)
+    {@generateIndex(metadata.readmeMetadata, metadata)}
+@end
+
+@private generateIndex(readmeMetadata, metadata)
+    {@readme(readmeMetadata, exampleMethods(readmeMetadata.exampleMethods), installationLines(readmeMetadata))}
+
+    {@apiReferences(metadata)}
+@end
+
+@private apiReferences(metadata)
+    Api Reference
+    -------------
+    .. toctree::
+        :maxdepth: 2
+
+        @join module : metadata.apiModules
+            {@module}
+        @end
+@end

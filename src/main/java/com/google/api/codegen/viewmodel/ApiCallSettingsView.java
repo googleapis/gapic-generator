@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,9 +52,7 @@ public abstract class ApiCallSettingsView {
 
   public abstract String pagedListResponseFactoryName();
 
-  public abstract String bundlingDescriptorName();
-
-  public abstract String operationResultTypeName();
+  public abstract String batchingDescriptorName();
 
   public abstract String retryCodesName();
 
@@ -67,7 +65,10 @@ public abstract class ApiCallSettingsView {
   public abstract RetryParamsDefinitionView retryParamsView();
 
   @Nullable
-  public abstract BundlingConfigView bundlingConfig();
+  public abstract BatchingConfigView batchingConfig();
+
+  @Nullable
+  public abstract LongRunningOperationDetailView operationMethod();
 
   public abstract Builder toBuilder();
 
@@ -106,11 +107,9 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder pagedListResponseFactoryName(String val);
 
-    public abstract Builder bundlingDescriptorName(String val);
+    public abstract Builder batchingDescriptorName(String val);
 
-    public abstract Builder bundlingConfig(BundlingConfigView val);
-
-    public abstract Builder operationResultTypeName(String val);
+    public abstract Builder batchingConfig(BatchingConfigView val);
 
     public abstract Builder retryCodesName(String val);
 
@@ -119,6 +118,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder retryCodesView(RetryCodesDefinitionView val);
 
     public abstract Builder retryParamsView(RetryParamsDefinitionView val);
+
+    public abstract Builder operationMethod(LongRunningOperationDetailView val);
 
     public abstract ApiCallSettingsView build();
   }

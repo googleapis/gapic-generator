@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.nodejs.JSDocCommentFixer;
-import com.google.api.codegen.py.PythonSphinxCommentFixer;
-import com.google.api.codegen.ruby.RDocCommentFixer;
+import com.google.api.codegen.util.js.JSCommentReformatter;
+import com.google.api.codegen.util.py.PythonCommentReformatter;
+import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.common.truth.Truth;
 import java.util.regex.Matcher;
 import org.junit.Test;
@@ -47,65 +47,70 @@ public class ProtoDocumentLinkTest {
   }
 
   @Test
-  public void testRDocCommentFixer() {
-    Truth.assertThat(RDocCommentFixer.rdocify("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("Shelf");
-    Truth.assertThat(RDocCommentFixer.rdocify("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("$Shelf");
+  public void testRubyCommentReformatter() {
+    RubyCommentReformatter commentReformatter = new RubyCommentReformatter();
+    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("{Google::Example::Library::V1::Shelf Shelf}");
+    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("{Google::Example::Library::V1::Shelf $Shelf}");
+    Truth.assertThat(
+            commentReformatter.reformat(
+                "[next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]"))
+        .isEqualTo(
+            "{Google::Example::Library::V1::ListShelvesResponse#next_page_token next_page_token}");
 
     // Cloud link may contain special character '$'
-    Truth.assertThat(RDocCommentFixer.rdocify("[cloud docs!](/library/example/link)"))
-        .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link]");
-    Truth.assertThat(RDocCommentFixer.rdocify("[cloud docs!](/library/example/link$)"))
-        .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link$]");
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
+        .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link)");
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
+        .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link$)");
 
     // Absolute link may contain special character '$'
-    Truth.assertThat(RDocCommentFixer.rdocify("[not a cloud link](http://www.google.com)"))
-        .isEqualTo("{not a cloud link}[http://www.google.com]");
-    Truth.assertThat(RDocCommentFixer.rdocify("[not a cloud link](http://www.google.com$)"))
-        .isEqualTo("{not a cloud link}[http://www.google.com$]");
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
+        .isEqualTo("[not a cloud link](http://www.google.com)");
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
+        .isEqualTo("[not a cloud link](http://www.google.com$)");
   }
 
   @Test
-  public void testPythonSphinxCommentFixer() {
-    Truth.assertThat(PythonSphinxCommentFixer.sphinxify("[Shelf][google.example.library.v1.Shelf]"))
+  public void testPythonCommentReformater() {
+    PythonCommentReformatter commentReformatter = new PythonCommentReformatter();
+    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("``Shelf``");
-    Truth.assertThat(
-            PythonSphinxCommentFixer.sphinxify("[$Shelf][google.example.library.v1.Shelf]"))
+    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("``$Shelf``");
 
     // Cloud link may contain special character '$'
-    Truth.assertThat(PythonSphinxCommentFixer.sphinxify("[cloud docs!](/library/example/link)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
         .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link>`_");
-    Truth.assertThat(PythonSphinxCommentFixer.sphinxify("[cloud docs!](/library/example/link$)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
         .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link$>`_");
 
     // Absolute link may contain special character '$'
-    Truth.assertThat(
-            PythonSphinxCommentFixer.sphinxify("[not a cloud link](http://www.google.com)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
         .isEqualTo("`not a cloud link <http://www.google.com>`_");
-    Truth.assertThat(
-            PythonSphinxCommentFixer.sphinxify("[not a cloud link](http://www.google.com$)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
         .isEqualTo("`not a cloud link <http://www.google.com$>`_");
   }
 
   @Test
-  public void testJSDocCommentFixer() {
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{@link Shelf}");
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{@link $Shelf}");
+  public void testJSCommentReformatter() {
+    JSCommentReformatter commentReformatter = new JSCommentReformatter();
+    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("Shelf");
+    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("$Shelf");
 
     // Cloud link may contain special character '$'
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[cloud docs!](/library/example/link)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link)");
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[cloud docs!](/library/example/link$)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link$)");
 
     // Absolute link may contain special character '$'
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[not a cloud link](http://www.google.com)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
         .isEqualTo("[not a cloud link](http://www.google.com)");
-    Truth.assertThat(JSDocCommentFixer.jsdocify("[not a cloud link](http://www.google.com$)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
         .isEqualTo("[not a cloud link](http://www.google.com$)");
   }
 }

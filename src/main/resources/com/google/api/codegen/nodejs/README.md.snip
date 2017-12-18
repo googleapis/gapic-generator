@@ -1,0 +1,23 @@
+@extends "nodejs/method_sample.snip"
+@extends "readme.snip"
+
+@snippet generate(metadata)
+  {@generateReadme(metadata.readmeMetadata)}
+@end
+
+@private generateReadme(metadata)
+  {@readme(metadata, exampleMethods(metadata.exampleMethods, metadata), installationLines(metadata))}
+@end
+
+@private exampleMethods(methods, metadata)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```js
+     {@decorateSampleCodeUnversioned(method, sampleCode(method))}
+    ```
+  @end
+@end
+
+@private installationLines(metadata)
+  $ npm install --save {@metadata.identifier}
+@end

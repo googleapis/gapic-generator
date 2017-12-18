@@ -1,4 +1,5 @@
 type: com.google.api.codegen.ConfigProto
+config_schema_version: 1.0.0
 language: go
 language_settings:
   go:
@@ -37,6 +38,18 @@ interfaces:
     timeout_millis: 1000
     request_object_method: false
   - name: LroMethod
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 1000
+    request_object_method: false
+    long_running:
+      return_type: google.example.myproto.v1.SimpleResponse
+      metadata_type: google.example.myproto.v1.SimpleResponse
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 30000
+      total_poll_timeout_millis: 86400000
+  - name: NotLroMethod
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 1000

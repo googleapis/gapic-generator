@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.auto.value.AutoValue;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /*
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
 public abstract class InitFieldConfig {
   public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
   public static final String RANDOM_TOKEN = "$RANDOM";
+  public static final Pattern RANDOM_TOKEN_PATTERN = Pattern.compile(Pattern.quote(RANDOM_TOKEN));
 
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 

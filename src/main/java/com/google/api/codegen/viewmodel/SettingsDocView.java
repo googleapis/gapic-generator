@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -36,8 +37,10 @@ public abstract class SettingsDocView {
 
   public abstract boolean hasDefaultInstance();
 
+  public abstract TransportProtocol transportProtocol();
+
   public static Builder newBuilder() {
-    return new AutoValue_SettingsDocView.Builder();
+    return new AutoValue_SettingsDocView.Builder().transportProtocol(TransportProtocol.GRPC);
   }
 
   @AutoValue.Builder
@@ -59,6 +62,8 @@ public abstract class SettingsDocView {
     public abstract Builder settingsBuilderVarName(String val);
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
+
+    public abstract Builder transportProtocol(TransportProtocol val);
 
     public abstract SettingsDocView build();
   }

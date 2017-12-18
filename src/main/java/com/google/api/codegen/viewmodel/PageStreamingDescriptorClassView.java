@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -28,8 +29,6 @@ public abstract class PageStreamingDescriptorClassView {
   public abstract String responseTypeName();
 
   public abstract String resourceTypeName();
-
-  public abstract String resourceZeroValue();
 
   public abstract String tokenTypeName();
 
@@ -45,7 +44,7 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String responseTokenGetFunction();
 
-  public abstract String resourcesFieldGetFunction();
+  public abstract List<String> resourcesFieldGetFunctions();
 
   public boolean requestHasPageSize() {
     return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
@@ -68,8 +67,6 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder resourceTypeName(String val);
 
-    public abstract Builder resourceZeroValue(String val);
-
     public abstract Builder tokenTypeName(String val);
 
     public abstract Builder defaultTokenValue(String val);
@@ -82,7 +79,7 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder responseTokenGetFunction(String val);
 
-    public abstract Builder resourcesFieldGetFunction(String val);
+    public abstract Builder resourcesFieldGetFunctions(List<String> val);
 
     public abstract PageStreamingDescriptorClassView build();
   }

@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 package com.google.api.codegen.config;
+
+import com.google.api.tools.framework.model.ProtoFile;
 
 /**
  * AnyResourceNameConfig is a singleton configuration indicating acceptance of any resource name
@@ -40,5 +42,10 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
   @Override
   public String getEntityName() {
     return ENTITY_NAME;
+  }
+
+  @Override
+  public ProtoFile getAssignedProtoFile() {
+    return null;
   }
 }

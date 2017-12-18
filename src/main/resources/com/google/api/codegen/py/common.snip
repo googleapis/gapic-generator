@@ -1,9 +1,51 @@
 @extends "common.snip"
 
-@snippet entityName(collectionConfig)
-  {@context.lowerCamelToLowerUnderscore(collectionConfig.getEntityName)}
+@snippet importList(fileImports)
+  @join fileImport : fileImports
+    @let attributeName = typeImports(fileImport.types)
+      @if attributeName
+        from {@fileImport.moduleName} import {@attributeName}
+      @else
+        import {@fileImport.moduleName}
+      @end
+    @end
+  @end
 @end
 
-@snippet formatResourceFunctionName(collectionConfig)
-  {@entityName(collectionConfig)}_path
+@private typeImports(imports)
+  @join import : imports on ", "
+    @if import.nickname
+      {@import.fullName} as {@import.nickname}
+    @else
+      {@import.fullName}
+    @end
+  @end
+@end
+
+@snippet licenseSection(fileHeader)
+    @join line : fileHeader.copyrightLines
+        @# {@line}
+    @end
+    {@BREAK}@#
+    @join line : fileHeader.licenseLines
+        @# {@line}
+    @end
+@end
+
+@snippet renderImportSection(importSection)
+    @if importSection.standardImports
+
+        {@importList(importSection.standardImports)}
+
+    @end
+    @if importSection.externalImports
+
+        {@importList(importSection.externalImports)}
+
+    @end
+    @if importSection.appImports
+
+        {@importList(importSection.appImports)}
+
+    @end
 @end

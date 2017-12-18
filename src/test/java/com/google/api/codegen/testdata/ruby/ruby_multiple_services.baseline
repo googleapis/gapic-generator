@@ -1,0 +1,1467 @@
+============== file: .gitignore ==============
+Gemfile.lock
+coverage/*
+doc/*
+pkg/*
+html/*
+jsondoc/*
+
+# Ignore YARD stuffs
+.yardoc
+
+# IDE settings
+.idea
+*.iml
+
+============== file: .rubocop.yml ==============
+AllCops:
+  Exclude:
+    - "google-example.gemspec"
+    - "lib/google/**/*"
+    - "Rakefile"
+    - "test/**/*"
+
+Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/MethodDefParentheses:
+  EnforcedStyle: require_no_parentheses
+Style/NumericLiterals:
+  Enabled: false
+Style/SpaceAroundOperators:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/EmptyLines:
+  Enabled: false
+Style/EmptyElse:
+  Enabled: false
+Style/HashSyntax:
+  Exclude:
+    - "lib/google/example/v1/**/*"
+Metrics/LineLength:
+  Exclude:
+    - "lib/google/example/v1/**/*"
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/PerceivedComplexity:
+  Max: 10
+Metrics/AbcSize:
+  Max: 25
+  Exclude:
+    - "lib/google/example/v1/**/*"
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - "lib/google/example/v1/**/*"
+Metrics/ParameterLists:
+  Enabled: false
+Style/RescueModifier:
+  Enabled: false
+Style/ClassVars:
+  Enabled: false
+Style/TrivialAccessors:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+
+============== file: .yardopts ==============
+--no-private
+--title=Google Example API
+--exclude _pb\.rb$
+--markup markdown
+
+./lib/**/*.rb
+-
+README.md
+
+============== file: Gemfile ==============
+source "https://rubygems.org"
+
+gemspec
+
+gem "rake", "~> 11.0"
+gem "gcloud-jsondoc",
+    git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
+    branch: "gcloud-jsondoc"
+
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
+# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
+# so pinning to 2.1 for now.
+gem "rainbow", "~> 2.1.0"
+
+============== file: LICENSE ==============
+                            Apache License
+                           Version 2.0, January 2004
+                        https://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       https://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+============== file: README.md ==============
+# Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+
+[Google Example API][Product Documentation]:
+This description tests descriptions that span multiple lines. This is a service
+that increments and decrements a counter.
+- [Client Library Documentation][]
+- [Product Documentation][]
+
+## Quick Start
+In order to use this library, you first need to go through the following
+steps:
+
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+
+### Installation
+```
+$ gem install google-example
+```
+
+### Next Steps
+- Read the [Client Library Documentation][] for Google Example API
+  to see other available methods on the client.
+- Read the [Google Example API Product documentation][Product Documentation]
+  to learn more about the product and see How-to Guides.
+- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  to see the full list of Cloud APIs that we cover.
+
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/multiple_services
+[Product Documentation]: https://cloud.google.com/multiple_services
+
+============== file: Rakefile ==============
+# Copyright 2017 Google LLC
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "bundler/setup"
+require "bundler/gem_tasks"
+
+require "rubocop/rake_task"
+RuboCop::RakeTask.new
+
+desc "Run tests."
+task :test do
+  $LOAD_PATH.unshift "lib", "test"
+  Dir.glob("test/**/*test.rb")
+    .reject { |file| file.include? "smoke_test" }
+    .each { |file| require_relative file }
+end
+
+namespace :test do
+  desc "Runs tests with coverage."
+  task :coverage do
+    require "simplecov"
+    SimpleCov.start do
+      command_name "google-example"
+      track_files "lib/**/*.rb"
+      add_filter "test/"
+    end
+
+    Rake::Task["test"].invoke
+  end
+end
+
+# Acceptance tests
+desc "Run the google-example acceptance tests."
+task :acceptance do
+  Rake::Task["acceptance:run"].invoke
+end
+
+namespace :acceptance do
+  task :run do
+    puts "The google-example gem does not have acceptance tests."
+  end
+
+  desc "Run acceptance tests with coverage."
+  task :coverage do
+  end
+
+  desc "Run acceptance cleanup."
+  task :cleanup do
+  end
+end
+
+require "yard"
+require "yard/rake/yardoc_task"
+YARD::Rake::YardocTask.new
+
+desc "Generates JSON output from google-example .yardoc"
+task :jsondoc => :yard do
+  require "rubygems"
+  require "gcloud/jsondoc"
+
+  registry = YARD::Registry.load! ".yardoc"
+
+  toc_config = {
+    documents: [
+      {
+        type: "toc",
+        title: "Google::Cloud::Example::V1::DataTypes",
+        modules: [
+          {
+            title: "Google::Cloud::Example::V1",
+            include: ["google/example/v1"]
+          },
+          {
+            title: "Google::Protobuf",
+            include: ["google/protobuf"]
+          },
+          {
+            title: "Google::Rpc",
+            include: ["google/rpc"]
+          }
+        ]
+      }
+    ]
+  }
+
+  generator = Gcloud::Jsondoc::Generator.new registry,
+                                             "google-example",
+                                             generate: toc_config
+  rm_rf "jsondoc", verbose: true
+  generator.write_to "jsondoc"
+  cp ["docs/toc.json"], "jsondoc", verbose: true
+end
+
+desc "Run yard-doctest example tests."
+task :doctest do
+  puts "The google-example gem does not have doctest tests."
+end
+
+desc "Run the CI build"
+task :ci do
+  header "BUILDING google-example"
+  header "google-example rubocop", "*"
+  sh "bundle exec rake rubocop"
+  header "google-example jsondoc", "*"
+  sh "bundle exec rake jsondoc"
+  header "google-example doctest", "*"
+  sh "bundle exec rake doctest"
+  header "google-example test", "*"
+  sh "bundle exec rake test"
+end
+
+
+namespace :ci do
+  desc "Run the CI build, with acceptance tests."
+  task :acceptance do
+    Rake::Task["ci"].invoke
+    header "google-example acceptance", "*"
+    sh "bundle exec rake acceptance -v"
+  end
+  task :a do
+    # This is a handy shortcut to save typing
+    Rake::Task["ci:acceptance"].invoke
+  end
+end
+
+task :default => :test
+
+def header str, token = "#"
+  line_length = str.length + 8
+  puts ""
+  puts token * line_length
+  puts "#{token * 3} #{str} #{token * 3}"
+  puts token * line_length
+  puts ""
+end
+
+============== file: google-example.gemspec ==============
+# -*- ruby -*-
+# encoding: utf-8
+
+Gem::Specification.new do |gem|
+  gem.name          = "google-example"
+  gem.version       = "0.6.8"
+
+  gem.authors       = ["Google LLC"]
+  gem.email         = "googleapis-packages@google.com"
+  gem.description   = "google-example is the official library for Google Example API."
+  gem.summary       = "API Client library for Google Example API"
+  gem.homepage      = "https://github.com/googleapis/googleapis"
+  gem.license       = "Apache-2.0"
+
+  gem.platform      = Gem::Platform::RUBY
+
+  gem.files         = `git ls-files -- lib/*`.split("\n") +
+                      ["README.md", "LICENSE", ".yardopts"]
+  gem.require_paths = ["lib"]
+
+  gem.required_ruby_version = ">= 2.0.0"
+
+  gem.add_dependency "google-gax", "~> 0.8.0"
+  gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
+  gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
+
+  gem.add_development_dependency "minitest", "~> 5.10"
+  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "simplecov", "~> 0.9"
+end
+
+============== file: lib/google/example.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "google/gax"
+require "pathname"
+
+module Google
+  # rubocop:disable LineLength
+
+  ##
+  # # Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  #
+  # [Google Example API][Product Documentation]:
+  # This description tests descriptions that span multiple lines. This is a service
+  # that increments and decrements a counter.
+  # - [Product Documentation][]
+  #
+  # ## Quick Start
+  # In order to use this library, you first need to go through the following
+  # steps:
+  #
+  # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+  # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Next Steps
+  # - Read the [Google Example API Product documentation][Product Documentation]
+  #   to learn more about the product and see How-to Guides.
+  # - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  #   to see the full list of Cloud APIs that we cover.
+  #
+  # [Product Documentation]: https://cloud.google.com/multiple_services
+  #
+  #
+  module Example
+    # rubocop:enable LineLength
+
+    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("example"))
+
+    AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
+      .select { |file| File.directory?(file) }
+      .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
+      .select { |dir| File.exist?(dir + ".rb") }
+      .map { |dir| File.basename(dir) }
+
+    module Incrementer
+      ##
+      # @param version [Symbol, String]
+      #   The major version of the service to be used. By default :v1
+      #   is used.
+      # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
+      #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #     Provides the means for authenticating requests made by the client. This parameter can
+      #     be many types.
+      #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+      #     authenticating requests made by this client.
+      #     A `String` will be treated as the path to the keyfile to be used for the construction of
+      #     credentials for this client.
+      #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #     credentials for this client.
+      #     A `GRPC::Core::Channel` will be used to make calls through.
+      #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #     should already be composed with a `GRPC::Core::CallCredentials` object.
+      #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #     metadata for requests, generally, to give OAuth credentials.
+      #   @param scopes [Array<String>]
+      #     The OAuth scopes for this service. This parameter is ignored if
+      #     an updater_proc is supplied.
+      #   @param client_config [Hash]
+      #     A Hash for call options for each method. See
+      #     Google::Gax#construct_settings for the structure of
+      #     this data. Falls back to the default config if not specified
+      #     or the specified config is missing data points.
+      #   @param timeout [Numeric]
+      #     The default timeout, in seconds, for calls made through this client.
+      def self.new(*args, version: :v1, **kwargs)
+        unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+          raise "The version: #{version} is not available. The available versions " \
+            "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+        end
+
+        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        version_module = Google::Example
+          .constants
+          .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+          .first
+        Google::Example.const_get(version_module)::Incrementer.new(*args, **kwargs)
+      end
+    end
+
+    module Decrementer
+      ##
+      # @param version [Symbol, String]
+      #   The major version of the service to be used. By default :v1
+      #   is used.
+      # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
+      #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #     Provides the means for authenticating requests made by the client. This parameter can
+      #     be many types.
+      #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+      #     authenticating requests made by this client.
+      #     A `String` will be treated as the path to the keyfile to be used for the construction of
+      #     credentials for this client.
+      #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #     credentials for this client.
+      #     A `GRPC::Core::Channel` will be used to make calls through.
+      #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #     should already be composed with a `GRPC::Core::CallCredentials` object.
+      #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #     metadata for requests, generally, to give OAuth credentials.
+      #   @param scopes [Array<String>]
+      #     The OAuth scopes for this service. This parameter is ignored if
+      #     an updater_proc is supplied.
+      #   @param client_config [Hash]
+      #     A Hash for call options for each method. See
+      #     Google::Gax#construct_settings for the structure of
+      #     this data. Falls back to the default config if not specified
+      #     or the specified config is missing data points.
+      #   @param timeout [Numeric]
+      #     The default timeout, in seconds, for calls made through this client.
+      def self.new(*args, version: :v1, **kwargs)
+        unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+          raise "The version: #{version} is not available. The available versions " \
+            "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+        end
+
+        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        version_module = Google::Example
+          .constants
+          .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+          .first
+        Google::Example.const_get(version_module)::Decrementer.new(*args, **kwargs)
+      end
+    end
+  end
+end
+
+============== file: lib/google/example/credentials.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "googleauth"
+
+module Google
+  module Example
+    class Credentials < Google::Auth::Credentials
+      SCOPE = [
+      ].freeze
+      PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+      JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+      DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
+    end
+  end
+end
+
+============== file: lib/google/example/v1.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "google/example/v1/incrementer_service_client"
+require "google/example/v1/decrementer_service_client"
+
+module Google
+  # rubocop:disable LineLength
+
+  ##
+  # # Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  #
+  # [Google Example API][Product Documentation]:
+  # This description tests descriptions that span multiple lines. This is a service
+  # that increments and decrements a counter.
+  # - [Product Documentation][]
+  #
+  # ## Quick Start
+  # In order to use this library, you first need to go through the following
+  # steps:
+  #
+  # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+  # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Next Steps
+  # - Read the [Google Example API Product documentation][Product Documentation]
+  #   to learn more about the product and see How-to Guides.
+  # - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  #   to see the full list of Cloud APIs that we cover.
+  #
+  # [Product Documentation]: https://cloud.google.com/multiple_services
+  #
+  #
+  module Example
+    module V1
+      # rubocop:enable LineLength
+
+      module Incrementer
+        ##
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        #   Provides the means for authenticating requests made by the client. This parameter can
+        #   be many types.
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+        #   authenticating requests made by this client.
+        #   A `String` will be treated as the path to the keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `GRPC::Core::Channel` will be used to make calls through.
+        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+        #   should already be composed with a `GRPC::Core::CallCredentials` object.
+        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+        #   metadata for requests, generally, to give OAuth credentials.
+        # @param scopes [Array<String>]
+        #   The OAuth scopes for this service. This parameter is ignored if
+        #   an updater_proc is supplied.
+        # @param client_config [Hash]
+        #   A Hash for call options for each method. See
+        #   Google::Gax#construct_settings for the structure of
+        #   this data. Falls back to the default config if not specified
+        #   or the specified config is missing data points.
+        # @param timeout [Numeric]
+        #   The default timeout, in seconds, for calls made through this client.
+        def self.new \
+            credentials: nil,
+            scopes: nil,
+            client_config: nil,
+            timeout: nil,
+            lib_name: nil,
+            lib_version: nil
+          kwargs = {
+            credentials: credentials,
+            scopes: scopes,
+            client_config: client_config,
+            timeout: timeout,
+            lib_name: lib_name,
+            lib_version: lib_version
+          }.select { |_, v| v != nil }
+          Google::Example::V1::IncrementerServiceClient.new(**kwargs)
+        end
+      end
+
+      module Decrementer
+        ##
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        #   Provides the means for authenticating requests made by the client. This parameter can
+        #   be many types.
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+        #   authenticating requests made by this client.
+        #   A `String` will be treated as the path to the keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `GRPC::Core::Channel` will be used to make calls through.
+        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+        #   should already be composed with a `GRPC::Core::CallCredentials` object.
+        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+        #   metadata for requests, generally, to give OAuth credentials.
+        # @param scopes [Array<String>]
+        #   The OAuth scopes for this service. This parameter is ignored if
+        #   an updater_proc is supplied.
+        # @param client_config [Hash]
+        #   A Hash for call options for each method. See
+        #   Google::Gax#construct_settings for the structure of
+        #   this data. Falls back to the default config if not specified
+        #   or the specified config is missing data points.
+        # @param timeout [Numeric]
+        #   The default timeout, in seconds, for calls made through this client.
+        def self.new \
+            credentials: nil,
+            scopes: nil,
+            client_config: nil,
+            timeout: nil,
+            lib_name: nil,
+            lib_version: nil
+          kwargs = {
+            credentials: credentials,
+            scopes: scopes,
+            client_config: client_config,
+            timeout: timeout,
+            lib_name: lib_name,
+            lib_version: lib_version
+          }.select { |_, v| v != nil }
+          Google::Example::V1::DecrementerServiceClient.new(**kwargs)
+        end
+      end
+    end
+  end
+end
+
+============== file: lib/google/example/v1/decrementer_service_client.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/googleapis/googleapis/blob/master/multiple_services.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google
+# engineers.
+#
+# The only allowed edits are to method and file documentation. A 3-way
+# merge preserves those additions if the generated source changes.
+
+require "json"
+require "pathname"
+
+require "google/gax"
+
+require "multiple_services_pb"
+require "google/example/credentials"
+
+module Google
+  module Example
+    module V1
+      # @!attribute [r] decrementer_service_stub
+      #   @return [Google::Cloud::Example::V1::DecrementerService::Stub]
+      class DecrementerServiceClient
+        attr_reader :decrementer_service_stub
+
+        # The default address of the service.
+        SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
+
+        # The default port of the service.
+        DEFAULT_SERVICE_PORT = 443
+
+        DEFAULT_TIMEOUT = 30
+
+        # The scopes needed to make gRPC calls to all of the methods defined in
+        # this service.
+        ALL_SCOPES = [
+        ].freeze
+
+
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        #   Provides the means for authenticating requests made by the client. This parameter can
+        #   be many types.
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+        #   authenticating requests made by this client.
+        #   A `String` will be treated as the path to the keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `GRPC::Core::Channel` will be used to make calls through.
+        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+        #   should already be composed with a `GRPC::Core::CallCredentials` object.
+        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+        #   metadata for requests, generally, to give OAuth credentials.
+        # @param scopes [Array<String>]
+        #   The OAuth scopes for this service. This parameter is ignored if
+        #   an updater_proc is supplied.
+        # @param client_config [Hash]
+        #   A Hash for call options for each method. See
+        #   Google::Gax#construct_settings for the structure of
+        #   this data. Falls back to the default config if not specified
+        #   or the specified config is missing data points.
+        # @param timeout [Numeric]
+        #   The default timeout, in seconds, for calls made through this client.
+        def initialize \
+            credentials: nil,
+            scopes: ALL_SCOPES,
+            client_config: {},
+            timeout: DEFAULT_TIMEOUT,
+            lib_name: nil,
+            lib_version: ""
+          # These require statements are intentionally placed here to initialize
+          # the gRPC module only when it's required.
+          # See https://github.com/googleapis/toolkit/issues/446
+          require "google/gax/grpc"
+          require "multiple_services_services_pb"
+
+          credentials ||= Google::Example::Credentials.default
+
+          if credentials.is_a?(String) || credentials.is_a?(Hash)
+            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+          end
+          if credentials.is_a?(GRPC::Core::Channel)
+            channel = credentials
+          end
+          if credentials.is_a?(GRPC::Core::ChannelCredentials)
+            chan_creds = credentials
+          end
+          if credentials.is_a?(Proc)
+            updater_proc = credentials
+          end
+          if credentials.is_a?(Google::Auth::Credentials)
+            updater_proc = credentials.updater_proc
+          end
+
+          package_version = Gem.loaded_specs['google-example'].version.version
+
+          google_api_client = "gl-ruby/#{RUBY_VERSION}"
+          google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
+          google_api_client << " grpc/#{GRPC::VERSION}"
+          google_api_client.freeze
+
+          headers = { :"x-goog-api-client" => google_api_client }
+          client_config_file = Pathname.new(__dir__).join(
+            "decrementer_service_client_config.json"
+          )
+          defaults = client_config_file.open do |f|
+            Google::Gax.construct_settings(
+              "google.cloud.example.v1.DecrementerService",
+              JSON.parse(f.read),
+              client_config,
+              Google::Gax::Grpc::STATUS_CODE_NAMES,
+              timeout,
+              errors: Google::Gax::Grpc::API_ERRORS,
+              kwargs: headers
+            )
+          end
+
+          # Allow overriding the service path/port in subclasses.
+          service_path = self.class::SERVICE_ADDRESS
+          port = self.class::DEFAULT_SERVICE_PORT
+          @decrementer_service_stub = Google::Gax::Grpc.create_stub(
+            service_path,
+            port,
+            chan_creds: chan_creds,
+            channel: channel,
+            updater_proc: updater_proc,
+            scopes: scopes,
+            &Google::Cloud::Example::V1::DecrementerService::Stub.method(:new)
+          )
+
+          @decrement = Google::Gax.create_api_call(
+            @decrementer_service_stub.method(:decrement),
+            defaults["decrement"]
+          )
+        end
+
+        # Service calls
+
+        # Decrement.
+        #
+        # @param options [Google::Gax::CallOptions]
+        #   Overrides the default settings for this call, e.g, timeout,
+        #   retries, etc.
+        # @raise [Google::Gax::GaxError] if the RPC is aborted.
+        # @example
+        #   require "google/example/v1"
+        #
+        #   decrementer_service_client = Google::Example::V1::Decrementer.new
+        #   decrementer_service_client.decrement
+
+        def decrement options: nil
+          req = Google::Cloud::Example::V1::DecrementRequest.new
+          @decrement.call(req, options)
+          nil
+        end
+      end
+    end
+  end
+end
+
+============== file: lib/google/example/v1/decrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.DecrementerService": {
+      "retry_codes": {},
+      "retry_params": {},
+      "methods": {
+        "Decrement": {
+          "timeout_millis": 10000
+        }
+      }
+    }
+  }
+}
+
+============== file: lib/google/example/v1/incrementer_service_client.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/googleapis/googleapis/blob/master/multiple_services.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google
+# engineers.
+#
+# The only allowed edits are to method and file documentation. A 3-way
+# merge preserves those additions if the generated source changes.
+
+require "json"
+require "pathname"
+
+require "google/gax"
+
+require "multiple_services_pb"
+require "google/example/credentials"
+
+module Google
+  module Example
+    module V1
+      # @!attribute [r] incrementer_service_stub
+      #   @return [Google::Cloud::Example::V1::IncrementerService::Stub]
+      class IncrementerServiceClient
+        attr_reader :incrementer_service_stub
+
+        # The default address of the service.
+        SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
+
+        # The default port of the service.
+        DEFAULT_SERVICE_PORT = 443
+
+        DEFAULT_TIMEOUT = 30
+
+        # The scopes needed to make gRPC calls to all of the methods defined in
+        # this service.
+        ALL_SCOPES = [
+        ].freeze
+
+
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        #   Provides the means for authenticating requests made by the client. This parameter can
+        #   be many types.
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+        #   authenticating requests made by this client.
+        #   A `String` will be treated as the path to the keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+        #   credentials for this client.
+        #   A `GRPC::Core::Channel` will be used to make calls through.
+        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+        #   should already be composed with a `GRPC::Core::CallCredentials` object.
+        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+        #   metadata for requests, generally, to give OAuth credentials.
+        # @param scopes [Array<String>]
+        #   The OAuth scopes for this service. This parameter is ignored if
+        #   an updater_proc is supplied.
+        # @param client_config [Hash]
+        #   A Hash for call options for each method. See
+        #   Google::Gax#construct_settings for the structure of
+        #   this data. Falls back to the default config if not specified
+        #   or the specified config is missing data points.
+        # @param timeout [Numeric]
+        #   The default timeout, in seconds, for calls made through this client.
+        def initialize \
+            credentials: nil,
+            scopes: ALL_SCOPES,
+            client_config: {},
+            timeout: DEFAULT_TIMEOUT,
+            lib_name: nil,
+            lib_version: ""
+          # These require statements are intentionally placed here to initialize
+          # the gRPC module only when it's required.
+          # See https://github.com/googleapis/toolkit/issues/446
+          require "google/gax/grpc"
+          require "multiple_services_services_pb"
+
+          credentials ||= Google::Example::Credentials.default
+
+          if credentials.is_a?(String) || credentials.is_a?(Hash)
+            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+          end
+          if credentials.is_a?(GRPC::Core::Channel)
+            channel = credentials
+          end
+          if credentials.is_a?(GRPC::Core::ChannelCredentials)
+            chan_creds = credentials
+          end
+          if credentials.is_a?(Proc)
+            updater_proc = credentials
+          end
+          if credentials.is_a?(Google::Auth::Credentials)
+            updater_proc = credentials.updater_proc
+          end
+
+          package_version = Gem.loaded_specs['google-example'].version.version
+
+          google_api_client = "gl-ruby/#{RUBY_VERSION}"
+          google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
+          google_api_client << " grpc/#{GRPC::VERSION}"
+          google_api_client.freeze
+
+          headers = { :"x-goog-api-client" => google_api_client }
+          client_config_file = Pathname.new(__dir__).join(
+            "incrementer_service_client_config.json"
+          )
+          defaults = client_config_file.open do |f|
+            Google::Gax.construct_settings(
+              "google.cloud.example.v1.IncrementerService",
+              JSON.parse(f.read),
+              client_config,
+              Google::Gax::Grpc::STATUS_CODE_NAMES,
+              timeout,
+              errors: Google::Gax::Grpc::API_ERRORS,
+              kwargs: headers
+            )
+          end
+
+          # Allow overriding the service path/port in subclasses.
+          service_path = self.class::SERVICE_ADDRESS
+          port = self.class::DEFAULT_SERVICE_PORT
+          @incrementer_service_stub = Google::Gax::Grpc.create_stub(
+            service_path,
+            port,
+            chan_creds: chan_creds,
+            channel: channel,
+            updater_proc: updater_proc,
+            scopes: scopes,
+            &Google::Cloud::Example::V1::IncrementerService::Stub.method(:new)
+          )
+
+          @increment = Google::Gax.create_api_call(
+            @incrementer_service_stub.method(:increment),
+            defaults["increment"]
+          )
+        end
+
+        # Service calls
+
+        # Increment.
+        #
+        # @param options [Google::Gax::CallOptions]
+        #   Overrides the default settings for this call, e.g, timeout,
+        #   retries, etc.
+        # @raise [Google::Gax::GaxError] if the RPC is aborted.
+        # @example
+        #   require "google/example/v1"
+        #
+        #   incrementer_service_client = Google::Example::V1::Incrementer.new
+        #   incrementer_service_client.increment
+
+        def increment options: nil
+          req = Google::Cloud::Example::V1::IncrementRequest.new
+          @increment.call(req, options)
+          nil
+        end
+      end
+    end
+  end
+end
+
+============== file: lib/google/example/v1/incrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.IncrementerService": {
+      "retry_codes": {},
+      "retry_params": {},
+      "methods": {
+        "Increment": {
+          "timeout_millis": 10000
+        }
+      }
+    }
+  }
+}
+
+============== file: test/google/example/v1/decrementer_service_client_test.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "google/gax"
+
+require "google/example"
+require "google/example/v1/decrementer_service_client"
+require "multiple_services_services_pb"
+
+class CustomTestError < StandardError; end
+
+# Mock for the GRPC::ClientStub class.
+class MockGrpcClientStub
+
+  # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
+  # @param mock_method [Proc] The method that is being mocked.
+  def initialize(expected_symbol, mock_method)
+    @expected_symbol = expected_symbol
+    @mock_method = mock_method
+  end
+
+  # This overrides the Object#method method to return the mocked method when the mocked method
+  # is being requested. For methods that aren't being tested, this method returns a proc that
+  # will raise an error when called. This is to assure that only the mocked grpc method is being
+  # called.
+  #
+  # @param symbol [Symbol] The symbol of the method being requested.
+  # @return [Proc] The proc of the requested method. If the requested method is not being mocked
+  #   the proc returned will raise when called.
+  def method(symbol)
+    return @mock_method if symbol == @expected_symbol
+
+    # The requested method is not being tested, raise if it called.
+    proc do
+      raise "The method #{symbol} was unexpectedly called during the " \
+        "test for #{@expected_symbol}."
+    end
+  end
+end
+
+class MockDecrementerServiceCredentials < Google::Example::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
+describe Google::Example::V1::DecrementerServiceClient do
+
+  describe 'decrement' do
+    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::DecrementerServiceClient#decrement."
+
+    it 'invokes decrement without error' do
+
+      # Mock Grpc layer
+      mock_method = proc do
+        nil
+      end
+      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+
+      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Decrementer.new(version: :v1)
+
+          # Call method
+          response = client.decrement
+
+          # Verify the response
+          assert_nil(response)
+        end
+      end
+    end
+
+    it 'invokes decrement with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+
+      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Decrementer.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.decrement
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+end
+============== file: test/google/example/v1/incrementer_service_client_test.rb ==============
+# Copyright 2017 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "google/gax"
+
+require "google/example"
+require "google/example/v1/incrementer_service_client"
+require "multiple_services_services_pb"
+
+class CustomTestError < StandardError; end
+
+# Mock for the GRPC::ClientStub class.
+class MockGrpcClientStub
+
+  # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
+  # @param mock_method [Proc] The method that is being mocked.
+  def initialize(expected_symbol, mock_method)
+    @expected_symbol = expected_symbol
+    @mock_method = mock_method
+  end
+
+  # This overrides the Object#method method to return the mocked method when the mocked method
+  # is being requested. For methods that aren't being tested, this method returns a proc that
+  # will raise an error when called. This is to assure that only the mocked grpc method is being
+  # called.
+  #
+  # @param symbol [Symbol] The symbol of the method being requested.
+  # @return [Proc] The proc of the requested method. If the requested method is not being mocked
+  #   the proc returned will raise when called.
+  def method(symbol)
+    return @mock_method if symbol == @expected_symbol
+
+    # The requested method is not being tested, raise if it called.
+    proc do
+      raise "The method #{symbol} was unexpectedly called during the " \
+        "test for #{@expected_symbol}."
+    end
+  end
+end
+
+class MockIncrementerServiceCredentials < Google::Example::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
+describe Google::Example::V1::IncrementerServiceClient do
+
+  describe 'increment' do
+    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::IncrementerServiceClient#increment."
+
+    it 'invokes increment without error' do
+
+      # Mock Grpc layer
+      mock_method = proc do
+        nil
+      end
+      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+
+      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Incrementer.new(version: :v1)
+
+          # Call method
+          response = client.increment
+
+          # Verify the response
+          assert_nil(response)
+        end
+      end
+    end
+
+    it 'invokes increment with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+
+      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Incrementer.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.increment
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+end

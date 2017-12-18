@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,10 +20,7 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ServiceDocView {
-
-  public abstract String firstLine();
-
-  public abstract List<String> remainingLines();
+  public abstract List<String> lines();
 
   @Nullable
   public abstract ApiMethodView exampleApiMethod();
@@ -38,15 +35,27 @@ public abstract class ServiceDocView {
 
   public abstract boolean hasDefaultInstance();
 
+  public abstract String serviceTitle();
+
   public static Builder newBuilder() {
     return new AutoValue_ServiceDocView.Builder();
   }
 
+  public String firstLine() {
+    return lines().get(0);
+  }
+
+  public List<String> remainingLines() {
+    return lines().subList(1, lines().size());
+  }
+
+  public abstract String defaultTransportProviderBuilder();
+
+  public abstract String defaultChannelProviderBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
+    public abstract Builder lines(List<String> val);
 
     public abstract Builder exampleApiMethod(ApiMethodView val);
 
@@ -59,6 +68,12 @@ public abstract class ServiceDocView {
     public abstract Builder settingsClassName(String val);
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
+
+    public abstract Builder serviceTitle(String val);
+
+    public abstract Builder defaultTransportProviderBuilder(String val);
+
+    public abstract Builder defaultChannelProviderBuilder(String val);
 
     public abstract ServiceDocView build();
   }

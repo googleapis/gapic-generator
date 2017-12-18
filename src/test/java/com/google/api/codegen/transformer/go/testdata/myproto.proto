@@ -5,9 +5,15 @@ package google.example.myproto.v1;
 import "google/longrunning/operations.proto";
 import "singleservice.proto";
 
+option go_package = "google.golang.org/genproto/googleapis/example/myproto/v1;myproto";
+
 service Gopher {
   rpc SimpleMethod(SimpleRequest) returns (SimpleResponse);
+
   rpc LroMethod(SimpleRequest) returns (google.longrunning.Operation);
+  // Returns Operation, but doesn't have long_running config in gapic.yaml
+  rpc NotLroMethod(SimpleRequest) returns (google.longrunning.Operation);
+
   rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
 

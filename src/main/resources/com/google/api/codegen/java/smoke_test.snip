@@ -61,7 +61,11 @@
 @private executeWithNoProjectID(smokeTest)
   public static void executeNoCatch() throws Exception {
     try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
-      {@methodCall(smokeTest.method)}
+      @if smokeTest.hasMethod
+        {@methodCall(smokeTest.method)}
+      @else
+        // Add your method call here.
+      @end
     }
   }
 @end
@@ -72,16 +76,16 @@
   @switch method.clientMethodType
   @case "PagedFlattenedMethod"
     {@method.responseTypeName} pagedResponse =
-        client.{@method.name}(\
+        client.{@method.clientMethodName}(\
           {@sampleMethodCallArgList(method.initCode.fieldSettings)});
     System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
   @case "FlattenedMethod"
     @if method.hasReturnValue
       {@method.responseTypeName} response = \
-        client.{@method.name}({@args(method.initCode.fieldSettings)});
+        client.{@method.clientMethodName}({@args(method.initCode.fieldSettings)});
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     @else
-      client.{@method.name}(\
+      client.{@method.clientMethodName}(\
         {@sampleMethodCallArgList(method.initCode.fieldSettings)});
     @end
   @end

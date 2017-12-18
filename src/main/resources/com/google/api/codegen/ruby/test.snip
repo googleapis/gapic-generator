@@ -1,0 +1,617 @@
+@extends "ruby/method_sample.snip"
+@extends "ruby/common.snip"
+@extends "ruby/initcode.snip"
+
+@snippet generate(apiTest)
+  {@header(apiTest.fileHeader)}
+
+  {@helpers(apiTest.testClass)}
+
+  {@testClass(apiTest.apiVersion, apiTest.testClass)}
+@end
+
+@private header(fileHeader)
+  {@license(fileHeader)}
+
+  {@importList(fileHeader.importSection.standardImports)}
+
+  {@importList(fileHeader.importSection.externalImports)}
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@private helpers(testClass)
+  class CustomTestError < StandardError; end
+
+  @# Mock for the GRPC::ClientStub class.
+  class MockGrpcClientStub
+
+    @# @@param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
+    @# @@param mock_method [Proc] The method that is being mocked.
+    def initialize(expected_symbol, mock_method)
+      @@expected_symbol = expected_symbol
+      @@mock_method = mock_method
+    end
+
+    @# This overrides the Object#method method to return the mocked method when the mocked method
+    @# is being requested. For methods that aren't being tested, this method returns a proc that
+    @# will raise an error when called. This is to assure that only the mocked grpc method is being
+    @# called.
+    @#
+    @# @@param symbol [Symbol] The symbol of the method being requested.
+    @# @@return [Proc] The proc of the requested method. If the requested method is not being mocked
+    @#   the proc returned will raise when called.
+    def method(symbol)
+      return @@mock_method if symbol == @@expected_symbol
+
+      @# The requested method is not being tested, raise if it called.
+      proc do
+        raise "The method #{symbol} was unexpectedly called during the " @\
+          "test for #{@@expected_symbol}."
+      end
+    end
+  end
+  
+  class {@testClass.mockCredentialsClassName} < {@testClass.fullyQualifiedCredentialsClassName}
+    def initialize(method_name)
+      @@method_name = method_name
+    end
+    
+    def updater_proc
+      proc do
+        raise "The method `#{@@method_name}` was trying to make a grpc request. This should not " @\
+            "happen since the grpc layer is being mocked."
+      end
+    end
+  end
+@end
+
+@private testClass(apiVersion, testClass)
+  describe {@testClass.apiClassName} do
+    @join test : testClass.testCases
+
+      describe '{@test.clientMethodName}' do
+        custom_error = CustomTestError.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
+
+        {@testCase(testClass, test)}
+
+        {@errorTestCase(testClass, test)}
+      end
+    @end
+  end
+@end
+
+@private testCase(testClass, test)
+  @switch test.grpcStreamingType
+  @case "NonStreaming"
+    @switch test.clientMethodType
+    @case "RequestObjectMethod"
+      {@requestObjectTestCase(testClass, test)}
+    @case "PagedRequestObjectMethod"
+      {@pageIterationTestCase(testClass, test)}
+    @case "OperationCallableMethod"
+      {@longrunningTestCase(testClass, test)}
+    @default
+      $unhandled case: {@test.clientMethodType.toString}$
+    @end
+  @case "ServerStreaming"
+    {@serverStreamingTest(testClass, test)}
+  @case "BidiStreaming"
+    {@bidiStreamingTest(testClass, test)}
+  @case "ClientStreaming"
+    {@clientStreamingTest(testClass, test)}
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private errorTestCase(testClass, test)
+  @switch test.grpcStreamingType
+    @case "NonStreaming"
+      {@simpleErrorTestCase(testClass, test)}
+    @case "ServerStreaming"
+      {@simpleErrorTestCase(testClass, test)}
+    @case "BidiStreaming"
+      {@clientStreamingErrorTestCase(testClass, test)}
+    @case "ClientStreaming"
+       {@clientStreamingErrorTestCase(testClass, test)}
+    @default
+      $unhandled case: {@test.grpcStreamingType.toString}$
+    @end
+@end
+
+@private requestObjectTestCase(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters
+      {@initCode(test.initCode)}
+    @end
+    @if and(initCode(test.initCode), test.hasReturnValue)
+      {@BREAK}
+    @end
+    @if test.hasReturnValue
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+      expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+    @end
+
+    @# Mock Grpc layer
+    {@mockUnaryRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        @if test.hasReturnValue
+          assert_equal(expected_response, response)
+        @else
+          assert_nil(response)
+        @end
+      end
+    end
+  end
+@end
+
+@private pageIterationTestCase(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+
+    @# Mock Grpc layer
+    {@mockUnaryRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        @join pageResponseView : test.pageStreamingResponseViews on BREAK
+          assert_equal(expected_response.{@pageResponseView.resourcesFieldGetterName}.to_a, response.to_a)
+        @end
+      end
+    end
+  end
+@end
+
+@private longrunningTestCase(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+    result = Google::Protobuf::Any.new
+    result.pack(expected_response)
+    operation = Google::Longrunning::Operation.new(
+      name: 'operations/{@test.name}',
+      done: true,
+      response: result
+    )
+
+    @# Mock Grpc layer
+    {@mockLongrunningRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        assert_equal(expected_response, response.response)
+      end
+    end
+  end
+
+  it 'invokes {@test.clientMethodName} and returns an operation error.' do
+    @if initCode(test.initCode)
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    operation_error = Google::Rpc::Status.new(
+      message: 'Operation error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}.'
+    )
+    operation = Google::Longrunning::Operation.new(
+      name: 'operations/{@test.name}',
+      done: true,
+      error: operation_error
+    )
+
+    @# Mock Grpc layer
+    {@mockLongrunningRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        assert(response.error?)
+        assert_equal(operation_error, response.error)
+      end
+    end
+  end
+@end
+
+@private serverStreamingTest(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if test.hasRequestParameters
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+
+    @# Mock Grpc layer
+    {@mockServerStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        assert_equal(1, response.count)
+        assert_equal(expected_response, response.first)
+      end
+    end
+  end
+@end
+
+@private clientStreamingTest(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+    @if test.hasReturnValue
+
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+      expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+    @end
+
+    @# Mock Grpc layer
+    {@mockClientStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@clientStreamingCall(test)}
+
+        @# Verify the response
+        @if test.hasReturnValue
+          assert_equal(expected_response, response)
+        @else
+          assert_nil(response)
+        @end
+      end
+    end
+  end
+@end
+
+@private bidiStreamingTest(testClass, test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
+
+    @# Mock Grpc layer
+    {@mockBidiStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        {@clientStreamingCall(test)}
+
+        @# Verify the response
+        assert_equal(1, response.count)
+        assert_equal(expected_response, response.first)
+      end
+    end
+  end
+@end
+
+@private simpleErrorTestCase(testClass, test)
+  it 'invokes {@test.clientMethodName} with error' do
+    @if initCode(test.initCode)
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Mock Grpc layer
+    {@mockUnaryError(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        err = assert_raises Google::Gax::GaxError do
+          {@methodCall(test)}
+        end
+
+        @# Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+@end
+
+@private clientStreamingErrorTestCase(testClass, test)
+  it 'invokes {@test.clientMethodName} with error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+
+    @# Mock Grpc layer
+    {@mockClientStreamingError(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      {@testClass.fullyQualifiedCredentialsClassName}.stub(:default, mock_credentials) do
+        {@initClient(testClass, test)}
+
+        @# Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.{@test.clientMethodName}([request])
+        end
+
+        @# Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+@end
+
+@private initClient(testClass, test)
+  client = {@test.fullyQualifiedAliasedServiceClassName}.new{@clientInitParams(testClass.clientInitOptionalParams)}
+@end
+
+@private clientInitParams(params)
+  @if params
+    ({@clientInitOptionalParams(params)})
+  @end
+@end
+
+@private clientInitOptionalParams(params)
+  @join param : params on ", "
+    {@param.key}: {@param.value}
+  @end
+@end
+
+@private mockUnaryRequest(test)
+  {@mockRequestInitLine(test)}
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    @if test.hasReturnValue
+      expected_response
+    @else
+      nil
+    @end
+  end
+@end
+
+@private mockLongrunningRequest(test)
+  {@mockRequestInitLine(test)}
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    operation
+  end
+@end
+
+@private mockUnaryError(test)
+  {@mockRequestInitLine(test)}
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    raise custom_error
+  end
+@end
+
+@private mockServerStreamingRequest(test)
+  {@mockRequestInitLine(test)}
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
+  end
+@end
+
+@private mockClientStreamingRequest(test)
+  mock_method = proc do |requests|
+    request = requests.first
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    @if test.hasReturnValue
+      expected_response
+    @else
+      nil
+    @end
+  end
+@end
+
+@private mockBidiStreamingRequest(test)
+  mock_method = proc do |requests|
+    request = requests.first
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
+  end
+@end
+
+@private mockRequestInitLine(test)
+  @if test.initCode.fieldSettings
+    mock_method = proc do |request|
+  @else
+    mock_method = proc do
+  @end
+@end
+
+@private mockClientStreamingError(test)
+  mock_method = proc do |requests|
+    @if test.asserts
+      request = requests.first
+      {@requestAsserts(test)}
+    @end
+    raise custom_error
+  end
+@end
+
+@private mockAuth(methodName, mockCredentialsClassName)
+  mock_credentials = {@mockCredentialsClassName}.new("{@methodName}")
+@end
+
+@private requestAsserts(test)
+  assert_instance_of({@test.fullyQualifiedRequestTypeName}, request)
+  @join assert : test.asserts
+    @if assert.isArray
+      {@arrayAssert(assert)}
+    @else
+      assert_equal(\
+        {@expectedValue(assert)}, \
+        request.{@assert.actualValueGetter})
+    @end
+  @end
+@end
+
+@private arrayAssert(assert)
+  @if assert.hasMessageTypeName
+    {@assert.expectedValueIdentifier} = {@assert.expectedValueIdentifier}.map do |req|
+      Google::Gax::to_proto(req, {@assert.messageTypeName})
+    end
+
+  @end
+  assert_equal(\
+      {@assert.expectedValueIdentifier}, \
+      request.{@assert.actualValueGetter})
+@end
+
+@private expectedValue(assert)
+  @if assert.hasMessageTypeName
+    Google::Gax::to_proto({@assert.expectedValueIdentifier}, {@assert.messageTypeName})
+  @else
+    {@assert.expectedValueIdentifier}
+  @end
+@end
+
+@private methodCallWithResponse(test)
+  @switch test.initCode.fieldSettings.size.toString
+  @case "0"
+    response = client.{@test.clientMethodName}
+  @case "1"
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "2"
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @default
+    response = client.{@test.clientMethodName}(
+      {@multilineArgList(test.initCode.fieldSettings)}
+    )
+  @end
+@end
+
+@private methodCall(test)
+  @switch test.initCode.fieldSettings.size.toString
+  @case "0"
+    client.{@test.clientMethodName}
+  @case "1"
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "2"
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @default
+    client.{@test.clientMethodName}(
+      {@multilineArgList(test.initCode.fieldSettings)}
+    )
+  @end
+@end
+
+@private clientStreamingCall(test)
+  @if test.hasReturnValue
+    response = client.{@test.clientMethodName}([request])
+  @else
+    client.{@test.clientMethodName}([request])
+  @end
+@end
+
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
+@private multilineArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ",".add(BREAK)
+    {@fieldSetting.identifier}
+  @end
+@end

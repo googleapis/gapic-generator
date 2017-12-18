@@ -1,33 +1,83 @@
-@extends "ruby/common.snip"
+@extends "ruby/initcode.snip"
 
 @snippet sampleCode(apiMethod)
   @@example
-  @let lines = util.getDocLines(sampleCode_(apiMethod))
+  @let lines = util.getDocLines(sampleCodeWithVersionImport(apiMethod))
     @join line : lines
       {@""}  {@line}
     @end
   @end
 @end
 
-@snippet sampleCode_(apiMethod)
-  require "{@apiMethod.initCode.apiFileName}"
+@snippet sampleCodeWithVersionImport(apiMethod)
+  require "{@apiMethod.initCode.versionIndexFileImportName}"
 
-  @join alias : apiMethod.initCode.imports
-    {@alias.nickname} = {@alias.fullName}
-  @end
+  {@versionedClientSampleCode(apiMethod)}
+@end
 
-  {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+@snippet sampleCodeWithTopLevelImport(apiMethod)
+  require "{@apiMethod.initCode.topLevelIndexFileImportName}"
+
+  {@topLevelClientSampleCode(apiMethod)}
+@end
+
+@snippet versionedClientSampleCode(apiMethod)
+  {@apiMethod.apiVariableName} = {@apiMethod.versionAliasedApiClassName}.new
+  {@sampleCodeCore(apiMethod)}
+@end
+
+@snippet topLevelClientSampleCode(apiMethod)
+  {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new
+  {@sampleCodeCore(apiMethod)}
+@end
+
+@snippet sampleCodeCore(apiMethod)
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
+
   @end
-  @switch apiMethod.type.toString
-  @case "OptionalArrayMethod"
-    {@optionalArrayMethodSampleCode(apiMethod)}
-  @case "PagedOptionalArrayMethod"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-  @default
-    $unhandledCase: {@apiMethod.type.toString}$
+  @if apiMethod.isLongRunningOperation
+    {@longRunningMethodSampleCode(apiMethod)}
+  @else
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+      {@optionalArrayMethodSampleCode(apiMethod)}
+    @case "PagedOptionalArrayMethod"
+      {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.type.toString}$
+    @end
   @end
+@end
+
+@private longRunningMethodSampleCode(apiMethod)
+
+  @# Register a callback during the method call.
+  operation = {@methodCallSampleCode(apiMethod)} do |op|
+    raise op.results.message if op.error?
+    op_results = op.results
+    @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
+  end
+
+  @# Or use the return value to register a callback.
+  operation.on_done do |op|
+    raise op.results.message if op.error?
+    op_results = op.results
+    @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
+  end
+
+  @# Manually reload the operation.
+  operation.reload!
+
+  @# Or block until the operation completes, triggering callbacks on
+  @# completion.
+  operation.wait_until_done!
 @end
 
 @private optionalArrayMethodSampleCode(apiMethod)
@@ -90,78 +140,24 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-  @let fieldSettings = apiMethod.initCode.fieldSettings
-    @if fieldSettings
-      {@apiMethod.apiVariableName}.{@apiMethod.name}\
-        ({@sampleMethodCallArgList(fieldSettings)})
-    @else
-      {@apiMethod.apiVariableName}.{@apiMethod.name}
+  @if apiMethod.initCode.fieldSettings
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode)})
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}
+  @end
+@end
+
+@snippet sampleMethodCallArgList(initCode)
+    @join fieldSetting : initCode.requiredFieldSettings on ", "
+        {@fieldSetting.identifier}
     @end
-  @end
-@end
-
-@private sampleMethodCallArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@fieldSetting.identifier}
-  @end
-@end
-
-@private initCode(initCodeSpec)
-  @join line : initCodeSpec.lines
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "MapInitLine"
-      {@initLineMap(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @default
-      $unhandledCase: {@line.lineType.toString}$
+    @if initCode.optionalFieldSettings
+        @if initCode.requiredFieldSettings
+            ,{@" "}
+        @end
+        @join fieldSetting : initCode.optionalFieldSettings on ", "
+            {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+        @end
     @end
-  @end
-@end
-
-@private initLineStructure(line)
-  {@line.identifier} = {@line.typeName}.new
-  @join fieldSetting : line.fieldSettings
-    {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
-  @end
-@end
-
-@private initLineList(line)
-  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
-@end
-
-@snippet varList(args)
-  @join arg : args on ", "
-    {@arg}
-  @end
-@end
-
-@private initLineMap(line)
-  {@line.identifier} = { {@keyVarList(line.initEntries)} }
-@end
-
-@private keyVarList(mapEntries)
-  @join mapEntry : mapEntries on ", "
-    {@mapEntry.key} => {@mapEntry.valueString}
-  @end
-@end
-
-@private initLineSimple(line)
-  {@line.identifier} = {@renderInitValue(line.initValue)}
-@end
-
-@private renderInitValue(initValue)
-  @switch initValue.type
-  @case "SimpleInitValueView"
-    {@initValue.initialValue}
-  @case "FormattedInitValueView"
-    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
-      ({@varList(initValue.formatArgs)})
-  @default
-    $unhandledCase: {@initValue.type}$
-  @end
 @end

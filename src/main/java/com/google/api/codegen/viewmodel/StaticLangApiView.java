@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,11 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangApiView {
+  @Nullable
   public abstract ServiceDocView doc();
+
+  @Nullable
+  public abstract String releaseLevelAnnotation();
 
   public abstract String name();
 
@@ -31,7 +35,10 @@ public abstract class StaticLangApiView {
   public abstract String grpcServiceName();
 
   @Nullable // Used in C#
-  public abstract String grpcTypeName();
+  public abstract String grpcTypeNameOuter();
+
+  @Nullable // Used in C#
+  public abstract String grpcTypeNameInner();
 
   @Nullable // Used in C#
   public abstract List<ReroutedGrpcView> reroutedGrpcClients();
@@ -58,6 +65,9 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  @Nullable // Used in Java
+  public abstract String stubInterfaceName();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
   }
@@ -67,13 +77,17 @@ public abstract class StaticLangApiView {
 
     public abstract Builder doc(ServiceDocView val);
 
+    public abstract Builder releaseLevelAnnotation(String val);
+
     public abstract Builder name(String val);
 
     public abstract Builder implName(String val);
 
     public abstract Builder grpcServiceName(String val);
 
-    public abstract Builder grpcTypeName(String val);
+    public abstract Builder grpcTypeNameInner(String val);
+
+    public abstract Builder grpcTypeNameOuter(String val);
 
     public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
 
@@ -96,6 +110,8 @@ public abstract class StaticLangApiView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
     public abstract StaticLangApiView build();
   }

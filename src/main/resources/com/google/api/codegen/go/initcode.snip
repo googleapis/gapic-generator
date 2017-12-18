@@ -1,0 +1,63 @@
+@snippet initCode(initCodeSpec)
+    @join line : initCodeSpec.lines
+        @switch line.lineType.toString
+        @case "StructureInitLine"
+            {@initLineStructure(line)}
+        @case "ListInitLine"
+            {@initLineList(line)}
+        @case "MapInitLine"
+            {@initLineMap(line)}
+        @case "SimpleInitLine"
+            {@initLineSimple(line)}
+        @end
+    @end
+@end
+
+@private initLineStructure(line)
+    var {@line.identifier} = {@line.typeConstructor}{
+        @join fieldSetting : line.fieldSettings
+            @if fieldSetting.isOneof
+                {@fieldSetting.oneofConfig.groupName}: &{@fieldSetting.oneofConfig.variantType}{
+                    {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+                },
+            @else
+                {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+            @end
+        @end
+    }
+@end
+
+@private initLineList(line)
+    var {@line.identifier} = []{@line.elementTypeName}{{@argList(line.elementIdentifiers)}}
+@end
+
+@private initLineMap(line)
+    var {@line.identifier} = map[{@line.keyTypeName}]{@line.valueTypeName}{
+        @join mapEntry : line.initEntries
+            {@mapEntry.key}: {@mapEntry.valueString},
+        @end
+    }
+@end
+
+@private initLineSimple(line)
+    var {@line.identifier} {@line.typeName} = {@renderInitValue(line.initValue)}
+@end
+
+@private renderInitValue(initValue)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        {@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @case "ResourceNameInitValueView"
+        {@renderResourceName(initValue)}
+    @case "ResourceNameOneofInitValueView"
+        {@initValue.resourceOneofTypeName}.from({@renderResourceName(initValue.specificResourceNameView)})
+    @end
+@end
+
+@private argList(args)
+    @join a : args on ", "
+        {@a}
+    @end
+@end

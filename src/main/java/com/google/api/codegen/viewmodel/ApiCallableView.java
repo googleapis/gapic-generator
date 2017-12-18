@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,8 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ApiCallableView {
@@ -27,10 +29,21 @@ public abstract class ApiCallableView {
 
   public abstract String responseTypeName();
 
+  @Nullable
+  public abstract String metadataTypeName();
+
+  public boolean hasMetadataTypeName() {
+    return metadataTypeName() != null;
+  }
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   public boolean isStreaming() {
     return grpcStreamingType() != GrpcStreamingType.NonStreaming;
+  }
+
+  public boolean isLongRunning() {
+    return type() == ApiCallableImplType.OperationApiCallable;
   }
 
   public abstract String name();
@@ -45,6 +58,20 @@ public abstract class ApiCallableView {
 
   // Used in C#
   public abstract String grpcClientVarName();
+
+  public abstract String methodDescriptorName();
+
+  public abstract String transportSettingsVar();
+
+  @Nullable
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
+  public boolean anyHeaderRequestParams() {
+    return headerRequestParams() != null && headerRequestParams().size() > 0;
+  }
+
+  @Nullable
+  public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_ApiCallableView.Builder()
@@ -61,6 +88,8 @@ public abstract class ApiCallableView {
 
     public abstract Builder responseTypeName(String name);
 
+    public abstract Builder metadataTypeName(String name);
+
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder name(String name);
@@ -74,6 +103,14 @@ public abstract class ApiCallableView {
     public abstract Builder settingsFunctionName(String name);
 
     public abstract Builder grpcClientVarName(String name);
+
+    public abstract Builder methodDescriptorName(String name);
+
+    public abstract Builder transportSettingsVar(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
+    public abstract Builder httpMethod(HttpMethodView val);
 
     public abstract ApiCallableView build();
   }

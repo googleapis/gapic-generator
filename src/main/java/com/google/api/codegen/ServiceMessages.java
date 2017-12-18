@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
@@ -43,7 +43,7 @@ public class ServiceMessages {
 
   /** Inputs a list of methods and returns only those which are page streaming. */
   public Iterable<Method> filterPageStreamingMethods(
-      final InterfaceConfig config, List<Method> methods) {
+      final GapicInterfaceConfig config, List<Method> methods) {
     Predicate<Method> isPageStreaming =
         new Predicate<Method>() {
           @Override
@@ -55,17 +55,30 @@ public class ServiceMessages {
     return Iterables.filter(methods, isPageStreaming);
   }
 
-  /** Inputs a list of methods and returns only those which are bundling. */
-  public Iterable<Method> filterBundlingMethods(
-      final InterfaceConfig config, List<Method> methods) {
-    Predicate<Method> isBundling =
+  /** Inputs a list of methods and returns only those which are batching. */
+  public Iterable<Method> filterBatchingMethods(
+      final GapicInterfaceConfig config, List<Method> methods) {
+    Predicate<Method> isBatching =
         new Predicate<Method>() {
           @Override
           public boolean apply(Method method) {
-            return config.getMethodConfig(method).isBundling();
+            return config.getMethodConfig(method).isBatching();
           }
         };
 
-    return Iterables.filter(methods, isBundling);
+    return Iterables.filter(methods, isBatching);
+  }
+
+  public Iterable<Method> filterLongrunningMethods(
+      final GapicInterfaceConfig config, List<Method> methods) {
+    Predicate<Method> isLongRunning =
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return config.getMethodConfig(method).isLongRunningOperation();
+          }
+        };
+
+    return Iterables.filter(methods, isLongRunning);
   }
 }

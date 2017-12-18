@@ -1,0 +1,209 @@
+@extends "ruby/common.snip"
+
+@snippet generate(metadata)
+  {@header(metadata.fileHeader)}
+
+  {@unitTestsTask(metadata)}
+  @if metadata.hasSmokeTests
+
+    {@smokeTestsTask(metadata)}
+  @end
+
+  {@acceptanceTestTask(metadata)}
+
+  {@yardTask(metadata)}
+
+  {@ciTask(metadata)}
+
+  task :default => :test
+
+  {@helpers()}
+
+@end
+
+@private header(fileHeader)
+  {@toComments(fileHeader.copyrightLines)}
+  {@toComments(fileHeader.licenseLines)}
+
+  require "bundler/setup"
+  require "bundler/gem_tasks"
+
+  require "rubocop/rake_task"
+  RuboCop::RakeTask.new
+@end
+
+@private unitTestsTask(metadata)
+  desc "Run tests."
+  task :test do
+    $LOAD_PATH.unshift "lib", "test"
+    Dir.glob("test/**/*test.rb")
+      .reject { |file| file.include? "smoke_test" }
+      .each { |file| require_relative file }
+  end
+
+  namespace :test do
+    desc "Runs tests with coverage."
+    task :coverage do
+      require "simplecov"
+      SimpleCov.start do
+        command_name "{@metadata.identifier}"
+        track_files "lib/**/*.rb"
+        add_filter "test/"
+      end
+
+      Rake::Task["test"].invoke
+    end
+  end
+@end
+
+@private smokeTestsTask(metadata)
+  desc "Runs the smoke tests."
+  task :smoke_test do
+    if ENV["{@metadata.smokeTestProjectVariable}"].nil?
+      fail "The {@metadata.smokeTestProjectVariable} environment variable must be set. "@\
+        "e.g {@metadata.smokeTestProjectVariable}=test123 rake smoke_test"
+    end
+
+    $LOAD_PATH.unshift "lib", "smoke_test"
+    Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
+  end
+
+  namespace :smoke_test do
+    desc "Runs smoke tests with coverage."
+    task :coverage do
+      require "simplecov"
+      SimpleCov.start do
+        command_name "{@metadata.identifier}"
+        track_files "lib/**/*.rb"
+        add_filter "test/"
+      end
+
+      Rake::Task["smoke_test"].invoke
+    end
+  end
+@end
+
+@private acceptanceTestTask(metadata)
+  @# Acceptance tests
+  desc "Run the {@metadata.identifier} acceptance tests."
+  task :acceptance do
+    Rake::Task["acceptance:run"].invoke
+  end
+
+  namespace :acceptance do
+    task :run do
+      @if metadata.hasSmokeTests
+        Rake::Task["smoke_test"].invoke
+      @else
+        puts "The {@metadata.identifier} gem does not have acceptance tests."
+      @end
+    end
+
+    desc "Run acceptance tests with coverage."
+    task :coverage do
+    end
+
+    desc "Run acceptance cleanup."
+    task :cleanup do
+    end
+  end
+@end
+
+@private yardTask(metadata)
+  require "yard"
+  require "yard/rake/yardoc_task"
+  YARD::Rake::YardocTask.new
+
+  desc "Generates JSON output from {@metadata.identifier} .yardoc"
+  task :jsondoc => :yard do
+    require "rubygems"
+    require "gcloud/jsondoc"
+
+    registry = YARD::Registry.load! ".yardoc"
+
+    toc_config = {
+      documents: [
+        {
+          type: "toc",
+          title: "{@metadata.versionNamespace}::DataTypes",
+          modules: [
+            {
+              title: "{@metadata.versionNamespace}",
+              include: ["{@metadata.versionPath}"]
+            },
+            {
+              title: "Google::Protobuf",
+              include: ["google/protobuf"]
+            },
+            {
+              title: "Google::Rpc",
+              include: ["google/rpc"]
+            }
+          ]
+        }
+      ]
+    }
+
+    generator = Gcloud::Jsondoc::Generator.new registry,
+                                               "{@metadata.identifier}",
+                                               generate: toc_config
+    rm_rf "jsondoc", verbose: true
+    generator.write_to "jsondoc"
+    cp ["docs/toc.json"], "jsondoc", verbose: true
+  end
+
+  desc "Run yard-doctest example tests."
+  task :doctest do
+    puts "The {@metadata.identifier} gem does not have doctest tests."
+  end
+@end
+
+@private ciTask(metadata)
+  desc "Run the CI build"
+  task :ci do
+    header "BUILDING {@metadata.identifier}"
+    header "{@metadata.identifier} rubocop", "*"
+    sh "bundle exec rake rubocop"
+    header "{@metadata.identifier} jsondoc", "*"
+    sh "bundle exec rake jsondoc"
+    header "{@metadata.identifier} doctest", "*"
+    sh "bundle exec rake doctest"
+    header "{@metadata.identifier} test", "*"
+    sh "bundle exec rake test"
+  end
+
+  @if metadata.hasSmokeTests
+    namespace :ci do
+      desc "Run the CI build, with smoke tests."
+      task :smoke_test do
+        Rake::Task["ci"].invoke
+        header "{@metadata.identifier} smoke_test", "*"
+        sh "bundle exec rake smoke_test -v"
+      end
+    end
+  @end
+
+  namespace :ci do
+    desc "Run the CI build, with acceptance tests."
+    task :acceptance do
+      Rake::Task["ci"].invoke
+      header "{@metadata.identifier} acceptance", "*"
+      sh "bundle exec rake acceptance -v"
+    end
+    task :a do
+      @# This is a handy shortcut to save typing
+      Rake::Task["ci:acceptance"].invoke
+    end
+  end
+@end
+
+@private helpers()
+  def header str, token = "#"
+    line_length = str.length + 8
+    puts ""
+    puts token * line_length
+    puts "#{token * 3} #{str} #{token * 3}"
+    puts token * line_length
+    puts ""
+  end
+@end

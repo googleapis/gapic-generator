@@ -1,32 +1,103 @@
+@extends "readme.snip"
 @extends "ruby/common.snip"
+@extends "ruby/method_sample.snip"
 
-@snippet generateFilename(file)
-  doc/{@context.getBasename(file)}.rb
-@end
+@snippet generate(doc)
+  @let body = documentChildren(doc)
+    {@license(doc.fileHeader)}
 
-@snippet generateClass(file)
-  @let body = documentChildren(file)
-    {@licenseSection()}
-
-    {@module(context.getGrpcModules(file).iterator, body) }
+    {@modules(doc.modules.iterator, body) }
   @end
 
 @end
 
-@private documentMessages(containerElement)
-  @join element : context.filterDocumentingMessages(containerElement) on BREAK.add(BREAK)
-    @let document = context.methodDocComment(element)
-      @if document
-        {@toComments(document)}
+@private modules(iterator, content)
+  @let module = iterator.next
+    @switch module.type
+    @case "TocModuleView"
+      {@tocModule(module, iterator, content)}
+    @case "ReadmeMetadataView"
+      {@readmeModule(module, iterator, content)}
+    @case "SimpleModuleView"
+      {@simpleModule(module, iterator, content)}
+    @end
+  @end
+@end
 
-      @end
-      @if or(context.filterDocumentingMessages(element), element.getEnums())
-        class {@element.getSimpleName()}
-          {@documentChildren(element)}
-        end
-      @else
-        class {@element.getSimpleName()}; end
-      @end
+@private tocModule(module, iterator, content)
+  @##
+  @# # {@module.fullName} Contents
+  @#
+  @# | Class | Description |
+  @# | ----- | ----------- |
+  @join class : module.contents
+    @# | [{@class.name}][] | {@class.description} |
+  @end
+  @#
+  @join class : module.contents
+    @# [{@class.name}]: {@class.link}
+  @end
+  @#
+  {@simpleModule(module, iterator, content)}
+@end
+
+@private readmeModule(module, iterator, content)
+  @# rubocop:disable LineLength
+
+  @##
+  {@toComments(util.getDocLines(generateReadme(module)))}
+  @#
+  @#
+  {@simpleModule(module, iterator, content)}
+@end
+
+@private generateReadme(metadata)
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@end
+
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+    {@sampleCodeWithTopLevelImport(method)}
+    ```
+  @end
+@end
+
+@private simpleModule(module, iterator, content)
+  module {@module.moduleName}
+    @if iterator.hasNext
+      {@modules(iterator, content)}
+    @else
+      {@content}
+    @end
+  end
+@end
+
+@private documentMessage(doc)
+  @if doc.lines
+    {@toComments(doc.lines)}
+
+  @end
+  @if doc.properties
+    {@propertyComments(doc.properties)}
+
+  @end
+  @if doc.elementDocs
+    class {@doc.name}
+      {@documentChildren(doc)}
+    end
+  @else
+    class {@doc.name}; end
+  @end
+@end
+
+@private propertyComments(properties)
+  @join prop : properties
+    @# @@!attribute [rw] {@prop.paramName}
+    @#   @@return [{@prop.typeName}]
+    @join line : prop.lines
+      @#     {@line}
     @end
   @end
 @end
@@ -35,62 +106,35 @@
 # files cause warnings of redefining constants.
 # TODO: add/modify special YARD tag of defining constants, instead of actually defining
 # constants in Ruby code.
-@private documentEnums(containerElement)
-  @join element : containerElement.getEnums() on BREAK.add(BREAK)
-    @let document = context.defaultComments(element)
-      @if document
-        {@toComments(document)}
+@private documentEnum(doc)
+  @if doc.lines
+    {@toComments(doc.lines)}
+
+  @end
+  module {@doc.name}
+    @join value : doc.values on BREAK.add(BREAK)
+      @if value.lines
+        {@toComments(value.lines)}
 
       @end
-      module {@element.getSimpleName()}
-        @join value : element.getValues() on BREAK.add(BREAK)
-          @let valueDocument = context.defaultComments(value)
-            @if valueDocument
-              {@toComments(valueDocument)}
-
-            @end
-            {@value.getSimpleName} = {@value.getNumber}
-          @end
-        @end
-      end
+      {@value.name} = {@value.number}
     @end
+  end
+@end
+
+@private documentChildren(doc)
+  @join child : doc.elementDocs on BREAK.add(BREAK)
+    {@documentElement(child)}
   @end
 @end
 
-@private documentChildren(containerElement)
-  @if and(context.filterDocumentingMessages(containerElement), containerElement.getEnums())
-    {@documentMessages(containerElement)}
-
-    {@documentEnums(containerElement)}
-  @else
-    @if context.filterDocumentingMessages(containerElement)
-      {@documentMessages(containerElement)}
-    @else
-      @if containerElement.getEnums()
-        {@documentEnums(containerElement)}
-      @end
-    @end
-  @end
-@end
-
-@private licenseSection()
-  @# Copyright 2016 Google Inc. All rights reserved.
-  @#
-  @# Licensed under the Apache License, Version 2.0 (the "License");
-  @# you may not use this file except in compliance with the License.
-  @# You may obtain a copy of the License at
-  @#
-  @# http://www.apache.org/licenses/LICENSE-2.0
-  @#
-  @# Unless required by applicable law or agreed to in writing, software
-  @# distributed under the License is distributed on an "AS IS" BASIS,
-  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  @# See the License for the specific language governing permissions and
-  @# limitations under the License.
-@end
-
-@private toComments(commentLines)
-  @join comment : commentLines
-    @# {@comment}
+@private documentElement(doc)
+  @switch doc.type
+  @case "GrpcMessageDocView"
+    {@documentMessage(doc)}
+  @case "GrpcEnumDocView"
+    {@documentEnum(doc)}
+  @default
+    {@unhandledCase()}
   @end
 @end

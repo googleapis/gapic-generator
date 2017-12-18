@@ -11,6 +11,7 @@
     @end
     private static MockServiceHelper serviceHelper;
     private {@xapiTest.testClass.apiClassName} client;
+    private LocalChannelProvider channelProvider;
 
     @@BeforeClass
     public static void startStaticServer() {
@@ -29,8 +30,10 @@
     @@Before
     public void setUp() throws IOException {
       serviceHelper.reset();
-      {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.defaultBuilder()
-          .setChannelProvider(serviceHelper.createChannelProvider())
+      channelProvider = serviceHelper.createChannelProvider();
+      {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
+          .setTransportChannelProvider(channelProvider)
+          .setCredentialsProvider(NoCredentialsProvider.create())
           .build();
       client = {@xapiTest.testClass.apiClassName}.create(settings);
     }
@@ -54,13 +57,22 @@
 @end
 
 @private testCase(test)
-  @switch test.serviceMethodType
-  @case "UnaryMethod"
-    {@unaryTestCase(test)}
-  @case "GrpcStreamingMethod"
-    {@grpcStreamingTestCase(test)}
-  @case "LongRunningMethod"
-    {@longRunningMethodTestCase(test)}
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ServerStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ClientStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "NonStreaming"
+      @switch test.clientMethodType
+      @case "FlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "PagedFlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "AsyncOperationFlattenedMethod"
+          {@longRunningMethodTestCase(test)}
+      @end
   @end
 @end
 
@@ -85,11 +97,11 @@
     try {
       {@initCode(test.initCode)}
 
-      client.{@test.surfaceMethodName}(\
+      client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+    } catch (InvalidArgumentException e) {
+      // Expected exception
     }
   }
 @end
@@ -117,12 +129,12 @@
     {@streamingMethodCallWithException(test)}
 
     try {
-      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
       Assert.fail("No exception thrown");
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
       StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+      Assert.assertEquals(Status.INVALID_ARGUMENT, statusException.getStatus());
     }
   }
 @end
@@ -155,13 +167,13 @@
     try {
       {@initCode(test.initCode)}
 
-      client.{@test.surfaceMethodName}(\
+      client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
-      Assert.assertEquals(ApiException.class, e.getCause().getClass());
-      ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
 
@@ -191,11 +203,11 @@
 @end
 
 @private bidiStreamingCall(test)
-  MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+  MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
-  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      client.{@test.surfaceMethodName}();
-  StreamObserver<{@test.requestTypeName}> requestObserver =
+  BidiStreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+      client.{@test.clientMethodName}();
+  ApiStreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
 
   requestObserver.onNext(request);
@@ -204,8 +216,8 @@
 @private serverStreamingCall(test)
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
-  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      client.{@test.surfaceMethodName}();
+  ServerStreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+      client.{@test.clientMethodName}();
   callable.serverStreamingCall(request, responseObserver);
 @end
 
@@ -215,14 +227,14 @@
 @end
 
 @private addException(test)
-  StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+  StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
   {@test.mockServiceVarName}.addException(exception);
 @end
 
 @private methodCall(test)
   @switch test.clientMethodType
   @case "PagedFlattenedMethod"
-    {@test.responseTypeName} pagedListResponse = client.{@test.surfaceMethodName}(\
+    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     @join pageStreamingResponseView : test.pageStreamingResponseViews
@@ -233,11 +245,11 @@
   @case "FlattenedMethod"
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
-          client.{@test.surfaceMethodName}(\
+          client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.assertEquals(expectedResponse, actualResponse);
     @else
-      client.{@test.surfaceMethodName}(\
+      client.{@test.clientMethodName}(\
             {@sampleMethodCallArgList(test.initCode.fieldSettings)});
     @end
   @default
@@ -247,7 +259,7 @@
 
 @private longRunningMethodCall(test)
   {@test.responseTypeName} actualResponse =
-      client.{@test.surfaceMethodName}(\
+      client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
   Assert.assertEquals(expectedResponse, actualResponse);
 @end
@@ -259,14 +271,28 @@
 
   @join assert : test.asserts
     @if assert.hasExpectedValueTransformFunction
-      Assert.assertEquals({@assert.expectedValueTransformFunction}(\
-        {@assert.expectedValueIdentifier}), \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasActualValueTransformFunction
+        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+          {@assert.expectedValueIdentifier}), \
+          {@assert.actualValueTransformFunction}(actualRequest.{@assert.actualValueGetter}()));
+      @else
+        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+          {@assert.expectedValueIdentifier}), \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @else
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasActualValueTransformFunction
+        "$ NOT IMPLEMENTED: hasActualValueTransformFunction == true while hasExpectedValueTransformFunction == false $";
+      @else
+        Assert.assertEquals({@assert.expectedValueIdentifier}, \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @end
   @end
+  Assert.assertTrue(
+      channelProvider.isHeaderSent(
+          ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+          GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
 @end
 
 @private sampleMethodCallArgList(fieldSettings)

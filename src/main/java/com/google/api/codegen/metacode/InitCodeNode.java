@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,12 +15,14 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
-import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -31,8 +33,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  * Represents a node in an tree of objects to be initialized.
@@ -43,13 +43,11 @@ public class InitCodeNode {
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
   private Map<String, InitCodeNode> children;
-  private TypeRef typeRef;
+  private TypeModel typeRef;
   private FieldConfig nodeFieldConfig;
   private Name identifier;
-
-  // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
-  // to MVVM)
-  private InitCodeLine initCodeLine;
+  private OneofConfig oneofConfig;
+  private String varName;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -58,6 +56,13 @@ public class InitCodeNode {
    */
   public String getKey() {
     return key;
+  }
+
+  /*
+   * Get the variable name, which may be configured differently from the key.
+   */
+  public String getVarName() {
+    return varName == null ? key : varName;
   }
 
   /*
@@ -90,9 +95,9 @@ public class InitCodeNode {
   }
 
   /*
-   * Get the TypeRef of the node.
+   * Get the TypeModel of the node.
    */
-  public TypeRef getType() {
+  public TypeModel getType() {
     return typeRef;
   }
 
@@ -111,17 +116,16 @@ public class InitCodeNode {
     return identifier;
   }
 
-  /*
-   * Get the InitCodeLine object.
-   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
-   * to MVVM)
-   */
-  public InitCodeLine getInitCodeLine() {
-    return initCodeLine;
+  public OneofConfig getOneofConfig() {
+    return oneofConfig;
   }
 
   public static InitCodeNode create(String key) {
     return new InitCodeNode(key, InitCodeLineType.Unknown, InitValueConfig.create());
+  }
+
+  public static InitCodeNode createWithName(String key, String varName) {
+    return new InitCodeNode(key, InitCodeLineType.Unknown, InitValueConfig.create(), varName);
   }
 
   public static InitCodeNode createWithValue(String key, InitValueConfig initValueConfig) {
@@ -154,7 +158,6 @@ public class InitCodeNode {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
-    root.createInitCodeLines();
     return root;
   }
 
@@ -171,10 +174,16 @@ public class InitCodeNode {
   }
 
   private InitCodeNode(String key, InitCodeLineType nodeType, InitValueConfig initValueConfig) {
+    this(key, nodeType, initValueConfig, key);
+  }
+
+  private InitCodeNode(
+      String key, InitCodeLineType nodeType, InitValueConfig initValueConfig, String varName) {
     this.key = key;
     this.lineType = nodeType;
     this.initValueConfig = initValueConfig;
     this.children = new LinkedHashMap<>();
+    this.varName = varName;
   }
 
   private void mergeChild(InitCodeNode newChild) {
@@ -220,18 +229,18 @@ public class InitCodeNode {
       // Add items in fieldSet to newSubTrees in case they were not included in
       // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
-      for (Field field : context.initFields()) {
+      for (FieldModel field : context.initFields()) {
         String nameString = field.getSimpleName();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
-          newSubTrees.add(InitCodeNode.create(nameString));
+          newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
         } else {
           newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }
       }
       // Filter subTrees using fieldSet
       Set<String> fieldSet = new HashSet<>();
-      for (Field field : context.initFields()) {
+      for (FieldModel field : context.initFields()) {
         fieldSet.add(field.getSimpleName());
       }
       for (InitCodeNode subTree : subTrees) {
@@ -250,7 +259,7 @@ public class InitCodeNode {
   }
 
   private void resolveNamesAndTypes(
-      InitCodeContext context, TypeRef type, Name suggestedName, FieldConfig fieldConfig) {
+      InitCodeContext context, TypeModel type, Name suggestedName, FieldConfig fieldConfig) {
 
     for (InitCodeNode child : children.values()) {
       validateKeyValue(type, child.key);
@@ -259,6 +268,9 @@ public class InitCodeNode {
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child),
           getChildFieldConfig(context.fieldConfigMap(), fieldConfig, type, child.key));
+      if (type.isMessage()) {
+        child.oneofConfig = type.getOneOfConfig(child.getKey());
+      }
     }
 
     SymbolTable table = context.symbolTable();
@@ -286,63 +298,12 @@ public class InitCodeNode {
     }
   }
 
-  /**
-   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
-   * to MVVM)
-   */
-  private void createInitCodeLines() {
-    if (children.size() == 0) {
-      initCodeLine = SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
-      return;
-    }
-    for (InitCodeNode childItem : children.values()) {
-      childItem.createInitCodeLines();
-    }
-    switch (lineType) {
-      case StructureInitLine:
-        List<FieldSetting> fieldSettings = new ArrayList<>();
-        for (InitCodeNode childItem : children.values()) {
-          FieldSetting fieldSetting =
-              FieldSetting.create(
-                  childItem.typeRef,
-                  childItem.identifier,
-                  childItem.initCodeLine.getIdentifier(),
-                  childItem.initCodeLine.getInitValueConfig());
-          fieldSettings.add(fieldSetting);
-        }
-        initCodeLine = StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
-        break;
-      case ListInitLine:
-        List<Name> elementIdentifiers = new ArrayList<>();
-        for (InitCodeNode childItem : children.values()) {
-          elementIdentifiers.add(childItem.initCodeLine.getIdentifier());
-        }
-        initCodeLine = ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
-        break;
-      case MapInitLine:
-        Map<String, Name> elementIdentifierMap = new LinkedHashMap<>();
-        for (InitCodeNode childItem : children.values()) {
-          elementIdentifierMap.put(childItem.key, childItem.initCodeLine.getIdentifier());
-        }
-        initCodeLine =
-            MapInitCodeLine.create(
-                typeRef.getMapKeyField().getType(),
-                typeRef.getMapValueField().getType(),
-                typeRef,
-                identifier,
-                elementIdentifierMap);
-        break;
-      default:
-        throw new IllegalArgumentException("Unexpected ParsedNodeType: " + lineType);
-    }
-  }
-
   /*
    * Validate the lineType against the typeRef that has been set, and against child objects. In the
    * case of no child objects being present, update the lineType to SimpleInitLine.
    */
   private static void validateType(
-      InitCodeLineType lineType, TypeRef typeRef, Set<String> childKeys) {
+      InitCodeLineType lineType, TypeModel typeRef, Set<String> childKeys) {
     switch (lineType) {
       case StructureInitLine:
         if (!typeRef.isMessage() || typeRef.isRepeated()) {
@@ -369,11 +330,10 @@ public class InitCodeNode {
         }
         break;
       case SimpleInitLine:
-        if (!typeRef.isPrimitive() && !typeRef.isEnum()) {
-          throw new IllegalArgumentException(
-              "typeRef " + typeRef + " not compatible with " + lineType);
+        if (childKeys.size() != 0) {
+          throw new IllegalArgumentException("node with SimpleInitLine type cannot have children");
         }
-        // Fall through to Unknown to check for no children.
+        break;
       case Unknown:
         // Any typeRef is acceptable, but we need to check that there are no children.
         if (childKeys.size() != 0) {
@@ -389,7 +349,7 @@ public class InitCodeNode {
       Name parentName, InitCodeLineType parentType, InitCodeNode child) {
     switch (parentType) {
       case StructureInitLine:
-        return Name.from(child.key);
+        return Name.anyLower(child.key);
       case MapInitLine:
         return parentName.join("item");
       case ListInitLine:
@@ -399,26 +359,26 @@ public class InitCodeNode {
     }
   }
 
-  private static void validateKeyValue(TypeRef parentType, String key) {
+  private static void validateKeyValue(TypeModel parentType, String key) {
     if (parentType.isMap()) {
-      TypeRef keyType = parentType.getMapKeyField().getType();
+      TypeModel keyType = parentType.getMapKeyField().getType();
       validateValue(keyType, key);
     } else if (parentType.isRepeated()) {
-      TypeRef keyType = TypeRef.of(Type.TYPE_UINT64);
+      TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
       validateValue(keyType, key);
     } else {
       // Don't validate message types, field will be missing for a bad key
     }
   }
 
-  private static TypeRef getChildType(TypeRef parentType, String key) {
+  private static TypeModel getChildType(TypeModel parentType, String key) {
     if (parentType.isMap()) {
       return parentType.getMapValueField().getType();
     } else if (parentType.isRepeated()) {
       // Using the Optional cardinality replaces the Repeated cardinality
       return parentType.makeOptional();
     } else if (parentType.isMessage()) {
-      for (Field field : parentType.getMessageType().getFields()) {
+      for (FieldModel field : parentType.getFields()) {
         if (field.getSimpleName().equals(key)) {
           return field.getType();
         }
@@ -434,14 +394,14 @@ public class InitCodeNode {
   private static FieldConfig getChildFieldConfig(
       Map<String, FieldConfig> fieldConfigMap,
       FieldConfig parentFieldConfig,
-      TypeRef parentType,
+      TypeModel parentType,
       String key) {
     if (parentType.isMap()) {
       return parentFieldConfig;
     } else if (parentType.isRepeated()) {
       return parentFieldConfig;
     } else if (parentType.isMessage()) {
-      for (Field field : parentType.getMessageType().getFields()) {
+      for (FieldModel field : parentType.getFields()) {
         if (field.getSimpleName().equals(key)) {
           FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
           if (fieldConfig == null) {
@@ -462,54 +422,7 @@ public class InitCodeNode {
    * Validates that the provided value matches the provided type. Throws an IllegalArgumentException
    * if the provided type is not supported or doesn't match the value.
    */
-  private static void validateValue(TypeRef type, String value) {
-    Type descType = type.getKind();
-    switch (descType) {
-      case TYPE_ENUM:
-        for (EnumValue enumValue : type.getEnumType().getValues()) {
-          if (enumValue.getSimpleName().equals(value)) {
-            return;
-          }
-        }
-        break;
-      case TYPE_BOOL:
-        String lowerCaseValue = value.toLowerCase();
-        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
-          return;
-        }
-        break;
-      case TYPE_DOUBLE:
-      case TYPE_FLOAT:
-        if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
-          return;
-        }
-        break;
-      case TYPE_INT64:
-      case TYPE_UINT64:
-      case TYPE_SINT64:
-      case TYPE_FIXED64:
-      case TYPE_SFIXED64:
-      case TYPE_INT32:
-      case TYPE_UINT32:
-      case TYPE_SINT32:
-      case TYPE_FIXED32:
-      case TYPE_SFIXED32:
-        if (Pattern.matches("[+-]?[0-9]+", value)) {
-          return;
-        }
-        break;
-      case TYPE_STRING:
-      case TYPE_BYTES:
-        Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
-        if (matcher.matches()) {
-          return;
-        }
-        break;
-      default:
-        // Throw an exception if a value is unsupported for the given type.
-        throw new IllegalArgumentException(
-            "Tried to assign value for unsupported type " + type + "; value " + value);
-    }
-    throw new IllegalArgumentException("Could not assign value '" + value + "' to type " + type);
+  private static void validateValue(TypeModel type, String value) {
+    type.validateValue(value);
   }
 }

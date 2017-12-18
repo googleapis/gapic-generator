@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,19 +18,21 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GoModelTypeNameConverter implements ModelTypeNameConverter {
+public class GoModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The import path for generated pb.go files for core-proto files. */
   private static final String CORE_PROTO_BASE = "google.golang.org/genproto/";
@@ -105,40 +107,41 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
    */
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    return getTypeName(elem, elem instanceof MessageType);
+  }
+
+  TypeName getTypeName(ProtoElement elem, boolean isPointer) {
     String importPath = elem.getFile().getProto().getOptions().getGoPackage();
-    String protoPackage = elem.getFile().getProto().getPackage();
-    String elemName = elem.getSimpleName();
-    boolean isPointer = elem instanceof MessageType;
-    return getTypeName(importPath, protoPackage, elemName, isPointer);
+    String elemName = getElemName(elem);
+    return getTypeName(importPath, elemName, isPointer);
+  }
+
+  private String getElemName(ProtoElement elem) {
+    // Fast path if we have a top-level message
+    if (elem.getParent() instanceof ProtoFile) {
+      return elem.getSimpleName();
+    }
+
+    // The number of components in the same with the layers of nesting.
+    // Init the list to something a little more than sensible.
+    List<String> nameComponents = new ArrayList<>(5);
+    while (!(elem instanceof ProtoFile)) {
+      nameComponents.add(elem.getSimpleName());
+      elem = elem.getParent();
+    }
+    Collections.reverse(nameComponents);
+    return Joiner.on("_").join(nameComponents);
   }
 
   @VisibleForTesting
-  TypeName getTypeName(String importPath, String protoPackage, String elemName, boolean isPointer) {
-    // This is out of our list of curated protos,
-    // and we don't currently have a good way to name them.
-    if (!Strings.isNullOrEmpty(importPath) && !importPath.startsWith(CORE_PROTO_BASE)) {
-      String localName = protoPackage.replace(".", "_");
-      String pointerPrefix = isPointer ? "*" : "";
-      return new TypeName(
-          Joiner.on(";").join(importPath, localName, elemName, pointerPrefix),
-          pointerPrefix + localName + "." + elemName);
-    }
-
-    // If the go_package option doesn't exist, infer it.
-    if (Strings.isNullOrEmpty(importPath)) {
-      if (protoPackage.startsWith(GOOGLE_PREFIX)) {
-        protoPackage = protoPackage.substring(GOOGLE_PREFIX.length());
-      }
-      importPath = CORE_PROTO_PATH + protoPackage.replace('.', '/');
-    }
-
+  TypeName getTypeName(String importPath, String elemName, boolean isPointer) {
     // There are two ways the import path can be formatted:
     // - "path/to/pkg"
     // - "path/to/pkg;pkgName"
     String localName = null;
     if (importPath.lastIndexOf(';') >= 0) {
       int semicolonPos = importPath.lastIndexOf(';');
-      localName = importPath.substring(semicolonPos + 1);
+      localName = importPath.substring(semicolonPos + 1) + "pb";
       importPath = importPath.substring(0, semicolonPos);
     } else {
       // The import path might be versioned:
@@ -158,23 +161,6 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
       if (localName == null) {
         throw new IllegalArgumentException("cannot find a suitable import name: " + importPath);
       }
-    }
-
-    // TODO(pongad): Remove this atrocious hack after resolving
-    // https://github.com/googleapis/googleapis/issues/161 .
-    // Context: The structure of Go "google.golang.org/genproto/googleapis/api" directory is different from
-    // the way proto files are laid out in https://github.com/googleapis/googleapis/tree/master/google/api .
-    // These files therefore needs the `go_package` option so we can generate import paths properly.
-    // This is the workaround until that can happen.
-    if (importPath.equals("google.golang.org/genproto/googleapis/api")
-        && (elemName.equals("MetricDescriptor") || elemName.equals("Metric"))) {
-      importPath = "google.golang.org/genproto/googleapis/api/metric";
-      localName = "metricpb";
-    } else if (importPath.equals("google.golang.org/genproto/googleapis/api")
-        && (elemName.equals("MonitoredResourceDescriptor")
-            || elemName.equals("MonitoredResource"))) {
-      importPath = "google.golang.org/genproto/googleapis/api/monitoredres";
-      localName = "monitoredrespb";
     }
 
     String pointerPrefix = isPointer ? "*" : "";
@@ -205,28 +191,36 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
-    return TypedValue.create(getTypeName(type), getZeroValueStr(type));
-  }
-
-  private String getZeroValueStr(TypeRef type) {
-    if (type.isRepeated() || type.isMap() || type.isMessage()) {
-      return "nil";
+  public TypedValue getSnippetZeroValue(TypeRef type) {
+    if (type.isRepeated() || type.isMap()) {
+      return TypedValue.create(getTypeName(type), "nil");
+    }
+    if (type.isEnum()) {
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
+    }
+    if (type.isMessage()) {
+      return TypedValue.create(
+          getTypeName(type), "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}");
     }
     switch (type.getKind()) {
       case TYPE_BOOL:
-        return "false";
+        return TypedValue.create(getTypeName(type), "false");
 
       case TYPE_STRING:
-        return "\"\"";
+        return TypedValue.create(getTypeName(type), "\"\"");
 
       case TYPE_BYTES:
-        return "nil";
+        return TypedValue.create(getTypeName(type), "nil");
 
       default:
         // Anything else -- numeric values.
-        return "0";
+        return TypedValue.create(getTypeName(type), "0");
     }
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override
@@ -243,7 +237,17 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by Go");
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    // Go names enums in two different ways.
+    // If the enum is nested in a message, the format is <message type>_<enum value>,
+    // respecting the C++ scoping rule used by protobuf,
+    // where enum values are scoped at the same level as the enum type, not as its children.
+    // On the other hand, if the enum is at top-level, there is no parent message,
+    // and the format is <enum type>_<enum value>
+    ProtoElement parent = type.getEnumType().getParent();
+    if (parent instanceof ProtoFile) {
+      parent = type.getEnumType();
+    }
+    return TypedValue.create(getTypeName(parent, false), "%s_" + value.getSimpleName());
   }
 }

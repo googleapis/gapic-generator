@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,13 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * MockCombinedView gathers unit-test-related classes. Used in languages that idiomatically put
@@ -34,6 +37,41 @@ public abstract class MockCombinedView implements ViewModel {
 
   public abstract List<MockServiceUsageView> mockServices();
 
+  public boolean hasGrpcStreaming() {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.grpcStreamingType() != GrpcStreamingType.NonStreaming) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean hasLongRunning() {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.clientMethodType() == ClientMethodType.OperationCallableMethod) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean hasServerStreaming() {
+    return hasStreamingType(GrpcStreamingType.ServerStreaming);
+  }
+
+  public boolean hasBidiStreaming() {
+    return hasStreamingType(GrpcStreamingType.BidiStreaming);
+  }
+
+  @Nullable
+  public abstract String localPackageName();
+
+  public abstract boolean packageHasMultipleServices();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -46,7 +84,7 @@ public abstract class MockCombinedView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockCombinedView.Builder();
+    return new AutoValue_MockCombinedView.Builder().packageHasMultipleServices(false);
   }
 
   @AutoValue.Builder
@@ -59,10 +97,25 @@ public abstract class MockCombinedView implements ViewModel {
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 
+    public abstract Builder localPackageName(String val);
+
     public abstract Builder outputPath(String val);
 
     public abstract Builder templateFileName(String val);
 
+    public abstract Builder packageHasMultipleServices(boolean val);
+
     public abstract MockCombinedView build();
+  }
+
+  private boolean hasStreamingType(GrpcStreamingType type) {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.grpcStreamingType() == type) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

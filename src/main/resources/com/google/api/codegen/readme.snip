@@ -1,0 +1,67 @@
+@extends "common.snip"
+
+@snippet readme(metadata, samples, installationLines)
+  {@title(metadata)}
+
+  {@quickStart(metadata, samples, installationLines)}
+
+  {@commonLinkDeclarations(metadata)}
+@end
+
+@private title(metadata)
+    @# {@metadata.targetLanguage} Client{@simplePlurality(metadata.hasMultipleServices)} for \
+    {@metadata.fullName} ([{@metadata.developmentStatusTitle}]({@metadata.versioningDocumentationLink}))
+
+    [{@metadata.fullName}][Product Documentation]:
+    {@wrapLines(@metadata.apiSummary)}
+  @if metadata.libraryDocumentationLink
+    - [Client Library Documentation][]
+  @end
+  - [Product Documentation][]
+@end
+
+@private quickStart(metadata, samples, installationLines)
+  @## Quick Start
+  In order to use this library, you first need to go through the following
+  steps:
+
+  1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  3. [Enable the {@metadata.fullName}.](https://console.cloud.google.com/apis/api/{@metadata.shortName})
+  4. [Setup Authentication.]({@metadata.authDocumentationLink})
+
+  @if installationLines
+    @### Installation
+    ```
+    {@installationLines}
+    ```
+
+  @end
+  @if samples
+    @### Preview
+    {@samples}
+
+  @end
+  @### Next Steps
+  @if metadata.libraryDocumentationLink
+    - Read the [Client Library Documentation][] for {@metadata.fullName}
+      to see other available methods on the client.
+  @end
+  - Read the [{@metadata.fullName} Product documentation][Product Documentation]
+    to learn more about the product and see How-to Guides.
+  - View this [repository's main README]({@metadata.mainReadmeLink})
+    to see the full list of Cloud APIs that we cover.
+@end
+
+@private commonLinkDeclarations(metadata)
+  @if metadata.libraryDocumentationLink
+    [Client Library Documentation]: {@metadata.libraryDocumentationLink}{@BREAK}
+  @end
+  [Product Documentation]: https://cloud.google.com/{@metadata.shortName}
+@end
+
+@private wrapLines(text)
+  @join line : util.getDocLines(text, 80)
+    {@line}
+  @end
+@end

@@ -1,0 +1,70 @@
+@extends "nodejs/method_sample.snip"
+
+@snippet generate(smokeTest)
+  {@header(smokeTest.fileHeader)}
+
+  {@smokeTest(smokeTest)}
+@end
+
+@private header(fileHeader)
+  {@lineComments(fileHeader.copyrightLines)}
+  //
+  {@lineComments(fileHeader.licenseLines)}
+
+  'use strict';
+@end
+
+@private smokeTest(smokeTest)
+  describe('{@smokeTest.name}', () => {
+    @if smokeTest.requireProjectId
+      if (!process.env.SMOKE_TEST_PROJECT) {
+        throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+      }
+      var projectId = process.env.SMOKE_TEST_PROJECT;
+
+    @end
+    @switch smokeTest.apiMethod.type.toString
+    @case "OptionalArrayMethod"
+      # The longrunning operation and paged methods need to access the samples directly because
+      # the samples have two method calls that need to be wrapped by mocha.
+      @if smokeTest.apiMethod.isLongRunningOperation
+        {@smokeTestBody(smokeTest, \
+            "successfully makes a call to the service", \
+            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, additionalCallback)})}
+
+        {@smokeTestBody(smokeTest, \
+            "successfully makes a call to the service", \
+            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, additionalCallback)})}
+    @else
+        {@smokeTestBody(smokeTest, \
+            "successfully makes a call to the service", \
+            {@sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}}
+      @end
+    @case "PagedOptionalArrayMethod"
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service using promises", \
+          {@methodCallSampleCodeForPagedResponseIterative(smokeTest.apiMethod, mochaCompletedCallback())})}
+
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service using callbacks", \
+          {@methodCallSampleCodeForPagedResponse(smokeTest.apiMethod, mochaCompletedCallback())})}
+
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service using streaming", \
+          {sampleCodePageStreaming(smokeTest.apiMethod, mochaCompletedCallback())})}
+    @default
+        $unhandledCase: {@smokeTest.apiMethod.type.toString}$
+    @end
+  });
+
+@end
+
+@private smokeTestBody(smokeTest, description, sampleCode)
+ it('{@description}', {@mochaCompletedCallback()} => {
+   {@decorateSampleCode(smokeTest.apiMethod, {@sampleCode})}
+ });
+@end
+
+@private mochaCompletedCallback()
+  done
+@end

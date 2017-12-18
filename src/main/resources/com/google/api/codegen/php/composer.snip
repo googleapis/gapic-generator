@@ -1,0 +1,33 @@
+@snippet generate(metadata)
+  {
+    "name": "{@metadata.identifier}",
+    "version": "{@metadata.packageVersionBound.lower}",
+    "author": "Google LLC",
+    "url": "{@metadata.homepage}",
+    "description": "{@metadata.fullName} client for PHP",
+    "require": {
+      @join packageDep : metadata.dependencies
+          "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
+      @end
+      "php" : "^5.5 || ^7.0"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "^5.7"
+    },
+    "license": "Apache-2.0",
+    "autoload": {
+      "psr-4": {
+        "Google\\Cloud\\": "src",
+        "Google\\Cloud\\Tests\\": "tests",
+        "Google\\Cloud\\Tests\\System\\": "tests/system",
+        "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
+        "": "proto/src"
+      }
+    },
+    "scripts": {
+      "test": [
+        "phpunit tests"
+      ]
+    }
+  }
+@end

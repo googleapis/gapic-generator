@@ -1,46 +1,105 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
+    @if apiMethod.hasApiVersion
+        const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
+
+        var client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({
+          // optional auth parameters.
+        });
+
+        {@coreSampleCode}
+    @else
+        {@decorateSampleCodeUnversioned(apiMethod, coreSampleCode)}
+    @end
+@end
+
+@snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
+    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
+
+    var client = {@apiMethod.localPackageName}.{@apiMethod.apiClassName}({
+      // optional auth parameters.
+    });
+
     {@coreSampleCode}
 @end
 
 @snippet sampleCode(apiMethod)
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
+        {@optionalArrayMethodSampleCode(apiMethod, empty())}
     @case "PagedOptionalArrayMethod"
-        {@initCode(apiMethod)}
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+        {@pagedOptionalArrayMethodSampleCode(apiMethod, empty())}
+    @default
+        $unhandledCase: {@apiMethod.type.toString}$
+    @end
+@end
+
+@private empty()
+@end
+
+@snippet sampleCode(apiMethod, additionalCallback)
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+        {@optionalArrayMethodSampleCode(apiMethod, additionalCallback)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
 @snippet sampleCodePageStreaming(apiMethod)
-    {@initCode(apiMethod)}
-    api.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
-        // doThingsWith(element)
-    }).on('error', funciton(err) {
-        console.error(err);
-    });
+    {@sampleCodePageStreaming(apiMethod, empty())}
 @end
 
-@private clientStreamingSampleCode(apiMethod)
-    var stream = api.{@apiMethod.name}(function(err, response) {
+@snippet sampleCodePageStreaming(apiMethod, additionalCallback)
+    {@initCode(apiMethod)}
+    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)})
+      @if additionalCallback
+        .on('data', element => {
+          console.log(element);
+        })
+        .on('error', {@additionalCallback})
+        .on('end', {@additionalCallback});
+      @else
+        .on('data', element => {
+          // doThingsWith(element)
+        }).on('error', err => {
+          console.log(err);
+        });
+      @end
+@end
+
+@private clientStreamingSampleCode(apiMethod, additionalCallback)
+    var stream = client.{@apiMethod.name}((err, response) => {
+      @if additionalCallback
         if (err) {
-            console.error(err);
-            return;
+          {@additionalCallback}(err);
+          return;
+        }
+        console.log(response);
+        {@additionalCallback}();
+      @else
+        if (err) {
+          console.error(err);
+          return;
         }
         // doThingsWith(response)
+      @end
     });
     {@initCode(apiMethod)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@private bidiStreamingSampleCode(apiMethod)
-    var stream = api.{@apiMethod.name}().on('data', function(response) {
-        // doThingsWith(response);
+@private bidiStreamingSampleCode(apiMethod, additionalCallback)
+    var stream = client.{@apiMethod.name}().on('data', response => {
+      @if additionalCallback
+        console.log(response);
+        {@additionalCallback}();
+      @else
+        // doThingsWith(response)
+      @end
     });
     {@initCode(apiMethod)}
     {@sampleWriteStreamingRequest(apiMethod)}
@@ -51,44 +110,39 @@
     stream.write(request);
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private optionalArrayMethodSampleCode(apiMethod, additionalCallback)
     @switch apiMethod.grpcStreamingType.toString
     @case "ServerStreaming"
-        {@initCode(apiMethod)}
-        {@methodCallSampleCode(apiMethod)}.on('data', function(response) {
-            // doThingsWith(response)
-        });
-    @case "ClientStreaming"
-        {@clientStreamingSampleCode(apiMethod)}
-    @case "BidiStreaming"
-        {@bidiStreamingSampleCode(apiMethod)}
-    @case "NonStreaming"
-        {@initCode(apiMethod)}
-        @if apiMethod.hasReturnValue
-            {@methodCallSampleCodeWithReturnValue(apiMethod)};
+      {@initCode(apiMethod)}
+      {@methodCallSampleCode(apiMethod)}.on('data', response => {
+        @if additionalCallback
+          console.log(response);
+          {@additionalCallback}();
         @else
-            {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+          // doThingsWith(response)
         @end
+      });
+    @case "ClientStreaming"
+      {@clientStreamingSampleCode(apiMethod, additionalCallback)}
+    @case "BidiStreaming"
+      {@bidiStreamingSampleCode(apiMethod, additionalCallback)}
+    @case "NonStreaming"
+      @if apiMethod.hasReturnValue
+        {@methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)}
+      @else
+        {@methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)}
+      @end
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
-    // Iterate over all elements.
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-        var resources = responses[0];
-        for (var i = 0; i < resources.length; ++i) {
-            // doThingsWith(resources[i])
-        }
-    }).catch(function(err) {
-        console.error(err);
-    });
+@private pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)}
 
-    // Or obtain the paged response.
-    {@methodCallSampleCodeForPagedResponse(apiMethod)}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)}
 @end
 
 @private methodCallSampleCode(apiMethod)
-    api.{@apiMethod.name}(\
+    client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
@@ -99,84 +153,205 @@
     @end
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod)
+@snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
+  // Iterate over all elements.
+  @if initCode(apiMethod)
+    {@initCode(apiMethod)}
+
+  @end
+  {@methodCallSampleCodePrefix(apiMethod)}
+    .then(responses => {
+      var resources = responses[0];
+      for (let i = 0; i < resources.length; i += 1) {
+        @if additionalCallback
+          console.log(resources[i]);
+        @else
+          // doThingsWith(resources[i])
+        @end
+      }
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
+
+@snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
+    // Or obtain the paged response.
+    # TODO(landrito) figure out how to remove this repetition for method samples.
+    @if initCode(apiMethod)
+      {@initCode(apiMethod)}
+
+    @end
+
     var options = {autoPaginate: false};
-    function callback(responses) {
-        // The actual resources in a response.
-        var resources = responses[0];
-        // The next request if the response shows there's more responses.
-        var nextRequest = responses[1];
-        // The actual response object, if necessary.
-        // var rawResponse = responses[2];
-        for (var i = 0; i < resources.length; ++i) {
-            // doThingsWith(resources[i]);
-        }
-        if (nextRequest) {
-            // Fetch the next page.
-            return api.{@apiMethod.name}(nextRequest, options).then(callback);
-        }
+    var callback = responses => {
+      // The actual resources in a response.
+      var resources = responses[0];
+      // The next request if the response shows that there are more responses.
+      var nextRequest = responses[1];
+      // The actual response object, if necessary.
+      // var rawResponse = responses[2];
+      for (let i = 0; i < resources.length; i += 1) {
+        @if additionalCallback
+          console.log(resources[i]);
+        @else
+          // doThingsWith(resources[i]);
+        @end
+      }
+      if (nextRequest) {
+        // Fetch the next page.
+        return client.{@apiMethod.name}(nextRequest, options).then(callback);
+      }
     }
-    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
-        .then(callback)
-        .catch(function(err) {
-            console.error(err);
-        });
+    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+      .then(callback)
+      {@promiseCallbacks(additionalCallback)}
 @end
 
 @private methodCallSampleCodePrefix(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)})
-    @else
-        api.{@apiMethod.name}()
-    @end
+  @if sampleMethodCallArgList(apiMethod)
+    client.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod)})
+  @else
+    client.{@apiMethod.name}()
+  @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod)
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+@private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
+  @if apiMethod.isLongRunningOperation
+    # TODO(landrito) figure out how to remove initcode repetition for method samples.
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
+
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
+  @else
+    {@initCode(apiMethod)}
+    {@methodCallSampleCodePrefix(apiMethod)}
+      .then(responses => {
         var response = responses[0];
-        // doThingsWith(response)
-    }).catch(function(err) {
-        console.error(err);
-    })
+        @if additionalCallback
+          console.log(response);
+        @else
+          // doThingsWith(response)
+        @end
+      })
+      {@promiseCallbacks(additionalCallback)}
+  @end
 @end
 
-@private methodCallSampleCodeWithoutReturnValue(apiMethod)
-    {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
-        console.error(err);
+@snippet methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
+  {@initCode(apiMethod)}
+
+  // Handle the operation using the promise pattern.
+  {@methodCallSampleCodePrefix(apiMethod)}
+    .then(responses => {
+      var operation = responses[0];
+      var initialApiResponse = responses[1];
+      @if additionalCallback
+        console.log(operation);
+        console.log(initialApiResponse);
+      @end
+
+      // Operation@#promise starts polling for the completion of the LRO.
+      return operation.promise();
     })
+    .then(responses => {
+      // The final result of the operation.
+      var result = responses[0];
+
+      // The metadata value of the completed operation.
+      var metadata = responses[1];
+
+      // The response of the api call returning the complete operation.
+      var finalApiResponse = responses[2];
+      @if additionalCallback
+
+        console.log(result);
+        console.log(metadata);
+        console.log(finalApiResponse);
+      @end
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
+
+@snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)
+  {@initCode(apiMethod)}
+
+  // Handle the operation using the event emitter pattern.
+  {@methodCallSampleCodePrefix(apiMethod)}
+    .then(responses => {
+      var operation = responses[0];
+      var initialApiResponse = responses[1];
+
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        @if additionalCallback
+          console.log(result);
+        @else
+          // doSomethingWith(result);
+        @end
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        @if additionalCallback
+          console.log(metadata);
+        @else
+          // doSomethingWith(metadata)
+        @end
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
+
+@private methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)
+    {@initCode(apiMethod)}
+    @if additionalCallback
+      {@methodCallSampleCodePrefix(apiMethod)}
+        .then(console.log)
+        .then({@additionalCallback})
+        .catch({@additionalCallback});
+    @else
+      {@methodCallSampleCodePrefix(apiMethod)}.catch(err => {
+        console.error(err);
+      });
+    @end
 @end
 
 @private initCode(apiMethod)
-    {@initCodeLines(apiMethod.initCode)}
-    @if initializeRequestObject(apiMethod)
-        {@initializeRequestObject(apiMethod)}
-    @end
+  {@initCodeLines(apiMethod.initCode)}
+  @if initializeRequestObject(apiMethod)
+    {@initializeRequestObject(apiMethod)}
+  @end
 @end
 
-@private initCodeLines(initCode)
-    @join line : initCode.lines
-        @switch line.lineType.toString
-        @case "StructureInitLine"
-            {@initLineStructure(line)}
-        @case "ListInitLine"
-            {@initLineList(line)}
-        @case "MapInitLine"
-            {@initLineMap(line)}
-        @case "SimpleInitLine"
-            {@initLineSimple(line)}
-        @default
-            $unhandledCase: {@line.lineType.toString}$
-        @end
+@snippet initCodeLines(initCode)
+  @join line : initCode.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
     @end
+  @end
 @end
 
 @private initLineStructure(line)
-    var {@line.identifier} = {
-        @join fieldSetting : line.fieldSettings on ",".add(BREAK)
-            {@fieldSetting.identifier} : {@fieldSetting.identifier}
-        @end
-    };
+  var {@line.identifier} = {
+    @join fieldSetting : line.fieldSettings on BREAK
+      {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+    @end
+  };
 @end
 
 @private initLineList(line)
@@ -184,47 +359,47 @@
 @end
 
 @snippet varList(args)
-    @join arg : args on ", "
-        {@arg}
-    @end
+  @join arg : args on ", "
+    {@arg}
+  @end
 @end
 
 @private initLineMap(line)
-    var {@line.identifier} = {{@keyVarList(line.initEntries)}};
+  var {@line.identifier} = {{@keyVarList(line.initEntries)}};
 @end
 
 @private keyVarList(mapEntries)
-    @join mapEntry : mapEntries vertical
-        {@mapEntry.key} : {@mapEntry.valueString},
-    @end
+  @join mapEntry : mapEntries vertical
+    {@mapEntry.key} : {@mapEntry.valueString},
+  @end
 @end
 
 @private initLineSimple(line)
-    var {@line.identifier} = {@renderInitValue(line.initValue)};
+  var {@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
 @private renderInitValue(initValue)
-    @switch initValue.type
-    @case "SimpleInitValueView"
-        {@initValue.initialValue}
-    @case "FormattedInitValueView"
-        api.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
-    @default
-        $unhandledCase: {@initValue.type}$
-    @end
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
 @end
 
 @private sampleMethodCallArgList(apiMethod)
-    @switch apiMethod.requiredRequestObjectParams.size.toString
-    @case "0"
-        {}
-    @case "1"
-        @let field = apiMethod.initCode.fieldSettings.get(0)
-            {{@field.requestFieldName}: {@field.identifier}}
-        @end
-    @default
-        request
+  @switch apiMethod.requiredRequestObjectParams.size.toString
+  @case "0"
+    {}
+  @case "1"
+    @let field = apiMethod.initCode.fieldSettings.get(0)
+      {{@field.fieldName}: {@field.identifier}}
     @end
+  @default
+    request
+  @end
 @end
 
 @private initializeRequestObject(apiMethod)
@@ -232,10 +407,21 @@
     @case "0"
     @case "1"
     @default
-        var request = {
-        @join fieldSetting : apiMethod.initCode.fieldSettings on ", ".add(BREAK)
-            {@""}    {@fieldSetting.requestFieldName}: {@fieldSetting.identifier}
+      var request = {
+        @join fieldSetting : apiMethod.initCode.fieldSettings on BREAK
+          {@fieldSetting.fieldName}: {@fieldSetting.identifier},
         @end
-        };
+      };
+    @end
+@end
+
+@private promiseCallbacks(additionalCallback)
+    @if additionalCallback
+      .then({@additionalCallback})
+      .catch({@additionalCallback});
+    @else
+      .catch(err => {
+        console.error(err);
+      });
     @end
 @end

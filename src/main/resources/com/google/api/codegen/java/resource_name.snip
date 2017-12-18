@@ -1,0 +1,178 @@
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
+
+  @@Generated("by GAPIC")
+  @@BetaApi
+  {@nameClassDef(apiFile.resourceName)}
+@end
+
+@private nameClassDef(resourceName)
+  public final class {@resourceName.typeName} implements ResourceName {
+    {@members(resourceName)}
+
+    {@constructors(resourceName)}
+
+    {@getters(resourceName)}
+
+    {@staticMethods(resourceName)}
+
+    {@builder(resourceName)}
+
+    {@toString(resourceName)}
+
+    {@equalsMethod(resourceName)}
+
+    {@hashCode(resourceName)}
+  }
+
+@end
+
+@private members(resourceName)
+  @join property : resourceName.pathParams
+    private final {@property.typeName} {@property.name};
+  @end
+
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("{@resourceName.pathTemplate}");
+@end
+
+@private staticMethods(resourceName)
+  public static {@resourceName.typeName} parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "{@resourceName.typeName}.parse: formattedString not in valid format");
+    return of(
+      @join param : resourceName.pathParams on ",".add(BREAK)
+        matchMap.get("{@param.name}")
+      @end
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @@Override
+  public ResourceNameType getType() {
+    return {@resourceName.nameTypeName}.instance();
+  }
+@end
+
+@private getTypeFunction(resourceName)
+  @@Override
+  public ResourceNameType getType() {
+    return {@resourceName.nameType}.instance();
+  }
+@end
+
+@private toString(resourceName)
+  @@Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        @join property : resourceName.pathParams on ",".add(BREAK)
+          "{@property.name}", {@property.name}
+        @end
+        );
+  }
+@end
+
+@private equalsMethod(resourceName)
+  @@Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof {@resourceName.typeName}) {
+      {@resourceName.typeName} that = ({@resourceName.typeName}) o;
+      return
+          @join param : resourceName.pathParams on " &&".add(BREAK)
+            Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
+          @end
+          ;
+    }
+    return false;
+  }
+@end
+
+@private hashCode(resourceName)
+  @@Override
+  public int hashCode() {
+    return Objects.hash(
+      @join pathParams : resourceName.pathParams on ", ".add(BREAK)
+        {@pathParams.name}
+      @end
+    );
+  }
+@end
+
+@private getters(resourceName)
+  @join param : resourceName.pathParams
+    public {@param.typeName} {@param.fieldGetFunction}() {
+      return {@param.name};
+    }
+
+  @end
+@end
+
+@private constructors(resourceName)
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private {@resourceName.typeName}(Builder builder) {
+    @join param : resourceName.pathParams
+      {@param.name} = Preconditions.checkNotNull(builder.{@param.fieldGetFunction}());
+    @end
+  }
+
+  public static {@resourceName.typeName} of(
+      @join param : resourceName.pathParams on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      ) {
+    return newBuilder()
+    @join param : resourceName.pathParams
+      .{@param.fieldSetFunction}({@param.name})
+    @end
+      .build();
+  }
+@end
+
+@private builder(resourceName)
+  public static class Builder {
+    @join param : resourceName.pathParams
+      private {@param.typeName} {@param.name};
+    @end
+
+    @join property : resourceName.pathParams
+      public {@property.typeName} {@property.fieldGetFunction}() {
+        return {@property.name};
+      }
+    @end
+
+    @join property: resourceName.pathParams
+      public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
+        this.{@property.name} = {@property.name};
+        return this;
+      }
+    @end
+
+    private Builder() {}
+
+    public Builder ({@resourceName.typeName} {@resourceName.name}) {
+      @join property : resourceName.pathParams
+        {@property.name} = {@resourceName.name}.{@property.name};
+      @end
+    }
+
+    public {@resourceName.typeName} build() {
+      return new {@resourceName.typeName}(this);
+    }
+  }
+@end

@@ -1,0 +1,33 @@
+@snippet generate(metadata)
+  @# -*- ruby -*-
+  @# encoding: utf-8
+
+  Gem::Specification.new do |gem|
+    gem.name          = "{@metadata.identifier}"
+    gem.version       = "{@metadata.packageVersionBound.lower}"
+
+    gem.authors       = ["{@metadata.author}"]
+    gem.email         = "{@metadata.email}"
+    gem.description   = "{@metadata.identifier} is the official library for {@metadata.fullName}."
+    gem.summary       = "API Client library for {@metadata.fullName}"
+    gem.homepage      = "{@metadata.homepage}"
+    gem.license       = "{@metadata.licenseName}"
+
+    gem.platform      = Gem::Platform::RUBY
+
+    gem.files         = `git ls-files -- lib/*`.split("\n") +
+                        ["README.md", "LICENSE", ".yardopts"]
+    gem.require_paths = ["lib"]
+
+    gem.required_ruby_version = ">= 2.0.0"
+
+    @join dep : metadata.dependencies
+      gem.add_dependency "{@dep.name}", "~> {@dep.versionBound.lower}"
+    @end
+
+    gem.add_development_dependency "minitest", "~> 5.10"
+    gem.add_development_dependency "rubocop", "<= 0.35.1"
+    gem.add_development_dependency "simplecov", "~> 0.9"
+  end
+
+@end

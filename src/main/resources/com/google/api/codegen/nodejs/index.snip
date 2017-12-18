@@ -1,0 +1,18 @@
+@extends "nodejs/common.snip"
+
+@snippet generate(index)
+  {@lineComments(index.fileHeader.copyrightLines)}
+  //
+  {@lineComments(index.fileHeader.licenseLines)}
+
+  'use strict';
+
+  @join client : index.requireViews
+    const {@client.clientName} = require('./{@client.fileName}');
+  @end
+
+  @join client : index.requireViews
+    module.exports.{@client.clientName} = {@client.clientName};
+  @end
+
+@end

@@ -1,0 +1,175 @@
+@extends "readme.snip"
+@extends "ruby/common.snip"
+@extends "ruby/method_sample.snip"
+
+@snippet generate(index)
+  {@license(index.fileHeader)}
+
+  @switch index.type.toString
+  @case "VersionIndex"
+    @join requireView : {@index.requireViews}
+        require "{@requireView.fileName}"
+    @end
+
+
+  @case "TopLevelIndex"
+    require "google/gax"
+    require "pathname"
+
+  @default
+  @end
+  @if index.modules
+    {@modules(index.modules.iterator, index.type, body(index))}
+  @end
+
+@end
+
+@private modules(iterator, indexType, content)
+  @let module = iterator.next
+    @switch module.type
+    @case "ReadmeMetadataView"
+      {@readmeModule(indexType, module, iterator, content)}
+    @case "SimpleModuleView"
+      {@simpleModule(indexType, module, iterator, content)}
+    @end
+  @end
+@end
+
+@private readmeModule(indexType, module, iterator, content)
+  @# rubocop:disable LineLength
+
+  @##
+  {@toComments(util.getDocLines(generateReadme(indexType, module)))}
+  @#
+  @#
+  {@simpleModule(indexType, module, iterator, content)}
+@end
+
+@private simpleModule(indexType, module, iterator, content)
+  module {@module.moduleName}
+    @if iterator.hasNext
+      {@modules(iterator, indexType, content)}
+    @else
+      @# rubocop:enable LineLength
+
+      {@content}
+    @end
+  end
+@end
+
+@private generateReadme(indexType, metadata)
+  {@readme(metadata, exampleMethods(indexType, metadata.exampleMethods), "")}
+@end
+
+@private exampleMethods(indexType, methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+    @switch indexType.toString
+    @case "VersionIndex"
+      {@sampleCodeWithVersionImport(method)}
+    @case "TopLevelIndex"
+      {@sampleCodeWithTopLevelImport(method)}
+    @default
+    @end
+    ```
+  @end
+@end
+
+@private body(index)
+  @if constants(index)
+    {@constants(index)}
+
+  @end
+  @join requireView : index.requireViews on BREAK.add(BREAK)
+    @if index.hasMultipleServices
+      module {@requireView.serviceName}
+        {@client(index, requireView)}
+      end
+    @else
+      {@client(index, requireView)}
+    @end
+  @end
+@end
+
+@private constants(index)
+  @switch index.type.toString
+  @case "TopLevelIndex"
+    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionFileBasePath}"))
+
+    AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
+      .select { |file| File.directory?(file) }
+      .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
+      .select { |dir| File.exist?(dir + ".rb") }
+      .map { |dir| File.basename(dir) }
+
+  @default
+  @end
+@end
+
+@private client(index, requireView)
+  @switch index.type.toString
+  @case "VersionIndex"
+    {@versionIndexClient(requireView)}
+  @case "TopLevelIndex"
+    {@topLevelClient(index, requireView)}
+  @default
+  @end
+@end
+
+@private versionIndexClient(requireView)
+  @##
+  @if @requireView.doc.lines
+    {@toComments(@requireView.doc.lines)}
+  @#
+  @end
+  {@toComments(util.getDocLines(initMethodComments()))}
+  def self.new @\
+      credentials: nil,
+      scopes: nil,
+      client_config: nil,
+      timeout: nil,
+      lib_name: nil,
+      lib_version: nil
+    kwargs = {
+      credentials: credentials,
+      scopes: scopes,
+      client_config: client_config,
+      timeout: timeout,
+      lib_name: lib_name,
+      lib_version: lib_version
+    }.select { |_, v| v != nil }
+    {@requireView.clientName}.new(**kwargs)
+  end
+@end
+
+@private topLevelClient(index, requireView)
+  @##
+  @if @requireView.doc.lines
+    {@toComments(@requireView.doc.lines)}
+  @#
+  @end
+  @# @@param version [Symbol, String]
+  @#   The major version of the service to be used. By default :{@index.apiVersion}
+  @#   is used.
+  @# @@overload new(version:, credentials:, scopes:, client_config:, timeout:)
+  {@toComments(util.getDocLines(initMethodComments()), util.toInt(3))}
+  def self.new(*args, version: :{@index.apiVersion}, **kwargs)
+    # Check if the version provided is available.
+    unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+      raise "The version: #{version} is not available. The available versions " @\
+        "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+    end
+
+    require "#{FILE_DIR}/#{version.to_s.downcase}"
+    version_module = {@requireView.topLevelNamespace}
+      .constants
+      .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+      .first
+    @if index.hasMultipleServices
+      {@requireView.topLevelNamespace}.const_get(version_module)::{@requireView.serviceName}.new(*args, **kwargs)
+    @else
+      {@requireView.topLevelNamespace}.const_get(version_module).new(*args, **kwargs)
+    @end
+  end
+@end

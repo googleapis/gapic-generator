@@ -1,6 +1,50 @@
-
 @snippet argList(args)
     @join arg : args on ", "
         {@arg}
     @end
+@end
+
+@snippet license(fileHeader)
+    /*
+    @join line : fileHeader.copyrightLines
+        {@""} * {@line}
+    @end
+     *
+    @join line : fileHeader.licenseLines
+        {@""} * {@line}
+    @end
+     */
+@end
+
+@snippet importList(fileImports)
+    @join fileImport : fileImports
+        @join import : fileImport.types
+            @switch import.type
+            @case "SimpleImport"
+                use {@import.fullName};
+            @case "AliasedImport"
+                use {@import.fullName} as {@import.nickname};
+            @default
+                $unhandledCase: {@import.type.toString}$
+            @end
+        @end
+    @end
+@end
+
+@snippet renderFileHeader(fileHeader, generatedCodeWarning)
+    <?php
+    {@license(fileHeader)}
+
+    {@generatedCodeWarning}
+
+    namespace {@fileHeader.packageName};
+
+    {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet simpleGeneratedCodeWarning()
+    /*
+     * GENERATED CODE WARNING
+     * This file was automatically generated - do not edit!
+     */
 @end

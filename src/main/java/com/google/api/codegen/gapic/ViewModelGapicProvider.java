@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -28,17 +28,17 @@ import java.util.TreeMap;
 
 public class ViewModelGapicProvider implements GapicProvider<Interface> {
   private final Model model;
-  private final ApiConfig apiConfig;
+  private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final ModelToViewTransformer modelToViewTransformer;
 
   private ViewModelGapicProvider(
       Model model,
-      ApiConfig apiConfig,
+      GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
       ModelToViewTransformer modelToViewTransformer) {
     this.model = model;
-    this.apiConfig = apiConfig;
+    this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.modelToViewTransformer = modelToViewTransformer;
   }
@@ -61,7 +61,7 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       return null;
     }
 
-    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, apiConfig);
+    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
@@ -88,7 +88,7 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
 
   public static class Builder {
     private Model model;
-    private ApiConfig apiConfig;
+    private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private ModelToViewTransformer modelToViewTransformer;
 
@@ -99,8 +99,8 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public Builder setApiConfig(ApiConfig apiConfig) {
-      this.apiConfig = apiConfig;
+    public Builder setProductConfig(GapicProductConfig productConfig) {
+      this.productConfig = productConfig;
       return this;
     }
 
@@ -115,7 +115,8 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
     }
 
     public ViewModelGapicProvider build() {
-      return new ViewModelGapicProvider(model, apiConfig, snippetSetRunner, modelToViewTransformer);
+      return new ViewModelGapicProvider(
+          model, productConfig, snippetSetRunner, modelToViewTransformer);
     }
   }
 }

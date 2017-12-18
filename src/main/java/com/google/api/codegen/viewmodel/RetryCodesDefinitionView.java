@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView.Builder;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status.Code;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -30,7 +29,7 @@ public abstract class RetryCodesDefinitionView {
 
   public abstract String retryFilterMethodName();
 
-  public abstract ImmutableSet<Code> codes();
+  public abstract ImmutableSet<String> codes();
 
   @Nullable // Used in C#
   public abstract List<String> codeNames();
@@ -47,7 +46,7 @@ public abstract class RetryCodesDefinitionView {
 
     public abstract Builder retryFilterMethodName(String val);
 
-    public abstract Builder codes(ImmutableSet<Code> val);
+    public abstract Builder codes(ImmutableSet<String> val);
 
     public abstract Builder codeNames(List<String> val);
 

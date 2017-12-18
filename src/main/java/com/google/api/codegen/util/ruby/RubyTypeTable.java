@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,6 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +35,11 @@ public class RubyTypeTable implements TypeTable {
   @Override
   public TypeTable cloneEmpty() {
     return new RubyTypeTable(dynamicTypeTable.getImplicitPackageName());
+  }
+
+  @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new RubyTypeTable(packageName);
   }
 
   @Override
@@ -80,6 +84,11 @@ public class RubyTypeTable implements TypeTable {
     return HashBiMap.create(inverseMap).inverse();
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getAllImports();
+  }
+
   public boolean hasImports() {
     return !getImports().isEmpty();
   }
@@ -89,57 +98,4 @@ public class RubyTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
-
-  /**
-   * : A set of Ruby keywords and built-ins. Keywords:
-   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
-   */
-  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "__ENCODING__",
-              "__LINE__",
-              "__FILE__",
-              "BEGIN",
-              "END",
-              "alias",
-              "and",
-              "begin",
-              "break",
-              "case",
-              "class",
-              "def",
-              "defined?",
-              "do",
-              "else",
-              "elsif",
-              "end",
-              "ensure",
-              "false",
-              "for",
-              "if",
-              "in",
-              "module",
-              "next",
-              "nil",
-              "not",
-              "or",
-              "redo",
-              "rescue",
-              "retry",
-              "return",
-              "self",
-              "super",
-              "then",
-              "true",
-              "undef",
-              "unless",
-              "until",
-              "when",
-              "while",
-              "yield",
-              // "options" is here because it's a common keyword argument to
-              // specify a CallOptions instance.
-              "options")
-          .build();
 }

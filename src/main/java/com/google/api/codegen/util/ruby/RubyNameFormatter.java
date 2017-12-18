@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 public class RubyNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
-    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+    if (RESERVED_IDENTIFIER_SET.contains(name)) {
       return name + "_";
     } else {
       return name;
@@ -56,8 +56,8 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
-    return "@" + name.toLowerUnderscore();
+  public String localVarReference(Name name) {
+    return name.toLowerUnderscore();
   }
 
   @Override
@@ -77,7 +77,7 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String inittedConstantName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
+    return wrapIfKeywordOrBuiltIn(name.toUpperUnderscore());
   }
 
   @Override
@@ -101,10 +101,10 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   /**
-   * : A set of ruby keywords and built-ins. keywords:
+   * A set of Ruby keywords and built-ins. See:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
               "__ENCODING__",

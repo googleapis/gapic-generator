@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,17 +21,23 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
 @AutoValue
 public abstract class FieldConfig {
-  public abstract Field getField();
+  public abstract FieldModel getField();
 
+  /** The list of fields that must be traversed to reach the field in getField(). */
+  public abstract List<FieldModel> getFieldPath();
+
+  @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
   @Nullable
@@ -54,15 +60,22 @@ public abstract class FieldConfig {
     return getResourceNameConfig().getResourceNameType();
   }
 
-  public static FieldConfig createFieldConfig(
-      Field field,
+  private static FieldConfig createFieldConfig(
+      FieldModel field,
       ResourceNameTreatment resourceNameTreatment,
-      ResourceNameConfig resourceNameConfig) {
-    return createFieldConfig(field, resourceNameTreatment, resourceNameConfig, resourceNameConfig);
+      ResourceNameConfig resourceNameConfig,
+      ResourceNameConfig messageResourceNameConfig) {
+    return createFieldConfig(
+        field,
+        ImmutableList.of(field),
+        resourceNameTreatment,
+        resourceNameConfig,
+        messageResourceNameConfig);
   }
 
-  public static FieldConfig createFieldConfig(
-      Field field,
+  private static FieldConfig createFieldConfig(
+      FieldModel field,
+      List<FieldModel> fieldPath,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
@@ -76,12 +89,35 @@ public abstract class FieldConfig {
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(
-        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+        field, fieldPath, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+  }
+
+  static FieldConfig createFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+  }
+
+  static FieldConfig createFieldConfig(FieldModel field, List<FieldModel> fieldPath) {
+    return FieldConfig.createFieldConfig(field, fieldPath, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
-  public static FieldConfig createDefaultFieldConfig(Field field) {
+  public static FieldConfig createDefaultFieldConfig(FieldModel field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+  }
+
+  static FieldConfig createMessageFieldConfig(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldModel field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFieldConfig(
+        null,
+        messageConfigs,
+        null,
+        resourceNameConfigs,
+        field,
+        ResourceNameTreatment.UNSET_TREATMENT,
+        defaultResourceNameTreatment);
   }
 
   /** Package-private since this is not used outside the config package. */
@@ -90,7 +126,7 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
@@ -123,23 +159,33 @@ public abstract class FieldConfig {
     if (messageFieldResourceNameConfig != null
         && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
       // We support the case of the flattenedField using a specific resource name type when the
-      // messageField uses a oneof containing that type
-      boolean ok = false;
-      if (messageFieldResourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+      // messageField uses a oneof containing that type, or when the messageField accepts any
+      // resource name, or for Discovery fields.
+      ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
+      boolean ok =
+          resourceTypeName == ResourceNameType.ANY
+              || (resourceTypeName == ResourceNameType.SINGLE
+                  && field.getApiSource().equals(ApiSource.DISCOVERY));
+      if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
       }
       if (!ok) {
-        Diag.error(
-            SimpleLocation.TOPLEVEL,
-            "Multiple entity names specified for field: "
-                + field.getFullName()
-                + ": ["
-                + flattenedFieldEntityName
-                + ", "
-                + messageFieldEntityName
-                + "]");
+        Diag error =
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Multiple entity names specified for field: "
+                    + field.getFullName()
+                    + ": ["
+                    + flattenedFieldEntityName
+                    + ", "
+                    + messageFieldEntityName
+                    + "]");
+        if (diagCollector == null) {
+          throw new IllegalArgumentException(error.toString());
+        }
+        diagCollector.addDiag(error);
         return null;
       }
     }
@@ -160,21 +206,21 @@ public abstract class FieldConfig {
       } else {
         ResourceNameConfig flattenedFieldResourceNameConfig = resourceNameConfigs.get(entityName);
         if (flattenedFieldResourceNameConfig == null) {
-          diagCollector.addDiag(
+          Diag error =
               Diag.error(
                   SimpleLocation.TOPLEVEL,
                   "No resourceNameConfig with entity_name \"%s\"",
-                  entityName));
+                  entityName);
+          if (diagCollector == null) {
+            throw new IllegalArgumentException(error.toString());
+          }
+          diagCollector.addDiag(error);
           return null;
         }
         return flattenedFieldResourceNameConfig;
       }
     }
     return null;
-  }
-
-  public boolean hasEntityName() {
-    return getEntityName() != null;
   }
 
   public boolean useResourceNameType() {
@@ -190,10 +236,16 @@ public abstract class FieldConfig {
         getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
   }
 
-  public boolean hasDifferentMessageResourceNameConfig() {
+  public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig())
+        && getField().getApiSource() != ApiSource.DISCOVERY;
+  }
+
+  public boolean requiresParamTransformationFromAny() {
+    return getMessageResourceNameConfig() != null
+        && getMessageResourceNameConfig().getResourceNameType() == ResourceNameType.ANY;
   }
 
   public FieldConfig getMessageFieldConfig() {
@@ -211,9 +263,13 @@ public abstract class FieldConfig {
    */
   public static void validate(
       ResourceNameMessageConfigs messageConfigs,
-      Field field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
+    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+      // There are no proto messages in Discovery.
+      return;
+    }
     switch (treatment) {
       case NONE:
         break;
@@ -240,11 +296,20 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, Field> selectFieldFunction() {
-    return new Function<FieldConfig, Field>() {
+  private static Function<FieldConfig, FieldModel> selectFieldFunction() {
+    return new Function<FieldConfig, FieldModel>() {
       @Override
-      public Field apply(FieldConfig fieldConfig) {
+      public FieldModel apply(FieldConfig fieldConfig) {
         return fieldConfig.getField();
+      }
+    };
+  }
+
+  private static Function<Field, FieldModel> createFieldTypeFunction() {
+    return new Function<Field, FieldModel>() {
+      @Override
+      public FieldModel apply(Field field) {
+        return new ProtoField(field);
       }
     };
   }
@@ -258,8 +323,12 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Iterable<Field> toFieldIterable(Iterable<FieldConfig> fieldConfigs) {
+  public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
     return Iterables.transform(fieldConfigs, selectFieldFunction());
+  }
+
+  public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
+    return Iterables.transform(fieldConfigs, createFieldTypeFunction());
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(

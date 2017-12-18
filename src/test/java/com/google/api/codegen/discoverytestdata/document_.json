@@ -1,0 +1,67 @@
+{
+  "id": "discovery#document",
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://example.com/foo": {}
+      }
+    }
+  },
+  "description": "My API!",
+  "methods": {
+    "foo": {
+      "description": "Insert a foo.",
+      "id": "myapi.foo.insert"
+    }
+  },
+  "resources": {
+    "bar": {
+      "methods": {
+        "baz": {
+          "description": "Get a baz.",
+          "id": "myapi.bar.baz.get",
+          "parameterOrder": [
+            "p1"
+          ],
+          "parameters": {
+            "p1": {
+              "type": "boolean",
+              "required": true,
+              "location": "query"
+            }
+          },
+          "request": {
+            "$ref": "GetBazRequest"
+          },
+          "response": {
+            "$ref": "Baz"
+          },
+          "scopes": [
+            "https://www.example.com/baz"
+          ]
+        }
+      }
+    }
+  },
+  "name": "myapi",
+  "canonicalName": "My API",
+  "revision": "20170419",
+  "rootUrl": "https://example.com",
+  "schemas": {
+    "GetBazRequest": {
+      "type": "string",
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      }
+    },
+    "Baz": {
+      "type": "string"
+    }
+  },
+  "servicePath": "/api",
+  "title": "My API!",
+  "version": "v1",
+  "version_module": "True"
+}

@@ -1,0 +1,74 @@
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+
+
+# smoke: SmokeTestClassView
+# smoke.method: TestCaseView
+@snippet generate(smoke)
+    {@renderFileHeader(smoke.fileHeader)}
+
+    namespace {@smoke.fileHeader.packageName}.SmokeTests
+    {
+        public class {@smoke.name}
+        {
+            public static int Main(string[] args)
+            {
+                @if smoke.requireProjectId
+                    // Read projectId from args
+                    if (args.Length != 1)
+                    {
+                        Console.WriteLine("Usage: Project ID must be passed as first argument.");
+                        Console.WriteLine();
+                        return 1;
+                    }
+                    string projectId = args[0];
+
+                @end
+                // Create client
+                {@smoke.apiClassName} client = {@smoke.apiClassName}.Create();
+
+                @if smoke.hasMethod
+                  {@methodCall(smoke.method)}
+                @else
+                  // Add your method call here.
+                @end
+
+                // Success
+                Console.WriteLine("Smoke test passed OK");
+                return 0;
+            }
+        }
+    }
+
+@end
+
+# method: TestCaseView
+@private methodCall(method)
+    // Initialize request argument(s)
+    {@topLevelInitCode(method.initCode)}
+
+    // Call API method
+    @switch method.clientMethodType
+    @case "PagedFlattenedMethod"
+        {@method.callerResponseTypeName} pagedResponse = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        // Show the result
+        foreach (var item in pagedResponse)
+        {
+            Console.WriteLine(item);
+        }
+    @case "FlattenedMethod"
+        @if method.hasReturnValue
+            {@method.callerResponseTypeName} response = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            // Show the result
+            Console.WriteLine(response);
+        @else
+            client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        @end
+    @end
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        {@fieldSetting.identifier}
+    @end
+@end

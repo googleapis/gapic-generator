@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,14 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.codegen.config.ApiConfig;
-import com.google.common.base.Strings;
+import com.google.api.codegen.config.GapicProductConfig;
 
 public class NodeJSUtils {
   /**
    * Returns true if the current API is a part of gcloud (i.e. cloud API). This can be known if the
-   * package name configuration is in the pattern of "@google-cloud/(API_NAME)".
+   * domain_layer_location is "google-cloud".
    */
-  public static boolean isGcloud(ApiConfig config) {
-    String packageName = config.getPackageName();
-    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
+  public static boolean isGcloud(GapicProductConfig config) {
+    return "google-cloud".equals(config.getDomainLayerLocation());
   }
 }

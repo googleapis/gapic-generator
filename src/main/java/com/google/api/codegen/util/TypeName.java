@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,14 +33,17 @@ public class TypeName {
 
   /** Creates a type alias with the given fullName and nickname. */
   public TypeName(String fullName, String nickname) {
-    this.topLevelAlias = TypeAlias.create(fullName, nickname);
-    this.pattern = null;
-    this.innerTypeNames = Arrays.asList();
+    this(TypeAlias.create(fullName, nickname));
   }
 
   /** Creates a type alias for a static inner type with the given fullName and nickname. */
   public TypeName(String fullName, String nickname, String parentTypeName) {
-    this.topLevelAlias = TypeAlias.create(fullName, nickname, parentTypeName);
+    this(TypeAlias.create(fullName, nickname, parentTypeName));
+  }
+
+  /** Creates a TypeName with a given TypeAlias. */
+  public TypeName(TypeAlias typeAlias) {
+    this.topLevelAlias = typeAlias;
     this.pattern = null;
     this.innerTypeNames = Arrays.asList();
   }
@@ -100,5 +103,13 @@ public class TypeName {
       result = StringUtils.replaceOnce(result, "%i", innerTypeName.getAndSaveNicknameIn(typeTable));
     }
     return result;
+  }
+
+  /**
+   * Renders the short name of this type given its pattern, and adds any necessary nicknames to the
+   * given type table.
+   */
+  public List<TypeName> getInnerTypeNames() {
+    return innerTypeNames;
   }
 }

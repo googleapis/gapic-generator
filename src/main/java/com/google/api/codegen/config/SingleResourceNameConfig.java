@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,11 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
-import com.google.api.gax.protobuf.PathTemplate;
-import com.google.api.gax.protobuf.ValidationException;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    */
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto) {
+      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto, ProtoFile file) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
@@ -43,7 +44,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       return null;
     }
     String entityName = collectionConfigProto.getEntityName();
-    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName);
+    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName, file);
   }
 
   /** Returns the name pattern for the resource name config. */
@@ -55,6 +56,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   /** Returns the name used as a basis for generating methods. */
   @Override
   public abstract String getEntityName();
+
+  @Override
+  @Nullable
+  public abstract ProtoFile getAssignedProtoFile();
 
   @Override
   public ResourceNameType getResourceNameType() {

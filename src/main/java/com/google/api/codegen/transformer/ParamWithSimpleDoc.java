@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,9 +53,17 @@ public abstract class ParamWithSimpleDoc {
 
   public abstract String setCallName();
 
+  public abstract String addCallName();
+
+  public abstract String getCallName();
+
   public abstract boolean isMap();
 
   public abstract boolean isArray();
+
+  public abstract boolean isPrimitive();
+
+  public abstract boolean isOptional();
 
   @Nullable // Used in C#
   public abstract String defaultValue();
@@ -65,12 +73,17 @@ public abstract class ParamWithSimpleDoc {
   public RequestObjectParamView asRequestObjectParamView() {
     return RequestObjectParamView.newBuilder()
         .name(name())
+        .keyName(name())
         .nameAsMethodName(nameAsMethodName())
         .elementTypeName(elementTypeName())
         .typeName(typeName())
         .setCallName(setCallName())
+        .addCallName(addCallName())
+        .getCallName(getCallName())
         .isMap(isMap())
         .isArray(isArray())
+        .isPrimitive(isPrimitive())
+        .isOptional(isOptional())
         .defaultValue(defaultValue())
         .build();
   }
@@ -80,8 +93,7 @@ public abstract class ParamWithSimpleDoc {
         .paramName(name())
         .typeName(typeName())
         .lines(docLines())
-        .firstLine(docLines().get(0))
-        .remainingLines(docLines().subList(0, docLines().size()))
+        .lines(docLines())
         .build();
   }
 
@@ -101,9 +113,17 @@ public abstract class ParamWithSimpleDoc {
 
     public abstract Builder setCallName(String val);
 
+    public abstract Builder addCallName(String val);
+
+    public abstract Builder getCallName(String val);
+
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder isPrimitive(boolean val);
+
+    public abstract Builder isOptional(boolean val);
 
     public abstract Builder defaultValue(String val);
 

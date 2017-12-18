@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,8 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SimpleParamDocView implements ParamDocView {
@@ -24,12 +24,15 @@ public abstract class SimpleParamDocView implements ParamDocView {
 
   public abstract String typeName();
 
-  @Nullable
   public abstract List<String> lines();
 
-  public abstract String firstLine();
+  public String firstLine() {
+    return lines().isEmpty() ? "" : lines().get(0);
+  }
 
-  public abstract List<String> remainingLines();
+  public List<String> remainingLines() {
+    return lines().isEmpty() ? ImmutableList.<String>of() : lines().subList(1, lines().size());
+  }
 
   public String type() {
     return SimpleParamDocView.class.getSimpleName();
@@ -46,10 +49,6 @@ public abstract class SimpleParamDocView implements ParamDocView {
     public abstract Builder typeName(String val);
 
     public abstract Builder lines(List<String> val);
-
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
 
     public abstract SimpleParamDocView build();
   }

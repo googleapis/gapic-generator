@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,8 @@ import com.google.auto.value.AutoValue;
 public abstract class CallableMethodDetailView {
   public abstract String callableName();
 
+  public abstract String interfaceTypeName();
+
   public abstract String genericAwareResponseType();
 
   public static Builder newBuilder() {
@@ -29,6 +31,8 @@ public abstract class CallableMethodDetailView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder callableName(String name);
+
+    public abstract Builder interfaceTypeName(String name);
 
     public abstract Builder genericAwareResponseType(String name);
 

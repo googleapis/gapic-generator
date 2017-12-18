@@ -1,0 +1,20 @@
+@extends "common.snip"
+
+@snippet generate(metadata)
+    {@title(metadata)}
+    {@util.sectionHeaderLine(title(metadata))}
+
+    @join module : metadata.clientModules
+        {@clientModule(module)}
+    @end
+@end
+
+@private title(metadata)
+    Client{@simplePlurality(metadata.hasMultipleServices)} for {@metadata.fullName}
+@end
+
+@private clientModule(module)
+    .. automodule:: {@module}
+        :members:
+        :inherited-members:
+@end

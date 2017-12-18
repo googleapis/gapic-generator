@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,12 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /** FlatteningConfig represents a specific flattening configuration for a method. */
@@ -38,32 +39,53 @@ public abstract class FlatteningConfig {
    * provided method.
    */
   @Nullable
-  public static FlatteningConfig createFlattening(
+  static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
-      Method method) {
+      MethodModel method) {
 
     boolean missing = false;
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
+    Set<String> oneofNames = new HashSet<>();
     for (String parameter : flatteningGroup.getParametersList()) {
 
-      Field parameterField = method.getInputMessage().lookupField(parameter);
+      FieldModel parameterField = method.getInputField(parameter);
       if (parameterField == null) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Field missing for flattening: method = %s, message type = %s, field = %s",
                 method.getFullName(),
-                method.getInputMessage().getFullName(),
+                method.getInputFullName(),
                 parameter));
         return null;
       }
 
+      Oneof oneof = parameterField.getOneof();
+      if (oneof != null) {
+        String oneofName = oneof.getName();
+        if (oneofNames.contains(oneofName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Value from oneof already specifed for flattening:%n"
+                      + "method = %s, message type = %s, oneof = %s",
+                  method.getFullName(),
+                  method.getInputFullName(),
+                  oneofName));
+          return null;
+        }
+        oneofNames.add(oneofName);
+      }
+
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
+      if (!parameterField.mayBeInResourceName()) {
+        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+      }
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
         defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
@@ -92,15 +114,7 @@ public abstract class FlatteningConfig {
         flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
-  public FieldConfig getFieldConfig(String fieldSimpleName) {
-    return getFlattenedFieldConfigs().get(fieldSimpleName);
-  }
-
-  public Iterable<Field> getFlattenedFields() {
-    return FieldConfig.toFieldIterable(getFlattenedFieldConfigs().values());
-  }
-
-  public Iterable<String> getParameterList() {
-    return getFlattenedFieldConfigs().keySet();
+  public Iterable<FieldModel> getFlattenedFields() {
+    return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 }

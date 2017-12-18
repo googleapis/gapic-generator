@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,8 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,11 +43,8 @@ public class CommonRenderingUtil {
   public static List<String> getDocLines(String text) {
     // TODO: Convert markdown to language-specific doc format.
     // https://github.com/googleapis/toolkit/issues/331
-    List<String> result = new ArrayList<>();
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add(line);
-    }
-    return result;
+    List<String> result = Splitter.on(String.format("%n")).splitToList(text);
+    return result.size() == 1 && result.get(0).isEmpty() ? ImmutableList.<String>of() : result;
   }
 
   /**
@@ -92,5 +91,15 @@ public class CommonRenderingUtil {
    */
   private static boolean isLineWrapChar(char c) {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
+  }
+
+  /** Creates a whitespace string of the specified width. */
+  public static String padding(int width) {
+    return Strings.repeat(" ", width);
+  }
+
+  /** Helper function for referencing integers from templates. */
+  public static int toInt(String value) {
+    return Integer.valueOf(value);
   }
 }

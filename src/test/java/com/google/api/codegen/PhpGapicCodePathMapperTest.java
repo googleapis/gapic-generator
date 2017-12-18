@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
-import com.google.api.gax.grpc.ApiCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
 import org.junit.Rule;
@@ -26,7 +25,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link ApiCallable}. */
 @RunWith(JUnit4.class)
 public class PhpGapicCodePathMapperTest {
 
@@ -37,8 +35,8 @@ public class PhpGapicCodePathMapperTest {
     PhpGapicCodePathMapper pathMapper =
         PhpGapicCodePathMapper.newBuilder().setPrefix("prefix").setSuffix("suffix").build();
 
-    ApiConfig configWithGoogleCloud =
-        ApiConfig.createDummyApiConfig(
+    GapicProductConfig configWithGoogleCloud =
+        GapicProductConfig.createDummyInstance(
             ImmutableMap.<String, InterfaceConfig>of(),
             "Google\\Cloud\\Sample\\Package\\V1",
             "",
@@ -46,8 +44,8 @@ public class PhpGapicCodePathMapperTest {
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
         .isEqualTo("prefix/Sample/Package/V1/suffix");
 
-    ApiConfig configWithGoogleNonCloud =
-        ApiConfig.createDummyApiConfig(
+    GapicProductConfig configWithGoogleNonCloud =
+        GapicProductConfig.createDummyInstance(
             ImmutableMap.<String, InterfaceConfig>of(),
             "Google\\NonCloud\\Sample\\Package\\V1",
             "",
@@ -55,8 +53,8 @@ public class PhpGapicCodePathMapperTest {
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
         .isEqualTo("prefix/NonCloud/Sample/Package/V1/suffix");
 
-    ApiConfig configWithAlphabet =
-        ApiConfig.createDummyApiConfig(
+    GapicProductConfig configWithAlphabet =
+        GapicProductConfig.createDummyInstance(
             ImmutableMap.<String, InterfaceConfig>of(),
             "Alphabet\\Google\\Cloud\\Sample\\Package\\V1",
             "",

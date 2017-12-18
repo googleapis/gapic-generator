@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,6 +38,11 @@ public abstract class TypeAlias {
   /** Creates a type alias with the given fullName, nickname and parentName. */
   public static TypeAlias create(String fullName, String nickname, String parentName) {
     return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.StaticImport);
+  }
+
+  /** Creates a type alias with the given fullName and nickname that represents an aliased import */
+  public static TypeAlias createAliasedImport(String fullName, String nickname) {
+    return new AutoValue_TypeAlias(fullName, nickname, null, ImportType.AliasedImport);
   }
 
   /** The full name of the alias. */

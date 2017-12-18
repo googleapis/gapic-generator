@@ -1,0 +1,6091 @@
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressName.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressName implements ResourceName {
+  private final String address;
+  private final String project;
+  private final String region;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private AddressName(Builder builder) {
+    address = Preconditions.checkNotNull(builder.getAddress());
+    project = Preconditions.checkNotNull(builder.getProject());
+    region = Preconditions.checkNotNull(builder.getRegion());
+  }
+
+  public static AddressName of(
+      String address,
+      String project,
+      String region
+      ) {
+    return newBuilder()
+    .setAddress(address)
+    .setProject(project)
+    .setRegion(region)
+      .build();
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+
+  public static AddressName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "AddressName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("address"),
+      matchMap.get("project"),
+      matchMap.get("region")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return AddressNameType.instance();
+  }
+
+  public static class Builder {
+    private String address;
+    private String project;
+    private String region;
+
+    public String getAddress() {
+      return address;
+    }
+    public String getProject() {
+      return project;
+    }
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (AddressName addressName) {
+      address = addressName.address;
+      project = addressName.project;
+      region = addressName.region;
+    }
+
+    public AddressName build() {
+      return new AddressName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "address", address,
+        "project", project,
+        "region", region
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AddressName) {
+      AddressName that = (AddressName) o;
+      return
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.region, that.getRegion())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      address,
+      project,
+      region
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressNameType.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressNameType implements ResourceNameType {
+  private static AddressNameType instance = new AddressNameType();
+
+  private AddressNameType() {}
+
+  public static AddressNameType instance() {
+    return instance;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class RegionName implements ResourceName {
+  private final String project;
+  private final String region;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}");
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private RegionName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+    region = Preconditions.checkNotNull(builder.getRegion());
+  }
+
+  public static RegionName of(
+      String project,
+      String region
+      ) {
+    return newBuilder()
+    .setProject(project)
+    .setRegion(region)
+      .build();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+
+  public static RegionName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "RegionName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project"),
+      matchMap.get("region")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return RegionNameType.instance();
+  }
+
+  public static class Builder {
+    private String project;
+    private String region;
+
+    public String getProject() {
+      return project;
+    }
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (RegionName regionName) {
+      project = regionName.project;
+      region = regionName.region;
+    }
+
+    public RegionName build() {
+      return new RegionName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project,
+        "region", region
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof RegionName) {
+      RegionName that = (RegionName) o;
+      return
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.region, that.getRegion())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project,
+      region
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionNameType.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class RegionNameType implements ResourceNameType {
+  private static RegionNameType instance = new RegionNameType();
+
+  private RegionNameType() {}
+
+  public static RegionNameType instance() {
+    return instance;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Address.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Address implements ApiMessage {
+  private final String address;
+  private final String creationTimestamp;
+  private final String description;
+  private final String id;
+  private final String kind;
+  private final String name;
+  private final String region;
+  private final String selfLink;
+  private final String status;
+  private final List<String> users;
+
+  private Address() {
+    this.address = null;
+    this.creationTimestamp = null;
+    this.description = null;
+    this.id = null;
+    this.kind = null;
+    this.name = null;
+    this.region = null;
+    this.selfLink = null;
+    this.status = null;
+    this.users = null;
+  }
+
+
+  private Address(
+      String address,
+      String creationTimestamp,
+      String description,
+      String id,
+      String kind,
+      String name,
+      String region,
+      String selfLink,
+      String status,
+      List<String> users
+      ) {
+    this.address = address;
+    this.creationTimestamp = creationTimestamp;
+    this.description = description;
+    this.id = id;
+    this.kind = kind;
+    this.name = name;
+    this.region = region;
+    this.selfLink = selfLink;
+    this.status = status;
+    this.users = users;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("creationTimestamp") && creationTimestamp != null) {
+      fieldMap.put("creationTimestamp", Collections.singletonList(String.valueOf(creationTimestamp)));
+    }
+    if (fieldNames.contains("description") && description != null) {
+      fieldMap.put("description", Collections.singletonList(String.valueOf(description)));
+    }
+    if (fieldNames.contains("id") && id != null) {
+      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
+    }
+    if (fieldNames.contains("kind") && kind != null) {
+      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
+    }
+    if (fieldNames.contains("name") && name != null) {
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("selfLink") && selfLink != null) {
+      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
+    }
+    if (fieldNames.contains("status") && status != null) {
+      fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
+    }
+    if (fieldNames.contains("users") && users != null) {
+      fieldMap.put("users", Collections.singletonList(String.valueOf(users)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getCreationTimestamp() {
+    return creationTimestamp;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getKind() {
+    return kind;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getSelfLink() {
+    return selfLink;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public List<String> getUsers() {
+    return users;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Address prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Address getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Address DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Address();
+  }
+
+  public static class Builder {
+    private String address;
+    private String creationTimestamp;
+    private String description;
+    private String id;
+    private String kind;
+    private String name;
+    private String region;
+    private String selfLink;
+    private String status;
+    private List<String> users;
+
+    Builder() {}
+
+    public Builder mergeFrom(Address other) {
+      if (other == Address.getDefaultInstance()) return this;
+      if (other.getAddress() != null) {
+        this.address = other.address;
+      }
+      if (other.getCreationTimestamp() != null) {
+        this.creationTimestamp = other.creationTimestamp;
+      }
+      if (other.getDescription() != null) {
+        this.description = other.description;
+      }
+      if (other.getId() != null) {
+        this.id = other.id;
+      }
+      if (other.getKind() != null) {
+        this.kind = other.kind;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getSelfLink() != null) {
+        this.selfLink = other.selfLink;
+      }
+      if (other.getStatus() != null) {
+        this.status = other.status;
+      }
+      if (other.getUsers() != null) {
+        this.users = other.users;
+      }
+      return this;
+    }
+
+    Builder(Address source) {
+      this.address = source.address;
+      this.creationTimestamp = source.creationTimestamp;
+      this.description = source.description;
+      this.id = source.id;
+      this.kind = source.kind;
+      this.name = source.name;
+      this.region = source.region;
+      this.selfLink = source.selfLink;
+      this.status = source.status;
+      this.users = source.users;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+
+    public String getCreationTimestamp() {
+      return creationTimestamp;
+    }
+
+    public Builder setCreationTimestamp(String creationTimestamp) {
+      this.creationTimestamp = creationTimestamp;
+      return this;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public Builder setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public String getKind() {
+      return kind;
+    }
+
+    public Builder setKind(String kind) {
+      this.kind = kind;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getSelfLink() {
+      return selfLink;
+    }
+
+    public Builder setSelfLink(String selfLink) {
+      this.selfLink = selfLink;
+      return this;
+    }
+
+    public String getStatus() {
+      return status;
+    }
+
+    public Builder setStatus(String status) {
+      this.status = status;
+      return this;
+    }
+
+    public List<String> getUsers() {
+      return users;
+    }
+
+    public Builder setUsers(List<String> users) {
+      this.users = users;
+      return this;
+    }
+
+
+    public Address build() {
+
+
+
+
+
+
+
+
+
+      return new Address(
+        address,
+        creationTimestamp,
+        description,
+        id,
+        kind,
+        name,
+        region,
+        selfLink,
+        status,
+        users
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAddress(this.address);
+      newBuilder.setCreationTimestamp(this.creationTimestamp);
+      newBuilder.setDescription(this.description);
+      newBuilder.setId(this.id);
+      newBuilder.setKind(this.kind);
+      newBuilder.setName(this.name);
+      newBuilder.setRegion(this.region);
+      newBuilder.setSelfLink(this.selfLink);
+      newBuilder.setStatus(this.status);
+      newBuilder.setUsers(this.users);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Address{"
+        + "address=" + address + ", "
+        + "creationTimestamp=" + creationTimestamp + ", "
+        + "description=" + description + ", "
+        + "id=" + id + ", "
+        + "kind=" + kind + ", "
+        + "name=" + name + ", "
+        + "region=" + region + ", "
+        + "selfLink=" + selfLink + ", "
+        + "status=" + status + ", "
+        + "users=" + users
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Address) {
+      Address that = (Address) o;
+      return
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.creationTimestamp, that.getCreationTimestamp()) &&
+          Objects.equals(this.description, that.getDescription()) &&
+          Objects.equals(this.id, that.getId()) &&
+          Objects.equals(this.kind, that.getKind()) &&
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.selfLink, that.getSelfLink()) &&
+          Objects.equals(this.status, that.getStatus()) &&
+          Objects.equals(this.users, that.getUsers())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      address,
+      creationTimestamp,
+      description,
+      id,
+      kind,
+      name,
+      region,
+      selfLink,
+      status,
+      users
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressList.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressList implements ApiMessage {
+  private final String id;
+  private final List<Address> items;
+  private final String kind;
+  private final String nextPageToken;
+  private final String selfLink;
+
+  private AddressList() {
+    this.id = null;
+    this.items = null;
+    this.kind = null;
+    this.nextPageToken = null;
+    this.selfLink = null;
+  }
+
+
+  private AddressList(
+      String id,
+      List<Address> items,
+      String kind,
+      String nextPageToken,
+      String selfLink
+      ) {
+    this.id = id;
+    this.items = items;
+    this.kind = kind;
+    this.nextPageToken = nextPageToken;
+    this.selfLink = selfLink;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("id") && id != null) {
+      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
+    }
+    if (fieldNames.contains("items") && items != null) {
+      fieldMap.put("items", Collections.singletonList(String.valueOf(items)));
+    }
+    if (fieldNames.contains("kind") && kind != null) {
+      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
+    }
+    if (fieldNames.contains("nextPageToken") && nextPageToken != null) {
+      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
+    }
+    if (fieldNames.contains("selfLink") && selfLink != null) {
+      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public List<Address> getItems() {
+    return items;
+  }
+
+  public String getKind() {
+    return kind;
+  }
+
+  public String getNextPageToken() {
+    return nextPageToken;
+  }
+
+  public String getSelfLink() {
+    return selfLink;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AddressList prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AddressList getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final AddressList DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new AddressList();
+  }
+
+  public static class Builder {
+    private String id;
+    private List<Address> items;
+    private String kind;
+    private String nextPageToken;
+    private String selfLink;
+
+    Builder() {}
+
+    public Builder mergeFrom(AddressList other) {
+      if (other == AddressList.getDefaultInstance()) return this;
+      if (other.getId() != null) {
+        this.id = other.id;
+      }
+      if (other.getItems() != null) {
+        this.items = other.items;
+      }
+      if (other.getKind() != null) {
+        this.kind = other.kind;
+      }
+      if (other.getNextPageToken() != null) {
+        this.nextPageToken = other.nextPageToken;
+      }
+      if (other.getSelfLink() != null) {
+        this.selfLink = other.selfLink;
+      }
+      return this;
+    }
+
+    Builder(AddressList source) {
+      this.id = source.id;
+      this.items = source.items;
+      this.kind = source.kind;
+      this.nextPageToken = source.nextPageToken;
+      this.selfLink = source.selfLink;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public List<Address> getItems() {
+      return items;
+    }
+
+    public Builder setItems(List<Address> items) {
+      this.items = items;
+      return this;
+    }
+
+    public String getKind() {
+      return kind;
+    }
+
+    public Builder setKind(String kind) {
+      this.kind = kind;
+      return this;
+    }
+
+    public String getNextPageToken() {
+      return nextPageToken;
+    }
+
+    public Builder setNextPageToken(String nextPageToken) {
+      this.nextPageToken = nextPageToken;
+      return this;
+    }
+
+    public String getSelfLink() {
+      return selfLink;
+    }
+
+    public Builder setSelfLink(String selfLink) {
+      this.selfLink = selfLink;
+      return this;
+    }
+
+
+    public AddressList build() {
+
+
+
+
+      return new AddressList(
+        id,
+        items,
+        kind,
+        nextPageToken,
+        selfLink
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setId(this.id);
+      newBuilder.setItems(this.items);
+      newBuilder.setKind(this.kind);
+      newBuilder.setNextPageToken(this.nextPageToken);
+      newBuilder.setSelfLink(this.selfLink);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "AddressList{"
+        + "id=" + id + ", "
+        + "items=" + items + ", "
+        + "kind=" + kind + ", "
+        + "nextPageToken=" + nextPageToken + ", "
+        + "selfLink=" + selfLink
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AddressList) {
+      AddressList that = (AddressList) o;
+      return
+          Objects.equals(this.id, that.getId()) &&
+          Objects.equals(this.items, that.getItems()) &&
+          Objects.equals(this.kind, that.getKind()) &&
+          Objects.equals(this.nextPageToken, that.getNextPageToken()) &&
+          Objects.equals(this.selfLink, that.getSelfLink())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      id,
+      items,
+      kind,
+      nextPageToken,
+      selfLink
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Data.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Data implements ApiMessage {
+  private final String key;
+  private final String value;
+
+  private Data() {
+    this.key = null;
+    this.value = null;
+  }
+
+
+  private Data(
+      String key,
+      String value
+      ) {
+    this.key = key;
+    this.value = value;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("value") && value != null) {
+      fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Data prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Data getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Data DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Data();
+  }
+
+  public static class Builder {
+    private String key;
+    private String value;
+
+    Builder() {}
+
+    public Builder mergeFrom(Data other) {
+      if (other == Data.getDefaultInstance()) return this;
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getValue() != null) {
+        this.value = other.value;
+      }
+      return this;
+    }
+
+    Builder(Data source) {
+      this.key = source.key;
+      this.value = source.value;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public Builder setValue(String value) {
+      this.value = value;
+      return this;
+    }
+
+
+    public Data build() {
+
+      return new Data(
+        key,
+        value
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setKey(this.key);
+      newBuilder.setValue(this.value);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Data{"
+        + "key=" + key + ", "
+        + "value=" + value
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Data) {
+      Data that = (Data) o;
+      return
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.value, that.getValue())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      key,
+      value
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Error.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Error implements ApiMessage {
+  private final List<Errors> errors;
+
+  private Error() {
+    this.errors = null;
+  }
+
+
+  private Error(
+      List<Errors> errors
+      ) {
+    this.errors = errors;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("errors") && errors != null) {
+      fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public List<Errors> getErrors() {
+    return errors;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Error prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Error getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Error DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Error();
+  }
+
+  public static class Builder {
+    private List<Errors> errors;
+
+    Builder() {}
+
+    public Builder mergeFrom(Error other) {
+      if (other == Error.getDefaultInstance()) return this;
+      if (other.getErrors() != null) {
+        this.errors = other.errors;
+      }
+      return this;
+    }
+
+    Builder(Error source) {
+      this.errors = source.errors;
+    }
+
+    public List<Errors> getErrors() {
+      return errors;
+    }
+
+    public Builder setErrors(List<Errors> errors) {
+      this.errors = errors;
+      return this;
+    }
+
+
+    public Error build() {
+      return new Error(
+        errors
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setErrors(this.errors);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Error{"
+        + "errors=" + errors
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Error) {
+      Error that = (Error) o;
+      return
+          Objects.equals(this.errors, that.getErrors())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      errors
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Errors.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Errors implements ApiMessage {
+  private final String code;
+  private final String location;
+  private final String message;
+
+  private Errors() {
+    this.code = null;
+    this.location = null;
+    this.message = null;
+  }
+
+
+  private Errors(
+      String code,
+      String location,
+      String message
+      ) {
+    this.code = code;
+    this.location = location;
+    this.message = message;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("code") && code != null) {
+      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
+    }
+    if (fieldNames.contains("location") && location != null) {
+      fieldMap.put("location", Collections.singletonList(String.valueOf(location)));
+    }
+    if (fieldNames.contains("message") && message != null) {
+      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Errors prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Errors getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Errors DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Errors();
+  }
+
+  public static class Builder {
+    private String code;
+    private String location;
+    private String message;
+
+    Builder() {}
+
+    public Builder mergeFrom(Errors other) {
+      if (other == Errors.getDefaultInstance()) return this;
+      if (other.getCode() != null) {
+        this.code = other.code;
+      }
+      if (other.getLocation() != null) {
+        this.location = other.location;
+      }
+      if (other.getMessage() != null) {
+        this.message = other.message;
+      }
+      return this;
+    }
+
+    Builder(Errors source) {
+      this.code = source.code;
+      this.location = source.location;
+      this.message = source.message;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public Builder setCode(String code) {
+      this.code = code;
+      return this;
+    }
+
+    public String getLocation() {
+      return location;
+    }
+
+    public Builder setLocation(String location) {
+      this.location = location;
+      return this;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public Builder setMessage(String message) {
+      this.message = message;
+      return this;
+    }
+
+
+    public Errors build() {
+
+
+      return new Errors(
+        code,
+        location,
+        message
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCode(this.code);
+      newBuilder.setLocation(this.location);
+      newBuilder.setMessage(this.message);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Errors{"
+        + "code=" + code + ", "
+        + "location=" + location + ", "
+        + "message=" + message
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Errors) {
+      Errors that = (Errors) o;
+      return
+          Objects.equals(this.code, that.getCode()) &&
+          Objects.equals(this.location, that.getLocation()) &&
+          Objects.equals(this.message, that.getMessage())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      code,
+      location,
+      message
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Operation.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Operation implements ApiMessage {
+  private final String clientOperationId;
+  private final String creationTimestamp;
+  private final String description;
+  private final String endTime;
+  private final Error error;
+  private final String httpErrorMessage;
+  private final Integer httpErrorStatusCode;
+  private final String id;
+  private final String insertTime;
+  private final String kind;
+  private final String name;
+  private final String operationType;
+  private final Integer progress;
+  private final String region;
+  private final String selfLink;
+  private final String startTime;
+  private final String status;
+  private final String statusMessage;
+  private final String targetId;
+  private final String targetLink;
+  private final String user;
+  private final List<Warnings> warnings;
+  private final String zone;
+
+  private Operation() {
+    this.clientOperationId = null;
+    this.creationTimestamp = null;
+    this.description = null;
+    this.endTime = null;
+    this.error = null;
+    this.httpErrorMessage = null;
+    this.httpErrorStatusCode = null;
+    this.id = null;
+    this.insertTime = null;
+    this.kind = null;
+    this.name = null;
+    this.operationType = null;
+    this.progress = null;
+    this.region = null;
+    this.selfLink = null;
+    this.startTime = null;
+    this.status = null;
+    this.statusMessage = null;
+    this.targetId = null;
+    this.targetLink = null;
+    this.user = null;
+    this.warnings = null;
+    this.zone = null;
+  }
+
+
+  private Operation(
+      String clientOperationId,
+      String creationTimestamp,
+      String description,
+      String endTime,
+      Error error,
+      String httpErrorMessage,
+      Integer httpErrorStatusCode,
+      String id,
+      String insertTime,
+      String kind,
+      String name,
+      String operationType,
+      Integer progress,
+      String region,
+      String selfLink,
+      String startTime,
+      String status,
+      String statusMessage,
+      String targetId,
+      String targetLink,
+      String user,
+      List<Warnings> warnings,
+      String zone
+      ) {
+    this.clientOperationId = clientOperationId;
+    this.creationTimestamp = creationTimestamp;
+    this.description = description;
+    this.endTime = endTime;
+    this.error = error;
+    this.httpErrorMessage = httpErrorMessage;
+    this.httpErrorStatusCode = httpErrorStatusCode;
+    this.id = id;
+    this.insertTime = insertTime;
+    this.kind = kind;
+    this.name = name;
+    this.operationType = operationType;
+    this.progress = progress;
+    this.region = region;
+    this.selfLink = selfLink;
+    this.startTime = startTime;
+    this.status = status;
+    this.statusMessage = statusMessage;
+    this.targetId = targetId;
+    this.targetLink = targetLink;
+    this.user = user;
+    this.warnings = warnings;
+    this.zone = zone;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("clientOperationId") && clientOperationId != null) {
+      fieldMap.put("clientOperationId", Collections.singletonList(String.valueOf(clientOperationId)));
+    }
+    if (fieldNames.contains("creationTimestamp") && creationTimestamp != null) {
+      fieldMap.put("creationTimestamp", Collections.singletonList(String.valueOf(creationTimestamp)));
+    }
+    if (fieldNames.contains("description") && description != null) {
+      fieldMap.put("description", Collections.singletonList(String.valueOf(description)));
+    }
+    if (fieldNames.contains("endTime") && endTime != null) {
+      fieldMap.put("endTime", Collections.singletonList(String.valueOf(endTime)));
+    }
+    if (fieldNames.contains("error") && error != null) {
+      fieldMap.put("error", Collections.singletonList(String.valueOf(error)));
+    }
+    if (fieldNames.contains("httpErrorMessage") && httpErrorMessage != null) {
+      fieldMap.put("httpErrorMessage", Collections.singletonList(String.valueOf(httpErrorMessage)));
+    }
+    if (fieldNames.contains("httpErrorStatusCode") && httpErrorStatusCode != null) {
+      fieldMap.put("httpErrorStatusCode", Collections.singletonList(String.valueOf(httpErrorStatusCode)));
+    }
+    if (fieldNames.contains("id") && id != null) {
+      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
+    }
+    if (fieldNames.contains("insertTime") && insertTime != null) {
+      fieldMap.put("insertTime", Collections.singletonList(String.valueOf(insertTime)));
+    }
+    if (fieldNames.contains("kind") && kind != null) {
+      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
+    }
+    if (fieldNames.contains("name") && name != null) {
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
+    }
+    if (fieldNames.contains("operationType") && operationType != null) {
+      fieldMap.put("operationType", Collections.singletonList(String.valueOf(operationType)));
+    }
+    if (fieldNames.contains("progress") && progress != null) {
+      fieldMap.put("progress", Collections.singletonList(String.valueOf(progress)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("selfLink") && selfLink != null) {
+      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
+    }
+    if (fieldNames.contains("startTime") && startTime != null) {
+      fieldMap.put("startTime", Collections.singletonList(String.valueOf(startTime)));
+    }
+    if (fieldNames.contains("status") && status != null) {
+      fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
+    }
+    if (fieldNames.contains("statusMessage") && statusMessage != null) {
+      fieldMap.put("statusMessage", Collections.singletonList(String.valueOf(statusMessage)));
+    }
+    if (fieldNames.contains("targetId") && targetId != null) {
+      fieldMap.put("targetId", Collections.singletonList(String.valueOf(targetId)));
+    }
+    if (fieldNames.contains("targetLink") && targetLink != null) {
+      fieldMap.put("targetLink", Collections.singletonList(String.valueOf(targetLink)));
+    }
+    if (fieldNames.contains("user") && user != null) {
+      fieldMap.put("user", Collections.singletonList(String.valueOf(user)));
+    }
+    if (fieldNames.contains("warnings") && warnings != null) {
+      fieldMap.put("warnings", Collections.singletonList(String.valueOf(warnings)));
+    }
+    if (fieldNames.contains("zone") && zone != null) {
+      fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getClientOperationId() {
+    return clientOperationId;
+  }
+
+  public String getCreationTimestamp() {
+    return creationTimestamp;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getEndTime() {
+    return endTime;
+  }
+
+  public Error getError() {
+    return error;
+  }
+
+  public String getHttpErrorMessage() {
+    return httpErrorMessage;
+  }
+
+  public Integer getHttpErrorStatusCode() {
+    return httpErrorStatusCode;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getInsertTime() {
+    return insertTime;
+  }
+
+  public String getKind() {
+    return kind;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getOperationType() {
+    return operationType;
+  }
+
+  public Integer getProgress() {
+    return progress;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getSelfLink() {
+    return selfLink;
+  }
+
+  public String getStartTime() {
+    return startTime;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public String getStatusMessage() {
+    return statusMessage;
+  }
+
+  public String getTargetId() {
+    return targetId;
+  }
+
+  public String getTargetLink() {
+    return targetLink;
+  }
+
+  public String getUser() {
+    return user;
+  }
+
+  public List<Warnings> getWarnings() {
+    return warnings;
+  }
+
+  public String getZone() {
+    return zone;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Operation prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Operation getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Operation DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Operation();
+  }
+
+  public static class Builder {
+    private String clientOperationId;
+    private String creationTimestamp;
+    private String description;
+    private String endTime;
+    private Error error;
+    private String httpErrorMessage;
+    private Integer httpErrorStatusCode;
+    private String id;
+    private String insertTime;
+    private String kind;
+    private String name;
+    private String operationType;
+    private Integer progress;
+    private String region;
+    private String selfLink;
+    private String startTime;
+    private String status;
+    private String statusMessage;
+    private String targetId;
+    private String targetLink;
+    private String user;
+    private List<Warnings> warnings;
+    private String zone;
+
+    Builder() {}
+
+    public Builder mergeFrom(Operation other) {
+      if (other == Operation.getDefaultInstance()) return this;
+      if (other.getClientOperationId() != null) {
+        this.clientOperationId = other.clientOperationId;
+      }
+      if (other.getCreationTimestamp() != null) {
+        this.creationTimestamp = other.creationTimestamp;
+      }
+      if (other.getDescription() != null) {
+        this.description = other.description;
+      }
+      if (other.getEndTime() != null) {
+        this.endTime = other.endTime;
+      }
+      if (other.getError() != null) {
+        this.error = other.error;
+      }
+      if (other.getHttpErrorMessage() != null) {
+        this.httpErrorMessage = other.httpErrorMessage;
+      }
+      if (other.getHttpErrorStatusCode() != null) {
+        this.httpErrorStatusCode = other.httpErrorStatusCode;
+      }
+      if (other.getId() != null) {
+        this.id = other.id;
+      }
+      if (other.getInsertTime() != null) {
+        this.insertTime = other.insertTime;
+      }
+      if (other.getKind() != null) {
+        this.kind = other.kind;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getOperationType() != null) {
+        this.operationType = other.operationType;
+      }
+      if (other.getProgress() != null) {
+        this.progress = other.progress;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getSelfLink() != null) {
+        this.selfLink = other.selfLink;
+      }
+      if (other.getStartTime() != null) {
+        this.startTime = other.startTime;
+      }
+      if (other.getStatus() != null) {
+        this.status = other.status;
+      }
+      if (other.getStatusMessage() != null) {
+        this.statusMessage = other.statusMessage;
+      }
+      if (other.getTargetId() != null) {
+        this.targetId = other.targetId;
+      }
+      if (other.getTargetLink() != null) {
+        this.targetLink = other.targetLink;
+      }
+      if (other.getUser() != null) {
+        this.user = other.user;
+      }
+      if (other.getWarnings() != null) {
+        this.warnings = other.warnings;
+      }
+      if (other.getZone() != null) {
+        this.zone = other.zone;
+      }
+      return this;
+    }
+
+    Builder(Operation source) {
+      this.clientOperationId = source.clientOperationId;
+      this.creationTimestamp = source.creationTimestamp;
+      this.description = source.description;
+      this.endTime = source.endTime;
+      this.error = source.error;
+      this.httpErrorMessage = source.httpErrorMessage;
+      this.httpErrorStatusCode = source.httpErrorStatusCode;
+      this.id = source.id;
+      this.insertTime = source.insertTime;
+      this.kind = source.kind;
+      this.name = source.name;
+      this.operationType = source.operationType;
+      this.progress = source.progress;
+      this.region = source.region;
+      this.selfLink = source.selfLink;
+      this.startTime = source.startTime;
+      this.status = source.status;
+      this.statusMessage = source.statusMessage;
+      this.targetId = source.targetId;
+      this.targetLink = source.targetLink;
+      this.user = source.user;
+      this.warnings = source.warnings;
+      this.zone = source.zone;
+    }
+
+    public String getClientOperationId() {
+      return clientOperationId;
+    }
+
+    public Builder setClientOperationId(String clientOperationId) {
+      this.clientOperationId = clientOperationId;
+      return this;
+    }
+
+    public String getCreationTimestamp() {
+      return creationTimestamp;
+    }
+
+    public Builder setCreationTimestamp(String creationTimestamp) {
+      this.creationTimestamp = creationTimestamp;
+      return this;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public Builder setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public String getEndTime() {
+      return endTime;
+    }
+
+    public Builder setEndTime(String endTime) {
+      this.endTime = endTime;
+      return this;
+    }
+
+    public Error getError() {
+      return error;
+    }
+
+    public Builder setError(Error error) {
+      this.error = error;
+      return this;
+    }
+
+    public String getHttpErrorMessage() {
+      return httpErrorMessage;
+    }
+
+    public Builder setHttpErrorMessage(String httpErrorMessage) {
+      this.httpErrorMessage = httpErrorMessage;
+      return this;
+    }
+
+    public Integer getHttpErrorStatusCode() {
+      return httpErrorStatusCode;
+    }
+
+    public Builder setHttpErrorStatusCode(Integer httpErrorStatusCode) {
+      this.httpErrorStatusCode = httpErrorStatusCode;
+      return this;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public String getInsertTime() {
+      return insertTime;
+    }
+
+    public Builder setInsertTime(String insertTime) {
+      this.insertTime = insertTime;
+      return this;
+    }
+
+    public String getKind() {
+      return kind;
+    }
+
+    public Builder setKind(String kind) {
+      this.kind = kind;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public String getOperationType() {
+      return operationType;
+    }
+
+    public Builder setOperationType(String operationType) {
+      this.operationType = operationType;
+      return this;
+    }
+
+    public Integer getProgress() {
+      return progress;
+    }
+
+    public Builder setProgress(Integer progress) {
+      this.progress = progress;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getSelfLink() {
+      return selfLink;
+    }
+
+    public Builder setSelfLink(String selfLink) {
+      this.selfLink = selfLink;
+      return this;
+    }
+
+    public String getStartTime() {
+      return startTime;
+    }
+
+    public Builder setStartTime(String startTime) {
+      this.startTime = startTime;
+      return this;
+    }
+
+    public String getStatus() {
+      return status;
+    }
+
+    public Builder setStatus(String status) {
+      this.status = status;
+      return this;
+    }
+
+    public String getStatusMessage() {
+      return statusMessage;
+    }
+
+    public Builder setStatusMessage(String statusMessage) {
+      this.statusMessage = statusMessage;
+      return this;
+    }
+
+    public String getTargetId() {
+      return targetId;
+    }
+
+    public Builder setTargetId(String targetId) {
+      this.targetId = targetId;
+      return this;
+    }
+
+    public String getTargetLink() {
+      return targetLink;
+    }
+
+    public Builder setTargetLink(String targetLink) {
+      this.targetLink = targetLink;
+      return this;
+    }
+
+    public String getUser() {
+      return user;
+    }
+
+    public Builder setUser(String user) {
+      this.user = user;
+      return this;
+    }
+
+    public List<Warnings> getWarnings() {
+      return warnings;
+    }
+
+    public Builder setWarnings(List<Warnings> warnings) {
+      this.warnings = warnings;
+      return this;
+    }
+
+    public String getZone() {
+      return zone;
+    }
+
+    public Builder setZone(String zone) {
+      this.zone = zone;
+      return this;
+    }
+
+
+    public Operation build() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      return new Operation(
+        clientOperationId,
+        creationTimestamp,
+        description,
+        endTime,
+        error,
+        httpErrorMessage,
+        httpErrorStatusCode,
+        id,
+        insertTime,
+        kind,
+        name,
+        operationType,
+        progress,
+        region,
+        selfLink,
+        startTime,
+        status,
+        statusMessage,
+        targetId,
+        targetLink,
+        user,
+        warnings,
+        zone
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setClientOperationId(this.clientOperationId);
+      newBuilder.setCreationTimestamp(this.creationTimestamp);
+      newBuilder.setDescription(this.description);
+      newBuilder.setEndTime(this.endTime);
+      newBuilder.setError(this.error);
+      newBuilder.setHttpErrorMessage(this.httpErrorMessage);
+      newBuilder.setHttpErrorStatusCode(this.httpErrorStatusCode);
+      newBuilder.setId(this.id);
+      newBuilder.setInsertTime(this.insertTime);
+      newBuilder.setKind(this.kind);
+      newBuilder.setName(this.name);
+      newBuilder.setOperationType(this.operationType);
+      newBuilder.setProgress(this.progress);
+      newBuilder.setRegion(this.region);
+      newBuilder.setSelfLink(this.selfLink);
+      newBuilder.setStartTime(this.startTime);
+      newBuilder.setStatus(this.status);
+      newBuilder.setStatusMessage(this.statusMessage);
+      newBuilder.setTargetId(this.targetId);
+      newBuilder.setTargetLink(this.targetLink);
+      newBuilder.setUser(this.user);
+      newBuilder.setWarnings(this.warnings);
+      newBuilder.setZone(this.zone);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Operation{"
+        + "clientOperationId=" + clientOperationId + ", "
+        + "creationTimestamp=" + creationTimestamp + ", "
+        + "description=" + description + ", "
+        + "endTime=" + endTime + ", "
+        + "error=" + error + ", "
+        + "httpErrorMessage=" + httpErrorMessage + ", "
+        + "httpErrorStatusCode=" + httpErrorStatusCode + ", "
+        + "id=" + id + ", "
+        + "insertTime=" + insertTime + ", "
+        + "kind=" + kind + ", "
+        + "name=" + name + ", "
+        + "operationType=" + operationType + ", "
+        + "progress=" + progress + ", "
+        + "region=" + region + ", "
+        + "selfLink=" + selfLink + ", "
+        + "startTime=" + startTime + ", "
+        + "status=" + status + ", "
+        + "statusMessage=" + statusMessage + ", "
+        + "targetId=" + targetId + ", "
+        + "targetLink=" + targetLink + ", "
+        + "user=" + user + ", "
+        + "warnings=" + warnings + ", "
+        + "zone=" + zone
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Operation) {
+      Operation that = (Operation) o;
+      return
+          Objects.equals(this.clientOperationId, that.getClientOperationId()) &&
+          Objects.equals(this.creationTimestamp, that.getCreationTimestamp()) &&
+          Objects.equals(this.description, that.getDescription()) &&
+          Objects.equals(this.endTime, that.getEndTime()) &&
+          Objects.equals(this.error, that.getError()) &&
+          Objects.equals(this.httpErrorMessage, that.getHttpErrorMessage()) &&
+          Objects.equals(this.httpErrorStatusCode, that.getHttpErrorStatusCode()) &&
+          Objects.equals(this.id, that.getId()) &&
+          Objects.equals(this.insertTime, that.getInsertTime()) &&
+          Objects.equals(this.kind, that.getKind()) &&
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.operationType, that.getOperationType()) &&
+          Objects.equals(this.progress, that.getProgress()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.selfLink, that.getSelfLink()) &&
+          Objects.equals(this.startTime, that.getStartTime()) &&
+          Objects.equals(this.status, that.getStatus()) &&
+          Objects.equals(this.statusMessage, that.getStatusMessage()) &&
+          Objects.equals(this.targetId, that.getTargetId()) &&
+          Objects.equals(this.targetLink, that.getTargetLink()) &&
+          Objects.equals(this.user, that.getUser()) &&
+          Objects.equals(this.warnings, that.getWarnings()) &&
+          Objects.equals(this.zone, that.getZone())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      clientOperationId,
+      creationTimestamp,
+      description,
+      endTime,
+      error,
+      httpErrorMessage,
+      httpErrorStatusCode,
+      id,
+      insertTime,
+      kind,
+      name,
+      operationType,
+      progress,
+      region,
+      selfLink,
+      startTime,
+      status,
+      statusMessage,
+      targetId,
+      targetLink,
+      user,
+      warnings,
+      zone
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Warnings.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Warnings implements ApiMessage {
+  private final String code;
+  private final List<Data> data;
+  private final String message;
+
+  private Warnings() {
+    this.code = null;
+    this.data = null;
+    this.message = null;
+  }
+
+
+  private Warnings(
+      String code,
+      List<Data> data,
+      String message
+      ) {
+    this.code = code;
+    this.data = data;
+    this.message = message;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("code") && code != null) {
+      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
+    }
+    if (fieldNames.contains("data") && data != null) {
+      fieldMap.put("data", Collections.singletonList(String.valueOf(data)));
+    }
+    if (fieldNames.contains("message") && message != null) {
+      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public List<Data> getData() {
+    return data;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Warnings prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Warnings getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Warnings DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Warnings();
+  }
+
+  public static class Builder {
+    private String code;
+    private List<Data> data;
+    private String message;
+
+    Builder() {}
+
+    public Builder mergeFrom(Warnings other) {
+      if (other == Warnings.getDefaultInstance()) return this;
+      if (other.getCode() != null) {
+        this.code = other.code;
+      }
+      if (other.getData() != null) {
+        this.data = other.data;
+      }
+      if (other.getMessage() != null) {
+        this.message = other.message;
+      }
+      return this;
+    }
+
+    Builder(Warnings source) {
+      this.code = source.code;
+      this.data = source.data;
+      this.message = source.message;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public Builder setCode(String code) {
+      this.code = code;
+      return this;
+    }
+
+    public List<Data> getData() {
+      return data;
+    }
+
+    public Builder setData(List<Data> data) {
+      this.data = data;
+      return this;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public Builder setMessage(String message) {
+      this.message = message;
+      return this;
+    }
+
+
+    public Warnings build() {
+
+
+      return new Warnings(
+        code,
+        data,
+        message
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCode(this.code);
+      newBuilder.setData(this.data);
+      newBuilder.setMessage(this.message);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Warnings{"
+        + "code=" + code + ", "
+        + "data=" + data + ", "
+        + "message=" + message
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Warnings) {
+      Warnings that = (Warnings) o;
+      return
+          Objects.equals(this.code, that.getCode()) &&
+          Objects.equals(this.data, that.getData()) &&
+          Objects.equals(this.message, that.getMessage())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      code,
+      data,
+      message
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/DeleteAddressHttpRequest.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class DeleteAddressHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String address;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String region;
+  private final String userIp;
+
+  private DeleteAddressHttpRequest() {
+    this.access_token = null;
+    this.address = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.region = null;
+    this.userIp = null;
+  }
+
+
+  private DeleteAddressHttpRequest(
+      String access_token,
+      String address,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String region,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.address = address;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.region = region;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(DeleteAddressHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static DeleteAddressHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final DeleteAddressHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new DeleteAddressHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String address;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String region;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(DeleteAddressHttpRequest other) {
+      if (other == DeleteAddressHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getAddress() != null) {
+        this.address = other.address;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(DeleteAddressHttpRequest source) {
+      this.access_token = source.access_token;
+      this.address = source.address;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.region = source.region;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public DeleteAddressHttpRequest build() {
+      String missing = "";
+
+      if (address == null) {
+        missing += " address";
+      }
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+      if (region == null) {
+        missing += " region";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new DeleteAddressHttpRequest(
+        access_token,
+        address,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        project,
+        quotaUser,
+        region,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddress(this.address);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRegion(this.region);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+
+    public final Builder setAddressWithAddressName(AddressName value) {
+      if (value == null) {
+        return
+            setAddress("").
+            setProject("").
+            setRegion("")
+            ;
+      }
+      return
+          setAddress(value.getAddress()).
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
+          ;
+    }
+
+    public final AddressName getAddressAsAddressName() {
+      return AddressName.of(
+          getAddress(),
+          getProject(),
+          getRegion()
+          );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "DeleteAddressHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "address=" + address + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "region=" + region + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof DeleteAddressHttpRequest) {
+      DeleteAddressHttpRequest that = (DeleteAddressHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      address,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      project,
+      quotaUser,
+      region,
+      userIp
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/GetAddressHttpRequest.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class GetAddressHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String address;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String region;
+  private final String userIp;
+
+  private GetAddressHttpRequest() {
+    this.access_token = null;
+    this.address = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.region = null;
+    this.userIp = null;
+  }
+
+
+  private GetAddressHttpRequest(
+      String access_token,
+      String address,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String region,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.address = address;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.region = region;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(GetAddressHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static GetAddressHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final GetAddressHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new GetAddressHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String address;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String region;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(GetAddressHttpRequest other) {
+      if (other == GetAddressHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getAddress() != null) {
+        this.address = other.address;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(GetAddressHttpRequest source) {
+      this.access_token = source.access_token;
+      this.address = source.address;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.region = source.region;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public GetAddressHttpRequest build() {
+      String missing = "";
+
+      if (address == null) {
+        missing += " address";
+      }
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+      if (region == null) {
+        missing += " region";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new GetAddressHttpRequest(
+        access_token,
+        address,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        project,
+        quotaUser,
+        region,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddress(this.address);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRegion(this.region);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+
+    public final Builder setAddressWithAddressName(AddressName value) {
+      if (value == null) {
+        return
+            setAddress("").
+            setProject("").
+            setRegion("")
+            ;
+      }
+      return
+          setAddress(value.getAddress()).
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
+          ;
+    }
+
+    public final AddressName getAddressAsAddressName() {
+      return AddressName.of(
+          getAddress(),
+          getProject(),
+          getRegion()
+          );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "GetAddressHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "address=" + address + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "region=" + region + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof GetAddressHttpRequest) {
+      GetAddressHttpRequest that = (GetAddressHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      address,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      project,
+      quotaUser,
+      region,
+      userIp
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/InsertAddressHttpRequest.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class InsertAddressHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final Address addressResource;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String region;
+  private final String userIp;
+
+  private InsertAddressHttpRequest() {
+    this.access_token = null;
+    this.addressResource = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.region = null;
+    this.userIp = null;
+  }
+
+
+  private InsertAddressHttpRequest(
+      String access_token,
+      Address addressResource,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String region,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.addressResource = addressResource;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.region = region;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("addressResource") && addressResource != null) {
+      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public Address getRequestBody() {
+    return addressResource;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public Address getAddressResource() {
+    return addressResource;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(InsertAddressHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static InsertAddressHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final InsertAddressHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new InsertAddressHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private Address addressResource;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String region;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(InsertAddressHttpRequest other) {
+      if (other == InsertAddressHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getAddressResource() != null) {
+        this.addressResource = other.addressResource;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(InsertAddressHttpRequest source) {
+      this.access_token = source.access_token;
+      this.addressResource = source.addressResource;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.region = source.region;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public Address getAddressResource() {
+      return addressResource;
+    }
+
+    public Builder setAddressResource(Address addressResource) {
+      this.addressResource = addressResource;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public InsertAddressHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+      if (region == null) {
+        missing += " region";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new InsertAddressHttpRequest(
+        access_token,
+        addressResource,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        project,
+        quotaUser,
+        region,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddressResource(this.addressResource);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRegion(this.region);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+
+    public final Builder setRegionWithRegionName(RegionName value) {
+      if (value == null) {
+        return
+            setProject("").
+            setRegion("")
+            ;
+      }
+      return
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
+          ;
+    }
+
+    public final RegionName getRegionAsRegionName() {
+      return RegionName.of(
+          getProject(),
+          getRegion()
+          );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "InsertAddressHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "addressResource=" + addressResource + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "region=" + region + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof InsertAddressHttpRequest) {
+      InsertAddressHttpRequest that = (InsertAddressHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.addressResource, that.getAddressResource()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      addressResource,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      project,
+      quotaUser,
+      region,
+      userIp
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ListAddressesHttpRequest.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ListAddressesHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String filter;
+  private final String key;
+  private final Integer maxResults;
+  private final String orderBy;
+  private final String pageToken;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String region;
+  private final String userIp;
+
+  private ListAddressesHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.filter = null;
+    this.key = null;
+    this.maxResults = null;
+    this.orderBy = null;
+    this.pageToken = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.region = null;
+    this.userIp = null;
+  }
+
+
+  private ListAddressesHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String filter,
+      String key,
+      Integer maxResults,
+      String orderBy,
+      String pageToken,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String region,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.filter = filter;
+    this.key = key;
+    this.maxResults = maxResults;
+    this.orderBy = orderBy;
+    this.pageToken = pageToken;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.region = region;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("filter") && filter != null) {
+      fieldMap.put("filter", Collections.singletonList(String.valueOf(filter)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("maxResults") && maxResults != null) {
+      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
+    }
+    if (fieldNames.contains("orderBy") && orderBy != null) {
+      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
+    }
+    if (fieldNames.contains("pageToken") && pageToken != null) {
+      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getFilter() {
+    return filter;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public Integer getMaxResults() {
+    return maxResults;
+  }
+
+  public String getOrderBy() {
+    return orderBy;
+  }
+
+  public String getPageToken() {
+    return pageToken;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ListAddressesHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ListAddressesHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final ListAddressesHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new ListAddressesHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String filter;
+    private String key;
+    private Integer maxResults;
+    private String orderBy;
+    private String pageToken;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String region;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(ListAddressesHttpRequest other) {
+      if (other == ListAddressesHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getFilter() != null) {
+        this.filter = other.filter;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getMaxResults() != null) {
+        this.maxResults = other.maxResults;
+      }
+      if (other.getOrderBy() != null) {
+        this.orderBy = other.orderBy;
+      }
+      if (other.getPageToken() != null) {
+        this.pageToken = other.pageToken;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(ListAddressesHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.filter = source.filter;
+      this.key = source.key;
+      this.maxResults = source.maxResults;
+      this.orderBy = source.orderBy;
+      this.pageToken = source.pageToken;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.region = source.region;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getFilter() {
+      return filter;
+    }
+
+    public Builder setFilter(String filter) {
+      this.filter = filter;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public Integer getMaxResults() {
+      return maxResults;
+    }
+
+    public Builder setMaxResults(Integer maxResults) {
+      this.maxResults = maxResults;
+      return this;
+    }
+
+    public String getOrderBy() {
+      return orderBy;
+    }
+
+    public Builder setOrderBy(String orderBy) {
+      this.orderBy = orderBy;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public ListAddressesHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+      if (region == null) {
+        missing += " region";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new ListAddressesHttpRequest(
+        access_token,
+        callback,
+        fields,
+        filter,
+        key,
+        maxResults,
+        orderBy,
+        pageToken,
+        prettyPrint,
+        project,
+        quotaUser,
+        region,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setFilter(this.filter);
+      newBuilder.setKey(this.key);
+      newBuilder.setMaxResults(this.maxResults);
+      newBuilder.setOrderBy(this.orderBy);
+      newBuilder.setPageToken(this.pageToken);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRegion(this.region);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+
+    public final Builder setRegionWithRegionName(RegionName value) {
+      if (value == null) {
+        return
+            setProject("").
+            setRegion("")
+            ;
+      }
+      return
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
+          ;
+    }
+
+    public final RegionName getRegionAsRegionName() {
+      return RegionName.of(
+          getProject(),
+          getRegion()
+          );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ListAddressesHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "filter=" + filter + ", "
+        + "key=" + key + ", "
+        + "maxResults=" + maxResults + ", "
+        + "orderBy=" + orderBy + ", "
+        + "pageToken=" + pageToken + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "region=" + region + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ListAddressesHttpRequest) {
+      ListAddressesHttpRequest that = (ListAddressesHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.filter, that.getFilter()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.maxResults, that.getMaxResults()) &&
+          Objects.equals(this.orderBy, that.getOrderBy()) &&
+          Objects.equals(this.pageToken, that.getPageToken()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      filter,
+      key,
+      maxResults,
+      orderBy,
+      pageToken,
+      prettyPrint,
+      project,
+      quotaUser,
+      region,
+      userIp
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressClient.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.stub.AddressStub;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
+/**
+ * Service Description: Creates and runs virtual machines on Google Cloud Platform.
+ *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (AddressClient addressClient = AddressClient.create()) {
+ *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   Operation response = addressClient.deleteAddress(address);
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the addressClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * API callable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of AddressSettings to
+ * create(). For example:
+ *
+ * To customize credentials:
+ *
+ * <pre>
+ * <code>
+ * AddressSettings addressSettings =
+ *     AddressSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * AddressClient addressClient =
+ *     AddressClient.create(addressSettings);
+ * </code>
+ * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * AddressSettings addressSettings =
+ *     AddressSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * AddressClient addressClient =
+ *     AddressClient.create(addressSettings);
+ * </code>
+ * </pre>
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi
+public class AddressClient implements BackgroundResource {
+  private final AddressSettings settings;
+  private final AddressStub stub;
+
+
+
+  /**
+   * Constructs an instance of AddressClient with default settings.
+   */
+  public static final AddressClient create() throws IOException {
+    return create(AddressSettings.newBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of AddressClient, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final AddressClient create(AddressSettings settings) throws IOException {
+    return new AddressClient(settings);
+  }
+
+  /**
+   * Constructs an instance of AddressClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use AddressSettings}.
+   */
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public static final AddressClient create(AddressStub stub) {
+    return new AddressClient(stub);
+  }
+
+  /**
+   * Constructs an instance of AddressClient, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected AddressClient(AddressSettings settings) throws IOException {
+    this.settings = settings;
+    this.stub = settings.createStub();
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  protected AddressClient(AddressStub stub) {
+    this.settings = null;
+    this.stub = stub;
+  }
+
+  public final AddressSettings getSettings() {
+    return settings;
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public AddressStub getStub() {
+    return stub;
+  }
+
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Operation response = addressClient.deleteAddress(address);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation deleteAddress(AddressName address) {
+
+    DeleteAddressHttpRequest request =
+        DeleteAddressHttpRequest.newBuilder()
+        .setAddressWithAddressName(address)
+        .build();
+    return deleteAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   Operation response = addressClient.deleteAddress(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation deleteAddress(DeleteAddressHttpRequest request) {
+    return deleteAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.deleteAddressCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    return stub.deleteAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Address response = addressClient.getAddress(address);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address resource to return.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Address getAddress(AddressName address) {
+
+    GetAddressHttpRequest request =
+        GetAddressHttpRequest.newBuilder()
+        .setAddressWithAddressName(address)
+        .build();
+    return getAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   Address response = addressClient.getAddress(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Address getAddress(GetAddressHttpRequest request) {
+    return getAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   ApiFuture&lt;Address&gt; future = addressClient.getAddressCallable().futureCall(request);
+   *   // Do something
+   *   Address response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    return stub.getAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region, address);
+   * }
+   * </code></pre>
+   *
+   * @param region Name of the region for this request.
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation insertAddress(RegionName region, Address addressResource) {
+
+    InsertAddressHttpRequest request =
+        InsertAddressHttpRequest.newBuilder()
+        .setRegionWithRegionName(region)
+        .setAddressResource(addressResource)
+        .build();
+    return insertAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .setAddressResource(address)
+   *     .build();
+   *   Operation response = addressClient.insertAddress(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation insertAddress(InsertAddressHttpRequest request) {
+    return insertAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .setAddressResource(address)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable() {
+    return stub.insertAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   for (Address element : addressClient.listAddresses(region).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param region Name of the region for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ListAddressesPagedResponse listAddresses(RegionName region) {
+    ListAddressesHttpRequest request =
+        ListAddressesHttpRequest.newBuilder()
+        .setRegionWithRegionName(region)
+        .build();
+    return listAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
+   *   for (Address element : addressClient.listAddresses(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ListAddressesPagedResponse listAddresses(ListAddressesHttpRequest request) {
+    return listAddressesPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
+   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressClient.listAddressesPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Address element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    return stub.listAddressesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
+   *   while (true) {
+   *     AddressList response = addressClient.listAddressesCallable().call(request);
+   *     for (Address element : response.getItems()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
+    return stub.listAddressesCallable();
+  }
+
+  @Override
+  public final void close() throws Exception {
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
+  }
+
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressSettings.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.httpjson.GaxHttpJsonProperties;
+import com.google.api.gax.httpjson.HttpJsonTransportChannel;
+import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.auth.Credentials;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.stub.AddressStub;
+import com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link AddressClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (https://www.googleapis.com/compute/v1/projects/) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of deleteAddress to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * AddressSettings.Builder addressSettingsBuilder =
+ *     AddressSettings.newBuilder();
+ * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * AddressSettings addressSettings = addressSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi
+public class AddressSettings extends ClientSettings<AddressSettings> {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .add("https://www.googleapis.com/auth/compute")
+      .add("https://www.googleapis.com/auth/compute.readonly")
+      .add("https://www.googleapis.com/auth/devstorage.full_control")
+      .add("https://www.googleapis.com/auth/devstorage.read_only")
+      .add("https://www.googleapis.com/auth/devstorage.read_write")
+      .build();
+
+  private final UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+  private final UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
+  private final UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
+  private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+
+  /**
+   * Returns the object with the settings used for calls to deleteAddress.
+   */
+  public UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
+    return deleteAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getAddress.
+   */
+  public UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings() {
+    return getAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to insertAddress.
+   */
+  public UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings() {
+    return insertAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to listAddresses.
+   */
+  public PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
+    return listAddressesSettings;
+  }
+
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public AddressStub createStub() throws IOException {
+    if (getTransportChannelProvider()
+        .getTransportName()
+        .equals(HttpJsonTransportChannel.getHttpJsonTransportName())) {
+      return HttpJsonAddressStub.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportChannelProvider().getTransportName());
+    }
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "https://www.googleapis.com/compute/v1/projects/";
+  }
+
+  /**
+   * Returns the default service port.
+   */
+  public static int getDefaultServicePort() {
+    return 443;
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        ;
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingHttpJsonChannelProvider.Builder defaultHttpJsonTransportProviderBuilder() {
+    return InstantiatingHttpJsonChannelProvider.newBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return defaultHttpJsonTransportProviderBuilder().build();
+  }
+
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(AddressSettings.class))
+        .setTransportToken(GaxHttpJsonProperties.getHttpJsonTokenName(), GaxHttpJsonProperties.getHttpJsonVersion());
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  protected AddressSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder);
+
+    deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
+    getAddressSettings = settingsBuilder.getAddressSettings().build();
+    insertAddressSettings = settingsBuilder.insertAddressSettings().build();
+    listAddressesSettings = settingsBuilder.listAddressesSettings().build();
+  }
+
+  private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
+      new PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public ListAddressesHttpRequest injectToken(ListAddressesHttpRequest payload, String token) {
+          return ListAddressesHttpRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public ListAddressesHttpRequest injectPageSize(ListAddressesHttpRequest payload, int pageSize) {
+          return ListAddressesHttpRequest
+            .newBuilder(payload)
+            .setMaxResults(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(ListAddressesHttpRequest payload) {
+          return payload.getMaxResults();
+        }
+        @Override
+        public String extractNextToken(AddressList payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Address> extractResources(AddressList payload) {
+          return payload.getItems();
+        }
+      };
+
+  private static final PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> LIST_ADDRESSES_PAGE_STR_FACT =
+      new PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse>() {
+        @Override
+        public ApiFuture<ListAddressesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<ListAddressesHttpRequest, AddressList> callable,
+            ListAddressesHttpRequest request,
+            ApiCallContext context,
+            ApiFuture<AddressList> futureResponse) {
+          PageContext<ListAddressesHttpRequest, AddressList, Address> pageContext =
+              PageContext.create(callable, LIST_ADDRESSES_PAGE_STR_DESC, request, context);
+          return ListAddressesPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
+
+  /**
+   * Builder for AddressSettings.
+   */
+  public static class Builder extends ClientSettings.Builder<AddressSettings, Builder> {
+    private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
+
+    private final UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+    private final UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
+    private final UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
+    private final PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+
+    private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
+      definitions.put(
+          "idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+      definitions.put(
+          "non_idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+      RetrySettings settings = null;
+      settings = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis(100L))
+          .setRetryDelayMultiplier(1.3)
+          .setMaxRetryDelay(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(20000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(20000L))
+          .setTotalTimeout(Duration.ofMillis(600000L))
+          .build();
+      definitions.put("default", settings);
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+
+    protected Builder() {
+      this((ClientContext) null);
+    }
+
+    protected Builder(ClientContext clientContext) {
+      super(clientContext);
+
+      deleteAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      getAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      insertAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      listAddressesSettings = PagedCallSettings.newBuilder(
+          LIST_ADDRESSES_PAGE_STR_FACT);
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          deleteAddressSettings,
+          getAddressSettings,
+          insertAddressSettings,
+          listAddressesSettings
+      );
+
+      initDefaults(this);
+    }
+
+    private static Builder createDefault() {
+      Builder builder = new Builder((ClientContext) null);
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
+      return initDefaults(builder);
+    }
+
+    private static Builder initDefaults(Builder builder) {
+
+      builder.deleteAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.getAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.insertAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.listAddressesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      return builder;
+    }
+
+    protected Builder(AddressSettings settings) {
+      super(settings);
+
+      deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
+      getAddressSettings = settings.getAddressSettings.toBuilder();
+      insertAddressSettings = settings.insertAddressSettings.toBuilder();
+      listAddressesSettings = settings.listAddressesSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          deleteAddressSettings,
+          getAddressSettings,
+          insertAddressSettings,
+          listAddressesSettings
+      );
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
+      return this;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to deleteAddress.
+     */
+    public UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
+      return deleteAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getAddress.
+     */
+    public UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings() {
+      return getAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to insertAddress.
+     */
+    public UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings() {
+      return insertAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listAddresses.
+     */
+    public PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
+      return listAddressesSettings;
+    }
+
+    @Override
+    public AddressSettings build() throws IOException {
+      return new AddressSettings(this);
+    }
+  }
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressStub.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.Operation;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.RegionName;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Base stub class for simplecompute.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public abstract class AddressStub implements BackgroundResource {
+
+
+  @BetaApi
+  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: deleteAddressCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: getAddressCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: insertAddressCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAddressesPagedCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAddressesCallable()");
+  }
+
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressStub.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.stub;
+
+import com.google.api.client.http.HttpMethods;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
+import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.HttpJsonCallSettings;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.Operation;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * HTTP stub implementation for simplecompute.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public class HttpJsonAddressStub extends AddressStub {
+  private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
+
+  private static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
+      ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
+          .setMethodName("compute.addresses.delete")
+          .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
+          .setResponseInstance(Operation.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
+          .setPathParams(Sets.<String>newHashSet(
+                            "address",    "project",    "region"
+                            ))
+          .setQueryParams(Sets.<String>newHashSet(
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.DELETE)
+          .build();
+  private static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
+      ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
+          .setMethodName("compute.addresses.get")
+          .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
+          .setResponseInstance(Address.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
+          .setPathParams(Sets.<String>newHashSet(
+                            "address",    "project",    "region"
+                            ))
+          .setQueryParams(Sets.<String>newHashSet(
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.GET)
+          .build();
+  private static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
+      ApiMethodDescriptor.<InsertAddressHttpRequest, Operation>newBuilder()
+          .setMethodName("compute.addresses.insert")
+          .setRequestInstance(InsertAddressHttpRequest.getDefaultInstance())
+          .setResponseInstance(Operation.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
+          .setPathParams(Sets.<String>newHashSet(
+                            "project",    "region"
+                            ))
+          .setQueryParams(Sets.<String>newHashSet(
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.POST)
+          .build();
+  private static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
+      ApiMethodDescriptor.<ListAddressesHttpRequest, AddressList>newBuilder()
+          .setMethodName("compute.addresses.list")
+          .setRequestInstance(ListAddressesHttpRequest.getDefaultInstance())
+          .setResponseInstance(AddressList.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
+          .setPathParams(Sets.<String>newHashSet(
+                            "project",    "region"
+                            ))
+          .setQueryParams(Sets.<String>newHashSet(
+                             "filter",    "maxResults",    "orderBy",    "pageToken"
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.GET)
+          .build();
+
+  private final BackgroundResource backgroundResources;
+
+  private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
+  private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
+  private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
+  private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
+  private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
+
+  public static final HttpJsonAddressStub create(AddressSettings settings) throws IOException {
+    return new HttpJsonAddressStub(settings, ClientContext.create(settings));
+  }
+
+  public static final HttpJsonAddressStub create(ClientContext clientContext) throws IOException {
+    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext);
+  }
+
+  /**
+   * Constructs an instance of HttpJsonAddressStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext) throws IOException {
+
+    HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
+        HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
+            .setMethodDescriptor(deleteAddressMethodDescriptor)
+            .build();
+    HttpJsonCallSettings<GetAddressHttpRequest, Address> getAddressTransportSettings =
+        HttpJsonCallSettings.<GetAddressHttpRequest, Address>newBuilder()
+            .setMethodDescriptor(getAddressMethodDescriptor)
+            .build();
+    HttpJsonCallSettings<InsertAddressHttpRequest, Operation> insertAddressTransportSettings =
+        HttpJsonCallSettings.<InsertAddressHttpRequest, Operation>newBuilder()
+            .setMethodDescriptor(insertAddressMethodDescriptor)
+            .build();
+    HttpJsonCallSettings<ListAddressesHttpRequest, AddressList> listAddressesTransportSettings =
+        HttpJsonCallSettings.<ListAddressesHttpRequest, AddressList>newBuilder()
+            .setMethodDescriptor(listAddressesMethodDescriptor)
+            .build();
+
+    this.deleteAddressCallable = HttpJsonCallableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
+    this.getAddressCallable = HttpJsonCallableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
+    this.insertAddressCallable = HttpJsonCallableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
+    this.listAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.listAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+  @BetaApi
+  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    return deleteAddressCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    return getAddressCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable() {
+    return insertAddressCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    return listAddressesPagedCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
+    return listAddressesCallable;
+  }
+
+  @Override
+  public final void close() throws Exception {
+    shutdown();
+  }
+
+  @Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/PagedResponseWrappers.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.paging.FixedSizeCollection;
+import com.google.api.gax.paging.Page;
+import com.google.api.gax.paging.PagedListResponse;
+import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.PageContext;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import java.util.Iterator;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Wrapper class to contain paged response types for page streaming methods.
+ * Each static class inside this wrapper class is used as the return type of
+ * one of an API method that implements the page streaming pattern.
+ */
+@Generated("by GAPIC")
+@BetaApi
+public class PagedResponseWrappers {
+
+  public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
+
+    public static ApiFuture<ListAddressesPagedResponse> createAsync(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        ApiFuture<AddressList> futureResponse) {
+      ApiFuture<ListAddressesPage> futurePage =
+          ListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListAddressesPage, ListAddressesPagedResponse>() {
+            @Override
+            public ListAddressesPagedResponse apply(ListAddressesPage input) {
+              return new ListAddressesPagedResponse(input);
+            }
+          });
+    }
+
+    private ListAddressesPagedResponse(ListAddressesPage page) {
+      super(page, ListAddressesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListAddressesPage extends AbstractPage<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage> {
+
+    private ListAddressesPage(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        AddressList response) {
+      super(context, response);
+    }
+
+    private static ListAddressesPage createEmptyPage() {
+      return new ListAddressesPage(null, null);
+    }
+
+    @Override
+    protected ListAddressesPage createPage(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        AddressList response) {
+      return new ListAddressesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListAddressesPage> createPageAsync(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        ApiFuture<AddressList> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
+
+    private ListAddressesFixedSizeCollection(List<ListAddressesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListAddressesFixedSizeCollection createEmptyCollection() {
+      return new ListAddressesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListAddressesFixedSizeCollection createCollection(
+        List<ListAddressesPage> pages, int collectionSize) {
+      return new ListAddressesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
+
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/package-info.java ==============
+/*
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * A client to Compute Engine API.
+ *
+ * The interfaces provided are listed below, along with usage samples.
+ *
+ * =============
+ * AddressClient
+ * =============
+ *
+ * Service Description: Creates and runs virtual machines on Google Cloud Platform.
+ *
+ * Sample for AddressClient:
+ * <pre>
+ * <code>
+ * try (AddressClient addressClient = AddressClient.create()) {
+ *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   Operation response = addressClient.deleteAddress(address);
+ * }
+ * </code>
+ * </pre>
+ *
+ */
+
+package com.google.cloud.simplecompute.v1;

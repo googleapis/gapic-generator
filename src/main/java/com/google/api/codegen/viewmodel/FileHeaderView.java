@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,10 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FileHeaderView {
-
   public abstract ImmutableList<String> copyrightLines();
 
   public abstract ImmutableList<String> licenseLines();
@@ -31,9 +30,26 @@ public abstract class FileHeaderView {
 
   public abstract String localPackageName();
 
+  public abstract ImmutableList<String> modules();
+
+  @Nullable
+  public abstract String version();
+
+  public boolean hasVersion() {
+    String version = version();
+    return version != null && version.length() > 0;
+  }
+
+  public abstract String generatorVersion();
+
+  public boolean hasGeneratorVersion() {
+    String generatorVersion = generatorVersion();
+    return generatorVersion != null && generatorVersion.length() > 0;
+  }
+
   public abstract String localExamplePackageName();
 
-  public abstract List<ImportTypeView> imports();
+  public abstract ImportSectionView importSection();
 
   public static Builder newBuilder() {
     return new AutoValue_FileHeaderView.Builder();
@@ -51,9 +67,15 @@ public abstract class FileHeaderView {
 
     public abstract Builder localPackageName(String val);
 
+    public abstract Builder modules(ImmutableList<String> val);
+
+    public abstract Builder version(String val);
+
+    public abstract Builder generatorVersion(String val);
+
     public abstract Builder localExamplePackageName(String val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
+    public abstract Builder importSection(ImportSectionView val);
 
     public abstract FileHeaderView build();
   }

@@ -3,8 +3,9 @@
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
 
-    // Package {@view.fileHeader.localPackageName} is an experimental, auto-generated package for the
-    // {@view.fileHeader.localPackageName} API.
+    // Package {@view.fileHeader.localPackageName} is an auto-generated package for the
+    // {@view.serviceTitle}.
+    {@releaseLevel(view)}
     //
     @join line : view.packageDoc
         // {@line}
@@ -15,5 +16,46 @@
     @end
     package {@view.fileHeader.localPackageName} // import "{@view.importPath}"
 
-    const gapicNameVersion = "gapic/0.1.0"
+    import (
+        "golang.org/x/net/context"
+        "google.golang.org/grpc/metadata"
+    )
+
+    func insertMetadata(ctx context.Context, mds ...metadata.MD) context.Context {
+        out, _ := metadata.FromOutgoingContext(ctx)
+        out = out.Copy()
+        for _, md := range mds {
+            for k, v := range md {
+                out[k] = append(out[k], v...)
+            }
+        }
+        return metadata.NewOutgoingContext(ctx, out)
+    }
+
+    // DefaultAuthScopes reports the default set of authentication scopes to use with this package.
+    func DefaultAuthScopes() []string {
+      return []string{
+        @join scope : view.authScopes
+          "{@scope}",
+        @end
+      }
+    }
+@end
+
+@private releaseLevel(view)
+    @switch view.releaseLevel
+    @case "GA"
+    @case "UNSET_RELEASE_LEVEL"
+        //
+        //   NOTE: This package is in alpha. It is not stable, and is likely to change.
+    @case "ALPHA"
+        //
+        //   NOTE: This package is in alpha. It is not stable, and is likely to change.
+    @case "BETA"
+        //
+        //   NOTE: This package is in beta. It is not stable, and may be subject to changes.
+    @case "DEPRECATED"
+        //
+        //   NOTE: This package is deprecated.
+    @end
 @end

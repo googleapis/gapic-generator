@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,6 +35,11 @@ public class PhpTypeTable implements TypeTable {
   @Override
   public TypeTable cloneEmpty() {
     return new PhpTypeTable(dynamicTypeTable.getImplicitPackageName());
+  }
+
+  @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new PhpTypeTable(packageName);
   }
 
   @Override
@@ -90,6 +95,11 @@ public class PhpTypeTable implements TypeTable {
       cleanedImports.put(imported, imports.get(imported));
     }
     return cleanedImports;
+  }
+
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getAllImports();
   }
 
   public boolean hasImports() {

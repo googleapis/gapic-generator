@@ -1,10 +1,10 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -27,11 +28,12 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
 
-public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
+public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -134,8 +136,14 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     }
     String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+      ProtoFile protoFile = (ProtoFile) parentEl;
+      String namespace = protoFile.getProto().getOptions().getCsharpNamespace();
+      if (Strings.isNullOrEmpty(namespace)) {
+        for (String name : Splitter.on('.').split(parentEl.getFullName())) {
+          prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+        }
+      } else {
+        prefix = namespace + ".";
       }
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
@@ -143,11 +151,11 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     if (type.isMap()) {
-      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName genericMapTypeName =
           new TypeName(
               mapTypeName.getFullName(),
@@ -157,8 +165,8 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
               valueTypeName);
       return TypedValue.create(genericMapTypeName, "new %s()");
     } else if (type.isRepeated()) {
-      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName elementTypeName = getTypeNameForElementType(type);
+      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName genericListTypeName =
           new TypeName(
               listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
@@ -166,15 +174,46 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
-      TypeName enumTypeName = getTypeName(type);
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
-      String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
-      String enumValueName =
-          enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
-      return TypedValue.create(enumTypeName, "%s." + enumValueName);
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    }
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    if (type.isMap()) {
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName emptyMapTypeName = typeNameConverter.getTypeName("Google.Api.Gax.EmptyDictionary");
+      TypeName genericEmptyMapTypeName =
+          new TypeName(
+              emptyMapTypeName.getFullName(),
+              emptyMapTypeName.getNickname(),
+              "%s<%i, %i>",
+              keyTypeName,
+              valueTypeName);
+      return TypedValue.create(genericEmptyMapTypeName, "%s.Instance");
+    } else if (type.isRepeated()) {
+      TypeName elementTypeName = getTypeNameForElementType(type);
+      TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
+      TypeName emptyTypeName =
+          new TypeName(
+              enumerableTypeName.getFullName(),
+              enumerableTypeName.getNickname(),
+              "%s.Empty<%i>",
+              elementTypeName);
+      return TypedValue.create(emptyTypeName, "%s()");
+    } else if (type.isMessage()) {
+      return TypedValue.create(getTypeName(type), "new %s()");
+    } else if (type.isEnum()) {
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
+    } else {
+      if (type.getKind() == Type.TYPE_BYTES) {
+        return TypedValue.create(getTypeName(type), "ByteString.Empty");
+      } else {
+        return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      }
     }
   }
 
@@ -209,18 +248,38 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException(
-        "getTypeNameForResourceNameElementType not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+  }
+
+  private TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, TypeModel type, String typedResourceShortName) {
+    TypeName simpleTypeName = new TypeName(typedResourceShortName);
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by C#");
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    TypeName enumTypeName = getTypeName(type);
+    List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+    String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
+    String enumValueName = enumNamer.getEnumValueName(enumShortTypeName, value.getSimpleName());
+    return TypedValue.create(enumTypeName, "%s." + enumValueName);
   }
 }

@@ -6,16 +6,8 @@
     package {@view.fileHeader.localPackageName}
 
     import (
-        {@imports(view.fileHeader.imports)}
+        {@renderImportSection(view.fileHeader.importSection)}
     )
-
-    @if view.pathTemplates
-        var (
-            @join pathTemplate : view.pathTemplates
-                {@pathTemplate.name} = gax.MustCompilePathTemplate("{@pathTemplate.pattern}")
-            @end
-        )
-    @end
 
     // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
     type {@view.callOptionsTypeName} struct {
@@ -27,11 +19,7 @@
     func {@view.defaultClientOptionFunctionName}() []option.ClientOption {
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceAddress}:{@view.servicePort}"),
-            option.WithScopes(
-                @join scope : view.authScopes
-                    "{@scope}",
-                @end
-            ),
+            option.WithScopes(DefaultAuthScopes()...),
         }
     }
 
@@ -45,8 +33,8 @@
                               codes.{@code},
                           @end
                       }, gax.Backoff{
-                          Initial: {@def.params.getInitialRetryDelay.getMillis}*time.Millisecond,
-                          Max: {@def.params.getMaxRetryDelay.getMillis}*time.Millisecond,
+                          Initial: {@def.params.getInitialRetryDelay.toMillis}*time.Millisecond,
+                          Max: {@def.params.getMaxRetryDelay.toMillis}*time.Millisecond,
                           Multiplier: {@def.params.getRetryDelayMultiplier},
                       })
                   }),
@@ -70,17 +58,23 @@
             {@stub.name} {@stub.grpcClientTypeName}
         @end
 
+        @if view.hasLongRunningOperations
+            // LROClient is used internally to handle longrunning operations.
+            // It is exposed so that its CallOptions can be modified if required.
+            // Users should not Close this client.
+            LROClient *lroauto.OperationsClient
+        @end
+
         // The call options for this service.
         CallOptions *{@view.callOptionsTypeName}
 
-        // The metadata to be sent with each request.
-        metadata metadata.MD
+        // The x-goog-* metadata to be sent with each request.
+        xGoogMetadata metadata.MD
     }
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    // {@view.serviceDoc.firstLine}
-    @join line : view.serviceDoc.remainingLines
+    @join line : view.serviceDoc.lines
         // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
@@ -96,7 +90,20 @@
                 {@stub.name}: {@stub.createStubFunctionName}(conn),
             @end
         }
-        c.SetGoogleClientInfo("gax", gax.Version)
+        c.{@setClientInfoFunc(view)}()
+        @if view.hasLongRunningOperations
+
+            c.LROClient, err = lroauto.NewOperationsClient(ctx, option.WithGRPCConn(conn))
+            if err != nil {
+                // This error "should not happen", since we are just reusing old connection
+                // and never actually need to dial.
+                // If this does happen, we could leak conn. However, we cannot close conn:
+                // If the user invoked the function with option.WithGRPCConn,
+                // we would close a connection that's still in use.
+                // TODO(pongad): investigate error conditions.
+                return nil, err
+            }
+        @end
         return c, nil
     }
 
@@ -111,26 +118,28 @@
         return c.conn.Close()
     }
 
-    // SetGoogleClientInfo sets the name and version of the application in
+    // {@setClientInfoFunc(view)} sets the name and version of the application in
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
-    func (c *{@view.clientTypeName}) SetGoogleClientInfo(name, version string) {
-        v := fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())
-        c.metadata = metadata.Pairs("x-goog-api-client", v)
+    func (c *{@view.clientTypeName}) {@setClientInfoFunc(view)}(keyval ...string) {
+        kv := append([]string{"gl-go", version.Go()}, keyval...)
+        kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
+        c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
     }
 
     @join getter : view.pathTemplateGetters
         // {@getter.name} returns the path for the {@getter.resourceName} resource.
         func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
-            path, err := {@getter.pathTemplateName}.Render(map[string]string{
-                @join arg : getter.args
-                    "{@arg.templateKey}": {@arg.name},
+            return "" +
+                @join piece : getter.render.pieces
+                    @switch piece.kind
+                    @case "LITERAL"
+                        "{@piece.value}" +
+                    @case "VARIABLE"
+                        {@piece.value} +
+                    @end
                 @end
-            })
-            if err != nil {
-                panic(err)
-            }
-            return path
+                ""
         }
 
     @end
@@ -174,17 +183,22 @@
     @join iter : view.pageStreamingDescriptorClasses
         {@iterator(view, iter)}
     @end
+
+    @join lro : view.lroDetailViews
+        {@lroWrapper(view, lro)}
+    @end
 @end
 
 @private simpleMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
+        {@mergeMetadata(method)}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
@@ -193,32 +207,36 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*longrunning.Operation, error) {
-        {@mergeMetadata()}
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) (*{@method.operationMethod.clientReturnTypeName}, error) {
+        {@mergeMetadata(method)}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
-        return longrunning.InternalNewOperation(c.Connection(), resp), nil
+        return &{@method.operationMethod.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.LROClient, resp),
+        }, nil
     }
 @end
 
 # Used for bidi and request GRPC streaming.
 # The function is not accept a request, but otherwise the same with simpleMethod.
 @private noRequestStreamMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
+        {@mergeMetadata(method)}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.name}(ctx)
+            resp, err = c.{@method.stubName}.{@method.name}(ctx, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
@@ -227,20 +245,22 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) error {
-        {@mergeMetadata()}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) error {
+        {@mergeMetadata(method)}
+        opts = {@mergeOptions(method.settingsGetterName)}
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         return err
     }
 @end
 
 @private pageStreamingMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) *{@method.responseTypeName} {
-        {@mergeMetadata()}
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) *{@method.responseTypeName} {
+        {@mergeMetadata(method)}
+        opts = {@mergeOptions(method.settingsGetterName)}
         it := &{@method.responseTypeName}{}
         it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
             var resp {@method.serviceResponseTypeName}
@@ -250,11 +270,11 @@
             } else {
                 req.PageSize = int32(pageSize)
             }
-            err := gax.Invoke(ctx, func(ctx context.Context) error {
+            err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
                 var err error
-                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
                 return err
-            }, c.CallOptions.{@method.settingsGetterName}...)
+            }, opts...)
             if err != nil {
                 return nil, "", err
             }
@@ -297,10 +317,11 @@
     // Next returns the next result. Its second return value is iterator.Done if there are no more
     // results. Once Next returns Done, all subsequent calls will return Done.
     func (it *{@iter.typeName}) Next() ({@iter.resourceTypeName}, error) {
+        var item {@iter.resourceTypeName}
         if err := it.nextFunc(); err != nil {
-            return {@iter.resourceZeroValue}, err
+            return item, err
         }
-        item := it.items[0]
+        item = it.items[0]
         it.items = it.items[1:]
         return item, nil
     }
@@ -317,13 +338,161 @@
 
 @end
 
+@private lroWrapper(view, lro)
+    // {@lro.clientReturnTypeName} manages a long-running operation from {@lro.methodName}.
+    type {@lro.clientReturnTypeName} struct {
+        lro *longrunning.Operation
+    }
+
+    // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.
+    // The name must be that of a previously created {@lro.clientReturnTypeName}, possibly from a different process.
+    func (c *{@view.clientTypeName}) {@lro.constructorName}(name string) *{@lro.clientReturnTypeName} {
+        return &{@lro.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
+        }
+    }
+
+    @if lro.isEmptyOperation
+        // Wait blocks until the long-running operation is completed, returning any error encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context, opts ...gax.CallOption) error {
+            return op.lro.WaitWithInterval(ctx, nil, {@lro.maxPollDelay}*time.Millisecond, opts...)
+        }
+
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully, op.Done will return true.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context, opts ...gax.CallOption) error {
+            return op.lro.Poll(ctx, nil, opts...)
+        }
+    @else
+        // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context, opts ...gax.CallOption) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.WaitWithInterval(ctx, &resp, {@lro.maxPollDelay}*time.Millisecond, opts...); err != nil {
+                return nil, err
+            }
+            return &resp, nil
+        }
+
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully,
+        // op.Done will return true, and the response of the operation is returned.
+        // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context, opts ...gax.CallOption) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.Poll(ctx, &resp, opts...); err != nil {
+                return nil, err
+            }
+            if !op.Done() {
+                return nil, nil
+            }
+            return &resp, nil
+        }
+    @end
+
+    // Metadata returns metadata associated with the long-running operation.
+    // Metadata itself does not contact the server, but Poll does.
+    // To get the latest metadata, call this method after a successful call to Poll.
+    // If the metadata is not available, the returned metadata and error are both nil.
+    func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
+        var meta {@lro.metadataTypeName}
+        if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+            return nil, nil
+        } else if err != nil {
+            return nil, err
+        }
+        return &meta, nil
+    }
+
+    // Done reports whether the long-running operation has completed.
+    func (op *{@lro.clientReturnTypeName}) Done() bool {
+        return op.lro.Done()
+    }
+
+    // Name returns the name of the long-running operation.
+    // The name is assigned by the server and is unique within the service from which the operation is created.
+    func (op *{@lro.clientReturnTypeName}) Name() string {
+        return op.lro.Name()
+    }
+
+    @if lro.implementsCancel
+        // Cancel starts asynchronous cancellation on a long-running operation.
+        // The server makes a best effort to cancel the operation, but success is not guaranteed.
+        // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+        // completed despite cancellation. On successful cancellation, the operation is not deleted;
+        // instead, op.Poll returns an error with code Canceled.
+        func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context, opts ...gax.CallOption) error {
+            return op.lro.Cancel(ctx, opts...)
+        }
+    @end
+
+    @if lro.implementsDelete
+        // Delete deletes a long-running operation.
+        // This method indicates that the client is no longer interested in the operation result.
+        // It does not cancel the operation.
+        func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context, opts ...gax.CallOption) error {
+            return op.lro.Delete(ctx, opts...)
+        }
+    @end
+@end
+
 @private pathTemplateParams(args)
     @join e : args on ", "
       {@e.name}
     @end
 @end
 
-@private mergeMetadata()
-    md, _ := metadata.FromContext(ctx)
-    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+@private requestParamGetter(gettersChain)
+    @join getter : gettersChain on "."
+        Get{@getter}()
+    @end
+@end
+
+@private headerRequestParamString(headerRequestParams) horizontal on EMPTY
+    # This if block prevents a space from being printed after '"'.
+    @if TRUE
+        fmt.Sprintf("
+    @end
+    @join headerRequestParam : headerRequestParams on "&"
+        %s=%v
+    @end
+    ",
+    @join headerRequestParam : headerRequestParams on ", "
+        "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}
+    @end
+    )
+@end
+
+@private mergeMetadata(method)
+    @if method.headerRequestParams
+        md := metadata.Pairs("x-goog-request-params", {@headerRequestParamString(method.headerRequestParams)})
+        ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    @else
+        ctx = insertMetadata(ctx, c.xGoogMetadata)
+    @end
+@end
+
+@private mergeOptions(getterName)
+    append(c.CallOptions.{@getterName}[0:len(c.CallOptions.{@getterName}):len(c.CallOptions.{@getterName})], opts...)
+@end
+
+@private setClientInfoFunc(view)
+    @if view.domainLayerLocation
+        SetGoogleClientInfo
+    @else
+        setGoogleClientInfo
+    @end
 @end

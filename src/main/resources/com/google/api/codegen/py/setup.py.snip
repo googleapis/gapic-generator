@@ -1,0 +1,55 @@
+@extends "py/common.snip"
+
+@snippet generate(metadata)
+  {@licenseSection(metadata.fileHeader)}
+
+  """A setup module for the GAPIC {@metadata.fullName} library.
+
+  See:
+  https://packaging.python.org/en/latest/distributing.html
+  https://github.com/pypa/sampleproject
+  """
+
+  from setuptools import setup, find_packages
+  import io
+  import sys
+
+  install_requires = [
+      @join packageDep : metadata.dependencies
+          '{@packageDep.name} >= {@packageDep.versionBound.lower}, < {@packageDep.versionBound.upper}',
+      @end
+  ]
+
+  with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
+      long_description = readme_file.read()
+
+  setup(
+      name='{@metadata.gapicPackageName}',
+      version='{@metadata.packageVersionBound.lower}',
+      author='{@metadata.author}',
+      author_email='{@metadata.email}',
+      classifiers=[
+          'Intended Audience :: Developers',
+          'Development Status :: {@metadata.developmentStatus}',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Apache Software License',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+      ],
+      description='GAPIC library for the {@metadata.fullName}',
+      include_package_data=True,
+      long_description=long_description,
+      install_requires=install_requires,
+      license='{@metadata.licenseName}',
+      packages=find_packages(exclude=('tests*',)),
+      namespace_packages=[{@quotedList(metadata.namespacePackages)}],
+      url='{@metadata.homepage}',
+      zip_safe=False,
+  )
+
+@end

@@ -1,0 +1,35 @@
+@extends "py/common.snip"
+@extends "py/method_sample.snip"
+
+@snippet generate(smokeTest)
+    {@header(smokeTest.fileHeader)}
+
+    {@testBody(smokeTest)}
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+    {@renderImportSection(fileHeader.importSection)}
+@end
+
+@private testBody(smokeTest)
+    class {@smokeTest.name}(object):
+
+        def test_{@smokeTest.apiMethod.name}(self):
+            @if smokeTest.requireProjectId
+                project_id = os.environ['PROJECT_ID']
+            @end
+
+            client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
+            {@initCode(smokeTest.apiMethod.initCode)}
+            @if smokeTest.apiMethod.hasReturnValue
+                response = {@testMethodCall(smokeTest.apiMethod)}
+            @else
+                {@testMethodCall(smokeTest.apiMethod)}
+            @end
+@end
+
+@private testMethodCall(apiMethod)
+    client.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(apiMethod.initCode)})
+@end

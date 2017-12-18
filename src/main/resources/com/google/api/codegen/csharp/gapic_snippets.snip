@@ -1,5 +1,7 @@
 @extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
 
+# snippets: SnippetsFileView
 @snippet generate(snippets)
     {@renderFileHeader(snippets.fileHeader)}
 
@@ -11,6 +13,7 @@
 @end
 
 @private renderSnippets(snippets)
+    /// <summary>Generated snippets</summary>
     public class {@snippets.name}
     {
         @join snippetMethod : snippets.snippetMethods
@@ -21,6 +24,7 @@
 @end
 
 @private method(snippetMethod)
+    /// <summary>Snippet for {@snippetMethod.method.name}</summary>
     @switch snippetMethod.method.type.toString
     @case "FlattenedMethod"
         {@flattenedMethodSync(snippetMethod)}
@@ -30,6 +34,26 @@
         {@pagedFlattenedMethodSync(snippetMethod)}
     @case "PagedFlattenedAsyncMethod" 
         {@pagedFlattenedMethodAsync(snippetMethod)}
+    @case "RequestObjectMethod"
+        @if snippetMethod.method.isStreaming
+            {@streamingRequestObjectMethod(snippetMethod)}
+        @else
+            {@requestObjectMethodSync(snippetMethod)}
+        @end
+    @case "AsyncRequestObjectMethod"
+        {@requestObjectMethodAsync(snippetMethod)}
+    @case "PagedRequestObjectMethod"
+        {@pagedRequestObjectMethodSync(snippetMethod)}
+    @case "AsyncPagedRequestObjectMethod"
+        {@pagedRequestObjectMethodAsync(snippetMethod)}
+    @case "OperationFlattenedMethod"
+        {@operationFlattenedMethodSync(snippetMethod)}
+    @case "AsyncOperationFlattenedMethod"
+        {@operationFlattenedMethodAsync(snippetMethod)}
+    @case "OperationRequestObjectMethod"
+        {@operationRequestObjectMethodSync(snippetMethod)}
+    @case "AsyncOperationRequestObjectMethod"
+        {@operationRequestObjectMethodAsync(snippetMethod)}
     @default
         $unhandledCase: {@snippetMethod.method.type.toString}$
     @end
@@ -39,7 +63,7 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
         @else
@@ -54,7 +78,7 @@
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
         // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
         @else
@@ -68,68 +92,327 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
-        // Iterate over all response items, lazily performing RPCs as required
-        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
-        {
-            // Do something with each item
-            Console.WriteLine(item);
-        }
-        
-        // Or iterate over fixed-sized pages, lazily performing RPCs as required
-        int pageSize = 10;
-        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
-        {
-            // Do something with each page of items
-            Console.WriteLine("A page of results:");
-            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
-            {
-                Console.WriteLine(item);
-            }
-        }
-        // End snippet
+        {@consumePagedResponseSync(snippetMethod)}
     }
 @end
 
+@private pagedRequestObjectMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumePagedResponseSync(snippetMethod)}
+    }
+@end
+
+@private consumePagedResponseSync(snippetMethod)
+    // Iterate over all response items, lazily performing RPCs as required
+    foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
+    {
+        // Do something with each item
+        Console.WriteLine(item);
+    }
+
+    // Or iterate over pages (of server-defined size), performing one RPC per page
+    foreach ({@snippetMethod.method.listMethod.responseTypeName} page in response.AsRawResponses())
+    {
+        // Do something with each page of items
+        Console.WriteLine("A page of results:");
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
+        {
+            Console.WriteLine(item);
+        }
+    }
+
+    // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+    int pageSize = 10;
+    Page<{@snippetMethod.method.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
+    // Do something with the page of items
+    Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+    foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in singlePage)
+    {
+        Console.WriteLine(item);
+    }
+    // Store the pageToken, for when the next page is required.
+    string nextPageToken = singlePage.NextPageToken;
+    // End snippet
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
 @private pagedFlattenedMethodAsync(snippetMethod)
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
-        // Iterate over all response items, lazily performing RPCs as required
-        await response.ForEachAsync(({@snippetMethod.method.listMethod.resourceTypeName} item) =>
+        {@consumePagedResponseAsync(snippetMethod)}
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private pagedRequestObjectMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, TRUE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumePagedResponseAsync(snippetMethod)}
+    }
+@end
+
+@private consumePagedResponseAsync(snippetMethod)
+    // Iterate over all response items, lazily performing RPCs as required
+    await response.ForEachAsync(({@snippetMethod.method.listMethod.resourceTypeName} item) =>
+    {
+        // Do something with each item
+        Console.WriteLine(item);
+    });
+
+    // Or iterate over pages (of server-defined size), performing one RPC per page
+    await response.AsRawResponses().ForEachAsync(({@snippetMethod.method.listMethod.responseTypeName} page) =>
+    {
+        // Do something with each page of items
+        Console.WriteLine("A page of results:");
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
         {
-            // Do something with each item
             Console.WriteLine(item);
-        });
-        
-        // Or iterate over fixed-sized pages, lazily performing RPCs as required
-        int pageSize = 10;
-        IAsyncEnumerable<FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-        await fixedSizePages.ForEachAsync((FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page) =>
-        {
-            // Do something with each page of items
-            Console.WriteLine("A page of results:");
-            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
-            {
-                Console.WriteLine(item);
-            }
-        });
+        }
+    });
+
+    // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+    int pageSize = 10;
+    Page<{@snippetMethod.method.listMethod.resourceTypeName}> singlePage = await response.ReadPageAsync(pageSize);
+    // Do something with the page of items
+    Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+    foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in singlePage)
+    {
+        Console.WriteLine(item);
+    }
+    // Store the pageToken, for when the next page is required.
+    string nextPageToken = singlePage.NextPageToken;
+    // End snippet
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private requestObjectMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
+        @else
+            {@sampleMethodCall(snippetMethod)};
+        @end
         // End snippet
     }
 @end
 
-@private preparations(snippetMethod)
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethod(snippetMethod)
+    @switch snippetMethod.method.grpcStreamingType
+    @case "ServerStreaming"
+        {@streamingRequestObjectMethodServer(snippetMethod)}
+    @case "BidiStreaming"
+        {@streamingRequestObjectMethodBidirectional(snippetMethod)}
+    @default
+        *** ERROR: Cannot handle streaming type '{@snippetMethod.method.grpcStreamingType.toString}' ***
+    @end
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethodServer(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        // Create client
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+        // Initialize request argument
+        {@topLevelInitCode(snippetMethod.method.initCode)}
+        // Make the request, returning a streaming response
+        {@snippetMethod.apiClassName}.{@snippetMethod.callerResponseTypeName} streamingResponse = {@sampleMethodCall(snippetMethod)};
+
+        // Read streaming responses from server until complete
+        IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
+        while (await responseStream.MoveNext())
+        {
+            {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+            // Do something with streamed response
+        }
+        // The response stream has completed
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethodBidirectional(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}(CallSettings,BidirectionalStreamingSettings)
+        // Create client
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+        // Initialize streaming call, retrieving the stream object
+        {@snippetMethod.apiClassName}.{@snippetMethod.callerResponseTypeName} duplexStream = {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}();
+
+        // Sending requests and retrieving responses can be arbitrarily interleaved.
+        // Exact sequence will depend on client/server behavior.
+        
+        // Create task to do something with responses from server
+        Task responseHandlerTask = Task.Run(async () =>
+        {
+            IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
+        });
+        
+        // Send requests to the server
+        bool done = false;
+        while (!done)
+        {
+            // Initialize a request
+            {@topLevelInitCode(snippetMethod.method.initCode)}
+            // Stream a request to the server
+            await duplexStream.WriteAsync(request);
+            
+            // Set "done" to true when sending requests is complete
+        }
+        // Complete writing requests to the stream
+        await duplexStream.WriteCompleteAsync();
+        // Await the response handler.
+        // This will complete once all server responses have been processed.
+        await responseHandlerTask;
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private requestObjectMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, TRUE)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
+        @else
+            await {@sampleMethodCall(snippetMethod)};
+        @end
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationFlattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, FALSE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationFlattenedMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod, TRUE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, TRUE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationRequestObjectMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, FALSE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationRequestObjectMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, TRUE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, TRUE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView, isAsync: Boolean
+@private consumeOperationResponse(snippetMethod, isAsync)
+    // Poll until the returned long-running operation is complete
+    {@snippetMethod.callerResponseTypeName} completedResponse =
+        {@if(isAsync, "await ", "")}response.PollUntilCompleted{@if(isAsync, "Async", "")}();
+    @if snippetMethod.method.hasReturnValue
+        // Retrieve the operation result
+        {@snippetMethod.method.responseTypeName} result = completedResponse.Result;
+    @else
+        // The long-running operation is now complete.
+    @end
+
+    // Or get the name of the operation
+    string operationName = response.Name;
+    // This name can be stored, then the long-running operation retrieved later by name
+    {@snippetMethod.callerResponseTypeName} retrievedResponse =
+        {@if(isAsync, "await ", "")}{@snippetMethod.apiVariableName}.PollOnce{@snippetMethod.method.name}(operationName);
+    // Check if the retrieved long-running operation has completed
+    if (retrievedResponse.IsCompleted)
+    {
+        @if snippetMethod.method.hasReturnValue
+            // If it has completed, then access the result
+            {@snippetMethod.method.responseTypeName} retrievedResult = retrievedResponse.Result;
+        @else
+            // The long-running operation is now complete.
+        @end
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView, isAsync: Boolean
+@private preparations(snippetMethod, isAsync)
     // Create client
-    {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
-    // Initialize request argument(s)
-    {@topLevelInitCode(snippetMethod.method.initCode)}
+    @if isAsync
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = await {@snippetMethod.apiClassName}.CreateAsync();
+    @else
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+    @end
+    @if snippetMethod.method.initCode.topLevelLines.size
+        // Initialize request argument(s)
+        {@topLevelInitCode(snippetMethod.method.initCode)}
+    @end
     // Make the request
 @end
 
@@ -146,72 +429,5 @@
 @private sampleMethodCallArgList(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
         {@fieldSetting.identifier}
-    @end
-@end
-
-@private topLevelInitCode(initCodeSpec)
-    @join line : initCodeSpec.topLevelLines
-        {@initCode(TRUE, line)};
-    @end
-@end
-
-@private initCode(includeAssignment, line)
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-        @if includeAssignment
-            {@line.typeName} {@line.identifier} = new {@line.typeName}
-        @else
-            new {@line.typeName}
-        @end
-
-        {
-            @join fieldSetting : line.fieldSettings
-                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
-            @end
-        }
-    @case "ListInitLine"
-        @if includeAssignment
-            IEnumerable<{@line.elementTypeName}> {@line.identifier} = new[]
-        @else
-            new[]
-        @end
-
-        {
-            @join child : line.elements
-                {@initCode(FALSE, child)},
-            @end
-        }
-    @case "MapInitLine"
-        @if includeAssignment
-            IDictionary<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = \
-                new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
-        @else
-            new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
-        @end
-
-        {
-            @join mapEntry : line.initEntries
-                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
-            @end
-        }
-    @case "SimpleInitLine"
-        @if includeAssignment
-            {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)}
-        @else
-            {@renderInitValue(line.initValue)}
-        @end
-    @default
-        $unhandledCase: {@line.lineType.toString}$
-    @end
-@end
-
-@private renderInitValue(initValue)
-    @switch initValue.type
-    @case "SimpleInitValueView"
-        {@initValue.initialValue}
-    @case "FormattedInitValueView"
-        {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
-    @default
-        $unhandledCase: {@initValue.type}$
     @end
 @end
