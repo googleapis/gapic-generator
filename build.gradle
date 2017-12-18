@@ -434,13 +434,6 @@ task runConfigGen(type: JavaExec) {
     args = clargs.split(',').toList()
   }
 }
-
-// Task to run GrpcMetadataGeneratorTool
-// =============================
-//
-// Command line args can be passed to the tool as a comma-separated list:
-//   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
-task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
   if (project.hasProperty('clargs')) {
