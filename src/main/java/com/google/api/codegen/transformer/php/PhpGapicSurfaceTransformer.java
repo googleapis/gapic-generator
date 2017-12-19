@@ -260,6 +260,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\Cloud\\Version");
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {

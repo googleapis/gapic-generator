@@ -566,6 +566,10 @@
                     $optionalArgs['retrySettings']
                 );
             }
+            @if @apiMethod.headerRequestParams
+              {@requestParams(apiMethod.headerRequestParams)}
+
+            @end
             $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
@@ -581,6 +585,23 @@
         }
         {@""}
     @end
+@end
+
+@private requestParams(headerRequestParams)
+  $requestParams = new RequestParamsHeaderDescriptor([
+    @join headerRequestParam : @headerRequestParams
+      '{@headerRequestParam.fullyQualifiedName}' => $request->{@requestParamGetter(headerRequestParam.gettersChain)},
+    @end
+  ]);
+  $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
+      ? array_merge($optionalArgs['userHeaders'], $requestParams->getHeader())
+      : $requestParams->getHeader();
+@end
+
+@private requestParamGetter(gettersChain)
+  @join getter : gettersChain on "->"
+    {@getter}()
+  @end
 @end
 
 @private paramList(params)
