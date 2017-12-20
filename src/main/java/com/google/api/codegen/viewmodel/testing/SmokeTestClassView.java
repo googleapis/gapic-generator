@@ -38,11 +38,8 @@ public abstract class SmokeTestClassView implements ViewModel {
   @Nullable
   public abstract ApiMethodView apiMethod();
 
-  @Nullable
-  public abstract TestCaseView method();
-
   public boolean hasMethod() {
-    return method() != null;
+    return apiMethod() != null;
   }
 
   public abstract boolean requireProjectId();
@@ -86,8 +83,6 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder apiMethod(ApiMethodView val);
-
-    public abstract Builder method(TestCaseView val);
 
     public abstract Builder requireProjectId(boolean val);
 
