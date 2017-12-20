@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,13 +17,11 @@ package com.google.api.codegen;
 import com.google.api.codegen.advising.Adviser;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.configgen.MessageGenerator;
-import com.google.api.codegen.configgen.mergers.ProtoConfigMerger;
-import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -36,9 +34,11 @@ import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -103,12 +103,17 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
-    model.establishStage(Merged.KEY);
+    ConfigSource configSource = loadConfigFromFiles(configFileNames);
+    if (configSource == null) {
+      return;
+    }
 
-    ConfigProto configProto = loadConfigFromFiles(configFileNames);
+    ConfigProto configProto = (ConfigProto) configSource.getConfig();
     if (configProto == null) {
       return;
     }
+
+    model.establishStage(Merged.KEY);
 
     List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
     Adviser adviser = new Adviser(adviceSuppressors);
@@ -190,24 +195,15 @@ public class CodeGeneratorApi extends ToolDriverBase {
     return provider;
   }
 
-  private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+  private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
-
-    ProtoConfigMerger configMerger = new ProtoConfigMerger();
-    MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
-    for (File file : configFiles) {
-      ConfigNode configNode = configMerger.mergeConfig(model, file);
-      messageGenerator.visit(configNode.getChild());
-    }
-    ConfigProto configProto = (ConfigProto) messageGenerator.getValue();
-    if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
-      return null;
-    }
-
-    return configProto;
+    ImmutableMap<String, Message> supportedConfigTypes =
+        ImmutableMap.<String, Message>of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
+    return MultiYamlReader.read(model.getDiagCollector(), configFiles, supportedConfigTypes);
   }
 
   private List<File> pathsToFiles(List<String> configFileNames) {

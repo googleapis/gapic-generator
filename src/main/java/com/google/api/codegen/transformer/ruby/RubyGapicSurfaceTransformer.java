@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
@@ -119,20 +120,22 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      String packageName = productConfig.getPackageName();
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
               new RubyTypeTable(productConfig.getPackageName()),
-              new RubyModelTypeNameConverter(productConfig.getPackageName()));
+              new RubyModelTypeNameConverter(packageName));
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
-      serviceSurfaces.add(generateApiClass(context));
+      serviceSurfaces.add(generateApiClass(context, packageName));
     }
     return serviceSurfaces.build();
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context) {
+  private ViewModel generateApiClass(GapicInterfaceContext context, String packageName) {
     SurfaceNamer namer = context.getNamer();
+    PackageMetadataNamer metadataNamer = new RubyPackageMetadataNamer(packageName);
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
@@ -183,8 +186,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
-    xapiClass.packageVersion(
-        packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
+    xapiClass.gapicPackageName(
+        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
+            ? "google-gax"
+            : metadataNamer.getMetadataIdentifier());
 
     xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
     xapiClass.defaultCredentialsInitializerCall(

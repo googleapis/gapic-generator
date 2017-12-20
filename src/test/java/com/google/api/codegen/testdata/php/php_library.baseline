@@ -32,13 +32,13 @@
 ============== file: src/Example/Library/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,6 +71,7 @@ use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\OperationResponse;
 use Google\ApiCore\PageStreamingDescriptor;
 use Google\ApiCore\PathTemplate;
+use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\Example\Library\V1\AddCommentsRequest;
@@ -139,8 +140,8 @@ use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
  * calls that map to API methods. Sample code to get started:
  *
  * ```
+ * $libraryServiceClient = new LibraryServiceClient();
  * try {
- *     $libraryServiceClient = new LibraryServiceClient();
  *     $shelf = new Shelf();
  *     $response = $libraryServiceClient->createShelf($shelf);
  * } finally {
@@ -605,8 +606,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $response = $libraryServiceClient->createShelf($shelf);
      * } finally {
@@ -655,8 +656,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $options = '';
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
@@ -717,8 +718,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listShelves();
@@ -785,8 +786,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
@@ -835,8 +836,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
@@ -888,8 +889,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
@@ -926,6 +927,14 @@ class LibraryServiceGapicClient
                 $optionalArgs['retrySettings']
             );
         }
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+          'book.read' => $request->getBook()->getRead(),
+        ]);
+        $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+            : $requestParams->getHeader();
+
         $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);
@@ -941,8 +950,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
      *     $seriesString = 'foobar';
@@ -1009,8 +1018,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
@@ -1059,8 +1068,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
@@ -1141,8 +1150,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
@@ -1189,8 +1198,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
@@ -1257,8 +1266,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
@@ -1310,8 +1319,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listStrings();
@@ -1389,8 +1398,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $comment = '';
      *     $stage = Stage::UNSET;
@@ -1447,8 +1456,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
@@ -1497,8 +1506,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $formattedAltBookName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
@@ -1551,8 +1560,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
@@ -1601,8 +1610,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $indexName = 'default index';
      *     $indexMapItem = '';
@@ -1657,8 +1666,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamShelves();
@@ -1714,8 +1723,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = '';
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamBooks($name);
@@ -1773,8 +1782,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
@@ -1851,8 +1860,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
@@ -1916,8 +1925,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $namesElement = '';
      *     $names = [$namesElement];
      *     $shelves = [];
@@ -1997,8 +2006,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $tag = '';
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
@@ -2052,8 +2061,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $label = '';
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
@@ -2107,8 +2116,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
@@ -2182,8 +2191,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
@@ -2255,8 +2264,8 @@ class LibraryServiceGapicClient
      *
      * Sample code:
      * ```
+     * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $libraryServiceClient = new LibraryServiceClient();
      *     $requiredSingularInt32 = 0;
      *     $requiredSingularInt64 = 0;
      *     $requiredSingularFloat = 0.0;
@@ -2507,13 +2516,13 @@ class LibraryServiceGapicClient
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -2722,13 +2731,13 @@ class LibraryServiceClient extends LibraryServiceGapicClient
 ============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -2781,13 +2790,13 @@ class LibraryServiceSmokeTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -5130,8 +5139,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $requiredSingularInt32 = -72313594;
-        $requiredSingularInt64 = -72313499;
+        $requiredSingularInt32 = 72313594;
+        $requiredSingularInt64 = 72313499;
         $requiredSingularFloat = -7514705.0;
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
@@ -5220,8 +5229,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $requiredSingularInt32 = -72313594;
-        $requiredSingularInt64 = -72313499;
+        $requiredSingularInt32 = 72313594;
+        $requiredSingularInt64 = 72313499;
         $requiredSingularFloat = -7514705.0;
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
@@ -5266,13 +5275,13 @@ class LibraryServiceClientTest extends GeneratedTest
 ============== file: tests/unit/Example/Library/V1/MockLabelerImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -5310,13 +5319,13 @@ class MockLabelerImpl extends LabelerGrpcClient
 ============== file: tests/unit/Example/Library/V1/MockLibraryServiceImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -5354,13 +5363,13 @@ class MockLibraryServiceImpl extends LibraryServiceGrpcClient
 ============== file: tests/unit/Example/Library/V1/MockOperationsImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
