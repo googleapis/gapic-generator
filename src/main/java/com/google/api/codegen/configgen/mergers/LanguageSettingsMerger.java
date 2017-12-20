@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,8 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.MissingFieldTransformer;
+import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
@@ -50,14 +52,18 @@ public class LanguageSettingsMerger {
 
   public ConfigNode mergeLanguageSettings(
       final String packageName, ConfigNode configNode, ConfigNode prevNode) {
-    FieldConfigNode languageSettingsNode = new FieldConfigNode("language_settings");
-    prevNode.insertNext(languageSettingsNode);
+    FieldConfigNode languageSettingsNode =
+        MissingFieldTransformer.insert("language_settings", configNode, prevNode).generate();
+    if (NodeFinder.hasContent(languageSettingsNode.getChild())) {
+      return languageSettingsNode;
+    }
+
     ConfigNode languageSettingsValueNode =
         ListTransformer.generateList(
             LANGUAGE_FORMATTERS.entrySet(),
             languageSettingsNode,
-            entry -> {
-              ConfigNode languageNode = new FieldConfigNode(entry.getKey());
+            (startLine, entry) -> {
+              ConfigNode languageNode = new FieldConfigNode(startLine, entry.getKey());
               mergeLanguageSetting(languageNode, entry.getValue(), packageName);
               return languageNode;
             });
@@ -68,7 +74,8 @@ public class LanguageSettingsMerger {
 
   private ConfigNode mergeLanguageSetting(
       ConfigNode languageNode, LanguageFormatter languageFormatter, String packageName) {
-    ConfigNode packageNameNode = new FieldConfigNode("package_name");
+    ConfigNode packageNameNode =
+        new FieldConfigNode(NodeFinder.getNextLine(languageNode), "package_name");
     languageNode.setChild(packageNameNode);
     mergePackageNameValue(packageNameNode, languageFormatter, packageName);
     return packageNameNode;
@@ -77,7 +84,8 @@ public class LanguageSettingsMerger {
   private ConfigNode mergePackageNameValue(
       ConfigNode packageNameNode, LanguageFormatter languageFormatter, String packageName) {
     ConfigNode packageNameValueNode =
-        new ScalarConfigNode(languageFormatter.getFormattedPackageName(packageName));
+        new ScalarConfigNode(
+            packageNameNode.getStartLine(), languageFormatter.getFormattedPackageName(packageName));
     packageNameNode.setChild(packageNameValueNode);
     return packageNameValueNode;
   }

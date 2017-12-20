@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -652,9 +652,9 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.ExecutorProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.core.GaxProperties");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
@@ -714,12 +714,13 @@ public class JavaSurfaceTransformer {
         if (interfaceConfig.hasLongRunningOperations()) {
           typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
         }
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcExtraHeaderData");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
         break;
       case DISCOVERY:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
         break;
     }
   }
