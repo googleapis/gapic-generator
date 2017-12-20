@@ -12,28 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.clientconfig.viewmodel;
+package com.google.api.codegen.transformer.clientconfig;
 
-import com.google.auto.value.AutoValue;
-import java.util.List;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 
-/** Represents a retry code definition. */
-@AutoValue
-public abstract class RetryCodeDefView {
-  public abstract String name();
-
-  public abstract List<String> codes();
-
-  public static Builder newBuilder() {
-    return new AutoValue_RetryCodeDefView.Builder();
-  }
-
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder name(String val);
-
-    public abstract Builder codes(List<String> val);
-
-    public abstract RetryCodeDefView build();
+/** The default ModelToViewTransformer to transform a Model into the client config. */
+public class ClientConfigTransformer extends AbstractClientConfigTransformer {
+  public ClientConfigTransformer(GapicCodePathMapper pathMapper) {
+    super(pathMapper);
   }
 }

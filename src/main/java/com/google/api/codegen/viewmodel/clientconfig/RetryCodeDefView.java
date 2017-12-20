@@ -12,27 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.clientconfig.viewmodel;
+package com.google.api.codegen.viewmodel.clientconfig;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
-/** Represents a key-value pair. */
+/** Represents a retry code definition. */
 @AutoValue
-public abstract class PairView {
-  public abstract String key();
+public abstract class RetryCodeDefView {
+  public abstract String name();
 
-  public abstract String value();
+  public abstract List<String> codes();
 
   public static Builder newBuilder() {
-    return new AutoValue_PairView.Builder();
+    return new AutoValue_RetryCodeDefView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder key(String val);
+    public abstract Builder name(String val);
 
-    public abstract Builder value(String val);
+    public abstract Builder codes(List<String> val);
 
-    public abstract PairView build();
+    public abstract RetryCodeDefView build();
   }
 }

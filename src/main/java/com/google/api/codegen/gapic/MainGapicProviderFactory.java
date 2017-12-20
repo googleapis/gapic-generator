@@ -14,15 +14,13 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.clientconfig.transformer.CommonClientConfigTransformer;
-import com.google.api.codegen.clientconfig.transformer.php.PhpClientConfigTransformer;
-import com.google.api.codegen.clientconfig.transformer.py.PythonClientConfigTransformer;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.clientconfig.ClientConfigTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSmokeTestTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
@@ -36,9 +34,11 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransforme
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.php.PhpClientConfigTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
+import com.google.api.codegen.transformer.py.PythonClientConfigTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
@@ -100,7 +100,7 @@ public class MainGapicProviderFactory
               .setProductConfig(productConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
               .setModelToViewTransformer(
-                  new CommonClientConfigTransformer(CommonGapicCodePathMapper.defaultInstance()))
+                  new ClientConfigTransformer(CommonGapicCodePathMapper.defaultInstance()))
               .build();
       providers.add(provider);
     } else if (id.equals(CSHARP)) {
@@ -265,7 +265,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new CommonClientConfigTransformer(nodeJSPathMapper))
+                .setModelToViewTransformer(new ClientConfigTransformer(nodeJSPathMapper))
                 .build();
 
         providers.add(mainProvider);
@@ -410,7 +410,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new CommonClientConfigTransformer(rubyPathMapper))
+                .setModelToViewTransformer(new ClientConfigTransformer(rubyPathMapper))
                 .build();
         GapicProvider<? extends Object> metadataProvider =
             ViewModelGapicProvider.newBuilder()

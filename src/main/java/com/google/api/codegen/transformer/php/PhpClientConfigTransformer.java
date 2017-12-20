@@ -12,11 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.clientconfig.transformer;
+package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.clientconfig.viewmodel.MethodView;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.clientconfig.AbstractClientConfigTransformer;
 
-public interface MethodTransformer {
-  MethodView generateMethod(MethodConfig methodConfig);
+/** The ModelToViewTransformer to transform a Model into the client config for PHP. */
+public class PhpClientConfigTransformer extends AbstractClientConfigTransformer {
+  public PhpClientConfigTransformer(GapicCodePathMapper pathMapper) {
+    super(pathMapper);
+  }
+
+  @Override
+  protected boolean isRetryingSupported(MethodConfig methodConfig) {
+    return super.isRetryingSupported(methodConfig) && !methodConfig.isGrpcStreaming();
+  }
 }
