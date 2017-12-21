@@ -47,6 +47,9 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract boolean requireProjectId();
 
+  @Nullable
+  public abstract String projectIdVariableName();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -90,6 +93,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder method(TestCaseView val);
 
     public abstract Builder requireProjectId(boolean val);
+
+    public abstract Builder projectIdVariableName(String val);
 
     public abstract Builder apiName(String val);
 
