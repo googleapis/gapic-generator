@@ -336,6 +336,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiMethodName(MethodModel method, VisibilityConfig visibility) {
+    // This is defined in grpc/generic/service.rb
+    return method
+        .getSimpleName()
+        .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+        .replaceAll("([a-z\\d])([A-Z])", "$1_$2")
+        .replaceAll("-", "_")
+        .toLowerCase();
+  }
+
+  @Override
   public String getModuleVersionName() {
     List<String> apiModules = getApiModules();
     return apiModules.get(apiModules.size() - 1);
