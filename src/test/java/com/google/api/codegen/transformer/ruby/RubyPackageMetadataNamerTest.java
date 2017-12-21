@@ -35,9 +35,24 @@ public class RubyPackageMetadataNamerTest {
   }
 
   @Test
-  public void getSmokeTestProjectVariable() {
+  public void getProjectVariable() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getSmokeTestProjectVariable())
-        .isEqualTo("URL_LENGTHENER_API_TEST_PROJECT");
+    Truth.assertThat(namer.getProjectVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_PROJECT");
+    Truth.assertThat(namer.getProjectVariable(false)).isEqualTo("URL_LENGTHENER_API_PROJECT");
+  }
+
+  @Test
+  public void getKeyfileVariable() {
+    RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
+    Truth.assertThat(namer.getKeyfileVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE");
+    Truth.assertThat(namer.getKeyfileVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE");
+  }
+
+  @Test
+  public void getJsonKeyVariable() {
+    RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
+    Truth.assertThat(namer.getJsonKeyVariable(true))
+        .isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE_JSON");
+    Truth.assertThat(namer.getJsonKeyVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE_JSON");
   }
 }

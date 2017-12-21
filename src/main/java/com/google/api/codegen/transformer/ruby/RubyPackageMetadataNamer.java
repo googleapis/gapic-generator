@@ -50,8 +50,19 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     return getMetadataIdentifier() + ".gemspec";
   }
 
-  public String getSmokeTestProjectVariable() {
-    return Name.from(getSimpleMetadataIdentifier(), "test", "project").toUpperUnderscore();
+  public String getProjectVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "project")
+        .toUpperUnderscore();
+  }
+
+  public String getKeyfileVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "keyfile")
+        .toUpperUnderscore();
+  }
+
+  public String getJsonKeyVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "keyfile", "json")
+        .toUpperUnderscore();
   }
 
   private String getSimpleMetadataIdentifier() {

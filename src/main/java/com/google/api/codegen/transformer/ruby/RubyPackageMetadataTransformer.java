@@ -292,7 +292,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .versionNamespace(validVersionNamespace(interfaceModels, surfaceNamer))
-        .smokeTestProjectVariable(namer.getSmokeTestProjectVariable())
+        .smokeTestProjectVariable(namer.getProjectVariable(true))
+        .smokeTestKeyfileVariable(namer.getKeyfileVariable(true))
+        .smokeTestJsonKeyVariable(namer.getJsonKeyVariable(true))
+        .projectVariable(namer.getProjectVariable(false))
+        .keyfileVariable(namer.getKeyfileVariable(false))
+        .jsonKeyVariable(namer.getJsonKeyVariable(false))
         .build();
   }
 

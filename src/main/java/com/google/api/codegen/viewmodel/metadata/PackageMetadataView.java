@@ -166,6 +166,21 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String smokeTestProjectVariable();
 
+  @Nullable
+  public abstract String smokeTestKeyfileVariable();
+
+  @Nullable
+  public abstract String smokeTestJsonKeyVariable();
+
+  @Nullable
+  public abstract String projectVariable();
+
+  @Nullable
+  public abstract String keyfileVariable();
+
+  @Nullable
+  public abstract String jsonKeyVariable();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -284,6 +299,36 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Environment variable to determine the Google Cloud project used to run smoke tests. */
     public abstract Builder smokeTestProjectVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud service account keyfile used to run smoke
+     * tests.
+     */
+    public abstract Builder smokeTestKeyfileVariable(String s);
+
+    /**
+     * Environment variable to determine the contents of the Google Cloud service account keyfile
+     * used to run smoke tests.
+     */
+    public abstract Builder smokeTestJsonKeyVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud project used to configure default
+     * credentials.
+     */
+    public abstract Builder projectVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud service account keyfile used to configure
+     * default credentials.
+     */
+    public abstract Builder keyfileVariable(String s);
+
+    /**
+     * Environment variable to determine the contents of the Google Cloud service account keyfile
+     * used to configure default credentials.
+     */
+    public abstract Builder jsonKeyVariable(String s);
 
     public abstract PackageMetadataView build();
   }
