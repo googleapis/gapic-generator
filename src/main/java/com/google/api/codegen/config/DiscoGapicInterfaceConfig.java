@@ -45,7 +45,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return Strings.isNullOrEmpty(getInterfaceNameOverride()) ? getInterfaceNameOverride() : getRawName();
+    return getInterfaceNameOverride() != null ? getInterfaceNameOverride() : getRawName();
   }
 
   @Override
