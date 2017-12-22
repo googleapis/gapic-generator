@@ -88,7 +88,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return getInterfaceNameOverride() != null ? getInterfaceNameOverride() : getInterface().getSimpleName();
+    return getInterfaceNameOverride() != null
+        ? getInterfaceNameOverride()
+        : getInterface().getSimpleName();
   }
 
   @Override
