@@ -45,7 +45,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getRawName();
+    return Strings.isNullOrEmpty(getInterfaceNameOverride()) ? getInterfaceNameOverride() : getRawName();
   }
 
   @Override
@@ -54,14 +54,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Override
   public String getRawName() {
     return getInterfaceModel().getSimpleName();
-  }
-
-  @Nullable
-  public abstract String getInterfaceNameOverride();
-
-  @Override
-  public boolean hasInterfaceNameOverride() {
-    return getInterfaceNameOverride() != null;
   }
 
   @Override
@@ -154,8 +146,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceName, document),
           interfaceNameOverride,
+          new DiscoInterfaceModel(interfaceName, document),
           smokeTestConfig,
           methodConfigMap,
           singleResourceNames);

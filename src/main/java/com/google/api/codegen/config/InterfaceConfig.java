@@ -65,7 +65,7 @@ public interface InterfaceConfig {
 
   ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
-  boolean hasInterfaceNameOverride();
+  String getInterfaceNameOverride();
 
   String getRawName();
 }
