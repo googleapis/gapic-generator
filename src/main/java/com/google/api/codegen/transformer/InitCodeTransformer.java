@@ -161,7 +161,8 @@ public class InitCodeTransformer {
         }
       }
 
-      boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
+      boolean isMap = fieldConfig.getField().isMap();
+      boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
 
       String enumTypeName = null;
       TypeModel fieldType = fieldItemTree.getType();
@@ -179,6 +180,7 @@ public class InitCodeTransformer {
               expectedValueIdentifier,
               expectedTransformFunction,
               actualTransformFunction,
+              isMap,
               isArray,
               getterMethod,
               enumTypeName,
@@ -210,12 +212,14 @@ public class InitCodeTransformer {
       String expected,
       String expectedTransformFunction,
       String actualTransformFunction,
+      boolean isMap,
       boolean isArray,
       String actual,
       String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .isMap(isMap)
         .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)

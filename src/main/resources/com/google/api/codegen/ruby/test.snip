@@ -559,7 +559,7 @@
 @end
 
 @private expectedValue(assert)
-  @if assert.hasMessageTypeName
+  @if and(assert.hasMessageTypeName, not(assert.isMap))
     Google::Gax::to_proto({@assert.expectedValueIdentifier}, {@assert.messageTypeName})
   @else
     {@assert.expectedValueIdentifier}
