@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,11 @@ public class StandardValueProducer implements ValueProducer {
       return Byte.toString(lowByte);
     } else if (typeRef.getPrimitiveTypeName().contains("int")
         || typeRef.getPrimitiveTypeName().contains("fixed")) {
-      return Integer.toString(identifier.hashCode());
+      int value = identifier.hashCode();
+      if (value == Integer.MIN_VALUE) {
+        value = 0;
+      }
+      return "" + Math.abs(value);
     } else if (typeRef.isDoubleType() || typeRef.isFloatType()) {
       return Double.toString(identifier.hashCode() / 10);
     } else {

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -181,17 +181,13 @@ public class GoGapicSurfaceTransformerTest {
   }
 
   private Method getMethod(Interface apiInterface, String methodName) {
-    for (Method method : apiInterface.getMethods()) {
-      String name = method.getFullName();
-      int dot = name.lastIndexOf('.');
-      if (dot >= 0) {
-        name = name.substring(dot + 1);
-      }
-      if (name.equals(methodName)) {
-        return method;
-      }
+    Method method = apiInterface.lookupMethod(methodName);
+    if (method == null) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Method %s not found, available: %s", methodName, apiInterface.getMethods()));
     }
-    throw new IllegalArgumentException(
-        String.format("Method %s not found, available: %s", methodName, apiInterface.getMethods()));
+
+    return method;
   }
 }
