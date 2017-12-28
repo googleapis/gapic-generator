@@ -123,8 +123,6 @@ const path = require('path');
 const VERSION = require('../package.json').version;
 
 /**
- * blah
- *
  * @class
  */
 class NoTemplatesApiServiceClient {
@@ -280,9 +278,8 @@ class NoTemplatesApiServiceClient {
    *         and trailing
    *    whitespace.
    *
-   * @param {Object} request
+   * @param {Object} [request]
    *   The request object that will be sent.
-   * @param {string} [request.optionalString]
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -299,7 +296,7 @@ class NoTemplatesApiServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var optionalString = 'a value';
+   *
    * client.increment({}).catch(err => {
    *   console.error(err);
    * });
@@ -310,7 +307,9 @@ class NoTemplatesApiServiceClient {
       options = {};
     }
     options = options || {};
-
+    if (request === undefined) {
+      request = {};
+    }
     return this._innerApiCalls.increment(request, options, callback);
   }
 }
