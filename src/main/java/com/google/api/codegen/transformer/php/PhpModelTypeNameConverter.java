@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
-import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -174,11 +173,11 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
       }
 
       String parentFullName = getTypeName(parent, maxDepth - 1).getFullName();
-      String nickname = elem.getSimpleName();
-      String fullName = String.format("%s_%s", parentFullName, nickname);
+      String fullName = String.format("%s_%s", parentFullName, elem.getSimpleName());
+      String[] nameSplit = fullName.split("\\\\");
+      String nickname = nameSplit[nameSplit.length - 1];
 
-      TypeAlias typeAlias = TypeAlias.createAliasedImport(fullName, nickname);
-      return new TypeName(typeAlias);
+      return new TypeName(fullName, nickname);
     }
     return typeNameConverter.getTypeName(getTypeNameString(elem));
   }
