@@ -560,10 +560,10 @@ require "library"
 
 describe "LibraryServiceSmokeTest" do
   it "runs one smoke test with update_book" do
-    unless ENV["SMOKE_TEST_PROJECT"]
-      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
+    unless ENV["LIBRARY_TEST_PROJECT"]
+      fail "Usage: LIBRARY_TEST_PROJECT=<project_id> ruby #{$0}"
     end
-    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
+    project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
     library_service_client = Library.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)

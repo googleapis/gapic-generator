@@ -71,6 +71,7 @@ use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\OperationResponse;
 use Google\ApiCore\PageStreamingDescriptor;
 use Google\ApiCore\PathTemplate;
+use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\Example\Library\V1\AddCommentsRequest;
@@ -926,6 +927,14 @@ class LibraryServiceGapicClient
                 $optionalArgs['retrySettings']
             );
         }
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+          'book.read' => $request->getBook()->getRead(),
+        ]);
+        $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+            : $requestParams->getHeader();
+
         $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);

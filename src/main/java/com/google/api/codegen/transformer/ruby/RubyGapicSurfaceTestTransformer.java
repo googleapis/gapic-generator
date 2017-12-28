@@ -228,6 +228,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         smokeTestPathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
+    RubyPackageMetadataNamer metadataNamer =
+        new RubyPackageMetadataNamer(context.getNamer().getPackageName());
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
@@ -256,6 +258,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
+    testClass.projectIdVariableName(metadataNamer.getSmokeTestProjectVariable());
     testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =
