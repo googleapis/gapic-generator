@@ -4932,7 +4932,7 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.list_books(formatted_name, filter)
+          response = client.list_books(formatted_name, filter: filter)
 
           # Verify the response
           assert(response.instance_of?(Google::Gax::PagedEnumerable))
@@ -4965,7 +4965,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.list_books(formatted_name, filter)
+            client.list_books(formatted_name, filter: filter)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
