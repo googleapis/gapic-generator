@@ -32,7 +32,7 @@
 ============== file: src/LongRunning/Gapic/OperationsGapicClient.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -83,6 +83,7 @@ use Google\ApiCore\GrpcConstants;
 use Google\ApiCore\GrpcCredentialsHelper;
 use Google\ApiCore\PageStreamingDescriptor;
 use Google\ApiCore\PathTemplate;
+use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\ValidationException;
 use Google\Cloud\Version;
 use Google\LongRunning\CancelOperationRequest;
@@ -110,12 +111,12 @@ use Google\LongRunning\OperationsGrpcClient;
  * calls that map to API methods. Sample code to get started:
  *
  * ```
+ * $options = [
+ *     'serviceAddress' => 'my-service-address',
+ *     'scopes' => ['my-service-scope'],
+ * ];
+ * $operationsClient = new OperationsClient($options);
  * try {
- *     $options = [
- *         'serviceAddress' => 'my-service-address',
- *         'scopes' => ['my-service-scope'],
- *     ];
- *     $operationsClient = new OperationsClient($options);
  *     $name = '';
  *     $response = $operationsClient->getOperation($name);
  * } finally {
@@ -304,12 +305,12 @@ class OperationsGapicClient
      *
      * Sample code:
      * ```
+     * $options = [
+     *     'serviceAddress' => 'my-service-address',
+     *     'scopes' => ['my-service-scope'],
+     * ];
+     * $operationsClient = new OperationsClient($options);
      * try {
-     *     $options = [
-     *         'serviceAddress' => 'my-service-address',
-     *         'scopes' => ['my-service-scope'],
-     *     ];
-     *     $operationsClient = new OperationsClient($options);
      *     $name = '';
      *     $response = $operationsClient->getOperation($name);
      * } finally {
@@ -364,12 +365,12 @@ class OperationsGapicClient
      *
      * Sample code:
      * ```
+     * $options = [
+     *     'serviceAddress' => 'my-service-address',
+     *     'scopes' => ['my-service-scope'],
+     * ];
+     * $operationsClient = new OperationsClient($options);
      * try {
-     *     $options = [
-     *         'serviceAddress' => 'my-service-address',
-     *         'scopes' => ['my-service-scope'],
-     *     ];
-     *     $operationsClient = new OperationsClient($options);
      *     $name = '';
      *     $filter = '';
      *     // Iterate through all elements
@@ -459,12 +460,12 @@ class OperationsGapicClient
      *
      * Sample code:
      * ```
+     * $options = [
+     *     'serviceAddress' => 'my-service-address',
+     *     'scopes' => ['my-service-scope'],
+     * ];
+     * $operationsClient = new OperationsClient($options);
      * try {
-     *     $options = [
-     *         'serviceAddress' => 'my-service-address',
-     *         'scopes' => ['my-service-scope'],
-     *     ];
-     *     $operationsClient = new OperationsClient($options);
      *     $name = '';
      *     $operationsClient->cancelOperation($name);
      * } finally {
@@ -516,12 +517,12 @@ class OperationsGapicClient
      *
      * Sample code:
      * ```
+     * $options = [
+     *     'serviceAddress' => 'my-service-address',
+     *     'scopes' => ['my-service-scope'],
+     * ];
+     * $operationsClient = new OperationsClient($options);
      * try {
-     *     $options = [
-     *         'serviceAddress' => 'my-service-address',
-     *         'scopes' => ['my-service-scope'],
-     *     ];
-     *     $operationsClient = new OperationsClient($options);
      *     $name = '';
      *     $operationsClient->deleteOperation($name);
      * } finally {
@@ -583,7 +584,7 @@ class OperationsGapicClient
 ============== file: src/LongRunning/OperationsClient.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -688,7 +689,7 @@ class OperationsClient extends OperationsGapicClient
 ============== file: tests/system/LongRunning/OperationsSmokeTest.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -755,7 +756,7 @@ class OperationsSmokeTest extends GeneratedTest
 ============== file: tests/unit/LongRunning/MockOperationsImpl.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -813,7 +814,7 @@ class MockOperationsImpl extends OperationsGrpcClient
 ============== file: tests/unit/LongRunning/OperationsClientTest.php ==============
 <?php
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
