@@ -1191,6 +1191,7 @@ class LibraryServiceClient {
    *
    * // Iterate over all elements.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
    *
    * client.listBooks({name: formattedName})
    *   .then(responses => {
@@ -1205,6 +1206,7 @@ class LibraryServiceClient {
    *
    * // Or obtain the paged response.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
    *
    *
    * var options = {autoPaginate: false};
@@ -1279,6 +1281,7 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
    * client.listBooksStream({name: formattedName})
    *   .on('data', element => {
    *     // doThingsWith(element)
@@ -3468,8 +3471,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock response
@@ -3502,8 +3507,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock Grpc layer
