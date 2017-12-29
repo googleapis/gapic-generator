@@ -3006,6 +3006,7 @@ import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.PagedListDescriptor;
 import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
@@ -3130,8 +3131,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   private final UnaryCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final UnaryCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
   private final UnaryCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-  private final StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-  private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
+  private final ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+  private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
@@ -3272,14 +3273,14 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to streamShelves.
    */
-  public StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+  public ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
     return streamShelvesSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to streamBooks.
    */
-  public StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
+  public ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
     return streamBooksSettings;
   }
 
@@ -3805,8 +3806,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     private final UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final UnaryCallSettings.Builder<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
     private final UnaryCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-    private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-    private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
+    private final ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+    private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
@@ -3899,9 +3900,9 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
       updateBookIndexSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      streamShelvesSettings = StreamingCallSettings.newBuilder();
+      streamShelvesSettings = ServerStreamingCallSettings.newBuilder();
 
-      streamBooksSettings = StreamingCallSettings.newBuilder();
+      streamBooksSettings = ServerStreamingCallSettings.newBuilder();
 
       discussBookSettings = StreamingCallSettings.newBuilder();
 
@@ -4325,14 +4326,14 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to streamShelves.
      */
-    public StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+    public ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
       return streamShelvesSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to streamBooks.
      */
-    public StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
+    public ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
       return streamBooksSettings;
     }
 
