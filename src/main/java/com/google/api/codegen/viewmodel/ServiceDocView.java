@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -42,11 +43,17 @@ public abstract class ServiceDocView {
   }
 
   public String firstLine() {
-    return lines().get(0);
+    if (lines().size() > 0) {
+      return lines().get(0);
+    }
+    return "";
   }
 
   public List<String> remainingLines() {
-    return lines().subList(1, lines().size());
+    if (lines().size() > 0) {
+      return lines().subList(1, lines().size());
+    }
+    return Collections.<String>emptyList();
   }
 
   public abstract String defaultTransportProviderBuilder();
