@@ -27,5 +27,6 @@ public interface InterfaceTransformer {
    */
   Map<String, String> getResourceToEntityNameMap(InterfaceModel apiInterface);
 
+  /** Generates the resource_name_generation fields. */
   void generateResourceNameGenerations(ConfigNode parentNode, ApiModel model);
 }

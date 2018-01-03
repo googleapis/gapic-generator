@@ -78,7 +78,6 @@ public class DiscoInterfaceModel implements InterfaceModel {
   public List<MethodModel> getMethods() {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
     if (!apiModel.getDocument().resources().containsKey(getResourceName())) {
-      System.out.println(getSimpleName());
       return ImmutableList.of();
     }
     for (Method method : apiModel.getDocument().resources().get(getResourceName())) {
@@ -87,6 +86,12 @@ public class DiscoInterfaceModel implements InterfaceModel {
     return methods.build();
   }
 
+  /**
+   * Converts the interfaceName to the resource name used by the document.
+   *
+   * <p>Note that the format of the interfaceName is
+   * [ownerName].[documentName].[version].[resourceName].
+   */
   private String getResourceName() {
     List<String> pieces = Splitter.on(".").splitToList(interfaceName);
     return Name.anyCamel(pieces.get(pieces.size() - 1)).toLowerCamel();

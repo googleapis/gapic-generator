@@ -25,7 +25,6 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import java.util.List;
@@ -38,30 +37,21 @@ public class DiscoInterfaceTransformer implements InterfaceTransformer {
   public Map<String, String> getResourceToEntityNameMap(InterfaceModel apiInterface) {
     DiscoApiModel model = (DiscoApiModel) apiInterface.getApiModel();
     Document document = model.getDocument();
-    SetMultimap<String, String> resourceToNamePatternMap = getResourceToNamePatternMap(document);
-    Map<Method, String> methodToNamePatternMap = getMethodToNamePatternMap(document);
-    Map<String, String> resourceNameMap = new TreeMap<>();
+    SetMultimap<String, String> collectionNamePatternMap = getCollectionNamePatternMap(document);
+    Map<String, String> collectionNameMap = new TreeMap<>();
     for (Method method : document.methods()) {
-      resourceNameMap.put(
-          methodToNamePatternMap.get(method),
-          getResourceIdentifier(method, apiInterface.getSimpleName(), resourceToNamePatternMap));
+      collectionNameMap.put(
+          DiscoGapicNamer.getCanonicalPath(method),
+          getQualifiedCollectionName(
+              method, apiInterface.getSimpleName(), collectionNamePatternMap));
     }
-    return resourceNameMap;
-  }
-
-  private Map<Method, String> getMethodToNamePatternMap(Document document) {
-    ImmutableMap.Builder<Method, String> methodToNamePatternMapBuilder = ImmutableMap.builder();
-    for (Method method : document.methods()) {
-      methodToNamePatternMapBuilder.put(method, DiscoGapicNamer.getCanonicalPath(method));
-    }
-
-    return methodToNamePatternMapBuilder.build();
+    return collectionNameMap;
   }
 
   @Override
   public void generateResourceNameGenerations(ConfigNode parentNode, ApiModel model) {
     Document document = ((DiscoApiModel) model).getDocument();
-    SetMultimap<String, String> resourceToNamePatternMap = getResourceToNamePatternMap(document);
+    SetMultimap<String, String> collectionNamePatternMap = getCollectionNamePatternMap(document);
     FieldConfigNode resourceNameGenerationsNode =
         MissingFieldTransformer.append("resource_name_generation", parentNode).generate();
     if (NodeFinder.hasContent(resourceNameGenerationsNode.getChild())) {
@@ -83,13 +73,13 @@ public class DiscoInterfaceTransformer implements InterfaceTransformer {
             FieldConfigNode.createStringPair(startLine, "message_name", messageName);
         String parameterName =
             DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
-        String resourceName =
-            getResourceIdentifier(method, resource.getKey(), resourceToNamePatternMap);
+        String collectionName =
+            getQualifiedCollectionName(method, resource.getKey(), collectionNamePatternMap);
         ConfigNode fieldEntityMapNode =
             new FieldConfigNode(NodeFinder.getNextLine(messageNameNode), "field_entity_map");
         ConfigNode fieldEntityEntryNode =
             FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(fieldEntityMapNode), parameterName, resourceName);
+                NodeFinder.getNextLine(fieldEntityMapNode), parameterName, collectionName);
         fieldEntityMapNode.setChild(fieldEntityEntryNode);
         node.setChild(messageNameNode.insertNext(fieldEntityMapNode));
 
@@ -108,32 +98,29 @@ public class DiscoInterfaceTransformer implements InterfaceTransformer {
     }
   }
 
-  /** Map of base resource identifiers to all canonical name patterns that use that identifier. */
-  private SetMultimap<String, String> getResourceToNamePatternMap(Document document) {
-    ImmutableSetMultimap.Builder<String, String> resourceToNamePatternMapBuilder =
+  /** Creates a map from a collection name of a resource to the name patterns of its methods. */
+  private SetMultimap<String, String> getCollectionNamePatternMap(Document document) {
+    ImmutableSetMultimap.Builder<String, String> collectionNamePatternMap =
         ImmutableSetMultimap.builder();
     for (Method method : document.methods()) {
       String namePattern = DiscoGapicNamer.getCanonicalPath(method);
-      String simpleResourceName =
+      String collectionName =
           DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
-      resourceToNamePatternMapBuilder.put(simpleResourceName, namePattern);
+      collectionNamePatternMap.put(collectionName, namePattern);
     }
 
-    return resourceToNamePatternMapBuilder.build();
+    return collectionNamePatternMap.build();
   }
 
-  /**
-   * Get the resource name for a method. Qualifies the resource name if it clashes with another
-   * resource with the same name but different canonical path.
-   */
-  private String getResourceIdentifier(
-      Method method, String parentName, SetMultimap<String, String> resourceToNamePatternMap) {
-    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
-    if (resourceToNamePatternMap.get(resourceName).size() == 1) {
-      return resourceName;
+  /** Gets the qualified collection name for a method. */
+  private String getQualifiedCollectionName(
+      Method method, String parentName, SetMultimap<String, String> collectionNamePatternMap) {
+    String collectionName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+    if (collectionNamePatternMap.get(collectionName).size() == 1) {
+      return collectionName;
     }
 
-    // Qualify resource name to avoid naming clashes with other methods with same name pattern.
+    // Qualify collection name to avoid naming clashes with other methods with same name pattern.
     return DiscoGapicNamer.getQualifiedResourceIdentifier(method, parentName).toLowerCamel();
   }
 }

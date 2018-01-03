@@ -61,6 +61,6 @@ public class ProtoInterfaceTransformer implements InterfaceTransformer {
 
   @Override
   public void generateResourceNameGenerations(ConfigNode parentNode, ApiModel model) {
-    // Do nothing
+    // TODO(#1783): Implement
   }
 }

@@ -130,16 +130,14 @@ public class MethodMerger {
   }
 
   private ConfigNode generateField(ConfigNode prevNode, MethodModel method) {
-    List<String> parameterList = new ArrayList<>();
-    List<FieldModel> fieldList = new ArrayList<>();
+    List<? extends FieldModel> parametersForResourceNameMethod =
+        method.getInputFieldsForResourceNameMethod();
+    List<String> parameters = new ArrayList<>();
     for (FieldModel field : method.getInputFields()) {
-      String fieldName = field.getSimpleName();
-      if (field.getOneof() == null && !methodTransformer.isIgnoredParameter(fieldName)) {
-        parameterList.add(fieldName);
-        fieldList.add(field);
+      if (isParameter(field, parametersForResourceNameMethod)) {
+        parameters.add(field.getNameAsParameter());
       }
     }
-    List<String> parameters = filteredInputFields(method, fieldList);
     if (parameters.size() > 0 && parameters.size() <= FLATTENING_THRESHOLD) {
       prevNode = generateFlatteningNode(prevNode, parameters);
     }
@@ -154,11 +152,11 @@ public class MethodMerger {
       prevNode = requiredFieldsNode;
     }
 
-    // use all fields for the following check; if there are ignored fields for flattening
-    // purposes, the caller still needs a way to set them (by using the request object method).
+    // If there are ignored fields for flattening purposes, the caller still needs a way to set
+    // them (by using the request object method).
     int fieldCount = Iterables.size(method.getInputFields());
     boolean requestObjectMethod =
-        (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
+        (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount > parameters.size())
             && !method.getRequestStreaming();
     ConfigNode requestObjectMethodNode =
         FieldConfigNode.createStringPair(
@@ -180,20 +178,19 @@ public class MethodMerger {
     return prevNode.getNext();
   }
 
-  /** Get the filtered input fields for a model, from a list of candidates. */
-  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
-    List<String> parameterNames = new ArrayList<>();
-    List<? extends FieldModel> parametersForResourceNameMethod =
-        method.getInputFieldsForResourceNameMethod();
-    for (FieldModel field : candidates) {
-      if (parametersForResourceNameMethod.contains(field)) {
-        parameterNames.add(field.getNameAsParameter());
-      }
+  private boolean isParameter(FieldModel field, List<? extends FieldModel> candidates) {
+    if (field.getOneof() != null) {
+      return false;
     }
-    return parameterNames;
+
+    if (methodTransformer.isIgnoredParameter(field.getSimpleName())) {
+      return false;
+    }
+
+    return candidates.contains(field);
   }
 
-  private ConfigNode generateFlatteningNode(ConfigNode prevNode, List<String> parameterList) {
+  private ConfigNode generateFlatteningNode(ConfigNode prevNode, List<String> parameters) {
     ConfigNode flatteningNode =
         new FieldConfigNode(NodeFinder.getNextLine(prevNode), "flattening")
             .setComment(
@@ -207,7 +204,7 @@ public class MethodMerger {
     flatteningGroupsNode.setChild(groupNode);
     ConfigNode parametersNode = new FieldConfigNode(groupNode.getStartLine(), "parameters");
     groupNode.setChild(parametersNode);
-    ListTransformer.generateStringList(parameterList, parametersNode);
+    ListTransformer.generateStringList(parameters, parametersNode);
     return flatteningNode;
   }
 
