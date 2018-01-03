@@ -61,6 +61,9 @@ public abstract class SmokeTestClassView implements ViewModel {
   @Nullable
   public abstract String apiVersion();
 
+  @Nullable
+  public abstract String methodName();
+
   public static Builder newBuilder() {
     return new AutoValue_SmokeTestClassView.Builder().requireProjectId(false);
   }
@@ -89,6 +92,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder methodName(String val);
 
     public abstract SmokeTestClassView build();
   }

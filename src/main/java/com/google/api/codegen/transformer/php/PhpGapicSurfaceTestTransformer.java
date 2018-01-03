@@ -311,6 +311,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiMethod(apiMethod);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(apiMethod.initCode(), context.getNamer()));
+    testClass.methodName(namer.getTestCaseName(new SymbolTable(), method));
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(context.getImportTypeTable().getImports());
