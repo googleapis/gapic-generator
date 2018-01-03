@@ -121,7 +121,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getRetrySettingsTypeName() {
-    return "\\Google\\ApiCore\\RetrySettings";
+    return "RetrySettings";
   }
 
   @Override

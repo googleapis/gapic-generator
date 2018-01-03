@@ -23,6 +23,9 @@ public abstract class GrpcStreamingDetailView {
 
   public abstract String methodName();
 
+  @Nullable
+  public abstract String upperCamelMethodName();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   @Nullable
@@ -43,6 +46,8 @@ public abstract class GrpcStreamingDetailView {
   public abstract static class Builder {
 
     public abstract Builder methodName(String val);
+
+    public abstract Builder upperCamelMethodName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 

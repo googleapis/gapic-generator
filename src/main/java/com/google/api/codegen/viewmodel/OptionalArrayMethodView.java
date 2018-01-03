@@ -42,6 +42,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String requestTypeName();
 
+  public abstract String responseTypeName();
+
   public abstract String key();
 
   public abstract String grpcMethodName();
@@ -137,6 +139,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder requestVariableName(String val);
 
     public abstract Builder requestTypeName(String val);
+
+    public abstract Builder responseTypeName(String val);
 
     public abstract Builder key(String val);
 

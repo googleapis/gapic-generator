@@ -1,0 +1,52 @@
+@snippet generate(config)
+<?php
+
+return [
+    'interfaces' => [
+        {@buildInterface(config)}
+    ]
+];
+@end
+
+@private buildInterface(config)
+    '{@config.interfaceKey}' => [
+        @if config.hasLongRunningOperations
+            @join descriptor : {@config.longRunningDescriptors}
+                '{@descriptor.upperCamelMethodName}' => [
+                    'longRunning' => [
+                        'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
+                        'metadataReturnType' => '{@descriptor.metadataTypeName}',
+                    ]
+                ],
+            @end
+        @end
+        @if config.hasPageStreamingMethods
+            @join descriptor : {@config.pageStreamingDescriptors}
+                '{@descriptor.upperCamelMethodName}' => [
+                    'pageStreaming' => [
+                        'requestPageTokenGetMethod' => '{@descriptor.requestTokenGetMethodName}',
+                        'requestPageTokenSetMethod' => '{@descriptor.requestTokenSetMethodName}',
+                        @if descriptor.requestHasPageSizeField
+                            'requestPageSizeGetMethod' => '{@descriptor.requestPageSizeGetMethodName}',
+                            'requestPageSizeSetMethod' => '{@descriptor.requestPageSizeSetMethodName}',
+                        @end
+                        'responsePageTokenGetMethod' => '{@descriptor.responseTokenGetMethodName}',
+                        'resourcesGetMethod' => '{@descriptor.resourcesGetMethodName}'
+                    ]
+                ],
+            @end
+        @end
+        @if config.hasGrpcStreamingMethods
+            @join descriptor : {@config.grpcStreamingDescriptors}
+                '{@descriptor.upperCamelMethodName}' => [
+                    'grpcStreaming' => [
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
+                        @if descriptor.hasGrpcResourcesField
+                            'resourcesGetMethod' => '{@descriptor.grpcResourcesField}',
+                        @end
+                    ]
+                ],
+            @end
+        @end
+    ]
+@end
