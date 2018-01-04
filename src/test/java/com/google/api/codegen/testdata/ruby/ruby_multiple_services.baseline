@@ -98,7 +98,7 @@ gem "rainbow", "~> 2.1.0"
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        https://www.apache.org/licenses/
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -290,7 +290,7 @@ gem "rainbow", "~> 2.1.0"
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -333,12 +333,12 @@ $ gem install google-example
 [Product Documentation]: https://cloud.google.com/multiple_services
 
 ============== file: Rakefile ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -513,13 +513,13 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: lib/google/example.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -663,13 +663,13 @@ module Google
 end
 
 ============== file: lib/google/example/credentials.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -692,13 +692,13 @@ module Google
 end
 
 ============== file: lib/google/example/v1.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -769,11 +769,6 @@ module Google
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
         def self.new \
-            service_path: nil,
-            port: nil,
-            channel: nil,
-            chan_creds: nil,
-            updater_proc: nil,
             credentials: nil,
             scopes: nil,
             client_config: nil,
@@ -781,11 +776,6 @@ module Google
             lib_name: nil,
             lib_version: nil
           kwargs = {
-            service_path: service_path,
-            port: port,
-            channel: channel,
-            chan_creds: chan_creds,
-            updater_proc: updater_proc,
             credentials: credentials,
             scopes: scopes,
             client_config: client_config,
@@ -824,11 +814,6 @@ module Google
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
         def self.new \
-            service_path: nil,
-            port: nil,
-            channel: nil,
-            chan_creds: nil,
-            updater_proc: nil,
             credentials: nil,
             scopes: nil,
             client_config: nil,
@@ -836,11 +821,6 @@ module Google
             lib_name: nil,
             lib_version: nil
           kwargs = {
-            service_path: service_path,
-            port: port,
-            channel: channel,
-            chan_creds: chan_creds,
-            updater_proc: updater_proc,
             credentials: credentials,
             scopes: scopes,
             client_config: client_config,
@@ -856,13 +836,13 @@ module Google
 end
 
 ============== file: lib/google/example/v1/decrementer_service_client.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -909,6 +889,7 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
+
         # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
@@ -934,11 +915,6 @@ module Google
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
         def initialize \
-            service_path: SERVICE_ADDRESS,
-            port: DEFAULT_SERVICE_PORT,
-            channel: nil,
-            chan_creds: nil,
-            updater_proc: nil,
             credentials: nil,
             scopes: ALL_SCOPES,
             client_config: {},
@@ -950,17 +926,6 @@ module Google
           # See https://github.com/googleapis/toolkit/issues/446
           require "google/gax/grpc"
           require "multiple_services_services_pb"
-
-          if channel || chan_creds || updater_proc
-            warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
-              "on 2017/09/08"
-            credentials ||= channel
-            credentials ||= chan_creds
-            credentials ||= updater_proc
-          end
-          if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-            warn "`service_path` and `port` parameters are deprecated and will be removed"
-          end
 
           credentials ||= Google::Example::Credentials.default
 
@@ -980,9 +945,11 @@ module Google
             updater_proc = credentials.updater_proc
           end
 
+          package_version = Gem.loaded_specs['google-example'].version.version
+
           google_api_client = "gl-ruby/#{RUBY_VERSION}"
           google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-          google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
           google_api_client << " grpc/#{GRPC::VERSION}"
           google_api_client.freeze
 
@@ -1001,6 +968,10 @@ module Google
               kwargs: headers
             )
           end
+
+          # Allow overriding the service path/port in subclasses.
+          service_path = self.class::SERVICE_ADDRESS
+          port = self.class::DEFAULT_SERVICE_PORT
           @decrementer_service_stub = Google::Gax::Grpc.create_stub(
             service_path,
             port,
@@ -1057,13 +1028,13 @@ end
 }
 
 ============== file: lib/google/example/v1/incrementer_service_client.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -1110,6 +1081,7 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
+
         # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
@@ -1135,11 +1107,6 @@ module Google
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
         def initialize \
-            service_path: SERVICE_ADDRESS,
-            port: DEFAULT_SERVICE_PORT,
-            channel: nil,
-            chan_creds: nil,
-            updater_proc: nil,
             credentials: nil,
             scopes: ALL_SCOPES,
             client_config: {},
@@ -1151,17 +1118,6 @@ module Google
           # See https://github.com/googleapis/toolkit/issues/446
           require "google/gax/grpc"
           require "multiple_services_services_pb"
-
-          if channel || chan_creds || updater_proc
-            warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
-              "on 2017/09/08"
-            credentials ||= channel
-            credentials ||= chan_creds
-            credentials ||= updater_proc
-          end
-          if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-            warn "`service_path` and `port` parameters are deprecated and will be removed"
-          end
 
           credentials ||= Google::Example::Credentials.default
 
@@ -1181,9 +1137,11 @@ module Google
             updater_proc = credentials.updater_proc
           end
 
+          package_version = Gem.loaded_specs['google-example'].version.version
+
           google_api_client = "gl-ruby/#{RUBY_VERSION}"
           google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-          google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
           google_api_client << " grpc/#{GRPC::VERSION}"
           google_api_client.freeze
 
@@ -1202,6 +1160,10 @@ module Google
               kwargs: headers
             )
           end
+
+          # Allow overriding the service path/port in subclasses.
+          service_path = self.class::SERVICE_ADDRESS
+          port = self.class::DEFAULT_SERVICE_PORT
           @incrementer_service_stub = Google::Gax::Grpc.create_stub(
             service_path,
             port,
@@ -1258,13 +1220,13 @@ end
 }
 
 ============== file: test/google/example/v1/decrementer_service_client_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -1381,13 +1343,13 @@ describe Google::Example::V1::DecrementerServiceClient do
   end
 end
 ============== file: test/google/example/v1/incrementer_service_client_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,

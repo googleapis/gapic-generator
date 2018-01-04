@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -785,11 +785,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
    */
-  public String getRpcServiceClassName(InterfaceModel apiInterface, GapicProductConfig productConfig) {
+  public String getRpcServiceClassName(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     NamePath namePath =
         typeNameConverter.getNamePath(getTypeFormatter().getFullNameFor(apiInterface));
     String rpcContainerName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), Name.from(productConfig.getTransportProtocol().name().toLowerCase()).toUpperCamel()));
+        publicClassName(
+            Name.upperCamelKeepUpperAcronyms(
+                namePath.getHead(),
+                Name.from(productConfig.getTransportProtocol().name().toLowerCase())
+                    .toUpperCamel()));
     String serviceClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName(), "ImplBase"));
     return qualifiedName(namePath.withHead(rpcContainerName).append(serviceClassName));

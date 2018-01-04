@@ -69,14 +69,6 @@
         .build();
     {@""}
   @end
-
-  private static final String DEFAULT_GAPIC_NAME = "gapic";
-  private static final String DEFAULT_GAPIC_VERSION = "";
-
-  private static final String PROPERTIES_FILE = "/{@xsettingsClass.packagePath}/project.properties";
-  private static final String META_VERSION_KEY = "artifact.version";
-
-  private static String gapicVersion;
   {@""}
 @end
 
@@ -161,21 +153,12 @@
   @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
-        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
-        .setApiClientHeaderLineKey("x-goog-api-client")
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion({@xsettingsClass.name}.class))
         @if xsettingsClass.transportProtocol == "GRPC"
-          .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData())
+          .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
+        @else
+          .setTransportToken(GaxHttpJsonProperties.getHttpJsonTokenName(), GaxHttpJsonProperties.getHttpJsonVersion());
         @end
-        ;
-  }
-
-  private static String getGapicVersion() {
-    if (gapicVersion == null) {
-      gapicVersion = PropertiesProvider.loadProperty(
-          {@xsettingsClass.name}.class, PROPERTIES_FILE, META_VERSION_KEY);
-      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
-    }
-    return gapicVersion;
   }
 
   /**
@@ -274,7 +257,7 @@
 @end
 
 @private constructors(xsettingsClass)
-  private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
+  protected {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
     @join settings : xsettingsClass.callSettings
@@ -528,11 +511,11 @@
 @end
 
 @private builderConstructors(xsettingsClass)
-  private Builder() {
+  protected Builder() {
     this((ClientContext) null);
   }
 
-  private Builder(ClientContext clientContext) {
+  protected Builder(ClientContext clientContext) {
     super(clientContext);
 
     @join settings : xsettingsClass.callSettings
@@ -571,7 +554,7 @@
     @if xsettingsClass.hasDefaultInstance
       builder.setTransportChannelProvider(defaultTransportChannelProvider());
       builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
-      builder.setHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
       builder.setEndpoint(getDefaultEndpoint());
     @end
     return initDefaults(builder);
@@ -632,7 +615,7 @@
     return builder;
   }
 
-  private Builder({@xsettingsClass.name} settings) {
+  protected Builder({@xsettingsClass.name} settings) {
     super(settings);
 
     @join settings : xsettingsClass.callSettings

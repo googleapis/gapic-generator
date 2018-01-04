@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -244,7 +244,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterfaceModel()));
-    String rpcTypeName = namer.getRpcServiceClassName(context.getInterfaceModel(), context.getProductConfig());
+    String rpcTypeName =
+        namer.getRpcServiceClassName(context.getInterfaceModel(), context.getProductConfig());
     int dotIndex = rpcTypeName.indexOf('.');
     apiClass.grpcTypeNameOuter(rpcTypeName.substring(0, dotIndex));
     apiClass.grpcTypeNameInner(rpcTypeName.substring(dotIndex + 1, rpcTypeName.length()));
