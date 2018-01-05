@@ -312,28 +312,6 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(MethodContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
-    ClientMethodType methodType;
-
-    if (methodConfig.isPageStreaming()) {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.PagedFlattenedMethod;
-      } else {
-        methodType = ClientMethodType.PagedRequestObjectMethod;
-      }
-    } else {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.FlattenedMethod;
-      } else {
-        methodType = ClientMethodType.RequestObjectMethod;
-      }
-    }
-
-    return createTestCaseView(
-        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
-  }
-
   public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
     for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
       if (requireProjectIdInSmokeTest(settingsView, namer)) {
