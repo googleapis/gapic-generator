@@ -1102,7 +1102,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
-   *   String filter = "";
+   *   String filter = "book-filter-string";
    *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -1130,8 +1130,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   for (Book element : libraryClient.listBooks(request).iterateAll()) {
    *     // doThingsWith(element);
@@ -1155,8 +1157,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   ApiFuture&lt;ListBooksPagedResponse&gt; future = libraryClient.listBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -1178,8 +1182,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   while (true) {
    *     ListBooksResponse response = libraryClient.listBooksCallable().call(request);
@@ -6599,7 +6605,7 @@ public class LibraryClientTest {
     mockLibraryService.addResponse(expectedResponse);
 
     ShelfName name = ShelfName.of("[SHELF_ID]");
-    String filter = "filter-1274492040";
+    String filter = "book-filter-string";
 
     ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
 
@@ -6627,7 +6633,7 @@ public class LibraryClientTest {
 
     try {
       ShelfName name = ShelfName.of("[SHELF_ID]");
-      String filter = "filter-1274492040";
+      String filter = "book-filter-string";
 
       client.listBooks(name, filter);
       Assert.fail("No exception raised");

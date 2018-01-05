@@ -2749,8 +2749,10 @@ func TestLibraryServiceListBooks(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     var formattedName string = ShelfPath("[SHELF_ID]")
+    var filter string = "book-filter-string"
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
+        Filter: filter,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -2788,8 +2790,10 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
+    var filter string = "book-filter-string"
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
+        Filter: filter,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
