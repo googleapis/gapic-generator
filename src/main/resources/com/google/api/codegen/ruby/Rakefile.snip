@@ -88,26 +88,31 @@
   task :acceptance, :project, :keyfile do |t, args|
     project = args[:project]
     project ||=
-      ENV["GCLOUD_TEST_PROJECT"] ||
-      ENV["{@metadata.smokeTestProjectVariable}"]
+      ENV["{@metadata.smokeTestProjectVariable}"] ||
+      ENV["GCLOUD_TEST_PROJECT"]
     keyfile = args[:keyfile]
     keyfile ||=
-      ENV["GCLOUD_TEST_KEYFILE"] ||
-      ENV["{@metadata.smokeTestKeyfileVariable}"]
+      ENV["{@metadata.smokeTestKeyfileVariable}"] ||
+      ENV["GCLOUD_TEST_KEYFILE"]
     if keyfile
       keyfile = File.read keyfile
     else
       keyfile ||=
-        ENV["GCLOUD_TEST_KEYFILE_JSON"] ||
-        ENV["{@metadata.smokeTestJsonKeyVariable}"]
+        ENV["{@metadata.smokeTestJsonKeyVariable}"] ||
+        ENV["GCLOUD_TEST_KEYFILE_JSON"]
     end
     if project.nil? || keyfile.nil?
-      fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or VIDEO_INTELLIGENCE_TEST_PROJECT=test123 VIDEO_INTELLIGENCE_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+      fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or {@metadata.smokeTestProjectVariable}=test123 {@metadata.smokeTestKeyfileVariable}=/path/to/keyfile.json rake acceptance"
+    end
+    # clear any env var already set
+    {@importList(metadata.fileHeader.importSection.appImports)}
+    ({@metadata.fileHeader.packageName}::Credentials::PATH_ENV_VARS +
+     {@metadata.fileHeader.packageName}::Credentials::JSON_ENV_VARS).each do |path|
+      ENV[path] = nil
     end
     # always overwrite when running tests
     ENV["{@metadata.projectVariable}"] = project
     ENV["{@metadata.smokeTestProjectVariable}"] = project
-    ENV["{@metadata.keyfileVariable}"] = nil
     ENV["{@metadata.jsonKeyVariable}"] = keyfile
     
     Rake::Task["acceptance:run"].invoke

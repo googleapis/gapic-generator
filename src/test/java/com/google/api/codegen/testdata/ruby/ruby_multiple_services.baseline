@@ -379,25 +379,30 @@ desc "Run the google-example acceptance tests."
 task :acceptance, :project, :keyfile do |t, args|
   project = args[:project]
   project ||=
-    ENV["GCLOUD_TEST_PROJECT"] ||
-    ENV["EXAMPLE_TEST_PROJECT"]
+    ENV["EXAMPLE_TEST_PROJECT"] ||
+    ENV["GCLOUD_TEST_PROJECT"]
   keyfile = args[:keyfile]
   keyfile ||=
-    ENV["GCLOUD_TEST_KEYFILE"] ||
-    ENV["EXAMPLE_TEST_KEYFILE"]
+    ENV["EXAMPLE_TEST_KEYFILE"] ||
+    ENV["GCLOUD_TEST_KEYFILE"]
   if keyfile
     keyfile = File.read keyfile
   else
     keyfile ||=
-      ENV["GCLOUD_TEST_KEYFILE_JSON"] ||
-      ENV["EXAMPLE_TEST_KEYFILE_JSON"]
+      ENV["EXAMPLE_TEST_KEYFILE_JSON"] ||
+      ENV["GCLOUD_TEST_KEYFILE_JSON"]
   end
   if project.nil? || keyfile.nil?
-    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or VIDEO_INTELLIGENCE_TEST_PROJECT=test123 VIDEO_INTELLIGENCE_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or EXAMPLE_TEST_PROJECT=test123 EXAMPLE_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+  end
+  require "google/example/credentials"
+  require "google/example/credentials"
+  (Google::Example::V1::Credentials::PATH_ENV_VARS +
+   Google::Example::V1::Credentials::JSON_ENV_VARS).each do |path|
+    ENV[path] = nil
   end
   ENV["EXAMPLE_PROJECT"] = project
   ENV["EXAMPLE_TEST_PROJECT"] = project
-  ENV["EXAMPLE_KEYFILE"] = nil
   ENV["EXAMPLE_KEYFILE_JSON"] = keyfile
 
   Rake::Task["acceptance:run"].invoke

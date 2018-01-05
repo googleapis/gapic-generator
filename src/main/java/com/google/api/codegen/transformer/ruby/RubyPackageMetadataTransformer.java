@@ -27,7 +27,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -71,8 +70,10 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String MAIN_README_PATH = "/blob/master/README.md";
   private static final String VERSIONING_DOC_PATH = "#versioning";
 
+  private final RubyImportSectionTransformer importSectionTransformer =
+      new RubyImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new RubyImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final ValueProducer valueProducer = new StandardValueProducer();
@@ -271,24 +272,26 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
     boolean hasSmokeTests = false;
     List<InterfaceModel> interfaceModels = new LinkedList<>();
+    List<GapicInterfaceContext> contexts = new LinkedList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceContext context = createContext(apiInterface, productConfig);
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       interfaceModels.add(context.getInterfaceModel());
+      contexts.add(context);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
-        break;
       }
     }
 
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
+    ImportSectionView importSection =
+        importSectionTransformer.generateRakefileAcceptanceTaskImportSection(contexts);
 
     return metadataTransformer
         .generateMetadataView(
             namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
-            fileHeaderTransformer.generateFileHeader(
-                productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
+            fileHeaderTransformer.generateFileHeader(productConfig, importSection, surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .versionNamespace(validVersionNamespace(interfaceModels, surfaceNamer))
