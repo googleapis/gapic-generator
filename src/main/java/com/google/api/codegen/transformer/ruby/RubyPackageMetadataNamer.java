@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,13 @@ import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.util.List;
 
 /** A RubyPackageMetadataNamer provides ruby specific names for metadata views. */
 public class RubyPackageMetadataNamer extends PackageMetadataNamer {
+  private final char METADATA_IDENTIFIER_SEPARATOR = '-';
+
   private String packageName;
 
   public RubyPackageMetadataNamer(String packageName) {
@@ -39,7 +42,7 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     for (String name : names) {
       lowerNames.add(Name.upperCamel(name).toLowerUnderscore());
     }
-    return Joiner.on('-').join(lowerNames.build());
+    return Joiner.on(METADATA_IDENTIFIER_SEPARATOR).join(lowerNames.build());
   }
 
   @Override
@@ -47,7 +50,12 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     return getMetadataIdentifier() + ".gemspec";
   }
 
-  public String getSmokeTestProjectVariable(String productName) {
-    return Name.from(productName, "test", "project").toUpperUnderscore();
+  public String getSmokeTestProjectVariable() {
+    return Name.from(getSimpleMetadataIdentifier(), "test", "project").toUpperUnderscore();
+  }
+
+  private String getSimpleMetadataIdentifier() {
+    return Iterables.getLast(
+        Splitter.on(METADATA_IDENTIFIER_SEPARATOR).split(getMetadataIdentifier()));
   }
 }

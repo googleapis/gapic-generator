@@ -98,7 +98,7 @@ gem "rainbow", "~> 2.1.0"
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        https://www.apache.org/licenses/
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -290,7 +290,7 @@ gem "rainbow", "~> 2.1.0"
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -311,8 +311,9 @@ In order to use this library, you first need to go through the following
 steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
 ```
@@ -346,12 +347,12 @@ response = library_service_client.update_book(formatted_name, book, optional_foo
 [Product Documentation]: https://cloud.google.com/library
 
 ============== file: Rakefile ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -526,13 +527,13 @@ def header str, token = "#"
 end
 
 ============== file: acceptance/library/v1/library_service_smoke_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -549,10 +550,10 @@ require "library"
 
 describe "LibraryServiceSmokeTest" do
   it "runs one smoke test with update_book" do
-    unless ENV["SMOKE_TEST_PROJECT"]
-      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
+    unless ENV["LIBRARY_TEST_PROJECT"]
+      fail "Usage: LIBRARY_TEST_PROJECT=<project_id> ruby #{$0}"
     end
-    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
+    project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
     library_service_client = Library.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
@@ -566,13 +567,13 @@ describe "LibraryServiceSmokeTest" do
 end
 
 ============== file: lib/library.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -597,8 +598,9 @@ require "pathname"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -695,13 +697,13 @@ module Library
 end
 
 ============== file: lib/library/credentials.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -724,13 +726,13 @@ module Library
 end
 
 ============== file: lib/library/v1.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -754,8 +756,9 @@ require "library/v1/library_service_client"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -826,11 +829,6 @@ module Library
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
     def self.new \
-        service_path: nil,
-        port: nil,
-        channel: nil,
-        chan_creds: nil,
-        updater_proc: nil,
         credentials: nil,
         scopes: nil,
         client_config: nil,
@@ -838,11 +836,6 @@ module Library
         lib_name: nil,
         lib_version: nil
       kwargs = {
-        service_path: service_path,
-        port: port,
-        channel: channel,
-        chan_creds: chan_creds,
-        updater_proc: updater_proc,
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
@@ -856,13 +849,13 @@ module Library
 end
 
 ============== file: lib/library/v1/library_service_client.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -968,6 +961,10 @@ module Library
         "https://www.googleapis.com/auth/library"
       ].freeze
 
+      class OperationsClient < Google::Longrunning::OperationsClient
+        SERVICE_ADDRESS = SERVICE_ADDRESS
+      end
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -1044,11 +1041,6 @@ module Library
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
       def initialize \
-          service_path: SERVICE_ADDRESS,
-          port: DEFAULT_SERVICE_PORT,
-          channel: nil,
-          chan_creds: nil,
-          updater_proc: nil,
           credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
@@ -1062,21 +1054,9 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
-        if channel || chan_creds || updater_proc
-          warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
-            "on 2017/09/08"
-          credentials ||= channel
-          credentials ||= chan_creds
-          credentials ||= updater_proc
-        end
-        if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-          warn "`service_path` and `port` parameters are deprecated and will be removed"
-        end
-
         credentials ||= Library::Credentials.default
 
-        @operations_client = Google::Longrunning::OperationsClient.new(
-          service_path: service_path,
+        @operations_client = OperationsClient.new(
           credentials: credentials,
           scopes: scopes,
           client_config: client_config,
@@ -1101,9 +1081,11 @@ module Library
           updater_proc = credentials.updater_proc
         end
 
+        package_version = Gem.loaded_specs['library'].version.version
+
         google_api_client = "gl-ruby/#{RUBY_VERSION}"
         google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-        google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+        google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
         google_api_client << " grpc/#{GRPC::VERSION}"
         google_api_client.freeze
 
@@ -1124,6 +1106,10 @@ module Library
             kwargs: headers
           )
         end
+
+        # Allow overriding the service path/port in subclasses.
+        service_path = self.class::SERVICE_ADDRESS
+        port = self.class::DEFAULT_SERVICE_PORT
         @library_service_stub = Google::Gax::Grpc.create_stub(
           service_path,
           port,
@@ -2699,13 +2685,13 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: test/library/v1/library_service_client_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2017 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,

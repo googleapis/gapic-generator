@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -228,6 +228,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         smokeTestPathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
+    RubyPackageMetadataNamer metadataNamer =
+        new RubyPackageMetadataNamer(context.getNamer().getPackageName());
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
@@ -240,9 +242,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    // testCaseView not in use by Ruby for smoke test.
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -252,10 +251,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
+    testClass.projectIdVariableName(metadataNamer.getSmokeTestProjectVariable());
     testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =

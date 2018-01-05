@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -312,50 +312,35 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(MethodContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
-    ClientMethodType methodType;
-
-    if (methodConfig.isPageStreaming()) {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.PagedFlattenedMethod;
-      } else {
-        methodType = ClientMethodType.PagedRequestObjectMethod;
-      }
-    } else {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.FlattenedMethod;
-      } else {
-        methodType = ClientMethodType.RequestObjectMethod;
-      }
-    }
-
-    return createTestCaseView(
-        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
-  }
-
   public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
     for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
-      InitCodeLineView line = settingsView.initCodeLine();
-      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
-        SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
-        String projectVarName =
-            namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
-        if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
-          ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
-          ResourceNameOneofInitValueView initValue =
-              (ResourceNameOneofInitValueView) simpleLine.initValue();
-          ResourceNameInitValueView subValue = initValue.specificResourceNameView();
-          return subValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
-          SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
-          return initValue.initialValue().equals(projectVarName);
-        } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
-          FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        }
+      if (requireProjectIdInSmokeTest(settingsView, namer)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean requireProjectIdInSmokeTest(FieldSettingView settingsView, SurfaceNamer namer) {
+    InitCodeLineView line = settingsView.initCodeLine();
+    if (line.lineType() == InitCodeLineType.SimpleInitLine) {
+      SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
+      String projectVarName =
+          namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+      if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
+        ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
+        return initValue.formatArgs().contains(projectVarName);
+      } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
+        ResourceNameOneofInitValueView initValue =
+            (ResourceNameOneofInitValueView) simpleLine.initValue();
+        ResourceNameInitValueView subValue = initValue.specificResourceNameView();
+        return subValue.formatArgs().contains(projectVarName);
+      } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
+        SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
+        return initValue.initialValue().equals(projectVarName);
+      } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
+        FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
+        return initValue.formatArgs().contains(projectVarName);
       }
     }
     return false;

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -299,12 +299,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCase after we switch to use apiMethod for smoke test
-    TestCaseView testCase = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
-    // apiMethod is cloned with an empty type table so types used only by method documentation (ex: an optional
-    // FieldMask type) aren't included in the TypeTable by default.
-    OptionalArrayMethodView apiMethod =
-        createSmokeTestCaseApiMethodView(flattenedMethodContext.cloneWithEmptyTypeTable());
+    OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
     testClass.apiSettingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
@@ -314,9 +309,9 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .toLowerUnderscore());
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethod);
-    testClass.method(testCase);
     testClass.requireProjectId(
-        testCaseTransformer.requireProjectIdInSmokeTest(testCase.initCode(), context.getNamer()));
+        testCaseTransformer.requireProjectIdInSmokeTest(apiMethod.initCode(), context.getNamer()));
+    testClass.methodName(namer.getTestCaseName(new SymbolTable(), method));
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(context.getImportTypeTable().getImports());

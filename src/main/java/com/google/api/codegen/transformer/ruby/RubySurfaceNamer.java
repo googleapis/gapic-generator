@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -333,6 +333,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
     String versionModule = apiModules.get(apiModules.size() - 1);
     String version = Name.upperCamel(versionModule).toLowerUnderscore();
     return VersionMatcher.isVersion(version);
+  }
+
+  @Override
+  public String getApiMethodName(MethodModel method, VisibilityConfig visibility) {
+    // This is defined in grpc/generic/service.rb
+    return method
+        .getSimpleName()
+        .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+        .replaceAll("([a-z\\d])([A-Z])", "$1_$2")
+        .replaceAll("-", "_")
+        .toLowerCase();
   }
 
   @Override

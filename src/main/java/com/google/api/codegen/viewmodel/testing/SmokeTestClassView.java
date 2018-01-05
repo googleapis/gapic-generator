@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,14 +38,14 @@ public abstract class SmokeTestClassView implements ViewModel {
   @Nullable
   public abstract ApiMethodView apiMethod();
 
-  @Nullable
-  public abstract TestCaseView method();
-
   public boolean hasMethod() {
-    return method() != null;
+    return apiMethod() != null;
   }
 
   public abstract boolean requireProjectId();
+
+  @Nullable
+  public abstract String projectIdVariableName();
 
   @Override
   public String resourceRoot() {
@@ -63,6 +63,9 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   @Nullable
   public abstract String apiVersion();
+
+  @Nullable
+  public abstract String methodName();
 
   public static Builder newBuilder() {
     return new AutoValue_SmokeTestClassView.Builder().requireProjectId(false);
@@ -87,13 +90,15 @@ public abstract class SmokeTestClassView implements ViewModel {
 
     public abstract Builder apiMethod(ApiMethodView val);
 
-    public abstract Builder method(TestCaseView val);
-
     public abstract Builder requireProjectId(boolean val);
+
+    public abstract Builder projectIdVariableName(String val);
 
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder methodName(String val);
 
     public abstract SmokeTestClassView build();
   }

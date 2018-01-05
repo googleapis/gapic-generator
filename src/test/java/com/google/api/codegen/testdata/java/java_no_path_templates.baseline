@@ -1,13 +1,13 @@
 java/sample.gradle.snip generation is not enabled for this test case.
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -218,13 +218,13 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceSettings.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -238,10 +238,10 @@ import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.api.gax.core.PropertiesProvider;
-import com.google.api.gax.grpc.GrpcExtraHeaderData;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -276,14 +276,6 @@ import org.threeten.bp.Duration;
 @Generated("by GAPIC v0.0.5")
 @BetaApi
 public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApiServiceSettings> {
-
-  private static final String DEFAULT_GAPIC_NAME = "gapic";
-  private static final String DEFAULT_GAPIC_VERSION = "";
-
-  private static final String PROPERTIES_FILE = "/com/google/gcloud/example/project.properties";
-  private static final String META_VERSION_KEY = "artifact.version";
-
-  private static String gapicVersion;
 
   private final UnaryCallSettings<IncrementRequest, Empty> incrementSettings;
 
@@ -328,19 +320,8 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
-        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
-        .setApiClientHeaderLineKey("x-goog-api-client")
-        .addApiClientHeaderLineData(GrpcExtraHeaderData.getXGoogApiClientData())
-        ;
-  }
-
-  private static String getGapicVersion() {
-    if (gapicVersion == null) {
-      gapicVersion = PropertiesProvider.loadProperty(
-          NoTemplatesApiServiceSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
-      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
-    }
-    return gapicVersion;
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(NoTemplatesApiServiceSettings.class))
+        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
   /**
@@ -364,7 +345,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
     return new Builder(this);
   }
 
-  private NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
+  protected NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
     incrementSettings = settingsBuilder.incrementSettings().build();
@@ -396,11 +377,11 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
 
-    private Builder() {
+    protected Builder() {
       this((ClientContext) null);
     }
 
-    private Builder(ClientContext clientContext) {
+    protected Builder(ClientContext clientContext) {
       super(clientContext);
 
       incrementSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -426,7 +407,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
       return builder;
     }
 
-    private Builder(NoTemplatesApiServiceSettings settings) {
+    protected Builder(NoTemplatesApiServiceSettings settings) {
       super(settings);
 
       incrementSettings = settings.incrementSettings.toBuilder();
@@ -461,13 +442,13 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
 }
 ============== file: src/main/java/com/google/gcloud/example/package-info.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -491,13 +472,13 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
 package com.google.gcloud.example;
 ============== file: src/main/java/com/google/gcloud/example/stub/GrpcNoTemplatesApiServiceStub.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -615,13 +596,13 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
 }
 ============== file: src/main/java/com/google/gcloud/example/stub/NoTemplatesApiServiceStub.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -656,13 +637,13 @@ public abstract class NoTemplatesApiServiceStub implements BackgroundResource {
 }
 ============== file: src/test/java/com/google/gcloud/example/MockNoTemplatesAPIService.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -714,13 +695,13 @@ public class MockNoTemplatesAPIService implements MockGrpcService  {
 }
 ============== file: src/test/java/com/google/gcloud/example/MockNoTemplatesAPIServiceImpl.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -792,13 +773,13 @@ public class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceImplBase
 }
 ============== file: src/test/java/com/google/gcloud/example/NoTemplatesApiServiceClientTest.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -809,9 +790,12 @@ public class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceImplBase
 package com.google.gcloud.example;
 
 import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.grpc.testing.LocalChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.common.collect.Lists;
@@ -836,6 +820,7 @@ public class NoTemplatesApiServiceClientTest {
   private static MockNoTemplatesAPIService mockNoTemplatesAPIService;
   private static MockServiceHelper serviceHelper;
   private NoTemplatesApiServiceClient client;
+  private LocalChannelProvider channelProvider;
 
   @BeforeClass
   public static void startStaticServer() {
@@ -852,8 +837,9 @@ public class NoTemplatesApiServiceClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.newBuilder()
-        .setTransportChannelProvider(serviceHelper.createChannelProvider())
+        .setTransportChannelProvider(channelProvider)
         .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
     client = NoTemplatesApiServiceClient.create(settings);

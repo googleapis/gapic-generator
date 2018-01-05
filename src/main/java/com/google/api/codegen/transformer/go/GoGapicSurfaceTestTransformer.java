@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,6 +42,8 @@ import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
@@ -183,7 +185,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     MethodContext methodContext = context.asRequestMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
+    StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -194,12 +196,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
             + method.getSimpleName()
             + "_smoke_test.go");
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    testClass.apiMethod(
-        new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext));
-    testClass.method(testCaseView);
+    testClass.apiMethod(apiMethodView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
-            testCaseView.initCode(), context.getNamer()));
+            apiMethodView.initCode(), context.getNamer()));
 
     // The shared code above add imports both for input and output.
     // Since we use short decls, we don't need to import anything for output.
@@ -210,5 +210,16 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.fileHeader(fileHeader);
 
     return testClass.build();
+  }
+
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
+    StaticLangApiMethodView initialApiMethodView =
+        new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext);
+    StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, testCaseTransformer.createSmokeTestInitContext(methodContext));
+    apiMethodView.initCode(initCodeView);
+    return apiMethodView.build();
   }
 }

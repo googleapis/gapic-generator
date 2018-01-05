@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,6 +46,8 @@ import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
@@ -144,25 +146,32 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
+    StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    // TODO: Java needs to be refactored to use ApiMethodView instead
-    testClass.apiMethod(
-        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext));
-    testClass.method(testCaseView);
+    testClass.apiMethod(apiMethodView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
-            testCaseView.initCode(), context.getNamer()));
+            apiMethodView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
     return testClass;
+  }
+
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
+    StaticLangApiMethodView initialApiMethodView =
+        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext);
+    StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, testCaseTransformer.createSmokeTestInitContext(methodContext));
+    apiMethodView.initCode(initCodeView);
+    return apiMethodView.build();
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
@@ -338,9 +347,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addUnitTestImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");

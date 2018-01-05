@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -237,7 +237,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -247,7 +246,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     testClass.outputPath(namer.getSourceFilePath(SMOKE_TEST_OUTPUT_BASE_PATH, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
