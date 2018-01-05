@@ -3228,8 +3228,13 @@ class LibraryServiceClient {
    *
    * // Iterate over all elements.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
    *
-   * client.listBooks({name: formattedName})
+   * client.listBooks(request)
    *   .then(responses => {
    *     var resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
@@ -3242,6 +3247,11 @@ class LibraryServiceClient {
    *
    * // Or obtain the paged response.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
    *
    *
    * var options = {autoPaginate: false};
@@ -3260,7 +3270,7 @@ class LibraryServiceClient {
    *     return client.listBooks(nextRequest, options).then(callback);
    *   }
    * }
-   * client.listBooks({name: formattedName}, options)
+   * client.listBooks(request, options)
    *   .then(callback)
    *   .catch(err => {
    *     console.error(err);
@@ -3316,7 +3326,12 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.shelfPath('[SHELF_ID]');
-   * client.listBooksStream({name: formattedName})
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
+   * client.listBooksStream(request)
    *   .on('data', element => {
    *     // doThingsWith(element)
    *   }).on('error', err => {
@@ -5505,8 +5520,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock response
@@ -5539,8 +5556,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock Grpc layer
