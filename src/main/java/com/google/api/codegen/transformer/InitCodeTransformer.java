@@ -486,7 +486,7 @@ public class InitCodeTransformer {
             value = context.getNamer().injectRandomStringGeneratorCode(value);
             break;
           case Variable:
-            value = context.getNamer().localVarName(Name.anyLower(value));
+            value = context.getNamer().localVarReference(Name.anyLower(value));
             break;
           default:
             throw new IllegalArgumentException("Unhandled init value type");

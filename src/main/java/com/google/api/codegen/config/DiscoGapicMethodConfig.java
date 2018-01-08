@@ -181,7 +181,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
-    sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;

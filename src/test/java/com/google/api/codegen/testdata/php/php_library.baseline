@@ -473,7 +473,7 @@ class LibraryServiceGapicClient
      *           NOTE: if the $channel optional argument is specified, then this option is unused.
      *     @type \Google\Auth\CredentialsLoader $credentialsLoader
      *           A CredentialsLoader object created using the Google\Auth library.
-     *     @type array $scopes A string array of scopes to use when acquiring credentials.
+     *     @type string[] $scopes A string array of scopes to use when acquiring credentials.
      *                          Defaults to the scopes for the Google Example Library API.
      *     @type string $clientConfigPath
      *           Path to a JSON file containing client method configuration, including retry settings.
@@ -1071,14 +1071,15 @@ class LibraryServiceGapicClient
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $filter = 'book-filter-string';
      *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements
-     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -3545,8 +3546,9 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedName = $client->shelfName('[SHELF_ID]');
+        $filter = 'book-filter-string';
 
-        $response = $client->listBooks($formattedName);
+        $response = $client->listBooks($formattedName, ['filter' => $filter]);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
@@ -3586,9 +3588,10 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedName = $client->shelfName('[SHELF_ID]');
+        $filter = 'book-filter-string';
 
         try {
-            $client->listBooks($formattedName);
+            $client->listBooks($formattedName, ['filter' => $filter]);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
