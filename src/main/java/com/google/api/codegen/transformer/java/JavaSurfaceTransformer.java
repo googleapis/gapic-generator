@@ -22,6 +22,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -698,7 +699,12 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("java.util.ArrayList");
       typeTable.saveNicknameFor("java.util.Collection");
     }
-    if (interfaceConfig.hasGrpcStreamingMethods()) {
+
+    if (interfaceConfig.hasGrpcStreamingMethods(GrpcStreamingType.ServerStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallSettings");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods(GrpcStreamingType.ClientStreaming)
+        || interfaceConfig.hasGrpcStreamingMethods(GrpcStreamingType.BidiStreaming)) {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
