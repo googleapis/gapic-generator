@@ -58,18 +58,20 @@ public class ConfigGeneratorTool {
       formater.printHelp("ConfigGeneratorTool", options);
     }
 
-    generate(
-        cl.getOptionValue("descriptor_set"),
-        cl.getOptionValues("service_yaml"),
-        cl.getOptionValue("output"));
+    int exitCode =
+        generate(
+            cl.getOptionValue("descriptor_set"),
+            cl.getOptionValues("service_yaml"),
+            cl.getOptionValue("output"));
+    System.exit(exitCode);
   }
 
-  private static void generate(String descriptorSet, String[] configs, String outputFile) {
+  private static int generate(String descriptorSet, String[] configs, String outputFile) {
     ToolOptions options = ToolOptions.create();
     options.set(ConfigGeneratorApi.OUTPUT_FILE, outputFile);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     ConfigGeneratorApi configGen = new ConfigGeneratorApi(options);
-    configGen.run();
+    return configGen.run();
   }
 }
