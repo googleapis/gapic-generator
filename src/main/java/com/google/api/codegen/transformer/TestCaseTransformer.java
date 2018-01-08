@@ -179,6 +179,7 @@ public class TestCaseTransformer {
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
+        .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
         .build();
   }
 
