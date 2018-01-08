@@ -699,7 +699,7 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("java.util.Collection");
     }
     if (interfaceConfig.hasGrpcStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallSettings");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");

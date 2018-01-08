@@ -3006,8 +3006,8 @@ import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.PagedListDescriptor;
 import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.StatusCode;
-import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -3130,10 +3130,10 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   private final UnaryCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final UnaryCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
   private final UnaryCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-  private final StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-  private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
-  private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
-  private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
+  private final ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+  private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
+  private final ServerStreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
+  private final ServerStreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -3272,28 +3272,28 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to streamShelves.
    */
-  public StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+  public ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
     return streamShelvesSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to streamBooks.
    */
-  public StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
+  public ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
     return streamBooksSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to discussBook.
    */
-  public StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings() {
+  public ServerStreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings() {
     return discussBookSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to monologAboutBook.
    */
-  public StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings() {
+  public ServerStreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings() {
     return monologAboutBookSettings;
   }
 
@@ -3805,10 +3805,10 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     private final UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final UnaryCallSettings.Builder<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
     private final UnaryCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-    private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-    private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
-    private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
-    private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
+    private final ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+    private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
+    private final ServerStreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
+    private final ServerStreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -3899,13 +3899,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
       updateBookIndexSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      streamShelvesSettings = StreamingCallSettings.newBuilder();
+      streamShelvesSettings = ServerStreamingCallSettings.newBuilder();
 
-      streamBooksSettings = StreamingCallSettings.newBuilder();
+      streamBooksSettings = ServerStreamingCallSettings.newBuilder();
 
-      discussBookSettings = StreamingCallSettings.newBuilder();
+      discussBookSettings = ServerStreamingCallSettings.newBuilder();
 
-      monologAboutBookSettings = StreamingCallSettings.newBuilder();
+      monologAboutBookSettings = ServerStreamingCallSettings.newBuilder();
 
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
@@ -4325,28 +4325,28 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to streamShelves.
      */
-    public StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+    public ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
       return streamShelvesSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to streamBooks.
      */
-    public StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
+    public ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
       return streamBooksSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to discussBook.
      */
-    public StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings() {
+    public ServerStreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings() {
       return discussBookSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to monologAboutBook.
      */
-    public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
+    public ServerStreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return monologAboutBookSettings;
     }
 
