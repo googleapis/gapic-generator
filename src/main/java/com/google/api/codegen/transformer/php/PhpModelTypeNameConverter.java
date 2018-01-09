@@ -174,10 +174,9 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
       String parentFullName = getTypeName(parent, maxDepth - 1).getFullName();
       String fullName = String.format("%s_%s", parentFullName, elem.getSimpleName());
-      String[] nameSplit = fullName.split("\\\\");
-      String nickname = nameSplit[nameSplit.length - 1];
+      String nickName = fullName.substring(fullName.lastIndexOf("\\") + 1);
 
-      return new TypeName(fullName, nickname);
+      return new TypeName(fullName, nickName);
     }
     return typeNameConverter.getTypeName(getTypeNameString(elem));
   }
