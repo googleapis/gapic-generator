@@ -213,8 +213,14 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
-    StaticLangApiMethodView initialApiMethodView =
-        new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext);
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      initialApiMethodView =
+          new StaticLangApiMethodTransformer().generatePagedRequestObjectMethod(methodContext);
+    } else {
+      initialApiMethodView =
+          new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext);
+    }
     StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
