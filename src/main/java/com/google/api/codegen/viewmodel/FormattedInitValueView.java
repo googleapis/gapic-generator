@@ -25,6 +25,8 @@ public abstract class FormattedInitValueView implements InitValueView {
 
   public abstract String formatFunctionName();
 
+  public abstract String formatSpec();
+
   public abstract List<String> formatArgs();
 
   public String type() {
@@ -42,6 +44,8 @@ public abstract class FormattedInitValueView implements InitValueView {
     public abstract Builder fullyQualifiedApiWrapperName(String val);
 
     public abstract Builder formatFunctionName(String val);
+
+    public abstract Builder formatSpec(String val);
 
     public abstract Builder formatArgs(List<String> val);
 
