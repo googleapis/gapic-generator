@@ -72,6 +72,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -215,11 +217,9 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
     StaticLangApiMethodView initialApiMethodView;
     if (methodContext.getMethodConfig().isPageStreaming()) {
-      initialApiMethodView =
-          new StaticLangApiMethodTransformer().generatePagedRequestObjectMethod(methodContext);
+      initialApiMethodView = apiMethodTransformer.generatePagedRequestObjectMethod(methodContext);
     } else {
-      initialApiMethodView =
-          new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext);
+      initialApiMethodView = apiMethodTransformer.generateRequestObjectMethod(methodContext);
     }
     StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeView initCodeView =
