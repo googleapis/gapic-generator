@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -41,13 +40,14 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.util.testing.PythonValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
+import com.google.api.codegen.viewmodel.metadata.SimpleInitFileView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -111,7 +111,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     ProtoApiModel apiModel = new ProtoApiModel(model);
     return ImmutableList.<ViewModel>builder()
-        .addAll(computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer))
+        .addAll(
+            computeInitFiles(
+                computePackages(productConfig.getPackageName()), surfaceNamer, productConfig))
         .addAll(generateTopLevelFiles(apiModel, productConfig))
         .addAll(generateDocFiles(apiModel, productConfig))
         .add(generateNoxFile(apiModel, productConfig))
@@ -358,7 +360,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
    * package corresponds to exactly one __init__.py file, although the contents of that file depend
    * on whether the package is a namespace package.
    */
-  private List<ViewModel> computeInitFiles(List<String> packages, SurfaceNamer namer) {
+  private List<ViewModel> computeInitFiles(
+      List<String> packages, SurfaceNamer namer, GapicProductConfig productConfig) {
     List<ViewModel> initFiles = new ArrayList<>();
     for (String packageName : packages) {
       final String template;
@@ -371,8 +374,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       }
       String outputPath =
           Paths.get(packageName.replace(".", File.separator)).resolve("__init__.py").toString();
-      initFiles.add(
-          SimpleViewModel.create(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, template, outputPath));
+      FileHeaderView fileHeader =
+          fileHeaderTransformer.generateFileHeader(
+              productConfig,
+              ImportSectionView.newBuilder().build(),
+              new PythonSurfaceNamer(productConfig.getPackageName()));
+      initFiles.add(SimpleInitFileView.create(template, outputPath, fileHeader));
     }
     return initFiles;
   }
