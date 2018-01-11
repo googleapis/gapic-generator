@@ -72,10 +72,20 @@ public class StaticLangResourceObjectTransformer {
     String addCallName = namer.getFieldAddFunctionName(field);
     String getCallName = namer.getFieldGetFunctionName(field);
     String transformParamFunctionName = null;
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-        && fieldConfig.requiresParamTransformation()) {
-      if (!fieldConfig.requiresParamTransformationFromAny()) {
+    String formatMethodName = null;
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (fieldConfig.requiresParamTransformation()
+          && !fieldConfig.requiresParamTransformationFromAny()) {
         transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+      }
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+        if (field.isRepeated()) {
+          // TODO support repeated one-ofs
+          transformParamFunctionName =
+              namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
+        } else {
+          formatMethodName = namer.getResourceNameFormatMethodName();
+        }
       }
     }
 
@@ -89,6 +99,7 @@ public class StaticLangResourceObjectTransformer {
     param.addCallName(addCallName);
     param.getCallName(getCallName);
     param.transformParamFunctionName(transformParamFunctionName);
+    param.formatMethodName(formatMethodName);
     param.isMap(field.isMap());
     param.isArray(!field.isMap() && field.isRepeated());
     param.isPrimitive(namer.isPrimitive(field));

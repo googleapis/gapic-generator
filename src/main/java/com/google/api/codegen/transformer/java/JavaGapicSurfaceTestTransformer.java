@@ -75,6 +75,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -164,8 +166,22 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
-    StaticLangApiMethodView initialApiMethodView =
-        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext);
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodConfig.isPageStreaming()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+      } else {
+        initialApiMethodView = apiMethodTransformer.generatePagedRequestObjectMethod(methodContext);
+      }
+    } else {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+      } else {
+        initialApiMethodView = apiMethodTransformer.generateRequestObjectMethod(methodContext);
+      }
+    }
+
     StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
