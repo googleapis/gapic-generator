@@ -42,6 +42,13 @@ interfaces:
     rpc_timeout_multiplier: 1
     max_rpc_timeout_millis: 90000
     total_timeout_millis: 600000
+  smoke_test:
+    method: ListOperations
+    init_fields:
+      - name="my-name"
+      # Test setting entire field to PROJECT_ID, rather than component of formatted string field
+      # Test having PROJECT_ID in second field listed
+      - filter=$PROJECT_ID
   methods:
   - name: GetOperation
     flattening:

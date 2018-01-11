@@ -37,10 +37,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract String domainLayerLocation();
 
-  public abstract List<PathTemplateView> pathTemplates();
-
-  public abstract List<PathTemplateGetterFunctionView> pathTemplateGetters();
-
   public abstract List<RetryConfigDefinitionView> retryPairDefinitions();
 
   public abstract List<IamResourceView> iamResources();
@@ -110,8 +106,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
 
-    public abstract Builder pathTemplates(List<PathTemplateView> val);
-
     public abstract Builder retryPairDefinitions(List<RetryConfigDefinitionView> val);
 
     public abstract Builder iamResources(List<IamResourceView> val);
@@ -119,8 +113,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
     public abstract Builder serviceDoc(ServiceDocView val);
 
     public abstract Builder serviceAddress(String val);
-
-    public abstract Builder pathTemplateGetters(List<PathTemplateGetterFunctionView> val);
 
     public abstract Builder servicePort(Integer val);
 
