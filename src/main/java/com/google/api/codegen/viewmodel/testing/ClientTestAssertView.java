@@ -23,6 +23,8 @@ public abstract class ClientTestAssertView {
 
   public abstract String expectedValueIdentifier();
 
+  public abstract boolean isMap();
+
   public abstract boolean isArray();
 
   @Nullable
@@ -68,6 +70,8 @@ public abstract class ClientTestAssertView {
     public abstract Builder actualValueGetter(String val);
 
     public abstract Builder expectedValueIdentifier(String val);
+
+    public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
 

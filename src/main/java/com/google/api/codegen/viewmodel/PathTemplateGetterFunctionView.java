@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
 public abstract class PathTemplateGetterFunctionView {
@@ -25,10 +24,6 @@ public abstract class PathTemplateGetterFunctionView {
   public abstract String resourceName();
 
   public abstract String entityName();
-
-  public abstract List<PathTemplateArgumentView> args();
-
-  public abstract PathTemplateRenderView render();
 
   public abstract String pathTemplateName();
 
@@ -47,10 +42,6 @@ public abstract class PathTemplateGetterFunctionView {
     public abstract Builder entityName(String val);
 
     public abstract Builder pathTemplateName(String val);
-
-    public abstract Builder args(List<PathTemplateArgumentView> val);
-
-    public abstract Builder render(PathTemplateRenderView val);
 
     public abstract Builder pattern(String val);
 
