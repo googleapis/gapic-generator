@@ -122,7 +122,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 .developmentStatusTitle(
                     namer.getReleaseAnnotation(
                         metadataTransformer.getMergedReleaseLevel(
-                            packageConfig, productConfig, TargetLanguage.PYTHON)))
+                            packageConfig, productConfig, TargetLanguage.NODEJS)))
                 .targetLanguage("Node.js")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(
