@@ -72,6 +72,16 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "library_pkg.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.PHP,
+            new String[] {"php_gapic.yaml", "longrunning_gapic.yaml"},
+            "longrunning_pkg.yaml",
+            "longrunning"),
+        GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.PHP,
+            new String[] {"php_gapic.yaml", "no_path_templates_gapic.yaml"},
+            "no_path_templates_pkg.yaml",
+            "no_path_templates"),
+        GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.JAVA,
             new String[] {"java_gapic.yaml", "library_gapic.yaml"},
             "library_pkg.yaml",

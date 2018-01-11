@@ -214,8 +214,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiSnippetsClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(
-        Name.upperCamel(
-            "Generated", interfaceConfig.getInterfaceModel().getSimpleName(), "ClientSnippets"));
+        Name.anyCamel("Generated", getInterfaceName(interfaceConfig), "ClientSnippets"));
   }
 
   @Override
