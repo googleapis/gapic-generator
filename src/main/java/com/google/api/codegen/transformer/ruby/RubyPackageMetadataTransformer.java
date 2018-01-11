@@ -47,10 +47,12 @@ import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** Responsible for producing package metadata related views for Ruby */
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
@@ -70,6 +72,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String LIB_DOC_PATH = "/#/docs/%s/latest/%s";
   private static final String MAIN_README_PATH = "/blob/master/README.md";
   private static final String VERSIONING_DOC_PATH = "#versioning";
+
+  // These dependencies are pulled in transitively through GAX and should not be declared
+  // explicitly to reduce the chance of version conflicts
+  private static final Set<String> BLACKLISTED_DEPENDENCIES =
+      ImmutableSet.of("googleapis-common-protos");
 
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
@@ -143,6 +150,15 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
+    // Whitelist is just the complement of the blacklist
+    Set<String> whitelist =
+        packageConfig
+            .protoPackageDependencies(TargetLanguage.RUBY)
+            .entrySet()
+            .stream()
+            .map(v -> v.getKey())
+            .filter(s -> !BLACKLISTED_DEPENDENCIES.contains(s))
+            .collect(Collectors.toSet());
     return metadataTransformer
         .generateMetadataView(
             namer,
@@ -150,12 +166,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             model,
             GEMSPEC_FILE,
             namer.getOutputFileName(),
-            TargetLanguage.RUBY)
+            TargetLanguage.RUBY,
+            whitelist)
         .identifier(namer.getMetadataIdentifier())
         .additionalDependencies(
             ImmutableList.of(
-                PackageDependencyView.create(
-                    "googleauth", packageConfig.authVersionBound(TargetLanguage.RUBY)),
                 PackageDependencyView.create(
                     "google-gax", packageConfig.gaxVersionBound(TargetLanguage.RUBY))))
         .build();
