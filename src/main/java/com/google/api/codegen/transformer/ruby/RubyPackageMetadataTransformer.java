@@ -124,7 +124,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .majorVersion(packageConfig.apiVersion())
         .hasMultipleServices(false)
         .developmentStatusTitle(
-            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
+            namer.getReleaseAnnotation(
+                metadataTransformer.getMergedReleaseLevel(
+                    packageConfig, productConfig, TargetLanguage.RUBY)))
         .targetLanguage("Ruby")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink("")
