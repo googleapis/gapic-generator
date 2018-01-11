@@ -68,6 +68,8 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             .name("timeout")
             .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
             .build());
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("metadata").defaultValue("None").build());
     return methodParams.build();
   }
 
@@ -177,6 +179,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             "The amount of time, in seconds, to wait",
             "for the request to complete. Note that if ``retry`` is",
             "specified, the timeout applies to each individual attempt."));
-    return ImmutableList.<ParamDocView>of(retryParamDoc.build(), timeoutParamDoc.build());
+
+    SimpleParamDocView.Builder metadataParamDoc = SimpleParamDocView.newBuilder();
+    metadataParamDoc.paramName("metadata");
+    metadataParamDoc.typeName("Optional[Sequence[Tuple[str, str]]]");
+    metadataParamDoc.lines(
+        ImmutableList.of("Additional metadata", "that is provided to the method."));
+    return ImmutableList.<ParamDocView>of(
+        retryParamDoc.build(), timeoutParamDoc.build(), metadataParamDoc.build());
   }
 }

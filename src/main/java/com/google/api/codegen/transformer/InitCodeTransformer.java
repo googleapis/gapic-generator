@@ -47,10 +47,12 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,8 @@ import java.util.stream.StreamSupport;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
+  private static final String FORMAT_SPEC_PLACEHOLDER = "FORMAT_SPEC_PLACEHOLDER";
+
   private final ImportSectionTransformer importSectionTransformer;
 
   public InitCodeTransformer() {
@@ -161,7 +165,8 @@ public class InitCodeTransformer {
         }
       }
 
-      boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
+      boolean isMap = fieldConfig.getField().isMap();
+      boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
 
       String enumTypeName = null;
       TypeModel fieldType = fieldItemTree.getType();
@@ -179,6 +184,7 @@ public class InitCodeTransformer {
               expectedValueIdentifier,
               expectedTransformFunction,
               actualTransformFunction,
+              isMap,
               isArray,
               getterMethod,
               enumTypeName,
@@ -210,12 +216,14 @@ public class InitCodeTransformer {
       String expected,
       String expectedTransformFunction,
       String actualTransformFunction,
+      boolean isMap,
       boolean isArray,
       String actual,
       String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .isMap(isMap)
         .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)
@@ -457,6 +465,17 @@ public class InitCodeTransformer {
                 .getNamer()
                 .getFormatFunctionName(
                     context.getInterfaceConfig(), initValueConfig.getSingleResourceNameConfig()));
+
+        PathTemplate template = initValueConfig.getSingleResourceNameConfig().getNameTemplate();
+        String[] encodeArgs = new String[template.vars().size()];
+        Arrays.fill(encodeArgs, FORMAT_SPEC_PLACEHOLDER);
+        // Format spec usually contains reserved character, escaped by path template.
+        // So we first encode using FORMAT_SPEC_PLACEHOLDER, then do stright string replace.
+        initValue.formatSpec(
+            template
+                .withoutVars()
+                .encode(encodeArgs)
+                .replace(FORMAT_SPEC_PLACEHOLDER, context.getNamer().formatSpec()));
 
         List<String> varList =
             Lists.newArrayList(

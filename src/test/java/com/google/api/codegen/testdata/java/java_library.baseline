@@ -182,7 +182,7 @@ task updateAndPushDocs {
 
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1102,7 +1102,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
-   *   String filter = "";
+   *   String filter = "book-filter-string";
    *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -1130,8 +1130,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   for (Book element : libraryClient.listBooks(request).iterateAll()) {
    *     // doThingsWith(element);
@@ -1155,8 +1157,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   ApiFuture&lt;ListBooksPagedResponse&gt; future = libraryClient.listBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -1178,8 +1182,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
+   *     .setFilter(filter)
    *     .build();
    *   while (true) {
    *     ListBooksResponse response = libraryClient.listBooksCallable().call(request);
@@ -2949,7 +2955,7 @@ public class LibraryClient implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibrarySettings.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3000,6 +3006,7 @@ import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.PagedListDescriptor;
 import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
@@ -3124,8 +3131,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   private final UnaryCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final UnaryCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
   private final UnaryCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-  private final StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-  private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
+  private final ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+  private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
@@ -3266,14 +3273,14 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to streamShelves.
    */
-  public StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+  public ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
     return streamShelvesSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to streamBooks.
    */
-  public StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
+  public ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
     return streamBooksSettings;
   }
 
@@ -3799,8 +3806,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     private final UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final UnaryCallSettings.Builder<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
     private final UnaryCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-    private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-    private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
+    private final ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+    private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
@@ -3893,9 +3900,9 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
       updateBookIndexSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      streamShelvesSettings = StreamingCallSettings.newBuilder();
+      streamShelvesSettings = ServerStreamingCallSettings.newBuilder();
 
-      streamBooksSettings = StreamingCallSettings.newBuilder();
+      streamBooksSettings = ServerStreamingCallSettings.newBuilder();
 
       discussBookSettings = StreamingCallSettings.newBuilder();
 
@@ -4319,14 +4326,14 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to streamShelves.
      */
-    public StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
+    public ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
       return streamShelvesSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to streamBooks.
      */
-    public StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
+    public ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
       return streamBooksSettings;
     }
 
@@ -4408,7 +4415,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/PagedResponseWrappers.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4882,7 +4889,7 @@ public class PagedResponseWrappers {
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/SampleApp.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4963,7 +4970,7 @@ public class SampleApp {
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/package-info.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5019,7 +5026,7 @@ public class SampleApp {
 package com.google.gcloud.pubsub.v1;
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/GrpcLibraryServiceStub.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5717,7 +5724,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStub.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5959,7 +5966,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/LibraryClientTest.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -6599,7 +6606,7 @@ public class LibraryClientTest {
     mockLibraryService.addResponse(expectedResponse);
 
     ShelfName name = ShelfName.of("[SHELF_ID]");
-    String filter = "filter-1274492040";
+    String filter = "book-filter-string";
 
     ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
 
@@ -6627,7 +6634,7 @@ public class LibraryClientTest {
 
     try {
       ShelfName name = ShelfName.of("[SHELF_ID]");
-      String filter = "filter-1274492040";
+      String filter = "book-filter-string";
 
       client.listBooks(name, filter);
       Assert.fail("No exception raised");
@@ -7827,7 +7834,7 @@ public class LibraryClientTest {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/LibrarySmokeTest.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7908,7 +7915,7 @@ public class LibrarySmokeTest {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLabeler.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7966,7 +7973,7 @@ public class MockLabeler implements MockGrpcService  {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLabelerImpl.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -8044,7 +8051,7 @@ public class MockLabelerImpl extends LabelerImplBase {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLibraryService.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -8102,7 +8109,7 @@ public class MockLibraryService implements MockGrpcService  {
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLibraryServiceImpl.java ==============
 /*
- * Copyright 2017 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -47,6 +47,7 @@ import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -178,6 +179,7 @@ public class TestCaseTransformer {
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
+        .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
         .build();
   }
 
@@ -270,7 +272,7 @@ public class TestCaseTransformer {
         .initObjectType(outputType)
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .initFieldConfigStrings(ImmutableList.<String>of())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
@@ -310,28 +312,6 @@ public class TestCaseTransformer {
       }
     }
     return additionalSubTrees;
-  }
-
-  public TestCaseView createSmokeTestCaseView(MethodContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
-    ClientMethodType methodType;
-
-    if (methodConfig.isPageStreaming()) {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.PagedFlattenedMethod;
-      } else {
-        methodType = ClientMethodType.PagedRequestObjectMethod;
-      }
-    } else {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.FlattenedMethod;
-      } else {
-        methodType = ClientMethodType.RequestObjectMethod;
-      }
-    }
-
-    return createTestCaseView(
-        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
   }
 
   public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
