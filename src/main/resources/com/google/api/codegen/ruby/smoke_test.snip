@@ -23,7 +23,7 @@ describe "{@smokeTest.name}" do
   it "runs one smoke test with {@smokeTest.apiMethod.name}" do
     @if smokeTest.requireProjectId
       unless ENV["{@smokeTest.projectIdVariableName}"]
-        fail "Usage: {@smokeTest.projectIdVariableName}=<project_id> ruby #{$0}"
+        fail "{@smokeTest.projectIdVariableName} environment variable must be defined"
       end
       project_id = ENV["{@smokeTest.projectIdVariableName}"].freeze
     @end
