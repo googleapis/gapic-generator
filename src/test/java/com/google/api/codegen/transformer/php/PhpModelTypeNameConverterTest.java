@@ -38,6 +38,6 @@ public class PhpModelTypeNameConverterTest {
             converter
                 .getEnumValue(type, value)
                 .getValueAndSaveTypeNicknameIn(new PhpTypeTable(packageName)))
-        .isEqualTo("Rating::GOOD");
+        .isEqualTo("Book_Rating::GOOD");
   }
 }

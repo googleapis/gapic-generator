@@ -12,6 +12,8 @@ language_settings:
     # See: https://github.com/googleapis/toolkit/issues/320
     package_name: cloud.google.com/go/library/apiv1
     domain_layer_location: cloud.google.com/go/library
+    interface_names:
+      google.example.library.v1.LibraryService: LibClient
   ruby:
     # Note that package_name for ruby is intentionally changed
     # from the gRPC package name of the API to test the generated
@@ -262,6 +264,9 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
+    sample_code_init_fields:
+    # Set the sample_code_init_field for an optional field
+    - filter="book-filter-string"
   - name: DeleteBook
     flattening:
       groups:

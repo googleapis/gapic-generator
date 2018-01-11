@@ -1,0 +1,561 @@
+============== file: composer.json ==============
+{
+  "name": "example/example",
+  "version": "0.1.0",
+  "author": "Google LLC",
+  "url": "https://github.com/googleapis/googleapis",
+  "description": "Google Fake API client for PHP",
+  "require": {
+    "google/gax": "^0.6.*",
+    "google/protobuf": "^0.7.*",
+    "php" : "^5.5 || ^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
+  "license": "Apache-2.0",
+  "autoload": {
+    "psr-4": {
+      "Google\\Cloud\\": "src",
+      "Google\\Cloud\\Tests\\": "tests",
+      "Google\\Cloud\\Tests\\System\\": "tests/system",
+      "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
+      "": "proto/src"
+    }
+  },
+  "scripts": {
+    "test": [
+      "phpunit tests"
+    ]
+  }
+}
+============== file: src/Example/V1/Gapic/NoTemplatesApiServiceGapicClient.php ==============
+<?php
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was generated from the file
+ * https://github.com/google/googleapis/blob/master/no_path_templates.proto
+ * and updates to that file get reflected here through a refresh process.
+ *
+ * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
+ * even though we intent the surface to be stable, we may make backwards incompatible changes
+ * if necessary.
+ *
+ * @experimental
+ */
+
+namespace Google\Example\V1\Gapic;
+
+use Google\ApiCore\AgentHeaderDescriptor;
+use Google\ApiCore\ApiCallable;
+use Google\ApiCore\CallSettings;
+use Google\ApiCore\GrpcConstants;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\PathTemplate;
+use Google\ApiCore\RequestParamsHeaderDescriptor;
+use Google\ApiCore\ValidationException;
+use Google\Cloud\Example\V1\IncrementRequest;
+use Google\Cloud\Example\V1\NoTemplatesAPIServiceGrpcClient;
+use Google\Cloud\Version;
+
+/**
+ * Service Description:
+ *
+ * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
+ * even though we intent the surface to be stable, we may make backwards incompatible changes
+ * if necessary.
+ *
+ * This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * ```
+ * $options = [
+ *     'serviceAddress' => 'my-service-address',
+ *     'scopes' => ['my-service-scope'],
+ * ];
+ * $noTemplatesApiServiceClient = new NoTemplatesApiServiceClient($options);
+ * try {
+ *
+ *     $noTemplatesApiServiceClient->increment();
+ * } finally {
+ *     if (isset($noTemplatesApiServiceClient)) {
+ *         $noTemplatesApiServiceClient->close();
+ *     }
+ * }
+ * ```
+ *
+ * @experimental
+ */
+class NoTemplatesApiServiceGapicClient
+{
+
+    /**
+     * The default port of the service.
+     */
+    const DEFAULT_SERVICE_PORT = 443;
+
+    /**
+     * The name of the code generator, to be included in the agent header.
+     */
+    const CODEGEN_NAME = 'gapic';
+
+    /**
+     * The code generator version, to be included in the agent header.
+     */
+    const CODEGEN_VERSION = '0.0.5';
+
+
+    private static $gapicVersion;
+    private static $gapicVersionLoaded = false;
+
+    protected $grpcCredentialsHelper;
+    protected $noTemplatesApiServiceStub;
+    private $scopes;
+    private $defaultCallSettings;
+    private $descriptors;
+
+
+
+
+
+    private static function getGapicVersion()
+    {
+        if (!self::$gapicVersionLoaded) {
+            if (file_exists(__DIR__ . '/../VERSION')) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . '/../VERSION'));
+            } elseif (class_exists(Version::class)) {
+              self::$gapicVersion = Version::VERSION;
+            }
+            self::$gapicVersionLoaded = true;
+        }
+        return self::$gapicVersion;
+    }
+
+
+
+
+    /**
+     * Constructor.
+     *
+     * @param array $options {
+     *     Required. Options for configuring the service API wrapper. Those options
+     *     that must be provided are marked as Required.
+     *
+     *     @type string $serviceAddress Required. The domain name of the API remote host.
+     *     @type mixed $port The port on which to connect to the remote host. Default 443.
+     *     @type \Grpc\Channel $channel
+     *           A `Channel` object to be used by gRPC. If not specified, a channel will be constructed.
+     *     @type \Grpc\ChannelCredentials $sslCreds
+     *           A `ChannelCredentials` object for use with an SSL-enabled channel.
+     *           Default: a credentials object returned from
+     *           \Grpc\ChannelCredentials::createSsl()
+     *           NOTE: if the $channel optional argument is specified, then this argument is unused.
+     *     @type bool $forceNewChannel
+     *           If true, this forces gRPC to create a new channel instead of using a persistent channel.
+     *           Defaults to false.
+     *           NOTE: if the $channel optional argument is specified, then this option is unused.
+     *     @type \Google\Auth\CredentialsLoader $credentialsLoader
+     *           A CredentialsLoader object created using the Google\Auth library.
+     *     @type string[] $scopes Required. A string array of scopes to use when acquiring credentials.
+     *     @type string $clientConfigPath
+     *           Path to a JSON file containing client method configuration, including retry settings.
+     *           Specify this setting to specify the retry behavior of all methods on the client.
+     *           By default this settings points to the default client config file, which is provided
+     *           in the resources folder. The retry settings provided in this option can be overridden
+     *           by settings in $retryingOverride
+     *     @type array $retryingOverride
+     *           An associative array in which the keys are method names (e.g. 'createFoo'), and
+     *           the values are retry settings to use for that method. The retry settings for each
+     *           method can be a {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *           of retry settings parameters. See the documentation on {@see Google\ApiCore\RetrySettings}
+     *           for example usage. Passing a value of null is equivalent to a value of
+     *           ['retriesEnabled' => false]. Retry settings provided in this setting override the
+     *           settings in $clientConfigPath.
+     * }
+     * @throws ValidationException Throws a ValidationException if required arguments are missing
+     *                             from the $options array.
+     * @experimental
+     */
+    public function __construct($options = [])
+    {
+        if (!array_key_exists('serviceAddress', $options)) {
+            throw new ValidationException("The 'serviceAddress' option must be provided.");
+        }
+        if (!array_key_exists('scopes', $options)) {
+            throw new ValidationException("The 'scopes' option must be provided.");
+        }
+        $defaultOptions = [
+            'port' => self::DEFAULT_SERVICE_PORT,
+            'retryingOverride' => null,
+            'libName' => null,
+            'libVersion' => null,
+            'clientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_client_config.json',
+        ];
+        $options = array_merge($defaultOptions, $options);
+
+
+        $gapicVersion = $options['libVersion'] ?: self::getGapicVersion();
+
+        $headerDescriptor = new AgentHeaderDescriptor([
+            'libName' => $options['libName'],
+            'libVersion' => $options['libVersion'],
+            'gapicVersion' => $gapicVersion,
+        ]);
+
+        $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
+        $this->descriptors = [
+            'increment' => $defaultDescriptors,
+        ];
+
+        $clientConfigJsonString = file_get_contents($options['clientConfigPath']);
+        $clientConfig = json_decode($clientConfigJsonString, true);
+        $this->defaultCallSettings =
+                CallSettings::load('google.cloud.example.v1.NoTemplatesAPIService',
+                                   $clientConfig,
+                                   $options['retryingOverride']);
+
+        $this->scopes = $options['scopes'];
+
+        $createStubOptions = [];
+        if (array_key_exists('sslCreds', $options)) {
+            $createStubOptions['sslCreds'] = $options['sslCreds'];
+        }
+        $this->grpcCredentialsHelper = new GrpcCredentialsHelper($options);
+
+        $createNoTemplatesApiServiceStubFunction = function ($hostname, $opts, $channel) {
+            return new NoTemplatesAPIServiceGrpcClient($hostname, $opts, $channel);
+        };
+        if (array_key_exists('createNoTemplatesApiServiceStubFunction', $options)) {
+            $createNoTemplatesApiServiceStubFunction = $options['createNoTemplatesApiServiceStubFunction'];
+        }
+        $this->noTemplatesApiServiceStub = $this->grpcCredentialsHelper->createStub($createNoTemplatesApiServiceStubFunction);
+    }
+
+    /**
+     * Increments something.
+     *   Sometimes the comments are indented, but Sphinx doesn't like that. So
+     *  in Python we trim all
+     *      leading
+     *         and trailing
+     *    whitespace.
+     *
+     * Sample code:
+     * ```
+     * $options = [
+     *     'serviceAddress' => 'my-service-address',
+     *     'scopes' => ['my-service-scope'],
+     * ];
+     * $noTemplatesApiServiceClient = new NoTemplatesApiServiceClient($options);
+     * try {
+     *
+     *     $noTemplatesApiServiceClient->increment();
+     * } finally {
+     *     if (isset($noTemplatesApiServiceClient)) {
+     *         $noTemplatesApiServiceClient->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type \Google\ApiCore\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @throws \Google\ApiCore\ApiException if the remote call fails
+     * @experimental
+     */
+    public function increment($optionalArgs = [])
+    {
+        $request = new IncrementRequest();
+
+        $defaultCallSettings = $this->defaultCallSettings['increment'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->noTemplatesApiServiceStub, 'Increment', $mergedSettings, $this->descriptors['increment']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Initiates an orderly shutdown in which preexisting calls continue but new
+     * calls are immediately cancelled.
+     * @experimental
+     */
+    public function close()
+    {
+        $this->noTemplatesApiServiceStub->close();
+    }
+
+    private function createCredentialsCallback()
+    {
+        return $this->grpcCredentialsHelper->createCallCredentialsCallback();
+    }
+}
+============== file: src/Example/V1/NoTemplatesApiServiceClient.php ==============
+<?php
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was generated from the file
+ * https://github.com/google/googleapis/blob/master/no_path_templates.proto
+ * and updates to that file get reflected here through a refresh process.
+ *
+ * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+ * more frequently than those which have been declared beta or 1.0, including changes which break
+ * backwards compatibility.
+ *
+ * @experimental
+ */
+
+namespace Google\Example\V1;
+
+use Google\Example\V1\Gapic\NoTemplatesApiServiceGapicClient;
+
+/**
+ * {@inheritdoc}
+ */
+class NoTemplatesApiServiceClient extends NoTemplatesApiServiceGapicClient
+{
+    // This class is intentionally empty, and is intended to hold manual
+    // additions to the generated {@see NoTemplatesApiServiceClientImpl} class.
+}
+============== file: src/Example/V1/resources/no_templates_api_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.NoTemplatesAPIService": {
+      "retry_codes": {},
+      "retry_params": {},
+      "methods": {
+        "Increment": {
+          "timeout_millis": 10000
+        }
+      }
+    }
+  }
+}
+
+============== file: tests/unit/Example/V1/MockNoTemplatesAPIServiceImpl.php ==============
+<?php
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Unit\Example\V1;
+
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\Cloud\Example\V1\NoTemplatesAPIServiceGrpcClient;
+use Google\LongRunning\GetOperationRequest;
+use Google\Protobuf\Any;
+use Google\Protobuf\GPBEmpty;
+use Grpc;
+use PHPUnit\Framework\TestCase;
+use stdClass;
+
+class MockNoTemplatesAPIServiceImpl extends NoTemplatesAPIServiceGrpcClient
+{
+    use MockStubTrait;
+}
+============== file: tests/unit/Example/V1/NoTemplatesApiServiceClientTest.php ==============
+<?php
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Unit\Example\V1;
+
+use Google\Example\V1\NoTemplatesApiServiceClient;
+use Google\ApiCore\ApiException;
+use Google\ApiCore\BidiStream;
+use Google\ApiCore\GrpcCredentialsHelper;
+use Google\ApiCore\LongRunning\OperationsClient;
+use Google\ApiCore\ServerStream;
+use Google\ApiCore\Testing\GeneratedTest;
+use Google\ApiCore\Testing\MockStubTrait;
+use Google\Cloud\Example\V1\IncrementRequest;
+use Google\Cloud\Example\V1\NoTemplatesAPIServiceGrpcClient;
+use Google\LongRunning\GetOperationRequest;
+use Google\Protobuf\Any;
+use Google\Protobuf\GPBEmpty;
+use Grpc;
+use PHPUnit\Framework\TestCase;
+use stdClass;
+
+/**
+ * @group example
+ * @group grpc
+ */
+class NoTemplatesApiServiceClientTest extends GeneratedTest
+{
+    public function createMockNoTemplatesAPIServiceImpl($hostname, $opts)
+    {
+        return new MockNoTemplatesAPIServiceImpl($hostname, $opts);
+    }
+
+    private function createStub($createGrpcStub)
+    {
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([
+            'serviceAddress' => 'unknown-service-address',
+            'port' => NoTemplatesApiServiceClient::DEFAULT_SERVICE_PORT,
+            'scopes' => ['unknown-service-scopes'],
+        ]);
+        return $grpcCredentialsHelper->createStub($createGrpcStub);
+    }
+
+    /**
+     * @return NoTemplatesApiServiceClient
+     */
+    private function createClient($createStubFuncName, $grpcStub, $options = [])
+    {
+        return new NoTemplatesApiServiceClient($options + [
+            $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
+                return $grpcStub;
+            },
+            'serviceAddress' => 'unknown-service-address',
+            'scopes' => ['unknown-service-scopes'],
+        ]);
+    }
+    /**
+     * @test
+     */
+    public function incrementTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockNoTemplatesAPIServiceImpl']);
+        $client = $this->createClient('createNoTemplatesApiServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $expectedResponse = new GPBEmpty();
+        $grpcStub->addResponse($expectedResponse);
+
+        $client->increment();
+        $actualRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.cloud.example.v1.NoTemplatesAPIService/Increment', $actualFuncCall);
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function incrementExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockNoTemplatesAPIServiceImpl']);
+        $client = $this->createClient('createNoTemplatesApiServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Grpc\STATUS_DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $grpcStub->addResponse(null, $status);
+
+        try {
+            $client->increment();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+}

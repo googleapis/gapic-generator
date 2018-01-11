@@ -11,6 +11,7 @@
   )
 
   import (
+    "fmt"
     "strconv"
     "testing"
     "time"
@@ -21,6 +22,7 @@
     "google.golang.org/api/option"
   )
 
+  var _ = fmt.Sprintf
   var _ = iterator.Done
   var _ = strconv.FormatUint
   var _ = time.Now
@@ -38,26 +40,26 @@
     projectId := testutil.ProjID()
     _ = projectId
 
-    c, err := {@view.method.serviceConstructorName}(ctx, option.WithTokenSource(ts))
+    c, err := {@view.apiMethod.serviceConstructorName}(ctx, option.WithTokenSource(ts))
     if err != nil {
       t.Fatal(err)
     }
 
-    {@initCode(view.method.initCode)}
+    {@initCode(view.apiMethod.initCode)}
 
-    @switch view.method.clientMethodType
+    @switch view.apiMethod.type
     @case "PagedRequestObjectMethod"
-      iter := {@call(view.method)}
+      iter := {@call(view.apiMethod)}
       if _, err := iter.Next(); err != nil && err != iterator.Done {
         t.Error(err)
       }
     @case "RequestObjectMethod"
-      @if view.method.hasReturnValue
-        if _, err := {@call(view.method)}; err != nil {
+      @if view.apiMethod.hasReturnValue
+        if _, err := {@call(view.apiMethod)}; err != nil {
           t.Error(err)
         }
       @else
-        if err := {@call(view.method)}; err != nil {
+        if err := {@call(view.apiMethod)}; err != nil {
           t.Error(err)
         }
       @end
@@ -65,8 +67,8 @@
   }
 @end
 
-@private call(method)
-  c.{@method.clientMethodName}(ctx, {@args(method.initCode.fieldSettings)})
+@private call(apiMethod)
+  c.{@apiMethod.name}(ctx, {@args(apiMethod.initCode.fieldSettings)})
 @end
 
 @private args(fieldSettings)
