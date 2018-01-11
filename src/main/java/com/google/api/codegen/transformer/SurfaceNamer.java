@@ -1132,6 +1132,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.upperCamel(field.getParentSimpleName()));
   }
 
+  public String formatSpec() {
+    return "%s";
+  }
+
   /////////////////////////////////////// Path Template ////////////////////////////////////////
 
   /**

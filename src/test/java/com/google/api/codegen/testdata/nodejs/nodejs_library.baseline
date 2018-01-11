@@ -113,7 +113,7 @@ $ npm install --save @google-cloud/library
 }
 
 ============== file: smoke-test/library_service_smoke_test.js ==============
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ describe('LibraryServiceSmokeTest', () => {
 });
 
 ============== file: src/index.js ==============
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -249,7 +249,7 @@ module.exports.v1 = gapic.v1;
 module.exports.default = Object.assign({}, module.exports);
 
 ============== file: src/v1/index.js ==============
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -270,7 +270,7 @@ const LibraryServiceClient = require('./library_service_client');
 module.exports.LibraryServiceClient = LibraryServiceClient;
 
 ============== file: src/v1/library_service_client.js ==============
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1191,8 +1191,13 @@ class LibraryServiceClient {
    *
    * // Iterate over all elements.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
    *
-   * client.listBooks({name: formattedName})
+   * client.listBooks(request)
    *   .then(responses => {
    *     var resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
@@ -1205,6 +1210,11 @@ class LibraryServiceClient {
    *
    * // Or obtain the paged response.
    * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
    *
    *
    * var options = {autoPaginate: false};
@@ -1223,7 +1233,7 @@ class LibraryServiceClient {
    *     return client.listBooks(nextRequest, options).then(callback);
    *   }
    * }
-   * client.listBooks({name: formattedName}, options)
+   * client.listBooks(request, options)
    *   .then(callback)
    *   .catch(err => {
    *     console.error(err);
@@ -1279,7 +1289,12 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.shelfPath('[SHELF_ID]');
-   * client.listBooksStream({name: formattedName})
+   * var filter = 'book-filter-string';
+   * var request = {
+   *   name: formattedName,
+   *   filter: filter,
+   * };
+   * client.listBooksStream(request)
    *   .on('data', element => {
    *     // doThingsWith(element)
    *   }).on('error', err => {
@@ -2916,7 +2931,7 @@ module.exports = LibraryServiceClient;
 }
 
 ============== file: test/gapic-v1.js ==============
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3468,8 +3483,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock response
@@ -3502,8 +3519,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       var formattedName = client.shelfPath('[SHELF_ID]');
+      var filter = 'book-filter-string';
       var request = {
         name: formattedName,
+        filter: filter,
       };
 
       // Mock Grpc layer

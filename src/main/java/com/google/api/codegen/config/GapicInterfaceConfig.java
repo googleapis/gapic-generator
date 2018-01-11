@@ -86,22 +86,16 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public abstract String getManualDoc();
 
-  @Nullable
-  public abstract String getInterfaceNameOverride();
-
   @Override
   public String getName() {
-    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getInterface().getSimpleName();
+    return getInterfaceNameOverride() != null
+        ? getInterfaceNameOverride()
+        : getInterface().getSimpleName();
   }
 
   @Override
   public String getRawName() {
     return getInterface().getSimpleName();
-  }
-
-  @Override
-  public boolean hasInterfaceNameOverride() {
-    return getInterfaceNameOverride() != null;
   }
 
   /**
@@ -181,6 +175,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return new AutoValue_GapicInterfaceConfig(
+          interfaceNameOverride,
           new ProtoInterfaceModel(apiInterface),
           methodConfigs,
           smokeTestConfig,
@@ -190,8 +185,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
           iamResources,
           requiredConstructorParams,
           singleResourceNames,
-          manualDoc,
-          interfaceNameOverride);
+          manualDoc);
     }
   }
 

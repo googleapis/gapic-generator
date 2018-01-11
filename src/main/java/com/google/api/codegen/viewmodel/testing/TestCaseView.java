@@ -77,6 +77,8 @@ public abstract class TestCaseView {
 
   public abstract String grpcStubCallString();
 
+  public abstract boolean clientHasDefaultInstance();
+
   public static Builder newBuilder() {
     return new AutoValue_TestCaseView.Builder();
   }
@@ -131,6 +133,8 @@ public abstract class TestCaseView {
     public abstract Builder createStubFunctionName(String val);
 
     public abstract Builder grpcStubCallString(String val);
+
+    public abstract Builder clientHasDefaultInstance(boolean val);
 
     public abstract TestCaseView build();
   }

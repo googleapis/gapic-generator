@@ -3,7 +3,7 @@
 
 
 # smoke: SmokeTestClassView
-# smoke.method: TestCaseView
+# smoke.apiMethod: StaticLangApiMethodView
 @snippet generate(smoke)
     {@renderFileHeader(smoke.fileHeader)}
 
@@ -28,7 +28,7 @@
                 {@smoke.apiClassName} client = {@smoke.apiClassName}.Create();
 
                 @if smoke.hasMethod
-                  {@methodCall(smoke.method)}
+                  {@methodCall(smoke.apiMethod)}
                 @else
                   // Add your method call here.
                 @end
@@ -42,27 +42,29 @@
 
 @end
 
-# method: TestCaseView
-@private methodCall(method)
+# method: StaticLangApiMethodView
+@private methodCall(apiMethod)
     // Initialize request argument(s)
-    {@topLevelInitCode(method.initCode)}
+    {@topLevelInitCode(apiMethod.initCode)}
 
     // Call API method
-    @switch method.clientMethodType
+    @switch apiMethod.type
     @case "PagedFlattenedMethod"
-        {@method.callerResponseTypeName} pagedResponse = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        {@apiMethod.responseTypeName} pagedResponse = client.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
         // Show the result
         foreach (var item in pagedResponse)
         {
             Console.WriteLine(item);
         }
     @case "FlattenedMethod"
-        @if method.hasReturnValue
-            {@method.callerResponseTypeName} response = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        @if apiMethod.hasReturnValue
+            {@apiMethod.responseTypeName} response = client.{@apiMethod.name}(\
+                {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
             // Show the result
             Console.WriteLine(response);
         @else
-            client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            client.{@apiMethod.name}({@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
         @end
     @end
 @end
