@@ -197,7 +197,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName()))
         .developmentStatus(
-            surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+            surfaceNamer.getReleaseAnnotation(
+                metadataTransformer.getMergedReleaseLevel(
+                    packageConfig, productConfig, TargetLanguage.PYTHON)))
         .clientModules(clientModules(surfaceNamer))
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
@@ -222,7 +224,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     metadataNamer.getReleaseAnnotation(
-                        packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+                        metadataTransformer.getMergedReleaseLevel(
+                            packageConfig, productConfig, TargetLanguage.PYTHON)))
                 .targetLanguage("Python")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(
