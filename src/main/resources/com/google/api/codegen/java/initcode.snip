@@ -20,7 +20,7 @@
 @private initLineStructure(line)
   {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
   @join fieldSetting : line.fieldSettings
-    {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@fieldSetting.identifier})
+    {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@renderFieldSettingValue(fieldSetting)})
   @end
   {@EMPTY}  .build();
 @end
@@ -60,8 +60,19 @@
 
 @private renderResourceName(initValue)
   @if {@initValue.convertToString}
-    {@initValue.resourceTypeName}.of({@argList(initValue.formatArgs)}).toString()
+    {@initValue.resourceTypeName}.format({@argList(initValue.formatArgs)})
   @else
     {@initValue.resourceTypeName}.of({@argList(initValue.formatArgs)})
+  @end
+@end
+
+@private renderFieldSettingValue(fieldSetting)
+  @if fieldSetting.transformParamFunctionName
+    {@fieldSetting.transformParamFunctionName}({@fieldSetting.identifier})
+  @else
+    {@fieldSetting.identifier}
+  @end
+  @if fieldSetting.formatMethodName
+    .{@fieldSetting.formatMethodName}()
   @end
 @end

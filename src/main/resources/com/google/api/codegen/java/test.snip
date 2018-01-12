@@ -270,30 +270,29 @@
   {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
   @join assert : test.asserts
-    @if assert.hasExpectedValueTransformFunction
-      @if assert.hasActualValueTransformFunction
-        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
-          {@assert.expectedValueIdentifier}), \
-          {@assert.actualValueTransformFunction}(actualRequest.{@assert.actualValueGetter}()));
-      @else
-        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
-          {@assert.expectedValueIdentifier}), \
-          actualRequest.{@assert.actualValueGetter}());
-      @end
-    @else
-      @if assert.hasActualValueTransformFunction
-        "$ NOT IMPLEMENTED: hasActualValueTransformFunction == true while hasExpectedValueTransformFunction == false $";
-      @else
-        Assert.assertEquals({@assert.expectedValueIdentifier}, \
-          actualRequest.{@assert.actualValueGetter}());
-      @end
-    @end
+    Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
   @end
   @if test.clientHasDefaultInstance
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
             GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  @end
+@end
+
+@private assertExpectedParam(assert)
+  @if assert.hasExpectedValueTransformFunction
+    {@assert.expectedValueTransformFunction}({@assert.expectedValueIdentifier})
+  @else
+    {@assert.expectedValueIdentifier}
+  @end
+@end
+
+@private assertActualParam(assert)
+  @if assert.hasActualValueTransformFunction
+    {@assert.actualValueTransformFunction}(actualRequest.{@assert.actualValueGetter}())
+  @else
+    actualRequest.{@assert.actualValueGetter}()
   @end
 @end
 
