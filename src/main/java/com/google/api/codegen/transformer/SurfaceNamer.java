@@ -261,12 +261,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getModuleServiceName");
   }
 
-  /////////////////////////////////// Protos methods /////////////////////////////////////////////
+  /////////////////////////////////// Proto methods /////////////////////////////////////////////
 
   /** The function name to set the given field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+    if (featureConfig.useResourceNameProtoAccessor(fieldConfig)) {
       return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldSetFunctionName(field);
@@ -339,7 +339,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get the given field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+    if (featureConfig.useResourceNameProtoAccessor(fieldConfig)) {
       return getResourceNameFieldGetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldGetFunctionName(field);
@@ -501,11 +501,25 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getResourceTypeParseMethodName");
   }
 
+  public String getResourceTypeParseListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeParseListMethodName");
+  }
+
+  public String getResourceTypeFormatListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeFormatListMethodName");
+  }
+
   /** The name of the create method for the resource one-of for the given field config */
   public String getResourceOneofCreateMethod(ImportTypeTable typeTable, FieldConfig fieldConfig) {
     return getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
         + "."
         + publicMethodName(Name.from("from"));
+  }
+
+  public String getResourceNameFormatMethodName() {
+    return "toString";
   }
 
   /** The method name of the retry filter for the given key */
