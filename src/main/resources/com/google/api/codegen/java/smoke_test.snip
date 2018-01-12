@@ -79,6 +79,10 @@
         client.{@apiMethod.name}(\
           {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
     System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
+  @case "AsyncOperationFlattenedMethod"
+      {@apiMethod.responseTypeName} response = \
+        client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)}).get();
+      System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
   @case "FlattenedMethod"
     @if apiMethod.hasReturnValue
       {@apiMethod.responseTypeName} response = \

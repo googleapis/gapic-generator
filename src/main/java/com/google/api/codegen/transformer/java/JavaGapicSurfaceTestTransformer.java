@@ -172,13 +172,25 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       if (methodContext.isFlattenedMethodContext()) {
         initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
       } else {
-        initialApiMethodView = apiMethodTransformer.generatePagedRequestObjectMethod(methodContext);
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: page-streaming + request-object");
+      }
+    } else if (methodConfig.isGrpcStreaming()) {
+      throw new UnsupportedOperationException("Unsupported smoke test type: grpc-streaming");
+    } else if (methodConfig.isLongRunningOperation()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView =
+            apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: long-running + request-object");
       }
     } else {
       if (methodContext.isFlattenedMethodContext()) {
         initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
       } else {
-        initialApiMethodView = apiMethodTransformer.generateRequestObjectMethod(methodContext);
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: simple-call + request-object");
       }
     }
 
