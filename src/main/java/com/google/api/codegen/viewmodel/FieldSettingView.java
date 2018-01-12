@@ -47,6 +47,10 @@ public abstract class FieldSettingView {
 
   public abstract Boolean required();
 
+  public abstract String formatMethodName();
+
+  public abstract String transformParamFunctionName();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
   }
@@ -74,6 +78,10 @@ public abstract class FieldSettingView {
     public abstract Builder elementTypeName(String val);
 
     public abstract Builder required(Boolean val);
+
+    public abstract Builder formatMethodName(String val);
+
+    public abstract Builder transformParamFunctionName(String val);
 
     public abstract FieldSettingView build();
   }

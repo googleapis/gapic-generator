@@ -160,8 +160,20 @@ public class InitCodeTransformer {
           expectedTransformFunction = namer.getToStringMethod();
           actualTransformFunction = namer.getToStringMethod();
         } else if (fieldConfig.requiresParamTransformation()) {
-          expectedTransformFunction =
-              namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+          if (methodContext.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+            expectedTransformFunction = namer.getToStringMethod();
+          } else {
+            expectedTransformFunction =
+                namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+          }
+        } else if (methodContext.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+          if (fieldConfig.getField().isRepeated()) {
+            actualTransformFunction =
+                namer.getResourceTypeParseListMethodName(methodContext.getTypeTable(), fieldConfig);
+          } else {
+            actualTransformFunction =
+                namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);
+          }
         }
       }
 
@@ -576,7 +588,7 @@ public class InitCodeTransformer {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       FieldConfig fieldConfig = item.getFieldConfig();
 
-      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (context.getFeatureConfig().useResourceNameProtoAccessor(fieldConfig)) {
         fieldSetting.fieldSetFunction(
             namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
@@ -605,6 +617,19 @@ public class InitCodeTransformer {
       fieldSetting.required(
           fieldConfig != null
               && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName()));
+      String formatMethodName = "";
+      String transformParamFunctionName = "";
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+        if (fieldConfig.getField().isRepeated()) {
+          // TODO (https://github.com/googleapis/toolkit/issues/1806) support repeated one-ofs
+          transformParamFunctionName =
+              namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
+        } else {
+          formatMethodName = namer.getResourceNameFormatMethodName();
+        }
+      }
+      fieldSetting.transformParamFunctionName(transformParamFunctionName);
+      fieldSetting.formatMethodName(formatMethodName);
       allSettings.add(fieldSetting.build());
     }
     return allSettings;
