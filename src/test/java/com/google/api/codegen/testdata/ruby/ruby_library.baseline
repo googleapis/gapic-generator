@@ -431,8 +431,8 @@ task :acceptance, :project, :keyfile do |t, args|
     fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
   end
   require "library/credentials"
-  (Library::V1::Credentials::PATH_ENV_VARS +
-   Library::V1::Credentials::JSON_ENV_VARS).each do |path|
+  (Library::Credentials::PATH_ENV_VARS +
+   Library::Credentials::JSON_ENV_VARS).each do |path|
     ENV[path] = nil
   end
   ENV["LIBRARY_PROJECT"] = project

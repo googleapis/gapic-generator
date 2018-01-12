@@ -141,6 +141,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract FileHeaderView fileHeader();
 
+  @Nullable
+  public abstract String credentialsClassName();
+
   // Python-specific configuration
   @Nullable
   public abstract List<String> namespacePackages();
@@ -288,6 +291,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** File header information such as copyright lines and license lines */
     public abstract Builder fileHeader(FileHeaderView val);
+
+    /** Name of the class that handles authentication for this package */
+    public abstract Builder credentialsClassName(String val);
 
     public abstract Builder readmeMetadata(ReadmeMetadataView val);
 

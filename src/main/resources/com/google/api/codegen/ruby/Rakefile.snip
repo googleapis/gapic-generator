@@ -106,8 +106,8 @@
     end
     # clear any env var already set
     {@importList(metadata.fileHeader.importSection.appImports)}
-    ({@metadata.fileHeader.packageName}::Credentials::PATH_ENV_VARS +
-     {@metadata.fileHeader.packageName}::Credentials::JSON_ENV_VARS).each do |path|
+    ({@metadata.credentialsClassName}::PATH_ENV_VARS +
+     {@metadata.credentialsClassName}::JSON_ENV_VARS).each do |path|
       ENV[path] = nil
     end
     # always overwrite when running tests
