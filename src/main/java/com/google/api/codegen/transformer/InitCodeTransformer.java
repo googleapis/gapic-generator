@@ -621,7 +621,7 @@ public class InitCodeTransformer {
       String transformParamFunctionName = "";
       if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
         if (fieldConfig.getField().isRepeated()) {
-          // TODO support repeated one-ofs
+          // TODO (https://github.com/googleapis/toolkit/issues/1806) support repeated one-ofs
           transformParamFunctionName =
               namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
         } else {
