@@ -75,6 +75,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -164,8 +166,34 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
-    StaticLangApiMethodView initialApiMethodView =
-        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext);
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodConfig.isPageStreaming()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: page-streaming + request-object");
+      }
+    } else if (methodConfig.isGrpcStreaming()) {
+      throw new UnsupportedOperationException("Unsupported smoke test type: grpc-streaming");
+    } else if (methodConfig.isLongRunningOperation()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView =
+            apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: long-running + request-object");
+      }
+    } else {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: simple-call + request-object");
+      }
+    }
+
     StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(

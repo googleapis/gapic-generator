@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
@@ -68,5 +69,15 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
   private String getSimpleMetadataIdentifier() {
     return Iterables.getLast(
         Splitter.on(METADATA_IDENTIFIER_SEPARATOR).split(getMetadataIdentifier()));
+  }
+
+  @Override
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    switch (releaseLevel) {
+      case GA:
+        return "GA";
+      default:
+        return super.getReleaseAnnotation(releaseLevel);
+    }
   }
 }
