@@ -573,13 +573,19 @@
 
 @private builderSetCalls(requestObjectParams)
   @join requestObjectParam : requestObjectParams
-    @if requestObjectParam.hasTransformParamFunction
-      .{@requestObjectParam.setCallName}(\
-        {@requestObjectParam.name} == null ? null : \
-        {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
-    @else
-      .{@requestObjectParam.setCallName}({@requestObjectParam.name})
-    @end
+    .{@requestObjectParam.setCallName}({@builderSetCallParam(requestObjectParam)})
+  @end
+@end
+
+@private builderSetCallParam(requestObjectParam)
+  @if requestObjectParam.hasTransformParamFunction
+    {@requestObjectParam.name} == null ? null : \
+      {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name})
+  @else
+    {@requestObjectParam.name}
+  @end
+  @if requestObjectParam.hasFormatMethodName
+    .{@requestObjectParam.formatMethodName}()
   @end
 @end
 
