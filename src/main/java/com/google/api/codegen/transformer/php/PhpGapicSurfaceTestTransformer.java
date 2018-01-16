@@ -74,8 +74,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return ImmutableList.of(
-        SMOKE_TEST_TEMPLATE_FILE, UNIT_TEST_TEMPLATE_FILE);
+    return ImmutableList.of(SMOKE_TEST_TEMPLATE_FILE, UNIT_TEST_TEMPLATE_FILE);
   }
 
   @Override
