@@ -18,6 +18,7 @@ import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
 import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class Name {
   public static Name from(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
+      if (Strings.isNullOrEmpty(piece)) {
+        continue;
+      }
       validateLowerUnderscore(piece);
       namePieces.add(new NamePiece(piece, CaseFormat.LOWER_UNDERSCORE));
     }
@@ -66,6 +70,9 @@ public class Name {
   public static Name upperUnderscore(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
+      if (Strings.isNullOrEmpty(piece)) {
+        continue;
+      }
       validateUpperUnderscore(piece);
       namePieces.add(new NamePiece(piece, CaseFormat.UPPER_UNDERSCORE));
     }
@@ -119,6 +126,9 @@ public class Name {
       CheckCase checkCase, AcronymMode acronymMode, String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
+      if (Strings.isNullOrEmpty(piece)) {
+        continue;
+      }
       validateCamel(piece, checkCase);
       for (SubNamePiece subPiece : CommonAcronyms.splitByUpperAcronyms(piece)) {
         CaseFormat caseFormat = getCamelCaseFormat(subPiece.namePieceString());

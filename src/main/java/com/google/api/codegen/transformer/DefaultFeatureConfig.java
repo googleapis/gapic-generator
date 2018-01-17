@@ -24,8 +24,23 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
+  public boolean resourceNameProtoAccessorsEnabled() {
+    return false;
+  }
+
+  @Override
   public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
     return resourceNameTypesEnabled() && fieldConfig != null && fieldConfig.useResourceNameType();
+  }
+
+  @Override
+  public boolean useResourceNameProtoAccessor(FieldConfig fieldConfig) {
+    return resourceNameProtoAccessorsEnabled() && useResourceNameFormatOption(fieldConfig);
+  }
+
+  @Override
+  public boolean useResourceNameConverters(FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOption(fieldConfig);
   }
 
   @Override

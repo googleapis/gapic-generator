@@ -413,10 +413,6 @@ end
 
 desc "Runs the smoke tests."
 task :smoke_test do
-  if ENV["GOOGLE_TEST_PROJECT"].nil?
-    fail "The GOOGLE_TEST_PROJECT environment variable must be set. "\
-      "e.g GOOGLE_TEST_PROJECT=test123 rake smoke_test"
-  end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
   Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
@@ -438,7 +434,34 @@ end
 
 # Acceptance tests
 desc "Run the google acceptance tests."
-task :acceptance do
+task :acceptance, :project, :keyfile do |t, args|
+  project = args[:project]
+  project ||=
+    ENV["GOOGLE_TEST_PROJECT"] ||
+    ENV["GCLOUD_TEST_PROJECT"]
+  keyfile = args[:keyfile]
+  keyfile ||=
+    ENV["GOOGLE_TEST_KEYFILE"] ||
+    ENV["GCLOUD_TEST_KEYFILE"]
+  if keyfile
+    keyfile = File.read keyfile
+  else
+    keyfile ||=
+      ENV["GOOGLE_TEST_KEYFILE_JSON"] ||
+      ENV["GCLOUD_TEST_KEYFILE_JSON"]
+  end
+  if project.nil? || keyfile.nil?
+    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or GOOGLE_TEST_PROJECT=test123 GOOGLE_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+  end
+  require "google/longrunning/credentials"
+  (Google::Auth::Credentials::PATH_ENV_VARS +
+   Google::Auth::Credentials::JSON_ENV_VARS).each do |path|
+    ENV[path] = nil
+  end
+  ENV["GOOGLE_PROJECT"] = project
+  ENV["GOOGLE_TEST_PROJECT"] = project
+  ENV["GOOGLE_KEYFILE_JSON"] = keyfile
+
   Rake::Task["acceptance:run"].invoke
 end
 
@@ -514,15 +537,6 @@ task :ci do
   sh "bundle exec rake doctest"
   header "google test", "*"
   sh "bundle exec rake test"
-end
-
-namespace :ci do
-  desc "Run the CI build, with smoke tests."
-  task :smoke_test do
-    Rake::Task["ci"].invoke
-    header "google smoke_test", "*"
-    sh "bundle exec rake smoke_test -v"
-  end
 end
 
 namespace :ci do

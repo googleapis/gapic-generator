@@ -41,6 +41,9 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
   @Nullable
   public abstract String transformParamFunctionName();
 
+  @Nullable
+  public abstract String formatMethodName();
+
   public abstract boolean isMap();
 
   public abstract boolean isArray();
@@ -71,6 +74,10 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     return transformParamFunctionName() != null;
   }
 
+  public boolean hasFormatMethodName() {
+    return formatMethodName() != null;
+  }
+
   // Methods for getting/setting the fields of the generated class.
   public abstract List<FieldCopyView> fieldCopyMethods();
 
@@ -98,6 +105,8 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     public abstract Builder getCallName(String val);
 
     public abstract Builder transformParamFunctionName(String val);
+
+    public abstract Builder formatMethodName(String val);
 
     public abstract Builder isMap(boolean val);
 
