@@ -28,6 +28,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -58,6 +59,21 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     importSection.standardImports(generateTestStandardImports());
     importSection.externalImports(generateTestExternalImports(context));
     importSection.appImports(generateTestAppImports(context));
+    importSection.serviceImports(none);
+    return importSection.build();
+  }
+
+  public ImportSectionView generateRakefileAcceptanceTaskImportSection(
+      List<GapicInterfaceContext> contexts) {
+    List<ImportFileView> none = ImmutableList.of();
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.standardImports(none);
+    importSection.externalImports(none);
+    Set<ImportFileView> credentialsImports = new HashSet<>();
+    for (GapicInterfaceContext context : contexts) {
+      credentialsImports.add(createImport(context.getNamer().getCredentialsClassImportName()));
+    }
+    importSection.appImports(ImmutableList.copyOf(credentialsImports));
     importSection.serviceImports(none);
     return importSection.build();
   }

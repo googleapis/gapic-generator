@@ -390,10 +390,6 @@ end
 
 desc "Runs the smoke tests."
 task :smoke_test do
-  if ENV["LIBRARY_TEST_PROJECT"].nil?
-    fail "The LIBRARY_TEST_PROJECT environment variable must be set. "\
-      "e.g LIBRARY_TEST_PROJECT=test123 rake smoke_test"
-  end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
   Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
@@ -415,7 +411,34 @@ end
 
 # Acceptance tests
 desc "Run the library acceptance tests."
-task :acceptance do
+task :acceptance, :project, :keyfile do |t, args|
+  project = args[:project]
+  project ||=
+    ENV["LIBRARY_TEST_PROJECT"] ||
+    ENV["GCLOUD_TEST_PROJECT"]
+  keyfile = args[:keyfile]
+  keyfile ||=
+    ENV["LIBRARY_TEST_KEYFILE"] ||
+    ENV["GCLOUD_TEST_KEYFILE"]
+  if keyfile
+    keyfile = File.read keyfile
+  else
+    keyfile ||=
+      ENV["LIBRARY_TEST_KEYFILE_JSON"] ||
+      ENV["GCLOUD_TEST_KEYFILE_JSON"]
+  end
+  if project.nil? || keyfile.nil?
+    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+  end
+  require "library/credentials"
+  (Library::Credentials::PATH_ENV_VARS +
+   Library::Credentials::JSON_ENV_VARS).each do |path|
+    ENV[path] = nil
+  end
+  ENV["LIBRARY_PROJECT"] = project
+  ENV["LIBRARY_TEST_PROJECT"] = project
+  ENV["LIBRARY_KEYFILE_JSON"] = keyfile
+
   Rake::Task["acceptance:run"].invoke
 end
 
@@ -491,15 +514,6 @@ task :ci do
   sh "bundle exec rake doctest"
   header "library test", "*"
   sh "bundle exec rake test"
-end
-
-namespace :ci do
-  desc "Run the CI build, with smoke tests."
-  task :smoke_test do
-    Rake::Task["ci"].invoke
-    header "library smoke_test", "*"
-    sh "bundle exec rake smoke_test -v"
-  end
 end
 
 namespace :ci do
