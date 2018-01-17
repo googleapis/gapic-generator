@@ -254,7 +254,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
-    testClass.projectIdVariableName(metadataNamer.getSmokeTestProjectVariable());
+    testClass.projectIdVariableName(metadataNamer.getProjectVariable(true));
     testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =

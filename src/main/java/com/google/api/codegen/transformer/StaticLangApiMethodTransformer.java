@@ -174,9 +174,18 @@ public class StaticLangApiMethodTransformer {
             context.getFeatureConfig(),
             context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
+    String resourceListParseFunction = "";
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    if (context.getFeatureConfig().useResourceNameConverters(resourceFieldConfig)) {
+      resourceListParseFunction =
+          namer.getResourceTypeParseListMethodName(context.getTypeTable(), resourceFieldConfig);
+    }
+
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
             .resourceListGetFunction(getResourceListCallName)
+            .resourceListParseFunction(resourceListParseFunction)
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 

@@ -26,4 +26,9 @@ public class CSharpFeatureConfig extends DefaultFeatureConfig {
   public boolean resourceNameTypesEnabled() {
     return true;
   }
+
+  @Override
+  public boolean resourceNameProtoAccessorsEnabled() {
+    return resourceNameTypesEnabled();
+  }
 }
