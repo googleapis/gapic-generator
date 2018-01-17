@@ -14,35 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class RestConfigView implements ViewModel {
-  public abstract String templateFileName();
+public abstract class RestInterfaceConfigView {
+  public abstract String key();
 
-  public abstract String outputPath();
-
-  public abstract List<RestInterfaceConfigView> interfaceConfigs();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
+  public abstract List<RestMethodConfigView> apiMethods();
 
   public static Builder newBuilder() {
-    return new AutoValue_RestConfigView.Builder();
+    return new AutoValue_RestInterfaceConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder templateFileName(String val);
+    public abstract Builder key(String val);
 
-    public abstract Builder outputPath(String val);
+    public abstract Builder apiMethods(List<RestMethodConfigView> val);
 
-    public abstract Builder interfaceConfigs(List<RestInterfaceConfigView> val);
-
-    public abstract RestConfigView build();
+    public abstract RestInterfaceConfigView build();
   }
 }

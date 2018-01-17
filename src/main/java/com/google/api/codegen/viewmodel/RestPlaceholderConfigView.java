@@ -1,10 +1,10 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,10 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RestPlaceholderConfigView {
   public abstract String name();
-
-  @Nullable
-  public abstract String format();
-
-  public abstract boolean hasSpecialFormat();
 
   public abstract List<String> getters();
 
@@ -36,10 +30,6 @@ public abstract class RestPlaceholderConfigView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder name(String val);
-
-    public abstract Builder format(String val);
-
-    public abstract Builder hasSpecialFormat(boolean val);
 
     public abstract Builder getters(List<String> val);
 

@@ -25,8 +25,8 @@
      * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
      * and updates to that file get reflected here through a refresh process.
      *
-     * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
-     * even though we intent the surface to be stable, we may make backwards incompatible changes
+     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+     * even though we intend the surface to be stable, we may make backwards incompatible changes
      * if necessary.
      *
      * @@experimental
@@ -49,8 +49,8 @@
         @end
     @end
      *
-     * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
-     * even though we intent the surface to be stable, we may make backwards incompatible changes
+     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+     * even though we intend the surface to be stable, we may make backwards incompatible changes
      * if necessary.
      *
      * This class provides the ability to make remote calls to the backing service through method
@@ -388,10 +388,10 @@
             $this->pluckArray([
                 'serviceName',
                 'clientConfigPath',
-                'restClientConfigPath',
                 'descriptorsConfigPath'
             ], $options);
-            $this->operationsClient = new OperationsClient($options);
+            $this->operationsClient = $this->pluck('operationsClient', $options, false)
+                ?: new OperationsClient($options);
         @else
             $this->setClientOptions($options + self::getClientDefaults());
         @end
@@ -416,7 +416,6 @@
                 @end
 
             @end
-
             @if @apiMethod.headerRequestParams
               {@requestParams(apiMethod.headerRequestParams)}
 
@@ -434,7 +433,12 @@
             '{@apiMethod.grpcMethodName}',
             $optionalArgs,
             {@apiMethod.responseTypeName}::class,
-            $request
+            @if apiMethod.hasRerouteToGrpcInterface
+                $request,
+                '{@apiMethod.rerouteToGrpcInterface}'
+            @else
+                $request
+            @end
         );
     @case "OptionalArrayMethod"
         @if apiMethod.isLongRunningOperation
@@ -442,7 +446,12 @@
                 '{@apiMethod.grpcMethodName}',
                 $optionalArgs,
                 $request,
-                $this->getOperationsClient()
+                @if apiMethod.hasRerouteToGrpcInterface
+                    $this->getOperationsClient(),
+                    '{@apiMethod.rerouteToGrpcInterface}'
+                @else
+                    $this->getOperationsClient()
+                @end
             )->wait();
         @else
             return $this->startCall(
@@ -457,22 +466,37 @@
                         null,
 
                     @end
-                    @switch apiMethod.grpcStreamingType.toString
-                    @case "BidiStreaming"
-                        Call::BIDI_STREAMING_CALL
-                    @case "ClientStreaming"
-                        Call::CLIENT_STREAMING_CALL
-                    @case "ServerStreaming"
-                        Call::SERVER_STREAMING_CALL
+                    @if apiMethod.hasRerouteToGrpcInterface
+                        {@streamingCallType(apiMethod)},
+                        '{@apiMethod.rerouteToGrpcInterface}'
+                    @else
+                        {@streamingCallType(apiMethod)}
                     @end
-
                 );
                 @else
-                    $request
+                    @if apiMethod.hasRerouteToGrpcInterface
+                        $request,
+                        Call::UNARY_CALL,
+                        '{@apiMethod.rerouteToGrpcInterface}'
+
+                    @else
+                        $request
+
+                    @end
                 )->wait();
                 @end
-
         @end
+    @end
+@end
+
+@private streamingCallType(apiMethod)
+    @switch apiMethod.grpcStreamingType.toString
+    @case "BidiStreaming"
+        Call::BIDI_STREAMING_CALL
+    @case "ClientStreaming"
+        Call::CLIENT_STREAMING_CALL
+    @case "ServerStreaming"
+        Call::SERVER_STREAMING_CALL
     @end
 @end
 

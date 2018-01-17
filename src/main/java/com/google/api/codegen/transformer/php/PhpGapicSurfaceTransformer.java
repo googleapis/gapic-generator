@@ -15,12 +15,15 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
+import com.google.api.HttpRule.Builder;
+import com.google.api.Service;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -48,23 +51,26 @@ import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RestConfigView;
+import com.google.api.codegen.viewmodel.RestInterfaceConfigView;
 import com.google.api.codegen.viewmodel.RestMethodConfigView;
 import com.google.api.codegen.viewmodel.RestPlaceholderConfigView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.lang.IllegalStateException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
+  private Model serviceModel;
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
@@ -80,7 +86,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String REST_CONFIG_TEMPLATE_FILENAME = "php/rest_config.snip";
 
   public PhpGapicSurfaceTransformer(
-      GapicProductConfig productConfig, GapicCodePathMapper pathMapper) {
+      GapicProductConfig productConfig, GapicCodePathMapper pathMapper, Model serviceModel) {
+    this.serviceModel = serviceModel;
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
@@ -172,9 +179,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     apiImplClass.methodKeys(generateMethodKeys(context));
     apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
-    apiImplClass.clientConfigName(
-        Name.upperCamel(context.getInterfaceConfig().getInterfaceModel().getSimpleName())
-            .toLowerUnderscore());
+    apiImplClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
@@ -237,7 +242,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       result.add(
           LongRunningOperationDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
-              .upperCamelMethodName(context.getNamer().getGrpcMethodName(method))
+              .transportMethodName(context.getNamer().getGrpcMethodName(method))
               .constructorName("")
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
@@ -258,10 +263,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ViewModel buildDescriptorConfigViewModel(GapicInterfaceContext context) {
     return DescriptorConfigView.newBuilder()
         .pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context))
-        .hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods())
-        .hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods())
         .longRunningDescriptors(createLongRunningDescriptors(context))
-        .hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations())
         .grpcStreamingDescriptors(createGrpcStreamingDescriptors(context))
         .interfaceKey(context.getInterface().getFullName())
         .templateFileName(DESCRIPTOR_CONFIG_TEMPLATE_FILENAME)
@@ -273,30 +275,77 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return RestConfigView.newBuilder()
         .templateFileName(REST_CONFIG_TEMPLATE_FILENAME)
         .outputPath(generateConfigOutputPath(context, "rest_client_config"))
-        .interfaceKey(context.getInterface().getFullName())
-        .apiMethods(generateRestMethodConfigViews(context))
+        .interfaceConfigs(generateRestInterfaceConfigViews(context))
         .build();
   }
 
-  private List<RestMethodConfigView> generateRestMethodConfigViews(GapicInterfaceContext context) {
-    List<RestMethodConfigView> configViews = new ArrayList<>();
+  private List<RestInterfaceConfigView> generateRestInterfaceConfigViews(
+      GapicInterfaceContext context) {
+    List<RestInterfaceConfigView> configViews = new ArrayList<>();
+    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    SurfaceNamer namer = context.getNamer();
+    Map<String, List<HttpRule>> interfaces = new TreeMap<>();
+    Service serviceConfig = serviceModel.getServiceConfig();
 
     for (MethodModel methodModel : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(methodModel);
+      MethodConfig methodConfig = methodContext.getMethodConfig();
+      Method method = methodContext.getMethod();
 
-      if (!methodContext.getMethodConfig().isGrpcStreaming()) {
-        configViews.add(generateRestMethodConfigView(methodContext));
+      // REST does not support streaming methods
+      if (methodConfig.isGrpcStreaming()) {
+        continue;
       }
+
+      String interfaceName =
+          methodConfig.getRerouteToGrpcInterface() == null
+              ? context.getInterface().getFullName()
+              : methodConfig.getRerouteToGrpcInterface();
+      HttpRule httpRule =
+          getHttpRule(method.getOptionFields())
+              .toBuilder()
+              .setSelector(String.format("%s.%s", interfaceName, method.getSimpleName()))
+              .build();
+
+      addHttpRuleToMap(interfaces, interfaceName, httpRule);
+    }
+
+    for (HttpRule httpRule : serviceConfig.getHttp().getRulesList()) {
+      String selector = httpRule.getSelector();
+      String interfaceName = selector.substring(0, selector.lastIndexOf("."));
+
+      addHttpRuleToMap(interfaces, interfaceName, httpRule);
+    }
+
+    for (Map.Entry<String, List<HttpRule>> entry : interfaces.entrySet()) {
+      configViews.add(generateRestInterfaceConfigView(entry.getKey(), entry.getValue(), namer));
     }
 
     return configViews;
   }
 
-  private RestMethodConfigView generateRestMethodConfigView(GapicMethodContext context) {
+  private RestInterfaceConfigView generateRestInterfaceConfigView(
+      String key, List<HttpRule> httpRules, SurfaceNamer namer) {
+    return RestInterfaceConfigView.newBuilder()
+        .key(key)
+        .apiMethods(generateRestMethodConfigViews(httpRules, namer))
+        .build();
+  }
+
+  private List<RestMethodConfigView> generateRestMethodConfigViews(
+      List<HttpRule> httpRules, SurfaceNamer namer) {
+    List<RestMethodConfigView> configViews = new ArrayList<>();
+
+    for (HttpRule httpRule : httpRules) {
+      configViews.add(generateRestMethodConfigView(httpRule, namer));
+    }
+
+    return configViews;
+  }
+
+  private RestMethodConfigView generateRestMethodConfigView(HttpRule httpRule, SurfaceNamer namer) {
     RestMethodConfigView.Builder restMethodConfig = RestMethodConfigView.newBuilder();
-    Method method = context.getMethod();
-    Map<String, String> httpMethodMap = new HashMap<>();
-    HttpRule httpRule = getHttpRule(method.getOptionFields());
+    Map<String, String> httpMethodMap = new TreeMap<>();
     String body = httpRule.getBody();
 
     httpMethodMap.put("get", httpRule.getGet());
@@ -314,7 +363,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
       Set<String> templateVars = PathTemplate.create(uriTemplate).vars();
 
-      restMethodConfig.placeholders(generateRestPlaceholderConfigViews(context, templateVars));
+      restMethodConfig.placeholders(generateRestPlaceholderConfigViews(namer, templateVars));
       restMethodConfig.hasPlaceholders(templateVars.size() > 0);
       restMethodConfig.method(entry.getKey());
       restMethodConfig.uriTemplate(uriTemplate);
@@ -322,7 +371,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       break;
     }
 
-    restMethodConfig.name(method.getSimpleName());
+    String selector = httpRule.getSelector();
+
+    restMethodConfig.name(selector.substring(selector.lastIndexOf(".") + 1));
     restMethodConfig.hasBody(!body.isEmpty());
     restMethodConfig.body(body);
 
@@ -330,38 +381,27 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<RestPlaceholderConfigView> generateRestPlaceholderConfigViews(
-      GapicMethodContext context, Set<String> templateVars) {
+      SurfaceNamer namer, Set<String> templateVars) {
     List<RestPlaceholderConfigView> placeholderViews = new ArrayList<>(templateVars.size());
 
     for (String var : templateVars) {
-      placeholderViews.add(generateRestPlaceholderConfigView(context, var));
+      placeholderViews.add(generateRestPlaceholderConfigView(namer, var));
     }
 
     return placeholderViews;
   }
 
   private RestPlaceholderConfigView generateRestPlaceholderConfigView(
-      GapicMethodContext context, String var) {
-    SurfaceNamer namer = context.getNamer();
-    MethodModel methodModel = context.getMethodConfig().getMethodModel();
+      SurfaceNamer namer, String var) {
     RestPlaceholderConfigView.Builder placeholderView = RestPlaceholderConfigView.newBuilder();
-    String[] getters = var.split("\\.");
-    String fullName = context.getSurfaceInterfaceContext().getInterface().getFullName();
+    ImmutableList.Builder<String> getters = ImmutableList.builder();
 
-    for (int i = 0; i < getters.length; i++) {
-      getters[i] =
-          namer.getFieldGetFunctionName(methodModel.getInputType(), Name.anyLower(getters[i]));
-    }
-
-    if (fullName.equals("google.longrunning.Operations")) {
-      placeholderView.format(String.format("operations/{%s}", var));
-      placeholderView.hasSpecialFormat(true);
-    } else {
-      placeholderView.hasSpecialFormat(false);
+    for (String getter : var.split("\\.")) {
+      getters.add(namer.getFieldGetFunctionName(Name.anyLower(getter)));
     }
 
     placeholderView.name(var);
-    placeholderView.getters(Arrays.asList(getters));
+    placeholderView.getters(getters.build());
 
     return placeholderView.build();
   }
@@ -381,7 +421,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       result.add(
           GrpcStreamingDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
-              .upperCamelMethodName(context.getNamer().getGrpcMethodName(method))
+              .transportMethodName(context.getNamer().getGrpcMethodName(method))
               .grpcStreamingType(grpcStreamingConfig.getType())
               .grpcResourcesField(resourcesFieldGetFunction)
               .build());
@@ -395,6 +435,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
@@ -404,10 +445,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\Auth\\CredentialsLoader");
     typeTable.saveNicknameFor("\\Grpc\\Channel");
     typeTable.saveNicknameFor("\\Grpc\\ChannelCredentials");
-
-    if (interfaceConfig.hasGrpcStreamingMethods()) {
-      typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
-    }
 
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
@@ -456,5 +493,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     throw new IllegalStateException("A HttpRule option must be defined.");
+  }
+
+  private void addHttpRuleToMap(
+      Map<String, List<HttpRule>> interfaces, String interfaceName, HttpRule httpRule) {
+    if (interfaces.containsKey(interfaceName)) {
+      interfaces.get(interfaceName).add(httpRule);
+    } else {
+      interfaces.put(interfaceName, new ArrayList<HttpRule>(Arrays.asList(httpRule)));
+    }
   }
 }

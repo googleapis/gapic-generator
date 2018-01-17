@@ -3,17 +3,19 @@
 
 return [
     'interfaces' => [
-        {@buildInterface(config)}
+        @join interface : {@config.interfaceConfigs}
+            {@buildInterface(interface)}
+        @end
     ]
 ];
 @end
 
-@private buildInterface(config)
-    '{@config.interfaceKey}' => [
-        @join apiMethod : {@config.apiMethods}
+@private buildInterface(interface)
+    '{@interface.key}' => [
+        @join apiMethod : {@interface.apiMethods}
             {@buildMethod(apiMethod)}
         @end
-    ]
+    ],
 @end
 
 @private buildMethod(apiMethod)
@@ -32,9 +34,6 @@ return [
                                 '{@getter}',
                             @end
                         ],
-                        @if placeholder.hasSpecialFormat
-                            'format' => '{@placeholder.format}'
-                        @end
                     ],
                 @end
             ]

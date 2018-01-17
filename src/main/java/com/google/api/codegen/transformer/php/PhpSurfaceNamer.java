@@ -120,11 +120,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRetrySettingsTypeName() {
-    return "RetrySettings";
-  }
-
-  @Override
   public String getOptionalArrayTypeName() {
     return "array";
   }
@@ -166,6 +161,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "GapicClient"));
+  }
+
+  @Override
+  public String getClientConfigName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).toLowerUnderscore();
   }
 
   @Override

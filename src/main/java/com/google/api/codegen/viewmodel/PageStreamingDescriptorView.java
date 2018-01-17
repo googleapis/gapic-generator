@@ -46,7 +46,7 @@ public abstract class PageStreamingDescriptorView {
 
   public abstract String methodName();
 
-  public abstract String upperCamelMethodName();
+  public abstract String transportMethodName();
 
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingDescriptorView.Builder();
@@ -82,7 +82,7 @@ public abstract class PageStreamingDescriptorView {
 
     public abstract Builder methodName(String val);
 
-    public abstract Builder upperCamelMethodName(String val);
+    public abstract Builder transportMethodName(String val);
 
     public abstract PageStreamingDescriptorView build();
   }

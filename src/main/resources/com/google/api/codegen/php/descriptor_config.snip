@@ -12,7 +12,7 @@ return [
     '{@config.interfaceKey}' => [
         @if config.hasLongRunningOperations
             @join descriptor : {@config.longRunningDescriptors}
-                '{@descriptor.upperCamelMethodName}' => [
+                '{@descriptor.transportMethodName}' => [
                     'longRunning' => [
                         'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
                         'metadataReturnType' => '{@descriptor.metadataTypeName}',
@@ -22,7 +22,7 @@ return [
         @end
         @if config.hasPageStreamingMethods
             @join descriptor : {@config.pageStreamingDescriptors}
-                '{@descriptor.upperCamelMethodName}' => [
+                '{@descriptor.transportMethodName}' => [
                     'pageStreaming' => [
                         'requestPageTokenGetMethod' => '{@descriptor.requestTokenGetMethodName}',
                         'requestPageTokenSetMethod' => '{@descriptor.requestTokenSetMethodName}',
@@ -38,7 +38,7 @@ return [
         @end
         @if config.hasGrpcStreamingMethods
             @join descriptor : {@config.grpcStreamingDescriptors}
-                '{@descriptor.upperCamelMethodName}' => [
+                '{@descriptor.transportMethodName}' => [
                     'grpcStreaming' => [
                         'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
                         @if descriptor.hasGrpcResourcesField

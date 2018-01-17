@@ -55,7 +55,7 @@ public class PageStreamingTransformer {
     descriptor.resourcesGetMethodName(
         context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
     descriptor.methodName(context.getNamer().getMethodKey(method));
-    descriptor.upperCamelMethodName(context.getNamer().getGrpcMethodName(method));
+    descriptor.transportMethodName(context.getNamer().getGrpcMethodName(method));
     return descriptor.build();
   }
 

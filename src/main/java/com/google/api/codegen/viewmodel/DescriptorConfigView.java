@@ -1,10 +1,10 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,11 +36,21 @@ public abstract class DescriptorConfigView implements ViewModel {
 
   public abstract String outputPath();
 
-  public abstract boolean hasPageStreamingMethods();
+  public boolean hasPageStreamingMethods() {
+    return pageStreamingDescriptors().size() > 0;
+  }
 
-  public abstract boolean hasBatchingMethods();
+  public boolean hasBatchingMethods() {
+    if (batchingDescriptors() == null) {
+      return false;
+    }
 
-  public abstract boolean hasLongRunningOperations();
+    return batchingDescriptors().size() > 0;
+  }
+
+  public boolean hasLongRunningOperations() {
+    return longRunningDescriptors().size() > 0;
+  }
 
   public boolean hasGrpcStreamingMethods() {
     return grpcStreamingDescriptors().size() > 0;
@@ -70,12 +80,6 @@ public abstract class DescriptorConfigView implements ViewModel {
     public abstract Builder interfaceKey(String val);
 
     public abstract Builder outputPath(String val);
-
-    public abstract Builder hasPageStreamingMethods(boolean val);
-
-    public abstract Builder hasBatchingMethods(boolean val);
-
-    public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract DescriptorConfigView build();
   }

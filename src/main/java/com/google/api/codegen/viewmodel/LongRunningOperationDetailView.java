@@ -37,7 +37,7 @@ public abstract class LongRunningOperationDetailView {
   public abstract String methodName();
 
   @Nullable
-  public abstract String upperCamelMethodName();
+  public abstract String transportMethodName();
 
   public abstract long initialPollDelay();
 
@@ -69,7 +69,7 @@ public abstract class LongRunningOperationDetailView {
 
     public abstract Builder methodName(String val);
 
-    public abstract Builder upperCamelMethodName(String val);
+    public abstract Builder transportMethodName(String val);
 
     public abstract Builder initialPollDelay(long initialDelay);
 

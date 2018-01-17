@@ -155,7 +155,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
       retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
       String retryDocType =
-          Joiner.on("|").join(context.getNamer().getRetrySettingsTypeName(), "array");
+          Joiner.on("|").join("RetrySettings", "array");
       retrySettingsDoc.typeName(retryDocType);
       // TODO figure out a reliable way to line-wrap comments across all languages
       // instead of encoding it in the transformer

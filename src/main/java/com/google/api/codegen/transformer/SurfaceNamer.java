@@ -351,6 +351,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getFieldGetFunctionName(field, field.asName());
   }
 
+  /** The function name to get a field having the given name. */
+  public String getFieldGetFunctionName(Name identifier) {
+    return publicMethodName(Name.from("get").join(identifier));
+  }
+
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
@@ -917,11 +922,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name for the message property */
   public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldModel type) {
     return getParamTypeName(typeTable, type);
-  }
-
-  /** The type name for retry settings. */
-  public String getRetrySettingsTypeName() {
-    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
   /** The type name for an optional array argument; not used in most languages. */
