@@ -488,7 +488,20 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private void addHttpRuleToMap(
       Map<String, List<HttpRule>> interfaces, String interfaceName, HttpRule httpRule) {
     if (interfaces.containsKey(interfaceName)) {
-      interfaces.get(interfaceName).add(httpRule);
+      List<HttpRule> httpRules = interfaces.get(interfaceName);
+
+      for (int i = 0; i < httpRules.size(); i++) {
+        // If a rule is already set, override it. This exists to allow rules
+        // defined in the service configuration to take precedence as they are
+        // added last.
+        if (httpRules.get(i).getSelector().equals(httpRule.getSelector())) {
+          httpRules.set(i, httpRule);
+
+          return;
+        }
+      }
+
+      httpRules.add(httpRule);
     } else {
       interfaces.put(interfaceName, new ArrayList<HttpRule>(Arrays.asList(httpRule)));
     }
