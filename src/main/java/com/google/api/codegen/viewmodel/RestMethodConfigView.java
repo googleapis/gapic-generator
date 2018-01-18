@@ -30,11 +30,16 @@ public abstract class RestMethodConfigView implements ApiMethodView {
   public abstract String body();
 
   @Nullable
+  public abstract List<String> additionalBindings();
+
+  @Nullable
   public abstract List<RestPlaceholderConfigView> placeholders();
 
   public abstract boolean hasBody();
 
   public abstract boolean hasPlaceholders();
+
+  public abstract boolean hasAdditionalBindings();
 
   public static Builder newBuilder() {
     return new AutoValue_RestMethodConfigView.Builder();
@@ -50,11 +55,15 @@ public abstract class RestMethodConfigView implements ApiMethodView {
 
     public abstract Builder body(String val);
 
+    public abstract Builder additionalBindings(List<String> val);
+
     public abstract Builder placeholders(List<RestPlaceholderConfigView> val);
 
     public abstract Builder hasBody(boolean val);
 
     public abstract Builder hasPlaceholders(boolean val);
+
+    public abstract Builder hasAdditionalBindings(boolean val);
 
     public abstract RestMethodConfigView build();
   }

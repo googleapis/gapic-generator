@@ -25,6 +25,19 @@ return [
         @if apiMethod.hasBody
             'body' => '{@apiMethod.body}',
         @end
+        @if apiMethod.hasAdditionalBindings
+            'additionalBindings' => [
+                @join additionalBinding : {@apiMethod.additionalBindings}
+                    [
+                        'method' => '{@apiMethod.method}',
+                        'uriTemplate' => '{@additionalBinding}',
+                        @if apiMethod.hasBody
+                            'body' => '{@apiMethod.body}',
+                        @end
+                    ],
+                @end
+            ]
+        @end
         @if apiMethod.hasPlaceholders
             'placeholders' => [
                 @join placeholder : {@apiMethod.placeholders}

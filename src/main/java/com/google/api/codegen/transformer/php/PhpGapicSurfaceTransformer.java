@@ -344,40 +344,30 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private RestMethodConfigView generateRestMethodConfigView(HttpRule httpRule, SurfaceNamer namer) {
-    RestMethodConfigView.Builder restMethodConfig = RestMethodConfigView.newBuilder();
-    Map<String, String> httpMethodMap = new TreeMap<>();
     String body = httpRule.getBody();
+    String selector = httpRule.getSelector();
+    List<String> additionalBindings = new ArrayList<>();
+    Map.Entry<String, String> entry = getHttpMethodEntry(httpRule);
+    String uriTemplate = entry.getValue();
+    Set<String> templateVars = PathTemplate.create(uriTemplate).vars();
 
-    httpMethodMap.put("get", httpRule.getGet());
-    httpMethodMap.put("put", httpRule.getPut());
-    httpMethodMap.put("delete", httpRule.getDelete());
-    httpMethodMap.put("post", httpRule.getPost());
-    httpMethodMap.put("patch", httpRule.getPatch());
-
-    for (Map.Entry<String, String> entry : httpMethodMap.entrySet()) {
-      String uriTemplate = entry.getValue();
-
-      if (uriTemplate.isEmpty()) {
-        continue;
+    if (httpRule.getAdditionalBindingsCount() > 0) {
+      for (HttpRule additionalBindingHttpRule : httpRule.getAdditionalBindingsList()) {
+        additionalBindings.add(getHttpMethodEntry(additionalBindingHttpRule).getValue());
       }
-
-      Set<String> templateVars = PathTemplate.create(uriTemplate).vars();
-
-      restMethodConfig.placeholders(generateRestPlaceholderConfigViews(namer, templateVars));
-      restMethodConfig.hasPlaceholders(templateVars.size() > 0);
-      restMethodConfig.method(entry.getKey());
-      restMethodConfig.uriTemplate(uriTemplate);
-
-      break;
     }
 
-    String selector = httpRule.getSelector();
-
-    restMethodConfig.name(selector.substring(selector.lastIndexOf(".") + 1));
-    restMethodConfig.hasBody(!body.isEmpty());
-    restMethodConfig.body(body);
-
-    return restMethodConfig.build();
+    return RestMethodConfigView.newBuilder()
+        .additionalBindings(additionalBindings)
+        .hasAdditionalBindings(additionalBindings.size() > 0)
+        .placeholders(generateRestPlaceholderConfigViews(namer, templateVars))
+        .hasPlaceholders(templateVars.size() > 0)
+        .method(entry.getKey())
+        .uriTemplate(uriTemplate)
+        .name(selector.substring(selector.lastIndexOf(".") + 1))
+        .hasBody(!body.isEmpty())
+        .body(body)
+        .build();
   }
 
   private List<RestPlaceholderConfigView> generateRestPlaceholderConfigViews(
@@ -502,5 +492,23 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     } else {
       interfaces.put(interfaceName, new ArrayList<HttpRule>(Arrays.asList(httpRule)));
     }
+  }
+
+  private Map.Entry<String, String> getHttpMethodEntry(HttpRule httpRule) {
+    Map<String, String> httpMethodMap = new TreeMap<>();
+
+    httpMethodMap.put("get", httpRule.getGet());
+    httpMethodMap.put("put", httpRule.getPut());
+    httpMethodMap.put("delete", httpRule.getDelete());
+    httpMethodMap.put("post", httpRule.getPost());
+    httpMethodMap.put("patch", httpRule.getPatch());
+
+    for (Map.Entry<String, String> entry : httpMethodMap.entrySet()) {
+      if (!entry.getValue().isEmpty()) {
+        return entry;
+      }
+    }
+
+    throw new IllegalStateException("A HTTP method must be defined.");
   }
 }
