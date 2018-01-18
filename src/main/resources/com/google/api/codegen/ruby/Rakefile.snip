@@ -86,34 +86,36 @@
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
   task :acceptance, :project, :keyfile do |t, args|
-    project = args[:project]
-    project ||=
-      ENV["{@metadata.smokeTestProjectVariable}"] ||
-      ENV["GCLOUD_TEST_PROJECT"]
-    keyfile = args[:keyfile]
-    keyfile ||=
-      ENV["{@metadata.smokeTestKeyfileVariable}"] ||
-      ENV["GCLOUD_TEST_KEYFILE"]
-    if keyfile
-      keyfile = File.read keyfile
-    else
+    @if metadata.hasSmokeTests
+      project = args[:project]
+      project ||=
+        ENV["{@metadata.smokeTestProjectVariable}"] ||
+        ENV["GCLOUD_TEST_PROJECT"]
+      keyfile = args[:keyfile]
       keyfile ||=
-        ENV["{@metadata.smokeTestJsonKeyVariable}"] ||
-        ENV["GCLOUD_TEST_KEYFILE_JSON"]
-    end
-    if project.nil? || keyfile.nil?
-      fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or {@metadata.smokeTestProjectVariable}=test123 {@metadata.smokeTestKeyfileVariable}=/path/to/keyfile.json rake acceptance"
-    end
-    # clear any env var already set
-    {@importList(metadata.fileHeader.importSection.appImports)}
-    ({@metadata.credentialsClassName}::PATH_ENV_VARS +
-     {@metadata.credentialsClassName}::JSON_ENV_VARS).each do |path|
-      ENV[path] = nil
-    end
-    # always overwrite when running tests
-    ENV["{@metadata.projectVariable}"] = project
-    ENV["{@metadata.smokeTestProjectVariable}"] = project
-    ENV["{@metadata.jsonKeyVariable}"] = keyfile
+        ENV["{@metadata.smokeTestKeyfileVariable}"] ||
+        ENV["GCLOUD_TEST_KEYFILE"]
+      if keyfile
+        keyfile = File.read keyfile
+      else
+        keyfile ||=
+          ENV["{@metadata.smokeTestJsonKeyVariable}"] ||
+          ENV["GCLOUD_TEST_KEYFILE_JSON"]
+      end
+      if project.nil? || keyfile.nil?
+        fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or {@metadata.smokeTestProjectVariable}=test123 {@metadata.smokeTestKeyfileVariable}=/path/to/keyfile.json rake acceptance"
+      end
+      # clear any env var already set
+      {@importList(metadata.fileHeader.importSection.appImports)}
+      ({@metadata.credentialsClassName}::PATH_ENV_VARS +
+       {@metadata.credentialsClassName}::JSON_ENV_VARS).each do |path|
+        ENV[path] = nil
+      end
+      # always overwrite when running tests
+      ENV["{@metadata.projectVariable}"] = project
+      ENV["{@metadata.smokeTestProjectVariable}"] = project
+      ENV["{@metadata.jsonKeyVariable}"] = keyfile
+    @end
     
     Rake::Task["acceptance:run"].invoke
   end

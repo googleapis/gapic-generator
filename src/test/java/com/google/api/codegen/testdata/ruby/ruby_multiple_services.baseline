@@ -29,44 +29,6 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 Style/MethodDefParentheses:
   EnforcedStyle: require_no_parentheses
-Style/NumericLiterals:
-  Enabled: false
-Style/SpaceAroundOperators:
-  Enabled: false
-Metrics/ClassLength:
-  Enabled: false
-Style/EmptyLines:
-  Enabled: false
-Style/EmptyElse:
-  Enabled: false
-Style/HashSyntax:
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/LineLength:
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/CyclomaticComplexity:
-  Max: 10
-Metrics/PerceivedComplexity:
-  Max: 10
-Metrics/AbcSize:
-  Max: 25
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/ParameterLists:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
-Style/ClassVars:
-  Enabled: false
-Style/TrivialAccessors:
-  Enabled: false
-Style/FileName:
-  Enabled: false
 
 ============== file: .yardopts ==============
 --no-private
@@ -83,7 +45,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rake", "~> 11.0"
 gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
@@ -91,10 +52,7 @@ gem "gcloud-jsondoc",
 # WORKAROUND: builds are having problems since the release of 3.0.0
 # pin to the last known good version
 gem "public_suffix", "~> 2.0"
-
-# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
-# so pinning to 2.1 for now.
-gem "rainbow", "~> 2.1.0"
+gem "rake", "~> 11.0"
 
 ============== file: LICENSE ==============
                             Apache License
@@ -378,32 +336,6 @@ end
 # Acceptance tests
 desc "Run the google-example acceptance tests."
 task :acceptance, :project, :keyfile do |t, args|
-  project = args[:project]
-  project ||=
-    ENV["EXAMPLE_TEST_PROJECT"] ||
-    ENV["GCLOUD_TEST_PROJECT"]
-  keyfile = args[:keyfile]
-  keyfile ||=
-    ENV["EXAMPLE_TEST_KEYFILE"] ||
-    ENV["GCLOUD_TEST_KEYFILE"]
-  if keyfile
-    keyfile = File.read keyfile
-  else
-    keyfile ||=
-      ENV["EXAMPLE_TEST_KEYFILE_JSON"] ||
-      ENV["GCLOUD_TEST_KEYFILE_JSON"]
-  end
-  if project.nil? || keyfile.nil?
-    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or EXAMPLE_TEST_PROJECT=test123 EXAMPLE_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
-  end
-  require "google/example/credentials"
-  (Google::Example::Credentials::PATH_ENV_VARS +
-   Google::Example::Credentials::JSON_ENV_VARS).each do |path|
-    ENV[path] = nil
-  end
-  ENV["EXAMPLE_PROJECT"] = project
-  ENV["EXAMPLE_TEST_PROJECT"] = project
-  ENV["EXAMPLE_KEYFILE_JSON"] = keyfile
 
   Rake::Task["acceptance:run"].invoke
 end
@@ -533,7 +465,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
-  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
 end
 
