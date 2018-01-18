@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DescriptorConfigView implements ViewModel {
@@ -25,7 +24,6 @@ public abstract class DescriptorConfigView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
-  @Nullable
   public abstract List<BatchingDescriptorView> batchingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
