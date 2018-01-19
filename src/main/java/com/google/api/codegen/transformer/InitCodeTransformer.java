@@ -66,11 +66,11 @@ import java.util.stream.StreamSupport;
  */
 public class InitCodeTransformer {
   private static final String FORMAT_SPEC_PLACEHOLDER = "FORMAT_SPEC_PLACEHOLDER";
-  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize this field.";
+  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize this too long field.";
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the intialization code should include user-facing comments like TODOs. This should be
+  // Whether the initialization code should include user-facing comments like TODOs. This should be
   // false if the initialization code is being used to generate tests, rather than code samples.
   private final boolean generateUserFacingComments;
 
