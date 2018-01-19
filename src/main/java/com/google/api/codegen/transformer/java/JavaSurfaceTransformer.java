@@ -204,8 +204,8 @@ public class JavaSurfaceTransformer {
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
-    xapiClass.settingsStubInterfaceName(
-        getAndSaveNicknameForStubType(context, namer.getApiSettingsStubClassName(interfaceConfig)));
+    xapiClass.stubSettingsInterfaceName(
+        getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
@@ -375,7 +375,7 @@ public class JavaSurfaceTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String className = context.getNamer().getApiSettingsStubClassName(context.getInterfaceConfig());
+    String className = context.getNamer().getApiStubSettingsClassName(context.getInterfaceConfig());
     settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -470,7 +470,7 @@ public class JavaSurfaceTransformer {
             context,
             namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol())));
     xsettingsClass.stubSettingsName(
-        getAndSaveNicknameForStubType(context, namer.getApiSettingsStubClassName(interfaceConfig)));
+        getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
 
     return xsettingsClass.build();
   }

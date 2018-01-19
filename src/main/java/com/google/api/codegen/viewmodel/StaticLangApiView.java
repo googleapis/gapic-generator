@@ -116,7 +116,7 @@ public abstract class StaticLangApiView {
 
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
-    public abstract Builder settingsStubInterfaceName(String apiSettingsStubInterfaceName);
+    public abstract Builder stubSettingsInterfaceName(String apiSettingsStubInterfaceName);
 
     public abstract StaticLangApiView build();
   }
