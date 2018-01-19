@@ -53,8 +53,8 @@
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
  *
- * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
- * even though we intent the surface to be stable, we may make backwards incompatible changes
+ * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+ * even though we intend the surface to be stable, we may make backwards incompatible changes
  * if necessary.
  *
  * @experimental
@@ -145,8 +145,8 @@ use Grpc\ChannelCredentials;
  *
  * Service comment may include special characters: <>&"`'&#64;.
  *
- * EXPERIMENTAL: this client library class has not yet been declared GA (1.0). This means that
- * even though we intent the surface to be stable, we may make backwards incompatible changes
+ * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+ * even though we intend the surface to be stable, we may make backwards incompatible changes
  * if necessary.
  *
  * This class provides the ability to make remote calls to the backing service through method
@@ -1738,7 +1738,7 @@ class LibraryServiceGapicClient
             $optionalArgs,
             $request,
             Call::UNARY_CALL,
-            'google.example.library.v1.Labeler'
+            'google.tagger.v1.Labeler'
         )->wait();
     }
 
@@ -2129,9 +2129,9 @@ class LibraryServiceGapicClient
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
  *
- * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
- * more frequently than those which have been declared beta or 1.0, including changes which break
- * backwards compatibility.
+ * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+ * even though we intend the surface to be stable, we may make backwards incompatible changes
+ * if necessary.
  *
  * @experimental
  */
@@ -2319,6 +2319,7 @@ class LibraryServiceClient extends LibraryServiceGapicClient
     }
   }
 }
+
 ============== file: src/Example/Library/V1/resources/library_service_descriptor_config.php ==============
 <?php
 
@@ -2404,13 +2405,6 @@ return [
 
 return [
     'interfaces' => [
-        'google.example.library.v1.Labeler' => [
-            'AddLabel' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/label',
-                'body' => '*',
-            ],
-        ],
         'google.example.library.v1.LibraryService' => [
             'CreateShelf' => [
                 'method' => 'post',
@@ -2570,6 +2564,12 @@ return [
             'GetBookFromAbsolutelyAnywhere' => [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{name=archives/*/books/*}',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                    ],
+                ]
                 'placeholders' => [
                     'name' => [
                         'getters' => [
@@ -2634,6 +2634,20 @@ return [
                 'body' => '*',
             ],
         ],
+        'google.tagger.v1.Labeler' => [
+            'AddLabel' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addLabel',
+                'body' => '*',
+                'placeholders' => [
+                    'resource' => [
+                        'getters' => [
+                            'getResource',
+                        ],
+                    ],
+                ]
+            ],
+        ],
     ]
 ];
 ============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
@@ -2695,7 +2709,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
         $libraryServiceClient->updateBook($formattedName, $book, ['optionalFoo' => $optionalFoo, 'updateMask' => $updateMask, 'physicalMask' => $physicalMask]);
     }
 }
-============== file: tests/Example/Library/V1/LibraryServiceClientTest.php ==============
+============== file: tests/unit/Example/Library/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -4748,7 +4762,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
-        $this->assertSame('/google.example.library.v1.Labeler/AddLabel', $actualFuncCall);
+        $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
 
         $actualValue = $actualRequestObject->getResource();
 

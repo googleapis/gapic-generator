@@ -45,6 +45,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.DescriptorConfigView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiSubclassView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
@@ -172,6 +173,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     apiImplClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
     apiImplClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    apiImplClass.batchingDescriptors(ImmutableList.<BatchingDescriptorView>of());
     apiImplClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
     apiImplClass.longRunningDescriptors(createLongRunningDescriptors(context));
     apiImplClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
@@ -262,6 +264,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel buildDescriptorConfigViewModel(GapicInterfaceContext context) {
     return DescriptorConfigView.newBuilder()
+        .batchingDescriptors(ImmutableList.<BatchingDescriptorView>of())
         .pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context))
         .longRunningDescriptors(createLongRunningDescriptors(context))
         .grpcStreamingDescriptors(createGrpcStreamingDescriptors(context))
@@ -467,7 +470,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    return outputPath.substring(0, outputPath.length() - 5)
+    return outputPath.substring(0, outputPath.length() - 6)
         + "/resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join(name)
