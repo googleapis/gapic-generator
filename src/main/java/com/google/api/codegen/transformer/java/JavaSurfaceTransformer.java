@@ -197,6 +197,8 @@ public class JavaSurfaceTransformer {
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
+    xapiClass.settingsStubInterfaceName(
+        getAndSaveNicknameForStubType(context, namer.getApiSettingsStubInterfaceName(interfaceConfig)));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(

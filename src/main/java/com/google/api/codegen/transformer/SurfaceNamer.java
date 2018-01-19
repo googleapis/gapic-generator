@@ -776,6 +776,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub"));
   }
 
+  /**
+   * The name of the stub interface for a particular proto interface; not used in most languages.
+   */
+  public String getApiSettingsStubInterfaceName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Settings", "Stub"));
+  }
+
   /** The name of the http stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
