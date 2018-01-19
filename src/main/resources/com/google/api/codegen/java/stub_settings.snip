@@ -16,6 +16,7 @@
 @end
 
 @private renderClass(classView)
+  drake
   public class {@classView.name} extends ClientSettings<{@classView.name}> {
     {@constants(classView)}
     {@members(classView)}
@@ -93,6 +94,72 @@
    */
   public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
     return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  @if xsettingsClass.hasDefaultServiceAddress
+    /**
+     * Returns the default service endpoint.
+     */
+    @if xsettingsClass.useDefaultServicePortInEndpoint
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
+      }
+    @else
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}";
+      }
+
+      /**
+       * Returns the default service port.
+       */
+      public static int getDefaultServicePort() {
+        return {@xsettingsClass.servicePort};
+      }
+    @end
+
+  @end
+
+  @if xsettingsClass.hasDefaultServiceScopes
+    /**
+     * Returns the default service scopes.
+     */
+    public static List<String> getDefaultServiceScopes() {
+      return DEFAULT_SERVICE_SCOPES;
+    }
+
+  @end
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        @if xsettingsClass.hasDefaultServiceScopes
+            .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        @end
+        ;
+  }
+
+  @if xsettingsClass.hasDefaultServiceAddress
+    /** Returns a builder for the default ChannelProvider for this service. */
+    public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
+      return {@xsettingsClass.instantiatingChannelProvider}.newBuilder();
+    }
+
+    public static TransportChannelProvider defaultTransportChannelProvider() {
+      return {@xsettingsClass.defaultTransportProviderBuilder}().build();
+    }
+  @end
+
+  @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion({@xsettingsClass.name}.class))
+        @if xsettingsClass.transportProtocol == "GRPC"
+          .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
+        @else
+          .setTransportToken(GaxHttpJsonProperties.getHttpJsonTokenName(), GaxHttpJsonProperties.getHttpJsonVersion());
+        @end
   }
 
   /**
@@ -499,11 +566,10 @@
   private static Builder createDefault() {
     Builder builder = new Builder((ClientContext) null);
     @if xsettingsClass.hasDefaultInstance
-      builder.setTransportChannelProvider({@xsettingsClass.stubSettingsName}.defaultTransportChannelProvider());
-      builder.setCredentialsProvider({@xsettingsClass.stubSettingsName}.defaultCredentialsProviderBuilder().build());
-      builder.setInternalHeaderProvider({@xsettingsClass.stubSettingsName}.defaultApiClientHeaderProviderBuilder().build());
-      builder.setEndpoint({@xsettingsClass.stubSettingsName}.getDefaultEndpoint());
-      builder.stubBuilder = {@xsettingsClass.stubSettingsName}.newBuilder();
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
     @end
     return initDefaults(builder);
   }

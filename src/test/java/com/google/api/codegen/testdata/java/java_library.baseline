@@ -256,6 +256,7 @@ import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooks
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
+import com.google.gcloud.pubsub.v1.stub.LibraryServiceSettingsStub;
 import com.google.gcloud.pubsub.v1.stub.LibraryServiceStub;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
@@ -3060,6 +3061,7 @@ import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedRe
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.gcloud.pubsub.v1.stub.GrpcLibraryServiceStub;
+import com.google.gcloud.pubsub.v1.stub.LibraryServiceSettingsStub;
 import com.google.gcloud.pubsub.v1.stub.LibraryServiceStub;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
@@ -3372,47 +3374,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
    */
   public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
     return InstantiatingExecutorProvider.newBuilder();
-  }
-
-  /**
-   * Returns the default service endpoint.
-   */
-  public static String getDefaultEndpoint() {
-    return "library-example.googleapis.com:443";
-  }
-
-
-  /**
-   * Returns the default service scopes.
-   */
-  public static List<String> getDefaultServiceScopes() {
-    return DEFAULT_SERVICE_SCOPES;
-  }
-
-
-  /**
-   * Returns a builder for the default credentials for this service.
-   */
-  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
-    return GoogleCredentialsProvider.newBuilder()
-        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
-        ;
-  }
-
-  /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
-    return InstantiatingGrpcChannelProvider.newBuilder();
-  }
-
-  public static TransportChannelProvider defaultTransportChannelProvider() {
-    return defaultGrpcTransportProviderBuilder().build();
-  }
-
-  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
-  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
-    return ApiClientHeaderProvider.newBuilder()
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(LibrarySettings.class))
-        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
   /**
@@ -3957,10 +3918,11 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
     private static Builder createDefault() {
       Builder builder = new Builder((ClientContext) null);
-      builder.setTransportChannelProvider(defaultTransportChannelProvider());
-      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
-      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
-      builder.setEndpoint(getDefaultEndpoint());
+      builder.setTransportChannelProvider(LibraryServiceSettingsStub.defaultTransportChannelProvider());
+      builder.setCredentialsProvider(LibraryServiceSettingsStub.defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(LibraryServiceSettingsStub.defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(LibraryServiceSettingsStub.getDefaultEndpoint());
+      builder.stubBuilder = LibraryServiceSettingsStub.newBuilder();
       return initDefaults(builder);
     }
 

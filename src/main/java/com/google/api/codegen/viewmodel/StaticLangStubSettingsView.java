@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangSettingsView {
+public abstract class StaticLangStubSettingsView {
 
   @Nullable
   public abstract String releaseLevelAnnotation();
@@ -80,9 +80,6 @@ public abstract class StaticLangSettingsView {
 
   public abstract boolean hasDefaultInstance();
 
-  @Nullable
-  public abstract String stubSettingsName();
-
   @Nullable // Used in Java
   public abstract String stubInterfaceName();
 
@@ -108,7 +105,7 @@ public abstract class StaticLangSettingsView {
   public abstract TransportProtocol transportProtocol();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangSettingsView.Builder()
+    return new AutoValue_StaticLangStubSettingsView.Builder()
         .transportProtocol(TransportProtocol.GRPC)
         .useDefaultServicePortInEndpoint(true);
   }
@@ -122,11 +119,9 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder name(String val);
 
-    public abstract Builder servicePort(Integer val);
-
     public abstract Builder serviceAddress(String val);
 
-    public abstract Builder stubSettingsName(String val);
+    public abstract Builder servicePort(Integer val);
 
     public abstract Builder useDefaultServicePortInEndpoint(boolean val);
 
@@ -169,6 +164,6 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 
-    public abstract StaticLangSettingsView build();
+    public abstract StaticLangStubSettingsView build();
   }
 }
