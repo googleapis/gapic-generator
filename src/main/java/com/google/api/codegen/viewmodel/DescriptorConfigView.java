@@ -39,10 +39,6 @@ public abstract class DescriptorConfigView implements ViewModel {
   }
 
   public boolean hasBatchingMethods() {
-    if (batchingDescriptors() == null) {
-      return false;
-    }
-
     return batchingDescriptors().size() > 0;
   }
 
