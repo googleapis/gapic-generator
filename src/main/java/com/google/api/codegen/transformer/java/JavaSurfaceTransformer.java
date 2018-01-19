@@ -135,7 +135,8 @@ public class JavaSurfaceTransformer {
 
       context = context.withNewTypeTable();
       StaticLangFileView<StaticLangSettingsView> settingsFile =
-          generateSettingsFile(context, productConfig, exampleApiMethod, stubSettingsFile.classView());
+          generateSettingsFile(
+              context, productConfig, exampleApiMethod, stubSettingsFile.classView());
       surfaceDocs.add(settingsFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
@@ -204,7 +205,7 @@ public class JavaSurfaceTransformer {
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
-    xapiClass.stubSettingsInterfaceName(
+    xapiClass.stubSettingsClassName(
         getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
@@ -392,7 +393,8 @@ public class JavaSurfaceTransformer {
     StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
         StaticLangFileView.newBuilder();
 
-    settingsFile.classView(generateSettingsClass(context, productConfig, stubSettingsView, exampleApiMethod));
+    settingsFile.classView(
+        generateSettingsClass(context, productConfig, stubSettingsView, exampleApiMethod));
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =

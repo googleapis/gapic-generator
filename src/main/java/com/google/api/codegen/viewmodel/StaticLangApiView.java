@@ -69,7 +69,7 @@ public abstract class StaticLangApiView {
   public abstract String stubInterfaceName();
 
   @Nullable // Used in Java
-  public abstract String settingsStubInterfaceName();
+  public abstract String stubSettingsClassName();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
@@ -116,7 +116,7 @@ public abstract class StaticLangApiView {
 
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
-    public abstract Builder stubSettingsInterfaceName(String apiSettingsStubInterfaceName);
+    public abstract Builder stubSettingsClassName(String apiSettingsStubInterfaceName);
 
     public abstract StaticLangApiView build();
   }
