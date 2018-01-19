@@ -28,6 +28,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
   @Override
   public abstract String identifier();
 
+  public abstract String comment();
+
   public abstract InitValueView initValue();
 
   public static Builder newBuilder() {
@@ -43,6 +45,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder initValue(InitValueView val);
+
+    public abstract Builder comment(String val);
 
     public abstract SimpleInitCodeLineView build();
   }

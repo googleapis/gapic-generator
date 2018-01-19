@@ -17,6 +17,8 @@
 
 @private initLineStructure(line)
   @switch line.fieldSettings.size.toString
+  # Note: This empty case is not actually used in the current implementation;
+  # empty structs are initialized through SimpleInitLines.
   @case "0"
     {@line.identifier} = {}
   @case "1"
@@ -71,6 +73,10 @@
 @end
 
 @private initLineSimple(line)
+  @if line.comment
+    @# {@line.comment}
+
+  @end
   {@line.identifier} = {@renderInitValue(line.initValue)}
 @end
 
