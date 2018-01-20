@@ -29,6 +29,31 @@
     ]
   }
 }
+============== file: src/Example/V1/Gapic/../resources/no_templates_api_service_descriptor_config.php ==============
+<?php
+
+return [
+    'interfaces' => [
+        'google.cloud.example.v1.NoTemplatesAPIService' => [
+        ]
+    ]
+];
+
+============== file: src/Example/V1/Gapic/../resources/no_templates_api_service_rest_client_config.php ==============
+<?php
+
+return [
+    'interfaces' => [
+        'google.cloud.example.v1.NoTemplatesAPIService' => [
+            'Increment' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/me:increment',
+                'body' => '*',
+            ],
+        ],
+    ]
+];
+
 ============== file: src/Example/V1/Gapic/NoTemplatesApiServiceGapicClient.php ==============
 <?php
 /*
@@ -113,7 +138,6 @@ class NoTemplatesApiServiceGapicClient
      * The name of the service.
      */
     const SERVICE_NAME = 'google.cloud.example.v1.NoTemplatesAPIService';
-
 
     /**
      * The default port of the service.
@@ -315,31 +339,6 @@ class NoTemplatesApiServiceClient extends NoTemplatesApiServiceGapicClient
     }
   }
 }
-
-============== file: src/Example/V1/resources/no_templates_api_service_descriptor_config.php ==============
-<?php
-
-return [
-    'interfaces' => [
-        'google.cloud.example.v1.NoTemplatesAPIService' => [
-        ]
-    ]
-];
-
-============== file: src/Example/V1/resources/no_templates_api_service_rest_client_config.php ==============
-<?php
-
-return [
-    'interfaces' => [
-        'google.cloud.example.v1.NoTemplatesAPIService' => [
-            'Increment' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/me:increment',
-                'body' => '*',
-            ],
-        ],
-    ]
-];
 
 ============== file: tests/unit/Example/V1/NoTemplatesApiServiceClientTest.php ==============
 <?php

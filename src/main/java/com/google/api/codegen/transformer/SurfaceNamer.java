@@ -1247,6 +1247,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
 
+  /** The path to a config with a specified name. */
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return getNotImplementedString("SurfaceNamer.getConfigPath");
+  }
+
   /**
    * The type name of the method constant in the Grpc container class. This needs to match what Grpc
    * generates for the particular language.

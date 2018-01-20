@@ -90,7 +90,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         views.add(createSmokeTestClassView(context));
       }
     }
-
     return views;
   }
 

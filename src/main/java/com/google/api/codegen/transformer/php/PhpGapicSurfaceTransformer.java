@@ -133,7 +133,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         context.withNewTypeTable(context.getNamer().getGapicImplNamespace());
 
     List<ViewModel> surfaceData = new ArrayList<>();
-
     surfaceData.add(buildGapicClientViewModel(gapicImplContext));
     surfaceData.add(buildClientViewModel(context));
     surfaceData.add(buildDescriptorConfigViewModel(gapicImplContext));
@@ -263,6 +262,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel buildDescriptorConfigViewModel(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+    SurfaceNamer namer = context.getNamer();
+
     return DescriptorConfigView.newBuilder()
         .batchingDescriptors(ImmutableList.<BatchingDescriptorView>of())
         .pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context))
@@ -270,14 +273,20 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         .grpcStreamingDescriptors(createGrpcStreamingDescriptors(context))
         .interfaceKey(context.getInterface().getFullName())
         .templateFileName(DESCRIPTOR_CONFIG_TEMPLATE_FILENAME)
-        .outputPath(generateConfigOutputPath(context, "descriptor_config"))
+        .outputPath(
+            outputPath + namer.getConfigPath(context.getInterfaceConfig(), "descriptor_config"))
         .build();
   }
 
   private ViewModel buildRestConfigViewModel(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+    SurfaceNamer namer = context.getNamer();
+
     return RestConfigView.newBuilder()
         .templateFileName(REST_CONFIG_TEMPLATE_FILENAME)
-        .outputPath(generateConfigOutputPath(context, "rest_client_config"))
+        .outputPath(
+            outputPath + namer.getConfigPath(context.getInterfaceConfig(), "rest_client_config"))
         .interfaceConfigs(generateRestInterfaceConfigViews(context))
         .build();
   }
@@ -465,19 +474,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiMethods;
   }
 
-  private String generateConfigOutputPath(GapicInterfaceContext context, String name) {
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    String outputPath =
-        pathMapper.getOutputPath(
-            context.getInterfaceModel().getFullName(), context.getProductConfig());
-    return outputPath.substring(0, outputPath.length() - 6)
-        + "/resources/"
-        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
-            .join(name)
-            .toLowerUnderscore()
-        + ".php";
-  }
-
   private HttpRule getHttpRule(Map<FieldDescriptor, Object> optionFields) {
     for (FieldDescriptor fieldDescriptor : optionFields.keySet()) {
       if (fieldDescriptor.getFullName().equals("google.api.http")) {
@@ -499,7 +495,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         // added last.
         if (httpRules.get(i).getSelector().equals(httpRule.getSelector())) {
           httpRules.set(i, httpRule);
-
           return;
         }
       }

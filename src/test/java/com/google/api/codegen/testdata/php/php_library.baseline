@@ -29,6 +29,338 @@
     ]
   }
 }
+============== file: src/Example/Library/V1/Gapic/../resources/library_service_descriptor_config.php ==============
+<?php
+
+return [
+    'interfaces' => [
+        'google.example.library.v1.LibraryService' => [
+            'GetBigBook' => [
+                'longRunning' => [
+                    'operationReturnType' => '\Google\Example\Library\V1\Book',
+                    'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
+                ]
+            ],
+            'GetBigNothing' => [
+                'longRunning' => [
+                    'operationReturnType' => '\Google\Protobuf\GPBEmpty',
+                    'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
+                ]
+            ],
+            'ListShelves' => [
+                'pageStreaming' => [
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getShelves'
+                ]
+            ],
+            'ListBooks' => [
+                'pageStreaming' => [
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getBooks'
+                ]
+            ],
+            'ListStrings' => [
+                'pageStreaming' => [
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getStrings'
+                ]
+            ],
+            'FindRelatedBooks' => [
+                'pageStreaming' => [
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getNames'
+                ]
+            ],
+            'StreamShelves' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'ServerStreaming',
+                    'resourcesGetMethod' => 'getShelves',
+                ]
+            ],
+            'StreamBooks' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'ServerStreaming',
+                ]
+            ],
+            'DiscussBook' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'BidiStreaming',
+                ]
+            ],
+            'MonologAboutBook' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'ClientStreaming',
+                ]
+            ],
+        ]
+    ]
+];
+
+============== file: src/Example/Library/V1/Gapic/../resources/library_service_rest_client_config.php ==============
+<?php
+
+return [
+    'interfaces' => [
+        'google.example.library.v1.LibraryService' => [
+            'CreateShelf' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/bookShelves',
+                'body' => 'shelf',
+            ],
+            'GetShelf' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=bookShelves/*}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'ListShelves' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/bookShelves',
+            ],
+            'DeleteShelf' => [
+                'method' => 'delete',
+                'uriTemplate' => '/v1/{name=bookShelves/*}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'MergeShelves' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=bookShelves/*}:merge',
+                'body' => '*',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'CreateBook' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=bookShelves/*}/books',
+                'body' => 'book',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'PublishSeries' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1:publish',
+                'body' => '*',
+            ],
+            'GetBook' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'ListBooks' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=bookShelves/*}/books',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'DeleteBook' => [
+                'method' => 'delete',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'UpdateBook' => [
+                'method' => 'put',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                'body' => 'book',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'MoveBook' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:move',
+                'body' => '*',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'ListStrings' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/strings',
+            ],
+            'AddComments' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=bookShelves/*}/comments',
+                'body' => '*',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'GetBookFromArchive' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=archives/*/books/*}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'GetBookFromAnywhere' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=archives/*/books/**}',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'GetBookFromAbsolutelyAnywhere' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=archives/*/books/*}',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                    ],
+                ]
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'UpdateBookIndex' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}/index',
+                'body' => '*',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'FindRelatedBooks' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/bookShelves',
+            ],
+            'AddTag' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addTag',
+                'body' => '*',
+                'placeholders' => [
+                    'resource' => [
+                        'getters' => [
+                            'getResource',
+                        ],
+                    ],
+                ]
+            ],
+            'GetBigBook' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:big',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'GetBigNothing' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:bignothing',
+                'placeholders' => [
+                    'name' => [
+                        'getters' => [
+                            'getName',
+                        ],
+                    ],
+                ]
+            ],
+            'TestOptionalRequiredFlatteningParams' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/testofp',
+                'body' => '*',
+            ],
+        ],
+        'google.tagger.v1.Labeler' => [
+            'AddLabel' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addLabel',
+                'body' => '*',
+                'placeholders' => [
+                    'resource' => [
+                        'getters' => [
+                            'getResource',
+                        ],
+                    ],
+                ]
+            ],
+        ],
+    ]
+];
+
 ============== file: src/Example/Library/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
@@ -181,7 +513,6 @@ class LibraryServiceGapicClient
      * The default address of the service.
      */
     const SERVICE_ADDRESS = 'library-example.googleapis.com';
-
 
     /**
      * The default port of the service.
@@ -2319,338 +2650,6 @@ class LibraryServiceClient extends LibraryServiceGapicClient
     }
   }
 }
-
-============== file: src/Example/Library/V1/resources/library_service_descriptor_config.php ==============
-<?php
-
-return [
-    'interfaces' => [
-        'google.example.library.v1.LibraryService' => [
-            'GetBigBook' => [
-                'longRunning' => [
-                    'operationReturnType' => '\Google\Example\Library\V1\Book',
-                    'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
-                ]
-            ],
-            'GetBigNothing' => [
-                'longRunning' => [
-                    'operationReturnType' => '\Google\Protobuf\GPBEmpty',
-                    'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
-                ]
-            ],
-            'ListShelves' => [
-                'pageStreaming' => [
-                    'requestPageTokenGetMethod' => 'getPageToken',
-                    'requestPageTokenSetMethod' => 'setPageToken',
-                    'responsePageTokenGetMethod' => 'getNextPageToken',
-                    'resourcesGetMethod' => 'getShelves'
-                ]
-            ],
-            'ListBooks' => [
-                'pageStreaming' => [
-                    'requestPageTokenGetMethod' => 'getPageToken',
-                    'requestPageTokenSetMethod' => 'setPageToken',
-                    'requestPageSizeGetMethod' => 'getPageSize',
-                    'requestPageSizeSetMethod' => 'setPageSize',
-                    'responsePageTokenGetMethod' => 'getNextPageToken',
-                    'resourcesGetMethod' => 'getBooks'
-                ]
-            ],
-            'ListStrings' => [
-                'pageStreaming' => [
-                    'requestPageTokenGetMethod' => 'getPageToken',
-                    'requestPageTokenSetMethod' => 'setPageToken',
-                    'requestPageSizeGetMethod' => 'getPageSize',
-                    'requestPageSizeSetMethod' => 'setPageSize',
-                    'responsePageTokenGetMethod' => 'getNextPageToken',
-                    'resourcesGetMethod' => 'getStrings'
-                ]
-            ],
-            'FindRelatedBooks' => [
-                'pageStreaming' => [
-                    'requestPageTokenGetMethod' => 'getPageToken',
-                    'requestPageTokenSetMethod' => 'setPageToken',
-                    'requestPageSizeGetMethod' => 'getPageSize',
-                    'requestPageSizeSetMethod' => 'setPageSize',
-                    'responsePageTokenGetMethod' => 'getNextPageToken',
-                    'resourcesGetMethod' => 'getNames'
-                ]
-            ],
-            'StreamShelves' => [
-                'grpcStreaming' => [
-                    'grpcStreamingType' => 'ServerStreaming',
-                    'resourcesGetMethod' => 'getShelves',
-                ]
-            ],
-            'StreamBooks' => [
-                'grpcStreaming' => [
-                    'grpcStreamingType' => 'ServerStreaming',
-                ]
-            ],
-            'DiscussBook' => [
-                'grpcStreaming' => [
-                    'grpcStreamingType' => 'BidiStreaming',
-                ]
-            ],
-            'MonologAboutBook' => [
-                'grpcStreaming' => [
-                    'grpcStreamingType' => 'ClientStreaming',
-                ]
-            ],
-        ]
-    ]
-];
-
-============== file: src/Example/Library/V1/resources/library_service_rest_client_config.php ==============
-<?php
-
-return [
-    'interfaces' => [
-        'google.example.library.v1.LibraryService' => [
-            'CreateShelf' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/bookShelves',
-                'body' => 'shelf',
-            ],
-            'GetShelf' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'ListShelves' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/bookShelves',
-            ],
-            'DeleteShelf' => [
-                'method' => 'delete',
-                'uriTemplate' => '/v1/{name=bookShelves/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'MergeShelves' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=bookShelves/*}:merge',
-                'body' => '*',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'CreateBook' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=bookShelves/*}/books',
-                'body' => 'book',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'PublishSeries' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1:publish',
-                'body' => '*',
-            ],
-            'GetBook' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'ListBooks' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*}/books',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'DeleteBook' => [
-                'method' => 'delete',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'UpdateBook' => [
-                'method' => 'put',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
-                'body' => 'book',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'MoveBook' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:move',
-                'body' => '*',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'ListStrings' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/strings',
-            ],
-            'AddComments' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=bookShelves/*}/comments',
-                'body' => '*',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'GetBookFromArchive' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=archives/*/books/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'GetBookFromAnywhere' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=archives/*/books/**}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'GetBookFromAbsolutelyAnywhere' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=archives/*/books/*}',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
-                    ],
-                ]
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'UpdateBookIndex' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}/index',
-                'body' => '*',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'FindRelatedBooks' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/bookShelves',
-            ],
-            'AddTag' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addTag',
-                'body' => '*',
-                'placeholders' => [
-                    'resource' => [
-                        'getters' => [
-                            'getResource',
-                        ],
-                    ],
-                ]
-            ],
-            'GetBigBook' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:big',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'GetBigNothing' => [
-                'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}:bignothing',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
-            ],
-            'TestOptionalRequiredFlatteningParams' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/testofp',
-                'body' => '*',
-            ],
-        ],
-        'google.tagger.v1.Labeler' => [
-            'AddLabel' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addLabel',
-                'body' => '*',
-                'placeholders' => [
-                    'resource' => [
-                        'getters' => [
-                            'getResource',
-                        ],
-                    ],
-                ]
-            ],
-        ],
-    ]
-];
 
 ============== file: tests/system/Example/Library/V1/LibraryServiceSmokeTest.php ==============
 <?php

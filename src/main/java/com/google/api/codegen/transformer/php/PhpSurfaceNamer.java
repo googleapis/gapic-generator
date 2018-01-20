@@ -107,11 +107,20 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
-    return "../resources/"
+    return "/../resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join("client_config")
             .toLowerUnderscore()
         + ".json";
+  }
+
+  @Override
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return "/../resources/"
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join(name)
+            .toLowerUnderscore()
+        + ".php";
   }
 
   @Override
