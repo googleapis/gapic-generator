@@ -126,18 +126,18 @@ public class JavaSurfaceTransformer {
 
       serviceDocs.add(apiFile.classView().doc());
 
-      context = context.withNewTypeTable();
       StaticLangApiMethodView exampleApiMethod =
           getExampleApiMethod(apiFile.classView().apiMethods());
+
+      context = context.withNewTypeTable(namer.getPackageName());
+      StaticLangFileView<StaticLangSettingsView> settingsFile =
+          generateSettingsFile(context, productConfig, exampleApiMethod);
+      surfaceDocs.add(settingsFile);
+
+      context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubSettingsView> stubSettingsFile =
           generateStubSettingsFile(context, productConfig, exampleApiMethod);
       surfaceDocs.add(stubSettingsFile);
-
-      context = context.withNewTypeTable();
-      StaticLangFileView<StaticLangSettingsView> settingsFile =
-          generateSettingsFile(
-              context, productConfig, exampleApiMethod, stubSettingsFile.classView());
-      surfaceDocs.add(settingsFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
@@ -388,13 +388,11 @@ public class JavaSurfaceTransformer {
   private StaticLangFileView<StaticLangSettingsView> generateSettingsFile(
       InterfaceContext context,
       GapicProductConfig productConfig,
-      StaticLangApiMethodView exampleApiMethod,
-      StaticLangStubSettingsView stubSettingsView) {
+      StaticLangApiMethodView exampleApiMethod) {
     StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
         StaticLangFileView.newBuilder();
 
-    settingsFile.classView(
-        generateSettingsClass(context, productConfig, stubSettingsView, exampleApiMethod));
+    settingsFile.classView(generateSettingsClass(context, productConfig, exampleApiMethod));
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =
@@ -412,7 +410,6 @@ public class JavaSurfaceTransformer {
   private StaticLangSettingsView generateSettingsClass(
       InterfaceContext context,
       GapicProductConfig productConfig,
-      StaticLangStubSettingsView stubSettingsView,
       StaticLangApiMethodView exampleApiMethod) {
     addSettingsImports(context);
 
@@ -642,7 +639,7 @@ public class JavaSurfaceTransformer {
         getAndSaveNicknameForRootType(
             apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
     stubClass.stubSettingsClassName(
-        getAndSaveNicknameForRootType(
+        getAndSaveNicknameForStubType(
             apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));

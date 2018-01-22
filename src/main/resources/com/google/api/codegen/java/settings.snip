@@ -20,7 +20,6 @@
     {@constants(classView)}
     {@members(classView)}
     {@constructors(classView)}
-    {@descriptors(classView)}
     {@innerBuilderClass(classView)}
   }
 @end
@@ -171,104 +170,6 @@
     stubSettings = settingsBuilder.stubBuilder.build();
   }
   {@""}
-@end
-
-@private descriptors(xsettingsClass)
-  {@pagedListResponseFactories(xsettingsClass)}
-  {@batchingDescriptors(xsettingsClass)}
-@end
-
-@private pagedListResponseFactories(xsettingsClass)
-  @join factory : xsettingsClass.pagedListResponseFactories
-    private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
-        new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
-          @@Override
-          public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
-              UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
-              {@factory.requestTypeName} request,
-              ApiCallContext context,
-              ApiFuture<{@factory.responseTypeName}> futureResponse) {
-            PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
-                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
-            return {@factory.pagedListResponseTypeName}.createAsync(pageContext, futureResponse);
-          }
-        };
-    {@""}
-  @end
-@end
-
-@private batchingDescriptors(xsettingsClass)
-  @join desc : xsettingsClass.batchingDescriptors
-    private static final BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
-        new BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
-          @@Override
-          public PartitionKey getBatchPartitionKey({@desc.requestTypeName} request) {
-            return new PartitionKey({@partitionKeyCode(desc)});
-          }
-
-          @@Override
-          public RequestBuilder<{@desc.requestTypeName}> getRequestBuilder() {
-            return new RequestBuilder<{@desc.requestTypeName}>() {
-              private {@desc.requestTypeName}.Builder builder;
-              @@Override
-              public void appendRequest({@desc.requestTypeName} request) {
-                if (builder == null) {
-                  builder = request.toBuilder();
-                } else {
-                  builder.{@desc.batchedFieldSetFunction}(request.{@desc.batchedFieldGetFunction}());
-                }
-              }
-              @@Override
-              public {@desc.requestTypeName} build() {
-                return builder.build();
-              }
-            };
-          }
-
-          @@Override
-          public void splitResponse(
-              {@desc.responseTypeName} batchResponse,
-              Collection<? extends BatchedRequestIssuer<{@desc.responseTypeName}>> batch) {
-            int batchMessageIndex = 0;
-            for (BatchedRequestIssuer<{@desc.responseTypeName}> responder : batch) {
-              @if desc.hasSubresponse
-                {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
-                long subresponseCount = responder.getMessageCount();
-                for (int i = 0; i < subresponseCount; i++) {
-                  subresponseElements.add(batchResponse.{@desc.subresponseByIndexGetFunction}(batchMessageIndex));
-                  batchMessageIndex += 1;
-                }
-                {@desc.responseTypeName} response =
-                    {@desc.responseTypeName}.newBuilder().{@desc.subresponseSetFunction}(subresponseElements).build();
-              @else
-                {@desc.responseTypeName} response =
-                    {@desc.responseTypeName}.newBuilder().build();
-              @end
-              responder.setResponse(response);
-            }
-          }
-
-          @@Override
-          public void splitException(
-              Throwable throwable,
-              Collection<? extends BatchedRequestIssuer<{@desc.responseTypeName}>> batch) {
-            for (BatchedRequestIssuer<{@desc.responseTypeName}> responder : batch) {
-              responder.setException(throwable);
-            }
-          }
-
-          @@Override
-          public long countElements({@desc.requestTypeName} request) {
-            return request.{@desc.batchedFieldCountGetFunction}();
-          }
-
-          @@Override
-          public long countBytes({@desc.requestTypeName} request) {
-            return request.getSerializedSize();
-          }
-        };
-    {@""}
-  @end
 @end
 
 @private partitionKeyCode(batchingDesc)
