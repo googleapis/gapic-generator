@@ -1,3 +1,5 @@
+@extends "ruby/common.snip"
+
 @snippet initCode(initCodeSpec)
   @join line : initCodeSpec.lines
     @switch line.lineType.toString
@@ -73,8 +75,8 @@
 @end
 
 @private initLineSimple(line)
-  @if line.comment
-    @# {@line.comment}
+  @if line.doc
+    {@toComments(line.doc)}
 
   @end
   {@line.identifier} = {@renderInitValue(line.initValue)}

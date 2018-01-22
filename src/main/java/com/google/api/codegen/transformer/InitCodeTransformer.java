@@ -48,6 +48,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -66,7 +67,10 @@ import java.util.stream.StreamSupport;
  */
 public class InitCodeTransformer {
   private static final String FORMAT_SPEC_PLACEHOLDER = "FORMAT_SPEC_PLACEHOLDER";
-  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize this field.";
+
+  // Note: Markdown backticks for code reference should be converted to an idiomatic representation
+  // by the language-appropriate CommentReformatter when this String is formatted.
+  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize `%s`:";
 
   private final ImportSectionTransformer importSectionTransformer;
 
@@ -559,7 +563,7 @@ public class InitCodeTransformer {
             context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(item.getType()));
         simpleInitValue.isRepeated(item.getType().isRepeated());
         if (isRequired(item.getFieldConfig(), context)) {
-          comment = UNINITIALIZED_REQUIRED_FIELD_COMMENT;
+          comment = String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, item.getVarName());
         }
       }
 
@@ -567,9 +571,9 @@ public class InitCodeTransformer {
     }
     surfaceLine.initValue(initValue);
     if (generateUserFacingComments) {
-      surfaceLine.comment(comment);
+      surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
-      surfaceLine.comment("");
+      surfaceLine.doc(ImmutableList.of());
     }
   }
 
