@@ -66,7 +66,7 @@ import java.util.stream.StreamSupport;
  */
 public class InitCodeTransformer {
   private static final String FORMAT_SPEC_PLACEHOLDER = "FORMAT_SPEC_PLACEHOLDER";
-  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize this too long field.";
+  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize this field.";
 
   private final ImportSectionTransformer importSectionTransformer;
 
