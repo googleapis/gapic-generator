@@ -1103,8 +1103,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the gPRC request. */
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return getNotImplementedString("SurfaceNamer.getRequestTypeName");
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getAndSaveTypeName");
   }
 
   public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {

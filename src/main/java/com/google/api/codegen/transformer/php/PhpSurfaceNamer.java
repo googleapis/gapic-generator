@@ -196,7 +196,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
