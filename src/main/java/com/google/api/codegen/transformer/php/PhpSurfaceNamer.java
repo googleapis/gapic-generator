@@ -116,7 +116,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
-    return "/../resources/"
+    return "/resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join(name)
             .toLowerUnderscore()

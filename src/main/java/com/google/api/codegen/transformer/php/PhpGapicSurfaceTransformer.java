@@ -135,8 +135,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ViewModel> surfaceData = new ArrayList<>();
     surfaceData.add(buildGapicClientViewModel(gapicImplContext));
     surfaceData.add(buildClientViewModel(context));
-    surfaceData.add(buildDescriptorConfigViewModel(gapicImplContext));
-    surfaceData.add(buildRestConfigViewModel(gapicImplContext));
+    surfaceData.add(buildDescriptorConfigViewModel(context));
+    surfaceData.add(buildRestConfigViewModel(context));
     return surfaceData;
   }
 
