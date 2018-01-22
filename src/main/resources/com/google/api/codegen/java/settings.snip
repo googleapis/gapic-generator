@@ -73,19 +73,12 @@
 @end
 
 @private members(xsettingsClass)
-  {@methodMembers(xsettingsClass)}
+  {@stubSettingsConfig(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
   @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportChannelProvider()
-        .getTransportName()
-        .equals({@xsettingsClass.rpcTransportName}.{@xsettingsClass.transportNameGetter}())) {
-      return {@xsettingsClass.rpcStubClassName}.create(this);
-    } else {
-      throw new UnsupportedOperationException(
-          "Transport not supported: " + getTransportChannelProvider().getTransportName());
-    }
+    return stubSettings.createStub();
   }
 
   /**
@@ -118,36 +111,16 @@
   {@""}
 @end
 
-@private methodMembers(xsettingsClass)
-  @join settings : xsettingsClass.callSettings
-    @switch settings.type
-    @case "SimpleApiCallable"
-      private final UnaryCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "PagedApiCallable"
-      private final PagedCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, \
-          {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BatchingApiCallable"
-      private final BatchingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "OperationApiCallable"
-      private final OperationCallSettings<{@settings.requestTypeName}, \
-          {@settings.operationMethod.operationPayloadTypeName}, \
-          {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
-    @case "ServerStreamingApiCallable"
-      private final ServerStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @default
-      @if settings.isStreaming
-        private final StreamingCallSettings<{@settings.requestTypeName}, \
-            {@settings.responseTypeName}> {@settings.memberName};
-      @else
-        $unhandledCase: {@settings.type}$
-      @end
-    @end
-  @end
-  {@BREAK}
+@private stubSettingsConfig(xsettingsClass)
+  private final {@xsettingsClass.stubSettingsName} stubSettings;
+
+  public static final {@xsettingsClass.name} create({@xsettingsClass.stubSettingsName} stub) throws IOException {
+    return new {@xsettingsClass.name}.Builder(stub).build();
+  }
+
+  public {@xsettingsClass.stubSettingsName} getStubSettings() {
+    return stubSettings;
+  }
 @end
 
 @private methodGetters(xsettingsClass)

@@ -3105,7 +3105,7 @@ import org.threeten.bp.Duration;
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
-public class LibrarySettings extends ClientSettings<LibrarySettings> {
+public class LibraryServiceSettingsStub extends ClientSettings<LibraryServiceSettingsStub> {
   /**
    * The default scopes of the service.
    */
@@ -3412,7 +3412,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
-        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(LibrarySettings.class))
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(LibraryServiceSettingsStub.class))
         .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
@@ -3437,7 +3437,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     return new Builder(this);
   }
 
-  protected LibrarySettings(Builder settingsBuilder) throws IOException {
+  protected LibraryServiceSettingsStub(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
     createShelfSettings = settingsBuilder.createShelfSettings().build();
@@ -3784,9 +3784,9 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       };
 
   /**
-   * Builder for LibrarySettings.
+   * Builder for LibraryServiceSettingsStub.
    */
-  public static class Builder extends ClientSettings.Builder<LibrarySettings, Builder> {
+  public static class Builder extends ClientSettings.Builder<LibraryServiceSettingsStub, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
@@ -4126,7 +4126,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       return builder;
     }
 
-    protected Builder(LibrarySettings settings) {
+    protected Builder(LibraryServiceSettingsStub settings) {
       super(settings);
 
       createShelfSettings = settings.createShelfSettings.toBuilder();
@@ -4409,8 +4409,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     @Override
-    public LibrarySettings build() throws IOException {
-      return new LibrarySettings(this);
+    public LibraryServiceSettingsStub build() throws IOException {
+      return new LibraryServiceSettingsStub(this);
     }
   }
 }
@@ -4575,37 +4575,15 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       .add("https://www.googleapis.com/auth/library")
       .build();
 
-  private final UnaryCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
-  private final UnaryCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
-  private final UnaryCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
-  private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
-  private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
-  private final BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
-  private final UnaryCallSettings<GetBookRequest, Book> getBookSettings;
-  private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
-  private final UnaryCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
-  private final UnaryCallSettings<UpdateBookRequest, Book> updateBookSettings;
-  private final UnaryCallSettings<MoveBookRequest, Book> moveBookSettings;
-  private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
-  private final UnaryCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
-  private final UnaryCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
-  private final UnaryCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings;
-  private final UnaryCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-  private final ServerStreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-  private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
-  private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
-  private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
-  private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-  private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
-  private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
-  private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
-  private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
-  private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
-  private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
-  private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+  private final LibraryServiceSettingsStub stubSettings;
 
+  public static final LibrarySettings create(LibraryServiceSettingsStub stub) throws IOException {
+    return new LibrarySettings.Builder(stub).build();
+  }
+
+  public LibraryServiceSettingsStub getStubSettings() {
+    return stubSettings;
+  }
   /**
    * Returns the object with the settings used for calls to createShelf.
    */
@@ -4819,14 +4797,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
 
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public LibraryServiceStub createStub() throws IOException {
-    if (getTransportChannelProvider()
-        .getTransportName()
-        .equals(GrpcTransportChannel.getGrpcTransportName())) {
-      return GrpcLibraryServiceStub.create(this);
-    } else {
-      throw new UnsupportedOperationException(
-          "Transport not supported: " + getTransportChannelProvider().getTransportName());
-    }
+    return stubSettings.createStub();
   }
 
   /**
@@ -6524,6 +6495,7 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.gcloud.pubsub.v1.LibraryServiceSettingsStub;
 import com.google.gcloud.pubsub.v1.LibrarySettings;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooksPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
@@ -6794,12 +6766,12 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
 
-  public static final GrpcLibraryServiceStub create(LibrarySettings settings) throws IOException {
+  public static final GrpcLibraryServiceStub create(LibraryServiceSettingsStub settings) throws IOException {
     return new GrpcLibraryServiceStub(settings, ClientContext.create(settings));
   }
 
   public static final GrpcLibraryServiceStub create(ClientContext clientContext) throws IOException {
-    return new GrpcLibraryServiceStub(LibrarySettings.newBuilder().build(), clientContext);
+    return new GrpcLibraryServiceStub(LibraryServiceSettingsStub.newBuilder().build(), clientContext);
   }
 
   /**
@@ -6807,7 +6779,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected GrpcLibraryServiceStub(LibrarySettings settings, ClientContext clientContext) throws IOException {
+  protected GrpcLibraryServiceStub(LibraryServiceSettingsStub settings, ClientContext clientContext) throws IOException {
     this.operationsStub = GrpcOperationsStub.create(clientContext);
 
     GrpcCallSettings<CreateShelfRequest, Shelf> createShelfTransportSettings =

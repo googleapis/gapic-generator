@@ -493,7 +493,7 @@ public class JavaSurfaceTransformer {
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
-    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
+    String name = namer.getApiStubSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
@@ -641,6 +641,9 @@ public class JavaSurfaceTransformer {
     stubClass.settingsClassName(
         getAndSaveNicknameForRootType(
             apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
+    stubClass.stubSettingsClassName(
+        getAndSaveNicknameForRootType(
+            apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
