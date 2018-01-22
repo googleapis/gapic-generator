@@ -422,7 +422,13 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
+    xsettingsClass.doc(
+        generateSettingsDoc(
+            context,
+            exampleApiMethod,
+            productConfig,
+            namer.getApiSettingsClassName(context.getInterfaceConfig()),
+            namer.getApiWrapperClassName(context.getInterfaceConfig())));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
@@ -489,7 +495,13 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
+    xsettingsClass.doc(
+        generateSettingsDoc(
+            context,
+            exampleApiMethod,
+            productConfig,
+            context.getNamer().getApiStubSettingsClassName(interfaceConfig),
+            namer.getApiStubInterfaceName(context.getInterfaceConfig())));
     String name = namer.getApiStubSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
@@ -927,7 +939,9 @@ public class JavaSurfaceTransformer {
   private SettingsDocView generateSettingsDoc(
       InterfaceContext context,
       StaticLangApiMethodView exampleApiMethod,
-      GapicProductConfig productConfig) {
+      GapicProductConfig productConfig,
+      String settingsClassName,
+      String apiClassName) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
@@ -936,9 +950,9 @@ public class JavaSurfaceTransformer {
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
-    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    settingsDoc.apiClassName(apiClassName);
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
-    settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    settingsDoc.settingsClassName(settingsClassName);
     settingsDoc.settingsBuilderVarName(
         namer.getApiSettingsBuilderVarName(context.getInterfaceConfig()));
     settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());

@@ -3107,14 +3107,6 @@ import org.threeten.bp.Duration;
  */
 @Generated("by GAPIC v0.0.5")
 public class LibrarySettings extends ClientSettings<LibrarySettings> {
-  /**
-   * The default scopes of the service.
-   */
-  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
-      .add("https://www.googleapis.com/auth/cloud-platform")
-      .add("https://www.googleapis.com/auth/library")
-      .build();
-
   private final LibraryServiceStubSettings stubSettings;
 
   public static final LibrarySettings create(LibraryServiceStubSettings stub) throws IOException {
@@ -3394,65 +3386,40 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     protected Builder(LibrarySettings settings) {
-      super(settings);
+      super(settings.getStubSettings());
+      stubBuilder = settings.getStubSettings().toBuilder();
+    }
 
-      createShelfSettings = settings.createShelfSettings.toBuilder();
-      getShelfSettings = settings.getShelfSettings.toBuilder();
-      listShelvesSettings = settings.listShelvesSettings.toBuilder();
-      deleteShelfSettings = settings.deleteShelfSettings.toBuilder();
-      mergeShelvesSettings = settings.mergeShelvesSettings.toBuilder();
-      createBookSettings = settings.createBookSettings.toBuilder();
-      publishSeriesSettings = settings.publishSeriesSettings.toBuilder();
-      getBookSettings = settings.getBookSettings.toBuilder();
-      listBooksSettings = settings.listBooksSettings.toBuilder();
-      deleteBookSettings = settings.deleteBookSettings.toBuilder();
-      updateBookSettings = settings.updateBookSettings.toBuilder();
-      moveBookSettings = settings.moveBookSettings.toBuilder();
-      listStringsSettings = settings.listStringsSettings.toBuilder();
-      addCommentsSettings = settings.addCommentsSettings.toBuilder();
-      getBookFromArchiveSettings = settings.getBookFromArchiveSettings.toBuilder();
-      getBookFromAnywhereSettings = settings.getBookFromAnywhereSettings.toBuilder();
-      getBookFromAbsolutelyAnywhereSettings = settings.getBookFromAbsolutelyAnywhereSettings.toBuilder();
-      updateBookIndexSettings = settings.updateBookIndexSettings.toBuilder();
-      streamShelvesSettings = settings.streamShelvesSettings.toBuilder();
-      streamBooksSettings = settings.streamBooksSettings.toBuilder();
-      discussBookSettings = settings.discussBookSettings.toBuilder();
-      monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
-      findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
-      addTagSettings = settings.addTagSettings.toBuilder();
-      addLabelSettings = settings.addLabelSettings.toBuilder();
-      getBigBookSettings = settings.getBigBookSettings.toBuilder();
-      getBigBookOperationSettings = settings.getBigBookOperationSettings.toBuilder();
-      getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
-      getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
-      testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+    protected Builder(LibraryServiceStubSettings stubSettings) {
+      super(stubSettings);
+      stubBuilder = stubSettings.toBuilder();
+    }
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
-          createShelfSettings,
-          getShelfSettings,
-          listShelvesSettings,
-          deleteShelfSettings,
-          mergeShelvesSettings,
-          createBookSettings,
-          publishSeriesSettings,
-          getBookSettings,
-          listBooksSettings,
-          deleteBookSettings,
-          updateBookSettings,
-          moveBookSettings,
-          listStringsSettings,
-          addCommentsSettings,
-          getBookFromArchiveSettings,
-          getBookFromAnywhereSettings,
-          getBookFromAbsolutelyAnywhereSettings,
-          updateBookIndexSettings,
-          findRelatedBooksSettings,
-          addTagSettings,
-          addLabelSettings,
-          getBigBookSettings,
-          getBigNothingSettings,
-          testOptionalRequiredFlatteningParamsSettings
-      );
+    @Override
+    public Builder setTransportChannelProvider(TransportChannelProvider channelProvider) {
+      super.setTransportChannelProvider(channelProvider);
+      stubBuilder.setTransportChannelProvider(channelProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+      super.setCredentialsProvider(credentialsProvider);
+      stubBuilder.setCredentialsProvider(credentialsProvider);
+      return this;
+    }
+
+    protected Builder setInternalHeaderProvider(HeaderProvider headerProvider) {
+      super.setInternalHeaderProvider(headerProvider);
+      stubBuilder.setInternalHeaderProvider(headerProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setEndpoint(String endpoint) {
+      super.setEndpoint(endpoint);
+      stubBuilder.setEndpoint(endpoint);
+      return this;
     }
 
     /**
@@ -3461,7 +3428,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      * Note: This method does not support applying settings to streaming methods.
      */
     public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
-      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
+      super.applyToAllUnaryMethods(stubBuilder.unaryMethodSettingsBuilders(), settingsUpdater);
+      stubBuilder.applyToAllUnaryMethods(settingsUpdater);
       return this;
     }
 
@@ -3469,210 +3437,210 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      * Returns the builder for the settings used for calls to createShelf.
      */
     public UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings() {
-      return createShelfSettings;
+      return stubBuilder.createShelfSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getShelf.
      */
     public UnaryCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings() {
-      return getShelfSettings;
+      return stubBuilder.getShelfSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
     public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
-      return listShelvesSettings;
+      return stubBuilder.listShelvesSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to deleteShelf.
      */
     public UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings() {
-      return deleteShelfSettings;
+      return stubBuilder.deleteShelfSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to mergeShelves.
      */
     public UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings() {
-      return mergeShelvesSettings;
+      return stubBuilder.mergeShelvesSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to createBook.
      */
     public UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings() {
-      return createBookSettings;
+      return stubBuilder.createBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
     public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
-      return publishSeriesSettings;
+      return stubBuilder.publishSeriesSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBook.
      */
     public UnaryCallSettings.Builder<GetBookRequest, Book> getBookSettings() {
-      return getBookSettings;
+      return stubBuilder.getBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
     public PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
-      return listBooksSettings;
+      return stubBuilder.listBooksSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to deleteBook.
      */
     public UnaryCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings() {
-      return deleteBookSettings;
+      return stubBuilder.deleteBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to updateBook.
      */
     public UnaryCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings() {
-      return updateBookSettings;
+      return stubBuilder.updateBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to moveBook.
      */
     public UnaryCallSettings.Builder<MoveBookRequest, Book> moveBookSettings() {
-      return moveBookSettings;
+      return stubBuilder.moveBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
     public PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
-      return listStringsSettings;
+      return stubBuilder.listStringsSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
     public BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
-      return addCommentsSettings;
+      return stubBuilder.addCommentsSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBookFromArchive.
      */
     public UnaryCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings() {
-      return getBookFromArchiveSettings;
+      return stubBuilder.getBookFromArchiveSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBookFromAnywhere.
      */
     public UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings() {
-      return getBookFromAnywhereSettings;
+      return stubBuilder.getBookFromAnywhereSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBookFromAbsolutelyAnywhere.
      */
     public UnaryCallSettings.Builder<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereSettings() {
-      return getBookFromAbsolutelyAnywhereSettings;
+      return stubBuilder.getBookFromAbsolutelyAnywhereSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to updateBookIndex.
      */
     public UnaryCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings() {
-      return updateBookIndexSettings;
+      return stubBuilder.updateBookIndexSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to streamShelves.
      */
     public ServerStreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
-      return streamShelvesSettings;
+      return stubBuilder.streamShelvesSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to streamBooks.
      */
     public ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings() {
-      return streamBooksSettings;
+      return stubBuilder.streamBooksSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to discussBook.
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings() {
-      return discussBookSettings;
+      return stubBuilder.discussBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to monologAboutBook.
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
-      return monologAboutBookSettings;
+      return stubBuilder.monologAboutBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
     public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
-      return findRelatedBooksSettings;
+      return stubBuilder.findRelatedBooksSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to addTag.
      */
     public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return addTagSettings;
+      return stubBuilder.addTagSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to addLabel.
      */
     public UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
-      return addLabelSettings;
+      return stubBuilder.addLabelSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBigBook.
      */
     public UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings() {
-      return getBigBookSettings;
+      return stubBuilder.getBigBookSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBigBook.
      */
     public OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings() {
-      return getBigBookOperationSettings;
+      return stubBuilder.getBigBookOperationSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBigNothing.
      */
     public UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings() {
-      return getBigNothingSettings;
+      return stubBuilder.getBigNothingSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to getBigNothing.
      */
     public OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings() {
-      return getBigNothingOperationSettings;
+      return stubBuilder.getBigNothingOperationSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to testOptionalRequiredFlatteningParams.
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
-      return testOptionalRequiredFlatteningParamsSettings;
+      return stubBuilder.testOptionalRequiredFlatteningParamsSettings();
     }
 
     @Override
@@ -5355,7 +5323,7 @@ import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link LibraryClient}.
+ * Settings class to configure an instance of {@link LibraryServiceStub}.
  *
  * <p>The default instance has everything set to sensible defaults:
  *
@@ -5372,11 +5340,11 @@ import org.threeten.bp.Duration;
  *
  * <pre>
  * <code>
- * LibrarySettings.Builder librarySettingsBuilder =
- *     LibrarySettings.newBuilder();
+ * LibraryServiceStubSettings.Builder librarySettingsBuilder =
+ *     LibraryServiceStubSettings.newBuilder();
  * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
- * LibrarySettings librarySettings = librarySettingsBuilder.build();
+ * LibraryServiceStubSettings librarySettings = librarySettingsBuilder.build();
  * </code>
  * </pre>
  */
@@ -6472,6 +6440,16 @@ public class LibraryServiceStubSettings extends ClientSettings<LibraryServiceStu
     public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
       super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
       return this;
+    }
+
+    @Override
+    public Builder setInternalHeaderProvider(HeaderProvider headerProvider) {
+      super.setInternalHeaderProvider(headerProvider);
+      return this;
+    }
+
+    public ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders() {
+      return unaryMethodSettingsBuilders;
     }
 
     /**
