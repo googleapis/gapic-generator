@@ -102,10 +102,13 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
     apiMethod.requestVariableName(namer.getRequestVariableName(method));
     apiMethod.requestTypeName(
-        namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
+        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethod().getInputType()));
+    apiMethod.responseTypeName(
+        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethod().getOutputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(method));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(method));
+    apiMethod.rerouteToGrpcInterface(context.getMethodConfig().getRerouteToGrpcInterface());
     apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
 
     apiMethod.methodParams(apiMethodParamTransformer.generateMethodParams(context));
