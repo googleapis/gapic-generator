@@ -47,16 +47,16 @@ public class InterfaceMerger {
   public void mergeInterfaces(ApiModel model, ConfigNode configNode) {
     FieldConfigNode interfacesNode =
         MissingFieldTransformer.append("interfaces", configNode).generate();
-    if (NodeFinder.hasContent(interfacesNode.getChild())) {
-      return;
+    if (!NodeFinder.hasContent(interfacesNode.getChild())) {
+      ConfigNode interfacesValueNode =
+          ListTransformer.generateList(
+              model.getInterfaces(), interfacesNode, this::generateInterfaceNode);
+      interfacesNode
+          .setChild(interfacesValueNode)
+          .setComment(new DefaultComment("A list of API interface configurations."));
     }
 
-    ConfigNode interfacesValueNode =
-        ListTransformer.generateList(
-            model.getInterfaces(), interfacesNode, this::generateInterfaceNode);
-    interfacesNode
-        .setChild(interfacesValueNode)
-        .setComment(new DefaultComment("A list of API interface configurations."));
+    interfaceTransformer.generateResourceNameGenerations(configNode, model);
   }
 
   private ListItemConfigNode generateInterfaceNode(int startLine, InterfaceModel apiInterface) {

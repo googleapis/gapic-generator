@@ -39,4 +39,9 @@ public class ProtoMethodTransformer implements MethodTransformer {
     }
     return "60000";
   }
+
+  @Override
+  public String getResourceNameTreatment() {
+    return "";
+  }
 }

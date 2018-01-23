@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.configgen;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.configgen.nodes.ConfigNode;
 import java.util.Map;
 
 /** Generates API source specific interface data. */
@@ -24,4 +26,7 @@ public interface InterfaceTransformer {
    * unique resource paths to a short name used by the collection configuration.
    */
   Map<String, String> getResourceToEntityNameMap(InterfaceModel apiInterface);
+
+  /** Generates the resource_name_generation fields. */
+  void generateResourceNameGenerations(ConfigNode parentNode, ApiModel model);
 }
