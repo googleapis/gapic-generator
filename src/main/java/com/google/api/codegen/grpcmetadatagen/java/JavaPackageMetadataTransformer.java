@@ -76,7 +76,8 @@ public abstract class JavaPackageMetadataTransformer {
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())
-              .generationLayer(config.generationLayer());
+              .generationLayer(config.generationLayer())
+              .publishProtos(true);
       viewBuilders.add(viewBuilder);
     }
     return viewBuilders;
