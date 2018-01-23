@@ -28,6 +28,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -162,6 +163,12 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
       String callerResponseTypeName =
           namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
       apiMethodView.responseTypeName(callerResponseTypeName);
+    } else if (methodConfig.isLongRunningOperation()) {
+      ArrayList<ParamWithSimpleDoc> emptyParams = new ArrayList<ParamWithSimpleDoc>();
+      apiMethodView =
+          apiMethodTransformer
+              .generateOperationFlattenedMethod(methodContext, emptyParams)
+              .toBuilder();
     } else {
       apiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext).toBuilder();
     }
