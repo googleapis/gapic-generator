@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -137,7 +138,8 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
     smokeTestBuilder.apiSettingsClassName(
         namer.getApiSettingsClassName(context.getInterfaceConfig()));
 
-    StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
+    StaticLangApiMethodView apiMethodView =
+        createSmokeTestCaseApiMethodView(context, methodContext);
     smokeTestBuilder.apiMethod(apiMethodView);
     smokeTestBuilder.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(apiMethodView.initCode(), namer));
@@ -148,15 +150,21 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
     return smokeTestBuilder;
   }
 
-  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(
+      GapicInterfaceContext context, MethodContext methodContext) {
+    SurfaceNamer namer = context.getNamer();
     MethodConfig methodConfig = methodContext.getMethodConfig();
-    StaticLangApiMethodView initialApiMethodView;
+    StaticLangApiMethodView.Builder apiMethodView;
     if (methodConfig.isPageStreaming()) {
-      initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+      apiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext).toBuilder();
+      FieldConfig resourceFieldConfig =
+          methodContext.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+      String callerResponseTypeName =
+          namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
+      apiMethodView.responseTypeName(callerResponseTypeName);
     } else {
-      initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+      apiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext).toBuilder();
     }
-    StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
