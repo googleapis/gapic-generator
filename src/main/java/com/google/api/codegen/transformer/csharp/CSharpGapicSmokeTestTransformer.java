@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.testing.StandardValueProducer;
@@ -54,6 +56,8 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new CSharpApiMethodTransformer();
 
   public CSharpGapicSmokeTestTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -145,8 +149,13 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
-    StaticLangApiMethodView initialApiMethodView =
-        new CSharpApiMethodTransformer().generateFlattenedMethod(methodContext);
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodConfig.isPageStreaming()) {
+      initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+    } else {
+      initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+    }
     StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
