@@ -17,6 +17,7 @@ package com.google.api.codegen.grpcmetadatagen.java;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaPackageMetadataNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -76,7 +77,8 @@ public abstract class JavaPackageMetadataTransformer {
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())
-              .generationLayer(config.generationLayer());
+              .generationLayer(config.generationLayer())
+              .publishProtos(config.generationLayer() == GenerationLayer.PROTO);
       viewBuilders.add(viewBuilder);
     }
     return viewBuilders;
