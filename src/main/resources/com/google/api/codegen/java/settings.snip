@@ -61,7 +61,66 @@
 
   @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    return ((PublisherStubSettings) getStubSettings()).createStub();
+    return (({@xsettingsClass.stubSettingsName}) getStubSettings()).createStub();
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return {@xsettingsClass.stubSettingsName}.defaultExecutorProviderBuilder();
+  }
+
+  @if xsettingsClass.hasDefaultServiceAddress
+    /**
+     * Returns the default service endpoint.
+     */
+     public static String getDefaultEndpoint() {
+       return {@xsettingsClass.stubSettingsName}.getDefaultEndpoint();
+     }
+    @if xsettingsClass.useDefaultServicePortInEndpoint
+    @else
+      /**
+       * Returns the default service port.
+       */
+      public static int getDefaultServicePort() {
+        return {@xsettingsClass.stubSettingsName}.getDefaultServicePort();
+      }
+    @end
+
+  @end
+
+  @if xsettingsClass.hasDefaultServiceScopes
+    /**
+     * Returns the default service scopes.
+     */
+    public static List<String> getDefaultServiceScopes() {
+      return {@xsettingsClass.stubSettingsName}.getDefaultServiceScopes();
+    }
+
+  @end
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return {@xsettingsClass.stubSettingsName}.defaultCredentialsProviderBuilder();
+  }
+
+  @if xsettingsClass.hasDefaultServiceAddress
+    /** Returns a builder for the default ChannelProvider for this service. */
+    public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
+      return {@xsettingsClass.stubSettingsName}.{@xsettingsClass.defaultTransportProviderBuilder}();
+    }
+
+    public static TransportChannelProvider defaultTransportChannelProvider() {
+      return {@xsettingsClass.stubSettingsName}.defaultTransportChannelProvider();
+    }
+  @end
+
+  @@BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return {@xsettingsClass.stubSettingsName}.defaultApiClientHeaderProviderBuilder();
   }
 
   /**
@@ -104,36 +163,36 @@
     @case "SimpleApiCallable"
         public UnaryCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+          return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
        }
     @case "PagedApiCallable"
       public PagedCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
-        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+        return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "BatchingApiCallable"
       public BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+        return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "OperationApiCallable"
       public OperationCallSettings<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
             {@settings.operationMethod.metadataTypeName}> \
             {@settings.settingsGetFunction}() {
-        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+        return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "ServerStreamingApiCallable"
         public ServerStreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+          return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
         }
     @default
       @if settings.isStreaming
         public StreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
+          return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
         }
       @else
         $unhandledCase: {@settings.type}$
