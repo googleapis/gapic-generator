@@ -61,7 +61,7 @@
 
   @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    return stubSettings.createStub();
+    return ((PublisherStubSettings) getStubSettings()).createStub();
   }
 
   /**
@@ -88,14 +88,9 @@
 @end
 
 @private stubSettingsConfig(xsettingsClass)
-  private final {@xsettingsClass.stubSettingsName} stubSettings;
 
   public static final {@xsettingsClass.name} create({@xsettingsClass.stubSettingsName} stub) throws IOException {
-    return new {@xsettingsClass.name}.Builder(stub).build();
-  }
-
-  public {@xsettingsClass.stubSettingsName} getStubSettings() {
-    return stubSettings;
+    return new {@xsettingsClass.name}.Builder(stub.toBuilder()).build();
   }
   {@""}
 @end
@@ -109,36 +104,36 @@
     @case "SimpleApiCallable"
         public UnaryCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return stubSettings.{@settings.memberName}();
+          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
        }
     @case "PagedApiCallable"
       public PagedCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
-        return stubSettings.{@settings.memberName}();
+        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
       }
     @case "BatchingApiCallable"
       public BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return stubSettings.{@settings.memberName}();
+        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
       }
     @case "OperationApiCallable"
       public OperationCallSettings<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
             {@settings.operationMethod.metadataTypeName}> \
             {@settings.settingsGetFunction}() {
-        return stubSettings.{@settings.memberName}();
+        return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
       }
     @case "ServerStreamingApiCallable"
         public ServerStreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return stubSettings.{@settings.memberName}();
+          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
         }
     @default
       @if settings.isStreaming
         public StreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return stubSettings.{@settings.memberName}();
+          return ((PublisherStubSettings) getStubSettings()).{@settings.memberName}();
         }
       @else
         $unhandledCase: {@settings.type}$
@@ -151,7 +146,6 @@
 @private constructors(xsettingsClass)
   protected {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
-    stubSettings = settingsBuilder.stubBuilder.build();
   }
   {@""}
 @end
@@ -173,8 +167,6 @@
    * Builder for {@xsettingsClass.name}.
    */
   public static class Builder extends ClientSettings.Builder<{@xsettingsClass.name}, Builder> {
-    private {@xsettingsClass.stubSettingsName}.Builder stubBuilder;
-
     {@builderConstructors(xsettingsClass)}
 
     {@builderMethods(xsettingsClass)}
@@ -188,65 +180,31 @@
 @end
 
 @private builderConstructors(xsettingsClass)
-  protected Builder() {
+  protected Builder() throws IOException {
     this((ClientContext) null);
   }
 
   protected Builder(ClientContext clientContext) {
-    super(clientContext);
-
-    stubBuilder = {@xsettingsClass.stubSettingsName}.newBuilder(clientContext);
+    super({@xsettingsClass.stubSettingsName}.newBuilder(clientContext));
   }
 
   private static Builder createDefault() {
-    Builder builder = new Builder((ClientContext) null);
-    @if xsettingsClass.hasDefaultInstance
-      builder.setTransportChannelProvider({@xsettingsClass.stubSettingsName}.defaultTransportChannelProvider());
-      builder.setCredentialsProvider({@xsettingsClass.stubSettingsName}.defaultCredentialsProviderBuilder().build());
-      builder.setInternalHeaderProvider({@xsettingsClass.stubSettingsName}.defaultApiClientHeaderProviderBuilder().build());
-      builder.setEndpoint({@xsettingsClass.stubSettingsName}.getDefaultEndpoint());
-      builder.stubBuilder = {@xsettingsClass.stubSettingsName}.newBuilder();
-    @end
-    return builder;
+    return new Builder({@xsettingsClass.stubSettingsName}.newBuilder());
   }
 
   protected Builder({@xsettingsClass.name} settings) {
-    super(settings.getStubSettings());
-    stubBuilder = settings.getStubSettings().toBuilder();
+    super(settings.getStubSettings().toBuilder());
   }
 
-  protected Builder({@xsettingsClass.stubSettingsName} stubSettings) {
+  protected Builder({@xsettingsClass.stubSettingsName}.Builder stubSettings) {
     super(stubSettings);
-    stubBuilder = stubSettings.toBuilder();
   }
+  {@""}
 @end
 
 @private builderMethods(xsettingsClass)
-  @@Override
-  public Builder setTransportChannelProvider(TransportChannelProvider channelProvider) {
-    super.setTransportChannelProvider(channelProvider);
-    stubBuilder.setTransportChannelProvider(channelProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
-    super.setCredentialsProvider(credentialsProvider);
-    stubBuilder.setCredentialsProvider(credentialsProvider);
-    return this;
-  }
-
-  protected Builder setInternalHeaderProvider(HeaderProvider headerProvider) {
-    super.setInternalHeaderProvider(headerProvider);
-    stubBuilder.setInternalHeaderProvider(headerProvider);
-    return this;
-  }
-
-  @@Override
-  public Builder setEndpoint(String endpoint) {
-    super.setEndpoint(endpoint);
-    stubBuilder.setEndpoint(endpoint);
-    return this;
+  public {@xsettingsClass.stubSettingsName}.Builder getStubSettingsBuilder() {
+    return (({@xsettingsClass.stubSettingsName}.Builder) getStubSettings());
   }
 
   /**
@@ -255,8 +213,7 @@
    * Note: This method does not support applying settings to streaming methods.
    */
   public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
-    super.applyToAllUnaryMethods(stubBuilder.unaryMethodSettingsBuilders(), settingsUpdater);
-    stubBuilder.applyToAllUnaryMethods(settingsUpdater);
+    super.applyToAllUnaryMethods(getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);
     return this;
   }
 
@@ -268,35 +225,35 @@
     @case "SimpleApiCallable"
       public UnaryCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return stubBuilder.{@settings.memberName}();
+        return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "PagedApiCallable"
       public PagedCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
-        return stubBuilder.{@settings.memberName}();
+        return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "BatchingApiCallable"
       public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return stubBuilder.{@settings.memberName}();
+        return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "OperationApiCallable"
       public OperationCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.operationMethod.operationPayloadTypeName}, \
           {@settings.operationMethod.metadataTypeName}> \
           {@settings.settingsGetFunction}() {
-        return stubBuilder.{@settings.memberName}();
+        return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "ServerStreamingApiCallable"
       public ServerStreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return stubBuilder.{@settings.memberName}();
+        return getStubSettingsBuilder().{@settings.memberName}();
       }
     @default
       @if settings.isStreaming
         public StreamingCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return stubBuilder.{@settings.memberName}();
+          return getStubSettingsBuilder().{@settings.memberName}();
         }
       @else
         $unhandledCase: {@settings.type}$
