@@ -57,6 +57,14 @@
         {
             Console.WriteLine(item);
         }
+    @case "OperationFlattenedMethod"
+        {@apiMethod.operationMethod.clientReturnTypeName} operationResponse = client.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+        // Poll the operation until it's complete.
+        // This returns a new operation containing the result (or error).
+        operationResponse = operationResponse.PollUntilCompleted();
+        // Show the result
+        Console.WriteLine(operationResponse.Result);
     @case "FlattenedMethod"
         @if apiMethod.hasReturnValue
             {@apiMethod.responseTypeName} response = client.{@apiMethod.name}(\

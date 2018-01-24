@@ -98,7 +98,8 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
-        .hasMultipleServices(false);
+        .hasMultipleServices(false)
+        .publishProtos(false);
   }
 
   /**

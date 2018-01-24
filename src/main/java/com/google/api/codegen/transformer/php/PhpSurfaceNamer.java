@@ -107,7 +107,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
-    return "../resources/"
+    return "/../resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join("client_config")
             .toLowerUnderscore()
@@ -115,13 +115,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldModel field) {
-    return field.isMap();
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return "/resources/"
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join(name)
+            .toLowerUnderscore()
+        + ".php";
   }
 
   @Override
-  public String getRetrySettingsTypeName() {
-    return "\\Google\\ApiCore\\RetrySettings";
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
+    return field.isMap();
   }
 
   @Override
@@ -169,6 +173,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getClientConfigName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).toLowerUnderscore();
+  }
+
+  @Override
   public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
@@ -187,7 +196,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
