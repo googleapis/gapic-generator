@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
 public abstract class SimpleInitCodeLineView implements InitCodeLineView {
@@ -27,6 +28,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
 
   @Override
   public abstract String identifier();
+
+  public abstract List<String> doc();
 
   public abstract InitValueView initValue();
 
@@ -43,6 +46,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder initValue(InitValueView val);
+
+    public abstract Builder doc(List<String> val);
 
     public abstract SimpleInitCodeLineView build();
   }
