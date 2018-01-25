@@ -56,12 +56,10 @@
 @end
 
 @private members(xsettingsClass)
-  {@stubSettingsConfig(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
-  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    return (({@xsettingsClass.stubSettingsName}) getStubSettings()).createStub();
+  public static final {@xsettingsClass.name} create({@xsettingsClass.stubSettingsName} stub) throws IOException {
+    return new {@xsettingsClass.name}.Builder(stub.toBuilder()).build();
   }
 
   /**
@@ -142,14 +140,6 @@
    */
   public Builder toBuilder() {
     return new Builder(this);
-  }
-  {@""}
-@end
-
-@private stubSettingsConfig(xsettingsClass)
-
-  public static final {@xsettingsClass.name} create({@xsettingsClass.stubSettingsName} stub) throws IOException {
-    return new {@xsettingsClass.name}.Builder(stub.toBuilder()).build();
   }
   {@""}
 @end
