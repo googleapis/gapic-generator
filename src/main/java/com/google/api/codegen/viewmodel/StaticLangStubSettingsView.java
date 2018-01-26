@@ -37,9 +37,6 @@ public abstract class StaticLangStubSettingsView {
   /* Whether to use the default service port with the default endpoint. Default true. */
   public abstract boolean useDefaultServicePortInEndpoint();
 
-  @Nullable
-  public abstract String packagePath();
-
   public abstract Iterable<String> authScopes();
 
   public abstract List<ApiCallSettingsView> callSettings();
@@ -124,8 +121,6 @@ public abstract class StaticLangStubSettingsView {
     public abstract Builder servicePort(Integer val);
 
     public abstract Builder useDefaultServicePortInEndpoint(boolean val);
-
-    public abstract Builder packagePath(String val);
 
     public abstract Builder authScopes(Iterable<String> val);
 

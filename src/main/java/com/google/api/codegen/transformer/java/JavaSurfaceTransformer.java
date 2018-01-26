@@ -467,7 +467,6 @@ public class JavaSurfaceTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xsettingsClass.rpcStubClassName(
@@ -540,7 +539,6 @@ public class JavaSurfaceTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xsettingsClass.rpcStubClassName(
