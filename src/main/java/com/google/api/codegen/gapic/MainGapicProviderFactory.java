@@ -315,7 +315,7 @@ public class MainGapicProviderFactory
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
-                    new PhpGapicSurfaceTransformer(productConfig, phpPathMapper))
+                    new PhpGapicSurfaceTransformer(productConfig, phpPathMapper, model))
                 .build();
 
         GapicCodePathMapper phpClientConfigPathMapper =

@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class LongRunningOperationDetailView {
@@ -34,6 +35,9 @@ public abstract class LongRunningOperationDetailView {
   public abstract boolean implementsCancel();
 
   public abstract String methodName();
+
+  @Nullable
+  public abstract String transportMethodName();
 
   public abstract long initialPollDelay();
 
@@ -64,6 +68,8 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder implementsCancel(boolean val);
 
     public abstract Builder methodName(String val);
+
+    public abstract Builder transportMethodName(String val);
 
     public abstract Builder initialPollDelay(long initialDelay);
 

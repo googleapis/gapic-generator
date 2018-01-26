@@ -224,7 +224,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
     return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 

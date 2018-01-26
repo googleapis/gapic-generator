@@ -29,44 +29,6 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 Style/MethodDefParentheses:
   EnforcedStyle: require_no_parentheses
-Style/NumericLiterals:
-  Enabled: false
-Style/SpaceAroundOperators:
-  Enabled: false
-Metrics/ClassLength:
-  Enabled: false
-Style/EmptyLines:
-  Enabled: false
-Style/EmptyElse:
-  Enabled: false
-Style/HashSyntax:
-  Exclude:
-    - "lib/google/longrunning/**/*"
-Metrics/LineLength:
-  Exclude:
-    - "lib/google/longrunning/**/*"
-Metrics/CyclomaticComplexity:
-  Max: 10
-Metrics/PerceivedComplexity:
-  Max: 10
-Metrics/AbcSize:
-  Max: 25
-  Exclude:
-    - "lib/google/longrunning/**/*"
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - "lib/google/longrunning/**/*"
-Metrics/ParameterLists:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
-Style/ClassVars:
-  Enabled: false
-Style/TrivialAccessors:
-  Enabled: false
-Style/FileName:
-  Enabled: false
 
 ============== file: .yardopts ==============
 --no-private
@@ -83,7 +45,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rake", "~> 11.0"
 gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
@@ -91,10 +52,7 @@ gem "gcloud-jsondoc",
 # WORKAROUND: builds are having problems since the release of 3.0.0
 # pin to the last known good version
 gem "public_suffix", "~> 2.0"
-
-# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
-# so pinning to 2.1 for now.
-gem "rainbow", "~> 2.1.0"
+gem "rake", "~> 11.0"
 
 ============== file: LICENSE ==============
                             Apache License
@@ -651,7 +609,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-gax", "~> 0.8.0"
 
   gem.add_development_dependency "minitest", "~> 5.10"
-  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
 end
 
@@ -1007,6 +965,8 @@ module Google
       #   require "google/longrunning"
       #
       #   operations_client = Google::Longrunning.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   response = operations_client.get_operation(name)
 
@@ -1049,7 +1009,11 @@ module Google
       #   require "google/longrunning"
       #
       #   operations_client = Google::Longrunning.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
+      #
+      #   # TODO: Initialize +filter+:
       #   filter = ''
       #
       #   # Iterate over all results.
@@ -1100,6 +1064,8 @@ module Google
       #   require "google/longrunning"
       #
       #   operations_client = Google::Longrunning.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   operations_client.cancel_operation(name)
 
@@ -1129,6 +1095,8 @@ module Google
       #   require "google/longrunning"
       #
       #   operations_client = Google::Longrunning.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   operations_client.delete_operation(name)
 
