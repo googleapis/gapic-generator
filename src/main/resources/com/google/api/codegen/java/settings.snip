@@ -152,36 +152,36 @@
      */
     @switch settings.type
     @case "SimpleApiCallable"
-        public UnaryCallSettings<{@settings.requestTypeName}, \
+        {@settings.visibility} UnaryCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
        }
     @case "PagedApiCallable"
-      public PagedCallSettings<{@settings.requestTypeName}, \
+      {@settings.visibility} PagedCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "BatchingApiCallable"
-      public BatchingCallSettings<{@settings.requestTypeName}, \
+      {@settings.visibility} BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "OperationApiCallable"
-      public OperationCallSettings<{@settings.requestTypeName}, \
+      {@settings.visibility} OperationCallSettings<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
             {@settings.operationMethod.metadataTypeName}> \
             {@settings.settingsGetFunction}() {
         return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
       }
     @case "ServerStreamingApiCallable"
-        public ServerStreamingCallSettings<{@settings.requestTypeName}, \
+        {@settings.visibility} ServerStreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
         }
     @default
       @if settings.isStreaming
-        public StreamingCallSettings<{@settings.requestTypeName}, \
+        {@settings.visibility} StreamingCallSettings<{@settings.requestTypeName}, \
               {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return (({@xsettingsClass.stubSettingsName}) getStubSettings()).{@settings.memberName}();
         }
@@ -273,35 +273,35 @@
      */
     @switch settings.type
     @case "SimpleApiCallable"
-      public UnaryCallSettings.Builder<{@settings.requestTypeName}, \
+      {@settings.visibility} UnaryCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "PagedApiCallable"
-      public PagedCallSettings.Builder<{@settings.requestTypeName}, \
+      {@settings.visibility} PagedCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "BatchingApiCallable"
-      public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
+      {@settings.visibility} BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "OperationApiCallable"
-      public OperationCallSettings.Builder<{@settings.requestTypeName}, \
+      {@settings.visibility} OperationCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.operationMethod.operationPayloadTypeName}, \
           {@settings.operationMethod.metadataTypeName}> \
           {@settings.settingsGetFunction}() {
         return getStubSettingsBuilder().{@settings.memberName}();
       }
     @case "ServerStreamingApiCallable"
-      public ServerStreamingCallSettings.Builder<{@settings.requestTypeName}, \
+      {@settings.visibility} ServerStreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return getStubSettingsBuilder().{@settings.memberName}();
       }
     @default
       @if settings.isStreaming
-        public StreamingCallSettings.Builder<{@settings.requestTypeName}, \
+        {@settings.visibility} StreamingCallSettings.Builder<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return getStubSettingsBuilder().{@settings.memberName}();
         }

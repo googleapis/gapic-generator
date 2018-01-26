@@ -396,7 +396,7 @@ public class LibraryClient implements BackgroundResource {
    */
   protected LibraryClient(LibrarySettings settings) throws IOException {
     this.settings = settings;
-    this.stub = settings.createStub();
+    this.stub = ((LibraryServiceStubSettings) settings.getStubSettings()).createStub();
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 

@@ -4807,7 +4807,7 @@ public class AddressClient implements BackgroundResource {
    */
   protected AddressClient(AddressSettings settings) throws IOException {
     this.settings = settings;
-    this.stub = settings.createStub();
+    this.stub = ((AddressStubSettings) settings.getStubSettings()).createStub();
   }
 
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
@@ -5271,11 +5271,6 @@ import org.threeten.bp.Duration;
 @Generated("by GAPIC v0.0.5")
 @BetaApi
 public class AddressSettings extends ClientSettings<AddressSettings> {
-
-  public static final AddressSettings create(AddressStubSettings stub) throws IOException {
-    return new AddressSettings.Builder(stub.toBuilder()).build();
-  }
-
   /**
    * Returns the object with the settings used for calls to deleteAddress.
    */
@@ -5305,9 +5300,8 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
   }
 
 
-  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  public AddressStub createStub() throws IOException {
-    return ((AddressStubSettings) getStubSettings()).createStub();
+  public static final AddressSettings create(AddressStubSettings stub) throws IOException {
+    return new AddressSettings.Builder(stub.toBuilder()).build();
   }
 
   /**
