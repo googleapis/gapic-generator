@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.viewmodel.clientconfig;
 
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
-/** Represents a generated document plus the filename for the document. */
+/** Represents a retry code definition. */
 @AutoValue
-public abstract class GeneratedResult {
+public abstract class RetryCodeDefView {
+  public abstract String name();
 
-  public static GeneratedResult create(Doc doc, String filename) {
-    return new AutoValue_GeneratedResult(doc, filename);
+  public abstract List<String> codes();
+
+  public static Builder newBuilder() {
+    return new AutoValue_RetryCodeDefView.Builder();
   }
 
-  public abstract Doc getDoc();
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder name(String val);
 
-  public abstract String getFilename();
+    public abstract Builder codes(List<String> val);
+
+    public abstract RetryCodeDefView build();
+  }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.viewmodel.clientconfig;
 
-/** Defines the SNIPPET_RESOURCE_ROOT. */
-public final class SnippetSetRunner {
+import com.google.auto.value.AutoValue;
 
-  /** The path to the root of snippet resources. */
-  public static final String SNIPPET_RESOURCE_ROOT =
-      SnippetSetRunner.class.getPackage().getName().replace('.', '/');
+/** Represents a key-value pair. */
+@AutoValue
+public abstract class PairView {
+  public abstract String key();
+
+  public abstract String value();
+
+  public static Builder newBuilder() {
+    return new AutoValue_PairView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder key(String val);
+
+    public abstract Builder value(String val);
+
+    public abstract PairView build();
+  }
 }

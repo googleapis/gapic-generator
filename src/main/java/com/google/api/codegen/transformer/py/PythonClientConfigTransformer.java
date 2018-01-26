@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.transformer.py;
 
-/** Defines the SNIPPET_RESOURCE_ROOT. */
-public final class SnippetSetRunner {
+import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.clientconfig.AbstractClientConfigTransformer;
 
-  /** The path to the root of snippet resources. */
-  public static final String SNIPPET_RESOURCE_ROOT =
-      SnippetSetRunner.class.getPackage().getName().replace('.', '/');
+/** The ModelToViewTransformer to transform a Model into the client config for Python. */
+public class PythonClientConfigTransformer extends AbstractClientConfigTransformer {
+  public PythonClientConfigTransformer(GapicCodePathMapper pathMapper) {
+    super(pathMapper);
+  }
+
+  @Override
+  protected String getExtension() {
+    return ".py";
+  }
 }
