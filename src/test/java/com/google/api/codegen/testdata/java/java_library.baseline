@@ -3108,11 +3108,6 @@ import org.threeten.bp.Duration;
  */
 @Generated("by GAPIC v0.0.5")
 public class LibrarySettings extends ClientSettings<LibrarySettings> {
-
-  public static final LibrarySettings create(LibraryServiceStubSettings stub) throws IOException {
-    return new LibrarySettings.Builder(stub.toBuilder()).build();
-  }
-
   /**
    * Returns the object with the settings used for calls to createShelf.
    */
@@ -3284,7 +3279,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to addLabel.
    */
-  public UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings() {
+  /* package-private */ UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).addLabelSettings();
   }
 
@@ -3324,9 +3319,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   }
 
 
-  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  public LibraryServiceStub createStub() throws IOException {
-    return ((LibraryServiceStubSettings) getStubSettings()).createStub();
+  public static final LibrarySettings create(LibraryServiceStubSettings stub) throws IOException {
+    return new LibrarySettings.Builder(stub.toBuilder()).build();
   }
 
   /**
@@ -3608,7 +3602,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to addLabel.
      */
-    public UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
+    /* package-private */ UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
       return getStubSettingsBuilder().addLabelSettings();
     }
 
