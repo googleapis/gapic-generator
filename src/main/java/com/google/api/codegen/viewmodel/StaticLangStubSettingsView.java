@@ -77,6 +77,8 @@ public abstract class StaticLangStubSettingsView {
 
   public abstract boolean hasDefaultInstance();
 
+  public abstract String packagePath();
+
   @Nullable // Used in Java
   public abstract String stubInterfaceName();
 
@@ -150,6 +152,8 @@ public abstract class StaticLangStubSettingsView {
     public abstract Builder rpcTransportName(String val);
 
     public abstract Builder transportNameGetter(String val);
+
+    public abstract Builder packagePath(String val);
 
     public abstract Builder defaultTransportProviderBuilder(String val);
 

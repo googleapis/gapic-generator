@@ -126,17 +126,18 @@ public class JavaSurfaceTransformer {
 
       serviceDocs.add(apiFile.classView().doc());
 
+      InterfaceContext settingsContext = context.withNewTypeTable();
       StaticLangApiMethodView exampleApiMethod =
           getExampleApiMethod(apiFile.classView().apiMethods());
-
-      context = context.withNewTypeTable(namer.getPackageName());
-      StaticLangFileView<StaticLangSettingsView> settingsFile =
-          generateSettingsFile(context, productConfig, exampleApiMethod);
-      surfaceDocs.add(settingsFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubSettingsView> stubSettingsFile =
           generateStubSettingsFile(context, productConfig, exampleApiMethod);
+
+      StaticLangFileView<StaticLangSettingsView> settingsFile =
+          generateSettingsFile(
+              settingsContext, productConfig, exampleApiMethod, stubSettingsFile.classView());
+      surfaceDocs.add(settingsFile);
       surfaceDocs.add(stubSettingsFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
@@ -388,11 +389,13 @@ public class JavaSurfaceTransformer {
   private StaticLangFileView<StaticLangSettingsView> generateSettingsFile(
       InterfaceContext context,
       GapicProductConfig productConfig,
-      StaticLangApiMethodView exampleApiMethod) {
+      StaticLangApiMethodView exampleApiMethod,
+      StaticLangStubSettingsView stubSettingsView) {
     StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
         StaticLangFileView.newBuilder();
 
-    settingsFile.classView(generateSettingsClass(context, productConfig, exampleApiMethod));
+    settingsFile.classView(
+        generateSettingsClass(context, productConfig, exampleApiMethod, stubSettingsView));
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =
@@ -410,69 +413,44 @@ public class JavaSurfaceTransformer {
   private StaticLangSettingsView generateSettingsClass(
       InterfaceContext context,
       GapicProductConfig productConfig,
-      StaticLangApiMethodView exampleApiMethod) {
+      StaticLangApiMethodView exampleApiMethod,
+      StaticLangStubSettingsView stubSettingsView) {
     addSettingsImports(context);
 
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    ApiModel model = context.getApiModel();
 
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
-    xsettingsClass.releaseLevelAnnotation(
-        context
-            .getNamer()
-            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.doc(
         generateSettingsDoc(
             context,
             exampleApiMethod,
             productConfig,
-            namer.getApiSettingsClassName(context.getInterfaceConfig()),
+            name,
             namer.getApiWrapperClassName(context.getInterfaceConfig())));
-    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
+
     xsettingsClass.name(name);
-    xsettingsClass.serviceAddress(model.getServiceAddress());
-    xsettingsClass.servicePort(model.getServicePort());
-    xsettingsClass.authScopes(model.getAuthScopes());
-    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      xsettingsClass.useDefaultServicePortInEndpoint(false);
-    }
+    xsettingsClass.releaseLevelAnnotation(stubSettingsView.releaseLevelAnnotation());
+    xsettingsClass.serviceAddress(stubSettingsView.serviceAddress());
+    xsettingsClass.servicePort(stubSettingsView.servicePort());
+    xsettingsClass.authScopes(stubSettingsView.authScopes());
 
-    xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
-    xsettingsClass.rpcTransportName(
-        namer.getTransportClassName(productConfig.getTransportProtocol()));
-    xsettingsClass.transportNameGetter(
-        namer.getTransporNameGetMethod(productConfig.getTransportProtocol()));
+    xsettingsClass.callSettings(apiCallableTransformer.generateCallSettings(context));
+    xsettingsClass.pageStreamingDescriptors(stubSettingsView.pageStreamingDescriptors());
+    xsettingsClass.pagedListResponseFactories(stubSettingsView.pagedListResponseFactories());
+    xsettingsClass.batchingDescriptors(stubSettingsView.batchingDescriptors());
+    xsettingsClass.retryCodesDefinitions(stubSettingsView.retryCodesDefinitions());
+    xsettingsClass.hasDefaultServiceAddress(stubSettingsView.hasDefaultServiceAddress());
+    xsettingsClass.hasDefaultServiceScopes(stubSettingsView.hasDefaultServiceScopes());
+    xsettingsClass.hasDefaultInstance(stubSettingsView.hasDefaultInstance());
+    xsettingsClass.retryParamsDefinitions(stubSettingsView.retryParamsDefinitions());
+    xsettingsClass.instantiatingChannelProvider(stubSettingsView.instantiatingChannelProvider());
+    xsettingsClass.transportProtocol(stubSettingsView.transportProtocol());
+    xsettingsClass.useDefaultServicePortInEndpoint(
+        stubSettingsView.useDefaultServicePortInEndpoint());
     xsettingsClass.defaultTransportProviderBuilder(
-        namer.getDefaultTransportProviderBuilder(productConfig.getTransportProtocol()));
-    xsettingsClass.transportProvider(
-        namer.getTransportProvider(productConfig.getTransportProtocol()));
-    xsettingsClass.instantiatingChannelProvider(
-        namer.getInstantiatingChannelProvider(productConfig.getTransportProtocol()));
-
-    List<ApiCallSettingsView> apiCallSettings =
-        apiCallableTransformer.generateCallSettings(context);
-    xsettingsClass.callSettings(apiCallSettings);
-    xsettingsClass.pageStreamingDescriptors(
-        pageStreamingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.pagedListResponseFactories(
-        pageStreamingTransformer.generateFactoryClasses(context));
-    xsettingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.retryCodesDefinitions(
-        retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
-    xsettingsClass.retryParamsDefinitions(
-        retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
-    xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
-
-    xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
-    xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
-    xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.stubInterfaceName(
-        getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
-    xsettingsClass.rpcStubClassName(
-        getAndSaveNicknameForStubType(
-            context,
-            namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol())));
+        stubSettingsView.defaultTransportProviderBuilder());
     xsettingsClass.stubSettingsName(
         getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
 
@@ -539,6 +517,7 @@ public class JavaSurfaceTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xsettingsClass.rpcStubClassName(
