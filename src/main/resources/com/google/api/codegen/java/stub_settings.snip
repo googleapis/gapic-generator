@@ -1,6 +1,7 @@
 @extends "java/common.snip"
+@extends "java/settings.snip"
 
-@snippet generate(classFile)
+@override generate(classFile)
   {@renderFileHeader(classFile.fileHeader)}
 
   {@classDoc(classFile.classView.doc)}
@@ -23,38 +24,6 @@
     {@descriptors(classView)}
     {@innerBuilderClass(classView)}
   }
-@end
-
-@private classDoc(doc)
-  // AUTO-GENERATED DOCUMENTATION AND CLASS
-  /**
-   * Settings class to configure an instance of {@@link {@doc.apiClassName}}.
-  @if doc.hasDefaultInstance
-    {@""} *
-     * <p>The default instance has everything set to sensible defaults:
-     *
-     * <ul>
-     * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
-     * are used.
-     * <li>Credentials are acquired automatically through Application Default Credentials.
-     * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
-     * </ul>
-     *
-     * <p>The builder of this class is recursive, so contained classes are themselves builders.
-     * When build() is called, the tree of builders is called to create the complete settings
-     * object. For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
-     *
-     * <pre>
-     * <code>
-     * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
-     *     {@doc.settingsClassName}.newBuilder();
-     * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
-     *     .setTotalTimeout(Duration.ofSeconds(30));
-     * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
-     * </code>
-     * </pre>
-  @end
-   */
 @end
 
 @private constants(xsettingsClass)
@@ -161,26 +130,7 @@
         @end
   }
 
-  /**
-   * Returns a new builder for this class.
-   */
-  public static Builder newBuilder() {
-    return Builder.createDefault();
-  }
-
-  /**
-   * Returns a new builder for this class.
-   */
-  public static Builder newBuilder(ClientContext clientContext) {
-    return new Builder(clientContext);
-  }
-
-  /**
-   * Returns a builder containing all the values of this settings class.
-   */
-  public Builder toBuilder() {
-    return new Builder(this);
-  }
+  {@settingsBuilderConstructors(xsettingsClass)}
   {@""}
 @end
 
@@ -421,18 +371,6 @@
   @end
 @end
 
-@private partitionKeyCode(batchingDesc)
-  @join partitionKey : batchingDesc.partitionKeys on ", "
-    request.{@partitionKey.fieldGetFunction}()
-  @end
-@end
-
-@private fieldCopyCalls(fieldCopies)
-  @join fieldCopy : fieldCopies
-    .{@fieldCopy.fieldSetFunction}(firstRequest.{@fieldCopy.fieldGetFunction}())
-  @end
-@end
-
 @private innerBuilderClass(xsettingsClass)
   /**
    * Builder for {@xsettingsClass.name}.
@@ -513,12 +451,6 @@
     @end
     RETRY_PARAM_DEFINITIONS = definitions.build();
   }
-@end
-
-@private statusCodes(codes)
-  @join code : codes on ", "
-    StatusCode.Code.{@code}
-  @end
 @end
 
 @private builderConstructors(xsettingsClass)

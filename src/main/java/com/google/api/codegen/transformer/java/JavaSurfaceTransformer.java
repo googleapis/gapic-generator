@@ -126,7 +126,6 @@ public class JavaSurfaceTransformer {
 
       serviceDocs.add(apiFile.classView().doc());
 
-      InterfaceContext settingsContext = context.withNewTypeTable();
       StaticLangApiMethodView exampleApiMethod =
           getExampleApiMethod(apiFile.classView().apiMethods());
 
@@ -134,9 +133,10 @@ public class JavaSurfaceTransformer {
       StaticLangFileView<StaticLangStubSettingsView> stubSettingsFile =
           generateStubSettingsFile(context, productConfig, exampleApiMethod);
 
+      context = context.withNewTypeTable(namer.getRootPackageName());
       StaticLangFileView<StaticLangSettingsView> settingsFile =
           generateSettingsFile(
-              settingsContext, productConfig, exampleApiMethod, stubSettingsFile.classView());
+              context, productConfig, exampleApiMethod, stubSettingsFile.classView());
       surfaceDocs.add(settingsFile);
       surfaceDocs.add(stubSettingsFile);
 

@@ -23,7 +23,7 @@
   }
 @end
 
-@private classDoc(doc)
+@snippet classDoc(doc)
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
    * Settings class to configure an instance of {@@link {@doc.apiClassName}}.
@@ -53,6 +53,29 @@
      * </pre>
   @end
    */
+@end
+
+@snippet settingsBuilderConstructors(xsettingsClass)
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
 @end
 
 @private members(xsettingsClass)
@@ -121,26 +144,7 @@
     return {@xsettingsClass.stubSettingsName}.defaultApiClientHeaderProviderBuilder();
   }
 
-  /**
-   * Returns a new builder for this class.
-   */
-  public static Builder newBuilder() {
-    return Builder.createDefault();
-  }
-
-  /**
-   * Returns a new builder for this class.
-   */
-  public static Builder newBuilder(ClientContext clientContext) {
-    return new Builder(clientContext);
-  }
-
-  /**
-   * Returns a builder containing all the values of this settings class.
-   */
-  public Builder toBuilder() {
-    return new Builder(this);
-  }
+  {@settingsBuilderConstructors(xsettingsClass)}
   {@""}
 @end
 
@@ -199,13 +203,13 @@
   {@""}
 @end
 
-@private partitionKeyCode(batchingDesc)
+@snippet partitionKeyCode(batchingDesc)
   @join partitionKey : batchingDesc.partitionKeys on ", "
     request.{@partitionKey.fieldGetFunction}()
   @end
 @end
 
-@private fieldCopyCalls(fieldCopies)
+@snippet fieldCopyCalls(fieldCopies)
   @join fieldCopy : fieldCopies
     .{@fieldCopy.fieldSetFunction}(firstRequest.{@fieldCopy.fieldGetFunction}())
   @end
@@ -222,7 +226,7 @@
   }
 @end
 
-@private statusCodes(codes)
+@snippet statusCodes(codes)
   @join code : codes on ", "
     StatusCode.Code.{@code}
   @end
