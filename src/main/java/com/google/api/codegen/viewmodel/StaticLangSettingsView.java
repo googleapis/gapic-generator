@@ -37,9 +37,6 @@ public abstract class StaticLangSettingsView {
   /* Whether to use the default service port with the default endpoint. Default true. */
   public abstract boolean useDefaultServicePortInEndpoint();
 
-  @Nullable
-  public abstract String packagePath();
-
   public abstract Iterable<String> authScopes();
 
   public abstract List<ApiCallSettingsView> callSettings();
@@ -84,22 +81,7 @@ public abstract class StaticLangSettingsView {
   public abstract String stubSettingsName();
 
   @Nullable // Used in Java
-  public abstract String stubInterfaceName();
-
-  @Nullable // Used in Java
-  public abstract String rpcStubClassName();
-
-  @Nullable // Used in Java
-  public abstract String rpcTransportName();
-
-  @Nullable // Used in Java
-  public abstract String transportNameGetter();
-
-  @Nullable // Used in Java
   public abstract String defaultTransportProviderBuilder();
-
-  @Nullable // Used in Java
-  public abstract String transportProvider();
 
   @Nullable // Used in Java
   public abstract String instantiatingChannelProvider();
@@ -130,8 +112,6 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder useDefaultServicePortInEndpoint(boolean val);
 
-    public abstract Builder packagePath(String val);
-
     public abstract Builder authScopes(Iterable<String> val);
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
@@ -153,17 +133,7 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
-    public abstract Builder stubInterfaceName(String val);
-
-    public abstract Builder rpcStubClassName(String val);
-
-    public abstract Builder rpcTransportName(String val);
-
-    public abstract Builder transportNameGetter(String val);
-
     public abstract Builder defaultTransportProviderBuilder(String val);
-
-    public abstract Builder transportProvider(String val);
 
     public abstract Builder instantiatingChannelProvider(String val);
 
