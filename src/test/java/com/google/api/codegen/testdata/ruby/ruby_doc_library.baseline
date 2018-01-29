@@ -1604,7 +1604,7 @@ module Google
     # error message is needed, put the localized message in the error details or
     # localize it in the client. The optional error details may contain arbitrary
     # information about the error. There is a predefined set of error detail types
-    # in the package +google.rpc+ that can be used for common error conditions.
+    # in the package +google.rpc+ which can be used for common error conditions.
     #
     # = Language mapping
     #
@@ -1627,7 +1627,7 @@ module Google
     #   errors.
     #
     # * Workflow errors. A typical workflow has multiple steps. Each step may
-    #   have a +Status+ message for error reporting.
+    #   have a +Status+ message for error reporting purpose.
     #
     # * Batch operations. If a client uses batch request and batch response, the
     #   +Status+ message should be used directly inside batch response, one for
@@ -1649,8 +1649,8 @@ module Google
     #     {Google::Rpc::Status#details} field, or localized by the client.
     # @!attribute [rw] details
     #   @return [Array<Google::Protobuf::Any>]
-    #     A list of messages that carry the error details.  There is a common set of
-    #     message types for APIs to use.
+    #     A list of messages that carry the error details.  There will be a
+    #     common set of message types for APIs to use.
     class Status; end
   end
 end
@@ -2781,6 +2781,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +shelf+:
       #   shelf = {}
       #   response = library_service_client.create_shelf(shelf)
 
@@ -2817,6 +2819,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #
+      #   # TODO: Initialize +options_+:
       #   options_ = ''
       #   response = library_service_client.get_shelf(formatted_name, options_)
 
@@ -2947,6 +2951,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #
+      #   # TODO: Initialize +book+:
       #   book = {}
       #   response = library_service_client.create_book(formatted_name, book)
 
@@ -2989,7 +2995,11 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +shelf+:
       #   shelf = {}
+      #
+      #   # TODO: Initialize +books+:
       #   books = []
       #   series_string = "foobar"
       #   series_uuid = { series_string: series_string }
@@ -3148,6 +3158,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +book+:
       #   book = {}
       #   response = library_service_client.update_book(formatted_name, book)
 
@@ -3389,6 +3401,8 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
+      #
+      #   # TODO: Initialize +index_map_item+:
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
       #   library_service_client.update_book_index(formatted_name, index_name, index_map)
@@ -3447,6 +3461,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   library_service_client.stream_books(name).each do |element|
       #     # Process element.
@@ -3484,6 +3500,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -3518,6 +3536,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -3551,8 +3571,12 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +names_element+:
       #   names_element = ''
       #   names = [names_element]
+      #
+      #   # TODO: Initialize +shelves+:
       #   shelves = []
       #
       #   # Iterate over all results.
@@ -3600,6 +3624,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +tag+:
       #   tag = ''
       #   response = library_service_client.add_tag(formatted_resource, tag)
 
@@ -3633,6 +3659,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +label+:
       #   label = ''
       #   response = library_service_client.add_label(formatted_resource, label)
 
@@ -3841,32 +3869,86 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +required_singular_int32+:
       #   required_singular_int32 = 0
+      #
+      #   # TODO: Initialize +required_singular_int64+:
       #   required_singular_int64 = 0
+      #
+      #   # TODO: Initialize +required_singular_float+:
       #   required_singular_float = 0.0
+      #
+      #   # TODO: Initialize +required_singular_double+:
       #   required_singular_double = 0.0
+      #
+      #   # TODO: Initialize +required_singular_bool+:
       #   required_singular_bool = false
+      #
+      #   # TODO: Initialize +required_singular_enum+:
       #   required_singular_enum = :ZERO
+      #
+      #   # TODO: Initialize +required_singular_string+:
       #   required_singular_string = ''
+      #
+      #   # TODO: Initialize +required_singular_bytes+:
       #   required_singular_bytes = ''
+      #
+      #   # TODO: Initialize +required_singular_message+:
       #   required_singular_message = {}
+      #
+      #   # TODO: Initialize +required_singular_resource_name+:
       #   required_singular_resource_name = ''
+      #
+      #   # TODO: Initialize +required_singular_resource_name_oneof+:
       #   required_singular_resource_name_oneof = ''
+      #
+      #   # TODO: Initialize +required_singular_fixed32+:
       #   required_singular_fixed32 = 0
+      #
+      #   # TODO: Initialize +required_singular_fixed64+:
       #   required_singular_fixed64 = 0
+      #
+      #   # TODO: Initialize +required_repeated_int32+:
       #   required_repeated_int32 = []
+      #
+      #   # TODO: Initialize +required_repeated_int64+:
       #   required_repeated_int64 = []
+      #
+      #   # TODO: Initialize +required_repeated_float+:
       #   required_repeated_float = []
+      #
+      #   # TODO: Initialize +required_repeated_double+:
       #   required_repeated_double = []
+      #
+      #   # TODO: Initialize +required_repeated_bool+:
       #   required_repeated_bool = []
+      #
+      #   # TODO: Initialize +required_repeated_enum+:
       #   required_repeated_enum = []
+      #
+      #   # TODO: Initialize +required_repeated_string+:
       #   required_repeated_string = []
+      #
+      #   # TODO: Initialize +required_repeated_bytes+:
       #   required_repeated_bytes = []
+      #
+      #   # TODO: Initialize +required_repeated_message+:
       #   required_repeated_message = []
+      #
+      #   # TODO: Initialize +formatted_required_repeated_resource_name+:
       #   formatted_required_repeated_resource_name = []
+      #
+      #   # TODO: Initialize +formatted_required_repeated_resource_name_oneof+:
       #   formatted_required_repeated_resource_name_oneof = []
+      #
+      #   # TODO: Initialize +required_repeated_fixed32+:
       #   required_repeated_fixed32 = []
+      #
+      #   # TODO: Initialize +required_repeated_fixed64+:
       #   required_repeated_fixed64 = []
+      #
+      #   # TODO: Initialize +required_map+:
       #   required_map = {}
       #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
 

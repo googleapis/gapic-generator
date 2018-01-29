@@ -709,7 +709,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from(var));
   }
 
-  /* The name of a retry definition */
+  /** The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
