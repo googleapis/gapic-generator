@@ -272,13 +272,14 @@ message MethodConfigProto {
   // the sample to be usable.
   repeated string sample_code_init_fields = 10;
 
-  // Specifies sets of parameter values to be used together in a sample.
-  repeated CodeSampleValues code_sample_values = 16;
+  // Specifies sets of parameter values to be used together in a
+  // sample. If this is not set, no samples are output.
+  repeated SampleValueSet sample_value_sets = 16;
 
-  // Defines combinations of "molds" (sample code structures as output
-  // by the client library generator) and `CodeSampleValues` that should
-  // be combined to generate samples.
-  repeated SampleConfiguration samples = 17;
+  // Defines combinations of method calling forms (sample code
+  // structures as output by the client library generator) and
+  // `sample_value_sets` that should be combined to generate samples.
+  SampleConfiguration samples = 17;
 
   // Route calls through a different gRPC interface than the one this method
   // is contained in. This specifically supports the Pub/Sub IAM hack to route
@@ -300,9 +301,9 @@ message MethodConfigProto {
 
 }
 
-// `CodeSampleValues` defines sets of parameter values to be used in
+// `SampleValueSet` defines a set of parameter values used in
 // generating samples.
-message CodeSampleValues {
+message SampleValueSet {
   // An identifier, unique to this method, for this set of values.
   string id = 1;
 
@@ -326,52 +327,68 @@ message CodeSampleValues {
   repeated string parameters = 4;
 }
 
-// `SampleConfiguration` defines combinations of "molds" (sample code
-// structures as output by the client library generator) and
-// `CodeSampleValues` that should be combined to generate samples.
+// `SampleConfiguration` defines combinations of "calling forms"
+// (sample code structures as output by the client library generator)
+// and sample value sets that should be combined to generate samples.
 message SampleConfiguration {
-  // `Value` references one or more `CodeSampleValues` and provides a
-  // hint as to where it should be presented.
-  message Value {
-    // One or more of the `CodeSampleValues.id`s defined for this
-    // method. If more than one is specified and `explorer_sample` is
-    // set, the hint for relative order of the samples generated is
-    // taken to be the order of this list. If not specified, `ids`
-    // defaults to a list of all defined values for
-    // `MethodConfigProto.code_sample_values.id`. If any element of
-    // `ids` is invalid (i.e., is not found in
-    // `MethodConfigProto.code_sample_values.id`) and `delete` is not
-    // set, then an fatal error is raised at code-generation time.
-    repeated string ids = 1;
 
-    // Whether the samples specified by this configuration should also
-    // be used as configurable "Explorer Samples" suitable for
-    // inclusion in a UI element.
-    bool explorer_sample = 2;
+  // `SampleTypeConfiguration` defines the samples that will show up
+  // as a particular sample type. If order matters for this sample
+  // type, the order of the samples is taken to be primarily the order
+  // in which the `calling_forms` appear, and secondarily, for each
+  // such form, the order in which the `value_sets` appear.
+  message SampleTypeConfiguration {
+    // One or more expressions matching the method calling forms
+    // (defined by the client generator) applicable to this
+    // method. Any expressions that do not match at least one calling
+    // form cause a fatal error during code generation. If not
+    // specified, samples are generated for all such forms.
+    //
+    // An expression matches an ID:
+    //  (a) if the expression equals "*" (which matches all IDs), or
+    //  (b) if the expression equals the ID identically, or
+    //  (c) if the ID equals the expression concatenated with a "#" character
+    //      followed by any number of other characters.
+    //
+    // TODO(vchudnov-g): Point to a reference listing the possible calling forms
+    // for each method type.
+    repeated string calling_forms = 1;
 
-    // Whether the samples specified by this configuration should also
-    // be included within code code comments in the surface of each
-    // generated client library.
-    bool in_code_sample = 3;
-
-    // A hint as to the user-visible position of this
-    // `SampleConfiguration` relative to other
-    // `SampleConfiguration`s. This is only used when generating
-    // "Explorer Samples", which only happens if `explorer_sample` is
-    // set.
-    uint32 position = 4;
+    // One or more expressions matching the
+    // `MethodConfigProto.sample_value_sets.id`s defined for this
+    // method. Any expressions on this list that do not match a
+    // `SampleValueSet.id` cause a fatal error during code
+    // generation. If not specified or if empty, no samples of this
+    // type will be generated.
+    //
+    // An expression matches an ID
+    // (a) if the expression equals "*" (which matches all IDs), or
+    // (b) if the leading characters of the ID are identical to the
+    //     expression
+    repeated string value_sets = 2;
   }
 
-  // The sample code mold (defined in the client library generator for
-  // various method types) to which this `SampleConfiguration` applies
-  //
-  // TODO(vchudnov-g): Point to a reference listing the possible molds
-  // for each method type.
-  repeated string molds = 1;
+  // The configuration for in-code samples, which appear in the format
+  // and location idiomatic to each generated language. The various
+  // in-code samples will be presented in the order in which they are
+  // configured here. If this field is not specified, one in-code
+  // sample will be produced for this method.
+  repeated SampleTypeConfiguration in_code = 1;
 
-  // The set of `CodeSampleValues` to be used to generate samples for
-  // this "mold".
-  repeated Value values = 2;
+  // The configuration for stand-alone, runnable samples in each
+  // generated language. If this field is not specified, a stand-alone
+  // sample is generated for every combination of calling form and
+  // `MethodConfigProto.sample_value_sets`, if the latter is defined.
+  repeated SampleTypeConfiguration standalone = 2;
+
+  // The configuration for user-parametrized samples ("API explorer
+  // samples") that can be displayed in, for example, an interactive
+  // UI. The various explorer samples will be presented in the order
+  // in which they are configured here. If this field is not
+  // specified, an explorer sample is generated for every combination
+  // of calling form and `MethodConfigProto.sample_value_sets`, if the
+  // latter is defined.
+  repeated SampleTypeConfiguration api_explorer = 3;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a

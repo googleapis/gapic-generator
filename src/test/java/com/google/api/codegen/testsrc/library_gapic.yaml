@@ -227,7 +227,7 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
-    code_sample_values:
+    sample_value_sets:
     - id: review
       title: "Review Copy"
       description: "Calling PublishSeries for a review copy"
@@ -239,16 +239,21 @@ interfaces:
       parameters:
       - edition=2
     samples:
-    - molds: ["edition"]                       # TODO(vchudnov-g) use a real mold once implemented
-      values:
-      - ids: ["second_edition","review"]
-        explorer_sample: true
-        position: 1
-    - molds: ["series"]                        # TODO(vchudnov-g) use a real mold once implemented
-      values:
-      - ids: ["sample_code_init_fields"]       # implicit code_sample_values element for legacy field
-        in_code_sample: true
-        explorer_sample: true
+      in_code: 
+      - calling_forms: [callable]
+        value_sets: [review]
+      api_explorer:
+      - calling_forms: request_based
+        value_sets: [second_edition, review]
+      - calling_forms: callable
+        value_sets: [review]
+      standalone:
+      - calling_forms: request_based
+        value_sets: [second_edition, review]
+      - calling_forms: callable
+        value_sets: [review]
+      - calling_forms: callable
+        value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
   - name: GetBook
     flattening:
       groups:
@@ -328,15 +333,6 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
-    code_sample_values:
-      - id: foo_set
-        title: "Foo set"
-        parameters:
-          - optional_foo=Bar
-      - id: standard
-        parameters:
-          - name=Wonderland
-    # samples: not specified, so all molds are used to create samples for each element of `code_sample_values`
   - name: MoveBook
     flattening:
       groups:
