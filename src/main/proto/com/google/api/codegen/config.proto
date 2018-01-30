@@ -304,7 +304,8 @@ message MethodConfigProto {
 // `SampleValueSet` defines a set of parameter values used in
 // generating samples.
 message SampleValueSet {
-  // An identifier, unique to this method, for this set of values.
+  // An identifier, unique to a particular API method, for this set of
+  // values.
   string id = 1;
 
   // A short, user-visible name for this set of values. This name may
@@ -317,13 +318,12 @@ message SampleValueSet {
 
   // A set of parameter values to be used together in samples. Each
   // member of `parameters` can be specified in one of two formats:
-  //
   // * `DOTTED.RESOURCE.NAME=VALUE`, to specify the entire value of
   //   `NAME`.  If `VALUE` is not specified, it is treated as the
   //    default zero value for `NAME`'s type.
-  // *  `DOTTED.RESOURCE.NAME%FIELD=VALUE`, if `NAME` is required to be
-  //    a specially formatted string using `FIELD` as one of possibly
-  //    several placeholders.
+  // * `DOTTED.RESOURCE.NAME%FIELD=VALUE`, if `NAME` is required to be
+  //   a specially formatted string using `FIELD` as one of possibly
+  //   several placeholders.
   repeated string parameters = 4;
 }
 
