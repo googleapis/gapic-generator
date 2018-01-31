@@ -1,0 +1,56 @@
+@snippet generate(config)
+<?php
+
+return [
+    'interfaces' => [
+        @join interface : {@config.interfaceConfigs}
+            {@buildInterface(interface)}
+        @end
+    ]
+];
+{@""}
+@end
+
+@private buildInterface(interface)
+    '{@interface.key}' => [
+        @join apiMethod : {@interface.apiMethods}
+            {@buildMethod(apiMethod)}
+        @end
+    ],
+@end
+
+@private buildMethod(apiMethod)
+    '{@apiMethod.name}' => [
+        'method' => '{@apiMethod.method}',
+        'uriTemplate' => '{@apiMethod.uriTemplate}',
+        @if apiMethod.hasBody
+            'body' => '{@apiMethod.body}',
+        @end
+        @if apiMethod.hasAdditionalBindings
+            'additionalBindings' => [
+                @join additionalBinding : {@apiMethod.additionalBindings}
+                    [
+                        'method' => '{@apiMethod.method}',
+                        'uriTemplate' => '{@additionalBinding}',
+                        @if apiMethod.hasBody
+                            'body' => '{@apiMethod.body}',
+                        @end
+                    ],
+                @end
+            ],
+        @end
+        @if apiMethod.hasPlaceholders
+            'placeholders' => [
+                @join placeholder : {@apiMethod.placeholders}
+                    '{@placeholder.name}' => [
+                        'getters' => [
+                            @join getter : {@placeholder.getters}
+                                '{@getter}',
+                            @end
+                        ],
+                    ],
+                @end
+            ]
+        @end
+    ],
+@end

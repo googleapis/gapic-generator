@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,41 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class SimpleInitCodeLineView implements InitCodeLineView {
+public abstract class RestPlaceholderConfigView {
+  public abstract String name();
 
-  @Override
-  public abstract InitCodeLineType lineType();
-
-  public abstract String typeName();
-
-  @Override
-  public abstract String identifier();
-
-  public abstract List<String> doc();
-
-  public abstract InitValueView initValue();
+  public abstract List<String> getters();
 
   public static Builder newBuilder() {
-    return new AutoValue_SimpleInitCodeLineView.Builder();
+    return new AutoValue_RestPlaceholderConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder lineType(InitCodeLineType val);
+    public abstract Builder name(String val);
 
-    public abstract Builder typeName(String val);
+    public abstract Builder getters(List<String> val);
 
-    public abstract Builder identifier(String val);
-
-    public abstract Builder initValue(InitValueView val);
-
-    public abstract Builder doc(List<String> val);
-
-    public abstract SimpleInitCodeLineView build();
+    public abstract RestPlaceholderConfigView build();
   }
 }

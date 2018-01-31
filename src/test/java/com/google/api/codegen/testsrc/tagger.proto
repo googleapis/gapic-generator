@@ -4,6 +4,8 @@ syntax = "proto3";
 
 package google.tagger.v1;
 
+import "google/api/annotations.proto";
+
 option php_namespace = "Google\\Tagger\\CustomNamespace\\V1";
 option java_multiple_files = true;
 option java_outer_classname = "TaggerProto";
@@ -14,14 +16,18 @@ option go_package = "google.golang.org/genproto/googleapis/tagger/v1";
 service Tagger {
 
   // Adds a tag to the entity.
-  rpc AddTag(AddTagRequest) returns (AddTagResponse);
+  rpc AddTag(AddTagRequest) returns (AddTagResponse) {
+    option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
+  }
 }
 
 // Labeler mixin.
 service Labeler {
 
   // Adds a label to the entity.
-  rpc AddLabel(AddLabelRequest) returns (AddLabelResponse);
+  rpc AddLabel(AddLabelRequest) returns (AddLabelResponse) {
+    option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addLabel" body: "*" };
+  }
 }
 
 message AddTagRequest {

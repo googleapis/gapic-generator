@@ -351,6 +351,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getFieldGetFunctionName(field, field.asName());
   }
 
+  /** The function name to get a field having the given name. */
+  public String getFieldGetFunctionName(Name identifier) {
+    return publicMethodName(Name.from("get").join(identifier));
+  }
+
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
@@ -704,7 +709,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from(var));
   }
 
-  /* The name of a retry definition */
+  /** The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
@@ -919,11 +924,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getParamTypeName(typeTable, type);
   }
 
-  /** The type name for retry settings. */
-  public String getRetrySettingsTypeName() {
-    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
-  }
-
   /** The type name for an optional array argument; not used in most languages. */
   public String getOptionalArrayTypeName() {
     return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
@@ -1103,8 +1103,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the gPRC request. */
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return getNotImplementedString("SurfaceNamer.getRequestTypeName");
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getAndSaveTypeName");
   }
 
   public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
@@ -1245,6 +1245,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
+  }
+
+  /** The path to a config with a specified name. */
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return getNotImplementedString("SurfaceNamer.getConfigPath");
   }
 
   /**

@@ -184,6 +184,8 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String jsonKeyVariable();
 
+  public abstract boolean publishProtos();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -335,6 +337,9 @@ public abstract class PackageMetadataView implements ViewModel {
      * used to configure default credentials.
      */
     public abstract Builder jsonKeyVariable(String s);
+
+    /** Whether .proto files should be included in the package. */
+    public abstract Builder publishProtos(boolean val);
 
     public abstract PackageMetadataView build();
   }

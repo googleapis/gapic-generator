@@ -53,7 +53,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
-  @Nullable
   public abstract List<BatchingDescriptorView> batchingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();

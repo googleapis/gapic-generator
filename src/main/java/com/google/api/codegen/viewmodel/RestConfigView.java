@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,41 +14,35 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.metacode.InitCodeLineType;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class SimpleInitCodeLineView implements InitCodeLineView {
+public abstract class RestConfigView implements ViewModel {
+  public abstract String templateFileName();
+
+  public abstract String outputPath();
+
+  public abstract List<RestInterfaceConfigView> interfaceConfigs();
 
   @Override
-  public abstract InitCodeLineType lineType();
-
-  public abstract String typeName();
-
-  @Override
-  public abstract String identifier();
-
-  public abstract List<String> doc();
-
-  public abstract InitValueView initValue();
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
 
   public static Builder newBuilder() {
-    return new AutoValue_SimpleInitCodeLineView.Builder();
+    return new AutoValue_RestConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder lineType(InitCodeLineType val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract Builder typeName(String val);
+    public abstract Builder outputPath(String val);
 
-    public abstract Builder identifier(String val);
+    public abstract Builder interfaceConfigs(List<RestInterfaceConfigView> val);
 
-    public abstract Builder initValue(InitValueView val);
-
-    public abstract Builder doc(List<String> val);
-
-    public abstract SimpleInitCodeLineView build();
+    public abstract RestConfigView build();
   }
 }
