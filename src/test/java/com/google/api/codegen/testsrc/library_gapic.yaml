@@ -227,6 +227,33 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
+    sample_value_sets:
+    - id: review
+      title: "Review Copy"
+      description: "Calling PublishSeries for a review copy"
+      parameters:
+      - versioning.review_copy=true
+    - id: second_edition
+      title: "Second edition"
+      description: "Calling PublishSeries for a specified edition"
+      parameters:
+      - edition=2
+    samples:
+      in_code: 
+      - calling_forms: [callable]
+        value_sets: [review]
+      api_explorer:
+      - calling_forms: request_based
+        value_sets: [second_edition, review]
+      - calling_forms: callable
+        value_sets: [review]
+      standalone:
+      - calling_forms: request_based
+        value_sets: [second_edition, review]
+      - calling_forms: callable
+        value_sets: [review]
+      - calling_forms: callable
+        value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
   - name: GetBook
     flattening:
       groups:
