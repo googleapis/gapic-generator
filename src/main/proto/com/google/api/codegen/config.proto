@@ -340,15 +340,15 @@ message SampleConfiguration {
   message SampleTypeConfiguration {
     // One or more expressions matching the method calling forms
     // (defined by the client generator) applicable to this
-    // method. Any expressions that do not match at least one calling
-    // form cause a fatal error during code generation. If not
+    // method. Any expressions that do not match a calling form in a
+    // particular language are ignored for that language. If not
     // specified, samples are generated for all such forms.
     //
-    // An expression matches an ID:
-    //  (a) if the expression equals "*" (which matches all IDs), or
-    //  (b) if the expression equals the ID identically, or
-    //  (c) if the ID equals the expression concatenated with a "#" character
-    //      followed by any number of other characters.
+    // An expression matches an ID if the sequence of characters in
+    // the expression before the first "*", if any, match the initial
+    // sequence of characters in the ID. This allows for prefix
+    // matching. In particular, the expression "*" will
+    // match all IDs.
     //
     // TODO(vchudnov-g): Point to a reference listing the possible calling forms
     // for each method type.
@@ -361,10 +361,11 @@ message SampleConfiguration {
     // generation. If not specified or if empty, no samples of this
     // type will be generated.
     //
-    // An expression matches an ID
-    // (a) if the expression equals "*" (which matches all IDs), or
-    // (b) if the leading characters of the ID are identical to the
-    //     expression
+    // An expression matches an ID if the sequence of characters in
+    // the expression before the first "*", if any, match the initial
+    // sequence of characters in the ID. This allows for prefix
+    // matching. In particular, the expression "*" will
+    // match all IDs.
     repeated string value_sets = 2;
   }
 
