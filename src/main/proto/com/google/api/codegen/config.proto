@@ -272,6 +272,15 @@ message MethodConfigProto {
   // the sample to be usable.
   repeated string sample_code_init_fields = 10;
 
+  // Specifies sets of parameter values to be used together in a
+  // sample. If this is not set, no samples are output.
+  repeated SampleValueSet sample_value_sets = 16;
+
+  // Defines combinations of method calling forms (sample code
+  // structures as output by the client library generator) and
+  // `sample_value_sets` that should be combined to generate samples.
+  SampleConfiguration samples = 17;
+
   // Route calls through a different gRPC interface than the one this method
   // is contained in. This specifically supports the Pub/Sub IAM hack to route
   // IAM methods to IamPolicy for Pub/Sub.
@@ -290,6 +299,97 @@ message MethodConfigProto {
   // Long-running settings.
   LongRunningConfigProto long_running = 30;
 
+}
+
+// `SampleValueSet` defines a set of parameter values used in
+// generating samples.
+message SampleValueSet {
+  // An identifier, unique to a particular API method, for this set of
+  // values.
+  string id = 1;
+
+  // A short, user-visible name for this set of values. This name may
+  // be used in a UI menu, for example.
+  string title = 2;
+
+  // A longer description for this set of values. This name may be
+  // used in a UI hoverbox, for example.
+  string description = 3;
+
+  // A set of parameter values to be used together in samples. Each
+  // member of `parameters` can be specified in one of two formats:
+  // * `DOTTED.RESOURCE.NAME=VALUE`, to specify the entire value of
+  //   `NAME`.  If `VALUE` is not specified, it is treated as the
+  //    default zero value for `NAME`'s type.
+  // * `DOTTED.RESOURCE.NAME%FIELD=VALUE`, if `NAME` is required to be
+  //   a specially formatted string using `FIELD` as one of possibly
+  //   several placeholders.
+  repeated string parameters = 4;
+}
+
+// `SampleConfiguration` defines combinations of "calling forms"
+// (sample code structures as output by the client library generator)
+// and sample value sets that should be combined to generate samples.
+message SampleConfiguration {
+
+  // `SampleTypeConfiguration` defines the samples that will show up
+  // as a particular sample type. If order matters for this sample
+  // type, the order of the samples is taken to be primarily the order
+  // in which the `calling_forms` appear, and secondarily, for each
+  // such form, the order in which the `value_sets` appear.
+  message SampleTypeConfiguration {
+    // One or more expressions matching the method calling forms
+    // (defined by the client generator) applicable to this
+    // method. Any expressions that do not match a calling form in a
+    // particular language are ignored for that language. If not
+    // specified, samples are generated for all such forms.
+    //
+    // An expression matches an ID if the sequence of characters in
+    // the expression before the first "*", if any, match the initial
+    // sequence of characters in the ID. This allows for prefix
+    // matching. In particular, the expression "*" will
+    // match all IDs.
+    //
+    // TODO(vchudnov-g): Point to a reference listing the possible calling forms
+    // for each method type.
+    repeated string calling_forms = 1;
+
+    // One or more expressions matching the
+    // `MethodConfigProto.sample_value_sets.id`s defined for this
+    // method. Any expressions on this list that do not match a
+    // `SampleValueSet.id` cause a fatal error during code
+    // generation. If not specified or if empty, no samples of this
+    // type will be generated.
+    //
+    // An expression matches an ID if the sequence of characters in
+    // the expression before the first "*", if any, match the initial
+    // sequence of characters in the ID. This allows for prefix
+    // matching. In particular, the expression "*" will
+    // match all IDs.
+    repeated string value_sets = 2;
+  }
+
+  // The configuration for in-code samples, which appear in the format
+  // and location idiomatic to each generated language. The various
+  // in-code samples will be presented in the order in which they are
+  // configured here. If this field is not specified, one in-code
+  // sample will be produced for this method.
+  repeated SampleTypeConfiguration in_code = 1;
+
+  // The configuration for stand-alone, runnable samples in each
+  // generated language. If this field is not specified, a stand-alone
+  // sample is generated for every combination of calling form and
+  // `MethodConfigProto.sample_value_sets`, if the latter is defined.
+  repeated SampleTypeConfiguration standalone = 2;
+
+  // The configuration for user-parametrized samples ("API explorer
+  // samples") that can be displayed in, for example, an interactive
+  // UI. The various explorer samples will be presented in the order
+  // in which they are configured here. If this field is not
+  // specified, an explorer sample is generated for every combination
+  // of calling form and `MethodConfigProto.sample_value_sets`, if the
+  // latter is defined.
+  repeated SampleTypeConfiguration api_explorer = 3;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
