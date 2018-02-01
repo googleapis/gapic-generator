@@ -235,7 +235,7 @@
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
-    this.stub = settings.createStub();
+    this.stub = (({@xapiClass.stubSettingsClassName}) settings.getStubSettings()).createStub();
     @if xapiClass.hasLongRunningOperations
       this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end

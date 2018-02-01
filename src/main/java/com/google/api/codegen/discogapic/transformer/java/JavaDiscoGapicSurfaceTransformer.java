@@ -47,6 +47,7 @@ public class JavaDiscoGapicSurfaceTransformer
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
+  private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String RPC_STUB_TEMPLATE_FILENAME = "java/http_stub.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -64,6 +65,7 @@ public class JavaDiscoGapicSurfaceTransformer
     return Arrays.asList(
         API_TEMPLATE_FILENAME,
         SETTINGS_TEMPLATE_FILENAME,
+        STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
         RPC_STUB_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,

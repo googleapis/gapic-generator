@@ -62,6 +62,7 @@ import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
 import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
+import com.google.api.codegen.viewmodel.StaticLangStubSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
@@ -90,6 +91,7 @@ public class JavaSurfaceTransformer {
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
+  private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
 
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -124,12 +126,19 @@ public class JavaSurfaceTransformer {
 
       serviceDocs.add(apiFile.classView().doc());
 
-      context = context.withNewTypeTable();
       StaticLangApiMethodView exampleApiMethod =
           getExampleApiMethod(apiFile.classView().apiMethods());
+
+      context = context.withNewTypeTable(namer.getStubPackageName());
+      StaticLangFileView<StaticLangStubSettingsView> stubSettingsFile =
+          generateStubSettingsFile(context, productConfig, exampleApiMethod);
+
+      context = context.withNewTypeTable(namer.getRootPackageName());
       StaticLangFileView<StaticLangSettingsView> settingsFile =
-          generateSettingsFile(context, productConfig, exampleApiMethod);
+          generateSettingsFile(
+              context, productConfig, exampleApiMethod, stubSettingsFile.classView());
       surfaceDocs.add(settingsFile);
+      surfaceDocs.add(stubSettingsFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
@@ -195,9 +204,10 @@ public class JavaSurfaceTransformer {
         namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     xapiClass.name(name);
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
-    xapiClass.stubInterfaceName(namer.getApiStubInterfaceName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
+    xapiClass.stubSettingsClassName(
+        getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
@@ -354,14 +364,38 @@ public class JavaSurfaceTransformer {
     return null;
   }
 
-  private StaticLangFileView<StaticLangSettingsView> generateSettingsFile(
+  private StaticLangFileView<StaticLangStubSettingsView> generateStubSettingsFile(
       InterfaceContext context,
       GapicProductConfig productConfig,
       StaticLangApiMethodView exampleApiMethod) {
-    StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
-        StaticLangFileView.<StaticLangSettingsView>newBuilder();
+    StaticLangFileView.Builder<StaticLangStubSettingsView> settingsFile =
+        StaticLangFileView.newBuilder();
 
-    settingsFile.classView(generateSettingsClass(context, productConfig, exampleApiMethod));
+    settingsFile.classView(generateStubSettingsClass(context, productConfig, exampleApiMethod));
+    settingsFile.templateFileName(STUB_SETTINGS_TEMPLATE_FILENAME);
+
+    String outputPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
+    String className = context.getNamer().getApiStubSettingsClassName(context.getInterfaceConfig());
+    settingsFile.outputPath(outputPath + File.separator + className + ".java");
+
+    // must be done as the last step to catch all imports
+    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+
+    return settingsFile.build();
+  }
+
+  private StaticLangFileView<StaticLangSettingsView> generateSettingsFile(
+      InterfaceContext context,
+      GapicProductConfig productConfig,
+      StaticLangApiMethodView exampleApiMethod,
+      StaticLangStubSettingsView stubSettingsView) {
+    StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
+        StaticLangFileView.newBuilder();
+
+    settingsFile.classView(
+        generateSettingsClass(context, productConfig, exampleApiMethod, stubSettingsView));
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =
@@ -379,6 +413,53 @@ public class JavaSurfaceTransformer {
   private StaticLangSettingsView generateSettingsClass(
       InterfaceContext context,
       GapicProductConfig productConfig,
+      StaticLangApiMethodView exampleApiMethod,
+      StaticLangStubSettingsView stubSettingsView) {
+    addSettingsImports(context);
+
+    SurfaceNamer namer = context.getNamer();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+
+    StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
+    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
+    xsettingsClass.doc(
+        generateSettingsDoc(
+            context,
+            exampleApiMethod,
+            productConfig,
+            name,
+            namer.getApiWrapperClassName(context.getInterfaceConfig())));
+
+    xsettingsClass.name(name);
+    xsettingsClass.releaseLevelAnnotation(stubSettingsView.releaseLevelAnnotation());
+    xsettingsClass.serviceAddress(stubSettingsView.serviceAddress());
+    xsettingsClass.servicePort(stubSettingsView.servicePort());
+    xsettingsClass.authScopes(stubSettingsView.authScopes());
+
+    xsettingsClass.callSettings(apiCallableTransformer.generateCallSettings(context));
+    xsettingsClass.pageStreamingDescriptors(stubSettingsView.pageStreamingDescriptors());
+    xsettingsClass.pagedListResponseFactories(stubSettingsView.pagedListResponseFactories());
+    xsettingsClass.batchingDescriptors(stubSettingsView.batchingDescriptors());
+    xsettingsClass.retryCodesDefinitions(stubSettingsView.retryCodesDefinitions());
+    xsettingsClass.hasDefaultServiceAddress(stubSettingsView.hasDefaultServiceAddress());
+    xsettingsClass.hasDefaultServiceScopes(stubSettingsView.hasDefaultServiceScopes());
+    xsettingsClass.hasDefaultInstance(stubSettingsView.hasDefaultInstance());
+    xsettingsClass.retryParamsDefinitions(stubSettingsView.retryParamsDefinitions());
+    xsettingsClass.instantiatingChannelProvider(stubSettingsView.instantiatingChannelProvider());
+    xsettingsClass.transportProtocol(stubSettingsView.transportProtocol());
+    xsettingsClass.useDefaultServicePortInEndpoint(
+        stubSettingsView.useDefaultServicePortInEndpoint());
+    xsettingsClass.defaultTransportProviderBuilder(
+        stubSettingsView.defaultTransportProviderBuilder());
+    xsettingsClass.stubSettingsName(
+        getAndSaveNicknameForStubType(context, namer.getApiStubSettingsClassName(interfaceConfig)));
+
+    return xsettingsClass.build();
+  }
+
+  private StaticLangStubSettingsView generateStubSettingsClass(
+      InterfaceContext context,
+      GapicProductConfig productConfig,
       StaticLangApiMethodView exampleApiMethod) {
     addSettingsImports(context);
 
@@ -386,13 +467,19 @@ public class JavaSurfaceTransformer {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     ApiModel model = context.getApiModel();
 
-    StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
+    StaticLangStubSettingsView.Builder xsettingsClass = StaticLangStubSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
         context
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
-    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
+    xsettingsClass.doc(
+        generateSettingsDoc(
+            context,
+            exampleApiMethod,
+            productConfig,
+            context.getNamer().getApiStubSettingsClassName(interfaceConfig),
+            namer.getApiStubInterfaceName(context.getInterfaceConfig())));
+    String name = namer.getApiStubSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
@@ -430,7 +517,6 @@ public class JavaSurfaceTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xsettingsClass.rpcStubClassName(
@@ -540,6 +626,9 @@ public class JavaSurfaceTransformer {
     stubClass.settingsClassName(
         getAndSaveNicknameForRootType(
             apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
+    stubClass.stubSettingsClassName(
+        getAndSaveNicknameForStubType(
+            apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
@@ -660,6 +749,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StubSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.HeaderProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.TransportChannelProvider");
@@ -826,7 +916,9 @@ public class JavaSurfaceTransformer {
   private SettingsDocView generateSettingsDoc(
       InterfaceContext context,
       StaticLangApiMethodView exampleApiMethod,
-      GapicProductConfig productConfig) {
+      GapicProductConfig productConfig,
+      String settingsClassName,
+      String apiClassName) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
@@ -835,9 +927,9 @@ public class JavaSurfaceTransformer {
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
-    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    settingsDoc.apiClassName(apiClassName);
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
-    settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    settingsDoc.settingsClassName(settingsClassName);
     settingsDoc.settingsBuilderVarName(
         namer.getApiSettingsBuilderVarName(context.getInterfaceConfig()));
     settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());

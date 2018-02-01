@@ -29,6 +29,8 @@ public abstract class StaticLangRpcStubView {
 
   public abstract String settingsClassName();
 
+  public abstract String stubSettingsClassName();
+
   public abstract List<ApiCallableView> apiCallables();
 
   public abstract List<MethodDescriptorView> methodDescriptors();
@@ -59,6 +61,8 @@ public abstract class StaticLangRpcStubView {
     public abstract Builder name(String val);
 
     public abstract Builder settingsClassName(String val);
+
+    public abstract Builder stubSettingsClassName(String val);
 
     public abstract Builder apiCallables(List<ApiCallableView> val);
 
