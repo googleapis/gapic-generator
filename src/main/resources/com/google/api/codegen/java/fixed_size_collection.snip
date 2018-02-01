@@ -1,0 +1,54 @@
+@extends "java/common.snip"
+
+@snippet generate(pagedResponseClass)
+  {@renderFileHeader(pagedResponseClass.fileHeader)}
+
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Wrapper class to contain paged response types for page streaming methods.
+   * Each static class inside this wrapper class is used as the return type of
+   * one of an API method that implements the page streaming pattern.
+   */
+  @@Generated("by GAPIC")
+  @if pagedResponseClass.releaseLevelAnnotation
+    {@pagedResponseClass.releaseLevelAnnotation}
+  @end
+  public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
+      {@pagedResponseClass.requestTypeName},
+      {@pagedResponseClass.responseTypeName},
+      {@pagedResponseClass.resourceTypeName},
+      {@pagedResponseClass.pageTypeName},
+      {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+    private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+      return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
+    }
+
+    @@Override
+    protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+        List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+      return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
+    }
+    {@getValuesResourceMethods(pagedResponseClass)}
+  }
+  }
+@end
+
+@private getValuesResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
+      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end

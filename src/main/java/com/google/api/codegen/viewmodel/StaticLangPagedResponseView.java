@@ -14,28 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangPagedResponseView implements ViewModel {
-  @Override
-  public abstract String templateFileName();
-
-  public abstract FileHeaderView fileHeader();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
-  @Override
-  public abstract String outputPath();
-
-  @Nullable
-  public abstract String releaseLevelAnnotation();
+public abstract class StaticLangPagedResponseView {
 
   public abstract String pagedResponseTypeName();
 
@@ -71,14 +54,6 @@ public abstract class StaticLangPagedResponseView implements ViewModel {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder iterateMethods(List<PagedResponseIterateMethodView> val);
-
-    public abstract Builder templateFileName(String val);
-
-    public abstract Builder fileHeader(FileHeaderView val);
-
-    public abstract Builder releaseLevelAnnotation(String releaseAnnotation);
-
-    public abstract Builder outputPath(String val);
 
     public abstract StaticLangPagedResponseView build();
   }
