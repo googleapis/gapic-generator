@@ -190,12 +190,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       MethodContext methodContext, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
     ImportTypeTable typeTable = methodContext.getTypeTable();
-    String fullPackageWrapperName =
-        typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
     String pagedResponseShortName =
         getPagedResponseTypeInnerName(
             methodContext.getMethodModel(), typeTable, resourceFieldConfig.getField());
-    return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
+    return typeTable.getAndSaveNicknameFor(
+        typeTable
+            .getTypeNameConverter()
+            .getTypeNameInImplicitPackage(pagedResponseShortName)
+            .getFullName());
   }
 
   @Override

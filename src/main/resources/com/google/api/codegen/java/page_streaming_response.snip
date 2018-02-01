@@ -1,7 +1,7 @@
 @extends "java/common.snip"
 
-@snippet generate(pagedResponseClasses)
-  {@renderFileHeader(pagedResponseClasses.fileHeader)}
+@snippet generate(pagedResponseClass)
+  {@renderFileHeader(pagedResponseClass.fileHeader)}
 
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
@@ -10,12 +10,11 @@
    * one of an API method that implements the page streaming pattern.
    */
   @@Generated("by GAPIC")
-  @if pagedResponseClasses.releaseLevelAnnotation
-    {@pagedResponseClasses.releaseLevelAnnotation}
+  @if pagedResponseClass.releaseLevelAnnotation
+    {@pagedResponseClass.releaseLevelAnnotation}
   @end
-  public class {@pagedResponseClasses.name} {
+  public class {@pagedResponseClass.pagedResponseTypeName} {
 
-    @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
       public static class {@pagedResponseClass.pagedResponseTypeName} extends AbstractPagedListResponse<
           {@pagedResponseClass.requestTypeName},
           {@pagedResponseClass.responseTypeName},
@@ -99,8 +98,6 @@
         }
         {@getValuesResourceMethods(pagedResponseClass)}
       }
-
-    @end
   }
 @end
 

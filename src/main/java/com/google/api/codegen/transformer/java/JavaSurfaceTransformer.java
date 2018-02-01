@@ -58,7 +58,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
-import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
 import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
@@ -151,11 +150,11 @@ public class JavaSurfaceTransformer {
       surfaceDocs.add(grpcStubFile);
     }
 
-    StaticLangPagedResponseWrappersView pagedResponseWrappers =
-        generatePagedResponseWrappers(
+    List<StaticLangPagedResponseView> pagedResponseWrappers =
+        generatePagedResponses(
             model, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
     if (pagedResponseWrappers != null) {
-      surfaceDocs.add(pagedResponseWrappers);
+      surfaceDocs.addAll(pagedResponseWrappers);
     }
 
     PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
@@ -221,22 +220,13 @@ public class JavaSurfaceTransformer {
     return xapiClass.build();
   }
 
-  private StaticLangPagedResponseWrappersView generatePagedResponseWrappers(
+  private List<StaticLangPagedResponseView> generatePagedResponses(
       ApiModel model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
 
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
     ImportTypeTable typeTable = surfaceTransformer.createTypeTable(productConfig.getPackageName());
 
     addPagedResponseWrapperImports(typeTable);
-
-    StaticLangPagedResponseWrappersView.Builder pagedResponseWrappers =
-        StaticLangPagedResponseWrappersView.newBuilder();
-
-    pagedResponseWrappers.releaseLevelAnnotation(namer.getReleaseAnnotation(releaseLevel));
-    pagedResponseWrappers.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
-
-    String name = namer.getPagedResponseWrappersClassName();
-    pagedResponseWrappers.name(name);
 
     List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
@@ -249,8 +239,45 @@ public class JavaSurfaceTransformer {
               productConfig.getResourceNameMessageConfigs().isEmpty());
       for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
-          pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable));
+          MethodContext methodContext = context.asRequestMethodContext(method);
+          FieldModel resourceField =
+              methodContext.getMethodConfig().getPageStreaming().getResourcesField();
+
+          StaticLangPagedResponseView.Builder pagedResponseWrapper =
+              StaticLangPagedResponseView.newBuilder();
+
+          pagedResponseWrapper.releaseLevelAnnotation(namer.getReleaseAnnotation(releaseLevel));
+          pagedResponseWrapper.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
+
+          String pagedResponseTypeName =
+              context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
+          pagedResponseWrapper.pagedResponseTypeName(pagedResponseTypeName);
+          pagedResponseWrapper.pageTypeName(
+              context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
+          pagedResponseWrapper.fixedSizeCollectionTypeName(
+              context
+                  .getNamer()
+                  .getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
+          pagedResponseWrapper.requestTypeName(
+              method.getAndSaveRequestTypeName(methodContext.getTypeTable(), context.getNamer()));
+          pagedResponseWrapper.responseTypeName(
+              method.getAndSaveResponseTypeName(methodContext.getTypeTable(), context.getNamer()));
+          pagedResponseWrapper.resourceTypeName(
+              typeTable.getAndSaveNicknameForElementType(resourceField));
+          pagedResponseWrapper.iterateMethods(getIterateMethods(methodContext));
+
+          // must be done as the last step to catch all imports
+          ImportSectionView importSection =
+              importSectionTransformer.generateImportSection(typeTable.getImports());
+          pagedResponseWrapper.fileHeader(
+              fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
+
+          InterfaceModel firstInterface = model.getInterfaces().iterator().next();
+          String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
+          pagedResponseWrapper.outputPath(
+              outputPath + File.separator + pagedResponseTypeName + ".java");
+
+          pagedResponseWrappersList.add(pagedResponseWrapper.build());
         }
       }
     }
@@ -259,45 +286,7 @@ public class JavaSurfaceTransformer {
       return null;
     }
 
-    pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
-
-    // must be done as the last step to catch all imports
-    ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(typeTable.getImports());
-    pagedResponseWrappers.fileHeader(
-        fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
-
-    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
-    String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
-    pagedResponseWrappers.outputPath(outputPath + File.separator + name + ".java");
-
-    return pagedResponseWrappers.build();
-  }
-
-  private StaticLangPagedResponseView generatePagedResponseWrapper(
-      MethodContext context, ImportTypeTable typeTable) {
-    MethodModel method = context.getMethodModel();
-    FieldModel resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
-
-    StaticLangPagedResponseView.Builder pagedResponseWrapper =
-        StaticLangPagedResponseView.newBuilder();
-
-    String pagedResponseTypeName =
-        context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
-    pagedResponseWrapper.pagedResponseTypeName(pagedResponseTypeName);
-    pagedResponseWrapper.pageTypeName(
-        context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
-    pagedResponseWrapper.fixedSizeCollectionTypeName(
-        context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
-    pagedResponseWrapper.requestTypeName(
-        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    pagedResponseWrapper.responseTypeName(
-        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    pagedResponseWrapper.resourceTypeName(
-        typeTable.getAndSaveNicknameForElementType(resourceField));
-    pagedResponseWrapper.iterateMethods(getIterateMethods(context));
-
-    return pagedResponseWrapper.build();
+    return pagedResponseWrappersList;
   }
 
   private List<PagedResponseIterateMethodView> getIterateMethods(MethodContext context) {
