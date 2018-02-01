@@ -4789,93 +4789,6 @@ public class AddressClient implements BackgroundResource {
 
 
 
-  public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
-      ListAddressesHttpRequest,
-      AddressList,
-      Address,
-      ListAddressesPage,
-      ListAddressesFixedSizeCollection> {
-
-    public static ApiFuture<ListAddressesPagedResponse> createAsync(
-        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
-        ApiFuture<AddressList> futureResponse) {
-      ApiFuture<ListAddressesPage> futurePage =
-          ListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
-      return ApiFutures.transform(
-          futurePage,
-          new ApiFunction<ListAddressesPage, ListAddressesPagedResponse>() {
-            @Override
-            public ListAddressesPagedResponse apply(ListAddressesPage input) {
-              return new ListAddressesPagedResponse(input);
-            }
-          });
-    }
-
-    private ListAddressesPagedResponse(ListAddressesPage page) {
-      super(page, ListAddressesFixedSizeCollection.createEmptyCollection());
-    }
-
-
-  }
-
-  public static class ListAddressesPage extends AbstractPage<
-      ListAddressesHttpRequest,
-      AddressList,
-      Address,
-      ListAddressesPage> {
-
-    private ListAddressesPage(
-        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
-        AddressList response) {
-      super(context, response);
-    }
-
-    private static ListAddressesPage createEmptyPage() {
-      return new ListAddressesPage(null, null);
-    }
-
-    @Override
-    protected ListAddressesPage createPage(
-        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
-        AddressList response) {
-      return new ListAddressesPage(context, response);
-    }
-
-    @Override
-    public ApiFuture<ListAddressesPage> createPageAsync(
-        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
-        ApiFuture<AddressList> futureResponse) {
-      return super.createPageAsync(context, futureResponse);
-    }
-
-
-
-
-  }
-
-  public static class ListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
-      ListAddressesHttpRequest,
-      AddressList,
-      Address,
-      ListAddressesPage,
-      ListAddressesFixedSizeCollection> {
-
-    private ListAddressesFixedSizeCollection(List<ListAddressesPage> pages, int collectionSize) {
-      super(pages, collectionSize);
-    }
-
-    private static ListAddressesFixedSizeCollection createEmptyCollection() {
-      return new ListAddressesFixedSizeCollection(null, 0);
-    }
-
-    @Override
-    protected ListAddressesFixedSizeCollection createCollection(
-        List<ListAddressesPage> pages, int collectionSize) {
-      return new ListAddressesFixedSizeCollection(pages, collectionSize);
-    }
-
-
-  }
   /**
    * Constructs an instance of AddressClient with default settings.
    */
@@ -5281,6 +5194,93 @@ public class AddressClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
+
+    public static ApiFuture<ListAddressesPagedResponse> createAsync(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        ApiFuture<AddressList> futureResponse) {
+      ApiFuture<ListAddressesPage> futurePage =
+          ListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListAddressesPage, ListAddressesPagedResponse>() {
+            @Override
+            public ListAddressesPagedResponse apply(ListAddressesPage input) {
+              return new ListAddressesPagedResponse(input);
+            }
+          });
+    }
+
+    private ListAddressesPagedResponse(ListAddressesPage page) {
+      super(page, ListAddressesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListAddressesPage extends AbstractPage<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage> {
+
+    private ListAddressesPage(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        AddressList response) {
+      super(context, response);
+    }
+
+    private static ListAddressesPage createEmptyPage() {
+      return new ListAddressesPage(null, null);
+    }
+
+    @Override
+    protected ListAddressesPage createPage(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        AddressList response) {
+      return new ListAddressesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListAddressesPage> createPageAsync(
+        PageContext<ListAddressesHttpRequest, AddressList, Address> context,
+        ApiFuture<AddressList> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListAddressesHttpRequest,
+      AddressList,
+      Address,
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
+
+    private ListAddressesFixedSizeCollection(List<ListAddressesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListAddressesFixedSizeCollection createEmptyCollection() {
+      return new ListAddressesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListAddressesFixedSizeCollection createCollection(
+        List<ListAddressesPage> pages, int collectionSize) {
+      return new ListAddressesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressSettings.java ==============
 /*
