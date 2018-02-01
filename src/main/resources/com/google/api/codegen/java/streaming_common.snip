@@ -1,0 +1,31 @@
+@extends "java/common.snip"
+
+@snippet iterateAllResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end
+
+@snippet getValuesResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
+      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end

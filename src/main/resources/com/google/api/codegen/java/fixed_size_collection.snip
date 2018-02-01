@@ -1,7 +1,8 @@
 @extends "java/common.snip"
+@extends "java/streaming_common.snip"
 
-@snippet generate(pagedResponseClass)
-  {@renderFileHeader(pagedResponseClass.fileHeader)}
+@snippet generate(pagedResponseFile)
+  {@renderFileHeader(pagedResponseFile.fileHeader)}
 
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
@@ -10,45 +11,31 @@
    * one of an API method that implements the page streaming pattern.
    */
   @@Generated("by GAPIC")
-  @if pagedResponseClass.releaseLevelAnnotation
-    {@pagedResponseClass.releaseLevelAnnotation}
+  @if pagedResponseFile.releaseLevelAnnotation
+    {@pagedResponseFile.releaseLevelAnnotation}
   @end
-  public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
-      {@pagedResponseClass.requestTypeName},
-      {@pagedResponseClass.responseTypeName},
-      {@pagedResponseClass.resourceTypeName},
-      {@pagedResponseClass.pageTypeName},
-      {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+  @let pagedResponseClass = pagedResponseFile.pagedResponseClass
+    public class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
 
-    private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
-      super(pages, collectionSize);
-    }
+      private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        super(pages, collectionSize);
+      }
 
-    private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
-      return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
-    }
+      private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
+      }
 
-    @@Override
-    protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
-        List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
-      return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
-    }
-    {@getValuesResourceMethods(pagedResponseClass)}
-  }
-  }
-@end
-
-@private getValuesResourceMethods(pagedResponseClass)
-  @join iterateMethod : pagedResponseClass.iterateMethods
-    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
-      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
-          @@Override
-          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
-            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
-          }
-        }
-      );
+      @@Override
+      protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+          List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
+      }
+      {@getValuesResourceMethods(pagedResponseClass)}
     }
   @end
-  {@BREAK}
 @end

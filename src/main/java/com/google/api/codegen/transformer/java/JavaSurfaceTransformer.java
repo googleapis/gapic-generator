@@ -99,7 +99,7 @@ public class JavaSurfaceTransformer {
       "java/page_streaming_response.snip";
   private static final String FIXED_SIZE_COLLECTION_TEMPLATE_FILENAME =
       "java/fixed_size_collection.snip";
-  private static final String PAGE_STREAMING_PAGE_TEMPLATE_FILENAME = "java/page_streaming.snip";
+  private static final String PAGE_STREAMING_PAGE_TEMPLATE_FILENAME = "java/page_streaming_page.snip";
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,
@@ -243,7 +243,6 @@ public class JavaSurfaceTransformer {
               productConfig.getResourceNameMessageConfigs().isEmpty());
       for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
-
           StaticLangPagedResponseView pagedResponseView =
               generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable);
 
@@ -255,6 +254,7 @@ public class JavaSurfaceTransformer {
                   context.asRequestMethodContext(method),
                   model);
           responseView.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
+          responseView.pagedResponseClass(pagedResponseView);
           pagedResponseWrappersList.add(responseView.build());
 
           StaticLangPagedResponseFileView.Builder pageView =
@@ -265,6 +265,7 @@ public class JavaSurfaceTransformer {
                   context.asRequestMethodContext(method),
                   model);
           pageView.templateFileName(PAGE_STREAMING_PAGE_TEMPLATE_FILENAME);
+          pageView.pagedResponseClass(pagedResponseView);
           pagedResponseWrappersList.add(pageView.build());
 
           StaticLangPagedResponseFileView.Builder collectionView =
@@ -275,6 +276,7 @@ public class JavaSurfaceTransformer {
                   context.asRequestMethodContext(method),
                   model);
           collectionView.templateFileName(FIXED_SIZE_COLLECTION_TEMPLATE_FILENAME);
+          collectionView.pagedResponseClass(pagedResponseView);
           pagedResponseWrappersList.add(collectionView.build());
         }
       }
