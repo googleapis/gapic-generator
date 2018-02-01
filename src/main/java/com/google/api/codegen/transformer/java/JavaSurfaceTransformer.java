@@ -99,7 +99,8 @@ public class JavaSurfaceTransformer {
       "java/page_streaming_response.snip";
   private static final String FIXED_SIZE_COLLECTION_TEMPLATE_FILENAME =
       "java/fixed_size_collection.snip";
-  private static final String PAGE_STREAMING_PAGE_TEMPLATE_FILENAME = "java/page_streaming_page.snip";
+  private static final String PAGE_STREAMING_PAGE_TEMPLATE_FILENAME =
+      "java/page_streaming_page.snip";
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,
