@@ -249,7 +249,7 @@ public class JavaSurfaceTransformer {
 
           StaticLangPagedResponseFileView.Builder responseView =
               populatePagedResponseFileAttributes(
-                  pagedResponseView.responseTypeName(),
+                  pagedResponseView.pagedResponseTypeName(),
                   releaseLevel,
                   productConfig,
                   context.asRequestMethodContext(method),
