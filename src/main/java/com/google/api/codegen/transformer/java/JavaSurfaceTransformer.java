@@ -57,13 +57,13 @@ import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
-import com.google.api.codegen.viewmodel.StaticLangPagedResponseFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
 import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.StaticLangStubSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,10 +97,6 @@ public class JavaSurfaceTransformer {
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
-  private static final String FIXED_SIZE_COLLECTION_TEMPLATE_FILENAME =
-      "java/fixed_size_collection.snip";
-  private static final String PAGE_STREAMING_PAGE_TEMPLATE_FILENAME =
-      "java/page_streaming_page.snip";
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,
@@ -153,13 +149,6 @@ public class JavaSurfaceTransformer {
       StaticLangFileView<StaticLangRpcStubView> grpcStubFile =
           generateRpcStubClassFile(context, productConfig);
       surfaceDocs.add(grpcStubFile);
-    }
-
-    List<StaticLangPagedResponseFileView> pagedResponseWrappers =
-        generatePagedResponses(
-            model, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
-    if (pagedResponseWrappers != null) {
-      surfaceDocs.addAll(pagedResponseWrappers);
     }
 
     PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
@@ -221,94 +210,29 @@ public class JavaSurfaceTransformer {
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
-
+    xapiClass.pagedResponseViews(
+        generatePagedResponseWrappers(
+            context, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     return xapiClass.build();
   }
 
-  private List<StaticLangPagedResponseFileView> generatePagedResponses(
-      ApiModel model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+  private List<StaticLangPagedResponseView> generatePagedResponseWrappers(
+      InterfaceContext context, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+    addPagedResponseWrapperImports(context.getImportTypeTable());
 
-    SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
-    ImportTypeTable typeTable = surfaceTransformer.createTypeTable(productConfig.getPackageName());
-
-    addPagedResponseWrapperImports(typeTable);
-
-    List<StaticLangPagedResponseFileView> pagedResponseWrappersList = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface,
-              productConfig,
-              namer,
-              typeTable,
-              productConfig.getResourceNameMessageConfigs().isEmpty());
+    ImmutableList.Builder<StaticLangPagedResponseView> pagedResponseWrappersList =
+        ImmutableList.builder();
+    for (InterfaceModel apiInterface : context.getApiModel().getInterfaces()) {
       for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
-          StaticLangPagedResponseView pagedResponseView =
-              generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable);
-
-          StaticLangPagedResponseFileView.Builder responseView =
-              populatePagedResponseFileAttributes(
-                  pagedResponseView.pagedResponseTypeName(),
-                  releaseLevel,
-                  productConfig,
-                  context.asRequestMethodContext(method),
-                  model);
-          responseView.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
-          responseView.pagedResponseClass(pagedResponseView);
-          pagedResponseWrappersList.add(responseView.build());
-
-          StaticLangPagedResponseFileView.Builder pageView =
-              populatePagedResponseFileAttributes(
-                  pagedResponseView.pageTypeName(),
-                  releaseLevel,
-                  productConfig,
-                  context.asRequestMethodContext(method),
-                  model);
-          pageView.templateFileName(PAGE_STREAMING_PAGE_TEMPLATE_FILENAME);
-          pageView.pagedResponseClass(pagedResponseView);
-          pagedResponseWrappersList.add(pageView.build());
-
-          StaticLangPagedResponseFileView.Builder collectionView =
-              populatePagedResponseFileAttributes(
-                  pagedResponseView.fixedSizeCollectionTypeName(),
-                  releaseLevel,
-                  productConfig,
-                  context.asRequestMethodContext(method),
-                  model);
-          collectionView.templateFileName(FIXED_SIZE_COLLECTION_TEMPLATE_FILENAME);
-          collectionView.pagedResponseClass(pagedResponseView);
-          pagedResponseWrappersList.add(collectionView.build());
+          pagedResponseWrappersList.add(
+              generatePagedResponseWrapper(
+                  context.asRequestMethodContext(method), context.getImportTypeTable()));
         }
       }
     }
 
-    if (pagedResponseWrappersList.size() == 0) {
-      return null;
-    }
-
-    return pagedResponseWrappersList;
-  }
-
-  private StaticLangPagedResponseFileView.Builder populatePagedResponseFileAttributes(
-      String typeName,
-      ReleaseLevel releaseLevel,
-      GapicProductConfig productConfig,
-      MethodContext context,
-      ApiModel model) {
-    StaticLangPagedResponseFileView.Builder fileViewBuilder =
-        StaticLangPagedResponseFileView.newBuilder();
-    fileViewBuilder.releaseLevelAnnotation(context.getNamer().getReleaseAnnotation(releaseLevel));
-    // must be done as the last step to catch all imports
-    ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(context.getTypeTable().getImports());
-    fileViewBuilder.fileHeader(
-        fileHeaderTransformer.generateFileHeader(productConfig, importSection, context.getNamer()));
-
-    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
-    String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
-    fileViewBuilder.outputPath(outputPath + File.separator + typeName + ".java");
-    return fileViewBuilder;
+    return pagedResponseWrappersList.build();
   }
 
   private StaticLangPagedResponseView generatePagedResponseWrapper(

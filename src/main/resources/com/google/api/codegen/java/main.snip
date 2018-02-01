@@ -21,6 +21,7 @@
     {@members(classView)}
     {@statics(classView)}
     {@staticFunctions(classView)}
+    {@staticPagedResponseWrappers(classView)}
     {@constructors(classView)}
     {@memberMethods(classView)}
     {@apiMethods(classView)}
@@ -150,6 +151,94 @@
   {@""}
   @join function : xapiClass.parseResourceFunctions
     {@parseResourceFunction(function)}
+  @end
+@end
+
+@private staticPagedResponseWrappers(apiClass)
+  @join pagedResponseClass : apiClass.pagedResponseViews
+    public static class {@pagedResponseClass.pagedResponseTypeName} extends AbstractPagedListResponse<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      public static ApiFuture<{@pagedResponseClass.pagedResponseTypeName}> createAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        ApiFuture<{@pagedResponseClass.pageTypeName}> futurePage =
+            {@pagedResponseClass.pageTypeName}.createEmptyPage().createPageAsync(context, futureResponse);
+        return ApiFutures.transform(
+            futurePage,
+            new ApiFunction<{@pagedResponseClass.pageTypeName}, {@pagedResponseClass.pagedResponseTypeName}>() {
+              @@Override
+              public {@pagedResponseClass.pagedResponseTypeName} apply({@pagedResponseClass.pageTypeName} input) {
+                return new {@pagedResponseClass.pagedResponseTypeName}(input);
+              }
+            });
+      }
+
+      private {@pagedResponseClass.pagedResponseTypeName}({@pagedResponseClass.pageTypeName} page) {
+        super(page, {@pagedResponseClass.fixedSizeCollectionTypeName}.createEmptyCollection());
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.pageTypeName} extends AbstractPage<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName}> {
+
+      private {@pagedResponseClass.pageTypeName}(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        super(context, response);
+      }
+
+      private static {@pagedResponseClass.pageTypeName} createEmptyPage() {
+        return new {@pagedResponseClass.pageTypeName}(null, null);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.pageTypeName} createPage(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        return new {@pagedResponseClass.pageTypeName}(context, response);
+      }
+
+      @@Override
+      public ApiFuture<{@pagedResponseClass.pageTypeName}> createPageAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        return super.createPageAsync(context, futureResponse);
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        super(pages, collectionSize);
+      }
+
+      private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+          List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
+      }
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
   @end
 @end
 
@@ -599,4 +688,34 @@
     {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
       "{@pathTemplateCheck.validationMessageContext}");
   @end
+@end
+
+@private iterateAllResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end
+
+@private getValuesResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
+      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
 @end
