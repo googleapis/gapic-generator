@@ -179,12 +179,10 @@
         compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
       @end
       @join dependency : metadata.protoPackageDependencies
-        @switch metadata.dependencyType
-        @case "RELEASE"
-          compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
-        @case "LOCAL"
+        @if dependency.name == "proto-google-longrunning-v1"
+          compile project("proto-google-common-protos")
+        @else
           compile project(":{@dependency.name}")
-        @default
         @end
       @end
     @case "GRPC"

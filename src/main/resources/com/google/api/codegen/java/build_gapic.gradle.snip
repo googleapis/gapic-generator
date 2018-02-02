@@ -18,11 +18,23 @@
   }
 
   dependencies {
-    compile project(":{@metadata.protoPackageName}")
+    @if metadata.protoPackageName == "proto-google-longrunning-v1"
+      compile project(":proto-google-common-protos")
+    @else
+      compile project(":{@metadata.protoPackageName}")
+    @end
     compile libraries.gax, libraries.gaxGrpc
-    testCompile project(":{@metadata.grpcPackageName}")
+    @if metadata.grpcPackageName == "grpc-google-longrunning-v1"
+      testCompile project(":grpc-google-common-protos")
+    @else
+      testCompile project(":{@metadata.grpcPackageName}")
+    @end
     @join dependency : metadata.protoPackageTestDependencies
-      testCompile project(":{@dependency.name}")
+      @if dependency.name == "proto-google-longrunning-v1"
+        testCompile project(":proto-google-commons-protos")
+      @else
+        testCompile project(":{@dependency.name}")
+      @end
     @end
   }
 
