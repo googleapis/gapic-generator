@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -31,6 +32,7 @@ import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
@@ -220,6 +222,28 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
+  }
+
+  @Override
+  protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
+    String entityName = resourceNameConfig.getEntityName();
+    ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    switch (resourceNameType) {
+      case ANY:
+        return getAnyResourceTypeName();
+      case FIXED:
+        return Name.anyLower(entityName).join("name_fixed");
+      case ONEOF:
+        // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
+        // with a collection config.
+        entityName = StringUtil.removeSuffix(entityName, "_oneof");
+        return Name.from("any").join(Name.anyLower(entityName)).join("name");
+      case SINGLE:
+        return Name.anyLower(entityName).join("name");
+      case NONE:
+      default:
+        throw new UnsupportedOperationException("unexpected entity name type");
+    }
   }
 
   @Override

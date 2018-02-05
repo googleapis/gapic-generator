@@ -75,12 +75,13 @@ public class StaticLangResourceObjectTransformer {
     String formatMethodName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (fieldConfig.requiresParamTransformation()
-          && !fieldConfig.requiresParamTransformationFromAny()) {
+          && !fieldConfig.requiresParamTransformationFromAny()
+          && !featureConfig.useInheritanceForOneofs()) {
         transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
       }
       if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
         if (field.isRepeated()) {
-          // TODO support repeated one-ofs
+          // TODO support repeated one-ofs (in Java: Any* classes)
           transformParamFunctionName =
               namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
         } else {

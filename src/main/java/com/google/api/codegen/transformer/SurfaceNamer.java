@@ -39,6 +39,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
@@ -845,7 +846,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
-        entityName = removeSuffix(entityName, "_oneof");
+        entityName = StringUtil.removeSuffix(entityName, "_oneof");
         return Name.anyLower(entityName).join("name_oneof");
       case SINGLE:
         return Name.anyLower(entityName).join("name");
@@ -1609,13 +1610,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Indicates whether the specified method supports timeout settings. */
   public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
     return true;
-  }
-
-  private static String removeSuffix(String original, String suffix) {
-    if (original.endsWith(suffix)) {
-      original = original.substring(0, original.length() - suffix.length());
-    }
-    return original;
   }
 
   /** Make the given type name able to accept nulls, if it is a primitive type */

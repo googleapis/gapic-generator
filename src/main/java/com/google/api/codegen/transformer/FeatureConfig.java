@@ -41,6 +41,8 @@ public interface FeatureConfig {
    */
   boolean useResourceNameConverters(FieldConfig fieldConfig);
 
+  boolean useInheritanceForOneofs();
+
   /** Returns true if mixin APIs are supported. */
   boolean enableMixins();
 
