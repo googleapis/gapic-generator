@@ -796,11 +796,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
             .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
   }
 
-  /** The name of the class that contains paged list response wrappers. */
-  public String getPagedResponseWrappersClassName() {
-    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
-  }
-
   /** The sample application class name. */
   public String getSampleAppClassName() {
     return publicClassName(Name.upperCamel("SampleApp"));
