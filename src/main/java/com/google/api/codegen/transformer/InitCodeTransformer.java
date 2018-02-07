@@ -563,8 +563,8 @@ public class InitCodeTransformer {
             context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(item.getType()));
         simpleInitValue.isRepeated(item.getType().isRepeated());
         if (isRequired(item.getFieldConfig(), context)) {
-          comment =
-              String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, getVariableName(context, item));
+          String name = getVariableName(context, item);
+          comment = String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, name);
         }
       }
 
