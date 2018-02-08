@@ -38,7 +38,7 @@
     @case "ListInitLine"
       {@initLineList(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line, initCodeSpec.lines.indexOf(line))}
+      {@initLineSimple(line)}
     @case "MapInitLine"
       {@initLineMap(line)}
     @default
@@ -77,9 +77,10 @@
 @end
 
 # Generate a simple argument
-@private initLineSimple(line, idx)
+@private initLineSimple(line)
   @if line.doc
-    @if util.toInt(idx) > util.toInt(0)
+    @if line.isFirst
+    @else
       {@BREAK}
     @end
     {@toComments(line.doc)}
