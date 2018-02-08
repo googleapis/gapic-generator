@@ -31,6 +31,9 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
 
   public abstract List<String> doc();
 
+  /** @return if a newline should be added above this line */
+  public abstract boolean needsLeadingNewline();
+
   public abstract InitValueView initValue();
 
   public static Builder newBuilder() {
@@ -48,6 +51,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
     public abstract Builder initValue(InitValueView val);
 
     public abstract Builder doc(List<String> val);
+
+    public abstract Builder needsLeadingNewline(boolean val);
 
     public abstract SimpleInitCodeLineView build();
   }

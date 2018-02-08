@@ -61,4 +61,14 @@ public class PythonRenderingUtil {
     }
     return ">>> " + str;
   }
+
+  /** @see CommonRenderingUtil#padding(int) */
+  public static String padding(int width) {
+    return CommonRenderingUtil.padding(width);
+  }
+
+  /** @see CommonRenderingUtil#toInt(String) */
+  public static int toInt(String value) {
+    return CommonRenderingUtil.toInt(value);
+  }
 }

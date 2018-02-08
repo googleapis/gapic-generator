@@ -310,20 +310,20 @@ public class InitCodeTransformer {
       MethodContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
-      surfaceLines.add(generateSurfaceInitCodeLine(context, item));
+      surfaceLines.add(generateSurfaceInitCodeLine(context, item, surfaceLines.isEmpty()));
     }
     return surfaceLines;
   }
 
   private InitCodeLineView generateSurfaceInitCodeLine(
-      MethodContext context, InitCodeNode specItemNode) {
+      MethodContext context, InitCodeNode specItemNode, boolean isFirstItem) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
         return generateStructureInitCodeLine(context, specItemNode);
       case ListInitLine:
         return generateListInitCodeLine(context, specItemNode);
       case SimpleInitLine:
-        return generateSimpleInitCodeLine(context, specItemNode);
+        return generateSimpleInitCodeLine(context, specItemNode, isFirstItem);
       case MapInitLine:
         return generateMapInitCodeLine(context, specItemNode);
       default:
@@ -331,7 +331,8 @@ public class InitCodeTransformer {
     }
   }
 
-  private InitCodeLineView generateSimpleInitCodeLine(MethodContext context, InitCodeNode item) {
+  private InitCodeLineView generateSimpleInitCodeLine(
+      MethodContext context, InitCodeNode item, boolean isFirstItem) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
     FieldConfig fieldConfig = item.getFieldConfig();
 
@@ -355,7 +356,7 @@ public class InitCodeTransformer {
     }
 
     surfaceLine.identifier(getVariableName(context, item));
-    setInitValueAndComments(surfaceLine, context, item);
+    setInitValueAndComments(surfaceLine, context, item, isFirstItem);
 
     return surfaceLine.build();
   }
@@ -397,7 +398,7 @@ public class InitCodeTransformer {
     List<InitCodeLineView> elements = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
       entries.add(namer.localVarName(child.getIdentifier()));
-      elements.add(generateSurfaceInitCodeLine(context, child));
+      elements.add(generateSurfaceInitCodeLine(context, child, elements.isEmpty()));
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
@@ -421,7 +422,7 @@ public class InitCodeTransformer {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
       mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyField(), entry.getKey()));
       mapEntry.valueString(context.getNamer().localVarName(entry.getValue().getIdentifier()));
-      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue()));
+      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue(), entries.isEmpty()));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
@@ -430,7 +431,10 @@ public class InitCodeTransformer {
   }
 
   private void setInitValueAndComments(
-      SimpleInitCodeLineView.Builder surfaceLine, MethodContext context, InitCodeNode item) {
+      SimpleInitCodeLineView.Builder surfaceLine,
+      MethodContext context,
+      InitCodeNode item,
+      boolean isFirstItem) {
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
     InitValueConfig initValueConfig = item.getInitValueConfig();
@@ -563,14 +567,15 @@ public class InitCodeTransformer {
             context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(item.getType()));
         simpleInitValue.isRepeated(item.getType().isRepeated());
         if (isRequired(item.getFieldConfig(), context)) {
-          comment =
-              String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, getVariableName(context, item));
+          String name = getVariableName(context, item);
+          comment = String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, name);
         }
       }
 
       initValue = simpleInitValue.build();
     }
     surfaceLine.initValue(initValue);
+    surfaceLine.needsLeadingNewline(!isFirstItem);
     if (generateUserFacingComments) {
       surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
@@ -643,7 +648,7 @@ public class InitCodeTransformer {
           namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getVarName())));
 
       fieldSetting.identifier(getVariableName(context, item));
-      fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
+      fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item, allSettings.isEmpty()));
       fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getVarName())));
 
       fieldSetting.isMap(item.getType().isMap());
