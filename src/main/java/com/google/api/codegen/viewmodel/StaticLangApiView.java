@@ -71,6 +71,9 @@ public abstract class StaticLangApiView {
   @Nullable // Used in Java
   public abstract String stubSettingsClassName();
 
+  @Nullable // Used in Java
+  public abstract List<StaticLangPagedResponseView> pagedResponseViews();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
   }
@@ -117,6 +120,8 @@ public abstract class StaticLangApiView {
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
     public abstract Builder stubSettingsClassName(String apiSettingsStubInterfaceName);
+
+    public abstract Builder pagedResponseViews(List<StaticLangPagedResponseView> val);
 
     public abstract StaticLangApiView build();
   }

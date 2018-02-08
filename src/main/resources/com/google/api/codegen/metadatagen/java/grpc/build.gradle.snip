@@ -121,13 +121,7 @@
         compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
       @end
       @join dependency : metadata.protoPackageDependencies
-        @switch metadata.dependencyType
-        @case "RELEASE"
-          compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
-        @case "LOCAL"
-          compile project(":{@dependency.name}")
-        @default
-        @end
+        compile project(":{@dependency.name}")
       @end
     @case "GRPC"
       compile "io.grpc:grpc-stub:{@metadata.grpcVersionBound.lower}"

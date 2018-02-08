@@ -58,12 +58,12 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
-import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
 import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.StaticLangStubSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,13 +151,6 @@ public class JavaSurfaceTransformer {
       surfaceDocs.add(grpcStubFile);
     }
 
-    StaticLangPagedResponseWrappersView pagedResponseWrappers =
-        generatePagedResponseWrappers(
-            model, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
-    if (pagedResponseWrappers != null) {
-      surfaceDocs.add(pagedResponseWrappers);
-    }
-
     PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
     surfaceDocs.add(packageInfo);
 
@@ -217,61 +210,29 @@ public class JavaSurfaceTransformer {
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
-
+    xapiClass.pagedResponseViews(
+        generatePagedResponseWrappers(
+            context, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     return xapiClass.build();
   }
 
-  private StaticLangPagedResponseWrappersView generatePagedResponseWrappers(
-      ApiModel model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+  private List<StaticLangPagedResponseView> generatePagedResponseWrappers(
+      InterfaceContext context, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+    addPagedResponseWrapperImports(context.getImportTypeTable());
 
-    SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
-    ImportTypeTable typeTable = surfaceTransformer.createTypeTable(productConfig.getPackageName());
-
-    addPagedResponseWrapperImports(typeTable);
-
-    StaticLangPagedResponseWrappersView.Builder pagedResponseWrappers =
-        StaticLangPagedResponseWrappersView.newBuilder();
-
-    pagedResponseWrappers.releaseLevelAnnotation(namer.getReleaseAnnotation(releaseLevel));
-    pagedResponseWrappers.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
-
-    String name = namer.getPagedResponseWrappersClassName();
-    pagedResponseWrappers.name(name);
-
-    List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface,
-              productConfig,
-              namer,
-              typeTable,
-              productConfig.getResourceNameMessageConfigs().isEmpty());
+    ImmutableList.Builder<StaticLangPagedResponseView> pagedResponseWrappersList =
+        ImmutableList.builder();
+    for (InterfaceModel apiInterface : context.getApiModel().getInterfaces()) {
       for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
           pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable));
+              generatePagedResponseWrapper(
+                  context.asRequestMethodContext(method), context.getImportTypeTable()));
         }
       }
     }
 
-    if (pagedResponseWrappersList.size() == 0) {
-      return null;
-    }
-
-    pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
-
-    // must be done as the last step to catch all imports
-    ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(typeTable.getImports());
-    pagedResponseWrappers.fileHeader(
-        fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
-
-    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
-    String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
-    pagedResponseWrappers.outputPath(outputPath + File.separator + name + ".java");
-
-    return pagedResponseWrappers.build();
+    return pagedResponseWrappersList.build();
   }
 
   private StaticLangPagedResponseView generatePagedResponseWrapper(

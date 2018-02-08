@@ -17,16 +17,31 @@ java/sample.gradle.snip generation is not enabled for this test case.
  */
 package com.google.gcloud.example;
 
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.paging.FixedSizeCollection;
+import com.google.api.gax.paging.Page;
+import com.google.api.gax.paging.PagedListResponse;
+import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.gcloud.example.stub.NoTemplatesApiServiceStub;
 import com.google.gcloud.example.stub.NoTemplatesApiServiceStubSettings;
 import com.google.protobuf.Empty;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 
@@ -215,6 +230,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
   public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
     return stub.awaitTermination(duration, unit);
   }
+
 
 }
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceSettings.java ==============
