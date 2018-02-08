@@ -575,7 +575,7 @@ public class InitCodeTransformer {
       initValue = simpleInitValue.build();
     }
     surfaceLine.initValue(initValue);
-    surfaceLine.isFirst(isFirstItem);
+    surfaceLine.leadingNewline(isFirstItem);
     if (generateUserFacingComments) {
       surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
