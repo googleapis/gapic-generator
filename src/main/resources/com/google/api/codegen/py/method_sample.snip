@@ -78,6 +78,13 @@
 
 # Generate a simple argument
 @private initLineSimple(line)
+  @if line.doc
+    @if line.needsLeadingNewline
+      {@BREAK}
+    @end
+    {@toComments(line.doc)}
+
+  @end
   {@line.identifier} = {@renderInitValue(line.initValue)}
 @end
 

@@ -709,7 +709,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from(var));
   }
 
-  /* The name of a retry definition */
+  /** The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
@@ -781,17 +781,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub"));
   }
 
+  /**
+   * The name of the stub interface for a particular proto interface; not used in most languages.
+   */
+  public String getApiStubSettingsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
+  }
+
   /** The name of the http stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
             .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
-  }
-
-  /** The name of the class that contains paged list response wrappers. */
-  public String getPagedResponseWrappersClassName() {
-    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
   /** The sample application class name. */

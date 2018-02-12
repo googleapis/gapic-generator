@@ -282,6 +282,7 @@ public class ApiCallableTransformer {
     settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
     settings.retryParamsView(retryParamsByKey.get(methodConfig.getRetrySettingsConfigName()));
+    settings.visibility(namer.getVisiblityKeyword(methodConfig.getVisibility()));
 
     String notImplementedPrefix = "ApiCallableTransformer.generateApiCallableSettings - ";
     settings.resourceTypeName(

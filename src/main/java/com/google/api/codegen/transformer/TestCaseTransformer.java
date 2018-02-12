@@ -54,7 +54,7 @@ import java.util.List;
 
 /** TestCaseTransformer contains helper methods useful for creating test views. */
 public class TestCaseTransformer {
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
   private final TestValueGenerator valueGenerator;
   private boolean packageHasMultipleServices;
 

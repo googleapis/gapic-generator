@@ -277,7 +277,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
 
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             context, testCaseTransformer.createSmokeTestInitContext(context));
