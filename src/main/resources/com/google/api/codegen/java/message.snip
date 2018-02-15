@@ -226,30 +226,5 @@
       @end
       return newBuilder;
     }
-    @join resourceName : schema.resourceNames
-
-      public final Builder {@resourceName.setCallName}({@resourceName.typeName} value) {
-        if (value == null) {
-          return
-              @join field : resourceName.fieldCopyMethods on ".".add(BREAK)
-                {@field.fieldSetFunction}("")
-              @end
-              ;
-        }
-        return
-            @join field : resourceName.fieldCopyMethods on ".".add(BREAK)
-              {@field.fieldSetFunction}(value.{@field.fieldGetFunction}())
-            @end
-            ;
-      }
-
-      public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
-        return {@resourceName.typeName}.of(
-            @join field : resourceName.fieldCopyMethods on ",".add(BREAK)
-              {@field.fieldGetFunction}()
-            @end
-            );
-      }
-    @end
   }
 @end

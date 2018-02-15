@@ -31,6 +31,7 @@ import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
@@ -245,12 +246,45 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     for (FieldModel entry : method.getInputFields()) {
+      if (entry.mayBeInResourceName()) {
+        hasRequiredProperties = true;
+        continue;
+      }
       String parameterName = entry.getNameAsParameter();
       properties.add(
           schemaToParamView(context, entry, parameterName, symbolTable, EscapeName.ESCAPE_NAME));
       if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
+    }
+
+    // Add each ResourceName as a field in the request object.
+    for (RequestObjectParamView resourceNameField : resourceNames) {
+      StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
+      Method discoMethod = ((DiscoveryMethodModel) method).getDiscoMethod();
+      String resourceName =
+          DiscoGapicNamer.getResourceIdentifier(discoMethod.path()).toLowerCamel();
+      StringBuilder description =
+          new StringBuilder(discoMethod.parameters().get(resourceName).description());
+      description.append(String.format("\nIt must have the format `%s`. ", discoMethod.path()));
+      description.append(String.format("\\`{%s}\\` must start with a letter,\n", resourceName));
+      description.append(
+          "and contain only letters (\\`[A-Za-z]\\`), numbers (\\`[0-9]\\`), dashes (\\`-\\`),\n"
+              + "     * underscores (\\`_\\`), periods (\\`.\\`), tildes (\\`~\\`), plus (\\`+\\`) or percent\n"
+              + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
+              + "     * must not start with \\`\"goog\"\\`.");
+      paramView.description(description.toString());
+      paramView.name(symbolTable.getNewSymbol(resourceNameField.name()));
+      paramView.typeName("String");
+      paramView.innerTypeName("String");
+      paramView.isRequired(true);
+      paramView.canRepeat(false);
+      paramView.fieldGetFunction(resourceNameField.getCallName());
+      paramView.fieldSetFunction(resourceNameField.setCallName());
+      paramView.properties(new LinkedList<StaticLangApiMessageView>());
+      paramView.isRequestMessage(false);
+      paramView.hasRequiredProperties(false);
+      properties.add(paramView.build());
     }
     Collections.sort(properties);
 

@@ -39,6 +39,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private DiscoveryRequestType inputType;
+  private DiscoveryField outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -50,6 +51,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
+    this.outputType = discoGapicNamer.getResponseField(method);
   }
 
   public Method getDiscoMethod() {
@@ -182,23 +184,13 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    TypeName fullName =
-        typeTable
-            .getTypeTable()
-            .getTypeNameInImplicitPackage(
-                surfaceNamer.publicClassName(DiscoGapicNamer.getRequestName(method)));
-    return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    return typeTable.getAndSaveNicknameFor(inputType);
   }
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    Name responseName = DiscoGapicNamer.getResponseName(method);
-    if (responseName != null) {
-      TypeName fullName =
-          typeTable
-              .getTypeTable()
-              .getTypeNameInImplicitPackage(surfaceNamer.publicClassName(responseName));
-      return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    if (outputType != null) {
+      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
     } else {
       return typeTable.getAndSaveNicknameFor("java.lang.Void");
     }
@@ -320,6 +312,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeModel getOutputType() {
-    return null;
+    return outputType;
   }
 }

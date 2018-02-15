@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -176,6 +177,18 @@ public class DiscoGapicNamer {
               ? method.response().reference()
               : method.response().getIdentifier();
       return Name.anyCamel(typeName);
+    }
+    return null;
+  }
+
+  @Nullable
+  public DiscoveryField getResponseField(Method method) {
+    if (method.response() != null) {
+      Schema responseSchema =
+          method.response().reference() != null
+              ? method.response()
+              : method.getDocument().schemas().get(method.response().getIdentifier());
+      return DiscoveryField.create(responseSchema, this);
     }
     return null;
   }
