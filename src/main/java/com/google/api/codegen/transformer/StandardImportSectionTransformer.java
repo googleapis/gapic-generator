@@ -53,17 +53,29 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
   }
 
   private boolean excludeAppImport(TypeAlias alias, String className) {
-    String parentName = alias.getParentFullName();
+    String parentFullName = alias.getParentFullName();
     if (className == null
         || alias.getImportType() != ImportType.StaticImport
-        || parentName == null
-        || !parentName.endsWith(className)) {
+        || parentFullName == null
+        || !parentFullName.endsWith(className)) {
       return false;
     }
 
-    if (parentName.length() > className.length()) {
-      char packageSeparator = parentName.charAt(parentName.length() - className.length() - 1);
-      if (Character.isLetterOrDigit(packageSeparator)) {
+    // Trying to handle cases when className is a suffix of the actual parrent name in a
+    // language-agnostic way. For example:
+    //     parentFullName = "package.path.ParentTheClass";
+    //     className = "TheClass" ;
+    // should return false, but:
+    //     parentFullName = "package.path.ParentTheClass";
+    //     className = "ParentTheClass";
+    // should return true.
+    //
+    // It is also assumed that everything in full class name which is not a letter/digit/underscore
+    // is a path seprator. This should be good enough for all languages that we support.
+    if (parentFullName.length() > className.length()) {
+      char packageSeparator =
+          parentFullName.charAt(parentFullName.length() - className.length() - 1);
+      if (Character.isLetterOrDigit(packageSeparator) || '_' == packageSeparator) {
         return false;
       }
     }
