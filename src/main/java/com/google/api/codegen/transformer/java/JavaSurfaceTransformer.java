@@ -222,13 +222,12 @@ public class JavaSurfaceTransformer {
 
     ImmutableList.Builder<StaticLangPagedResponseView> pagedResponseWrappersList =
         ImmutableList.builder();
-    for (InterfaceModel apiInterface : context.getApiModel().getInterfaces()) {
-      for (MethodModel method : context.getSupportedMethods()) {
-        if (context.getMethodConfig(method).isPageStreaming()) {
-          pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(
-                  context.asRequestMethodContext(method), context.getImportTypeTable()));
-        }
+
+    for (MethodModel method : context.getSupportedMethods()) {
+      if (context.getMethodConfig(method).isPageStreaming()) {
+        pagedResponseWrappersList.add(
+            generatePagedResponseWrapper(
+                context.asRequestMethodContext(method), context.getImportTypeTable()));
       }
     }
 
