@@ -71,7 +71,7 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
     // should return true.
     //
     // It is also assumed that everything in full class name which is not a letter/digit/underscore
-    // is a path seprator. This should be good enough for all languages that we support.
+    // is a path separator. This should be good enough for all languages that we support.
     if (parentFullName.length() > className.length()) {
       char packageSeparator =
           parentFullName.charAt(parentFullName.length() - className.length() - 1);
