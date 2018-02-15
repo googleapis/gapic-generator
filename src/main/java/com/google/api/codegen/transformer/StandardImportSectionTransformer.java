@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -24,25 +25,48 @@ import java.util.Map;
 
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext context) {
-    return generateImportSection(context.getImportTypeTable().getImports());
+  public ImportSectionView generateImportSection(TransformationContext context, String className) {
+    return generateImportSection(context.getImportTypeTable().getImports(), className);
   }
 
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    return generateImportSection(context.getTypeTable().getImports());
+    return generateImportSection(context.getTypeTable().getImports(), null);
   }
 
-  public ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
+  public ImportSectionView generateImportSection(
+      Map<String, TypeAlias> typeImports, String className) {
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
     for (TypeAlias alias : typeImports.values()) {
+      if (excludeAppImport(alias, className)) {
+        continue;
+      }
       ImportTypeView.Builder imp = ImportTypeView.newBuilder();
       imp.fullName(alias.getFullName());
       imp.nickname(alias.getNickname());
       imp.type(alias.getImportType());
+
       appImports.add(ImportFileView.newBuilder().types(ImmutableList.of(imp.build())).build());
     }
     return ImportSectionView.newBuilder().appImports(appImports.build()).build();
+  }
+
+  private boolean excludeAppImport(TypeAlias alias, String className) {
+    String parentName = alias.getParentFullName();
+    if (className == null
+        || alias.getImportType() != ImportType.StaticImport
+        || parentName == null
+        || !parentName.endsWith(className)) {
+      return false;
+    }
+
+    if (parentName.length() > className.length()) {
+      char packageSeparator = parentName.charAt(parentName.length() - className.length() - 1);
+      if (Character.isLetterOrDigit(packageSeparator)) {
+        return false;
+      }
+    }
+    return true;
   }
 }

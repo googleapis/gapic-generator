@@ -156,7 +156,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
-    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, messageView.typeName()));
 
     return apiFile.build();
   }
@@ -174,7 +174,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return apiFile.build();
   }
