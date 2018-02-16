@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -72,7 +73,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+  private final MockServiceTransformer mockServiceTransformer = new GapicMockServiceTransformer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final NodeJSFeatureConfig featureConfig = new NodeJSFeatureConfig();

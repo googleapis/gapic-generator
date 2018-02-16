@@ -30,6 +30,7 @@ import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.StaticGapicProvider;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.DiscoGapicMockServiceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSampleAppTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -102,7 +103,8 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setModelToViewTransformer(
                     new JavaSurfaceTestTransformer(
                         javaTestPathMapper,
-                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
+                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        new DiscoGapicMockServiceTransformer()))
                 .build();
         providers.add(testProvider);
       }

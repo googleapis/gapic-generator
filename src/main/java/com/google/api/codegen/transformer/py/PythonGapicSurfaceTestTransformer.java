@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -76,7 +77,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
       new FileHeaderTransformer(importSectionTransformer);
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+  private final MockServiceTransformer mockServiceTransformer = new GapicMockServiceTransformer();
   private final FeatureConfig featureConfig = new DefaultFeatureConfig();
 
   public PythonGapicSurfaceTestTransformer(

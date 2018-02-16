@@ -66,19 +66,22 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
 
   private final SurfaceTransformer surfaceTransformer;
   private final GapicCodePathMapper pathMapper;
+  private final MockServiceTransformer mockServiceTransformer;
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new StaticLangApiMethodTransformer();
 
   public JavaSurfaceTestTransformer(
-      GapicCodePathMapper javaPathMapper, SurfaceTransformer surfaceTransformer) {
+      GapicCodePathMapper javaPathMapper,
+      SurfaceTransformer surfaceTransformer,
+      MockServiceTransformer mockServiceTransformer) {
     this.surfaceTransformer = surfaceTransformer;
+    this.mockServiceTransformer = mockServiceTransformer;
     this.pathMapper = javaPathMapper;
   }
 

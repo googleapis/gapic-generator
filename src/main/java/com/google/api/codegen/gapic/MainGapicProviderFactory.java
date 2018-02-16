@@ -25,6 +25,7 @@ import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSmokeTestTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
@@ -224,7 +225,8 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(
                     new JavaSurfaceTestTransformer(
                         javaTestPathMapper,
-                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig)))
+                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        new GapicMockServiceTransformer()))
                 .build();
         providers.add(testProvider);
       }

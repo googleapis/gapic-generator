@@ -19,18 +19,29 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** MockServiceTransformer contains helper methods useful for creating mock views. */
-public interface MockServiceTransformer {
-  List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig);
+/** DiscoGapicMockServiceTransformer contains helper methods useful for creating mock views. */
+public class DiscoGapicMockServiceTransformer implements MockServiceTransformer {
+  public List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig) {
+    return new ArrayList<>();
+  }
 
-  Map<String, InterfaceModel> getGrpcInterfacesForService(
-      ApiModel model, ProductConfig productConfig, InterfaceModel apiInterface);
+  public Map<String, InterfaceModel> getGrpcInterfacesForService(
+      ApiModel model, ProductConfig productConfig, InterfaceModel apiInterface) {
+    return new HashMap<>();
+  }
 
-  List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context);
+  public List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context) {
+    return new LinkedList<>();
+  }
 
-  List<MockServiceUsageView> createMockServices(
-      SurfaceNamer namer, ApiModel model, ProductConfig productConfig);
+  public List<MockServiceUsageView> createMockServices(
+      SurfaceNamer namer, ApiModel model, ProductConfig productConfig) {
+    return new LinkedList<>();
+  }
 }

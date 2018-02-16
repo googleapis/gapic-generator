@@ -169,42 +169,42 @@ public class StaticLangApiMethodTransformer {
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(method), methodViewBuilder);
 
-    //<<<<<<< HEAD
-    FieldConfig resourceFieldConfig =
-        context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
-    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-    if (resourceFieldConfig.getFieldPath().size() > 1) {
-      for (FieldModel field : resourceFieldConfig.getFieldPath()) {
-        resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
-      }
-    } else {
-      resourcesFieldGetFunctionList.add(
-          namer.getFieldGetFunctionName(
-              context.getFeatureConfig(),
-              context.getMethodConfig().getPageStreaming().getResourcesFieldConfig()));
+    //    //<<<<<<< HEAD
+    //    FieldConfig resourceFieldConfig =
+    //        context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+    //    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    //    if (resourceFieldConfig.getFieldPath().size() > 1) {
+    //      for (FieldModel field : resourceFieldConfig.getFieldPath()) {
+    //        resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    //      }
+    //    } else {
+    //      resourcesFieldGetFunctionList.add(
+    //          namer.getFieldGetFunctionName(
+    //              context.getFeatureConfig(),
+    //              context.getMethodConfig().getPageStreaming().getResourcesFieldConfig()));
+    //    }
+    //    UnpagedListCallableMethodDetailView unpagedListCallableDetails =
+    //        UnpagedListCallableMethodDetailView.newBuilder()
+    //            .resourceListGetFunction(resourcesFieldGetFunctionList.build())
+    //            =======
+    String getResourceListCallName =
+        namer.getFieldGetFunctionName(
+            context.getFeatureConfig(),
+            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+
+    String resourceListParseFunction = "";
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    if (context.getFeatureConfig().useResourceNameConverters(resourceFieldConfig)) {
+      resourceListParseFunction =
+          namer.getResourceTypeParseListMethodName(context.getTypeTable(), resourceFieldConfig);
     }
+
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
-            .resourceListGetFunction(resourcesFieldGetFunctionList.build())
-            //=======
-            //    String getResourceListCallName =
-            //        namer.getFieldGetFunctionName(
-            //            context.getFeatureConfig(),
-            //            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
-            //
-            //    String resourceListParseFunction = "";
-            //    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-            //    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-            //    if (context.getFeatureConfig().useResourceNameConverters(resourceFieldConfig)) {
-            //      resourceListParseFunction =
-            //          namer.getResourceTypeParseListMethodName(context.getTypeTable(), resourceFieldConfig);
-            //    }
-            //
-            //    UnpagedListCallableMethodDetailView unpagedListCallableDetails =
-            //        UnpagedListCallableMethodDetailView.newBuilder()
-            //            .resourceListGetFunction(getResourceListCallName)
-            //            .resourceListParseFunction(resourceListParseFunction)
-            //>>>>>>> resource_names
+            .resourceListGetFunction(getResourceListCallName)
+            .resourceListParseFunction(resourceListParseFunction)
+            //            >>>>>>> resource_names
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 

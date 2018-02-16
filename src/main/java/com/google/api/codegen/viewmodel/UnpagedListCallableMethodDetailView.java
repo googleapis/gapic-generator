@@ -15,12 +15,11 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class UnpagedListCallableMethodDetailView {
-  public abstract List<String> resourceListGetFunction();
+  public abstract String resourceListGetFunction();
 
   @Nullable
   public abstract String resourceListParseFunction();
@@ -31,7 +30,7 @@ public abstract class UnpagedListCallableMethodDetailView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder resourceListGetFunction(List<String> name);
+    public abstract Builder resourceListGetFunction(String name);
 
     public abstract Builder resourceListParseFunction(String name);
 
