@@ -38,8 +38,8 @@ public final class DiscoveryMethodModel implements MethodModel {
   private ImmutableSet<String> IDEMPOTENT_HTTP_METHODS =
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
-  private DiscoveryRequestType inputType;
-  private DiscoveryField outputType;
+  private final DiscoveryRequestType inputType;
+  private final DiscoveryField outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -51,7 +51,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
-    this.outputType = discoGapicNamer.getResponseField(method);
+    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
   }
 
   public Method getDiscoMethod() {

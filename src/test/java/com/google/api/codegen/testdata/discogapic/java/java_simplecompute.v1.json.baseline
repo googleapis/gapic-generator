@@ -17,18 +17,23 @@
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.Struct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceName {
+public final class AddressName implements ResourceName, Struct {
   private final String address;
   private final String project;
   private final String region;
@@ -61,6 +66,19 @@ public final class AddressName implements ResourceName {
       .build();
   }
 
+  public static String format(
+      String address,
+      String project,
+      String region
+      ) {
+    return of(
+        address,
+        project,
+        region
+        )
+        .toString();
+  }
+
   public String getAddress() {
     return address;
   }
@@ -73,6 +91,21 @@ public final class AddressName implements ResourceName {
     return region;
   }
 
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    return fieldMap;
+  }
 
   public static AddressName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -222,18 +255,23 @@ public final class AddressNameType implements ResourceNameType {
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.Struct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceName {
+public final class RegionName implements ResourceName, Struct {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -262,6 +300,17 @@ public final class RegionName implements ResourceName {
       .build();
   }
 
+  public static String format(
+      String project,
+      String region
+      ) {
+    return of(
+        project,
+        region
+        )
+        .toString();
+  }
+
   public String getProject() {
     return project;
   }
@@ -270,6 +319,18 @@ public final class RegionName implements ResourceName {
     return region;
   }
 
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    return fieldMap;
+  }
 
   public static RegionName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -407,6 +468,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -468,6 +531,11 @@ public final class Address implements ApiMessage {
     this.selfLink = selfLink;
     this.status = status;
     this.users = users;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -841,6 +909,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -882,6 +952,11 @@ public final class AddressList implements ApiMessage {
     this.kind = kind;
     this.nextPageToken = nextPageToken;
     this.selfLink = selfLink;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -1120,6 +1195,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1149,6 +1226,11 @@ public final class Data implements ApiMessage {
       ) {
     this.key = key;
     this.value = value;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -1306,6 +1388,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1331,6 +1415,11 @@ public final class Error implements ApiMessage {
       List<Errors> errors
       ) {
     this.errors = errors;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -1461,6 +1550,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1494,6 +1585,11 @@ public final class Errors implements ApiMessage {
     this.code = code;
     this.location = location;
     this.message = message;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -1678,6 +1774,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1791,6 +1889,11 @@ public final class Operation implements ApiMessage {
     this.user = user;
     this.warnings = warnings;
     this.zone = zone;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -2515,6 +2618,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.Struct;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -2548,6 +2653,11 @@ public final class Warnings implements ApiMessage {
     this.code = code;
     this.data = data;
     this.message = message;
+  }
+
+  @Override
+  public ResourceName getResourceName() {
+    return null;
   }
 
   @Override
@@ -2752,9 +2862,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   private final String fields;
   private final String key;
   private final String prettyPrint;
-  private final String project;
   private final String quotaUser;
-  private final String region;
   private final String userIp;
 
   private DeleteAddressHttpRequest() {
@@ -2764,9 +2872,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.fields = null;
     this.key = null;
     this.prettyPrint = null;
-    this.project = null;
     this.quotaUser = null;
-    this.region = null;
     this.userIp = null;
   }
 
@@ -2778,9 +2884,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       String fields,
       String key,
       String prettyPrint,
-      String project,
       String quotaUser,
-      String region,
       String userIp
       ) {
     this.access_token = access_token;
@@ -2789,10 +2893,13 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.fields = fields;
     this.key = key;
     this.prettyPrint = prettyPrint;
-    this.project = project;
     this.quotaUser = quotaUser;
-    this.region = region;
     this.userIp = userIp;
+  }
+
+  @Override
+  public AddressName getResourceName() {
+    return AddressName.parse(address);
   }
 
   @Override
@@ -2816,14 +2923,8 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
       fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
     if (fieldNames.contains("quotaUser") && quotaUser != null) {
       fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
     }
     if (fieldNames.contains("userIp") && userIp != null) {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
@@ -2861,16 +2962,8 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     return prettyPrint;
   }
 
-  public String getProject() {
-    return project;
-  }
-
   public String getQuotaUser() {
     return quotaUser;
-  }
-
-  public String getRegion() {
-    return region;
   }
 
   public String getUserIp() {
@@ -2904,9 +2997,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     private String fields;
     private String key;
     private String prettyPrint;
-    private String project;
     private String quotaUser;
-    private String region;
     private String userIp;
 
     Builder() {}
@@ -2931,14 +3022,8 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       if (other.getPrettyPrint() != null) {
         this.prettyPrint = other.prettyPrint;
       }
-      if (other.getProject() != null) {
-        this.project = other.project;
-      }
       if (other.getQuotaUser() != null) {
         this.quotaUser = other.quotaUser;
-      }
-      if (other.getRegion() != null) {
-        this.region = other.region;
       }
       if (other.getUserIp() != null) {
         this.userIp = other.userIp;
@@ -2953,9 +3038,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       this.fields = source.fields;
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
-      this.project = source.project;
       this.quotaUser = source.quotaUser;
-      this.region = source.region;
       this.userIp = source.userIp;
     }
 
@@ -3013,30 +3096,12 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       return this;
     }
 
-    public String getProject() {
-      return project;
-    }
-
-    public Builder setProject(String project) {
-      this.project = project;
-      return this;
-    }
-
     public String getQuotaUser() {
       return quotaUser;
     }
 
     public Builder setQuotaUser(String quotaUser) {
       this.quotaUser = quotaUser;
-      return this;
-    }
-
-    public String getRegion() {
-      return region;
-    }
-
-    public Builder setRegion(String region) {
-      this.region = region;
       return this;
     }
 
@@ -3060,13 +3125,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
 
 
 
-      if (project == null) {
-        missing += " project";
-      }
 
-      if (region == null) {
-        missing += " region";
-      }
 
       if (!missing.isEmpty()) {
         throw new IllegalStateException("Missing required properties:" + missing);
@@ -3078,9 +3137,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
         fields,
         key,
         prettyPrint,
-        project,
         quotaUser,
-        region,
         userIp
       );
     }
@@ -3093,34 +3150,9 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setProject(this.project);
       newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
-    }
-
-    public final Builder setAddress(AddressName value) {
-      if (value == null) {
-        return
-            setAddress("").
-            setProject("").
-            setRegion("")
-            ;
-      }
-      return
-          setAddress(value.getAddress()).
-          setProject(value.getProject()).
-          setRegion(value.getRegion())
-          ;
-    }
-
-    public final AddressName getAddress() {
-      return AddressName.of(
-          getAddress(),
-          getProject(),
-          getRegion()
-          );
     }
   }
 
@@ -3133,9 +3165,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
         + "fields=" + fields + ", "
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
-        + "project=" + project + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "region=" + region + ", "
         + "userIp=" + userIp
         + "}";
   }
@@ -3154,9 +3184,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
-          Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
-          Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.userIp, that.getUserIp())
           ;
     }
@@ -3172,9 +3200,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       fields,
       key,
       prettyPrint,
-      project,
       quotaUser,
-      region,
       userIp
     );
   }
@@ -3220,9 +3246,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
   private final String fields;
   private final String key;
   private final String prettyPrint;
-  private final String project;
   private final String quotaUser;
-  private final String region;
   private final String userIp;
 
   private GetAddressHttpRequest() {
@@ -3232,9 +3256,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.fields = null;
     this.key = null;
     this.prettyPrint = null;
-    this.project = null;
     this.quotaUser = null;
-    this.region = null;
     this.userIp = null;
   }
 
@@ -3246,9 +3268,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
       String fields,
       String key,
       String prettyPrint,
-      String project,
       String quotaUser,
-      String region,
       String userIp
       ) {
     this.access_token = access_token;
@@ -3257,10 +3277,13 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.fields = fields;
     this.key = key;
     this.prettyPrint = prettyPrint;
-    this.project = project;
     this.quotaUser = quotaUser;
-    this.region = region;
     this.userIp = userIp;
+  }
+
+  @Override
+  public AddressName getResourceName() {
+    return AddressName.parse(address);
   }
 
   @Override
@@ -3284,14 +3307,8 @@ public final class GetAddressHttpRequest implements ApiMessage {
     if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
       fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
     if (fieldNames.contains("quotaUser") && quotaUser != null) {
       fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
     }
     if (fieldNames.contains("userIp") && userIp != null) {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
@@ -3329,16 +3346,8 @@ public final class GetAddressHttpRequest implements ApiMessage {
     return prettyPrint;
   }
 
-  public String getProject() {
-    return project;
-  }
-
   public String getQuotaUser() {
     return quotaUser;
-  }
-
-  public String getRegion() {
-    return region;
   }
 
   public String getUserIp() {
@@ -3372,9 +3381,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
     private String fields;
     private String key;
     private String prettyPrint;
-    private String project;
     private String quotaUser;
-    private String region;
     private String userIp;
 
     Builder() {}
@@ -3399,14 +3406,8 @@ public final class GetAddressHttpRequest implements ApiMessage {
       if (other.getPrettyPrint() != null) {
         this.prettyPrint = other.prettyPrint;
       }
-      if (other.getProject() != null) {
-        this.project = other.project;
-      }
       if (other.getQuotaUser() != null) {
         this.quotaUser = other.quotaUser;
-      }
-      if (other.getRegion() != null) {
-        this.region = other.region;
       }
       if (other.getUserIp() != null) {
         this.userIp = other.userIp;
@@ -3421,9 +3422,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
       this.fields = source.fields;
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
-      this.project = source.project;
       this.quotaUser = source.quotaUser;
-      this.region = source.region;
       this.userIp = source.userIp;
     }
 
@@ -3481,30 +3480,12 @@ public final class GetAddressHttpRequest implements ApiMessage {
       return this;
     }
 
-    public String getProject() {
-      return project;
-    }
-
-    public Builder setProject(String project) {
-      this.project = project;
-      return this;
-    }
-
     public String getQuotaUser() {
       return quotaUser;
     }
 
     public Builder setQuotaUser(String quotaUser) {
       this.quotaUser = quotaUser;
-      return this;
-    }
-
-    public String getRegion() {
-      return region;
-    }
-
-    public Builder setRegion(String region) {
-      this.region = region;
       return this;
     }
 
@@ -3528,13 +3509,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
 
 
 
-      if (project == null) {
-        missing += " project";
-      }
 
-      if (region == null) {
-        missing += " region";
-      }
 
       if (!missing.isEmpty()) {
         throw new IllegalStateException("Missing required properties:" + missing);
@@ -3546,9 +3521,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
         fields,
         key,
         prettyPrint,
-        project,
         quotaUser,
-        region,
         userIp
       );
     }
@@ -3561,34 +3534,9 @@ public final class GetAddressHttpRequest implements ApiMessage {
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setProject(this.project);
       newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
-    }
-
-    public final Builder setAddress(AddressName value) {
-      if (value == null) {
-        return
-            setAddress("").
-            setProject("").
-            setRegion("")
-            ;
-      }
-      return
-          setAddress(value.getAddress()).
-          setProject(value.getProject()).
-          setRegion(value.getRegion())
-          ;
-    }
-
-    public final AddressName getAddress() {
-      return AddressName.of(
-          getAddress(),
-          getProject(),
-          getRegion()
-          );
     }
   }
 
@@ -3601,9 +3549,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
         + "fields=" + fields + ", "
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
-        + "project=" + project + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "region=" + region + ", "
         + "userIp=" + userIp
         + "}";
   }
@@ -3622,9 +3568,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
-          Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
-          Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.userIp, that.getUserIp())
           ;
     }
@@ -3640,9 +3584,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
       fields,
       key,
       prettyPrint,
-      project,
       quotaUser,
-      region,
       userIp
     );
   }
@@ -3688,7 +3630,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   private final String fields;
   private final String key;
   private final String prettyPrint;
-  private final String project;
   private final String quotaUser;
   private final String region;
   private final String userIp;
@@ -3700,7 +3641,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.fields = null;
     this.key = null;
     this.prettyPrint = null;
-    this.project = null;
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
@@ -3714,7 +3654,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       String fields,
       String key,
       String prettyPrint,
-      String project,
       String quotaUser,
       String region,
       String userIp
@@ -3725,10 +3664,14 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.fields = fields;
     this.key = key;
     this.prettyPrint = prettyPrint;
-    this.project = project;
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
+  }
+
+  @Override
+  public RegionName getResourceName() {
+    return RegionName.parse(region);
   }
 
   @Override
@@ -3751,9 +3694,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     }
     if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
       fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
     }
     if (fieldNames.contains("quotaUser") && quotaUser != null) {
       fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
@@ -3797,10 +3737,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     return prettyPrint;
   }
 
-  public String getProject() {
-    return project;
-  }
-
   public String getQuotaUser() {
     return quotaUser;
   }
@@ -3840,7 +3776,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     private String fields;
     private String key;
     private String prettyPrint;
-    private String project;
     private String quotaUser;
     private String region;
     private String userIp;
@@ -3867,9 +3802,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       if (other.getPrettyPrint() != null) {
         this.prettyPrint = other.prettyPrint;
       }
-      if (other.getProject() != null) {
-        this.project = other.project;
-      }
       if (other.getQuotaUser() != null) {
         this.quotaUser = other.quotaUser;
       }
@@ -3889,7 +3821,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       this.fields = source.fields;
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
-      this.project = source.project;
       this.quotaUser = source.quotaUser;
       this.region = source.region;
       this.userIp = source.userIp;
@@ -3949,15 +3880,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       return this;
     }
 
-    public String getProject() {
-      return project;
-    }
-
-    public Builder setProject(String project) {
-      this.project = project;
-      return this;
-    }
-
     public String getQuotaUser() {
       return quotaUser;
     }
@@ -3994,9 +3916,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
 
 
 
-      if (project == null) {
-        missing += " project";
-      }
 
       if (region == null) {
         missing += " region";
@@ -4012,7 +3931,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
         fields,
         key,
         prettyPrint,
-        project,
         quotaUser,
         region,
         userIp
@@ -4027,31 +3945,10 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setProject(this.project);
       newBuilder.setQuotaUser(this.quotaUser);
       newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
-    }
-
-    public final Builder setRegion(RegionName value) {
-      if (value == null) {
-        return
-            setProject("").
-            setRegion("")
-            ;
-      }
-      return
-          setProject(value.getProject()).
-          setRegion(value.getRegion())
-          ;
-    }
-
-    public final RegionName getRegion() {
-      return RegionName.of(
-          getProject(),
-          getRegion()
-          );
     }
   }
 
@@ -4064,7 +3961,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
         + "fields=" + fields + ", "
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
-        + "project=" + project + ", "
         + "quotaUser=" + quotaUser + ", "
         + "region=" + region + ", "
         + "userIp=" + userIp
@@ -4085,7 +3981,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
-          Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
           Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.userIp, that.getUserIp())
@@ -4103,7 +3998,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       fields,
       key,
       prettyPrint,
-      project,
       quotaUser,
       region,
       userIp
@@ -4154,7 +4048,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   private final String orderBy;
   private final String pageToken;
   private final String prettyPrint;
-  private final String project;
   private final String quotaUser;
   private final String region;
   private final String userIp;
@@ -4169,7 +4062,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.orderBy = null;
     this.pageToken = null;
     this.prettyPrint = null;
-    this.project = null;
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
@@ -4186,7 +4078,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       String orderBy,
       String pageToken,
       String prettyPrint,
-      String project,
       String quotaUser,
       String region,
       String userIp
@@ -4200,10 +4091,14 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.orderBy = orderBy;
     this.pageToken = pageToken;
     this.prettyPrint = prettyPrint;
-    this.project = project;
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
+  }
+
+  @Override
+  public RegionName getResourceName() {
+    return RegionName.parse(region);
   }
 
   @Override
@@ -4235,9 +4130,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     }
     if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
       fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
     }
     if (fieldNames.contains("quotaUser") && quotaUser != null) {
       fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
@@ -4293,10 +4185,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     return prettyPrint;
   }
 
-  public String getProject() {
-    return project;
-  }
-
   public String getQuotaUser() {
     return quotaUser;
   }
@@ -4339,7 +4227,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     private String orderBy;
     private String pageToken;
     private String prettyPrint;
-    private String project;
     private String quotaUser;
     private String region;
     private String userIp;
@@ -4375,9 +4262,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       if (other.getPrettyPrint() != null) {
         this.prettyPrint = other.prettyPrint;
       }
-      if (other.getProject() != null) {
-        this.project = other.project;
-      }
       if (other.getQuotaUser() != null) {
         this.quotaUser = other.quotaUser;
       }
@@ -4400,7 +4284,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       this.orderBy = source.orderBy;
       this.pageToken = source.pageToken;
       this.prettyPrint = source.prettyPrint;
-      this.project = source.project;
       this.quotaUser = source.quotaUser;
       this.region = source.region;
       this.userIp = source.userIp;
@@ -4487,15 +4370,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       return this;
     }
 
-    public String getProject() {
-      return project;
-    }
-
-    public Builder setProject(String project) {
-      this.project = project;
-      return this;
-    }
-
     public String getQuotaUser() {
       return quotaUser;
     }
@@ -4535,9 +4409,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
 
 
 
-      if (project == null) {
-        missing += " project";
-      }
 
       if (region == null) {
         missing += " region";
@@ -4556,7 +4427,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
         orderBy,
         pageToken,
         prettyPrint,
-        project,
         quotaUser,
         region,
         userIp
@@ -4574,31 +4444,10 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       newBuilder.setOrderBy(this.orderBy);
       newBuilder.setPageToken(this.pageToken);
       newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setProject(this.project);
       newBuilder.setQuotaUser(this.quotaUser);
       newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
-    }
-
-    public final Builder setRegion(RegionName value) {
-      if (value == null) {
-        return
-            setProject("").
-            setRegion("")
-            ;
-      }
-      return
-          setProject(value.getProject()).
-          setRegion(value.getRegion())
-          ;
-    }
-
-    public final RegionName getRegion() {
-      return RegionName.of(
-          getProject(),
-          getRegion()
-          );
     }
   }
 
@@ -4614,7 +4463,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
         + "orderBy=" + orderBy + ", "
         + "pageToken=" + pageToken + ", "
         + "prettyPrint=" + prettyPrint + ", "
-        + "project=" + project + ", "
         + "quotaUser=" + quotaUser + ", "
         + "region=" + region + ", "
         + "userIp=" + userIp
@@ -4638,7 +4486,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
           Objects.equals(this.orderBy, that.getOrderBy()) &&
           Objects.equals(this.pageToken, that.getPageToken()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
-          Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
           Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.userIp, that.getUserIp())
@@ -4659,7 +4506,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       orderBy,
       pageToken,
       prettyPrint,
-      project,
       quotaUser,
       region,
       userIp
@@ -5596,7 +5442,14 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
+import com.google.cloud.simplecompute.v1.Address;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.Operation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -5781,8 +5634,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     listAddressesSettings = settingsBuilder.listAddressesSettings().build();
   }
 
-  private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, com.google.cloud.simplecompute.v1.Address> LIST_ADDRESSES_PAGE_STR_DESC =
-      new PagedListDescriptor<ListAddressesHttpRequest, AddressList, com.google.cloud.simplecompute.v1.Address>() {
+  private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
+      new PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address>() {
         @Override
         public String emptyToken() {
           return "";
@@ -5810,7 +5663,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
           return payload.getNextPageToken();
         }
         @Override
-        public Iterable<com.google.cloud.simplecompute.v1.Address> extractResources(AddressList payload) {
+        public Iterable<Address> extractResources(AddressList payload) {
           return payload.getItems();
         }
       };
@@ -5823,7 +5676,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
             ListAddressesHttpRequest request,
             ApiCallContext context,
             ApiFuture<AddressList> futureResponse) {
-          PageContext<ListAddressesHttpRequest, AddressList, com.google.cloud.simplecompute.v1.Address> pageContext =
+          PageContext<ListAddressesHttpRequest, AddressList, Address> pageContext =
               PageContext.create(callable, LIST_ADDRESSES_PAGE_STR_DESC, request, context);
           return ListAddressesPagedResponse.createAsync(pageContext, futureResponse);
         }
@@ -6190,12 +6043,12 @@ public class HttpJsonAddressStub extends AddressStub {
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
 
-  public static final HttpJsonAddressStub create(AddressSettings settings) throws IOException {
+  public static final HttpJsonAddressStub create(AddressStubSettings settings) throws IOException {
     return new HttpJsonAddressStub(settings, ClientContext.create(settings));
   }
 
   public static final HttpJsonAddressStub create(ClientContext clientContext) throws IOException {
-    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext);
+    return new HttpJsonAddressStub(AddressStubSettings.newBuilder().build(), clientContext);
   }
 
   /**
@@ -6203,7 +6056,7 @@ public class HttpJsonAddressStub extends AddressStub {
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext) throws IOException {
+  protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext) throws IOException {
 
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
