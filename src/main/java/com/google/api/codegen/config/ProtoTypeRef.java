@@ -216,7 +216,7 @@ public class ProtoTypeRef implements TypeModel {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", typeRef.toString());
+    return String.format("Protobuf FieldModel (%s): {%s}", typeRef, fields);
   }
 
   @Override
