@@ -53,7 +53,7 @@
 @private executeWithProjectID(smokeTest)
   public static void executeNoCatch(String projectId) throws Exception {
     try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
-      {@methodCall(smokeTest.method)}
+      {@methodCall(smokeTest.apiMethod)}
     }
   }
 @end
@@ -62,7 +62,7 @@
   public static void executeNoCatch() throws Exception {
     try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
       @if smokeTest.hasMethod
-        {@methodCall(smokeTest.method)}
+        {@methodCall(smokeTest.apiMethod)}
       @else
         // Add your method call here.
       @end
@@ -70,23 +70,27 @@
   }
 @end
 
-@private methodCall(method)
-  {@initCode(method.initCode)}
+@private methodCall(apiMethod)
+  {@initCode(apiMethod.initCode)}
 
-  @switch method.clientMethodType
+  @switch apiMethod.type
   @case "PagedFlattenedMethod"
-    {@method.responseTypeName} pagedResponse =
-        client.{@method.clientMethodName}(\
-          {@sampleMethodCallArgList(method.initCode.fieldSettings)});
+    {@apiMethod.responseTypeName} pagedResponse =
+        client.{@apiMethod.name}(\
+          {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
     System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
+  @case "AsyncOperationFlattenedMethod"
+      {@apiMethod.responseTypeName} response = \
+        client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)}).get();
+      System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
   @case "FlattenedMethod"
-    @if method.hasReturnValue
-      {@method.responseTypeName} response = \
-        client.{@method.clientMethodName}({@args(method.initCode.fieldSettings)});
+    @if apiMethod.hasReturnValue
+      {@apiMethod.responseTypeName} response = \
+        client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)});
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     @else
-      client.{@method.clientMethodName}(\
-        {@sampleMethodCallArgList(method.initCode.fieldSettings)});
+      client.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
     @end
   @end
 @end

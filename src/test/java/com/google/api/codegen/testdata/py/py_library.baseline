@@ -285,6 +285,8 @@ LibraryServiceClient
     client = library_v1.LibraryServiceClient()
 
     name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+    # TODO: Initialize ``book``:
     book = {}
 
     response = client.update_book(name, book)
@@ -711,6 +713,8 @@ LibraryServiceClient
     client = library_v1.LibraryServiceClient()
 
     name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+    # TODO: Initialize ``book``:
     book = {}
 
     response = client.update_book(name, book)
@@ -736,6 +740,20 @@ Api Reference
     gapic/v1/api
     gapic/v1/types
 ============== file: google/__init__.py ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 try:
     import pkg_resources
     pkg_resources.declare_namespace(__name__)
@@ -743,6 +761,20 @@ except ImportError:
     import pkgutil
     __path__ = pkgutil.extend_path(__path__, __name__)
 ============== file: google/cloud/__init__.py ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 try:
     import pkg_resources
     pkg_resources.declare_namespace(__name__)
@@ -752,7 +784,7 @@ except ImportError:
 ============== file: google/cloud/example/__init__.py ==============
 
 ============== file: google/cloud/example/library.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -780,7 +812,7 @@ __all__ = (
     'LibraryServiceClient',
 )
 ============== file: google/cloud/example/library_v1/__init__.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -815,7 +847,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/gapic/__init__.py ==============
 
 ============== file: google/cloud/example/library_v1/gapic/enums.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -948,7 +980,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
         ONE = 1
     
 ============== file: google/cloud/example/library_v1/gapic/library_service_client.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -980,9 +1012,11 @@ import google.api_core.protobuf_helpers
 
 from google.cloud.example.library_v1.gapic import enums
 from google.cloud.example.library_v1.gapic import library_service_client_config
+from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
+from google.longrunning import operations_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
@@ -1293,7 +1327,8 @@ class LibraryServiceClient(object):
             self,
             shelf,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Creates a shelf, and returns the new Shelf.
         RPC method comment may include special characters: <>&\"``'@.
@@ -1303,6 +1338,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``shelf``:
             >>> shelf = {}
             >>>
             >>> response = client.create_shelf(shelf)
@@ -1317,6 +1353,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
@@ -1328,10 +1366,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.CreateShelfRequest(
             shelf=shelf,
         )
-        return self._create_shelf(request, retry=retry, timeout=timeout)
+        return self._create_shelf(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_shelf(
             self,
@@ -1340,7 +1381,8 @@ class LibraryServiceClient(object):
             message=None,
             string_builder=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Gets a shelf.
 
@@ -1350,6 +1392,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>> # TODO: Initialize ``options_``:
             >>> options_ = ''
             >>>
             >>> response = client.get_shelf(name, options_)
@@ -1368,6 +1412,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
@@ -1379,18 +1425,22 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetShelfRequest(
             name=name,
             options=options_,
             message=message,
             string_builder=string_builder,
         )
-        return self._get_shelf(request, retry=retry, timeout=timeout)
+        return self._get_shelf(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_shelves(
             self,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Lists shelves.
 
@@ -1418,6 +1468,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1431,10 +1483,13 @@ class LibraryServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.ListShelvesRequest()
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._list_shelves, retry=retry, timeout=timeout),
+            method=functools.partial(self._list_shelves, retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='shelves',
             request_token_field='page_token',
@@ -1446,7 +1501,8 @@ class LibraryServiceClient(object):
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Deletes a shelf.
 
@@ -1467,6 +1523,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -1475,17 +1533,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.DeleteShelfRequest(
             name=name,
         )
-        self._delete_shelf(request, retry=retry, timeout=timeout)
+        self._delete_shelf(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def merge_shelves(
             self,
             name,
             other_shelf_name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Merges two shelves by adding all books from the shelf named
         ``other_shelf_name`` to shelf ``name``, and deletes
@@ -1510,6 +1572,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
@@ -1521,18 +1585,22 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.MergeShelvesRequest(
             name=name,
             other_shelf_name=other_shelf_name,
         )
-        return self._merge_shelves(request, retry=retry, timeout=timeout)
+        return self._merge_shelves(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def create_book(
             self,
             name,
             book,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Creates a book.
 
@@ -1542,6 +1610,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>> # TODO: Initialize ``book``:
             >>> book = {}
             >>>
             >>> response = client.create_book(name, book)
@@ -1557,6 +1627,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
@@ -1568,6 +1640,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.CreateBookRequest(
             name=name,
             book=book,
@@ -1576,8 +1651,9 @@ class LibraryServiceClient(object):
         routing_header = google.api_core.gapic_v1.routing_header(
             [('name', name), ('book.read', book.read)],
         )
+        metadata.append(routing_header)
 
-        return self._create_book(request, retry=retry, timeout=timeout, metadata=[routing_header])
+        return self._create_book(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def publish_series(
             self,
@@ -1587,7 +1663,8 @@ class LibraryServiceClient(object):
             edition=None,
             review_copy=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Creates a series of books.
 
@@ -1596,7 +1673,10 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``shelf``:
             >>> shelf = {}
+            >>>
+            >>> # TODO: Initialize ``books``:
             >>> books = []
             >>> series_string = 'foobar'
             >>> series_uuid = {'series_string': series_string}
@@ -1621,6 +1701,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.PublishSeriesResponse` instance.
@@ -1632,6 +1714,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         # Sanity check: We have some fields which are mutually exclusive;
         # raise ValueError if more than one is sent.
         google.api_core.protobuf_helpers.check_oneof(
@@ -1646,13 +1731,14 @@ class LibraryServiceClient(object):
             edition=edition,
             review_copy=review_copy,
         )
-        return self._publish_series(request, retry=retry, timeout=timeout)
+        return self._publish_series(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book(
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Gets a book.
 
@@ -1673,6 +1759,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
@@ -1684,10 +1772,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        return self._get_book(request, retry=retry, timeout=timeout)
+        return self._get_book(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_books(
             self,
@@ -1695,7 +1786,8 @@ class LibraryServiceClient(object):
             page_size=None,
             filter_=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Lists books in a shelf.
 
@@ -1705,15 +1797,16 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.shelf_path('[SHELF_ID]')
+            >>> filter_ = 'book-filter-string'
             >>>
             >>>
             >>> # Iterate over all results
-            >>> for element in client.list_books(name):
+            >>> for element in client.list_books(name, filter=filter_):
             ...     # process element
             ...     pass
             >>>
             >>> # Or iterate over results one page at a time
-            >>> for page in client.list_books(name, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_books(name, filter=filter_, options=CallOptions(page_token=INITIAL_PAGE)):
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -1732,6 +1825,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1746,6 +1841,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
@@ -1753,7 +1851,7 @@ class LibraryServiceClient(object):
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._list_books, retry=retry, timeout=timeout),
+            method=functools.partial(self._list_books, retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='books',
             request_token_field='page_token',
@@ -1765,7 +1863,8 @@ class LibraryServiceClient(object):
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Deletes a book.
 
@@ -1786,6 +1885,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -1794,10 +1895,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.DeleteBookRequest(
             name=name,
         )
-        self._delete_book(request, retry=retry, timeout=timeout)
+        self._delete_book(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book(
             self,
@@ -1807,7 +1911,8 @@ class LibraryServiceClient(object):
             update_mask=None,
             physical_mask=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Updates a book.
 
@@ -1817,6 +1922,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> # TODO: Initialize ``book``:
             >>> book = {}
             >>>
             >>> response = client.update_book(name, book)
@@ -1839,6 +1946,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
@@ -1850,6 +1959,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
@@ -1857,14 +1969,15 @@ class LibraryServiceClient(object):
             update_mask=update_mask,
             physical_mask=physical_mask,
         )
-        return self._update_book(request, retry=retry, timeout=timeout)
+        return self._update_book(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def move_book(
             self,
             name,
             other_shelf_name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Moves a book to another shelf, and returns the new book.
 
@@ -1887,6 +2000,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Book` instance.
@@ -1898,18 +2013,22 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.MoveBookRequest(
             name=name,
             other_shelf_name=other_shelf_name,
         )
-        return self._move_book(request, retry=retry, timeout=timeout)
+        return self._move_book(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_strings(
             self,
             name=None,
             page_size=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Lists a primitive resource. To test go page streaming.
 
@@ -1943,6 +2062,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -1957,13 +2078,16 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.ListStringsRequest(
             name=name,
             page_size=page_size,
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._list_strings, retry=retry, timeout=timeout),
+            method=functools.partial(self._list_strings, retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='strings',
             request_token_field='page_token',
@@ -1976,7 +2100,8 @@ class LibraryServiceClient(object):
             name,
             comments,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Adds comments to a book
 
@@ -2005,6 +2130,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -2013,17 +2140,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.AddCommentsRequest(
             name=name,
             comments=comments,
         )
-        self._add_comments(request, retry=retry, timeout=timeout)
+        self._add_comments(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_archive(
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Gets a book from an archive.
 
@@ -2044,6 +2175,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromArchive` instance.
@@ -2055,17 +2188,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
         )
-        return self._get_book_from_archive(request, retry=retry, timeout=timeout)
+        return self._get_book_from_archive(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_anywhere(
             self,
             name,
             alt_book_name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Gets a book from a shelf or archive.
 
@@ -2089,6 +2226,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
@@ -2100,17 +2239,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name,
         )
-        return self._get_book_from_anywhere(request, retry=retry, timeout=timeout)
+        return self._get_book_from_anywhere(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_absolutely_anywhere(
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test proper OneOf-Any resource name mapping
 
@@ -2131,6 +2274,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
@@ -2142,10 +2287,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name,
         )
-        return self._get_book_from_absolutely_anywhere(request, retry=retry, timeout=timeout)
+        return self._get_book_from_absolutely_anywhere(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book_index(
             self,
@@ -2153,7 +2301,8 @@ class LibraryServiceClient(object):
             index_name,
             index_map,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Updates the index of a book.
 
@@ -2164,6 +2313,8 @@ class LibraryServiceClient(object):
             >>>
             >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> index_name = 'default index'
+            >>>
+            >>> # TODO: Initialize ``index_map_item``:
             >>> index_map_item = ''
             >>> index_map = {'default_key': index_map_item}
             >>>
@@ -2179,6 +2330,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -2187,17 +2340,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.UpdateBookIndexRequest(
             name=name,
             index_name=index_name,
             index_map=index_map,
         )
-        self._update_book_index(request, retry=retry, timeout=timeout)
+        self._update_book_index(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_shelves(
             self,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test server streaming
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2218,6 +2375,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.StreamShelvesResponse].
@@ -2228,14 +2387,18 @@ class LibraryServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.StreamShelvesRequest()
-        return self._stream_shelves(request, retry=retry, timeout=timeout)
+        return self._stream_shelves(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_books(
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test server streaming, non-paged responses.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2245,6 +2408,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``name``:
             >>> name = ''
             >>>
             >>> for element in client.stream_books(name):
@@ -2259,6 +2423,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.Book].
@@ -2270,16 +2436,20 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.StreamBooksRequest(
             name=name,
         )
-        return self._stream_books(request, retry=retry, timeout=timeout)
+        return self._stream_books(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def discuss_book(
             self,
             requests,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test bidi-streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2291,6 +2461,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``name``:
             >>> name = ''
             >>> request = {'name': name}
             >>>
@@ -2308,6 +2479,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             Iterable[~google.cloud.example.library_v1.types.Comment].
@@ -2319,13 +2492,17 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        return self._discuss_book(requests, retry=retry, timeout=timeout)
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        return self._discuss_book(requests, retry=retry, timeout=timeout, metadata=metadata)
 
     def monolog_about_book(
             self,
             requests,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test client streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -2337,6 +2514,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``name``:
             >>> name = ''
             >>> request = {'name': name}
             >>>
@@ -2352,6 +2530,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.Comment` instance.
@@ -2363,7 +2543,10 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        return self._monolog_about_book(requests, retry=retry, timeout=timeout)
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        return self._monolog_about_book(requests, retry=retry, timeout=timeout, metadata=metadata)
 
     def find_related_books(
             self,
@@ -2371,7 +2554,8 @@ class LibraryServiceClient(object):
             shelves,
             page_size=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
 
         Example:
@@ -2379,8 +2563,11 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``names_element``:
             >>> names_element = ''
             >>> names = [names_element]
+            >>>
+            >>> # TODO: Initialize ``shelves``:
             >>> shelves = []
             >>>
             >>>
@@ -2409,6 +2596,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.gax.PageIterator` instance. By default, this
@@ -2423,6 +2612,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.FindRelatedBooksRequest(
             names=names,
             shelves=shelves,
@@ -2430,7 +2622,7 @@ class LibraryServiceClient(object):
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._find_related_books, retry=retry, timeout=timeout),
+            method=functools.partial(self._find_related_books, retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='names',
             request_token_field='page_token',
@@ -2443,7 +2635,8 @@ class LibraryServiceClient(object):
             resource,
             tag,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Adds a tag to the book. This RPC is a mixin.
 
@@ -2453,6 +2646,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> # TODO: Initialize ``tag``:
             >>> tag = ''
             >>>
             >>> response = client.add_tag(resource, tag)
@@ -2468,6 +2663,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.AddTagResponse` instance.
@@ -2479,18 +2676,22 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = tagger_pb2.AddTagRequest(
             resource=resource,
             tag=tag,
         )
-        return self._add_tag(request, retry=retry, timeout=timeout)
+        return self._add_tag(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def add_label(
             self,
             resource,
             label,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Adds a label to the entity.
 
@@ -2500,6 +2701,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> # TODO: Initialize ``label``:
             >>> label = ''
             >>>
             >>> response = client.add_label(resource, label)
@@ -2515,6 +2718,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.AddLabelResponse` instance.
@@ -2526,17 +2731,21 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
             label=label,
         )
-        return self._add_label(request, retry=retry, timeout=timeout)
+        return self._add_label(request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_big_book(
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test long-running operations
 
@@ -2566,6 +2775,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
@@ -2577,10 +2788,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        operation = self._get_big_book(request, retry=retry, timeout=timeout)
+        operation = self._get_big_book(request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
@@ -2592,7 +2806,8 @@ class LibraryServiceClient(object):
             self,
             name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test long-running operations with empty return type.
 
@@ -2622,6 +2837,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
@@ -2633,10 +2850,13 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        operation = self._get_big_nothing(request, retry=retry, timeout=timeout)
+        operation = self._get_big_nothing(request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
@@ -2701,7 +2921,8 @@ class LibraryServiceClient(object):
             optional_repeated_fixed64=None,
             optional_map=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Test optional flattening parameters of all types
 
@@ -2711,32 +2932,85 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
+            >>> # TODO: Initialize ``required_singular_int32``:
             >>> required_singular_int32 = 0
+            >>>
+            >>> # TODO: Initialize ``required_singular_int64``:
             >>> required_singular_int64 = 0
+            >>>
+            >>> # TODO: Initialize ``required_singular_float``:
             >>> required_singular_float = 0.0
+            >>>
+            >>> # TODO: Initialize ``required_singular_double``:
             >>> required_singular_double = 0.0
+            >>>
+            >>> # TODO: Initialize ``required_singular_bool``:
             >>> required_singular_bool = False
+            >>>
+            >>> # TODO: Initialize ``required_singular_enum``:
             >>> required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
+            >>>
+            >>> # TODO: Initialize ``required_singular_string``:
             >>> required_singular_string = ''
+            >>>
+            >>> # TODO: Initialize ``required_singular_bytes``:
             >>> required_singular_bytes = b''
+            >>>
+            >>> # TODO: Initialize ``required_singular_message``:
             >>> required_singular_message = {}
+            >>>
+            >>> # TODO: Initialize ``required_singular_resource_name``:
             >>> required_singular_resource_name = ''
+            >>>
+            >>> # TODO: Initialize ``required_singular_resource_name_oneof``:
             >>> required_singular_resource_name_oneof = ''
+            >>>
+            >>> # TODO: Initialize ``required_singular_fixed32``:
             >>> required_singular_fixed32 = 0
+            >>>
+            >>> # TODO: Initialize ``required_singular_fixed64``:
             >>> required_singular_fixed64 = 0
+            >>>
+            >>> # TODO: Initialize ``required_repeated_int32``:
             >>> required_repeated_int32 = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_int64``:
             >>> required_repeated_int64 = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_float``:
             >>> required_repeated_float = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_double``:
             >>> required_repeated_double = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_bool``:
             >>> required_repeated_bool = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_enum``:
             >>> required_repeated_enum = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_string``:
             >>> required_repeated_string = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_bytes``:
             >>> required_repeated_bytes = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_message``:
             >>> required_repeated_message = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_resource_name``:
             >>> required_repeated_resource_name = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_resource_name_oneof``:
             >>> required_repeated_resource_name_oneof = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_fixed32``:
             >>> required_repeated_fixed32 = []
+            >>>
+            >>> # TODO: Initialize ``required_repeated_fixed64``:
             >>> required_repeated_fixed64 = []
+            >>>
+            >>> # TODO: Initialize ``required_map``:
             >>> required_map = {}
             >>>
             >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
@@ -2806,6 +3080,8 @@ class LibraryServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Returns:
             A :class:`~google.cloud.example.library_v1.types.TestOptionalRequiredFlatteningParamsResponse` instance.
@@ -2817,6 +3093,9 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
             required_singular_int32=required_singular_int32,
             required_singular_int64=required_singular_int64,
@@ -2873,7 +3152,7 @@ class LibraryServiceClient(object):
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
         )
-        return self._test_optional_required_flattening_params(request, retry=retry, timeout=timeout)
+        return self._test_optional_required_flattening_params(request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
@@ -3056,7 +3335,7 @@ config = {
 }
 
 ============== file: google/cloud/example/library_v1/types.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3121,7 +3400,7 @@ for module in (http_pb2,
 
 __all__ = tuple(sorted(names))
 ============== file: nox.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3207,7 +3486,7 @@ def lint_setup_py(session):
 universal = 1
 
 ============== file: setup.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3234,10 +3513,8 @@ import sys
 
 install_requires = [
     'google-api-core >= 0.1.0, < 0.2.0dev',
-    'google-auth >= 1.0.2, < 2.0dev',
     'googleapis-common-protos[grpc] >= 1.5.0, < 2.0dev',
     'python-other-package >= 12.1.0, < 13.5.1',
-    'requests >= 2.18.4, < 3.0dev',
 ]
 
 with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
@@ -3273,7 +3550,7 @@ setup(
 )
 
 ============== file: tests/system/gapic/v1/test_system_library_service_v1.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3311,7 +3588,7 @@ class TestSystemLibraryService(object):
         physical_mask = {}
         response = client.update_book(name, book, optional_foo=optional_foo, update_mask=update_mask, physical_mask=physical_mask)
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3694,8 +3971,9 @@ class TestLibraryServiceClient(object):
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
+        filter_ = 'book-filter-string'
 
-        paged_list_response = client.list_books(name)
+        paged_list_response = client.list_books(name, filter=filter_)
         resources = list(paged_list_response)
         assert len(resources) == 1
 
@@ -3713,8 +3991,9 @@ class TestLibraryServiceClient(object):
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
+        filter_ = 'book-filter-string'
 
-        paged_list_response = client.list_books(name)
+        paged_list_response = client.list_books(name, filter=filter_)
         with pytest.raises(CustomException):
             list(paged_list_response)
 

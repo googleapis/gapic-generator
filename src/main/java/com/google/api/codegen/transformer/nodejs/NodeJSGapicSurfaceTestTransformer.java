@@ -141,7 +141,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     }
 
     ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(typeTable.getImports());
+        importSectionTransformer.generateImportSection(typeTable.getImports(), null);
     return MockCombinedView.newBuilder()
         .outputPath(testCaseOutputFile(namer))
         .serviceImpls(impls)
@@ -234,7 +234,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -244,7 +243,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     testClass.outputPath(namer.getSourceFilePath(SMOKE_TEST_OUTPUT_BASE_PATH, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));

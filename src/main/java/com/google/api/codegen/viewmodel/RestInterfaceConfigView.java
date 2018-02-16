@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,24 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class PathTemplateArgumentView {
-  public abstract String name();
+public abstract class RestInterfaceConfigView {
+  public abstract String key();
 
-  public abstract String templateKey();
+  public abstract List<RestMethodConfigView> apiMethods();
 
   public static Builder newBuilder() {
-    return new AutoValue_PathTemplateArgumentView.Builder();
+    return new AutoValue_RestInterfaceConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder name(String val);
+    public abstract Builder key(String val);
 
-    public abstract Builder templateKey(String val);
+    public abstract Builder apiMethods(List<RestMethodConfigView> val);
 
-    public abstract PathTemplateArgumentView build();
+    public abstract RestInterfaceConfigView build();
   }
 }

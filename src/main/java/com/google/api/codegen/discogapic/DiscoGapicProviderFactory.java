@@ -19,7 +19,6 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
-
 import java.util.List;
 
 public interface DiscoGapicProviderFactory {

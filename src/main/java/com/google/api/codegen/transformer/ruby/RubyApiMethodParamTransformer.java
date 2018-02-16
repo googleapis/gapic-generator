@@ -85,7 +85,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     String requestTypeName =
         context
             .getNamer()
-            .getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType());
+            .getAndSaveTypeName(context.getTypeTable(), context.getMethod().getInputType());
     paramDoc.typeName("Enumerable<" + requestTypeName + ">");
     return paramDoc.build();
   }

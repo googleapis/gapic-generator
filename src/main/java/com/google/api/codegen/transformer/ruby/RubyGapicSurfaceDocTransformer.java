@@ -18,11 +18,12 @@ import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -156,16 +157,24 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         new RubyPackageMetadataNamer(productConfig.getPackageName());
     String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+    for (Interface apiInterface : file.getReachableInterfaces()) {
+      String description = RubyUtil.getSentence(namer.getDocLines(apiInterface));
+      InterfaceConfig interfaceConfig =
+          productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface));
       tocContents.add(
           metadataTransformer.generateTocContent(
-              model, packageNamer, packageFilePath, namer.getApiWrapperClassName(interfaceConfig)));
+              description,
+              packageNamer,
+              packageFilePath,
+              namer.getApiWrapperClassName(interfaceConfig)));
     }
 
     tocContents.add(
-        metadataTransformer.generateDataTypeTocContent(
-            productConfig.getPackageName(), packageNamer, packageFilePath));
+        metadataTransformer.generateTocContent(
+            "Data types for " + productConfig.getPackageName(),
+            packageNamer,
+            packageFilePath,
+            "Data Types"));
 
     return TocModuleView.newBuilder()
         .moduleName(moduleName)

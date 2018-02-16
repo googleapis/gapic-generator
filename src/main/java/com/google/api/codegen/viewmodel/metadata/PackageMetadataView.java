@@ -141,6 +141,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract FileHeaderView fileHeader();
 
+  @Nullable
+  public abstract String credentialsClassName();
+
   // Python-specific configuration
   @Nullable
   public abstract List<String> namespacePackages();
@@ -165,6 +168,23 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract String smokeTestProjectVariable();
+
+  @Nullable
+  public abstract String smokeTestKeyfileVariable();
+
+  @Nullable
+  public abstract String smokeTestJsonKeyVariable();
+
+  @Nullable
+  public abstract String projectVariable();
+
+  @Nullable
+  public abstract String keyfileVariable();
+
+  @Nullable
+  public abstract String jsonKeyVariable();
+
+  public abstract boolean publishProtos();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
@@ -274,6 +294,9 @@ public abstract class PackageMetadataView implements ViewModel {
     /** File header information such as copyright lines and license lines */
     public abstract Builder fileHeader(FileHeaderView val);
 
+    /** Name of the class that handles authentication for this package */
+    public abstract Builder credentialsClassName(String val);
+
     public abstract Builder readmeMetadata(ReadmeMetadataView val);
 
     /** Class name of the sample application. */
@@ -284,6 +307,39 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Environment variable to determine the Google Cloud project used to run smoke tests. */
     public abstract Builder smokeTestProjectVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud service account keyfile used to run smoke
+     * tests.
+     */
+    public abstract Builder smokeTestKeyfileVariable(String s);
+
+    /**
+     * Environment variable to determine the contents of the Google Cloud service account keyfile
+     * used to run smoke tests.
+     */
+    public abstract Builder smokeTestJsonKeyVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud project used to configure default
+     * credentials.
+     */
+    public abstract Builder projectVariable(String s);
+
+    /**
+     * Environment variable to determine the Google Cloud service account keyfile used to configure
+     * default credentials.
+     */
+    public abstract Builder keyfileVariable(String s);
+
+    /**
+     * Environment variable to determine the contents of the Google Cloud service account keyfile
+     * used to configure default credentials.
+     */
+    public abstract Builder jsonKeyVariable(String s);
+
+    /** Whether .proto files should be included in the package. */
+    public abstract Builder publishProtos(boolean val);
 
     public abstract PackageMetadataView build();
   }

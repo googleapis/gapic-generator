@@ -127,23 +127,6 @@
         c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
     }
 
-    @join getter : view.pathTemplateGetters
-        // {@getter.name} returns the path for the {@getter.resourceName} resource.
-        func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
-            return "" +
-                @join piece : getter.render.pieces
-                    @switch piece.kind
-                    @case "LITERAL"
-                        "{@piece.value}" +
-                    @case "VARIABLE"
-                        {@piece.value} +
-                    @end
-                @end
-                ""
-        }
-
-    @end
-
     @join resource : view.iamResources
         func (c *{@view.clientTypeName}) {@resource.resourceGetterFunctionName}({@resource.paramName} {@resource.resourceTypeName}) *iam.Handle {
             return iam.InternalNewHandle(c.Connection(), {@resource.paramName}.{@resource.fieldName})

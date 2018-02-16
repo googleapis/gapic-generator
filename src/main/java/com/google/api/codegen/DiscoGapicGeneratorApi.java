@@ -24,7 +24,6 @@ import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.DiscoveryNode;

@@ -21,6 +21,8 @@ import java.util.List;
 public abstract class UnpagedListCallableMethodDetailView {
   public abstract List<String> resourceListGetFunction();
 
+  public abstract String resourceListParseFunction();
+
   public static Builder newBuilder() {
     return new AutoValue_UnpagedListCallableMethodDetailView.Builder();
   }
@@ -28,6 +30,8 @@ public abstract class UnpagedListCallableMethodDetailView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder resourceListGetFunction(List<String> name);
+
+    public abstract Builder resourceListParseFunction(String name);
 
     public abstract UnpagedListCallableMethodDetailView build();
   }

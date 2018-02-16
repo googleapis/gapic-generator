@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -96,7 +98,25 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
-        .hasMultipleServices(false);
+        .hasMultipleServices(false)
+        .publishProtos(false);
+  }
+
+  /**
+   * Merges release levels from a PackageMetadataConfig and a GapicProductConfig. The
+   * GapicProductConfig always overrides the PackageMetadataConfig if its release level is set.
+   */
+  public ReleaseLevel getMergedReleaseLevel(
+      PackageMetadataConfig packageConfig,
+      GapicProductConfig productConfig,
+      TargetLanguage language) {
+    ReleaseLevel releaseLevel = productConfig.getReleaseLevel();
+    if (releaseLevel == ReleaseLevel.UNSET_RELEASE_LEVEL) {
+      releaseLevel = packageConfig.releaseLevel(TargetLanguage.RUBY);
+    }
+    return productConfig.getReleaseLevel() == ReleaseLevel.UNSET_RELEASE_LEVEL
+        ? packageConfig.releaseLevel(language)
+        : productConfig.getReleaseLevel();
   }
 
   private List<PackageDependencyView> getDependencies(

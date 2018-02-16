@@ -44,6 +44,8 @@ import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
@@ -71,6 +73,8 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
 
   public JavaSurfaceTestTransformer(
       GapicCodePathMapper javaPathMapper, SurfaceTransformer surfaceTransformer) {
@@ -167,25 +171,58 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
+    StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    // TODO: Java needs to be refactored to use ApiMethodView instead
-    testClass.apiMethod(
-        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext));
-    testClass.method(testCaseView);
+    testClass.apiMethod(apiMethodView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
-            testCaseView.initCode(), context.getNamer()));
+            apiMethodView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
     return testClass;
+  }
+
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodConfig.isPageStreaming()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: page-streaming + request-object");
+      }
+    } else if (methodConfig.isGrpcStreaming()) {
+      throw new UnsupportedOperationException("Unsupported smoke test type: grpc-streaming");
+    } else if (methodConfig.isLongRunningOperation()) {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView =
+            apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: long-running + request-object");
+      }
+    } else {
+      if (methodContext.isFlattenedMethodContext()) {
+        initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+      } else {
+        throw new UnsupportedOperationException(
+            "Unsupported smoke test type: simple-call + request-object");
+      }
+    }
+
+    StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, testCaseTransformer.createSmokeTestInitContext(methodContext));
+    apiMethodView.initCode(initCodeView);
+    return apiMethodView.build();
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////

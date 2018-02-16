@@ -17,9 +17,6 @@
   @# and updates to that file get reflected here through a refresh process.
   @# For the short term, the refresh process will only be runnable by Google
   @# engineers.
-  @#
-  @# The only allowed edits are to method and file documentation. A 3-way
-  @# merge preserves those additions if the generated source changes.
 
   {@importList(fileHeader.importSection.standardImports)}
 
@@ -111,7 +108,7 @@
   
   @if xapiClass.hasLongRunningOperations
     class OperationsClient < Google::Longrunning::OperationsClient
-      SERVICE_ADDRESS = SERVICE_ADDRESS
+      self::SERVICE_ADDRESS = {@xapiClass.name}::SERVICE_ADDRESS
     end
   @end
 @end

@@ -157,14 +157,32 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getResourceTypeParseMethodName(
       ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
-    String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
-    String concreteResourceTypeName;
-    if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
-      concreteResourceTypeName = publicClassName(Name.from("untyped_resource_name"));
-    } else {
-      concreteResourceTypeName = resourceTypeName;
-    }
+    String concreteResourceTypeName = getConcreteResourceTypeName(typeTable, resourceFieldConfig);
     return concreteResourceTypeName + "." + publicMethodName(Name.from("parse"));
+  }
+
+  @Override
+  public String getResourceTypeParseListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    String concreteResourceTypeName = getConcreteResourceTypeName(typeTable, resourceFieldConfig);
+    return concreteResourceTypeName + "." + publicMethodName(Name.from("parse_list"));
+  }
+
+  @Override
+  public String getResourceTypeFormatListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    String concreteResourceTypeName = getConcreteResourceTypeName(typeTable, resourceFieldConfig);
+    return concreteResourceTypeName + "." + publicMethodName(Name.from("to_string_list"));
+  }
+
+  private String getConcreteResourceTypeName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
+      return publicClassName(Name.from("untyped_resource_name"));
+    } else {
+      return resourceTypeName;
+    }
   }
 
   @Override
@@ -173,7 +191,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
     ImportTypeTable typeTable = methodContext.getTypeTable();
     String fullPackageWrapperName =
-        typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
+        typeTable.getImplicitPackageFullNameFor(
+            getApiWrapperClassName(methodContext.getInterfaceConfig()));
     String pagedResponseShortName =
         getPagedResponseTypeInnerName(
             methodContext.getMethodModel(), typeTable, resourceFieldConfig.getField());

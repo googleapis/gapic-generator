@@ -59,10 +59,6 @@
 @private smokeTestsTask(metadata)
   desc "Runs the smoke tests."
   task :smoke_test do
-    if ENV["{@metadata.smokeTestProjectVariable}"].nil?
-      fail "The {@metadata.smokeTestProjectVariable} environment variable must be set. "@\
-        "e.g {@metadata.smokeTestProjectVariable}=test123 rake smoke_test"
-    end
 
     $LOAD_PATH.unshift "lib", "smoke_test"
     Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
@@ -83,10 +79,44 @@
   end
 @end
 
+# TODO(geigerj): References to gcloud should not be hard-coded. Post-repo
+# dissection, consider moving generation of this task out of toolkit and into
+# a Ruby Cloud-scoped utility tool triggered only during cloud releases.
 @private acceptanceTestTask(metadata)
   @# Acceptance tests
   desc "Run the {@metadata.identifier} acceptance tests."
-  task :acceptance do
+  task :acceptance, :project, :keyfile do |t, args|
+    @if metadata.hasSmokeTests
+      project = args[:project]
+      project ||=
+        ENV["{@metadata.smokeTestProjectVariable}"] ||
+        ENV["GCLOUD_TEST_PROJECT"]
+      keyfile = args[:keyfile]
+      keyfile ||=
+        ENV["{@metadata.smokeTestKeyfileVariable}"] ||
+        ENV["GCLOUD_TEST_KEYFILE"]
+      if keyfile
+        keyfile = File.read keyfile
+      else
+        keyfile ||=
+          ENV["{@metadata.smokeTestJsonKeyVariable}"] ||
+          ENV["GCLOUD_TEST_KEYFILE_JSON"]
+      end
+      if project.nil? || keyfile.nil?
+        fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or {@metadata.smokeTestProjectVariable}=test123 {@metadata.smokeTestKeyfileVariable}=/path/to/keyfile.json rake acceptance"
+      end
+      # clear any env var already set
+      {@importList(metadata.fileHeader.importSection.appImports)}
+      ({@metadata.credentialsClassName}::PATH_ENV_VARS +
+       {@metadata.credentialsClassName}::JSON_ENV_VARS).each do |path|
+        ENV[path] = nil
+      end
+      # always overwrite when running tests
+      ENV["{@metadata.projectVariable}"] = project
+      ENV["{@metadata.smokeTestProjectVariable}"] = project
+      ENV["{@metadata.jsonKeyVariable}"] = keyfile
+    @end
+    
     Rake::Task["acceptance:run"].invoke
   end
 
@@ -171,17 +201,6 @@
     header "{@metadata.identifier} test", "*"
     sh "bundle exec rake test"
   end
-
-  @if metadata.hasSmokeTests
-    namespace :ci do
-      desc "Run the CI build, with smoke tests."
-      task :smoke_test do
-        Rake::Task["ci"].invoke
-        header "{@metadata.identifier} smoke_test", "*"
-        sh "bundle exec rake smoke_test -v"
-      end
-    end
-  @end
 
   namespace :ci do
     desc "Run the CI build, with acceptance tests."

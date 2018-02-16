@@ -20,6 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
+    - "acceptance/**/*smoke_test.rb"
 
 Documentation:
   Enabled: false
@@ -28,44 +29,6 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 Style/MethodDefParentheses:
   EnforcedStyle: require_no_parentheses
-Style/NumericLiterals:
-  Enabled: false
-Style/SpaceAroundOperators:
-  Enabled: false
-Metrics/ClassLength:
-  Enabled: false
-Style/EmptyLines:
-  Enabled: false
-Style/EmptyElse:
-  Enabled: false
-Style/HashSyntax:
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/LineLength:
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/CyclomaticComplexity:
-  Max: 10
-Metrics/PerceivedComplexity:
-  Max: 10
-Metrics/AbcSize:
-  Max: 25
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - "lib/google/example/v1/**/*"
-Metrics/ParameterLists:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
-Style/ClassVars:
-  Enabled: false
-Style/TrivialAccessors:
-  Enabled: false
-Style/FileName:
-  Enabled: false
 
 ============== file: .yardopts ==============
 --no-private
@@ -82,7 +45,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rake", "~> 11.0"
 gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
@@ -90,10 +52,7 @@ gem "gcloud-jsondoc",
 # WORKAROUND: builds are having problems since the release of 3.0.0
 # pin to the last known good version
 gem "public_suffix", "~> 2.0"
-
-# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
-# so pinning to 2.1 for now.
-gem "rainbow", "~> 2.1.0"
+gem "rake", "~> 11.0"
 
 ============== file: LICENSE ==============
                             Apache License
@@ -299,7 +258,7 @@ gem "rainbow", "~> 2.1.0"
    limitations under the License.
 
 ============== file: README.md ==============
-# Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+# Ruby Client for Google Example API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
 
 [Google Example API][Product Documentation]:
 This description tests descriptions that span multiple lines. This is a service
@@ -333,7 +292,7 @@ $ gem install google-example
 [Product Documentation]: https://cloud.google.com/multiple_services
 
 ============== file: Rakefile ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -376,7 +335,8 @@ end
 
 # Acceptance tests
 desc "Run the google-example acceptance tests."
-task :acceptance do
+task :acceptance, :project, :keyfile do |t, args|
+
   Rake::Task["acceptance:run"].invoke
 end
 
@@ -454,7 +414,6 @@ task :ci do
   sh "bundle exec rake test"
 end
 
-
 namespace :ci do
   desc "Run the CI build, with acceptance tests."
   task :acceptance do
@@ -504,16 +463,14 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
-  gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
-  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
-  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
 end
 
 ============== file: lib/google/example.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -534,7 +491,7 @@ module Google
   # rubocop:disable LineLength
 
   ##
-  # # Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  # # Ruby Client for Google Example API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
   #
   # [Google Example API][Product Documentation]:
   # This description tests descriptions that span multiple lines. This is a service
@@ -663,7 +620,7 @@ module Google
 end
 
 ============== file: lib/google/example/credentials.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -692,7 +649,7 @@ module Google
 end
 
 ============== file: lib/google/example/v1.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -713,7 +670,7 @@ module Google
   # rubocop:disable LineLength
 
   ##
-  # # Ruby Client for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  # # Ruby Client for Google Example API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
   #
   # [Google Example API][Product Documentation]:
   # This description tests descriptions that span multiple lines. This is a service
@@ -836,7 +793,7 @@ module Google
 end
 
 ============== file: lib/google/example/v1/decrementer_service_client.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -856,9 +813,6 @@ end
 # and updates to that file get reflected here through a refresh process.
 # For the short term, the refresh process will only be runnable by Google
 # engineers.
-#
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
 
 require "json"
 require "pathname"
@@ -1028,7 +982,7 @@ end
 }
 
 ============== file: lib/google/example/v1/incrementer_service_client.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1048,9 +1002,6 @@ end
 # and updates to that file get reflected here through a refresh process.
 # For the short term, the refresh process will only be runnable by Google
 # engineers.
-#
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
 
 require "json"
 require "pathname"
@@ -1220,7 +1171,7 @@ end
 }
 
 ============== file: test/google/example/v1/decrementer_service_client_test.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1343,7 +1294,7 @@ describe Google::Example::V1::DecrementerServiceClient do
   end
 end
 ============== file: test/google/example/v1/incrementer_service_client_test.rb ==============
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

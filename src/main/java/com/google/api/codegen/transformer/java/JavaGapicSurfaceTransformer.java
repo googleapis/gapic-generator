@@ -38,6 +38,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
+  private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String GRPC_STUB_TEMPLATE_FILENAME = "java/grpc_stub.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -55,6 +56,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
     return Arrays.asList(
         API_TEMPLATE_FILENAME,
         SETTINGS_TEMPLATE_FILENAME,
+        STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
         GRPC_STUB_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,

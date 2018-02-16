@@ -239,9 +239,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    // testCaseView not in use by Ruby for smoke test.
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -251,11 +248,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
-    testClass.projectIdVariableName(metadataNamer.getSmokeTestProjectVariable());
+    testClass.projectIdVariableName(metadataNamer.getProjectVariable(true));
     testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =
@@ -278,7 +274,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
 
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             context, testCaseTransformer.createSmokeTestInitContext(context));

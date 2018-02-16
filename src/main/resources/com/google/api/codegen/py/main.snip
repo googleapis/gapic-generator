@@ -271,17 +271,16 @@
 @end
 
 @private optionalParams(apiMethod)
-    @if apiMethod.headerRequestParams
-        , retry=retry, timeout=timeout, metadata=[routing_header]
-    @else
-        , retry=retry, timeout=timeout
-    @end
+    , retry=retry, timeout=timeout, metadata=metadata
 @end
 
 @private flattenedMethod(apiMethod)
     def {@apiMethod.name}(
             {@renderMethodParams(apiMethod.methodParams)}):
         {@methodComments(apiMethod, apiMethod.doc)}
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         @if apiMethod.isSingularRequestMethod
             @if apiMethod.oneofParams
                 {@checkOneOfParams(apiMethod.oneofParams)}
@@ -313,6 +312,7 @@
                 routing_header = google.api_core.gapic_v1.routing_header(
                     [{@routingHeader(apiMethod.headerRequestParams)}],
                 )
+                metadata.append(routing_header)
 
             @end
         @end

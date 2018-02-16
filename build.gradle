@@ -59,8 +59,7 @@ ext {
   libraries = [
     // General
 
-    // Guava 23.0 is for Java 8, Java 7 needs to use 23.0-android.
-    guava: 'com.google.guava:guava:23.0-android',
+    guava: 'com.google.guava:guava:23.0',
     jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
     autovalue: 'com.google.auto.value:auto-value:1.4',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
@@ -77,6 +76,7 @@ ext {
     mockito: 'org.mockito:mockito-core:2.+',
     truth: 'com.google.truth:truth:0.34',
     toolsFxTesting: 'com.google.api:api-compiler:0.0.6:testing',
+    commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
 
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
@@ -113,7 +113,8 @@ dependencies {
   testCompile libraries.junit,
     libraries.truth,
     libraries.toolsFxTesting,
-    libraries.mockito
+    libraries.mockito,
+    libraries.commonProtos
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
@@ -475,11 +476,13 @@ tasks.googleJavaFormat {
   exclude 'bin/**'
   exclude 'build/**'
   exclude 'benchmark/**'
+  exclude 'modules/googleapis/third_party'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
   exclude 'benchmark/**'
+  exclude 'modules/googleapis/third_party'
 }
 test.dependsOn verifyGoogleJavaFormat

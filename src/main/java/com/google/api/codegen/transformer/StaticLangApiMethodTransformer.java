@@ -169,6 +169,7 @@ public class StaticLangApiMethodTransformer {
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(method), methodViewBuilder);
 
+    //<<<<<<< HEAD
     FieldConfig resourceFieldConfig =
         context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
     ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
@@ -185,6 +186,25 @@ public class StaticLangApiMethodTransformer {
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
             .resourceListGetFunction(resourcesFieldGetFunctionList.build())
+            //=======
+            //    String getResourceListCallName =
+            //        namer.getFieldGetFunctionName(
+            //            context.getFeatureConfig(),
+            //            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+            //
+            //    String resourceListParseFunction = "";
+            //    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+            //    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+            //    if (context.getFeatureConfig().useResourceNameConverters(resourceFieldConfig)) {
+            //      resourceListParseFunction =
+            //          namer.getResourceTypeParseListMethodName(context.getTypeTable(), resourceFieldConfig);
+            //    }
+            //
+            //    UnpagedListCallableMethodDetailView unpagedListCallableDetails =
+            //        UnpagedListCallableMethodDetailView.newBuilder()
+            //            .resourceListGetFunction(getResourceListCallName)
+            //            .resourceListParseFunction(resourceListParseFunction)
+            //>>>>>>> resource_names
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 
@@ -477,6 +497,8 @@ public class StaticLangApiMethodTransformer {
         method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
     methodViewBuilder.serviceRequestTypeName(requestTypeName);
     methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
+    methodViewBuilder.serviceConstructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
 
     setServiceResponseTypeName(context, methodViewBuilder);
 

@@ -25,7 +25,7 @@ frustration later on.
 3 . Add your fork as a remote:
 
 ```
-git remote add fork https://github.com/<GITHUB-USERNAME>/google-cloud-java.git
+git remote add fork https://github.com/<GITHUB-USERNAME>/toolkit.git
 ```
 
 4 . Make your local changes

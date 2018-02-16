@@ -262,12 +262,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getModuleServiceName");
   }
 
-  /////////////////////////////////// Protos methods /////////////////////////////////////////////
+  /////////////////////////////////// Proto methods /////////////////////////////////////////////
 
   /** The function name to set the given field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+    if (featureConfig.useResourceNameProtoAccessor(fieldConfig)) {
       return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldSetFunctionName(field);
@@ -340,7 +340,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get the given field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+    if (featureConfig.useResourceNameProtoAccessor(fieldConfig)) {
       return getResourceNameFieldGetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldGetFunctionName(field);
@@ -350,6 +350,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FieldModel field) {
     return getFieldGetFunctionName(field, field.asName());
+  }
+
+  /** The function name to get a field having the given name. */
+  public String getFieldGetFunctionName(Name identifier) {
+    return publicMethodName(Name.from("get").join(identifier));
   }
 
   /** The function name to get a field having the given type and name. */
@@ -502,11 +507,25 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getResourceTypeParseMethodName");
   }
 
+  public String getResourceTypeParseListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeParseListMethodName");
+  }
+
+  public String getResourceTypeFormatListMethodName(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeFormatListMethodName");
+  }
+
   /** The name of the create method for the resource one-of for the given field config */
   public String getResourceOneofCreateMethod(ImportTypeTable typeTable, FieldConfig fieldConfig) {
     return getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
         + "."
         + publicMethodName(Name.from("from"));
+  }
+
+  public String getResourceNameFormatMethodName() {
+    return "toString";
   }
 
   /** The method name of the retry filter for the given key */
@@ -691,7 +710,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from(var));
   }
 
-  /* The name of a retry definition */
+  /** The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
@@ -763,17 +782,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub"));
   }
 
+  /**
+   * The name of the stub interface for a particular proto interface; not used in most languages.
+   */
+  public String getApiStubSettingsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
+  }
+
   /** The name of the http stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
             .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
-  }
-
-  /** The name of the class that contains paged list response wrappers. */
-  public String getPagedResponseWrappersClassName() {
-    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
   /** The sample application class name. */
@@ -909,11 +930,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name for the message property */
   public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldModel type) {
     return getParamTypeName(typeTable, type);
-  }
-
-  /** The type name for retry settings. */
-  public String getRetrySettingsTypeName() {
-    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
   /** The type name for an optional array argument; not used in most languages. */
@@ -1095,8 +1111,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the gPRC request. */
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return getNotImplementedString("SurfaceNamer.getRequestTypeName");
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getAndSaveTypeName");
   }
 
   public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
@@ -1136,6 +1152,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The parameter name of the IAM resource. */
   public String getIamResourceParamName(FieldModel field) {
     return localVarName(Name.upperCamel(field.getParentSimpleName()));
+  }
+
+  public String formatSpec() {
+    return "%s";
   }
 
   /////////////////////////////////////// Path Template ////////////////////////////////////////
@@ -1233,6 +1253,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
+  }
+
+  /** The path to a config with a specified name. */
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return getNotImplementedString("SurfaceNamer.getConfigPath");
   }
 
   /**

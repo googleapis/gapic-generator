@@ -30,7 +30,6 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,16 +239,7 @@ public class InitCodeNode {
           newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }
       }
-      // Filter subTrees using fieldSet
-      Set<String> fieldSet = new HashSet<>();
-      for (FieldModel field : context.initFields()) {
-        fieldSet.add(field.getSimpleName());
-      }
-      for (InitCodeNode subTree : subTrees) {
-        if (fieldSet.contains(subTree.getKey())) {
-          newSubTrees.add(subTree);
-        }
-      }
+      newSubTrees.addAll(subTrees);
       subTrees = newSubTrees;
     } else if (context.outputType() == InitCodeOutputType.FieldList) {
       throw new IllegalArgumentException("Init field array is not set for flattened method.");

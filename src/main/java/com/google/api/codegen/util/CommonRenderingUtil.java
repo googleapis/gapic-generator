@@ -93,12 +93,22 @@ public class CommonRenderingUtil {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 
-  /** Creates a whitespace string of the specified width. */
+  /**
+   * Creates a whitespace string of the specified width.
+   *
+   * @param width number of spaces
+   * @return padding whitespace
+   */
   public static String padding(int width) {
     return Strings.repeat(" ", width);
   }
 
-  /** Helper function for referencing integers from templates. */
+  /**
+   * Helper function for referencing integers from templates.
+   *
+   * @param value value
+   * @return int value
+   */
   public static int toInt(String value) {
     return Integer.valueOf(value);
   }

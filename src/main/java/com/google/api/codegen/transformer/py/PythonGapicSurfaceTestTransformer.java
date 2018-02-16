@@ -273,10 +273,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(method, flatteningGroup);
-
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    // testCaseView not in use by Python for smoke test.
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
@@ -294,7 +290,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         .outputPath(outputPath)
         .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
         .apiMethod(apiMethodView)
-        .method(testCaseView)
         .requireProjectId(requireProjectId)
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(

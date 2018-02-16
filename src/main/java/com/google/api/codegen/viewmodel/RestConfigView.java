@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,16 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.StaticLangApiView.Builder;
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
-  @Override
+public abstract class RestConfigView implements ViewModel {
   public abstract String templateFileName();
 
-  public abstract FileHeaderView fileHeader();
-
-  @Nullable
-  public abstract String releaseLevelAnnotation();
-
-  public abstract String name();
-
-  public abstract List<StaticLangPagedResponseView> pagedResponseWrapperList();
-
-  @Override
   public abstract String outputPath();
+
+  public abstract List<RestInterfaceConfigView> interfaceConfigs();
 
   @Override
   public String resourceRoot() {
@@ -43,23 +32,17 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangPagedResponseWrappersView.Builder();
+    return new AutoValue_RestConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder fileHeader(FileHeaderView val);
-
-    public abstract Builder releaseLevelAnnotation(String releaseAnnotation);
-
-    public abstract Builder name(String val);
-
-    public abstract Builder pagedResponseWrapperList(List<StaticLangPagedResponseView> val);
-
     public abstract Builder outputPath(String val);
 
-    public abstract StaticLangPagedResponseWrappersView build();
+    public abstract Builder interfaceConfigs(List<RestInterfaceConfigView> val);
+
+    public abstract RestConfigView build();
   }
 }
