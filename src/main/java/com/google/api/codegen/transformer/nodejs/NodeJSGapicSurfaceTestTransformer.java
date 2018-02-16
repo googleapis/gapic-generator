@@ -144,7 +144,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     }
 
     ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(typeTable.getImports());
+        importSectionTransformer.generateImportSection(typeTable.getImports(), null);
     return MockCombinedView.newBuilder()
         .outputPath(testCaseOutputFile(namer))
         .serviceImpls(impls)

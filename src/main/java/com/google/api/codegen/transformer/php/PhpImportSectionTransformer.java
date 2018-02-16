@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class PhpImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context, String className) {
     return generateImportSection(context.getImportTypeTable().getImports());
   }
 
