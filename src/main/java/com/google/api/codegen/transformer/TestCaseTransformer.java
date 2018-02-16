@@ -47,10 +47,14 @@ import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.api.tools.framework.model.Oneof;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** TestCaseTransformer contains helper methods useful for creating test views. */
 public class TestCaseTransformer {
@@ -258,15 +262,9 @@ public class TestCaseTransformer {
 
   private InitCodeContext createResponseInitCodeContext(
       MethodContext context, SymbolTable symbolTable) {
-    ArrayList<FieldModel> primitiveFields = new ArrayList<>();
     TypeModel outputType = context.getMethodModel().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
-    }
-    for (FieldModel field : outputType.getFields()) {
-      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
-      }
     }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)
@@ -274,11 +272,26 @@ public class TestCaseTransformer {
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(ImmutableList.<String>of())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .initFields(primitiveFields)
+        .initFields(responseInitFields(outputType.getFields()))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
+  }
+
+  @VisibleForTesting
+  static <E extends FieldModel> List<FieldModel> responseInitFields(List<E> fields) {
+    HashSet<Oneof> oneofSet = new HashSet<>();
+    return fields
+        .stream()
+        .filter(f -> f.isPrimitive() && !f.isRepeated())
+        .filter(
+            f -> {
+              // Includes field if field is not a part of a oneof, or it's the first field of the oneof.
+              Oneof oneof = f.getOneof();
+              return oneof == null || oneofSet.add(oneof);
+            })
+        .collect(Collectors.toList());
   }
 
   private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(MethodContext context) {
