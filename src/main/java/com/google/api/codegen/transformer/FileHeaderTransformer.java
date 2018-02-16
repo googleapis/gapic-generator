@@ -29,9 +29,13 @@ public class FileHeaderTransformer {
   }
 
   public FileHeaderView generateFileHeader(TransformationContext context) {
+    return generateFileHeader(context, null);
+  }
+
+  public FileHeaderView generateFileHeader(TransformationContext context, String className) {
     return generateFileHeader(
         context.getProductConfig(),
-        importSectionTransformer.generateImportSection(context),
+        importSectionTransformer.generateImportSection(context, className),
         context.getNamer());
   }
 

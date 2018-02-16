@@ -173,7 +173,7 @@ public class JavaSurfaceTransformer {
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return apiFile.build();
   }
@@ -222,13 +222,12 @@ public class JavaSurfaceTransformer {
 
     ImmutableList.Builder<StaticLangPagedResponseView> pagedResponseWrappersList =
         ImmutableList.builder();
-    for (InterfaceModel apiInterface : context.getApiModel().getInterfaces()) {
-      for (MethodModel method : context.getSupportedMethods()) {
-        if (context.getMethodConfig(method).isPageStreaming()) {
-          pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(
-                  context.asRequestMethodContext(method), context.getImportTypeTable()));
-        }
+
+    for (MethodModel method : context.getSupportedMethods()) {
+      if (context.getMethodConfig(method).isPageStreaming()) {
+        pagedResponseWrappersList.add(
+            generatePagedResponseWrapper(
+                context.asRequestMethodContext(method), context.getImportTypeTable()));
       }
     }
 
@@ -342,7 +341,7 @@ public class JavaSurfaceTransformer {
     settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return settingsFile.build();
   }
@@ -366,7 +365,7 @@ public class JavaSurfaceTransformer {
     settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return settingsFile.build();
   }
@@ -503,7 +502,7 @@ public class JavaSurfaceTransformer {
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return fileView.build();
   }
@@ -558,7 +557,7 @@ public class JavaSurfaceTransformer {
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
     return fileView.build();
   }

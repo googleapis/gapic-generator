@@ -35,7 +35,8 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext transformationContext) {
+  public ImportSectionView generateImportSection(
+      TransformationContext transformationContext, String className) {
     // TODO support non-Gapic inputs
     GapicInterfaceContext context = (GapicInterfaceContext) transformationContext;
     Set<String> importFilenames = generateImportFilenames(context);

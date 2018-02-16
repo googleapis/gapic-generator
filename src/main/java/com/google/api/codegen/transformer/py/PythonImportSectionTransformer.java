@@ -48,7 +48,7 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context, String className) {
     InterfaceContext interfaceContext = (InterfaceContext) context;
     return ImportSectionView.newBuilder()
         .standardImports(generateFileHeaderStandardImports(interfaceContext))
