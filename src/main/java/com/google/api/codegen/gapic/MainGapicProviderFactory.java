@@ -226,7 +226,8 @@ public class MainGapicProviderFactory
                     new JavaSurfaceTestTransformer(
                         javaTestPathMapper,
                         new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
-                        new GapicMockServiceTransformer()))
+                        new GapicMockServiceTransformer(),
+                        "java/test.snip"))
                 .build();
         providers.add(testProvider);
       }

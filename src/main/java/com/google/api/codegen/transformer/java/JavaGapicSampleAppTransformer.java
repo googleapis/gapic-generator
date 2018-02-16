@@ -50,7 +50,8 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
             javaPathMapper,
             new JavaGapicSurfaceTransformer(
                 javaPathMapper, PackageMetadataConfig.createDummyPackageMetadataConfig()),
-            new GapicMockServiceTransformer());
+            new GapicMockServiceTransformer(),
+            "java/test.snip");
   }
 
   @Override
