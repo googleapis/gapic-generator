@@ -95,8 +95,6 @@ public class JavaSurfaceTransformer {
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
 
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
-  private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
-      "java/page_streaming_response.snip";
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,

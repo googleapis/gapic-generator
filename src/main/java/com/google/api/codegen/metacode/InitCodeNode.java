@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -377,21 +378,27 @@ public class InitCodeNode {
       }
       // TODO(andrealin): this is super hacky
       if (parentType instanceof DiscoveryField) {
-        for (Schema field :
-            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
-          if (field.additionalProperties() != null) {
-            return DiscoveryField.create(
-                field.additionalProperties().dereference(),
-                ((DiscoveryField) parentType).getDiscoGapicNamer());
-          }
-        }
-        Schema additionalProperties =
-            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
-        if (additionalProperties != null) {
-          return DiscoveryField.create(
-              additionalProperties.dereference(),
-              ((DiscoveryField) parentType).getDiscoGapicNamer());
-        }
+
+        //        for (Schema field :
+        //            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
+        //          if (field.additionalProperties() != null) {
+        //            return DiscoveryField.create(
+        //                field.additionalProperties().dereference(),
+        //                ((DiscoveryField) parentType).getDiscoGapicNamer());
+        //          }
+        //        }
+        //        Schema additionalProperties =
+        //            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
+        //        if (additionalProperties != null) {
+        //          return DiscoveryField.create(
+        //              additionalProperties.dereference(),
+        //              ((DiscoveryField) parentType).getDiscoGapicNamer());
+        //        }
+        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
+        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
+        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+        return DiscoveryField.create(
+            pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer);
       }
       throw new IllegalArgumentException(
           "Message type " + parentType + " does not have field " + key);
@@ -421,24 +428,31 @@ public class InitCodeNode {
         }
       }
       if (parentType instanceof DiscoveryField) {
-        for (Schema field :
-            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
-          if (field.additionalProperties() != null) {
-            FieldModel fieldModel =
-                DiscoveryField.create(
-                    field.additionalProperties().dereference(),
-                    ((DiscoveryField) parentType).getDiscoGapicNamer());
-            return FieldConfig.createDefaultFieldConfig(fieldModel);
-          }
-        }
-        Schema additionalProperties =
-            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
-        if (additionalProperties != null) {
-          return FieldConfig.createDefaultFieldConfig(
-              DiscoveryField.create(
-                  additionalProperties.dereference(),
-                  ((DiscoveryField) parentType).getDiscoGapicNamer()));
-        }
+        //
+        //        for (Schema field :
+        //            ((DiscoveryField) parentType).getDiscoveryField().properties().values()) {
+        //          if (field.additionalProperties() != null) {
+        //            FieldModel fieldModel =
+        //                DiscoveryField.create(
+        //                    field.additionalProperties().dereference(),
+        //                    ((DiscoveryField) parentType).getDiscoGapicNamer());
+        //            return FieldConfig.createDefaultFieldConfig(fieldModel);
+        //          }
+        //        }
+        //        Schema additionalProperties =
+        //            ((DiscoveryField) parentType).getDiscoveryField().additionalProperties();
+        //        if (additionalProperties != null) {
+        //          return FieldConfig.createDefaultFieldConfig(
+        //              DiscoveryField.create(
+        //                  additionalProperties.dereference(),
+        //                  ((DiscoveryField) parentType).getDiscoGapicNamer()));
+        //        }
+        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
+        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
+        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+        return FieldConfig.createDefaultFieldConfig(
+            DiscoveryField.create(
+                pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer));
       }
       throw new IllegalArgumentException(
           "Message type " + parentType + " does not have field " + key);

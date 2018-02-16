@@ -5481,7 +5481,7 @@ import org.threeten.bp.Duration;
  * <code>
  * AddressStubSettings.Builder addressSettingsBuilder =
  *     AddressStubSettings.newBuilder();
- * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
+ * addressSettingsBuilder.deleteAddressSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressStubSettings addressSettings = addressSettingsBuilder.build();
  * </code>
@@ -6182,13 +6182,13 @@ public class HttpJsonAddressStub extends AddressStub {
 package com.google.cloud.simplecompute.v1;
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
 /*
- * Copyright 2017, Google LLC All rights reserved.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -6199,17 +6199,18 @@ package com.google.cloud.simplecompute.v1;
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.api.gax.core.PagedListResponse;
+import com.google.api.gax.grpc.GaxGrpcProperties;
 import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.grpc.testing.LocalChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.paging.PagedListResponse;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.StatusCode;
-import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
+import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.common.collect.Lists;
 import com.google.protobuf.GeneratedMessageV3;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6228,6 +6229,7 @@ public class AddressClientTest {
   private static MockAddresses mockAddresses;
   private static MockServiceHelper serviceHelper;
   private AddressClient client;
+  private LocalChannelProvider channelProvider;
 
   @BeforeClass
   public static void startStaticServer() {
@@ -6244,8 +6246,9 @@ public class AddressClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
     AddressSettings settings = AddressSettings.newBuilder()
-        .setTransportChannelProvider(serviceHelper.createChannelProvider())
+        .setTransportChannelProvider(channelProvider)
         .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
     client = AddressClient.create(settings);
@@ -6448,7 +6451,7 @@ public class AddressClientTest {
     Assert.assertEquals(1, actualRequests.size());
     InsertAddressHttpRequest actualRequest = (InsertAddressHttpRequest)actualRequests.get(0);
 
-    Assert.assertEquals(region, actualRequest.getRegionAsRegionName());
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
     Assert.assertEquals(address, actualRequest.getAddress());
   }
 
@@ -6499,7 +6502,7 @@ public class AddressClientTest {
     Assert.assertEquals(1, actualRequests.size());
     ListAddressesHttpRequest actualRequest = (ListAddressesHttpRequest)actualRequests.get(0);
 
-    Assert.assertEquals(region, actualRequest.getRegionAsRegionName());
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
   }
 
   @Test
