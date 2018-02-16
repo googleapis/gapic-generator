@@ -39,7 +39,7 @@ public class TestCaseTransformerTest {
     Mockito.when(field2.isRepeated()).thenReturn(false);
     Mockito.when(field2.getOneof()).thenReturn(oneof1);
 
-    // not equal, even if they have same property; otherwise "containsExactly" below doesn't work.
+    // not equal, even if they have the same properties; otherwise "containsExactly" below doesn't work.
     assertThat(field1).isNotEqualTo(field2);
 
     FieldModel field3 = Mockito.mock(FieldModel.class);
