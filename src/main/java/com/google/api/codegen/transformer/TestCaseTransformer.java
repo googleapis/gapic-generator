@@ -287,6 +287,7 @@ public class TestCaseTransformer {
         .filter(f -> f.isPrimitive() && !f.isRepeated())
         .filter(
             f -> {
+              // Includes field if field is not a part of a oneof, or it's the first field of the oneof.
               Oneof oneof = f.getOneof();
               return oneof == null || oneofSet.add(oneof);
             })
