@@ -122,9 +122,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
           continue;
         }
         Method method = namePatternsToMethod.get(namePattern);
-        StaticLangApiResourceNameView requestView =
+        StaticLangApiResourceNameView resourceNameView =
             generateResourceNameClass(requestContext, method, nameConfig);
-        surfaceRequests.add(generateResourceNameFile(requestContext, requestView));
+        surfaceRequests.add(generateResourceNameFile(requestContext, resourceNameView));
 
         SchemaTransformationContext nameTypeContext = requestContext.withNewTypeTable();
         addNameTypeClassImports(nameTypeContext.getImportTypeTable());
@@ -222,12 +222,17 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private void addResourceNameClassImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.base.Preconditions");
+    typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.Struct");
     typeTable.getAndSaveNicknameFor("com.google.api.pathtemplate.PathTemplate");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceName");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameType");
     typeTable.getAndSaveNicknameFor("java.io.IOException");
+    typeTable.getAndSaveNicknameFor("java.util.Collections");
+    typeTable.getAndSaveNicknameFor("java.util.HashMap");
+    typeTable.getAndSaveNicknameFor("java.util.List");
     typeTable.getAndSaveNicknameFor("java.util.Map");
     typeTable.getAndSaveNicknameFor("java.util.Objects");
+    typeTable.getAndSaveNicknameFor("java.util.Set");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 

@@ -10,12 +10,14 @@
 @end
 
 @private nameClassDef(resourceName)
-  public final class {@resourceName.typeName} implements ResourceName {
+  public final class {@resourceName.typeName} implements ResourceName, Struct {
     {@members(resourceName)}
 
     {@constructors(resourceName)}
 
     {@getters(resourceName)}
+
+    {@populateMapMethod(resourceName)}
 
     {@staticMethods(resourceName)}
 
@@ -114,6 +116,19 @@
     }
 
   @end
+@end
+
+@private populateMapMethod(resourceName)
+  @@Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    @join param : resourceName.pathParams
+      if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
+        fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
+      }
+    @end
+    return fieldMap;
+  }
 @end
 
 @private constructors(resourceName)

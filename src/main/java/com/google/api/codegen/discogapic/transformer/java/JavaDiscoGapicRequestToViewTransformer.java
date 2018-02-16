@@ -135,7 +135,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               enableStringFormatFunctions);
 
       for (MethodModel method : context.getSupportedMethods()) {
-        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
+        RequestObjectParamView params = getRequestObjectParams(context, method);
 
         SchemaTransformationContext requestContext =
             SchemaTransformationContext.create(
@@ -155,11 +155,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return surfaceRequests;
   }
 
-  private List<RequestObjectParamView> getRequestObjectParams(
+  private RequestObjectParamView getRequestObjectParams(
       DiscoGapicInterfaceContext context, MethodModel method) {
     MethodConfig methodConfig = context.getMethodConfig(method);
-
-    List<RequestObjectParamView> params = new LinkedList<>();
 
     // Generate the ResourceName methods.
     if (methodConfig.isFlattening()) {
@@ -170,16 +168,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
             flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
         for (FieldConfig fieldConfig : fieldConfigs) {
           if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-            params.add(
-                resourceObjectTransformer.generateRequestObjectParam(
-                    flattenedMethodContext, fieldConfig));
+            return resourceObjectTransformer.generateRequestObjectParam(
+                flattenedMethodContext, fieldConfig);
           }
         }
       }
     }
-
-    Collections.sort(params);
-    return params;
+    return null;
   }
 
   /* Given a message view, creates a top-level message file view. */
@@ -202,7 +197,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   private StaticLangApiMessageView generateRequestClass(
       SchemaTransformationContext context,
       MethodModel method,
-      List<RequestObjectParamView> resourceNames) {
+      RequestObjectParamView resourceNames) {
     StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
@@ -258,34 +253,31 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       }
     }
 
-    // Add each ResourceName as a field in the request object.
-    for (RequestObjectParamView resourceNameField : resourceNames) {
-      StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
-      Method discoMethod = ((DiscoveryMethodModel) method).getDiscoMethod();
-      String resourceName =
-          DiscoGapicNamer.getResourceIdentifier(discoMethod.path()).toLowerCamel();
-      StringBuilder description =
-          new StringBuilder(discoMethod.parameters().get(resourceName).description());
-      description.append(String.format("\nIt must have the format `%s`. ", discoMethod.path()));
-      description.append(String.format("\\`{%s}\\` must start with a letter,\n", resourceName));
-      description.append(
-          "and contain only letters (\\`[A-Za-z]\\`), numbers (\\`[0-9]\\`), dashes (\\`-\\`),\n"
-              + "     * underscores (\\`_\\`), periods (\\`.\\`), tildes (\\`~\\`), plus (\\`+\\`) or percent\n"
-              + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
-              + "     * must not start with \\`\"goog\"\\`.");
-      paramView.description(description.toString());
-      paramView.name(symbolTable.getNewSymbol(resourceNameField.name()));
-      paramView.typeName("String");
-      paramView.innerTypeName("String");
-      paramView.isRequired(true);
-      paramView.canRepeat(false);
-      paramView.fieldGetFunction(resourceNameField.getCallName());
-      paramView.fieldSetFunction(resourceNameField.setCallName());
-      paramView.properties(new LinkedList<StaticLangApiMessageView>());
-      paramView.isRequestMessage(false);
-      paramView.hasRequiredProperties(false);
-      properties.add(paramView.build());
-    }
+    StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
+    Method discoMethod = ((DiscoveryMethodModel) method).getDiscoMethod();
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(discoMethod.path()).toLowerCamel();
+    StringBuilder description =
+        new StringBuilder(discoMethod.parameters().get(resourceName).description());
+    description.append(String.format("\nIt must have the format `%s`. ", discoMethod.path()));
+    description.append(String.format("\\`{%s}\\` must start with a letter,\n", resourceName));
+    description.append(
+        "and contain only letters (\\`[A-Za-z]\\`), numbers (\\`[0-9]\\`), dashes (\\`-\\`),\n"
+            + "     * underscores (\\`_\\`), periods (\\`.\\`), tildes (\\`~\\`), plus (\\`+\\`) or percent\n"
+            + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
+            + "     * must not start with \\`\"goog\"\\`.");
+    paramView.description(description.toString());
+    paramView.name(symbolTable.getNewSymbol(resourceNames.name()));
+    paramView.typeName("String");
+    paramView.innerTypeName("String");
+    paramView.isRequired(true);
+    paramView.canRepeat(false);
+    paramView.fieldGetFunction(resourceNames.getCallName());
+    paramView.fieldSetFunction(resourceNames.setCallName());
+    paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.isRequestMessage(false);
+    paramView.hasRequiredProperties(false);
+    properties.add(paramView.build());
+
     Collections.sort(properties);
 
     requestView.canRepeat(false);
@@ -293,7 +285,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.properties(properties);
     requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
-    requestView.resourceNames(resourceNames);
+    requestView.resourceName(resourceNames);
 
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
@@ -333,7 +325,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.canRepeat(schema.isRepeated());
     paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(name));
     paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(name));
-    paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
     return paramView.build();
