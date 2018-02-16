@@ -524,6 +524,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
         + publicMethodName(Name.from("from"));
   }
 
+  /** The name of the create method for the resource one-of for the given field config */
+  public String getResourceTypeParentParseMethod(
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeParentParseMethod");
+  }
+
   public String getResourceNameFormatMethodName() {
     return "toString";
   }
@@ -1068,6 +1074,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     String resourceClassName =
         publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
     return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
+  }
+
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveResourceTypeFactoryName(
+      ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getAndSaveResourceTypeFactoryName");
   }
 
   /** The class name of the generated resource type from the entity name. */
