@@ -75,10 +75,10 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   // List of ResourceNames that this message contains.
   @Nullable
-  public abstract RequestObjectParamView resourceName();
+  public abstract RequestObjectParamView pathAsResourceName();
 
   public boolean hasResourceName() {
-    return resourceName() != null;
+    return pathAsResourceName() != null;
   }
 
   public static StaticLangApiMessageView.Builder newBuilder() {
@@ -103,7 +103,7 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
     public abstract Builder properties(List<StaticLangApiMessageView> val);
 
-    public abstract Builder resourceName(RequestObjectParamView val);
+    public abstract Builder pathAsResourceName(RequestObjectParamView val);
 
     public abstract Builder hasRequiredProperties(boolean val);
 

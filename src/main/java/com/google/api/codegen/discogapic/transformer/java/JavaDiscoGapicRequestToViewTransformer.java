@@ -285,7 +285,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.properties(properties);
     requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
-    requestView.resourceName(resourceNames);
+    requestView.pathAsResourceName(resourceNames);
 
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
