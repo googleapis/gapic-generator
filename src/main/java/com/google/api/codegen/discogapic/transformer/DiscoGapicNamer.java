@@ -184,10 +184,12 @@ public class DiscoGapicNamer {
   @Nullable
   public DiscoveryField getResponseField(Method method) {
     if (method.response() != null) {
-      Schema responseSchema =
-          method.response().reference() != null
-              ? method.response()
-              : method.getDocument().schemas().get(method.response().getIdentifier());
+      Schema responseSchema;
+      if (method.response().reference() != null) {
+        responseSchema = method.response();
+      } else {
+        responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
+      }
       return DiscoveryField.create(responseSchema, this);
     }
     return null;
