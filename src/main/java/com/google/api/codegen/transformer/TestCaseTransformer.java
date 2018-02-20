@@ -131,9 +131,7 @@ public class TestCaseTransformer {
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
     MockRpcResponseView mockRpcResponseView = null;
-    //    if (methodConfig.getMethodModel().getApiSource().equals(ApiSource.PROTO)) {
     mockRpcResponseView = createMockResponseView(methodContext, responseInitCodeContext);
-    //    }
 
     GrpcStreamingView grpcStreamingView = null;
     if (methodConfig.isGrpcStreaming()) {

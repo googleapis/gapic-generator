@@ -180,7 +180,7 @@ public class DiscoGapicNamer {
     if (method.response() != null) {
       Schema responseSchema;
       if (method.response().reference() != null) {
-        responseSchema = method.response();
+        responseSchema = method.response().dereference();
       } else {
         responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
       }
