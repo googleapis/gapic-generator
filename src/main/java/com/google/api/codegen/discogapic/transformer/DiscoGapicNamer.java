@@ -168,26 +168,16 @@ public class DiscoGapicNamer {
     return Name.anyCamel(Inflector.singularize(resource));
   }
 
-  /** Get the response type name from a method if the method has a non-null response type. */
-  @Nullable
-  public static Name getResponseName(Method method) {
-    if (method.response() != null) {
-      String typeName =
-          method.response().reference() != null
-              ? method.response().reference()
-              : method.response().getIdentifier();
-      return Name.anyCamel(typeName);
-    }
-    return null;
-  }
-
+  /** Get the response type from a method if the method has a non-null response type. */
   @Nullable
   public DiscoveryField getResponseField(Method method) {
     if (method.response() != null) {
-      Schema responseSchema =
-          method.response().reference() != null
-              ? method.response()
-              : method.getDocument().schemas().get(method.response().getIdentifier());
+      Schema responseSchema;
+      if (method.response().reference() != null) {
+        responseSchema = method.response();
+      } else {
+        responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
+      }
       return DiscoveryField.create(responseSchema, this);
     }
     return null;

@@ -39,11 +39,11 @@
 @private resourceNameMethod(schema)
   @@Override
   @if schema.hasResourceName
-    public {@schema.resourceName.typeName} getResourceName() {
-      return {@schema.resourceName.typeName}.parse({@schema.resourceName.name});
+    public {@schema.pathAsResourceName.typeName} resourceNamePath() {
+      return {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
     }
   @else
-    public ResourceName getResourceName() {
+    public ResourceNamePath resourceNamePath() {
       return null;
     }
   @end
@@ -70,11 +70,11 @@
   @@Nullable
   @@Override
   @if schema.hasRequestBody()
-    public {@schema.requestBodyType.innerTypeName} getRequestBody() {
+    public {@schema.requestBodyType.innerTypeName} requestBody() {
       return {@schema.requestBodyType.name};
     }
   @else
-    public ApiMessage getRequestBody() {
+    public ApiMessage requestBody() {
       return null;
     }
   @end
