@@ -49,26 +49,32 @@ public class DiscoGapicNamer {
     return languageNamer;
   }
 
+  public Name stringToName(String fieldName) {
+    if (fieldName.contains("_")) {
+      return Name.anyCamel(fieldName.split("_"));
+    } else {
+      return Name.anyCamel(fieldName);
+    }
+  }
+
   /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName) {
-    Name name;
-    if (fieldName.contains("_")) {
-      name = Name.anyCamel(fieldName.split("_"));
-    } else {
-      name = Name.anyCamel(fieldName);
-    }
-    return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("get").join(stringToName(fieldName)));
   }
 
   /** Returns the resource setter method name for a resource field. */
-  public String getResourceSetterName(String fieldName) {
-    Name name;
-    if (fieldName.contains("_")) {
-      name = Name.anyCamel(fieldName.split("_"));
+  public String getResourceSetterName(String fieldName, boolean isRepeated) {
+    if (isRepeated) {
+      return languageNamer.publicMethodName(Name.from("add", "all").join(stringToName(fieldName)));
     } else {
-      name = Name.anyCamel(fieldName);
+      return languageNamer.publicMethodName(Name.from("set").join(stringToName(fieldName)));
     }
-    return languageNamer.publicMethodName(Name.anyCamel("set").join(name));
+  }
+
+  /** Returns the resource setter method name for a resource field. */
+  public String getResourceAdderName(String fieldName) {
+    return languageNamer.publicMethodName(
+        Name.anyCamel("add").join("all").join(stringToName(fieldName)));
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */

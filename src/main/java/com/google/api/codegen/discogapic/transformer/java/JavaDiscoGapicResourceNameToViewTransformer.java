@@ -215,7 +215,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     paramView.fieldGetFunction(
         context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
     paramView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(schema.getIdentifier(), schema.type().equals(Schema.Type.ARRAY)));
     return paramView.build();
   }
 

@@ -442,7 +442,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
     } else {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.test.FakeStatusCode");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
       typeTable.saveNicknameFor("com.google.api.gax.httpjson.MockHttpService");
       typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
       typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
