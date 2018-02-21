@@ -368,10 +368,8 @@ public class ApiCallableTransformer {
       methodDescriptorBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     }
 
-    methodDescriptorBuilder.requestTypeName(
-        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    methodDescriptorBuilder.responseTypeName(
-        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+    methodDescriptorBuilder.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    methodDescriptorBuilder.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
     methodDescriptorBuilder.hasResponse(method.hasReturnValue());
     methodDescriptorBuilder.name(namer.getMethodDescriptorName(method));
     methodDescriptorBuilder.protoMethodName(method.getSimpleName());

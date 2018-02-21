@@ -24,6 +24,7 @@ import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -220,6 +221,17 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
+  }
+
+  @Override
+  public String getFullyQualifiedStubType(InterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ImportTypeTable typeTable = context.getImportTypeTable();
+
+    return namer.getStubPackageName()
+        + "."
+        + namer.getApiRpcStubClassName(
+            context.getInterfaceConfig(), context.getProductConfig().getTransportProtocol());
   }
 
   @Override

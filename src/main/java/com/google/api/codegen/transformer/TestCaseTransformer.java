@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -34,6 +35,7 @@ import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -158,6 +160,22 @@ public class TestCaseTransformer {
               .build();
     }
 
+    String methodDescriptorName = null;
+    if (methodContext.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+
+      TypeName rpcStubClassName =
+          new TypeName(
+              methodContext
+                  .getNamer()
+                  .getFullyQualifiedStubType(methodContext.getSurfaceInterfaceContext()));
+
+      methodDescriptorName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameForInnerType(
+                  rpcStubClassName.getFullName(), namer.getMethodDescriptorName(method));
+    }
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
@@ -186,8 +204,10 @@ public class TestCaseTransformer {
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
-        .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
+        .grpcStubCallString(
+            namer.getGrpcStubCallString(methodContext.getSurfaceInterfaceContext(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
+        .methodDescriptor(methodDescriptorName)
         .build();
   }
 
@@ -196,8 +216,7 @@ public class TestCaseTransformer {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
-    List<PageStreamingResponseView> pageStreamingResponseViews =
-        new ArrayList<PageStreamingResponseView>();
+    List<PageStreamingResponseView> pageStreamingResponseViews = new ArrayList<>();
 
     if (!methodConfig.isPageStreaming()) {
       return pageStreamingResponseViews;

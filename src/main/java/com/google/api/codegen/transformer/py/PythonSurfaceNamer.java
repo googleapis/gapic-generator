@@ -29,6 +29,7 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -337,7 +338,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceContext apiInterface, MethodModel method) {
     return getGrpcMethodName(method);
   }
 

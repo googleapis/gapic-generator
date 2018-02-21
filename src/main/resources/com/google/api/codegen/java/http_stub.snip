@@ -53,7 +53,8 @@
 @end
 
 @private httpMethodCallable(methodDescriptor)
-  private static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+  @@VisibleForTesting
+  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
           .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
           .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
@@ -76,26 +77,8 @@
       )
 @end
 
-@private streamingTypeEnum(streamingType)
-  @switch streamingType
-  @case "NonStreaming"
-    io.grpc.MethodDescriptor.MethodType.UNARY
-  @case "ServerStreaming"
-    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
-  @case "ClientStreaming"
-    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
-  @case "BidiStreaming"
-    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
-  @default
-    $unhandledCase: {@streamingType}$
-  @end
-@end
-
 @private members(stubClass)
   private final BackgroundResource backgroundResources;
-  @if stubClass.hasLongRunningOperations
-    private final GrpcOperationsStub operationsStub;
-  @end
 
   @join apiCallable : stubClass.apiCallables
     {@apiCallableMember(apiCallable)}

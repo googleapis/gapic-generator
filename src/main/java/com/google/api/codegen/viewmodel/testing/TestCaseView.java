@@ -80,6 +80,9 @@ public abstract class TestCaseView {
 
   public abstract boolean clientHasDefaultInstance();
 
+  @Nullable
+  public abstract String methodDescriptor();
+
   public static Builder newBuilder() {
     return new AutoValue_TestCaseView.Builder();
   }
@@ -136,6 +139,8 @@ public abstract class TestCaseView {
     public abstract Builder grpcStubCallString(String val);
 
     public abstract Builder clientHasDefaultInstance(boolean val);
+
+    public abstract Builder methodDescriptor(String val);
 
     public abstract TestCaseView build();
   }

@@ -1084,7 +1084,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The fully qualified type name for the stub of an API interface. */
-  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceContext apiInterface) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
   }
 
@@ -1309,7 +1309,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
-  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceContext context, MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 

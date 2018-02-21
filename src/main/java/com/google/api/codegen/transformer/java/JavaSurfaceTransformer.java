@@ -794,6 +794,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.RequestParamsExtractor");
+    typeTable.saveNicknameFor("com.google.common.annotations.VisibleForTesting");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -812,7 +813,7 @@ public class JavaSurfaceTransformer {
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
     }
-    switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
+    switch ((context.getProductConfig()).getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");

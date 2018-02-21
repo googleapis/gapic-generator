@@ -82,11 +82,13 @@
 @private addResponse(test)
   {@initCode(test.mockResponse.initCode)}
   MOCK_SERVICE.addResponse(expectedResponse);
+  MOCK_SERVICE.setSerializer({@test.methodDescriptor});
 @end
 
 @private addException(test)
   ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
   MOCK_SERVICE.addException(exception);
+  MOCK_SERVICE.setSerializer({@test.methodDescriptor});
 @end
 
 @private methodCall(test)
