@@ -296,7 +296,7 @@ public class TestCaseTransformer {
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(ImmutableList.<String>of())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .fieldConfigMap(context.getDefaultResourceNameConfigMap())
+        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .initFields(responseInitFields(outputType.getFields()))
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))

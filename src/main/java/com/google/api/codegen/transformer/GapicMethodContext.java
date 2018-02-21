@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.config.ApiSource.PROTO;
 
 import com.google.api.codegen.config.ApiSource;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -28,7 +27,6 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -105,11 +103,6 @@ public abstract class GapicMethodContext implements MethodContext {
   @Override
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     return getProductConfig().getSingleResourceNameConfig(entityName);
-  }
-
-  @Override
-  public ImmutableMap<String, FieldConfig> getDefaultResourceNameConfigMap() {
-    return getProductConfig().getDefaultResourceNameFieldConfigMap();
   }
 
   @Override
