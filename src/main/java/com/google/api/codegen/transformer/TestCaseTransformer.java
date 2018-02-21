@@ -162,7 +162,6 @@ public class TestCaseTransformer {
 
     String methodDescriptorName = null;
     if (methodContext.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
-
       TypeName rpcStubClassName =
           new TypeName(
               methodContext
@@ -170,7 +169,6 @@ public class TestCaseTransformer {
                   .getFullyQualifiedRpcStubType(
                       methodContext.getInterfaceConfig().getInterfaceModel(),
                       methodContext.getProductConfig().getTransportProtocol()));
-
       methodDescriptorName =
           methodContext
               .getTypeTable()
@@ -294,10 +292,10 @@ public class TestCaseTransformer {
         .initObjectType(outputType)
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
-        .initFieldConfigStrings(ImmutableList.<String>of())
-        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
+        .initFieldConfigStrings(ImmutableList.of())
+        .initValueConfigMap(ImmutableMap.of())
         .initFields(responseInitFields(outputType.getFields()))
+        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();

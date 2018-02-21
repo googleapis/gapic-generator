@@ -27,7 +27,6 @@ import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
 /**
@@ -264,8 +263,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getAndSaveNicknameForElementType(FieldModel type) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField()));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
   }
 
   @Override
@@ -277,23 +275,17 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(FieldModel type) {
-    return typeNameConverter
-        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    TypedValue typedValue;
-    typedValue = typeNameConverter.getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField());
-    return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
+    return getSnippetZeroValueAndSaveNicknameFor((FieldModel) type);
   }
 
   @Override
   public String getImplZeroValueAndSaveNicknameFor(FieldModel type) {
-    return typeNameConverter
-        .getImplZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Returns the imports accumulated so far. */
