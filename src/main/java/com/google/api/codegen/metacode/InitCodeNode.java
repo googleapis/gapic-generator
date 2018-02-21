@@ -296,7 +296,7 @@ public class InitCodeNode {
       InitCodeLineType lineType, TypeModel typeRef, Set<String> childKeys) {
     switch (lineType) {
       case StructureInitLine:
-        if (typeRef.isPrimitive() || typeRef.isRepeated()) {
+        if (!typeRef.isMessage() || typeRef.isRepeated()) {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
