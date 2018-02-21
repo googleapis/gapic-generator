@@ -167,7 +167,9 @@ public class TestCaseTransformer {
           new TypeName(
               methodContext
                   .getNamer()
-                  .getFullyQualifiedStubType(methodContext.getSurfaceInterfaceContext()));
+                  .getFullyQualifiedRpcStubType(
+                      methodContext.getInterfaceConfig().getInterfaceModel(),
+                      methodContext.getProductConfig().getTransportProtocol()));
 
       methodDescriptorName =
           methodContext
@@ -204,8 +206,7 @@ public class TestCaseTransformer {
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
-        .grpcStubCallString(
-            namer.getGrpcStubCallString(methodContext.getSurfaceInterfaceContext(), method))
+        .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
         .methodDescriptor(methodDescriptorName)
         .build();

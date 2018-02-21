@@ -29,7 +29,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -174,8 +173,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(InterfaceContext context) {
-    return getModelTypeFormatter().getFullNameFor(context.getInterfaceModel());
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
+    return getModelTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override

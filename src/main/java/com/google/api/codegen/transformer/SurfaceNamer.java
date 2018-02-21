@@ -789,12 +789,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
   }
 
-  /** The name of the http stub for a particular proto interface; not used in most languages. */
+  /** The name of the RPC stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
-      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
-            .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
+            .join(Name.anyCamel(interfaceModel.getSimpleName(), "Stub")));
   }
 
   /** The sample application class name. */
@@ -1084,7 +1084,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The fully qualified type name for the stub of an API interface. */
-  public String getFullyQualifiedStubType(InterfaceContext apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
+  }
+
+  /** The fully qualified type name for the RPC stub of an API interface. */
+  public String getFullyQualifiedRpcStubType(
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
   }
 
@@ -1309,7 +1315,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
-  public String getGrpcStubCallString(InterfaceContext context, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 

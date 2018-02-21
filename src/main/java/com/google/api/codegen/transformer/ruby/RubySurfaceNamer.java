@@ -27,7 +27,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -213,10 +212,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(InterfaceContext context) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     NamePath namePath =
-        getTypeNameConverter()
-            .getNamePath(getModelTypeFormatter().getFullNameFor(context.getInterfaceModel()));
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     return qualifiedName(namePath.append("Stub"));
   }
 
@@ -435,7 +433,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(InterfaceContext apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getFullyQualifiedStubType(apiInterface);
   }
 

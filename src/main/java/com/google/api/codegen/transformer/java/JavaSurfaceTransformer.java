@@ -480,7 +480,8 @@ public class JavaSurfaceTransformer {
     xsettingsClass.rpcStubClassName(
         getAndSaveNicknameForStubType(
             context,
-            namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol())));
+            namer.getApiRpcStubClassName(
+                interfaceConfig.getInterfaceModel(), productConfig.getTransportProtocol())));
 
     return xsettingsClass.build();
   }
@@ -551,7 +552,8 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getApiRpcStubClassName(
-                context.getInterfaceConfig(), productConfig.getTransportProtocol());
+                context.getInterfaceConfig().getInterfaceModel(),
+                productConfig.getTransportProtocol());
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -577,7 +579,8 @@ public class JavaSurfaceTransformer {
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
     String name =
-        namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol());
+        namer.getApiRpcStubClassName(
+            interfaceConfig.getInterfaceModel(), productConfig.getTransportProtocol());
     stubClass.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
