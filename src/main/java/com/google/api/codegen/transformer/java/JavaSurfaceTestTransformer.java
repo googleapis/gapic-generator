@@ -428,26 +428,29 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.protobuf.Any");
     }
-    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
-      typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
-      typeTable.saveNicknameFor("io.grpc.Status");
-      typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
-      typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
-    } else {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
-      typeTable.saveNicknameFor("com.google.api.gax.httpjson.MockHttpService");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
-      typeTable.saveNicknameFor("java.io.UnsupportedEncodingException");
+    switch (context.getProductConfig().getTransportProtocol()) {
+      case GRPC:
+        typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
+        typeTable.saveNicknameFor("io.grpc.Status");
+        typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
+        typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
+        break;
+      case HTTP:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.MockHttpService");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
+        typeTable.saveNicknameFor("java.io.UnsupportedEncodingException");
+        break;
     }
   }
 
