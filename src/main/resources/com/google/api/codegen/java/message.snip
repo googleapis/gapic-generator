@@ -15,8 +15,6 @@
 
     {@constructors(schema)}
 
-    {@resourceNameMethod(schema)}
-
     {@populateMapMethod(schema)}
 
     {@getRequestBodyMethod(schema)}
@@ -34,19 +32,6 @@
     {@hashCode(schema)}
   }
 
-@end
-
-@private resourceNameMethod(schema)
-  @@Override
-  @if schema.hasResourceName
-    public {@schema.pathAsResourceName.typeName} resourceNamePath() {
-      return {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
-    }
-  @else
-    public ResourceNamePath resourceNamePath() {
-      return null;
-    }
-  @end
 @end
 
 @private populateMapMethod(schema)
