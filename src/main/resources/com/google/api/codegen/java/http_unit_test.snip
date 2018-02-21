@@ -80,8 +80,11 @@
 @end
 
 @private addResponse(test)
-  {@initCode(test.mockResponse.initCode)}
-  MOCK_SERVICE.addResponse(expectedResponse);
+  @if test.hasReturnValue
+    {@initCode(test.mockResponse.initCode)}
+    MOCK_SERVICE.addResponse(expectedResponse);
+  @end
+  {@""}
   MOCK_SERVICE.setSerializer({@test.methodDescriptor});
 @end
 

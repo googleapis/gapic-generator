@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -39,7 +40,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private final DiscoveryRequestType inputType;
-  private final DiscoveryField outputType;
+  private final TypeModel outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -51,7 +52,11 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
-    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
+    if (method.response() != null) {
+      this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
+    } else {
+      this.outputType = new EmptyTypeModel();
+    }
   }
 
   public Method getDiscoMethod() {
@@ -115,13 +120,13 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    if (outputType != null) {
+    if (outputType instanceof EmptyTypeModel) {
+      // TODO(andrealin): make this language-agnostic
+      return new TypeName("java.lang.Void");
+    } else {
       return typeTable
           .getTypeTable()
           .getTypeName(typeTable.getFullNameFor((FieldModel) outputType));
-    } else {
-      // TODO(andrealin): make this language-agnostic
-      return new TypeName("java.lang.Void");
     }
   }
 
@@ -196,10 +201,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType != null) {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    } else {
+    if (outputType instanceof EmptyTypeModel) {
       return typeTable.getAndSaveNicknameFor("java.lang.Void");
+    } else {
+      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
     }
   }
 
