@@ -21,7 +21,14 @@ import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import java.util.List;
 
+/** A factory for DiscoGapicProviders which perform code generation. */
+//TODO(andrealin): combine this with GapicProviderFactory.
 public interface DiscoGapicProviderFactory {
+  /**
+   * Create the provider from the given model, configs and the output path.
+   *
+   * <p>The outputPath is used for copying static files from resources into the output directory.
+   */
   List<GapicProvider<? extends Object>> create(
       Document document,
       GapicProductConfig productConfig,

@@ -67,6 +67,7 @@ public abstract class Schema implements Node {
    * schema traversal path to the target; this path will include the starting node if the target was
    * found. Returns an empty list if the target is not found.
    */
+  // TODO(andrealin): unit test
   public List<Schema> findChild(String childName) {
     Set<Schema> visitedNodes = new HashSet<>();
     Map<Schema, Schema> nodeToPrevNode = new HashMap<>();
