@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -45,7 +44,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
-  private final TypeModel returnType = new EmptyTypeModel();
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method, DiscoGapicNamer discoGapicNamer) {
@@ -107,7 +105,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getInputFullName() {
-    // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();
   }
 
@@ -118,11 +115,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    // Maybe use Discogapic namer for this?
-    if (method.response() != null) {
+    if (outputType != null) {
       return typeTable
           .getTypeTable()
-          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+          .getTypeName(typeTable.getFullNameFor((FieldModel) outputType));
     } else {
       // TODO(andrealin): make this language-agnostic
       return new TypeName("java.lang.Void");

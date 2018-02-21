@@ -71,12 +71,6 @@ public class DiscoGapicNamer {
     }
   }
 
-  /** Returns the resource setter method name for a resource field. */
-  public String getResourceAdderName(String fieldName) {
-    return languageNamer.publicMethodName(
-        Name.anyCamel("add").join("all").join(stringToName(fieldName)));
-  }
-
   /** Returns the name for a ResourceName for the resource of the given method. */
   public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
     return languageNamer.localVarName(
@@ -220,6 +214,4 @@ public class DiscoGapicNamer {
     }
     return namePattern;
   }
-
-  //TODO(andrealin): Naming methods for service name.
 }

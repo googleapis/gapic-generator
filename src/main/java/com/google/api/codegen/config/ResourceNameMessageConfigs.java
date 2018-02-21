@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class ResourceNameMessageConfigs {
 
-  public abstract ImmutableMap<String, ResourceNameMessageConfig> getResourceTypeConfigMap();
+  abstract ImmutableMap<String, ResourceNameMessageConfig> getResourceTypeConfigMap();
 
   /**
    * Get a map from fully qualified message names to Fields, where each field has a resource name
