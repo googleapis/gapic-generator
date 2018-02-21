@@ -44,6 +44,11 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
+  public boolean useInheritanceForOneofs() {
+    return false;
+  }
+
+  @Override
   public boolean enableMixins() {
     return false;
   }

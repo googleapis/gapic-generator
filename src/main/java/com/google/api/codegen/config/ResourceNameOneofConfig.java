@@ -88,7 +88,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneofName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(oneofName, oneofName, configList, file);
   }
 
   @Override
