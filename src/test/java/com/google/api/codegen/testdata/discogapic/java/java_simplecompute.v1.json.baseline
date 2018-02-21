@@ -17,8 +17,8 @@
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceNamePath {
+public final class AddressName implements ResourceName {
   private final String address;
   private final String project;
   private final String region;
@@ -90,21 +90,6 @@ public final class AddressName implements ResourceNamePath {
     return region;
   }
 
-
-  @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    return fieldMap;
-  }
 
   public static AddressName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -254,8 +239,8 @@ public final class AddressNameType implements ResourceNameType {
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
@@ -269,7 +254,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceNamePath {
+public final class RegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -317,18 +302,6 @@ public final class RegionName implements ResourceNamePath {
     return region;
   }
 
-
-  @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    return fieldMap;
-  }
 
   public static RegionName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -466,9 +439,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -492,6 +464,7 @@ public final class Address implements ApiMessage {
   private final String selfLink;
   private final String status;
   private final List<String> users;
+  private final Map<String, String> pathParams;
 
   private Address() {
     this.address = null;
@@ -504,6 +477,7 @@ public final class Address implements ApiMessage {
     this.selfLink = null;
     this.status = null;
     this.users = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -529,11 +503,8 @@ public final class Address implements ApiMessage {
     this.selfLink = selfLink;
     this.status = status;
     this.users = users;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -570,6 +541,11 @@ public final class Address implements ApiMessage {
       fieldMap.put("users", Collections.singletonList(String.valueOf(users)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -907,9 +883,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -928,6 +903,7 @@ public final class AddressList implements ApiMessage {
   private final String kind;
   private final String nextPageToken;
   private final String selfLink;
+  private final Map<String, String> pathParams;
 
   private AddressList() {
     this.id = null;
@@ -935,6 +911,7 @@ public final class AddressList implements ApiMessage {
     this.kind = null;
     this.nextPageToken = null;
     this.selfLink = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -950,11 +927,8 @@ public final class AddressList implements ApiMessage {
     this.kind = kind;
     this.nextPageToken = nextPageToken;
     this.selfLink = selfLink;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -976,6 +950,11 @@ public final class AddressList implements ApiMessage {
       fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -1193,9 +1172,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1211,10 +1189,12 @@ import javax.annotation.Nullable;
 public final class Data implements ApiMessage {
   private final String key;
   private final String value;
+  private final Map<String, String> pathParams;
 
   private Data() {
     this.key = null;
     this.value = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1224,11 +1204,8 @@ public final class Data implements ApiMessage {
       ) {
     this.key = key;
     this.value = value;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1241,6 +1218,11 @@ public final class Data implements ApiMessage {
       fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -1386,9 +1368,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1403,9 +1384,11 @@ import javax.annotation.Nullable;
 @BetaApi
 public final class Error implements ApiMessage {
   private final List<Errors> errors;
+  private final Map<String, String> pathParams;
 
   private Error() {
     this.errors = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1413,11 +1396,8 @@ public final class Error implements ApiMessage {
       List<Errors> errors
       ) {
     this.errors = errors;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1427,6 +1407,11 @@ public final class Error implements ApiMessage {
       fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -1548,9 +1533,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1567,11 +1551,13 @@ public final class Errors implements ApiMessage {
   private final String code;
   private final String location;
   private final String message;
+  private final Map<String, String> pathParams;
 
   private Errors() {
     this.code = null;
     this.location = null;
     this.message = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1583,11 +1569,8 @@ public final class Errors implements ApiMessage {
     this.code = code;
     this.location = location;
     this.message = message;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1603,6 +1586,11 @@ public final class Errors implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -1772,9 +1760,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1811,6 +1798,7 @@ public final class Operation implements ApiMessage {
   private final String user;
   private final List<Warnings> warnings;
   private final String zone;
+  private final Map<String, String> pathParams;
 
   private Operation() {
     this.clientOperationId = null;
@@ -1836,6 +1824,7 @@ public final class Operation implements ApiMessage {
     this.user = null;
     this.warnings = null;
     this.zone = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1887,11 +1876,8 @@ public final class Operation implements ApiMessage {
     this.user = user;
     this.warnings = warnings;
     this.zone = zone;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1967,6 +1953,11 @@ public final class Operation implements ApiMessage {
       fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -2616,9 +2607,8 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNamePath;
 import com.google.api.resourcenames.ResourceName;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2635,11 +2625,13 @@ public final class Warnings implements ApiMessage {
   private final String code;
   private final List<Data> data;
   private final String message;
+  private final Map<String, String> pathParams;
 
   private Warnings() {
     this.code = null;
     this.data = null;
     this.message = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -2651,11 +2643,8 @@ public final class Warnings implements ApiMessage {
     this.code = code;
     this.data = data;
     this.message = message;
-  }
-
-  @Override
-  public ResourceNamePath resourceNamePath() {
-    return null;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -2671,6 +2660,11 @@ public final class Warnings implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -2840,7 +2834,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2862,6 +2856,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
+  private final Map<String, String> pathParams;
 
   private DeleteAddressHttpRequest() {
     this.access_token = null;
@@ -2872,6 +2867,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.prettyPrint = null;
     this.quotaUser = null;
     this.userIp = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -2893,11 +2889,12 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-  }
-
-  @Override
-  public AddressName resourceNamePath() {
-    return AddressName.parse(address);
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    AddressName resourceName = AddressName.parse(address);
+    mapBuilder.put("address", resourceName.getAddress());
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -2928,6 +2925,11 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -3224,7 +3226,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -3246,6 +3248,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
+  private final Map<String, String> pathParams;
 
   private GetAddressHttpRequest() {
     this.access_token = null;
@@ -3256,6 +3259,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.prettyPrint = null;
     this.quotaUser = null;
     this.userIp = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -3277,11 +3281,12 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-  }
-
-  @Override
-  public AddressName resourceNamePath() {
-    return AddressName.parse(address);
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    AddressName resourceName = AddressName.parse(address);
+    mapBuilder.put("address", resourceName.getAddress());
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -3312,6 +3317,11 @@ public final class GetAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -3608,7 +3618,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -3631,6 +3641,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String region;
   private final String userIp;
+  private final Map<String, String> pathParams;
 
   private InsertAddressHttpRequest() {
     this.access_token = null;
@@ -3642,6 +3653,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -3665,11 +3677,11 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
-  }
-
-  @Override
-  public RegionName resourceNamePath() {
-    return RegionName.parse(region);
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    RegionName resourceName = RegionName.parse(region);
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -3703,6 +3715,11 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable
@@ -4023,7 +4040,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -4049,6 +4066,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String region;
   private final String userIp;
+  private final Map<String, String> pathParams;
 
   private ListAddressesHttpRequest() {
     this.access_token = null;
@@ -4063,6 +4081,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -4092,11 +4111,11 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
-  }
-
-  @Override
-  public RegionName resourceNamePath() {
-    return RegionName.parse(region);
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    RegionName resourceName = RegionName.parse(region);
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
+    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -4139,6 +4158,11 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 
   @Nullable

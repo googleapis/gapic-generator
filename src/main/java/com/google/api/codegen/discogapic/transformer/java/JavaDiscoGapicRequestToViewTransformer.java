@@ -334,7 +334,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
   private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
     typeTable.getAndSaveNicknameFor("java.util.Collections");

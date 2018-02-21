@@ -79,11 +79,11 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
   }
 
   // Methods for getting/setting the fields of the generated class.
-  public abstract List<FieldCopyView> fieldCopyMethods();
+  public abstract List<StaticMemberView> fieldCopyMethods();
 
   public static Builder newBuilder() {
     return new AutoValue_RequestObjectParamView.Builder()
-        .fieldCopyMethods(new ArrayList<FieldCopyView>());
+        .fieldCopyMethods(new ArrayList<StaticMemberView>());
   }
 
   @AutoValue.Builder
@@ -120,7 +120,7 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
 
     public abstract Builder optionalDefault(String val);
 
-    public abstract Builder fieldCopyMethods(List<FieldCopyView> val);
+    public abstract Builder fieldCopyMethods(List<StaticMemberView> val);
 
     public abstract RequestObjectParamView build();
   }

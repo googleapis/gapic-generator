@@ -15,8 +15,6 @@
 
     {@constructors(schema)}
 
-    {@resourceNameMethod(schema)}
-
     {@populateMapMethod(schema)}
 
     {@getRequestBodyMethod(schema)}
@@ -36,19 +34,6 @@
 
 @end
 
-@private resourceNameMethod(schema)
-  @@Override
-  @if schema.hasResourceName
-    public {@schema.pathAsResourceName.typeName} resourceNamePath() {
-      return {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
-    }
-  @else
-    public ResourceNamePath resourceNamePath() {
-      return null;
-    }
-  @end
-@end
-
 @private populateMapMethod(schema)
   @@Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
@@ -63,6 +48,11 @@
       }
     @end
     return fieldMap;
+  }
+
+  @@Override
+  public Map<String, String> pathParams() {
+    return pathParams;
   }
 @end
 
@@ -84,6 +74,8 @@
   @join property : schema.properties
     private final {@property.typeName} {@property.name};
   @end
+  {@""}
+  private final Map<String, String> pathParams;
 @end
 
 @private toString(schema)
@@ -161,6 +153,7 @@
     @join param : schema.properties
       this.{@param.name} = null;
     @end
+    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -172,6 +165,14 @@
     @join param : schema.properties
       this.{@param.name} = {@param.name};
     @end
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    @if schema.hasResourceName
+      {@schema.pathAsResourceName.typeName} resourceName = {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
+      @join nameField : schema.pathAsResourceName.fieldCopyMethods
+        mapBuilder.put("{@nameField.name}", resourceName.{@nameField.fieldGetFunction}());
+      @end
+    @end
+    this.pathParams = mapBuilder.build();
   }
 @end
 
