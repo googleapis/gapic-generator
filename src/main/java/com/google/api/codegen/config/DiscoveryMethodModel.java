@@ -120,14 +120,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    if (outputType instanceof EmptyTypeModel) {
-      // TODO(andrealin): make this language-agnostic
-      return new TypeName("java.lang.Void");
-    } else {
-      return typeTable
-          .getTypeTable()
-          .getTypeName(typeTable.getFullNameFor((FieldModel) outputType));
-    }
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(outputType));
   }
 
   @Override
@@ -201,11 +194,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType instanceof EmptyTypeModel) {
-      return typeTable.getAndSaveNicknameFor("java.lang.Void");
-    } else {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    }
+    return typeTable.getAndSaveNicknameFor(outputType);
   }
 
   @Override

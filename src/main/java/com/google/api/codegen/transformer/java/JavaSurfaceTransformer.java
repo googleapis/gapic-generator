@@ -763,8 +763,8 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationTimedPollAlgorithm");
     }
-    switch (context.getApiModel().getApiSource()) {
-      case PROTO:
+    switch (context.getProductConfig().getTransportProtocol()) {
+      case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportChannel");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
         if (interfaceConfig.hasLongRunningOperations()) {
@@ -772,11 +772,12 @@ public class JavaSurfaceTransformer {
         }
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
         break;
-      case DISCOVERY:
+      case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
+        typeTable.saveNicknameFor("java.lang.Void");
         break;
     }
   }
@@ -833,6 +834,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
+        typeTable.saveNicknameFor("java.lang.Void");
         typeTable.saveNicknameFor("java.util.HashSet");
         typeTable.saveNicknameFor("java.util.Arrays");
         break;
@@ -846,6 +848,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("java.lang.Void");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasLongRunningOperations()) {

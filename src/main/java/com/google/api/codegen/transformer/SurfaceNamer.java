@@ -861,6 +861,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  public String getEmptyTypeName() {
+    return getNotImplementedString("SurfaceNamer.getEmptyTypeName");
+  }
+
   protected Name getAnyResourceTypeName() {
     return Name.from("resource_name");
   }

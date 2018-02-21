@@ -108,8 +108,7 @@ public class EmptyTypeModel implements TypeModel {
 
   @Override
   public String getTypeName() {
-    // TODO(andrealin): make language agnostic
-    return "java.lang.Void";
+    return "EmptyTypeModel";
   }
 
   @Override
