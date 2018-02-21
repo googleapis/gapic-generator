@@ -25,7 +25,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** DiscoGapicMockServiceTransformer contains helper methods useful for creating mock views. */
+/**
+ * DiscoGapicMockServiceTransformer contains helper methods useful for creating mock views. No mock
+ * views are generated for clients created from Discovery documents.
+ */
 public class DiscoGapicMockServiceTransformer implements MockServiceTransformer {
   public List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig) {
     return new ArrayList<>();

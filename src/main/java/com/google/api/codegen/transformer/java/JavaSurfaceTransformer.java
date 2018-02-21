@@ -539,8 +539,7 @@ public class JavaSurfaceTransformer {
 
   private StaticLangFileView<StaticLangRpcStubView> generateRpcStubClassFile(
       InterfaceContext context, GapicProductConfig productConfig) {
-    StaticLangFileView.Builder<StaticLangRpcStubView> fileView =
-        StaticLangFileView.<StaticLangRpcStubView>newBuilder();
+    StaticLangFileView.Builder<StaticLangRpcStubView> fileView = StaticLangFileView.newBuilder();
 
     fileView.classView(generateRpcStubClass(context, productConfig));
     fileView.templateFileName(rpcStubTemplateFilename);
