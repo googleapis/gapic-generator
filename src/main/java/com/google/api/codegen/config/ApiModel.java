@@ -41,7 +41,7 @@ public interface ApiModel {
 
   Iterable<? extends InterfaceModel> getInterfaces();
 
-  Iterable<? extends TypeModel> getTypes();
+  Iterable<? extends TypeModel> getAdditionalTypes();
 
   boolean hasMultipleServices();
 

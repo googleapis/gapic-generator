@@ -234,7 +234,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     // append any additional types
     Set<String> requireTypes = new HashSet<>();
-    for (TypeModel type : model.getTypes()) {
+    for (TypeModel type : model.getAdditionalTypes()) {
       if (type instanceof ProtoTypeRef) {
         ProtoTypeRef t = (ProtoTypeRef) type;
         String name =

@@ -63,7 +63,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public Iterable<? extends TypeModel> getTypes() {
+  public Iterable<? extends TypeModel> getAdditionalTypes() {
     // TODO: is this supported?
     return ImmutableList.of();
   }
