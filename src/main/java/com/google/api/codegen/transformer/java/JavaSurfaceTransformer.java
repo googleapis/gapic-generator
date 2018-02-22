@@ -910,6 +910,11 @@ public class JavaSurfaceTransformer {
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
+            if (hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  apiMethodTransformer.generatePagedFlattenedMethod(
+                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
+            }
           }
         }
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
@@ -941,6 +946,11 @@ public class JavaSurfaceTransformer {
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(flattenedMethodContext));
+            if (hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
+            }
           }
         }
         apiMethods.add(
@@ -953,6 +963,11 @@ public class JavaSurfaceTransformer {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(apiMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
+            if (hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  apiMethodTransformer.generateFlattenedMethod(
+                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
+            }
           }
         }
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(requestMethodContext));
@@ -961,5 +976,13 @@ public class JavaSurfaceTransformer {
     }
 
     return apiMethods;
+  }
+
+  private boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
+    return flatteningGroup
+        .getFlattenedFieldConfigs()
+        .values()
+        .stream()
+        .anyMatch(FieldConfig::useResourceNameType);
   }
 }

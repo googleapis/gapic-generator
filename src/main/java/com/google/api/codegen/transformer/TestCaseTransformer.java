@@ -259,6 +259,10 @@ public class TestCaseTransformer {
   private MockGrpcResponseView createMockResponseView(
       MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
+    methodContext =
+        methodContext
+            .getSurfaceInterfaceContext()
+            .asRequestMethodContext(methodContext.getMethodModel());
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =
