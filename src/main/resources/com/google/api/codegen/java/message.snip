@@ -51,7 +51,7 @@
   }
 
   @@Override
-  public Map<String, String> pathParams() {
+  public Map<String, String> getApiMessagePathParams() {
     return pathParams;
   }
 @end
@@ -60,11 +60,11 @@
   @@Nullable
   @@Override
   @if schema.hasRequestBody()
-    public {@schema.requestBodyType.innerTypeName} requestBody() {
+    public {@schema.requestBodyType.innerTypeName} getApiMessageRequestBody() {
       return {@schema.requestBodyType.name};
     }
   @else
-    public ApiMessage requestBody() {
+    public ApiMessage getApiMessageRequestBody() {
       return null;
     }
   @end
