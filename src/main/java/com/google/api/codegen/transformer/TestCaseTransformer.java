@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.metacode.InitCodeLineType.ListInitLine;
 import static com.google.api.codegen.metacode.InitCodeLineType.StructureInitLine;
 
 import com.google.api.codegen.config.BatchingConfig;
@@ -328,12 +329,12 @@ public class TestCaseTransformer {
         Iterator<FieldModel> it =
             Lists.reverse(config.getResourcesFieldConfig().getFieldPath()).iterator();
         InitCodeNode initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
-        it.next();
         while (it.hasNext()) {
           FieldModel field = it.next();
+          InitCodeLineType lineType = field.isRepeated() ? ListInitLine : StructureInitLine;
           initCodeNode =
               InitCodeNode.createWithChildren(
-                  field.getSimpleName(), StructureInitLine, initCodeNode);
+                  field.getSimpleName(), lineType, initCodeNode);
         }
         additionalSubTrees.add(initCodeNode);
       }

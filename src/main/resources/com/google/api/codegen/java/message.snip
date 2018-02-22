@@ -41,7 +41,7 @@
     @join param : schema.properties
       if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
-          fieldMap.put("{@param.name}", {@param.name}.stream().map(item -> item.toString()).collect(Collectors.toList())));
+          fieldMap.put("{@param.name}", {@param.name}.stream().map(item -> item.toString()).collect(Collectors.toList()));
         @else
           fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end

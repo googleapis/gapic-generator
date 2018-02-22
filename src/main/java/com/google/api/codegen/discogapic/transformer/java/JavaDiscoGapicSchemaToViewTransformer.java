@@ -229,6 +229,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     typeTable.getAndSaveNicknameFor("java.util.Map");
     typeTable.getAndSaveNicknameFor("java.util.Objects");
     typeTable.getAndSaveNicknameFor("java.util.Set");
+    typeTable.getAndSaveNicknameFor("java.util.stream.Collectors");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
     typeTable.getAndSaveNicknameFor("javax.annotation.Nullable");
   }

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.TypeModel;
@@ -21,6 +22,12 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class EmptyTypeModel implements TypeModel {
+
+  @Override
+  public ApiSource getApiSource() {
+    return ApiSource.EMPTY;
+  }
+
   private final List<FieldModel> fields = ImmutableList.of();
 
   @Override

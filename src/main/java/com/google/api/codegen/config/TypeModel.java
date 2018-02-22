@@ -23,6 +23,8 @@ import java.util.List;
  * definition.
  */
 public interface TypeModel {
+  ApiSource getApiSource();
+
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 

@@ -21,6 +21,11 @@ import java.util.List;
 @AutoValue
 public abstract class DiscoveryRequestType implements TypeModel {
 
+  @Override
+  public ApiSource getApiSource() {
+    return ApiSource.DISCOVERY;
+  }
+
   public static DiscoveryRequestType create(DiscoveryMethodModel method) {
     return newBuilder().typeName("message").parentMethod(method).build();
   }
