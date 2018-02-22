@@ -226,11 +226,15 @@ public class TestCaseTransformer {
     FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
-    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
+
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterName(resourcesFieldGetterName)
+            .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
@@ -242,11 +246,15 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
+      resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+      for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+        resourcesFieldGetFunctionList.add(
+            namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig));
+      }
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
