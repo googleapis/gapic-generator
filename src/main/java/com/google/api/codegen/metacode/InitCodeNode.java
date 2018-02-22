@@ -356,7 +356,7 @@ public class InitCodeNode {
     if (parentType.isMap()) {
       TypeModel keyType = parentType.getMapKeyField().getType();
       validateValue(keyType, key);
-    } else if (parentType.isRepeated() && parentType.getApiSource().equals(ApiSource.PROTO) ) {
+    } else if (parentType.isRepeated() && parentType.getApiSource().equals(ApiSource.PROTO)) {
       TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
       validateValue(keyType, key);
     } else {

@@ -333,8 +333,7 @@ public class TestCaseTransformer {
           FieldModel field = it.next();
           InitCodeLineType lineType = field.isRepeated() ? ListInitLine : StructureInitLine;
           initCodeNode =
-              InitCodeNode.createWithChildren(
-                  field.getSimpleName(), lineType, initCodeNode);
+              InitCodeNode.createWithChildren(field.getSimpleName(), lineType, initCodeNode);
         }
         additionalSubTrees.add(initCodeNode);
       }
