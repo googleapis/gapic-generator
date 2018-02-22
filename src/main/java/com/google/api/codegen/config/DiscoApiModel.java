@@ -64,8 +64,7 @@ public class DiscoApiModel implements ApiModel {
 
   @Override
   public Iterable<? extends TypeModel> getAdditionalTypes() {
-    // TODO: is this supported?
-    return ImmutableList.of();
+    throw new UnsupportedOperationException("Discovery does not support additional types");
   }
 
   @Override
