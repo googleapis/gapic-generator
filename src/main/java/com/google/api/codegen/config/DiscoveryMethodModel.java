@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -52,11 +51,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
-    if (method.response() != null) {
-      this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
-    } else {
-      this.outputType = new EmptyTypeModel();
-    }
+    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
   }
 
   public Method getDiscoMethod() {

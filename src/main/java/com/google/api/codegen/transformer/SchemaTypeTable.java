@@ -20,7 +20,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -28,7 +27,6 @@ import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
 /**
@@ -86,24 +84,10 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     return getNotImplementedString("SchemaTypeTable.getFullNameFor(FieldModel type, String value)");
   }
 
-  /** Returns the enum value string */
-  public String getEnumValue(Schema type, String value) {
-    if (!type.isEnum()) {
-      return value;
-    }
-    for (String enumValue : type.enumValues()) {
-      if (enumValue.equals(value)) {
-        return typeNameConverter
-            .getEnumValue(type, enumValue)
-            .getValueAndSaveTypeNicknameIn(typeTable);
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
-  }
-
   @Override
   public String getEnumValue(TypeModel type, String value) {
-    return getEnumValue(((DiscoveryField) type).getDiscoveryField(), value);
+    // TODO(andrealin): implement.
+    return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeModel type, String value)");
   }
 
   @Override
@@ -184,9 +168,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return discoGapicNamer.getRequestTypeName(method).getFullName();
     }
-    Schema schema =
-        type instanceof EmptyTypeModel ? null : ((DiscoveryField) type).getDiscoveryField();
-    return getFullNameFor(schema);
+    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
@@ -284,10 +266,9 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    Schema schema =
-        type instanceof EmptyTypeModel ? null : ((DiscoveryField) type).getDiscoveryField();
-    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(schema);
-    return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter
+        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
+        .getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override

@@ -195,7 +195,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEnum() {
-    // TODO(andrealin): handle enums.
+    // TODO(andrealin): implement.
     return false;
   }
 

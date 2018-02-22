@@ -797,7 +797,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.RequestParamsExtractor");
-    typeTable.saveNicknameFor("com.google.common.annotations.VisibleForTesting");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -833,6 +832,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
+        typeTable.saveNicknameFor("com.google.common.annotations.VisibleForTesting");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
         typeTable.saveNicknameFor("java.lang.Void");
         typeTable.saveNicknameFor("java.util.HashSet");

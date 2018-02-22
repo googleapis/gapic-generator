@@ -15,13 +15,11 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class UnpagedListCallableMethodDetailView {
   public abstract String resourceListGetFunction();
 
-  @Nullable
   public abstract String resourceListParseFunction();
 
   public static Builder newBuilder() {

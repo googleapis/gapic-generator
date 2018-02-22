@@ -19,7 +19,6 @@ import com.google.api.codegen.config.DiscoveryRequestType;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -89,9 +88,7 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return getDiscoGapicNamer().getRequestTypeName(method);
     }
-    Schema schema =
-        type instanceof EmptyTypeModel ? null : ((DiscoveryField) type).getDiscoveryField();
-    return getTypeNameForElementType(schema);
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
