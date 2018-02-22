@@ -63,6 +63,12 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
+  public Iterable<? extends TypeModel> getTypes() {
+    // TODO: is this supported?
+    return ImmutableList.of();
+  }
+
+  @Override
   public InterfaceModel getInterface(String interfaceName) {
     for (InterfaceModel interfaceModel : getInterfaces()) {
       if (interfaceModel.getSimpleName().equals(interfaceName)

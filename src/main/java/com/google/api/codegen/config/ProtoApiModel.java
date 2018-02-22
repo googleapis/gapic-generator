@@ -20,6 +20,7 @@ import com.google.api.Service;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +111,15 @@ public class ProtoApiModel implements ApiModel {
     }
     interfaceModels = intfModels.build();
     return interfaceModels;
+  }
+
+  @Override
+  public Iterable<ProtoTypeRef> getTypes() {
+    ImmutableList.Builder<ProtoTypeRef> models = ImmutableList.builder();
+    for (TypeRef t : new InterfaceView().getTypes(protoModel)) {
+      models.add(new ProtoTypeRef(t));
+    }
+    return models.build();
   }
 
   @Override
