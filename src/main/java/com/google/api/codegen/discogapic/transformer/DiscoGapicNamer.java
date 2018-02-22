@@ -71,6 +71,11 @@ public class DiscoGapicNamer {
     }
   }
 
+  /** Returns the resource adder method name for a resource field assuming the field is repeated. */
+  public String getResourceAdderName(String fieldName) {
+    return languageNamer.publicMethodName(Name.from("add").join(stringToName(fieldName)));
+  }
+
   /** Returns the name for a ResourceName for the resource of the given method. */
   public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
     return languageNamer.localVarName(

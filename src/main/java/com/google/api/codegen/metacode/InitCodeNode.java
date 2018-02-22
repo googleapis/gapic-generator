@@ -390,17 +390,6 @@ public class InitCodeNode {
     } else if (parentType.isRepeated()) {
       return parentFieldConfig;
     } else if (parentType.isMessage()) {
-      //      for (FieldModel field : parentType.getFields()) {
-      //        if (field.getSimpleName().equals(key)) {
-      //          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
-      //          if (fieldConfig == null) {
-      //            fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-      //          }
-      //          return fieldConfig;
-      //        }
-      //      }
-      //      throw new IllegalArgumentException(
-      //          "Message type " + parentType + " does not have field " + key);
       FieldModel childField = parentType.getField(key);
       if (childField == null) {
         throw new IllegalArgumentException(
@@ -411,16 +400,6 @@ public class InitCodeNode {
         fieldConfig = FieldConfig.createDefaultFieldConfig(childField);
       }
       return fieldConfig;
-
-      //      if (parentType instanceof DiscoveryField) {
-      //        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
-      //        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
-      //        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
-      //        return FieldConfig.createDefaultFieldConfig(
-      //            DiscoveryField.create(
-      //                pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer));
-      //      }
-
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);

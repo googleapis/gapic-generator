@@ -173,10 +173,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         context
             .getDiscoGapicNamer()
             .getResourceSetterName(schemaId, schema.type().equals(Type.ARRAY)));
+    schemaView.fieldAddFunction(context.getDiscoGapicNamer().getResourceAdderName(schemaId));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
-    if (schema.type() == Type.ARRAY) {
+    if (schema.repeated() || schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
     } else {
       schemaView.innerTypeName(schemaTypeName);
@@ -202,7 +203,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 
-    schemaView.canRepeat(schema.repeated());
+    schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);

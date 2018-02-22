@@ -41,7 +41,7 @@
     @join param : schema.properties
       if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
-          fieldMap.put("{@param.name}", {@param.name});
+          fieldMap.put("{@param.name}", {@param.name}.stream().map(item -> item.toString()).collect(Collectors.toList())));
         @else
           fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end
@@ -205,10 +205,22 @@
         return {@property.name};
       }
 
-      public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
-        this.{@property.name} = {@property.name};
-        return this;
-      }
+      @if property.canRepeat
+        public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
+          this.{@property.name}.addAll({@property.name});
+          return this;
+        }
+
+        public Builder {@property.fieldAddFunction}({@property.innerTypeName} {@property.name}) {
+          this.{@property.name}.add({@property.name});
+          return this;
+        }
+      @else
+        public Builder {@property.fieldSetFunction}({@property.innerTypeName} {@property.name}) {
+          this.{@property.name} = {@property.name};
+          return this;
+        }
+      @end
 
     @end
 
