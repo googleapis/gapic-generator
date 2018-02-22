@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
@@ -306,10 +307,12 @@ public class InitCodeNode {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
-        for (int i = 0; i < childKeys.size(); i++) {
-          if (!childKeys.contains(Integer.toString(i))) {
-            throw new IllegalArgumentException(
-                "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
+        if (typeRef.getApiSource().equals(ApiSource.PROTO)) {
+          for (int i = 0; i < childKeys.size(); i++) {
+            if (!childKeys.contains(Integer.toString(i))) {
+              throw new IllegalArgumentException(
+                  "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
+            }
           }
         }
         break;
@@ -353,7 +356,7 @@ public class InitCodeNode {
     if (parentType.isMap()) {
       TypeModel keyType = parentType.getMapKeyField().getType();
       validateValue(keyType, key);
-    } else if (parentType.isRepeated()) {
+    } else if (parentType.isRepeated() && parentType.getApiSource().equals(ApiSource.PROTO) ) {
       TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
       validateValue(keyType, key);
     } else {
