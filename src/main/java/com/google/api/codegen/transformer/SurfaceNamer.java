@@ -309,14 +309,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(TypeModel type, Name identifier) {
-//    if (type.isMap()) {
-//      return publicMethodName(Name.from("put").join(identifier));
-//    } else if (type.isRepeated()) {
-//      return publicMethodName(Name.from("add").join(identifier));
-//    } else {
-//      return publicMethodName(Name.from("set").join(identifier));
-//    }
-    return "";
+    return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
   /** The function name to set a field that is a resource name class. */
