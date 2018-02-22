@@ -123,14 +123,8 @@ public class ProtoApiModel implements ApiModel {
     return models.build();
   }
 
-  /**
-   * Helper to extract the types from the underlying model.
-   *
-   * @see com.google.api.Service#getTypesList()
-   * @param model model with service config
-   * @return types
-   */
-  protected Iterable<TypeRef> getTypes(Model model) {
+  /** Helper to extract the types from the underlying model. */
+  private Iterable<TypeRef> getTypes(Model model) {
     List<TypeRef> types = new ArrayList<>();
     for (Type type : model.getServiceConfig().getTypesList()) {
       types.add(model.getSymbolTable().lookupType(type.getName()));
