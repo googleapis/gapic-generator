@@ -78,8 +78,18 @@ public abstract class DiscoveryRequestType implements TypeModel {
   public void validateValue(String value) {}
 
   @Override
-  public List<? extends FieldModel> getFields() {
+  public List<DiscoveryField> getFields() {
     return parentMethod().getInputFields();
+  }
+
+  @Override
+  public DiscoveryField getField(String key) {
+    for (DiscoveryField field : getFields()) {
+      if (field.getSimpleName().equals(key)) {
+        return field;
+      }
+    }
+    return null;
   }
 
   @Override

@@ -67,7 +67,6 @@ public abstract class Schema implements Node {
    * schema traversal path to the target; this path will include the starting node if the target was
    * found. Returns an empty list if the target is not found.
    */
-  // TODO(andrealin): unit test
   public List<Schema> findChild(String childName) {
     Set<Schema> visitedNodes = new HashSet<>();
     Map<Schema, Schema> nodeToPrevNode = new HashMap<>();
@@ -151,8 +150,8 @@ public abstract class Schema implements Node {
     String description = root.getString("description");
     DiscoveryNode enumNode = root.getArray("enum");
     ImmutableList.Builder<String> enumValues = ImmutableList.builder();
-    for (String name : enumNode.getFieldNames()) {
-      enumValues.add(name);
+    for (DiscoveryNode name : enumNode.getElements()) {
+      enumValues.add(name.asText());
     }
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");

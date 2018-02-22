@@ -72,6 +72,11 @@ public class EmptyTypeModel implements TypeModel {
   }
 
   @Override
+  public FieldModel getField(String targetName) {
+    return null;
+  }
+
+  @Override
   public TypeModel makeOptional() {
     return this;
   }

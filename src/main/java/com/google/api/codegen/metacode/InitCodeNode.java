@@ -14,14 +14,11 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -371,21 +368,12 @@ public class InitCodeNode {
       // Using the Optional cardinality replaces the Repeated cardinality
       return parentType.makeOptional();
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          return field.getType();
-        }
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      // TODO(andrealin): this is super hacky
-      if (parentType instanceof DiscoveryField) {
-        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
-        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
-        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
-        return DiscoveryField.create(
-            pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer);
-      }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      return childField.getType();
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);
@@ -402,25 +390,37 @@ public class InitCodeNode {
     } else if (parentType.isRepeated()) {
       return parentFieldConfig;
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
-          if (fieldConfig == null) {
-            fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-          }
-          return fieldConfig;
-        }
+      //      for (FieldModel field : parentType.getFields()) {
+      //        if (field.getSimpleName().equals(key)) {
+      //          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
+      //          if (fieldConfig == null) {
+      //            fieldConfig = FieldConfig.createDefaultFieldConfig(field);
+      //          }
+      //          return fieldConfig;
+      //        }
+      //      }
+      //      throw new IllegalArgumentException(
+      //          "Message type " + parentType + " does not have field " + key);
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      if (parentType instanceof DiscoveryField) {
-        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
-        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
-        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
-        return FieldConfig.createDefaultFieldConfig(
-            DiscoveryField.create(
-                pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer));
+      FieldConfig fieldConfig = fieldConfigMap.get(childField.getFullName());
+      if (fieldConfig == null) {
+        fieldConfig = FieldConfig.createDefaultFieldConfig(childField);
       }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      return fieldConfig;
+
+      //      if (parentType instanceof DiscoveryField) {
+      //        Schema parentTypeSchema = ((DiscoveryField) parentType).getDiscoveryField();
+      //        DiscoGapicNamer discoGapicNamer = ((DiscoveryField) parentType).getDiscoGapicNamer();
+      //        List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+      //        return FieldConfig.createDefaultFieldConfig(
+      //            DiscoveryField.create(
+      //                pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer));
+      //      }
+
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);
