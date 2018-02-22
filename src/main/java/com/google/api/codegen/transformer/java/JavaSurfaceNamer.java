@@ -188,11 +188,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getEmptyTypeName() {
-    return "java.lang.Void";
-  }
-
-  @Override
   public String getAndSavePagedResponseTypeName(
       MethodContext methodContext, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
