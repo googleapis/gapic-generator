@@ -30,7 +30,6 @@ public abstract class TestCaseView {
 
   public abstract ClientMethodType clientMethodType();
 
-  @Nullable
   public abstract MockRpcResponseView mockResponse();
 
   public abstract List<ClientTestAssertView> asserts();

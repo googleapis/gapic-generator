@@ -86,24 +86,10 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     return getNotImplementedString("SchemaTypeTable.getFullNameFor(FieldModel type, String value)");
   }
 
-  /** Returns the enum value string */
-  public String getEnumValue(Schema type, String value) {
-    if (!type.isEnum()) {
-      return value;
-    }
-    for (String enumValue : type.enumValues()) {
-      if (enumValue.equals(value)) {
-        return typeNameConverter
-            .getEnumValue(type, enumValue)
-            .getValueAndSaveTypeNicknameIn(typeTable);
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
-  }
-
   @Override
   public String getEnumValue(TypeModel type, String value) {
-    return getEnumValue(((DiscoveryField) type).getDiscoveryField(), value);
+    // TODO(andrealin): implement.
+    return getNotImplementedString("SchemaTypeTable.getEnumValue(TypeModel type, String value)");
   }
 
   @Override

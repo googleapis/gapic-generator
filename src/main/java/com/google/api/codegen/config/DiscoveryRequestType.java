@@ -85,6 +85,7 @@ public abstract class DiscoveryRequestType implements TypeModel {
   @Override
   public DiscoveryField getField(String key) {
     for (DiscoveryField field : getFields()) {
+      // Just check each field's name without recursively searching inside each field.
       if (field.getSimpleName().equals(key)) {
         return field;
       }

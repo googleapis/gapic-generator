@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -148,11 +147,6 @@ public abstract class Schema implements Node {
     }
     String defaultValue = root.getString("default");
     String description = root.getString("description");
-    DiscoveryNode enumNode = root.getArray("enum");
-    ImmutableList.Builder<String> enumValues = ImmutableList.builder();
-    for (DiscoveryNode name : enumNode.getElements()) {
-      enumValues.add(name.asText());
-    }
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
@@ -179,7 +173,6 @@ public abstract class Schema implements Node {
             additionalProperties,
             defaultValue,
             description,
-            enumValues.build(),
             format,
             id,
             isEnum,
@@ -216,7 +209,6 @@ public abstract class Schema implements Node {
         null,
         "",
         "",
-        ImmutableList.of(),
         Format.EMPTY,
         "",
         false,
@@ -252,9 +244,6 @@ public abstract class Schema implements Node {
 
   /** @return the description. */
   public abstract String description();
-
-  /** @return the enum values. */
-  public abstract List<String> enumValues();
 
   /** @return the format. */
   public abstract Format format();
