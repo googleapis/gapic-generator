@@ -29,6 +29,11 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   @Override
+  public boolean useInheritanceForOneofs() {
+    return true;
+  }
+
+  @Override
   public boolean enableMixins() {
     return true;
   }

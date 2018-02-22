@@ -189,6 +189,10 @@ public class InitCodeTransformer {
           if (fieldConfig.getField().isRepeated()) {
             actualTransformFunction =
                 namer.getResourceTypeParseListMethodName(methodContext.getTypeTable(), fieldConfig);
+          } else if (fieldConfig.getResourceNameConfig().getResourceNameType()
+              == ResourceNameType.ONEOF) {
+            actualTransformFunction =
+                namer.getResourceTypeParentParseMethod(methodContext.getTypeTable(), fieldConfig);
           } else {
             actualTransformFunction =
                 namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);

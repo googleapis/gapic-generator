@@ -219,7 +219,14 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
+      resourcesFieldGetterName =
+          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
+      String expectedTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
+        expectedTransformFunction =
+            namer.getResourceTypeParseMethodName(
+                methodContext.getTypeTable(), resourcesFieldConfig);
+      }
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
@@ -227,6 +234,7 @@ public class TestCaseTransformer {
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
+              .expectedValueTransformFunction(expectedTransformFunction)
               .resourcesVarName(namer.localVarName(Name.from("resource_names")))
               .build());
     }
