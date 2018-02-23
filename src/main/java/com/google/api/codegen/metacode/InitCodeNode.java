@@ -230,7 +230,7 @@ public class InitCodeNode {
       // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
       for (FieldModel field : context.initFields()) {
-        String nameString = field.getSimpleName();
+        String nameString = field.getNameAsParameter();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
           newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));

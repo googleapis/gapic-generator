@@ -307,7 +307,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public DiscoveryField getField(String key) {
     for (DiscoveryField field : getFields()) {
-      if (field.getSimpleName().equals(key)) {
+      if (field.getNameAsParameter().equals(key)) {
         return field;
       }
     }

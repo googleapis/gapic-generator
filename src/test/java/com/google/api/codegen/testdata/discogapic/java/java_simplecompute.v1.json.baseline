@@ -5371,8 +5371,8 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
-   *   Operation response = addressClient.insertAddress(region, address);
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region, addressResource);
    * }
    * </code></pre>
    *
@@ -5399,10 +5399,10 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
+   *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   Operation response = addressClient.insertAddress(request);
    * }
@@ -5424,10 +5424,10 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
+   *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall(request);
    *   // Do something
@@ -5556,20 +5556,23 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
    *   String address = "";
-   *   Operation response = addressClient.patchAddress(region, address);
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.patchAddress(region, address, addressResource);
    * }
    * </code></pre>
    *
    * @param region Name of the region for this request.
+   * @param address Name of the address to patch.
    * @param addressResource A reserved address resource.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(RegionName region, Address addressResource) {
+  public final Operation patchAddress(RegionName region, String address, Address addressResource) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
         .setRegion(region.toString())
+        .setAddress(address)
         .setAddressResource(addressResource)
         .build();
     return patchAddress(request);
@@ -5584,9 +5587,11 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
    *   String address = "";
+   *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddress(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   Operation response = addressClient.patchAddress(request);
    * }
@@ -5609,9 +5614,11 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
    *   String address = "";
+   *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddress(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.patchAddressCallable().futureCall(request);
    *   // Do something
@@ -7114,10 +7121,10 @@ public class AddressClientTest {
     MOCK_SERVICE.setSerializer(insertAddressMethodDescriptor);
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-    Address address = Address.newBuilder().build();
+    Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
-        client.insertAddress(region, address);
+        client.insertAddress(region, addressResource);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = MOCK_SERVICE.getRequestPaths();
@@ -7133,9 +7140,9 @@ public class AddressClientTest {
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-      Address address = Address.newBuilder().build();
+      Address addressResource = Address.newBuilder().build();
 
-      client.insertAddress(region, address);
+      client.insertAddress(region, addressResource);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -7242,9 +7249,10 @@ public class AddressClientTest {
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
     String address = "address-1147692044";
+    Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
-        client.patchAddress(region, address);
+        client.patchAddress(region, address, addressResource);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = MOCK_SERVICE.getRequestPaths();
@@ -7260,8 +7268,8 @@ public class AddressClientTest {
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-      Address addressResource = Address.newBuilder().build();
       String address = "address-1147692044";
+      Address addressResource = Address.newBuilder().build();
 
       client.patchAddress(region, address, addressResource);
       Assert.fail("No exception raised");
