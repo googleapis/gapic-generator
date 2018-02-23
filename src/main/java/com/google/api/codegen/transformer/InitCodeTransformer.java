@@ -669,9 +669,22 @@ public class InitCodeTransformer {
 
       String formatMethodName = "";
       String transformParamFunctionName = "";
-      if (context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig)
-          || (context.getFeatureConfig().useResourceNameConverters(fieldConfig)
-              && !context.isFlattenedMethodContext())) {
+
+      // If resource name converters should only used in the sample, we need to convert the resource
+      // name to a string before passing it or setting it on the next thing
+      boolean needsConversion =
+          context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig);
+      // If resource name converters should be used and this is not a flattened method context
+      // (i.e. it is for setting fields on a proto object), we need to convert the resource name
+      // to a string.
+      // For flattened method contexts, if the resource names are used in more than just the sample
+      // (i.e. in the flattened method signature), then we don't convert (that will be done in the
+      // flattened method implementation when setting fields on the proto object).
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)
+          && !context.isFlattenedMethodContext()) {
+        needsConversion = true;
+      }
+      if (needsConversion) {
         if (fieldConfig.getField().isRepeated()) {
           // TODO (https://github.com/googleapis/toolkit/issues/1806) support repeated one-ofs
           transformParamFunctionName =
