@@ -1,4 +1,5 @@
 type: com.google.api.codegen.ConfigProto
+config_schema_version: 1.0.0
 # The settings of generated code in a specific language.
 language_settings:
   java:
@@ -174,6 +175,22 @@ interfaces:
     field_name_patterns:
       region: region
     timeout_millis: 60000
+  - name: compute.addresses.patch
+    flattening:
+      groups:
+      - parameters:
+        - region
+        - addressResource
+    required_fields:
+    - region
+    - addressResource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      region: region
+    timeout_millis: 60000
 resource_name_generation:
 - message_name: DeleteAddressHttpRequest
   field_entity_map:
@@ -185,5 +202,8 @@ resource_name_generation:
   field_entity_map:
     region: region
 - message_name: ListAddressesHttpRequest
+  field_entity_map:
+    region: region
+- message_name: PatchAddressHttpRequest
   field_entity_map:
     region: region
