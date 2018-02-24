@@ -44,7 +44,7 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.StaticLangApiNameTypeFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameView;
-import com.google.api.codegen.viewmodel.StaticMemberView;
+import com.google.api.codegen.viewmodel.StaticLangMemberView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
@@ -192,7 +192,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(nameConfig));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
 
-    List<StaticMemberView> properties = new LinkedList<>();
+    List<StaticLangMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
       if (entry.getValue().isPathParam()) {
         Schema param = entry.getValue();
@@ -206,9 +206,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   // Transforms a request/response Schema object into a StaticLangApiResourceNameView.
-  private StaticMemberView schemaToParamView(
+  private StaticLangMemberView schemaToParamView(
       SchemaTransformationContext context, Schema schema, SymbolTable symbolTable) {
-    StaticMemberView.Builder paramView = StaticMemberView.newBuilder();
+    StaticLangMemberView.Builder paramView = StaticLangMemberView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
     paramView.typeName(typeName);
