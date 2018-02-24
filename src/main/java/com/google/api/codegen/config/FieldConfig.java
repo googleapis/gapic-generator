@@ -220,6 +220,10 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES;
   }
 
+  public boolean useResourceNameTypeInSampleOnly() {
+    return getResourceNameTreatment() == ResourceNameTreatment.SAMPLE_ONLY;
+  }
+
   public boolean useValidation() {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
   }
@@ -227,6 +231,15 @@ public abstract class FieldConfig {
   public FieldConfig withResourceNameConfig(ResourceNameConfig resourceNameConfig) {
     return FieldConfig.createFieldConfig(
         getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
+  }
+
+  public FieldConfig withResourceNameInSampleOnly() {
+    ResourceNameTreatment newTreatment = ResourceNameTreatment.NONE;
+    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())) {
+      newTreatment = ResourceNameTreatment.SAMPLE_ONLY;
+    }
+    return FieldConfig.createFieldConfig(
+        getField(), newTreatment, getResourceNameConfig(), getMessageResourceNameConfig());
   }
 
   public boolean requiresParamTransformation() {
