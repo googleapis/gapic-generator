@@ -670,8 +670,8 @@ public class InitCodeTransformer {
       String formatMethodName = "";
       String transformParamFunctionName = "";
 
-      // If resource name converters should only used in the sample, we need to convert the resource
-      // name to a string before passing it or setting it on the next thing
+      // If resource name converters should only be used in the sample, we need to convert the
+      // resource name to a string before passing it or setting it on the next thing
       boolean needsConversion =
           context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig);
       // If resource name converters should be used and this is not a flattened method context
