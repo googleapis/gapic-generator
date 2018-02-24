@@ -217,7 +217,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
-    typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceName");
+    typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ResourceNameStruct");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
