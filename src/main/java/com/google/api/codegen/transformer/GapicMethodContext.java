@@ -123,4 +123,20 @@ public abstract class GapicMethodContext implements MethodContext {
   public String getGrpcContainerTypeName() {
     return getNamer().getGrpcContainerTypeName(getTargetInterface());
   }
+
+  @Override
+  public MethodContext withResourceNamesInSamplesOnly() {
+    return create(
+        getSurfaceInterfaceContext(),
+        getInterfaceModel().getInterface(),
+        getProductConfig(),
+        getTypeTable(),
+        getNamer(),
+        getMethodModel(),
+        getMethodConfig(),
+        getFlatteningConfig() == null
+            ? null
+            : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getFeatureConfig());
+  }
 }

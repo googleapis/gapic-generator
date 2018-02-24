@@ -16,9 +16,9 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
-/** This ViewModel defines the view model structure of field. */
+/** This ViewModel defines the view model structure of a field. */
 @AutoValue
-public abstract class StaticMemberView implements Comparable<StaticMemberView> {
+public abstract class StaticLangMemberView implements Comparable<StaticLangMemberView> {
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
@@ -32,7 +32,7 @@ public abstract class StaticMemberView implements Comparable<StaticMemberView> {
   public abstract String fieldGetFunction();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticMemberView.Builder();
+    return new AutoValue_StaticLangMemberView.Builder();
   }
 
   @AutoValue.Builder
@@ -45,11 +45,11 @@ public abstract class StaticMemberView implements Comparable<StaticMemberView> {
 
     public abstract Builder fieldGetFunction(String val);
 
-    public abstract StaticMemberView build();
+    public abstract StaticLangMemberView build();
   }
 
   @Override
-  public int compareTo(StaticMemberView o) {
+  public int compareTo(StaticLangMemberView o) {
     return this.name().compareTo(o.name());
   }
 }

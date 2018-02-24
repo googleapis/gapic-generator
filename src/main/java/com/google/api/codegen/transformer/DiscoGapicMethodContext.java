@@ -125,4 +125,20 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
     return new DiscoInterfaceModel(
         getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getDocument());
   }
+
+  @Override
+  public MethodContext withResourceNamesInSamplesOnly() {
+    return create(
+        getSurfaceInterfaceContext(),
+        interfaceName(),
+        getProductConfig(),
+        getTypeTable(),
+        getDiscoGapicNamer(),
+        getMethodModel(),
+        getMethodConfig(),
+        getFlatteningConfig() == null
+            ? null
+            : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getFeatureConfig());
+  }
 }

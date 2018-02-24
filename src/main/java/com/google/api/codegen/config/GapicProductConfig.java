@@ -454,13 +454,13 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
       createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
+          diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         createSingleResourceNameConfig(
-            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
+            diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
       }
     }
 
@@ -473,28 +473,29 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
+      ConfigProto configProto,
       CollectionConfigProto collectionConfigProto,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
       ProtoFile file) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            diagCollector, collectionConfigProto, file);
+            diagCollector, configProto, collectionConfigProto, file);
     if (singleResourceNameConfig == null) {
       return;
     }
-    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityName())) {
+    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
       SingleResourceNameConfig otherConfig =
-          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityName());
+          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());
       if (!singleResourceNameConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Inconsistent collection configs across interfaces. Entity name: "
-                    + singleResourceNameConfig.getEntityName()));
+                    + singleResourceNameConfig.getEntityId()));
       }
     } else {
       singleResourceNameConfigsMap.put(
-          singleResourceNameConfig.getEntityName(), singleResourceNameConfig);
+          singleResourceNameConfig.getEntityId(), singleResourceNameConfig);
     }
   }
 
@@ -511,7 +512,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (fixedConfig == null) {
         continue;
       }
-      fixedConfigBuilder.put(fixedConfig.getEntityName(), fixedConfig);
+      fixedConfigBuilder.put(fixedConfig.getEntityId(), fixedConfig);
     }
     return fixedConfigBuilder.build();
   }

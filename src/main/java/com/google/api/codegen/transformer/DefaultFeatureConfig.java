@@ -34,6 +34,20 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
+  public boolean useResourceNameFormatOptionInSample(FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled()
+        && fieldConfig != null
+        && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly());
+  }
+
+  @Override
+  public boolean useResourceNameFormatOptionInSampleOnly(FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled()
+        && fieldConfig != null
+        && fieldConfig.useResourceNameTypeInSampleOnly();
+  }
+
+  @Override
   public boolean useResourceNameProtoAccessor(FieldConfig fieldConfig) {
     return resourceNameProtoAccessorsEnabled() && useResourceNameFormatOption(fieldConfig);
   }
@@ -41,6 +55,22 @@ public class DefaultFeatureConfig implements FeatureConfig {
   @Override
   public boolean useResourceNameConverters(FieldConfig fieldConfig) {
     return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOption(fieldConfig);
+  }
+
+  @Override
+  public boolean useResourceNameConvertersInSample(FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOptionInSample(fieldConfig);
+  }
+
+  @Override
+  public boolean useResourceNameConvertersInSampleOnly(FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled()
+        && useResourceNameFormatOptionInSampleOnly(fieldConfig);
+  }
+
+  @Override
+  public boolean useInheritanceForOneofs() {
+    return false;
   }
 
   @Override

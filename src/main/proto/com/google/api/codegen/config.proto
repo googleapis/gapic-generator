@@ -207,6 +207,16 @@ message CollectionConfigProto {
 
   // Name to be used as a basis for generated methods and classes.
   string entity_name = 2;
+
+  repeated CollectionLanguageOverridesProto language_overrides = 3;
+}
+
+message CollectionLanguageOverridesProto {
+  // The language of the generated code.
+  string language = 1;
+
+  // The entity name to override the default with
+  string entity_name = 2;
 }
 
 message CollectionOneofProto {
@@ -434,11 +444,13 @@ message FlatteningGroupProto {
 // VALIDATE: string fields will be validated by the client against the
 // specified resource name formats.
 // STATIC_TYPES: the client will use generated types for resource names.
+// SAMPLE_ONLY: the generated types for resource names will only be used in samples.
 enum ResourceNameTreatment {
   UNSET_TREATMENT = 0;
   NONE = 1;
   VALIDATE = 2;
   STATIC_TYPES = 3;
+  SAMPLE_ONLY = 4;
 }
 
 // `PageStreamingConfigProto` describes information for generating a method which

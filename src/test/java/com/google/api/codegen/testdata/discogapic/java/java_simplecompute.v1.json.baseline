@@ -17,8 +17,8 @@
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceName {
+public final class AddressName implements ResourceNameStruct {
   private final String address;
   private final String project;
   private final String region;
@@ -90,6 +90,20 @@ public final class AddressName implements ResourceName {
     return region;
   }
 
+
+  @Override
+  public Map<String, String> getFieldValues() {
+    Map<String, String> fieldMap = new HashMap<>();
+    fieldMap.put("address", address);
+    fieldMap.put("project", project);
+    fieldMap.put("region", region);
+    return fieldMap;
+  }
+
+  @Override
+  public AddressName parseFrom(String formattedString) {
+    return AddressName.parse(formattedString);
+  }
 
   public static AddressName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -239,8 +253,8 @@ public final class AddressNameType implements ResourceNameType {
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
@@ -254,7 +268,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceName {
+public final class RegionName implements ResourceNameStruct {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -302,6 +316,19 @@ public final class RegionName implements ResourceName {
     return region;
   }
 
+
+  @Override
+  public Map<String, String> getFieldValues() {
+    Map<String, String> fieldMap = new HashMap<>();
+    fieldMap.put("project", project);
+    fieldMap.put("region", region);
+    return fieldMap;
+  }
+
+  @Override
+  public RegionName parseFrom(String formattedString) {
+    return RegionName.parse(formattedString);
+  }
 
   public static RegionName parse(String formattedString) {
     Map<String, String> matchMap =
@@ -439,7 +466,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -541,11 +568,6 @@ public final class Address implements ApiMessage {
       fieldMap.put("users", Collections.singletonList(String.valueOf(users)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -883,7 +905,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -950,11 +972,6 @@ public final class AddressList implements ApiMessage {
       fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -1172,7 +1189,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1218,11 +1235,6 @@ public final class Data implements ApiMessage {
       fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -1368,7 +1380,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1407,11 +1419,6 @@ public final class Error implements ApiMessage {
       fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -1533,7 +1540,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1586,11 +1593,6 @@ public final class Errors implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -1760,7 +1762,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1953,11 +1955,6 @@ public final class Operation implements ApiMessage {
       fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -2607,7 +2604,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.resourcenames.ResourceName;
+import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.Serializable;
 import java.util.Collections;
@@ -2660,11 +2657,6 @@ public final class Warnings implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -2925,11 +2917,6 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -3317,11 +3304,6 @@ public final class GetAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -3715,11 +3697,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -4158,11 +4135,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
-  }
-
-  @Override
-  public Map<String, String> getApiMessagePathParams() {
-    return pathParams;
   }
 
   @Nullable
@@ -4727,7 +4699,32 @@ public class AddressClient implements BackgroundResource {
 
     DeleteAddressHttpRequest request =
         DeleteAddressHttpRequest.newBuilder()
-        .setAddress(address.toString())
+        .setAddress(address == null ? null : address.toString())
+        .build();
+    return deleteAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Operation response = addressClient.deleteAddress(address.toString());
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation deleteAddress(String address) {
+
+    DeleteAddressHttpRequest request =
+        DeleteAddressHttpRequest.newBuilder()
+        .setAddress(address)
         .build();
     return deleteAddress(request);
   }
@@ -4797,7 +4794,32 @@ public class AddressClient implements BackgroundResource {
 
     GetAddressHttpRequest request =
         GetAddressHttpRequest.newBuilder()
-        .setAddress(address.toString())
+        .setAddress(address == null ? null : address.toString())
+        .build();
+    return getAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Address response = addressClient.getAddress(address.toString());
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address resource to return.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Address getAddress(String address) {
+
+    GetAddressHttpRequest request =
+        GetAddressHttpRequest.newBuilder()
+        .setAddress(address)
         .build();
     return getAddress(request);
   }
@@ -4869,7 +4891,35 @@ public class AddressClient implements BackgroundResource {
 
     InsertAddressHttpRequest request =
         InsertAddressHttpRequest.newBuilder()
-        .setRegion(region.toString())
+        .setRegion(region == null ? null : region.toString())
+        .setAddressResource(addressResource)
+        .build();
+    return insertAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region.toString(), address);
+   * }
+   * </code></pre>
+   *
+   * @param region Name of the region for this request.
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation insertAddress(String region, Address addressResource) {
+
+    InsertAddressHttpRequest request =
+        InsertAddressHttpRequest.newBuilder()
+        .setRegion(region)
         .setAddressResource(addressResource)
         .build();
     return insertAddress(request);
@@ -4945,7 +4995,33 @@ public class AddressClient implements BackgroundResource {
   public final ListAddressesPagedResponse listAddresses(RegionName region) {
     ListAddressesHttpRequest request =
         ListAddressesHttpRequest.newBuilder()
-        .setRegion(region.toString())
+        .setRegion(region == null ? null : region.toString())
+        .build();
+    return listAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   for (Address element : addressClient.listAddresses(region.toString()).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param region Name of the region for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ListAddressesPagedResponse listAddresses(String region) {
+    ListAddressesHttpRequest request =
+        ListAddressesHttpRequest.newBuilder()
+        .setRegion(region)
         .build();
     return listAddresses(request);
   }
@@ -6008,8 +6084,11 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
+                                                                      "address", "project", "region"
+                                                                      )))
           .setHttpMethod(HttpMethods.DELETE)
+          .setResourceNameField("address")
           .build();
   @VisibleForTesting
   public static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
@@ -6020,8 +6099,11 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
+                                                                      "address", "project", "region"
+                                                                      )))
           .setHttpMethod(HttpMethods.GET)
+          .setResourceNameField("address")
           .build();
   @VisibleForTesting
   public static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
@@ -6032,8 +6114,11 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
+                                                                      "project", "region"
+                                                                      )))
           .setHttpMethod(HttpMethods.POST)
+          .setResourceNameField("region")
           .build();
   @VisibleForTesting
   public static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
@@ -6045,8 +6130,11 @@ public class HttpJsonAddressStub extends AddressStub {
           .setQueryParams(Sets.<String>newHashSet(
                              "filter",    "maxResults",    "orderBy",    "pageToken"
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
+                                                                      "project", "region"
+                                                                      )))
           .setHttpMethod(HttpMethods.GET)
+          .setResourceNameField("region")
           .build();
 
   private final BackgroundResource backgroundResources;
