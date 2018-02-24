@@ -227,7 +227,6 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -254,6 +253,7 @@ import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
@@ -523,7 +523,31 @@ public class LibraryClient implements BackgroundResource {
 
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryClient.getShelf(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
         .build();
     return getShelf(request);
   }
@@ -743,7 +767,31 @@ public class LibraryClient implements BackgroundResource {
 
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
+        .build();
+    deleteShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   libraryClient.deleteShelf(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteShelf(String name) {
+
+    DeleteShelfRequest request =
+        DeleteShelfRequest.newBuilder()
+        .setName(name)
         .build();
     deleteShelf(request);
   }
@@ -814,8 +862,37 @@ public class LibraryClient implements BackgroundResource {
 
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
-        .setName(name.toString())
-        .setOtherShelfName(otherShelfName.toString())
+        .setName(name == null ? null : name.toString())
+        .setOtherShelfName(otherShelfName == null ? null : otherShelfName.toString())
+        .build();
+    return mergeShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryClient.mergeShelves(name.toString(), otherShelfName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf mergeShelves(String name, String otherShelfName) {
+
+    MergeShelvesRequest request =
+        MergeShelvesRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
         .build();
     return mergeShelves(request);
   }
@@ -1045,7 +1122,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryClient.getBook(name);
    * }
    * </code></pre>
@@ -1053,11 +1130,11 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book getBook(BookName name) {
+  public final Book getBook(ShelfBookName name) {
 
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .build();
     return getBook(request);
   }
@@ -1069,7 +1146,31 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryClient.getBook(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book getBook(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1091,7 +1192,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1127,7 +1228,35 @@ public class LibraryClient implements BackgroundResource {
   public final ListBooksPagedResponse listBooks(ShelfName name, String filter) {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
+        .setFilter(filter)
+        .build();
+    return listBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "book-filter-string";
+   *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf whose books we'd like to list.
+   * @param filter To test python built-in wrapping.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListBooksPagedResponse listBooks(String name, String filter) {
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name)
         .setFilter(filter)
         .build();
     return listBooks(request);
@@ -1224,7 +1353,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   libraryClient.deleteBook(name);
    * }
    * </code></pre>
@@ -1232,11 +1361,11 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to delete.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final void deleteBook(BookName name) {
+  public final void deleteBook(ShelfBookName name) {
 
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .build();
     deleteBook(request);
   }
@@ -1248,7 +1377,31 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   libraryClient.deleteBook(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteBook(String name) {
+
+    DeleteBookRequest request =
+        DeleteBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    deleteBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1270,7 +1423,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1291,7 +1444,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.updateBook(name, book);
    * }
@@ -1301,11 +1454,11 @@ public class LibraryClient implements BackgroundResource {
    * @param book The book to update with.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book updateBook(BookName name, Book book) {
+  public final Book updateBook(ShelfBookName name, Book book) {
 
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .setBook(book)
         .build();
     return updateBook(request);
@@ -1318,7 +1471,34 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryClient.updateBook(name.toString(), book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, Book book) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String optionalFoo = "";
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
@@ -1334,11 +1514,11 @@ public class LibraryClient implements BackgroundResource {
    * @param physicalMask To test Python import clash resolution.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book updateBook(BookName name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+  public final Book updateBook(ShelfBookName name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
 
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .setOptionalFoo(optionalFoo)
         .setBook(book)
         .setUpdateMask(updateMask)
@@ -1354,7 +1534,43 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String optionalFoo = "";
+   *   Book book = Book.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+   *   Book response = libraryClient.updateBook(name.toString(), optionalFoo, book, updateMask, physicalMask);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param optionalFoo An optional foo.
+   * @param book The book to update with.
+   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   * @param physicalMask To test Python import clash resolution.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setOptionalFoo(optionalFoo)
+        .setBook(book)
+        .setUpdateMask(updateMask)
+        .setPhysicalMask(physicalMask)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1378,7 +1594,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1401,7 +1617,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   Book response = libraryClient.moveBook(name, otherShelfName);
    * }
@@ -1411,12 +1627,12 @@ public class LibraryClient implements BackgroundResource {
    * @param otherShelfName The name of the destination shelf.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book moveBook(BookName name, ShelfName otherShelfName) {
+  public final Book moveBook(ShelfBookName name, ShelfName otherShelfName) {
 
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
-        .setName(name.toString())
-        .setOtherShelfName(otherShelfName.toString())
+        .setName(name == null ? null : name.toString())
+        .setOtherShelfName(otherShelfName == null ? null : otherShelfName.toString())
         .build();
     return moveBook(request);
   }
@@ -1428,7 +1644,34 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Book response = libraryClient.moveBook(name.toString(), otherShelfName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book moveBook(String name, String otherShelfName) {
+
+    MoveBookRequest request =
+        MoveBookRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+    return moveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1452,7 +1695,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1511,7 +1754,32 @@ public class LibraryClient implements BackgroundResource {
   public final ListStringsPagedResponse listStrings(ResourceName name) {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
+        .build();
+    return listStrings(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListStringsPagedResponse listStrings(String name) {
+    ListStringsRequest request =
+        ListStringsRequest.newBuilder()
+        .setName(name)
         .build();
     return listStrings(request);
   }
@@ -1592,7 +1860,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1627,7 +1895,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1659,7 +1927,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1702,7 +1970,31 @@ public class LibraryClient implements BackgroundResource {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromArchive getBookFromArchive(String name) {
+
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name)
         .build();
     return getBookFromArchive(request);
   }
@@ -1757,8 +2049,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
-   *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name, altBookName);
    * }
    * </code></pre>
@@ -1768,12 +2060,12 @@ public class LibraryClient implements BackgroundResource {
    * single resource name type in a oneof.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name, BookName altBookName) {
+  public final BookFromAnywhere getBookFromAnywhere(BookName name, ShelfBookName altBookName) {
 
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
-        .setName(name.toString())
-        .setAltBookName(altBookName == null ? null : BookNameOneof.from(altBookName).toString())
+        .setName(name == null ? null : name.toString())
+        .setAltBookName(altBookName == null ? null : altBookName.toString())
         .build();
     return getBookFromAnywhere(request);
   }
@@ -1785,8 +2077,36 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
-   *   BookNameOneof altBookName = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name.toString(), altBookName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @param altBookName An alternate book name, used to test restricting flattened field to a
+   * single resource name type in a oneof.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAnywhere(String name, String altBookName) {
+
+    GetBookFromAnywhereRequest request =
+        GetBookFromAnywhereRequest.newBuilder()
+        .setName(name)
+        .setAltBookName(altBookName)
+        .build();
+    return getBookFromAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from a shelf or archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -1809,8 +2129,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
-   *   BookNameOneof altBookName = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -1832,7 +2152,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name);
    * }
    * </code></pre>
@@ -1840,11 +2160,11 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(BookNameOneof name) {
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(BookName name) {
 
     GetBookFromAbsolutelyAnywhereRequest request =
         GetBookFromAbsolutelyAnywhereRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .build();
     return getBookFromAbsolutelyAnywhere(request);
   }
@@ -1856,7 +2176,31 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(String name) {
+
+    GetBookFromAbsolutelyAnywhereRequest request =
+        GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBookFromAbsolutelyAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1878,7 +2222,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1899,7 +2243,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -1913,11 +2257,11 @@ public class LibraryClient implements BackgroundResource {
    * @param indexMap The index to update the book with
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final void updateBookIndex(BookName name, String indexName, Map<String, String> indexMap) {
+  public final void updateBookIndex(ShelfBookName name, String indexName, Map<String, String> indexMap) {
 
     UpdateBookIndexRequest request =
         UpdateBookIndexRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .setIndexName(indexName)
         .putAllIndexMap(indexMap)
         .build();
@@ -1931,7 +2275,39 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   libraryClient.updateBookIndex(name.toString(), indexName, indexMap);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param indexName The name of the index for the book
+   * @param indexMap The index to update the book with
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
+
+    UpdateBookIndexRequest request =
+        UpdateBookIndexRequest.newBuilder()
+        .setName(name)
+        .setIndexName(indexName)
+        .putAllIndexMap(indexMap)
+        .build();
+    updateBookIndex(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -1959,7 +2335,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -2141,10 +2517,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (BookName element : libraryClient.findRelatedBooks(names, shelves).iterateAllAsBookName()) {
+   *   for (ShelfBookName element : libraryClient.findRelatedBooks(names, shelves).iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2154,10 +2530,10 @@ public class LibraryClient implements BackgroundResource {
    * @param shelves
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<ShelfBookName> names, List<ShelfName> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
-        .addAllNames(names == null ? null : BookName.toStringList(names))
+        .addAllNames(names == null ? null : ShelfBookName.toStringList(names))
         .addAllShelves(shelves == null ? null : ShelfName.toStringList(shelves))
         .build();
     return findRelatedBooks(request);
@@ -2170,14 +2546,43 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   for (ShelfBookName element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAllAsShelfBookName()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param names
+   * @param shelves
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
+    FindRelatedBooksRequest request =
+        FindRelatedBooksRequest.newBuilder()
+        .addAllNames(names)
+        .addAllShelves(shelves)
+        .build();
+    return findRelatedBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(BookName.toStringList(names))
+   *     .addAllNames(ShelfBookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   for (BookName element : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
+   *   for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2198,16 +2603,16 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(BookName.toStringList(names))
+   *     .addAllNames(ShelfBookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (BookName element : future.get().iterateAllAsBookName()) {
+   *   for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2224,16 +2629,16 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(BookName.toStringList(names))
+   *     .addAllNames(ShelfBookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-   *     for (BookName element : BookName.parseList(response.getNamesList())) {
+   *     for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2257,7 +2662,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
    * }
@@ -2286,7 +2691,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -2310,7 +2715,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -2333,7 +2738,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelResponse response = libraryClient.addLabel(formattedResource, label);
    * }
@@ -2363,7 +2768,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -2388,7 +2793,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -2412,7 +2817,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryClient.getBigBookAsync(name).get();
    * }
    * </code></pre>
@@ -2420,11 +2825,11 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(BookName name) {
+  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(ShelfBookName name) {
 
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .build();
     return getBigBookAsync(request);
   }
@@ -2436,7 +2841,31 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryClient.getBigBookAsync(name.toString()).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBigBookAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2458,7 +2887,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2479,7 +2908,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2500,7 +2929,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Empty response = libraryClient.getBigNothingAsync(name).get();
    * }
    * </code></pre>
@@ -2508,11 +2937,11 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(BookName name) {
+  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(ShelfBookName name) {
 
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setName(name.toString())
+        .setName(name == null ? null : name.toString())
         .build();
     return getBigNothingAsync(request);
   }
@@ -2524,7 +2953,31 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Empty response = libraryClient.getBigNothingAsync(name.toString()).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBigNothingAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2546,7 +2999,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2567,7 +3020,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2619,8 +3072,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2632,8 +3085,8 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;BookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;BookNameOneof&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -2646,8 +3099,8 @@ public class LibraryClient implements BackgroundResource {
    *   String optionalSingularString = "";
    *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
    *   List&lt;Integer&gt; optionalRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2659,8 +3112,8 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; optionalRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; optionalRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; optionalRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;BookName&gt; optionalRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;BookNameOneof&gt; optionalRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; optionalRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; optionalRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
@@ -2724,7 +3177,7 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalMap
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, BookName requiredSingularResourceName, BookNameOneof requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<BookName> requiredRepeatedResourceName, List<BookNameOneof> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, BookName optionalSingularResourceName, BookNameOneof optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<BookName> optionalRepeatedResourceName, List<BookNameOneof> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, ShelfBookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<ShelfBookName> requiredRepeatedResourceName, List<BookName> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, ShelfBookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<ShelfBookName> optionalRepeatedResourceName, List<BookName> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -2737,8 +3190,8 @@ public class LibraryClient implements BackgroundResource {
         .setRequiredSingularString(requiredSingularString)
         .setRequiredSingularBytes(requiredSingularBytes)
         .setRequiredSingularMessage(requiredSingularMessage)
-        .setRequiredSingularResourceName(requiredSingularResourceName.toString())
-        .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof.toString())
+        .setRequiredSingularResourceName(requiredSingularResourceName == null ? null : requiredSingularResourceName.toString())
+        .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof == null ? null : requiredSingularResourceNameOneof.toString())
         .setRequiredSingularFixed32(requiredSingularFixed32)
         .setRequiredSingularFixed64(requiredSingularFixed64)
         .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
@@ -2750,8 +3203,8 @@ public class LibraryClient implements BackgroundResource {
         .addAllRequiredRepeatedString(requiredRepeatedString)
         .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
         .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-        .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName == null ? null : BookName.toStringList(requiredRepeatedResourceName))
-        .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof == null ? null : BookNameOneof.toStringList(requiredRepeatedResourceNameOneof))
+        .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName == null ? null : ShelfBookName.toStringList(requiredRepeatedResourceName))
+        .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof == null ? null : BookName.toStringList(requiredRepeatedResourceNameOneof))
         .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
         .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
         .putAllRequiredMap(requiredMap)
@@ -2764,8 +3217,8 @@ public class LibraryClient implements BackgroundResource {
         .setOptionalSingularString(optionalSingularString)
         .setOptionalSingularBytes(optionalSingularBytes)
         .setOptionalSingularMessage(optionalSingularMessage)
-        .setOptionalSingularResourceName(optionalSingularResourceName.toString())
-        .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof.toString())
+        .setOptionalSingularResourceName(optionalSingularResourceName == null ? null : optionalSingularResourceName.toString())
+        .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof == null ? null : optionalSingularResourceNameOneof.toString())
         .setOptionalSingularFixed32(optionalSingularFixed32)
         .setOptionalSingularFixed64(optionalSingularFixed64)
         .addAllOptionalRepeatedInt32(optionalRepeatedInt32)
@@ -2777,8 +3230,8 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedString(optionalRepeatedString)
         .addAllOptionalRepeatedBytes(optionalRepeatedBytes)
         .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
-        .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName == null ? null : BookName.toStringList(optionalRepeatedResourceName))
-        .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof == null ? null : BookNameOneof.toStringList(optionalRepeatedResourceNameOneof))
+        .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName == null ? null : ShelfBookName.toStringList(optionalRepeatedResourceName))
+        .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof == null ? null : BookName.toStringList(optionalRepeatedResourceNameOneof))
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
@@ -2802,8 +3255,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2815,8 +3268,191 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;BookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;BookNameOneof&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
+   *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
+   *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
+   *   int optionalSingularInt32 = 0;
+   *   long optionalSingularInt64 = 0L;
+   *   float optionalSingularFloat = 0.0F;
+   *   double optionalSingularDouble = 0.0;
+   *   boolean optionalSingularBool = false;
+   *   TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+   *   String optionalSingularString = "";
+   *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
+   *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+   *   ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   int optionalSingularFixed32 = 0;
+   *   long optionalSingularFixed64 = 0L;
+   *   List&lt;Integer&gt; optionalRepeatedInt32 = new ArrayList&lt;&gt;();
+   *   List&lt;Long&gt; optionalRepeatedInt64 = new ArrayList&lt;&gt;();
+   *   List&lt;Float&gt; optionalRepeatedFloat = new ArrayList&lt;&gt;();
+   *   List&lt;Double&gt; optionalRepeatedDouble = new ArrayList&lt;&gt;();
+   *   List&lt;Boolean&gt; optionalRepeatedBool = new ArrayList&lt;&gt;();
+   *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerEnum&gt; optionalRepeatedEnum = new ArrayList&lt;&gt;();
+   *   List&lt;String&gt; optionalRepeatedString = new ArrayList&lt;&gt;();
+   *   List&lt;ByteString&gt; optionalRepeatedBytes = new ArrayList&lt;&gt;();
+   *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; optionalRepeatedMessage = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; optionalRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; optionalRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
+   *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
+   *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, ShelfBookName.toStringList(requiredRepeatedResourceName), BookName.toStringList(requiredRepeatedResourceNameOneof), requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, ShelfBookName.toStringList(optionalRepeatedResourceName), BookName.toStringList(optionalRepeatedResourceNameOneof), optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+   * }
+   * </code></pre>
+   *
+   * @param requiredSingularInt32
+   * @param requiredSingularInt64
+   * @param requiredSingularFloat
+   * @param requiredSingularDouble
+   * @param requiredSingularBool
+   * @param requiredSingularEnum
+   * @param requiredSingularString
+   * @param requiredSingularBytes
+   * @param requiredSingularMessage
+   * @param requiredSingularResourceName
+   * @param requiredSingularResourceNameOneof
+   * @param requiredSingularFixed32
+   * @param requiredSingularFixed64
+   * @param requiredRepeatedInt32
+   * @param requiredRepeatedInt64
+   * @param requiredRepeatedFloat
+   * @param requiredRepeatedDouble
+   * @param requiredRepeatedBool
+   * @param requiredRepeatedEnum
+   * @param requiredRepeatedString
+   * @param requiredRepeatedBytes
+   * @param requiredRepeatedMessage
+   * @param requiredRepeatedResourceName
+   * @param requiredRepeatedResourceNameOneof
+   * @param requiredRepeatedFixed32
+   * @param requiredRepeatedFixed64
+   * @param requiredMap
+   * @param optionalSingularInt32
+   * @param optionalSingularInt64
+   * @param optionalSingularFloat
+   * @param optionalSingularDouble
+   * @param optionalSingularBool
+   * @param optionalSingularEnum
+   * @param optionalSingularString
+   * @param optionalSingularBytes
+   * @param optionalSingularMessage
+   * @param optionalSingularResourceName
+   * @param optionalSingularResourceNameOneof
+   * @param optionalSingularFixed32
+   * @param optionalSingularFixed64
+   * @param optionalRepeatedInt32
+   * @param optionalRepeatedInt64
+   * @param optionalRepeatedFloat
+   * @param optionalRepeatedDouble
+   * @param optionalRepeatedBool
+   * @param optionalRepeatedEnum
+   * @param optionalRepeatedString
+   * @param optionalRepeatedBytes
+   * @param optionalRepeatedMessage
+   * @param optionalRepeatedResourceName
+   * @param optionalRepeatedResourceNameOneof
+   * @param optionalRepeatedFixed32
+   * @param optionalRepeatedFixed64
+   * @param optionalMap
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+
+    TestOptionalRequiredFlatteningParamsRequest request =
+        TestOptionalRequiredFlatteningParamsRequest.newBuilder()
+        .setRequiredSingularInt32(requiredSingularInt32)
+        .setRequiredSingularInt64(requiredSingularInt64)
+        .setRequiredSingularFloat(requiredSingularFloat)
+        .setRequiredSingularDouble(requiredSingularDouble)
+        .setRequiredSingularBool(requiredSingularBool)
+        .setRequiredSingularEnum(requiredSingularEnum)
+        .setRequiredSingularString(requiredSingularString)
+        .setRequiredSingularBytes(requiredSingularBytes)
+        .setRequiredSingularMessage(requiredSingularMessage)
+        .setRequiredSingularResourceName(requiredSingularResourceName)
+        .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof)
+        .setRequiredSingularFixed32(requiredSingularFixed32)
+        .setRequiredSingularFixed64(requiredSingularFixed64)
+        .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
+        .addAllRequiredRepeatedInt64(requiredRepeatedInt64)
+        .addAllRequiredRepeatedFloat(requiredRepeatedFloat)
+        .addAllRequiredRepeatedDouble(requiredRepeatedDouble)
+        .addAllRequiredRepeatedBool(requiredRepeatedBool)
+        .addAllRequiredRepeatedEnum(requiredRepeatedEnum)
+        .addAllRequiredRepeatedString(requiredRepeatedString)
+        .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
+        .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
+        .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
+        .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
+        .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
+        .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
+        .putAllRequiredMap(requiredMap)
+        .setOptionalSingularInt32(optionalSingularInt32)
+        .setOptionalSingularInt64(optionalSingularInt64)
+        .setOptionalSingularFloat(optionalSingularFloat)
+        .setOptionalSingularDouble(optionalSingularDouble)
+        .setOptionalSingularBool(optionalSingularBool)
+        .setOptionalSingularEnum(optionalSingularEnum)
+        .setOptionalSingularString(optionalSingularString)
+        .setOptionalSingularBytes(optionalSingularBytes)
+        .setOptionalSingularMessage(optionalSingularMessage)
+        .setOptionalSingularResourceName(optionalSingularResourceName)
+        .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof)
+        .setOptionalSingularFixed32(optionalSingularFixed32)
+        .setOptionalSingularFixed64(optionalSingularFixed64)
+        .addAllOptionalRepeatedInt32(optionalRepeatedInt32)
+        .addAllOptionalRepeatedInt64(optionalRepeatedInt64)
+        .addAllOptionalRepeatedFloat(optionalRepeatedFloat)
+        .addAllOptionalRepeatedDouble(optionalRepeatedDouble)
+        .addAllOptionalRepeatedBool(optionalRepeatedBool)
+        .addAllOptionalRepeatedEnum(optionalRepeatedEnum)
+        .addAllOptionalRepeatedString(optionalRepeatedString)
+        .addAllOptionalRepeatedBytes(optionalRepeatedBytes)
+        .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
+        .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName)
+        .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof)
+        .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
+        .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
+        .putAllOptionalMap(optionalMap)
+        .build();
+    return testOptionalRequiredFlatteningParams(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test optional flattening parameters of all types
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   int requiredSingularInt32 = 0;
+   *   long requiredSingularInt64 = 0L;
+   *   float requiredSingularFloat = 0.0F;
+   *   double requiredSingularDouble = 0.0;
+   *   boolean requiredSingularBool = false;
+   *   TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+   *   String requiredSingularString = "";
+   *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
+   *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+   *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   int requiredSingularFixed32 = 0;
+   *   long requiredSingularFixed64 = 0L;
+   *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
+   *   List&lt;Long&gt; requiredRepeatedInt64 = new ArrayList&lt;&gt;();
+   *   List&lt;Float&gt; requiredRepeatedFloat = new ArrayList&lt;&gt;();
+   *   List&lt;Double&gt; requiredRepeatedDouble = new ArrayList&lt;&gt;();
+   *   List&lt;Boolean&gt; requiredRepeatedBool = new ArrayList&lt;&gt;();
+   *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerEnum&gt; requiredRepeatedEnum = new ArrayList&lt;&gt;();
+   *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
+   *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
+   *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -2843,8 +3479,8 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(BookName.toStringList(requiredRepeatedResourceName))
-   *     .addAllRequiredRepeatedResourceNameOneof(BookNameOneof.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
+   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -2876,8 +3512,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+   *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2889,8 +3525,8 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;BookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;BookNameOneof&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -2917,8 +3553,8 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(BookName.toStringList(requiredRepeatedResourceName))
-   *     .addAllRequiredRepeatedResourceNameOneof(BookNameOneof.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
+   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3281,11 +3917,11 @@ public class LibraryClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
           @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
           }
         }
       );
@@ -3322,21 +3958,21 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
           @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
           }
         }
       );
     }
 
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
+    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
+      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
           @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
           }
         }
       );
@@ -3364,11 +4000,11 @@ public class LibraryClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
+    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
+      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
           @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
           }
         }
       );
@@ -4089,7 +4725,7 @@ import com.google.api.gax.paging.PagedListResponse;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Book.Rating;
-import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.FieldMask;
 import java.util.Arrays;
@@ -4134,7 +4770,7 @@ public class SampleApp {
   }
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
-      BookName name = BookName.of("testShelf-" + System.currentTimeMillis(), projectId);
+      ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
       String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
@@ -4244,7 +4880,6 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -4271,6 +4906,7 @@ import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
@@ -4935,7 +5571,6 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -4962,6 +5597,7 @@ import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
@@ -6647,7 +7283,7 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNameOneof;
+import com.google.example.library.v1.BookNames;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.Comment.Stage;
 import com.google.example.library.v1.CreateBookRequest;
@@ -6674,6 +7310,7 @@ import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
@@ -7082,7 +7719,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7191,7 +7828,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7203,7 +7840,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     Book actualResponse =
         client.getBook(name);
@@ -7213,7 +7850,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -7227,7 +7864,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBook(name);
       Assert.fail("No exception raised");
@@ -7292,7 +7929,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     client.deleteBook(name);
 
@@ -7300,7 +7937,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -7314,7 +7951,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.deleteBook(name);
       Assert.fail("No exception raised");
@@ -7326,7 +7963,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7338,7 +7975,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
@@ -7349,7 +7986,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -7364,7 +8001,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Book book = Book.newBuilder().build();
 
       client.updateBook(name, book);
@@ -7377,7 +8014,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7389,7 +8026,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String optionalFoo = "optionalFoo1822578535";
     Book book = Book.newBuilder().build();
     FieldMask updateMask = FieldMask.newBuilder().build();
@@ -7403,7 +8040,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertEquals(optionalFoo, actualRequest.getOptionalFoo());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
@@ -7421,7 +8058,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       String optionalFoo = "optionalFoo1822578535";
       Book book = Book.newBuilder().build();
       FieldMask updateMask = FieldMask.newBuilder().build();
@@ -7437,7 +8074,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7449,7 +8086,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
 
     Book actualResponse =
@@ -7460,7 +8097,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -7475,7 +8112,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
 
       client.moveBook(name, otherShelfName);
@@ -7506,7 +8143,8 @@ public class LibraryClientTest {
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
     List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
     Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(expectedResponse.getStringsListAsResourceNameList().get(0), resourceNames.get(0));
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -7555,7 +8193,8 @@ public class LibraryClientTest {
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
     List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
     Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(expectedResponse.getStringsListAsResourceNameList().get(0), resourceNames.get(0));
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -7590,7 +8229,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -7622,7 +8261,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -7691,7 +8330,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAnywhereTest() {
-    BookNameOneof name2 = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7703,8 +8342,8 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
-    BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     BookFromAnywhere actualResponse =
         client.getBookFromAnywhere(name, altBookName);
@@ -7714,7 +8353,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNameOneof.parse(actualRequest.getName()));
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(Objects.toString(altBookName), actualRequest.getAltBookName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -7729,8 +8368,8 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
-      BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBookFromAnywhere(name, altBookName);
       Assert.fail("No exception raised");
@@ -7742,7 +8381,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAbsolutelyAnywhereTest() {
-    BookNameOneof name2 = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7754,7 +8393,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+    BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     BookFromAnywhere actualResponse =
         client.getBookFromAbsolutelyAnywhere(name);
@@ -7778,7 +8417,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookNameOneof name = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+      BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBookFromAbsolutelyAnywhere(name);
       Assert.fail("No exception raised");
@@ -7793,7 +8432,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
@@ -7805,7 +8444,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMapMap());
     Assert.assertTrue(
@@ -7821,7 +8460,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       String indexName = "default index";
       String indexMapItem = "indexMapItem1918721251";
       Map<String, String> indexMap = new HashMap<>();
@@ -7882,7 +8521,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamBooksTest() throws Exception {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -7998,16 +8637,16 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void findRelatedBooksTest() {
     String nextPageToken = "";
-    BookName namesElement2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<BookName> names2 = Arrays.asList(namesElement2);
+    ShelfBookName namesElement2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names2 = Arrays.asList(namesElement2);
     FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllNames(BookName.toStringList(names2))
+      .addAllNames(ShelfBookName.toStringList(names2))
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<BookName> names = Arrays.asList(namesElement);
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
     List<ShelfName> shelves = new ArrayList<>();
 
     FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(names, shelves);
@@ -8015,15 +8654,16 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
-    List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    List<ShelfBookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsShelfBookName());
     Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(expectedResponse.getNamesListAsBookNameList().get(0), resourceNames.get(0));
+    Assert.assertEquals(ShelfBookName.parse(expectedResponse.getNamesList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(names, BookName.parseList(actualRequest.getNamesList()));
+    Assert.assertEquals(names, ShelfBookName.parseList(actualRequest.getNamesList()));
     Assert.assertEquals(shelves, ShelfName.parseList(actualRequest.getShelvesList()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -8038,8 +8678,8 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-      List<BookName> names = Arrays.asList(namesElement);
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
       List<ShelfName> shelves = new ArrayList<>();
 
       client.findRelatedBooks(names, shelves);
@@ -8055,7 +8695,7 @@ public class LibraryClientTest {
     AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
     String tag = "tag114586";
 
     AddTagResponse actualResponse =
@@ -8081,7 +8721,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
       String tag = "tag114586";
 
       client.addTag(formattedResource, tag);
@@ -8097,7 +8737,7 @@ public class LibraryClientTest {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
 
-    String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
     String label = "label102727412";
 
     AddLabelResponse actualResponse =
@@ -8123,7 +8763,7 @@ public class LibraryClientTest {
     mockLabeler.addException(exception);
 
     try {
-      String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
       String label = "label102727412";
 
       client.addLabel(formattedResource, label);
@@ -8136,7 +8776,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookTest() throws Exception {
-    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -8154,7 +8794,7 @@ public class LibraryClientTest {
             .build();
     mockLibraryService.addResponse(resultOperation);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     Book actualResponse =
         client.getBigBookAsync(name).get();
@@ -8164,7 +8804,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -8178,7 +8818,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBigBookAsync(name).get();
       Assert.fail("No exception raised");
@@ -8202,7 +8842,7 @@ public class LibraryClientTest {
             .build();
     mockLibraryService.addResponse(resultOperation);
 
-    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     Empty actualResponse =
         client.getBigNothingAsync(name).get();
@@ -8212,7 +8852,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -8226,7 +8866,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBigNothingAsync(name).get();
       Assert.fail("No exception raised");
@@ -8291,8 +8931,8 @@ public class LibraryClientTest {
     String requiredSingularString = "requiredSingularString-1949894503";
     ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-    BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-    BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+    ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     int requiredSingularFixed32 = 720656715;
     long requiredSingularFixed64 = 720656810;
     List<Integer> requiredRepeatedInt32 = new ArrayList<>();
@@ -8304,8 +8944,8 @@ public class LibraryClientTest {
     List<String> requiredRepeatedString = new ArrayList<>();
     List<ByteString> requiredRepeatedBytes = new ArrayList<>();
     List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
-    List<BookName> requiredRepeatedResourceName = new ArrayList<>();
-    List<BookNameOneof> requiredRepeatedResourceNameOneof = new ArrayList<>();
+    List<ShelfBookName> requiredRepeatedResourceName = new ArrayList<>();
+    List<BookName> requiredRepeatedResourceNameOneof = new ArrayList<>();
     List<Integer> requiredRepeatedFixed32 = new ArrayList<>();
     List<Long> requiredRepeatedFixed64 = new ArrayList<>();
     Map<Integer, String> requiredMap = new HashMap<>();
@@ -8318,8 +8958,8 @@ public class LibraryClientTest {
     String optionalSingularString = "optionalSingularString1852995162";
     ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-    BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-    BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+    ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     int optionalSingularFixed32 = 1648847958;
     long optionalSingularFixed64 = 1648847863;
     List<Integer> optionalRepeatedInt32 = new ArrayList<>();
@@ -8331,8 +8971,8 @@ public class LibraryClientTest {
     List<String> optionalRepeatedString = new ArrayList<>();
     List<ByteString> optionalRepeatedBytes = new ArrayList<>();
     List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
-    List<BookName> optionalRepeatedResourceName = new ArrayList<>();
-    List<BookNameOneof> optionalRepeatedResourceNameOneof = new ArrayList<>();
+    List<ShelfBookName> optionalRepeatedResourceName = new ArrayList<>();
+    List<BookName> optionalRepeatedResourceNameOneof = new ArrayList<>();
     List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
     List<Long> optionalRepeatedFixed64 = new ArrayList<>();
     Map<Integer, String> optionalMap = new HashMap<>();
@@ -8354,8 +8994,8 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredSingularString, actualRequest.getRequiredSingularString());
     Assert.assertEquals(requiredSingularBytes, actualRequest.getRequiredSingularBytes());
     Assert.assertEquals(requiredSingularMessage, actualRequest.getRequiredSingularMessage());
-    Assert.assertEquals(requiredSingularResourceName, BookName.parse(actualRequest.getRequiredSingularResourceName()));
-    Assert.assertEquals(requiredSingularResourceNameOneof, BookNameOneof.parse(actualRequest.getRequiredSingularResourceNameOneof()));
+    Assert.assertEquals(requiredSingularResourceName, ShelfBookName.parse(actualRequest.getRequiredSingularResourceName()));
+    Assert.assertEquals(requiredSingularResourceNameOneof, BookNames.parse(actualRequest.getRequiredSingularResourceNameOneof()));
     Assert.assertEquals(requiredSingularFixed32, actualRequest.getRequiredSingularFixed32());
     Assert.assertEquals(requiredSingularFixed64, actualRequest.getRequiredSingularFixed64());
     Assert.assertEquals(requiredRepeatedInt32, actualRequest.getRequiredRepeatedInt32List());
@@ -8367,8 +9007,8 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredRepeatedString, actualRequest.getRequiredRepeatedStringList());
     Assert.assertEquals(requiredRepeatedBytes, actualRequest.getRequiredRepeatedBytesList());
     Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
-    Assert.assertEquals(requiredRepeatedResourceName, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
-    Assert.assertEquals(requiredRepeatedResourceNameOneof, BookNameOneof.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
+    Assert.assertEquals(requiredRepeatedResourceName, ShelfBookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
+    Assert.assertEquals(requiredRepeatedResourceNameOneof, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
     Assert.assertEquals(requiredRepeatedFixed32, actualRequest.getRequiredRepeatedFixed32List());
     Assert.assertEquals(requiredRepeatedFixed64, actualRequest.getRequiredRepeatedFixed64List());
     Assert.assertEquals(requiredMap, actualRequest.getRequiredMapMap());
@@ -8381,8 +9021,8 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalSingularString, actualRequest.getOptionalSingularString());
     Assert.assertEquals(optionalSingularBytes, actualRequest.getOptionalSingularBytes());
     Assert.assertEquals(optionalSingularMessage, actualRequest.getOptionalSingularMessage());
-    Assert.assertEquals(optionalSingularResourceName, BookName.parse(actualRequest.getOptionalSingularResourceName()));
-    Assert.assertEquals(optionalSingularResourceNameOneof, BookNameOneof.parse(actualRequest.getOptionalSingularResourceNameOneof()));
+    Assert.assertEquals(optionalSingularResourceName, ShelfBookName.parse(actualRequest.getOptionalSingularResourceName()));
+    Assert.assertEquals(optionalSingularResourceNameOneof, BookNames.parse(actualRequest.getOptionalSingularResourceNameOneof()));
     Assert.assertEquals(optionalSingularFixed32, actualRequest.getOptionalSingularFixed32());
     Assert.assertEquals(optionalSingularFixed64, actualRequest.getOptionalSingularFixed64());
     Assert.assertEquals(optionalRepeatedInt32, actualRequest.getOptionalRepeatedInt32List());
@@ -8394,8 +9034,8 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedString, actualRequest.getOptionalRepeatedStringList());
     Assert.assertEquals(optionalRepeatedBytes, actualRequest.getOptionalRepeatedBytesList());
     Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
-    Assert.assertEquals(optionalRepeatedResourceName, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
-    Assert.assertEquals(optionalRepeatedResourceNameOneof, BookNameOneof.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
+    Assert.assertEquals(optionalRepeatedResourceName, ShelfBookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
+    Assert.assertEquals(optionalRepeatedResourceNameOneof, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());
@@ -8421,8 +9061,8 @@ public class LibraryClientTest {
       String requiredSingularString = "requiredSingularString-1949894503";
       ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-      BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-      BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+      ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       int requiredSingularFixed32 = 720656715;
       long requiredSingularFixed64 = 720656810;
       List<Integer> requiredRepeatedInt32 = new ArrayList<>();
@@ -8434,8 +9074,8 @@ public class LibraryClientTest {
       List<String> requiredRepeatedString = new ArrayList<>();
       List<ByteString> requiredRepeatedBytes = new ArrayList<>();
       List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
-      List<BookName> requiredRepeatedResourceName = new ArrayList<>();
-      List<BookNameOneof> requiredRepeatedResourceNameOneof = new ArrayList<>();
+      List<ShelfBookName> requiredRepeatedResourceName = new ArrayList<>();
+      List<BookName> requiredRepeatedResourceNameOneof = new ArrayList<>();
       List<Integer> requiredRepeatedFixed32 = new ArrayList<>();
       List<Long> requiredRepeatedFixed64 = new ArrayList<>();
       Map<Integer, String> requiredMap = new HashMap<>();
@@ -8448,8 +9088,8 @@ public class LibraryClientTest {
       String optionalSingularString = "optionalSingularString1852995162";
       ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-      BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-      BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.from(BookName.of("[SHELF_ID]", "[BOOK_ID]"));
+      ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       int optionalSingularFixed32 = 1648847958;
       long optionalSingularFixed64 = 1648847863;
       List<Integer> optionalRepeatedInt32 = new ArrayList<>();
@@ -8461,8 +9101,8 @@ public class LibraryClientTest {
       List<String> optionalRepeatedString = new ArrayList<>();
       List<ByteString> optionalRepeatedBytes = new ArrayList<>();
       List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
-      List<BookName> optionalRepeatedResourceName = new ArrayList<>();
-      List<BookNameOneof> optionalRepeatedResourceNameOneof = new ArrayList<>();
+      List<ShelfBookName> optionalRepeatedResourceName = new ArrayList<>();
+      List<BookName> optionalRepeatedResourceNameOneof = new ArrayList<>();
       List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
       List<Long> optionalRepeatedFixed64 = new ArrayList<>();
       Map<Integer, String> optionalMap = new HashMap<>();
@@ -8497,7 +9137,7 @@ import com.google.api.gax.paging.PagedListResponse;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Book.Rating;
-import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.FieldMask;
 import java.util.Arrays;
@@ -8542,7 +9182,7 @@ public class LibrarySmokeTest {
   }
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
-      BookName name = BookName.of("testShelf-" + System.currentTimeMillis(), projectId);
+      ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
       String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()

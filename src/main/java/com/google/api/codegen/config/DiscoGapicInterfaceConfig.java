@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -59,6 +60,9 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Override
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
+
+  // Mapping of a method to its main resource name.
+  public abstract Map<MethodConfig, SingleResourceNameConfig> methodToResourceNameMap();
 
   @Override
   public ImmutableList<FieldModel> getIamResources() {
@@ -130,6 +134,20 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
+    ImmutableMap.Builder<MethodConfig, SingleResourceNameConfig> methodToSingleResourceNameMap =
+        ImmutableMap.builder();
+    if (methodConfigs != null) {
+      for (MethodConfig methodConfig : methodConfigs) {
+        Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
+        String canonicalMethodPath = DiscoGapicNamer.getCanonicalPath(method);
+        for (SingleResourceNameConfig nameConfig : singleResourceNames) {
+          if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
+            methodToSingleResourceNameMap.put(methodConfig, nameConfig);
+          }
+        }
+      }
+    }
+
     String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
 
     String interfaceName =
@@ -149,6 +167,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           interfaceNameOverride,
           new DiscoInterfaceModel(interfaceName, document),
           smokeTestConfig,
+          methodToSingleResourceNameMap.build(),
           methodConfigMap,
           singleResourceNames);
     }

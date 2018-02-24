@@ -670,11 +670,16 @@
   @if requestObjectParam.hasTransformParamFunction
     {@requestObjectParam.name} == null ? null : \
       {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name})
+    @if requestObjectParam.hasFormatMethodName
+      .{@requestObjectParam.formatMethodName}()
+    @end
   @else
-    {@requestObjectParam.name}
-  @end
-  @if requestObjectParam.hasFormatMethodName
-    .{@requestObjectParam.formatMethodName}()
+    @if requestObjectParam.hasFormatMethodName
+      {@requestObjectParam.name} == null ? null : \
+        {@requestObjectParam.name}.{@requestObjectParam.formatMethodName}()
+    @else
+      {@requestObjectParam.name}
+    @end
   @end
 @end
 

@@ -63,8 +63,9 @@
           @end
           .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
           .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter({@initResourceName(methodDescriptor.httpMethod)}))
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+          .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
           .build();
 @end
 
@@ -245,4 +246,12 @@
     return backgroundResources.awaitTermination(duration, unit);
   }
 
+@end
+
+@private initResourceName(httpMethodView)
+  {@httpMethodView.resourceNameTypeName}.of(
+  @join param : httpMethodView.pathParams on ", "
+    "{@param}"
+  @end
+  )
 @end

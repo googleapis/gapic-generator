@@ -246,10 +246,19 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
+      //<<<<<<< HEAD
       resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
       for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
         resourcesFieldGetFunctionList.add(
-            namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig));
+            namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig));
+      }
+      //=======
+      String expectedTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
+        expectedTransformFunction =
+            namer.getResourceTypeParseMethodName(
+                methodContext.getTypeTable(), resourcesFieldConfig);
+        //>>>>>>> resource_names
       }
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
@@ -258,6 +267,7 @@ public class TestCaseTransformer {
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
+              .expectedValueTransformFunction(expectedTransformFunction)
               .resourcesVarName(namer.localVarName(Name.from("resource_names")))
               .build());
     }
@@ -282,6 +292,10 @@ public class TestCaseTransformer {
   private MockRpcResponseView createMockResponseView(
       MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
+    methodContext =
+        methodContext
+            .getSurfaceInterfaceContext()
+            .asRequestMethodContext(methodContext.getMethodModel());
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =

@@ -204,6 +204,32 @@ interfaces:
       region: region
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
+  - name: compute.addresses.patch
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - address
+        - requestId
+        - region
+        - addressResource
+    # TODO: Configure which fields are required.
+    required_fields:
+    - address
+    - requestId
+    - region
+    - addressResource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      region: region
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
 resource_name_generation:
 - message_name: DeleteAddressHttpRequest
   field_entity_map:
@@ -215,5 +241,8 @@ resource_name_generation:
   field_entity_map:
     region: region
 - message_name: ListAddressesHttpRequest
+  field_entity_map:
+    region: region
+- message_name: PatchAddressHttpRequest
   field_entity_map:
     region: region

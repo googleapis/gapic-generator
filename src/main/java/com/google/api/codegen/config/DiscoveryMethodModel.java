@@ -63,6 +63,10 @@ public final class DiscoveryMethodModel implements MethodModel {
     return method;
   }
 
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
+  }
+
   @Override
   public String getOutputTypeSimpleName() {
     return method.response() == null ? "none" : method.response().id();

@@ -10,12 +10,14 @@
 @end
 
 @private nameClassDef(resourceName)
-  public final class {@resourceName.typeName} implements ResourceName {
+  public final class {@resourceName.typeName} implements ResourceNameStruct {
     {@members(resourceName)}
 
     {@constructors(resourceName)}
 
     {@getters(resourceName)}
+
+    {@interfaceMethods(resourceName)}
 
     {@staticMethods(resourceName)}
 
@@ -37,6 +39,22 @@
 
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("{@resourceName.pathTemplate}");
+@end
+
+@private interfaceMethods(resourceName)
+  @@Override
+  public Map<String, String> getFieldValues() {
+    Map<String, String> fieldMap = new HashMap<>();
+    @join param : resourceName.pathParams
+      fieldMap.put("{@param.name}", {@param.name});
+    @end
+    return fieldMap;
+  }
+
+  @@Override
+  public {@resourceName.typeName} parseFrom(String formattedString) {
+    return {@resourceName.typeName}.parse(formattedString);
+  }
 @end
 
 @private staticMethods(resourceName)
