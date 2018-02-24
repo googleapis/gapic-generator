@@ -41,6 +41,8 @@ public interface ApiModel {
 
   Iterable<? extends InterfaceModel> getInterfaces();
 
+  Iterable<? extends TypeModel> getAdditionalTypes();
+
   boolean hasMultipleServices();
 
   InterfaceModel getInterface(String interfaceName);

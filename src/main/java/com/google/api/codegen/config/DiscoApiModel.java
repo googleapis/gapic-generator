@@ -63,6 +63,11 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
+  public Iterable<? extends TypeModel> getAdditionalTypes() {
+    throw new UnsupportedOperationException("Discovery does not support additional types");
+  }
+
+  @Override
   public InterfaceModel getInterface(String interfaceName) {
     for (InterfaceModel interfaceModel : getInterfaces()) {
       if (interfaceModel.getSimpleName().equals(interfaceName)

@@ -59,4 +59,6 @@ public interface MethodContext {
 
   // TODO(andrealin): Move this out when HTTP is implemented in gax.
   String getGrpcContainerTypeName();
+
+  MethodContext withResourceNamesInSamplesOnly();
 }
