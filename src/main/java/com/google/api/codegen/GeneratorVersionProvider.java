@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import java.io.IOException;
 import java.util.Properties;
 
 public class GeneratorVersionProvider {
@@ -23,15 +24,14 @@ public class GeneratorVersionProvider {
   public static String getGeneratorVersion() {
     String version = DEFAULT_VERSION;
     Properties properties = new Properties();
-    return "0.0.5";
-    //    try {
-    //      properties.load(
-    //          GeneratorVersionProvider.class
-    //              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
-    //      version = properties.getProperty("version");
-    //    } catch (IOException e) {
-    //      e.printStackTrace(System.err);
-    //    }
-    //    return version;
+    try {
+      properties.load(
+          GeneratorVersionProvider.class
+              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
+      version = properties.getProperty("version");
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
+    }
+    return version;
   }
 }
