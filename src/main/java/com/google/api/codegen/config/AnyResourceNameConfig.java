@@ -40,6 +40,11 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
   }
 
   @Override
+  public String getEntityId() {
+    return getEntityName();
+  }
+
+  @Override
   public String getEntityName() {
     return ENTITY_NAME;
   }

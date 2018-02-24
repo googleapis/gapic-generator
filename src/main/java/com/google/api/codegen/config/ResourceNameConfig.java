@@ -18,6 +18,9 @@ import com.google.api.tools.framework.model.ProtoFile;
 
 public interface ResourceNameConfig {
 
+  /** Returns the name used for uniquely identifying the entity in config. */
+  String getEntityId();
+
   /** Returns the name used as a basis for generating methods. */
   String getEntityName();
 

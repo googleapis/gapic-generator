@@ -46,13 +46,6 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();
 
-  public String getEntityName() {
-    if (getResourceNameConfig() == null) {
-      return null;
-    }
-    return getResourceNameConfig().getEntityName();
-  }
-
   public ResourceNameType getResourceNameType() {
     if (getResourceNameConfig() == null) {
       return null;
