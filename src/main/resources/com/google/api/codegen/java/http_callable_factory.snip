@@ -1,0 +1,63 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} implements CallableFactory {
+    {@memberMethods(classView)}
+  }
+@end
+
+@private classDoc(doc)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * HTTP callable factory implementation for {@doc.serviceTitle}.
+   *
+   * <p>This class is for advanced usage.
+   */
+@end
+
+@private memberMethods(xapiClass)
+  @@Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+  @@Override
+  public <RequestT, ResponseT, PagedListResponseT>
+      UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createPagedCallable(httpJsonCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @@Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createBatchingCallable(httpJsonCallSettings, batchingCallSettings, clientContext);
+  }
+@end

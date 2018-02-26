@@ -6285,6 +6285,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .build();
 
+  private static final CallableFactory callableFactory;
   private final BackgroundResource backgroundResources;
 
   private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
@@ -6301,12 +6302,25 @@ public class HttpJsonAddressStub extends AddressStub {
     return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext);
   }
 
+  public static final HttpJsonAddressStub create(ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of HttpJsonAddressStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new AddressCallableFactory();
+  }
+
+  /**
+   * Constructs an instance of HttpJsonAddressStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
 
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
@@ -6325,11 +6339,11 @@ public class HttpJsonAddressStub extends AddressStub {
             .setMethodDescriptor(listAddressesMethodDescriptor)
             .build();
 
-    this.deleteAddressCallable = HttpJsonCallableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
-    this.getAddressCallable = HttpJsonCallableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
-    this.insertAddressCallable = HttpJsonCallableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
-    this.listAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
-    this.listAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.deleteAddressCallable = callableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
+    this.getAddressCallable = callableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
+    this.insertAddressCallable = callableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
+    this.listAddressesCallable = callableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.listAddressesPagedCallable = callableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -6389,6 +6403,92 @@ public class HttpJsonAddressStub extends AddressStub {
     return backgroundResources.awaitTermination(duration, unit);
   }
 
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressCallableFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.stub;
+
+import com.google.api.client.http.HttpMethods;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
+import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.CallableFactory;
+import com.google.api.gax.httpjson.HttpJsonCallSettings;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.simplecompute.v1.Address;
+import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.Operation;
+import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * HTTP callable factory implementation for simplecompute.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class AddressCallableFactory implements CallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT>
+      UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createPagedCallable(httpJsonCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createBatchingCallable(httpJsonCallSettings, batchingCallSettings, clientContext);
+  }
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/package-info.java ==============
 /*

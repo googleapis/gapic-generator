@@ -795,6 +795,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
   }
 
+  /**
+   * The name of the callable factory for a particular stub interface; not used in most languages.
+   */
+  public String getApiStubCallableFactoryClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Callable", "Factory"));
+  }
+
   /** The name of the http stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {

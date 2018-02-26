@@ -5148,6 +5148,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
 
+  private static final CallableFactory callableFactory;
 
   private final BackgroundResource backgroundResources;
   private final GrpcOperationsStub operationsStub;
@@ -5196,13 +5197,27 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return new GrpcLibraryServiceStub(LibraryServiceStubSettings.newBuilder().build(), clientContext);
   }
 
+  public static final GrpcLibraryServiceStub create(ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    return new GrpcLibraryServiceStub(LibraryServiceStubSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of GrpcLibraryServiceStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected GrpcLibraryServiceStub(LibraryServiceStubSettings settings, ClientContext clientContext) throws IOException {
-    this.operationsStub = GrpcOperationsStub.create(clientContext);
+    this(settings, clientContext, new LibraryServiceCallableFactory();
+  }
+
+  /**
+   * Constructs an instance of GrpcLibraryServiceStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcLibraryServiceStub(LibraryServiceStubSettings settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    callableFactory = callableFactory;
+    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
 
     GrpcCallSettings<CreateShelfRequest, Shelf> createShelfTransportSettings =
         GrpcCallSettings.<CreateShelfRequest, Shelf>newBuilder()
@@ -5327,42 +5342,42 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
 
-    this.createShelfCallable = GrpcCallableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
-    this.getShelfCallable = GrpcCallableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
-    this.listShelvesCallable = GrpcCallableFactory.createUnaryCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
-    this.listShelvesPagedCallable = GrpcCallableFactory.createPagedCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
-    this.deleteShelfCallable = GrpcCallableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
-    this.mergeShelvesCallable = GrpcCallableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
-    this.createBookCallable = GrpcCallableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
-    this.publishSeriesCallable = GrpcCallableFactory.createBatchingCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
-    this.getBookCallable = GrpcCallableFactory.createUnaryCallable(getBookTransportSettings,settings.getBookSettings(), clientContext);
-    this.listBooksCallable = GrpcCallableFactory.createUnaryCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
-    this.listBooksPagedCallable = GrpcCallableFactory.createPagedCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
-    this.deleteBookCallable = GrpcCallableFactory.createUnaryCallable(deleteBookTransportSettings,settings.deleteBookSettings(), clientContext);
-    this.updateBookCallable = GrpcCallableFactory.createUnaryCallable(updateBookTransportSettings,settings.updateBookSettings(), clientContext);
-    this.moveBookCallable = GrpcCallableFactory.createUnaryCallable(moveBookTransportSettings,settings.moveBookSettings(), clientContext);
-    this.listStringsCallable = GrpcCallableFactory.createUnaryCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
-    this.listStringsPagedCallable = GrpcCallableFactory.createPagedCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
-    this.addCommentsCallable = GrpcCallableFactory.createBatchingCallable(addCommentsTransportSettings,settings.addCommentsSettings(), clientContext);
-    this.getBookFromArchiveCallable = GrpcCallableFactory.createUnaryCallable(getBookFromArchiveTransportSettings,settings.getBookFromArchiveSettings(), clientContext);
-    this.getBookFromAnywhereCallable = GrpcCallableFactory.createUnaryCallable(getBookFromAnywhereTransportSettings,settings.getBookFromAnywhereSettings(), clientContext);
-    this.getBookFromAbsolutelyAnywhereCallable = GrpcCallableFactory.createUnaryCallable(getBookFromAbsolutelyAnywhereTransportSettings,settings.getBookFromAbsolutelyAnywhereSettings(), clientContext);
-    this.updateBookIndexCallable = GrpcCallableFactory.createUnaryCallable(updateBookIndexTransportSettings,settings.updateBookIndexSettings(), clientContext);
-    this.streamShelvesCallable = GrpcCallableFactory.createServerStreamingCallable(streamShelvesTransportSettings,settings.streamShelvesSettings(), clientContext);
-    this.streamBooksCallable = GrpcCallableFactory.createServerStreamingCallable(streamBooksTransportSettings,settings.streamBooksSettings(), clientContext);
-    this.discussBookCallable = GrpcCallableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
-    this.monologAboutBookCallable = GrpcCallableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
-    this.findRelatedBooksCallable = GrpcCallableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
-    this.findRelatedBooksPagedCallable = GrpcCallableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = GrpcCallableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
-    this.addLabelCallable = GrpcCallableFactory.createUnaryCallable(addLabelTransportSettings,settings.addLabelSettings(), clientContext);
-    this.getBigBookCallable = GrpcCallableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
-    this.getBigBookOperationCallable = GrpcCallableFactory.createOperationCallable(
+    this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
+    this.getShelfCallable = callableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
+    this.listShelvesCallable = callableFactory.createUnaryCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
+    this.listShelvesPagedCallable = callableFactory.createPagedCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
+    this.deleteShelfCallable = callableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
+    this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
+    this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
+    this.publishSeriesCallable = callableFactory.createBatchingCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
+    this.getBookCallable = callableFactory.createUnaryCallable(getBookTransportSettings,settings.getBookSettings(), clientContext);
+    this.listBooksCallable = callableFactory.createUnaryCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
+    this.listBooksPagedCallable = callableFactory.createPagedCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
+    this.deleteBookCallable = callableFactory.createUnaryCallable(deleteBookTransportSettings,settings.deleteBookSettings(), clientContext);
+    this.updateBookCallable = callableFactory.createUnaryCallable(updateBookTransportSettings,settings.updateBookSettings(), clientContext);
+    this.moveBookCallable = callableFactory.createUnaryCallable(moveBookTransportSettings,settings.moveBookSettings(), clientContext);
+    this.listStringsCallable = callableFactory.createUnaryCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
+    this.listStringsPagedCallable = callableFactory.createPagedCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
+    this.addCommentsCallable = callableFactory.createBatchingCallable(addCommentsTransportSettings,settings.addCommentsSettings(), clientContext);
+    this.getBookFromArchiveCallable = callableFactory.createUnaryCallable(getBookFromArchiveTransportSettings,settings.getBookFromArchiveSettings(), clientContext);
+    this.getBookFromAnywhereCallable = callableFactory.createUnaryCallable(getBookFromAnywhereTransportSettings,settings.getBookFromAnywhereSettings(), clientContext);
+    this.getBookFromAbsolutelyAnywhereCallable = callableFactory.createUnaryCallable(getBookFromAbsolutelyAnywhereTransportSettings,settings.getBookFromAbsolutelyAnywhereSettings(), clientContext);
+    this.updateBookIndexCallable = callableFactory.createUnaryCallable(updateBookIndexTransportSettings,settings.updateBookIndexSettings(), clientContext);
+    this.streamShelvesCallable = callableFactory.createServerStreamingCallable(streamShelvesTransportSettings,settings.streamShelvesSettings(), clientContext);
+    this.streamBooksCallable = callableFactory.createServerStreamingCallable(streamBooksTransportSettings,settings.streamBooksSettings(), clientContext);
+    this.discussBookCallable = callableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
+    this.monologAboutBookCallable = callableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
+    this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
+    this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
+    this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
+    this.addLabelCallable = callableFactory.createUnaryCallable(addLabelTransportSettings,settings.addLabelSettings(), clientContext);
+    this.getBigBookCallable = callableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
+    this.getBigBookOperationCallable = callableFactory.createOperationCallable(
         getBigBookTransportSettings,settings.getBigBookOperationSettings(), clientContext, this.operationsStub);
-    this.getBigNothingCallable = GrpcCallableFactory.createUnaryCallable(getBigNothingTransportSettings,settings.getBigNothingSettings(), clientContext);
-    this.getBigNothingOperationCallable = GrpcCallableFactory.createOperationCallable(
+    this.getBigNothingCallable = callableFactory.createUnaryCallable(getBigNothingTransportSettings,settings.getBigNothingSettings(), clientContext);
+    this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
-    this.testOptionalRequiredFlatteningParamsCallable = GrpcCallableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+    this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -5537,6 +5552,171 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return backgroundResources.awaitTermination(duration, unit);
   }
 
+}
+============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceCallableFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.pubsub.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.CallableFactory;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.resourcenames.ResourceName;
+import com.google.common.collect.ImmutableMap;
+import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.BookFromAnywhere;
+import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateShelfRequest;
+import com.google.example.library.v1.DeleteBookRequest;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
+import com.google.example.library.v1.GetBookFromAnywhereRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.ListBooksRequest;
+import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.MergeShelvesRequest;
+import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
+import com.google.example.library.v1.StreamBooksRequest;
+import com.google.example.library.v1.StreamShelvesRequest;
+import com.google.example.library.v1.StreamShelvesResponse;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
+import com.google.example.library.v1.UpdateBookIndexRequest;
+import com.google.example.library.v1.UpdateBookRequest;
+import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.gcloud.pubsub.v1.LibrarySettings;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import com.google.tagger.v1.AddLabelRequest;
+import com.google.tagger.v1.AddLabelResponse;
+import com.google.tagger.v1.AddTagRequest;
+import com.google.tagger.v1.AddTagResponse;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC callable factory implementation for Google Example Library API.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class LibraryServiceCallableFactory implements CallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT> UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createPagedCallable(grpcCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      GrpcCallSettings<RequestT, Operation> grpcCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, OperationsStub operationsStub) {
+    return GrpcCallableFactory.createOperationCallable(grpcCallSettings, operationCallSettings, clientContext, operationsStub);
+  }
+
+  @Override
+  public <RequestT, ResponseT> BidiStreamingCallable<RequestT, ResponseT> createBidiStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createBidiStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ServerStreamingCallable<RequestT, ResponseT> createServerStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      ServerStreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createServerStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ClientStreamingCallable<RequestT, ResponseT> createClientStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStub.java ==============
 /*

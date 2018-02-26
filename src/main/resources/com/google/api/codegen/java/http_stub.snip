@@ -49,7 +49,8 @@
   @join methodDescriptor : stubClass.methodDescriptors
     {@httpMethodCallable(methodDescriptor)}
   @end
-  {@""}
+
+  private static final CallableFactory callableFactory;
 @end
 
 @private httpMethodCallable(methodDescriptor)
@@ -143,15 +144,28 @@
     return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
   }
 
+  public static final {@stubClass.name} create(ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of {@stubClass.name}, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new {@stubClass.callableFactoryClassName}();
+  }
+
+  /**
+   * Constructs an instance of {@stubClass.name}, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
     @if stubClass.hasLongRunningOperations
       # TODO reference a real class for httpjson when it is created
-      this.operationsStub = GrpcOperationsStub.create(clientContext);
+      this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors
@@ -162,7 +176,7 @@
     @end
 
     @join callable : stubClass.apiCallables
-      this.{@callable.name} = HttpJsonCallableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+      this.{@callable.name} = callableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
           settings.{@callable.settingsFunctionName}(), clientContext);
     @end
 

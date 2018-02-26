@@ -42,6 +42,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
   private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String GRPC_STUB_TEMPLATE_FILENAME = "java/grpc_stub.snip";
+  private static final String GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME =
+      "java/grpc_callable_factory.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
@@ -60,6 +62,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
         STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
         GRPC_STUB_TEMPLATE_FILENAME,
+        GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
@@ -68,7 +71,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer surfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper, packageMetadataConfig, this, GRPC_STUB_TEMPLATE_FILENAME);
+            pathMapper,
+            packageMetadataConfig,
+            this,
+            GRPC_STUB_TEMPLATE_FILENAME,
+            GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME);
     return surfaceTransformer.transform(new ProtoApiModel(model), productConfig);
   }
 
