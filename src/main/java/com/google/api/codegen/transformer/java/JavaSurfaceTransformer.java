@@ -596,7 +596,7 @@ public class JavaSurfaceTransformer {
             apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
     stubClass.callableFactoryClassName(
         getAndSaveNicknameForStubType(
-            apiMethodsContext, namer.getApiStubCallableFactoryClassName(interfaceConfig)));
+            apiMethodsContext, namer.getCallableFactoryClassName(interfaceConfig)));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
@@ -629,8 +629,7 @@ public class JavaSurfaceTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String className =
-        context.getNamer().getApiStubCallableFactoryClassName(context.getInterfaceConfig());
+    String className = context.getNamer().getCallableFactoryClassName(context.getInterfaceConfig());
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -646,23 +645,13 @@ public class JavaSurfaceTransformer {
 
     addCallableFactoryImports(context);
 
-    // Stub class has different default package name from method, request, and resource classes.
-    InterfaceContext apiMethodsContext =
-        context.withNewTypeTable(context.getNamer().getRootPackageName());
-
     StaticLangCallableFactoryView.Builder callableFactory =
         StaticLangCallableFactoryView.newBuilder();
 
     callableFactory.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
-    String name = namer.getApiStubCallableFactoryClassName(interfaceConfig);
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
-    callableFactory.name(name);
-
-    for (TypeAlias alias :
-        apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
-      context.getImportTypeTable().getAndSaveNicknameFor(alias);
-    }
+    callableFactory.name(namer.getCallableFactoryClassName(interfaceConfig));
 
     return callableFactory.build();
   }

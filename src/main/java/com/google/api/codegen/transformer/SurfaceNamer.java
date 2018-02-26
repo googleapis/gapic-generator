@@ -798,7 +798,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The name of the callable factory for a particular stub interface; not used in most languages.
    */
-  public String getApiStubCallableFactoryClassName(InterfaceConfig interfaceConfig) {
+  public String getCallableFactoryClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Callable", "Factory"));
   }
 
