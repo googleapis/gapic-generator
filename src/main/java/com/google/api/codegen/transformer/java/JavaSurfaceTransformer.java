@@ -596,7 +596,9 @@ public class JavaSurfaceTransformer {
             apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
     stubClass.callableFactoryClassName(
         getAndSaveNicknameForStubType(
-            apiMethodsContext, namer.getCallableFactoryClassName(interfaceConfig)));
+            apiMethodsContext,
+            namer.getCallableFactoryClassName(
+                interfaceConfig, productConfig.getTransportProtocol())));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
@@ -629,7 +631,11 @@ public class JavaSurfaceTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String className = context.getNamer().getCallableFactoryClassName(context.getInterfaceConfig());
+    String className =
+        context
+            .getNamer()
+            .getCallableFactoryClassName(
+                context.getInterfaceConfig(), productConfig.getTransportProtocol());
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -651,7 +657,8 @@ public class JavaSurfaceTransformer {
     callableFactory.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
-    callableFactory.name(namer.getCallableFactoryClassName(interfaceConfig));
+    callableFactory.name(
+        namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
 
     return callableFactory.build();
   }
