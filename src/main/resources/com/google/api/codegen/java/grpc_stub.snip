@@ -49,8 +49,7 @@
   @join methodDescriptor : stubClass.methodDescriptors
     {@grpcMethodDescriptor(methodDescriptor)}
   @end
-
-  private static final CallableFactory callableFactory;
+  {@""}
 @end
 
 @private grpcMethodDescriptor(methodDescriptor)
@@ -88,7 +87,8 @@
   @join apiCallable : stubClass.apiCallables
     {@apiCallableMember(apiCallable)}
   @end
-  {@""}
+
+  private final CallableFactory callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -150,7 +150,7 @@
    * factory methods should be preferred.
    */
   protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext) throws IOException {
-    this(settings, clientContext, new {@stubClass.callableFactoryClassName}();
+    this(settings, clientContext, new {@stubClass.callableFactoryClassName}());
   }
 
   /**
@@ -159,7 +159,7 @@
    * factory methods should be preferred.
    */
   protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
-    callableFactory = callableFactory;
+    this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
     @end

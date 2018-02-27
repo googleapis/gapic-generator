@@ -49,8 +49,7 @@
   @join methodDescriptor : stubClass.methodDescriptors
     {@httpMethodCallable(methodDescriptor)}
   @end
-
-  private static final CallableFactory callableFactory;
+  {@""}
 @end
 
 @private httpMethodCallable(methodDescriptor)
@@ -101,7 +100,8 @@
   @join apiCallable : stubClass.apiCallables
     {@apiCallableMember(apiCallable)}
   @end
-  {@""}
+
+  private final CallableFactory callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -163,6 +163,7 @@
    * factory methods should be preferred.
    */
   protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       # TODO reference a real class for httpjson when it is created
       this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);

@@ -4861,6 +4861,7 @@ package com.google.gcloud.pubsub.v1.stub;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.CallableFactory;
 import com.google.api.gax.grpc.GrpcCallSettings;
 import com.google.api.gax.grpc.GrpcCallableFactory;
 import com.google.api.gax.grpc.OperationFuture;
@@ -5148,7 +5149,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
 
-  private static final CallableFactory callableFactory;
 
   private final BackgroundResource backgroundResources;
   private final GrpcOperationsStub operationsStub;
@@ -5188,6 +5188,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
+  private final CallableFactory callableFactory;
 
   public static final GrpcLibraryServiceStub create(LibraryServiceStubSettings settings) throws IOException {
     return new GrpcLibraryServiceStub(settings, ClientContext.create(settings));
@@ -5207,7 +5208,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
    * factory methods should be preferred.
    */
   protected GrpcLibraryServiceStub(LibraryServiceStubSettings settings, ClientContext clientContext) throws IOException {
-    this(settings, clientContext, new LibraryServiceCallableFactory();
+    this(settings, clientContext, new LibraryServiceCallableFactory());
   }
 
   /**
@@ -5216,7 +5217,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
    * factory methods should be preferred.
    */
   protected GrpcLibraryServiceStub(LibraryServiceStubSettings settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
-    callableFactory = callableFactory;
+    this.callableFactory = callableFactory;
     this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
 
     GrpcCallSettings<CreateShelfRequest, Shelf> createShelfTransportSettings =
@@ -5579,12 +5580,18 @@ import com.google.api.gax.grpc.GrpcCallSettings;
 import com.google.api.gax.grpc.GrpcCallableFactory;
 import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.BatchingCallSettings;
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
 import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
@@ -5639,6 +5646,7 @@ import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse
 import com.google.gcloud.pubsub.v1.LibrarySettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.longrunning.stub.OperationsStub;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
@@ -5664,14 +5672,12 @@ import javax.annotation.Generated;
 @Generated("by GAPIC v0.0.5")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class LibraryServiceCallableFactory implements CallableFactory {
-  @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       UnaryCallSettings<RequestT, ResponseT> callSettings, ClientContext clientContext) {
     return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT, PagedListResponseT> UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
@@ -5679,14 +5685,12 @@ public class LibraryServiceCallableFactory implements CallableFactory {
     return GrpcCallableFactory.createPagedCallable(grpcCallSettings, pagedCallSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       BatchingCallSettings<RequestT, ResponseT> batchingCallSettings, ClientContext clientContext) {
     return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
       GrpcCallSettings<RequestT, Operation> grpcCallSettings,
       OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
@@ -5694,7 +5698,6 @@ public class LibraryServiceCallableFactory implements CallableFactory {
     return GrpcCallableFactory.createOperationCallable(grpcCallSettings, operationCallSettings, clientContext, operationsStub);
   }
 
-  @Override
   public <RequestT, ResponseT> BidiStreamingCallable<RequestT, ResponseT> createBidiStreamingCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
@@ -5702,7 +5705,6 @@ public class LibraryServiceCallableFactory implements CallableFactory {
     return GrpcCallableFactory.createBidiStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT> ServerStreamingCallable<RequestT, ResponseT> createServerStreamingCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       ServerStreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
@@ -5710,7 +5712,6 @@ public class LibraryServiceCallableFactory implements CallableFactory {
     return GrpcCallableFactory.createServerStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT> ClientStreamingCallable<RequestT, ResponseT> createClientStreamingCallable(
       GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
       StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,

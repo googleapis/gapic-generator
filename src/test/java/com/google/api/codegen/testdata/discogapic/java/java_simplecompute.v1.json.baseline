@@ -6189,6 +6189,7 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.CallableFactory;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
@@ -6285,7 +6286,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .build();
 
-  private static final CallableFactory callableFactory;
   private final BackgroundResource backgroundResources;
 
   private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
@@ -6294,6 +6294,7 @@ public class HttpJsonAddressStub extends AddressStub {
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
 
+  private final CallableFactory callableFactory;
   public static final HttpJsonAddressStub create(AddressSettings settings) throws IOException {
     return new HttpJsonAddressStub(settings, ClientContext.create(settings));
   }
@@ -6321,6 +6322,7 @@ public class HttpJsonAddressStub extends AddressStub {
    * factory methods should be preferred.
    */
   protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
 
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
@@ -6431,8 +6433,18 @@ import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.CallableFactory;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
@@ -6447,6 +6459,7 @@ import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.RegionName;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import com.google.longrunning.stub.OperationsStub;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6465,7 +6478,6 @@ import javax.annotation.Generated;
 @Generated("by GAPIC v0.0.5")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class AddressCallableFactory implements CallableFactory {
-  @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
       HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
       UnaryCallSettings<RequestT, ResponseT> callSettings,
@@ -6473,7 +6485,6 @@ public class AddressCallableFactory implements CallableFactory {
     return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT, PagedListResponseT>
       UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
       HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
@@ -6482,7 +6493,6 @@ public class AddressCallableFactory implements CallableFactory {
     return HttpJsonCallableFactory.createPagedCallable(httpJsonCallSettings, pagedCallSettings, clientContext);
   }
 
-  @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
       HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
       BatchingCallSettings<RequestT, ResponseT> batchingCallSettings,

@@ -862,6 +862,7 @@ public class JavaSurfaceTransformer {
     }
     switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
       case GRPC:
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.CallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");
         typeTable.saveNicknameFor("io.grpc.MethodDescriptor");
@@ -874,6 +875,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.CallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
@@ -886,6 +888,20 @@ public class JavaSurfaceTransformer {
 
   private void addCallableFactoryImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
+    typeTable.saveNicknameFor("com.google.longrunning.Operation");
+    typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
 
     switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
       case GRPC:
