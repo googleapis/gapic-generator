@@ -170,7 +170,7 @@ public class DiscoGapicNamer {
 
   /** Get the response type from a method if the method has a non-null response type. */
   @Nullable
-  public DiscoveryField getResponseField(Method method) {
+  public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
       Schema responseSchema;
       if (method.response().reference() != null) {
