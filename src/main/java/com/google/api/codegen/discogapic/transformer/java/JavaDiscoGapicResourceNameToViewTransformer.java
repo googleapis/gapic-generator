@@ -222,6 +222,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private void addResourceNameClassImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.base.Preconditions");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ResourceNameStruct");
     typeTable.getAndSaveNicknameFor("com.google.api.pathtemplate.PathTemplate");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameType");
