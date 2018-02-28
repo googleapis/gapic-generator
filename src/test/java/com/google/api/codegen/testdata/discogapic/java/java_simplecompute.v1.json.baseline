@@ -248,6 +248,208 @@ public final class AddressNameType implements ResourceNameType {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ResourceNameStruct;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectName implements ResourceNameStruct {
+  private final String project;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+  }
+
+  public static ProjectName of(
+      String project
+      ) {
+    return newBuilder()
+    .setProject(project)
+      .build();
+  }
+
+  public static String format(
+      String project
+      ) {
+    return of(
+        project
+        )
+        .toString();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+  @Override
+  public ProjectName parseFrom(String formattedString) {
+    return ProjectName.parse(formattedString);
+  }
+
+  public static ProjectName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return ProjectNameType.instance();
+  }
+
+  public static class Builder {
+    private String project;
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectName projectName) {
+      project = projectName.project;
+    }
+
+    public ProjectName build() {
+      return new ProjectName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectName) {
+      ProjectName that = (ProjectName) o;
+      return
+          Objects.equals(this.project, that.getProject())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectNameType.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectNameType implements ResourceNameType {
+  private static ProjectNameType instance = new ProjectNameType();
+
+  private ProjectNameType() {}
+
+  public static ProjectNameType instance() {
+    return instance;
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -3850,6 +4052,551 @@ public final class Warnings implements ApiMessage {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AggregatedListAddressesHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AggregatedListAddressesHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String filter;
+  private final String key;
+  private final Integer maxResults;
+  private final String orderBy;
+  private final String pageToken;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String userIp;
+
+  private AggregatedListAddressesHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.filter = null;
+    this.key = null;
+    this.maxResults = null;
+    this.orderBy = null;
+    this.pageToken = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
+  private AggregatedListAddressesHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String filter,
+      String key,
+      Integer maxResults,
+      String orderBy,
+      String pageToken,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.filter = filter;
+    this.key = key;
+    this.maxResults = maxResults;
+    this.orderBy = orderBy;
+    this.pageToken = pageToken;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("filter") && filter != null) {
+      fieldMap.put("filter", Collections.singletonList(String.valueOf(filter)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("maxResults") && maxResults != null) {
+      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
+    }
+    if (fieldNames.contains("orderBy") && orderBy != null) {
+      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
+    }
+    if (fieldNames.contains("pageToken") && pageToken != null) {
+      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("filter")) {
+      return String.valueOf(filter);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("maxResults")) {
+      return String.valueOf(maxResults);
+    }
+    if (fieldName.equals("orderBy")) {
+      return String.valueOf(orderBy);
+    }
+    if (fieldName.equals("pageToken")) {
+      return String.valueOf(pageToken);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("project")) {
+      return String.valueOf(project);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    throw new IOException(String.format("Field '%s' not found in AggregatedListAddressesHttpRequest fields", fieldName));
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getFilter() {
+    return filter;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public Integer getMaxResults() {
+    return maxResults;
+  }
+
+  public String getOrderBy() {
+    return orderBy;
+  }
+
+  public String getPageToken() {
+    return pageToken;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AggregatedListAddressesHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AggregatedListAddressesHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final AggregatedListAddressesHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new AggregatedListAddressesHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String filter;
+    private String key;
+    private Integer maxResults;
+    private String orderBy;
+    private String pageToken;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(AggregatedListAddressesHttpRequest other) {
+      if (other == AggregatedListAddressesHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getFilter() != null) {
+        this.filter = other.filter;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getMaxResults() != null) {
+        this.maxResults = other.maxResults;
+      }
+      if (other.getOrderBy() != null) {
+        this.orderBy = other.orderBy;
+      }
+      if (other.getPageToken() != null) {
+        this.pageToken = other.pageToken;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(AggregatedListAddressesHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.filter = source.filter;
+      this.key = source.key;
+      this.maxResults = source.maxResults;
+      this.orderBy = source.orderBy;
+      this.pageToken = source.pageToken;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getFilter() {
+      return filter;
+    }
+
+    public Builder setFilter(String filter) {
+      this.filter = filter;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public Integer getMaxResults() {
+      return maxResults;
+    }
+
+    public Builder setMaxResults(Integer maxResults) {
+      this.maxResults = maxResults;
+      return this;
+    }
+
+    public String getOrderBy() {
+      return orderBy;
+    }
+
+    public Builder setOrderBy(String orderBy) {
+      this.orderBy = orderBy;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public AggregatedListAddressesHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new AggregatedListAddressesHttpRequest(
+        access_token,
+        callback,
+        fields,
+        filter,
+        key,
+        maxResults,
+        orderBy,
+        pageToken,
+        prettyPrint,
+        project,
+        quotaUser,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setFilter(this.filter);
+      newBuilder.setKey(this.key);
+      newBuilder.setMaxResults(this.maxResults);
+      newBuilder.setOrderBy(this.orderBy);
+      newBuilder.setPageToken(this.pageToken);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "AggregatedListAddressesHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "filter=" + filter + ", "
+        + "key=" + key + ", "
+        + "maxResults=" + maxResults + ", "
+        + "orderBy=" + orderBy + ", "
+        + "pageToken=" + pageToken + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AggregatedListAddressesHttpRequest) {
+      AggregatedListAddressesHttpRequest that = (AggregatedListAddressesHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.filter, that.getFilter()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.maxResults, that.getMaxResults()) &&
+          Objects.equals(this.orderBy, that.getOrderBy()) &&
+          Objects.equals(this.pageToken, that.getPageToken()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      filter,
+      key,
+      maxResults,
+      orderBy,
+      pageToken,
+      prettyPrint,
+      project,
+      quotaUser,
+      userIp
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DeleteAddressHttpRequest.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -6341,6 +7088,139 @@ public class AddressClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   for (Address element : addressClient.aggregatedListAddresses(project).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(ProjectName project) {
+    AggregatedListAddressesHttpRequest request =
+        AggregatedListAddressesHttpRequest.newBuilder()
+        .setProject(project == null ? null : project.toString())
+        .build();
+    return aggregatedListAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   for (Address element : addressClient.aggregatedListAddresses(project.toString()).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(String project) {
+    AggregatedListAddressesHttpRequest request =
+        AggregatedListAddressesHttpRequest.newBuilder()
+        .setProject(project)
+        .build();
+    return aggregatedListAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   for (Address element : addressClient.aggregatedListAddresses(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(AggregatedListAddressesHttpRequest request) {
+    return aggregatedListAddressesPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   ApiFuture&lt;AggregatedListAddressesPagedResponse&gt; future = addressClient.aggregatedListAddressesPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Address element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    return stub.aggregatedListAddressesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   while (true) {
+   *     AddressAggregatedList response = addressClient.aggregatedListAddressesCallable().call(request);
+   *     for (Address element : response.getAddresses()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    return stub.aggregatedListAddressesCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * Deletes the specified address resource.
    *
    * Sample code:
@@ -6912,6 +7792,93 @@ public class AddressClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class AggregatedListAddressesPagedResponse extends AbstractPagedListResponse<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage,
+      AggregatedListAddressesFixedSizeCollection> {
+
+    public static ApiFuture<AggregatedListAddressesPagedResponse> createAsync(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        ApiFuture<AddressAggregatedList> futureResponse) {
+      ApiFuture<AggregatedListAddressesPage> futurePage =
+          AggregatedListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<AggregatedListAddressesPage, AggregatedListAddressesPagedResponse>() {
+            @Override
+            public AggregatedListAddressesPagedResponse apply(AggregatedListAddressesPage input) {
+              return new AggregatedListAddressesPagedResponse(input);
+            }
+          });
+    }
+
+    private AggregatedListAddressesPagedResponse(AggregatedListAddressesPage page) {
+      super(page, AggregatedListAddressesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class AggregatedListAddressesPage extends AbstractPage<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage> {
+
+    private AggregatedListAddressesPage(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        AddressAggregatedList response) {
+      super(context, response);
+    }
+
+    private static AggregatedListAddressesPage createEmptyPage() {
+      return new AggregatedListAddressesPage(null, null);
+    }
+
+    @Override
+    protected AggregatedListAddressesPage createPage(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        AddressAggregatedList response) {
+      return new AggregatedListAddressesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<AggregatedListAddressesPage> createPageAsync(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        ApiFuture<AddressAggregatedList> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class AggregatedListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage,
+      AggregatedListAddressesFixedSizeCollection> {
+
+    private AggregatedListAddressesFixedSizeCollection(List<AggregatedListAddressesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static AggregatedListAddressesFixedSizeCollection createEmptyCollection() {
+      return new AggregatedListAddressesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected AggregatedListAddressesFixedSizeCollection createCollection(
+        List<AggregatedListAddressesPage> pages, int collectionSize) {
+      return new AggregatedListAddressesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
   public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
       ListAddressesHttpRequest,
       AddressList,
@@ -7045,6 +8012,7 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.AddressStubSettings;
 import com.google.common.collect.ImmutableList;
@@ -7088,6 +8056,13 @@ import org.threeten.bp.Duration;
 @Generated("by GAPIC v0.0.5")
 @BetaApi
 public class AddressSettings extends ClientSettings<AddressSettings> {
+  /**
+   * Returns the object with the settings used for calls to aggregatedListAddresses.
+   */
+  public PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+    return ((AddressStubSettings) getStubSettings()).aggregatedListAddressesSettings();
+  }
+
   /**
    * Returns the object with the settings used for calls to deleteAddress.
    */
@@ -7243,6 +8218,13 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to aggregatedListAddresses.
+     */
+    public PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+      return getStubSettingsBuilder().aggregatedListAddressesSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to deleteAddress.
      */
     public UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
@@ -7329,8 +8311,11 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
@@ -7390,11 +8375,19 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       .add("https://www.googleapis.com/auth/devstorage.read_write")
       .build();
 
+  private final PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
   private final UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
   private final UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
   private final UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
   private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
   private final UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings;
+
+  /**
+   * Returns the object with the settings used for calls to aggregatedListAddresses.
+   */
+  public PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+    return aggregatedListAddressesSettings;
+  }
 
   /**
    * Returns the object with the settings used for calls to deleteAddress.
@@ -7523,12 +8516,47 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   protected AddressStubSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
+    aggregatedListAddressesSettings = settingsBuilder.aggregatedListAddressesSettings().build();
     deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
     getAddressSettings = settingsBuilder.getAddressSettings().build();
     insertAddressSettings = settingsBuilder.insertAddressSettings().build();
     listAddressesSettings = settingsBuilder.listAddressesSettings().build();
     patchAddressSettings = settingsBuilder.patchAddressSettings().build();
   }
+
+  private static final PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC =
+      new PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public AggregatedListAddressesHttpRequest injectToken(AggregatedListAddressesHttpRequest payload, String token) {
+          return AggregatedListAddressesHttpRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public AggregatedListAddressesHttpRequest injectPageSize(AggregatedListAddressesHttpRequest payload, int pageSize) {
+          return AggregatedListAddressesHttpRequest
+            .newBuilder(payload)
+            .setMaxResults(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(AggregatedListAddressesHttpRequest payload) {
+          return payload.getMaxResults();
+        }
+        @Override
+        public String extractNextToken(AddressAggregatedList payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Address> extractResources(AddressAggregatedList payload) {
+          return payload.getItems().getAddresses();
+        }
+      };
 
   private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
       new PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address>() {
@@ -7564,6 +8592,20 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
       };
 
+  private static final PagedListResponseFactory<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> AGGREGATED_LIST_ADDRESSES_PAGE_STR_FACT =
+      new PagedListResponseFactory<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse>() {
+        @Override
+        public ApiFuture<AggregatedListAddressesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> callable,
+            AggregatedListAddressesHttpRequest request,
+            ApiCallContext context,
+            ApiFuture<AddressAggregatedList> futureResponse) {
+          PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> pageContext =
+              PageContext.create(callable, AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC, request, context);
+          return AggregatedListAddressesPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
   private static final PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> LIST_ADDRESSES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse>() {
         @Override
@@ -7585,6 +8627,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   public static class Builder extends StubSettings.Builder<AddressStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
+    private final PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
     private final UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
     private final UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
     private final UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
@@ -7629,6 +8672,9 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     protected Builder(ClientContext clientContext) {
       super(clientContext);
 
+      aggregatedListAddressesSettings = PagedCallSettings.newBuilder(
+          AGGREGATED_LIST_ADDRESSES_PAGE_STR_FACT);
+
       deleteAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       getAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -7641,6 +8687,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       patchAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          aggregatedListAddressesSettings,
           deleteAddressSettings,
           getAddressSettings,
           insertAddressSettings,
@@ -7661,6 +8708,10 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     }
 
     private static Builder initDefaults(Builder builder) {
+
+      builder.aggregatedListAddressesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteAddressSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
@@ -7688,6 +8739,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     protected Builder(AddressStubSettings settings) {
       super(settings);
 
+      aggregatedListAddressesSettings = settings.aggregatedListAddressesSettings.toBuilder();
       deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
       getAddressSettings = settings.getAddressSettings.toBuilder();
       insertAddressSettings = settings.insertAddressSettings.toBuilder();
@@ -7695,6 +8747,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       patchAddressSettings = settings.patchAddressSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          aggregatedListAddressesSettings,
           deleteAddressSettings,
           getAddressSettings,
           insertAddressSettings,
@@ -7715,6 +8768,13 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
     public ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders() {
       return unaryMethodSettingsBuilders;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to aggregatedListAddresses.
+     */
+    public PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+      return aggregatedListAddressesSettings;
     }
 
     /**
@@ -7780,15 +8840,19 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.RegionName;
 import javax.annotation.Generated;
 
@@ -7802,6 +8866,16 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class AddressStub implements BackgroundResource {
 
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: aggregatedListAddressesPagedCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: aggregatedListAddressesCallable()");
+  }
 
   @BetaApi
   public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
@@ -7864,16 +8938,20 @@ import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.RegionName;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -7898,6 +8976,22 @@ import javax.annotation.Generated;
 public class HttpJsonAddressStub extends AddressStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
+  @VisibleForTesting
+  public static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
+      ApiMethodDescriptor.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
+          .setMethodName("compute.addresses.aggregatedList")
+          .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
+          .setResponseInstance(AddressAggregatedList.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/aggregated/addresses")
+          .setQueryParams(Sets.<String>newHashSet(
+                             "filter",    "maxResults",    "orderBy",    "pageToken"
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(ProjectName.of(
+                                                                      "project"
+                                                                      )))
+          .setHttpMethod(HttpMethods.GET)
+          .setResourceNameField("project")
+          .build();
   @VisibleForTesting
   public static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
       ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
@@ -7978,6 +9072,8 @@ public class HttpJsonAddressStub extends AddressStub {
 
   private final BackgroundResource backgroundResources;
 
+  private final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable;
+  private final UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable;
   private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
   private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
   private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
@@ -8000,6 +9096,10 @@ public class HttpJsonAddressStub extends AddressStub {
    */
   protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext) throws IOException {
 
+    HttpJsonCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesTransportSettings =
+        HttpJsonCallSettings.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
+            .setMethodDescriptor(aggregatedListAddressesMethodDescriptor)
+            .build();
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
             .setMethodDescriptor(deleteAddressMethodDescriptor)
@@ -8021,6 +9121,8 @@ public class HttpJsonAddressStub extends AddressStub {
             .setMethodDescriptor(patchAddressMethodDescriptor)
             .build();
 
+    this.aggregatedListAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
+    this.aggregatedListAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
     this.deleteAddressCallable = HttpJsonCallableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
     this.getAddressCallable = HttpJsonCallableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
     this.insertAddressCallable = HttpJsonCallableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
@@ -8029,6 +9131,16 @@ public class HttpJsonAddressStub extends AddressStub {
     this.patchAddressCallable = HttpJsonCallableFactory.createUnaryCallable(patchAddressTransportSettings,settings.patchAddressSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    return aggregatedListAddressesPagedCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    return aggregatedListAddressesCallable;
   }
 
   @BetaApi
@@ -8158,7 +9270,9 @@ import com.google.api.gax.rpc.ApiExceptionFactory;
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.api.gax.rpc.testing.FakeStatusCode;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.aggregatedListAddressesMethodDescriptor;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.deleteAddressMethodDescriptor;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.getAddressMethodDescriptor;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.insertAddressMethodDescriptor;
@@ -8204,6 +9318,57 @@ public class AddressClientTest {
   @AfterClass
   public static void tearDown() throws Exception {
     client.close();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void aggregatedListAddressesTest() {
+    String kind = "kind3292052";
+    String nextPageToken = "";
+    String id = "id3355";
+    String selfLink = "selfLink-1691268851";
+    Address addressesElement = Address.newBuilder().build();
+    List<Address> addresses = Arrays.asList(addressesElement);
+    AddressesScopedList items = AddressesScopedList.newBuilder()
+      .addAllAddresses(addresses)
+      .build();
+    AddressAggregatedList expectedResponse = AddressAggregatedList.newBuilder()
+      .setKind(kind)
+      .setNextPageToken(nextPageToken)
+      .setId(id)
+      .setSelfLink(selfLink)
+      .setItems(items)
+      .build();
+    MOCK_SERVICE.addResponse(expectedResponse);
+    MOCK_SERVICE.setSerializer(aggregatedListAddressesMethodDescriptor);
+
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    AggregatedListAddressesPagedResponse pagedListResponse = client.aggregatedListAddresses(project);
+
+    List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getItems().getAddresses().get(0), resources.get(0));
+
+    List<String> actualRequests = MOCK_SERVICE.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void aggregatedListAddressesExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    MOCK_SERVICE.addException(exception);
+    MOCK_SERVICE.setSerializer(aggregatedListAddressesMethodDescriptor);
+
+    try {
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.aggregatedListAddresses(project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
   }
 
   @Test
