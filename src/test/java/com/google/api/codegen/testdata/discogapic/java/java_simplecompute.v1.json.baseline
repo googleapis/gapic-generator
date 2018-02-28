@@ -21,6 +21,7 @@ import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public final class AddressName implements ResourceNameStruct {
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
+
+  private volatile Map<String, String> fieldValuesMap;
 
   public static Builder newBuilder() {
     return new Builder();
@@ -93,11 +96,19 @@ public final class AddressName implements ResourceNameStruct {
 
   @Override
   public Map<String, String> getFieldValuesMap() {
-    Map<String, String> fieldMap = new HashMap<>();
-    fieldMap.put("address", address);
-    fieldMap.put("project", project);
-    fieldMap.put("region", region);
-    return fieldMap;
+    if (fieldValuesMap != null) {
+      return fieldValuesMap;
+    }
+    ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+    fieldMapBuilder.put("address", address);
+    fieldMapBuilder.put("project", project);
+    fieldMapBuilder.put("region", region);
+    fieldValuesMap = fieldMapBuilder.build();
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
   }
 
   @Override
@@ -257,6 +268,7 @@ import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -273,6 +285,8 @@ public final class RegionName implements ResourceNameStruct {
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}");
+
+  private volatile Map<String, String> fieldValuesMap;
 
   public static Builder newBuilder() {
     return new Builder();
@@ -319,10 +333,18 @@ public final class RegionName implements ResourceNameStruct {
 
   @Override
   public Map<String, String> getFieldValuesMap() {
-    Map<String, String> fieldMap = new HashMap<>();
-    fieldMap.put("project", project);
-    fieldMap.put("region", region);
-    return fieldMap;
+    if (fieldValuesMap != null) {
+      return fieldValuesMap;
+    }
+    ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+    fieldMapBuilder.put("project", project);
+    fieldMapBuilder.put("region", region);
+    fieldValuesMap = fieldMapBuilder.build();
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
   }
 
   @Override
