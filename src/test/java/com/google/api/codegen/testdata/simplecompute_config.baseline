@@ -42,6 +42,8 @@ interfaces:
   # The entity_name is the name to be used as a basis for generated methods and
   # classes.
   collections:
+  - name_pattern: projects/{project}
+    entity_name: project
   - name_pattern: projects/{project}/regions/{region}
     entity_name: region
   - name_pattern: projects/{project}/regions/{region}/addresses/{address}
@@ -115,6 +117,33 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
+  - name: compute.addresses.aggregatedList
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - project
+    # TODO: Configure which fields are required.
+    required_fields:
+    - project
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: maxResults
+        token_field: pageToken
+      response:
+        token_field: nextPageToken
+        resources_field: AddressAggregatedList
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
   - name: compute.addresses.delete
     # TODO: Configure which groups of fields should be flattened into method
     # params.
