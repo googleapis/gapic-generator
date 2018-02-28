@@ -21,6 +21,7 @@ import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public final class AddressName implements ResourceNameStruct {
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
+
+  private volatile Map<String, String> fieldValuesMap;
 
   public static Builder newBuilder() {
     return new Builder();
@@ -92,12 +95,20 @@ public final class AddressName implements ResourceNameStruct {
 
 
   @Override
-  public Map<String, String> getFieldValues() {
-    Map<String, String> fieldMap = new HashMap<>();
-    fieldMap.put("address", address);
-    fieldMap.put("project", project);
-    fieldMap.put("region", region);
-    return fieldMap;
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap != null) {
+      return fieldValuesMap;
+    }
+    ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+    fieldMapBuilder.put("address", address);
+    fieldMapBuilder.put("project", project);
+    fieldMapBuilder.put("region", region);
+    fieldValuesMap = fieldMapBuilder.build();
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
   }
 
   @Override
@@ -257,6 +268,7 @@ import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceNameType;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -273,6 +285,8 @@ public final class RegionName implements ResourceNameStruct {
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}");
+
+  private volatile Map<String, String> fieldValuesMap;
 
   public static Builder newBuilder() {
     return new Builder();
@@ -318,11 +332,19 @@ public final class RegionName implements ResourceNameStruct {
 
 
   @Override
-  public Map<String, String> getFieldValues() {
-    Map<String, String> fieldMap = new HashMap<>();
-    fieldMap.put("project", project);
-    fieldMap.put("region", region);
-    return fieldMap;
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap != null) {
+      return fieldValuesMap;
+    }
+    ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+    fieldMapBuilder.put("project", project);
+    fieldMapBuilder.put("region", region);
+    fieldValuesMap = fieldMapBuilder.build();
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
   }
 
   @Override
@@ -468,7 +490,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -491,7 +513,6 @@ public final class Address implements ApiMessage {
   private final String selfLink;
   private final String status;
   private final List<String> users;
-  private final Map<String, String> pathParams;
 
   private Address() {
     this.address = null;
@@ -504,7 +525,6 @@ public final class Address implements ApiMessage {
     this.selfLink = null;
     this.status = null;
     this.users = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -531,7 +551,6 @@ public final class Address implements ApiMessage {
     this.status = status;
     this.users = users;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -568,6 +587,41 @@ public final class Address implements ApiMessage {
       fieldMap.put("users", Collections.singletonList(String.valueOf(users)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("address")) {
+      return String.valueOf(address);
+    }
+    if (fieldName.equals("creationTimestamp")) {
+      return String.valueOf(creationTimestamp);
+    }
+    if (fieldName.equals("description")) {
+      return String.valueOf(description);
+    }
+    if (fieldName.equals("id")) {
+      return String.valueOf(id);
+    }
+    if (fieldName.equals("kind")) {
+      return String.valueOf(kind);
+    }
+    if (fieldName.equals("name")) {
+      return String.valueOf(name);
+    }
+    if (fieldName.equals("region")) {
+      return String.valueOf(region);
+    }
+    if (fieldName.equals("selfLink")) {
+      return String.valueOf(selfLink);
+    }
+    if (fieldName.equals("status")) {
+      return String.valueOf(status);
+    }
+    if (fieldName.equals("users")) {
+      return String.valueOf(users);
+    }
+    throw new IOException(String.format("Field '%s' not found in Address fields", fieldName));
   }
 
   @Nullable
@@ -907,7 +961,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -925,7 +979,6 @@ public final class AddressList implements ApiMessage {
   private final String kind;
   private final String nextPageToken;
   private final String selfLink;
-  private final Map<String, String> pathParams;
 
   private AddressList() {
     this.id = null;
@@ -933,7 +986,6 @@ public final class AddressList implements ApiMessage {
     this.kind = null;
     this.nextPageToken = null;
     this.selfLink = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -950,7 +1002,6 @@ public final class AddressList implements ApiMessage {
     this.nextPageToken = nextPageToken;
     this.selfLink = selfLink;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -972,6 +1023,26 @@ public final class AddressList implements ApiMessage {
       fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("id")) {
+      return String.valueOf(id);
+    }
+    if (fieldName.equals("items")) {
+      return String.valueOf(items);
+    }
+    if (fieldName.equals("kind")) {
+      return String.valueOf(kind);
+    }
+    if (fieldName.equals("nextPageToken")) {
+      return String.valueOf(nextPageToken);
+    }
+    if (fieldName.equals("selfLink")) {
+      return String.valueOf(selfLink);
+    }
+    throw new IOException(String.format("Field '%s' not found in AddressList fields", fieldName));
   }
 
   @Nullable
@@ -1191,7 +1262,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1206,12 +1277,10 @@ import javax.annotation.Nullable;
 public final class Data implements ApiMessage {
   private final String key;
   private final String value;
-  private final Map<String, String> pathParams;
 
   private Data() {
     this.key = null;
     this.value = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1222,7 +1291,6 @@ public final class Data implements ApiMessage {
     this.key = key;
     this.value = value;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1235,6 +1303,17 @@ public final class Data implements ApiMessage {
       fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("value")) {
+      return String.valueOf(value);
+    }
+    throw new IOException(String.format("Field '%s' not found in Data fields", fieldName));
   }
 
   @Nullable
@@ -1382,7 +1461,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1396,11 +1475,9 @@ import javax.annotation.Nullable;
 @BetaApi
 public final class Error implements ApiMessage {
   private final List<Errors> errors;
-  private final Map<String, String> pathParams;
 
   private Error() {
     this.errors = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1409,7 +1486,6 @@ public final class Error implements ApiMessage {
       ) {
     this.errors = errors;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1419,6 +1495,14 @@ public final class Error implements ApiMessage {
       fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("errors")) {
+      return String.valueOf(errors);
+    }
+    throw new IOException(String.format("Field '%s' not found in Error fields", fieldName));
   }
 
   @Nullable
@@ -1542,7 +1626,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1558,13 +1642,11 @@ public final class Errors implements ApiMessage {
   private final String code;
   private final String location;
   private final String message;
-  private final Map<String, String> pathParams;
 
   private Errors() {
     this.code = null;
     this.location = null;
     this.message = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1577,7 +1659,6 @@ public final class Errors implements ApiMessage {
     this.location = location;
     this.message = message;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1593,6 +1674,20 @@ public final class Errors implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("code")) {
+      return String.valueOf(code);
+    }
+    if (fieldName.equals("location")) {
+      return String.valueOf(location);
+    }
+    if (fieldName.equals("message")) {
+      return String.valueOf(message);
+    }
+    throw new IOException(String.format("Field '%s' not found in Errors fields", fieldName));
   }
 
   @Nullable
@@ -1764,7 +1859,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1800,7 +1895,6 @@ public final class Operation implements ApiMessage {
   private final String user;
   private final List<Warnings> warnings;
   private final String zone;
-  private final Map<String, String> pathParams;
 
   private Operation() {
     this.clientOperationId = null;
@@ -1826,7 +1920,6 @@ public final class Operation implements ApiMessage {
     this.user = null;
     this.warnings = null;
     this.zone = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -1879,7 +1972,6 @@ public final class Operation implements ApiMessage {
     this.warnings = warnings;
     this.zone = zone;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -1955,6 +2047,80 @@ public final class Operation implements ApiMessage {
       fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("clientOperationId")) {
+      return String.valueOf(clientOperationId);
+    }
+    if (fieldName.equals("creationTimestamp")) {
+      return String.valueOf(creationTimestamp);
+    }
+    if (fieldName.equals("description")) {
+      return String.valueOf(description);
+    }
+    if (fieldName.equals("endTime")) {
+      return String.valueOf(endTime);
+    }
+    if (fieldName.equals("error")) {
+      return String.valueOf(error);
+    }
+    if (fieldName.equals("httpErrorMessage")) {
+      return String.valueOf(httpErrorMessage);
+    }
+    if (fieldName.equals("httpErrorStatusCode")) {
+      return String.valueOf(httpErrorStatusCode);
+    }
+    if (fieldName.equals("id")) {
+      return String.valueOf(id);
+    }
+    if (fieldName.equals("insertTime")) {
+      return String.valueOf(insertTime);
+    }
+    if (fieldName.equals("kind")) {
+      return String.valueOf(kind);
+    }
+    if (fieldName.equals("name")) {
+      return String.valueOf(name);
+    }
+    if (fieldName.equals("operationType")) {
+      return String.valueOf(operationType);
+    }
+    if (fieldName.equals("progress")) {
+      return String.valueOf(progress);
+    }
+    if (fieldName.equals("region")) {
+      return String.valueOf(region);
+    }
+    if (fieldName.equals("selfLink")) {
+      return String.valueOf(selfLink);
+    }
+    if (fieldName.equals("startTime")) {
+      return String.valueOf(startTime);
+    }
+    if (fieldName.equals("status")) {
+      return String.valueOf(status);
+    }
+    if (fieldName.equals("statusMessage")) {
+      return String.valueOf(statusMessage);
+    }
+    if (fieldName.equals("targetId")) {
+      return String.valueOf(targetId);
+    }
+    if (fieldName.equals("targetLink")) {
+      return String.valueOf(targetLink);
+    }
+    if (fieldName.equals("user")) {
+      return String.valueOf(user);
+    }
+    if (fieldName.equals("warnings")) {
+      return String.valueOf(warnings);
+    }
+    if (fieldName.equals("zone")) {
+      return String.valueOf(zone);
+    }
+    throw new IOException(String.format("Field '%s' not found in Operation fields", fieldName));
   }
 
   @Nullable
@@ -2606,7 +2772,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2622,13 +2788,11 @@ public final class Warnings implements ApiMessage {
   private final String code;
   private final List<Data> data;
   private final String message;
-  private final Map<String, String> pathParams;
 
   private Warnings() {
     this.code = null;
     this.data = null;
     this.message = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -2641,7 +2805,6 @@ public final class Warnings implements ApiMessage {
     this.data = data;
     this.message = message;
     ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -2657,6 +2820,20 @@ public final class Warnings implements ApiMessage {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("code")) {
+      return String.valueOf(code);
+    }
+    if (fieldName.equals("data")) {
+      return String.valueOf(data);
+    }
+    if (fieldName.equals("message")) {
+      return String.valueOf(message);
+    }
+    throw new IOException(String.format("Field '%s' not found in Warnings fields", fieldName));
   }
 
   @Nullable
@@ -2827,7 +3004,7 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2848,7 +3025,6 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
-  private final Map<String, String> pathParams;
 
   private DeleteAddressHttpRequest() {
     this.access_token = null;
@@ -2859,7 +3035,6 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.prettyPrint = null;
     this.quotaUser = null;
     this.userIp = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -2886,7 +3061,6 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     mapBuilder.put("address", resourceName.getAddress());
     mapBuilder.put("project", resourceName.getProject());
     mapBuilder.put("region", resourceName.getRegion());
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -2917,6 +3091,35 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("address")) {
+      return String.valueOf(address);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    throw new IOException(String.format("Field '%s' not found in DeleteAddressHttpRequest fields", fieldName));
   }
 
   @Nullable
@@ -3214,7 +3417,7 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3235,7 +3438,6 @@ public final class GetAddressHttpRequest implements ApiMessage {
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
-  private final Map<String, String> pathParams;
 
   private GetAddressHttpRequest() {
     this.access_token = null;
@@ -3246,7 +3448,6 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.prettyPrint = null;
     this.quotaUser = null;
     this.userIp = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -3273,7 +3474,6 @@ public final class GetAddressHttpRequest implements ApiMessage {
     mapBuilder.put("address", resourceName.getAddress());
     mapBuilder.put("project", resourceName.getProject());
     mapBuilder.put("region", resourceName.getRegion());
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -3304,6 +3504,35 @@ public final class GetAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("address")) {
+      return String.valueOf(address);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    throw new IOException(String.format("Field '%s' not found in GetAddressHttpRequest fields", fieldName));
   }
 
   @Nullable
@@ -3601,7 +3830,7 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3623,7 +3852,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String region;
   private final String userIp;
-  private final Map<String, String> pathParams;
 
   private InsertAddressHttpRequest() {
     this.access_token = null;
@@ -3635,7 +3863,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -3663,7 +3890,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     RegionName resourceName = RegionName.parse(region);
     mapBuilder.put("project", resourceName.getProject());
     mapBuilder.put("region", resourceName.getRegion());
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -3697,6 +3923,38 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("addressResource")) {
+      return String.valueOf(addressResource);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("region")) {
+      return String.valueOf(region);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    throw new IOException(String.format("Field '%s' not found in InsertAddressHttpRequest fields", fieldName));
   }
 
   @Nullable
@@ -4018,7 +4276,7 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -4043,7 +4301,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String region;
   private final String userIp;
-  private final Map<String, String> pathParams;
 
   private ListAddressesHttpRequest() {
     this.access_token = null;
@@ -4058,7 +4315,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.quotaUser = null;
     this.region = null;
     this.userIp = null;
-    this.pathParams = ImmutableMap.of();
   }
 
 
@@ -4092,7 +4348,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     RegionName resourceName = RegionName.parse(region);
     mapBuilder.put("project", resourceName.getProject());
     mapBuilder.put("region", resourceName.getRegion());
-    this.pathParams = mapBuilder.build();
   }
 
   @Override
@@ -4135,6 +4390,47 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("filter")) {
+      return String.valueOf(filter);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("maxResults")) {
+      return String.valueOf(maxResults);
+    }
+    if (fieldName.equals("orderBy")) {
+      return String.valueOf(orderBy);
+    }
+    if (fieldName.equals("pageToken")) {
+      return String.valueOf(pageToken);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("region")) {
+      return String.valueOf(region);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    throw new IOException(String.format("Field '%s' not found in ListAddressesHttpRequest fields", fieldName));
   }
 
   @Nullable
