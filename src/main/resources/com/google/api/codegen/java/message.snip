@@ -15,9 +15,7 @@
 
     {@constructors(schema)}
 
-    {@populateMapMethod(schema)}
-
-    {@getRequestBodyMethod(schema)}
+    {@interfaceMethods(schema)}
 
     {@getters(schema)}
 
@@ -34,7 +32,7 @@
 
 @end
 
-@private populateMapMethod(schema)
+@private interfaceMethods(schema)
   @@Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
@@ -53,9 +51,17 @@
     @end
     return fieldMap;
   }
-@end
 
-@private getRequestBodyMethod(schema)
+  @@Override
+  public String getFieldStringValue(String fieldName) throws IOException {
+    @join param : schema.properties
+      if (fieldName.equals("{@param.name}")) {
+        return String.valueOf({@param.name});
+      }
+    @end
+    throw new IOException(String.format("Field '%s' not found in {@schema.innerTypeName} fields", fieldName));
+  }
+
   @@Nullable
   @@Override
   @if schema.hasRequestBody()
@@ -161,13 +167,6 @@
       ) {
     @join param : schema.properties
       this.{@param.name} = {@param.name};
-    @end
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    @if schema.hasResourceName
-      {@schema.pathAsResourceName.typeName} resourceName = {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
-      @join nameField : schema.pathAsResourceName.fieldCopyMethods
-        mapBuilder.put("{@nameField.name}", resourceName.{@nameField.fieldGetFunction}());
-      @end
     @end
   }
 @end
