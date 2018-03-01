@@ -41,7 +41,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.StaticLangApiNameTypeFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameFactoryFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameView;
@@ -85,9 +84,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(
-        RESOURCE_NAME_TEMPLATE_FILENAME,
-        RESOURCE_NAME_FACTORY_TEMPLATE_FILENAME);
+    return Arrays.asList(RESOURCE_NAME_TEMPLATE_FILENAME, RESOURCE_NAME_FACTORY_TEMPLATE_FILENAME);
   }
 
   @Override
