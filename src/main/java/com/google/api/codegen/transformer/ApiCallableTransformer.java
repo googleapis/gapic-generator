@@ -228,9 +228,8 @@ public class ApiCallableTransformer {
               .get(context.getMethodConfig());
       DiscoGapicNamer discoGapicNamer =
           ((DiscoveryMethodModel) context.getMethodModel()).getDiscoGapicNamer();
-      String resourceName = discoGapicNamer.getResourceNameName(nameConfig);
-      String resourceNameTypeName = context.getNamer().publicClassName(Name.anyCamel(resourceName));
-      httpMethodView.resourceNameTypeName(resourceNameTypeName);
+      httpMethodView.resourceNameFactoryName(
+          discoGapicNamer.getResourceNameFactoryTypeName(nameConfig));
       httpMethodView.resourceNameFieldName(
           context.getNamer().privateFieldName(Name.anyCamel(nameConfig.getEntityName())));
       return httpMethodView.build();

@@ -83,6 +83,12 @@ public class DiscoGapicNamer {
         Name.anyCamel(resourceNameConfig.getEntityName()).join("name").join("type"));
   }
 
+  /** Returns the name for a ResourceName for the resource of the given method. */
+  public String getResourceNameFactoryTypeName(ResourceNameConfig resourceNameConfig) {
+    return languageNamer.publicClassName(
+        Name.anyCamel(resourceNameConfig.getEntityName()).join("name").join("factory"));
+  }
+
   /**
    * Formats the method as a Name. Methods are generally in the format
    * "[api].[resource].[function]".

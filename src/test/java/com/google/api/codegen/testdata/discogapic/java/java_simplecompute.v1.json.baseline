@@ -17,9 +17,8 @@
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceNameType;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -33,7 +32,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceNameStruct {
+public final class AddressName implements ResourceName {
   private final String address;
   private final String project;
   private final String region;
@@ -133,11 +132,6 @@ public final class AddressName implements ResourceNameStruct {
     return PATH_TEMPLATE.matches(formattedString);
   }
 
-  @Override
-  public ResourceNameType getType() {
-    return AddressNameType.instance();
-  }
-
   public static class Builder {
     private String address;
     private String project;
@@ -214,6 +208,35 @@ public final class AddressName implements ResourceNameStruct {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressNameFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.resourcenames.ResourceNameFactory;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressNameFactory implements ResourceNameFactory {
+  @Override
+  public AddressName parseFrom(String formattedString) {
+    return AddressName.parse(formattedString);
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressNameType.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -267,9 +290,8 @@ public final class AddressNameType implements ResourceNameType {
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceNameType;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -283,7 +305,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceNameStruct {
+public final class RegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -336,13 +358,16 @@ public final class RegionName implements ResourceNameStruct {
 
   @Override
   public Map<String, String> getFieldValuesMap() {
-    if (fieldValuesMap != null) {
-      return fieldValuesMap;
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldMapBuilder.put("region", region);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
     }
-    ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
-    fieldMapBuilder.put("project", project);
-    fieldMapBuilder.put("region", region);
-    fieldValuesMap = fieldMapBuilder.build();
     return fieldValuesMap;
   }
 
@@ -366,11 +391,6 @@ public final class RegionName implements ResourceNameStruct {
 
   public static boolean isParsableFrom(String formattedString) {
     return PATH_TEMPLATE.matches(formattedString);
-  }
-
-  @Override
-  public ResourceNameType getType() {
-    return RegionNameType.instance();
   }
 
   public static class Builder {
@@ -437,6 +457,35 @@ public final class RegionName implements ResourceNameStruct {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionNameFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.resourcenames.ResourceNameFactory;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class RegionNameFactory implements ResourceNameFactory {
+  @Override
+  public RegionName parseFrom(String formattedString) {
+    return RegionName.parse(formattedString);
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionNameType.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -491,7 +540,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -962,7 +1010,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -1263,7 +1310,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -1462,7 +1508,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -1627,7 +1672,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -1860,7 +1904,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -2773,7 +2816,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
@@ -6381,9 +6423,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
-                                                                      "address", "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(new AddressNameFactory()))
           .setHttpMethod(HttpMethods.DELETE)
           .setResourceNameField("address")
           .build();
@@ -6395,9 +6435,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
-                                                                      "address", "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(new AddressNameFactory()))
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("address")
           .build();
@@ -6409,9 +6447,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
-                                                                      "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(new RegionNameFactory()))
           .setHttpMethod(HttpMethods.POST)
           .setResourceNameField("region")
           .build();
@@ -6424,9 +6460,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setQueryParams(Sets.<String>newHashSet(
                              "filter",    "maxResults",    "orderBy",    "pageToken"
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
-                                                                      "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(new RegionNameFactory()))
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("region")
           .build();

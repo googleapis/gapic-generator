@@ -42,6 +42,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.StaticLangApiNameTypeFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiResourceNameFactoryFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiResourceNameView;
 import com.google.api.codegen.viewmodel.StaticLangMemberView;
@@ -74,6 +75,8 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
+  private static final String RESOURCE_NAME_FACTORY_TEMPLATE_FILENAME =
+      "java/resource_name_factory.snip";
   private static final String NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
 
   public JavaDiscoGapicResourceNameToViewTransformer(
@@ -83,7 +86,10 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(RESOURCE_NAME_TEMPLATE_FILENAME, NAME_TYPE_TEMPLATE_FILENAME);
+    return Arrays.asList(
+        RESOURCE_NAME_TEMPLATE_FILENAME,
+        RESOURCE_NAME_FACTORY_TEMPLATE_FILENAME,
+        NAME_TYPE_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -126,6 +132,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
             generateResourceNameClass(requestContext, method, nameConfig);
         surfaceRequests.add(generateResourceNameFile(requestContext, resourceNameView));
 
+        SchemaTransformationContext factoryViewContext = requestContext.withNewTypeTable();
+        surfaceRequests.add(generateResourceNameFactoryFile(factoryViewContext, resourceNameView));
+
         SchemaTransformationContext nameTypeContext = requestContext.withNewTypeTable();
         addNameTypeClassImports(nameTypeContext.getImportTypeTable());
         surfaceRequests.add(generateNameTypeFile(nameTypeContext, nameConfig));
@@ -161,6 +170,25 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     return apiFile.build();
   }
 
+  /* Given a ResourceName view, creates a top-level ResourceName file view. */
+  private StaticLangApiResourceNameFactoryFileView generateResourceNameFactoryFile(
+      SchemaTransformationContext context, StaticLangApiResourceNameView messageView) {
+    StaticLangApiResourceNameFactoryFileView.Builder apiFile =
+        StaticLangApiResourceNameFactoryFileView.newBuilder();
+    apiFile.templateFileName(RESOURCE_NAME_FACTORY_TEMPLATE_FILENAME);
+    addResourceNameFactoryClassImports(context.getImportTypeTable());
+    apiFile.resourceNameTypeName(messageView.typeName());
+    apiFile.name(messageView.factoryTypeName());
+
+    String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
+    apiFile.outputPath(outputPath + File.separator + messageView.factoryTypeName() + ".java");
+
+    apiFile.fileHeader(
+        fileHeaderTransformer.generateFileHeader(context, messageView.factoryTypeName()));
+
+    return apiFile.build();
+  }
+
   /* Given a ResourceNameType view, creates a top-level ResourceNameType file view. */
   private StaticLangApiNameTypeFileView generateNameTypeFile(
       SchemaTransformationContext context, SingleResourceNameConfig nameConfig) {
@@ -189,7 +217,8 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     String resourceName = context.getDiscoGapicNamer().getResourceNameName(nameConfig);
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
-    resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(nameConfig));
+    resourceNameView.factoryTypeName(
+        context.getDiscoGapicNamer().getResourceNameFactoryTypeName(nameConfig));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
 
     List<StaticLangMemberView> properties = new LinkedList<>();
@@ -223,9 +252,8 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.base.Preconditions");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
-    typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ResourceNameStruct");
     typeTable.getAndSaveNicknameFor("com.google.api.pathtemplate.PathTemplate");
-    typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameType");
+    typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceName");
     typeTable.getAndSaveNicknameFor("java.io.IOException");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
@@ -234,6 +262,10 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("java.util.Objects");
     typeTable.getAndSaveNicknameFor("java.util.Set");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
+  }
+
+  private void addResourceNameFactoryClassImports(ImportTypeTable typeTable) {
+    typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameFactory");
   }
 
   private void addNameTypeClassImports(ImportTypeTable typeTable) {
