@@ -64,13 +64,15 @@
     return getFieldValuesMap().get(fieldName);
   }
 
-  @@Override
-  public {@resourceName.typeName} parseFrom(String formattedString) {
-    return {@resourceName.typeName}.parse(formattedString);
-  }
 @end
 
 @private staticMethods(resourceName)
+  public static ResourceNameFactory<{@resourceName.typeName}> newFactory() {
+    return new ResourceNameFactory<{@resourceName.typeName}>() {
+      public {@resourceName.typeName} parseFrom(String formattedString) {return {@resourceName.typeName}.parse(formattedString);}
+    };
+  }
+
   public static {@resourceName.typeName} parse(String formattedString) {
     Map<String, String> matchMap =
         PATH_TEMPLATE.validatedMatch(formattedString, "{@resourceName.typeName}.parse: formattedString not in valid format");

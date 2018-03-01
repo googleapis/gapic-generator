@@ -53,13 +53,13 @@
   }
 
   @@Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     @join param : schema.properties
       if (fieldName.equals("{@param.name}")) {
         return String.valueOf({@param.name});
       }
     @end
-    throw new IOException(String.format("Field '%s' not found in {@schema.innerTypeName} fields", fieldName));
+    return null;
   }
 
   @@Nullable
