@@ -30,7 +30,7 @@ public abstract class HttpMethodView {
 
   public abstract String pathTemplate();
 
-  // The type name of the ResourceName used by this method.
+  // The type name of the ResourceNameFactory used by this method.
   public abstract String resourceNameFactoryName();
 
   // The field name for the method's request object's ResourceName.
