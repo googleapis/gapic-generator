@@ -273,7 +273,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.canRepeat(false);
     paramView.fieldGetFunction(resourceNames.getCallName());
     paramView.fieldSetFunction(resourceNames.setCallName());
-    paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
     properties.add(paramView.build());
