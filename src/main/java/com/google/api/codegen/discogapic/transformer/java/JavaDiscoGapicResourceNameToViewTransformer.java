@@ -218,7 +218,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
     resourceNameView.factoryTypeName(
-        context.getDiscoGapicNamer().getResourceNameFactoryTypeName(nameConfig));
+        context.getNamer().getAndSaveResourceFactoryName(context.getImportTypeTable(), nameConfig));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
 
     List<StaticLangMemberView> properties = new LinkedList<>();

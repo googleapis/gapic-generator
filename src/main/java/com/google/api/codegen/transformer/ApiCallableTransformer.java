@@ -23,7 +23,6 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -226,10 +225,8 @@ public class ApiCallableTransformer {
           ((DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig())
               .methodToResourceNameMap()
               .get(context.getMethodConfig());
-      DiscoGapicNamer discoGapicNamer =
-          ((DiscoveryMethodModel) context.getMethodModel()).getDiscoGapicNamer();
       httpMethodView.resourceNameFactoryName(
-          discoGapicNamer.getResourceNameFactoryTypeName(nameConfig));
+          context.getNamer().getAndSaveResourceFactoryName(context.getTypeTable(), nameConfig));
       httpMethodView.resourceNameFieldName(
           context.getNamer().privateFieldName(Name.anyCamel(nameConfig.getEntityName())));
       return httpMethodView.build();
