@@ -15,9 +15,7 @@
 
     {@constructors(schema)}
 
-    {@populateMapMethod(schema)}
-
-    {@getRequestBodyMethod(schema)}
+    {@interfaceMethods(schema)}
 
     {@getters(schema)}
 
@@ -34,14 +32,18 @@
 
 @end
 
-@private populateMapMethod(schema)
+@private interfaceMethods(schema)
   @@Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     @join param : schema.properties
       if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
-          fieldMap.put("{@param.name}", {@param.name});
+          List<String> stringList = new LinkedList<>();
+          for ({@param.innerTypeName} item : {@param.name}) {
+            stringList.add(item.toString());
+          }
+          fieldMap.put("{@param.name}", stringList);
         @else
           fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end
@@ -49,17 +51,26 @@
     @end
     return fieldMap;
   }
-@end
 
-@private getRequestBodyMethod(schema)
+  @@Override
+  public String getFieldStringValue(String fieldName) {
+    @join param : schema.properties
+      if (fieldName.equals("{@param.name}")) {
+        # TODO(andrealin): Handle list values.
+        return String.valueOf({@param.name});
+      }
+    @end
+    return null;
+  }
+
   @@Nullable
   @@Override
   @if schema.hasRequestBody()
-    public {@schema.requestBodyType.innerTypeName} getRequestBody() {
+    public {@schema.requestBodyType.innerTypeName} getApiMessageRequestBody() {
       return {@schema.requestBodyType.name};
     }
   @else
-    public ApiMessage getRequestBody() {
+    public ApiMessage getApiMessageRequestBody() {
       return null;
     }
   @end
@@ -69,6 +80,7 @@
   @join property : schema.properties
     private final {@property.typeName} {@property.name};
   @end
+  {@""}
 @end
 
 @private toString(schema)
@@ -157,6 +169,13 @@
     @join param : schema.properties
       this.{@param.name} = {@param.name};
     @end
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    @if schema.hasResourceName
+      {@schema.pathAsResourceName.typeName} resourceName = {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
+      @join nameField : schema.pathAsResourceName.fieldCopyMethods
+        mapBuilder.put("{@nameField.name}", resourceName.{@nameField.fieldGetFunction}());
+      @end
+    @end
   }
 @end
 
@@ -226,30 +245,5 @@
       @end
       return newBuilder;
     }
-    @join resourceName : schema.resourceNames
-
-      public final Builder {@resourceName.setCallName}({@resourceName.typeName} value) {
-        if (value == null) {
-          return
-              @join field : resourceName.fieldCopyMethods on ".".add(BREAK)
-                {@field.fieldSetFunction}("")
-              @end
-              ;
-        }
-        return
-            @join field : resourceName.fieldCopyMethods on ".".add(BREAK)
-              {@field.fieldSetFunction}(value.{@field.fieldGetFunction}())
-            @end
-            ;
-      }
-
-      public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
-        return {@resourceName.typeName}.of(
-            @join field : resourceName.fieldCopyMethods on ",".add(BREAK)
-              {@field.fieldGetFunction}()
-            @end
-            );
-      }
-    @end
   }
 @end

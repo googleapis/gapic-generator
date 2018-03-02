@@ -30,6 +30,12 @@ public abstract class HttpMethodView {
 
   public abstract String pathTemplate();
 
+  // The type name of the ResourceName used by this method.
+  public abstract String resourceNameTypeName();
+
+  // The field name for the method's request object's ResourceName.
+  public abstract String resourceNameFieldName();
+
   public static Builder newBuilder() {
     return new AutoValue_HttpMethodView.Builder();
   }
@@ -45,6 +51,10 @@ public abstract class HttpMethodView {
     public abstract Builder fullMethodName(String name);
 
     public abstract Builder pathTemplate(String name);
+
+    public abstract Builder resourceNameTypeName(String name);
+
+    public abstract Builder resourceNameFieldName(String name);
 
     public abstract HttpMethodView build();
   }

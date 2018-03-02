@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -71,15 +72,8 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
-    return languageNamer.localVarName(
-        Name.anyCamel(resourceNameConfig.getEntityName()).join("name"));
-  }
-
-  /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameTypeName(ResourceNameConfig resourceNameConfig) {
-    return languageNamer.publicClassName(
-        Name.anyCamel(resourceNameConfig.getEntityName()).join("name").join("type"));
+  public static Name getResourceNameName(ResourceNameConfig resourceNameConfig) {
+    return Name.anyCamel(resourceNameConfig.getEntityName()).join("name");
   }
 
   /**
@@ -167,15 +161,17 @@ public class DiscoGapicNamer {
     return Name.anyCamel(Inflector.singularize(resource));
   }
 
-  /** Get the response type name from a method if the method has a non-null response type. */
+  /** Get the response type from a method if the method has a non-null response type. */
   @Nullable
-  public static Name getResponseName(Method method) {
+  public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
-      String typeName =
-          method.response().reference() != null
-              ? method.response().reference()
-              : method.response().getIdentifier();
-      return Name.anyCamel(typeName);
+      Schema responseSchema;
+      if (method.response().reference() != null) {
+        responseSchema = method.response();
+      } else {
+        responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
+      }
+      return DiscoveryField.create(responseSchema, this);
     }
     return null;
   }

@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
+import com.google.api.codegen.viewmodel.StaticLangMemberView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,15 +108,17 @@ public class StaticLangResourceObjectTransformer {
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
     }
-    List<FieldCopyView> fieldCopyViews = new ArrayList<>();
+    List<StaticLangMemberView> fieldViews = new ArrayList<>();
     for (FieldModel child : context.getMethodModel().getResourceNameInputFields()) {
-      FieldCopyView.Builder fieldCopy = FieldCopyView.newBuilder();
-      fieldCopy.fieldGetFunction(namer.getFieldGetFunctionName(child));
-      fieldCopy.fieldSetFunction(namer.getFieldSetFunctionName(child));
-      fieldCopyViews.add(fieldCopy.build());
+      StaticLangMemberView.Builder staticMember = StaticLangMemberView.newBuilder();
+      staticMember.fieldGetFunction(namer.getFieldGetFunctionName(child));
+      staticMember.fieldSetFunction(namer.getFieldSetFunctionName(child));
+      staticMember.name(child.getNameAsParameter());
+      staticMember.typeName(child.getTypeFullName());
+      fieldViews.add(staticMember.build());
     }
-    Collections.sort(fieldCopyViews);
-    param.fieldCopyMethods(fieldCopyViews);
+    Collections.sort(fieldViews);
+    param.fieldCopyMethods(fieldViews);
 
     return param.build();
   }
