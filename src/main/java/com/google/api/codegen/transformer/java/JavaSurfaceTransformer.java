@@ -815,7 +815,7 @@ public class JavaSurfaceTransformer {
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
     }
-    switch ((context.getProductConfig()).getTransportProtocol()) {
+    switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");

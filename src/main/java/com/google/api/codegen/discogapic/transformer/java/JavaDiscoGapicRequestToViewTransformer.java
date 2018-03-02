@@ -273,7 +273,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.canRepeat(false);
     paramView.fieldGetFunction(resourceNameView.getCallName());
     paramView.fieldSetFunction(resourceNameView.setCallName());
-    paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
     properties.add(paramView.build());
@@ -336,7 +336,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
-    typeTable.getAndSaveNicknameFor("java.io.IOException");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.List");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");

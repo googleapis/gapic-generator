@@ -82,8 +82,7 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
   public abstract List<StaticLangMemberView> fieldCopyMethods();
 
   public static Builder newBuilder() {
-    return new AutoValue_RequestObjectParamView.Builder()
-        .fieldCopyMethods(new ArrayList<StaticLangMemberView>());
+    return new AutoValue_RequestObjectParamView.Builder().fieldCopyMethods(new ArrayList<>());
   }
 
   @AutoValue.Builder

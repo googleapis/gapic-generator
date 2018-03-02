@@ -17,9 +17,9 @@
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceNameType;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceNameStruct {
+public final class AddressName implements ResourceName {
   private final String address;
   private final String project;
   private final String region;
@@ -114,9 +114,11 @@ public final class AddressName implements ResourceNameStruct {
     return getFieldValuesMap().get(fieldName);
   }
 
-  @Override
-  public AddressName parseFrom(String formattedString) {
-    return AddressName.parse(formattedString);
+
+  public static ResourceNameFactory<AddressName> newFactory() {
+    return new ResourceNameFactory<AddressName>() {
+      public AddressName parse(String formattedString) {return AddressName.parse(formattedString);}
+    };
   }
 
   public static AddressName parse(String formattedString) {
@@ -131,11 +133,6 @@ public final class AddressName implements ResourceNameStruct {
 
   public static boolean isParsableFrom(String formattedString) {
     return PATH_TEMPLATE.matches(formattedString);
-  }
-
-  @Override
-  public ResourceNameType getType() {
-    return AddressNameType.instance();
   }
 
   public static class Builder {
@@ -214,40 +211,6 @@ public final class AddressName implements ResourceNameStruct {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressNameType.java ==============
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.google.cloud.simplecompute.v1;
-
-import com.google.api.core.BetaApi;
-import com.google.api.resourcenames.ResourceNameType;
-import javax.annotation.Generated;
-
-@Generated("by GAPIC")
-@BetaApi
-public final class AddressNameType implements ResourceNameType {
-  private static AddressNameType instance = new AddressNameType();
-
-  private AddressNameType() {}
-
-  public static AddressNameType instance() {
-    return instance;
-  }
-}
-
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -267,9 +230,9 @@ public final class AddressNameType implements ResourceNameType {
 package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceNameType;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -283,7 +246,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceNameStruct {
+public final class RegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -353,9 +316,11 @@ public final class RegionName implements ResourceNameStruct {
     return getFieldValuesMap().get(fieldName);
   }
 
-  @Override
-  public RegionName parseFrom(String formattedString) {
-    return RegionName.parse(formattedString);
+
+  public static ResourceNameFactory<RegionName> newFactory() {
+    return new ResourceNameFactory<RegionName>() {
+      public RegionName parse(String formattedString) {return RegionName.parse(formattedString);}
+    };
   }
 
   public static RegionName parse(String formattedString) {
@@ -369,11 +334,6 @@ public final class RegionName implements ResourceNameStruct {
 
   public static boolean isParsableFrom(String formattedString) {
     return PATH_TEMPLATE.matches(formattedString);
-  }
-
-  @Override
-  public ResourceNameType getType() {
-    return RegionNameType.instance();
   }
 
   public static class Builder {
@@ -440,40 +400,6 @@ public final class RegionName implements ResourceNameStruct {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionNameType.java ==============
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.google.cloud.simplecompute.v1;
-
-import com.google.api.core.BetaApi;
-import com.google.api.resourcenames.ResourceNameType;
-import javax.annotation.Generated;
-
-@Generated("by GAPIC")
-@BetaApi
-public final class RegionNameType implements ResourceNameType {
-  private static RegionNameType instance = new RegionNameType();
-
-  private RegionNameType() {}
-
-  public static RegionNameType instance() {
-    return instance;
-  }
-}
-
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Address.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -494,9 +420,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -596,7 +520,7 @@ public final class Address implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("address")) {
       return String.valueOf(address);
     }
@@ -627,7 +551,7 @@ public final class Address implements ApiMessage {
     if (fieldName.equals("users")) {
       return String.valueOf(users);
     }
-    throw new IOException(String.format("Field '%s' not found in Address fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -965,9 +889,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1032,7 +954,7 @@ public final class AddressList implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("id")) {
       return String.valueOf(id);
     }
@@ -1048,7 +970,7 @@ public final class AddressList implements ApiMessage {
     if (fieldName.equals("selfLink")) {
       return String.valueOf(selfLink);
     }
-    throw new IOException(String.format("Field '%s' not found in AddressList fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -1266,9 +1188,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1312,14 +1232,14 @@ public final class Data implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("key")) {
       return String.valueOf(key);
     }
     if (fieldName.equals("value")) {
       return String.valueOf(value);
     }
-    throw new IOException(String.format("Field '%s' not found in Data fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -1465,9 +1385,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1504,11 +1422,11 @@ public final class Error implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("errors")) {
       return String.valueOf(errors);
     }
-    throw new IOException(String.format("Field '%s' not found in Error fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -1630,9 +1548,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1683,7 +1599,7 @@ public final class Errors implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("code")) {
       return String.valueOf(code);
     }
@@ -1693,7 +1609,7 @@ public final class Errors implements ApiMessage {
     if (fieldName.equals("message")) {
       return String.valueOf(message);
     }
-    throw new IOException(String.format("Field '%s' not found in Errors fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -1863,9 +1779,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2056,7 +1970,7 @@ public final class Operation implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("clientOperationId")) {
       return String.valueOf(clientOperationId);
     }
@@ -2126,7 +2040,7 @@ public final class Operation implements ApiMessage {
     if (fieldName.equals("zone")) {
       return String.valueOf(zone);
     }
-    throw new IOException(String.format("Field '%s' not found in Operation fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -2776,9 +2690,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
-import com.google.api.gax.httpjson.ResourceNameStruct;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2829,7 +2741,7 @@ public final class Warnings implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("code")) {
       return String.valueOf(code);
     }
@@ -2839,7 +2751,7 @@ public final class Warnings implements ApiMessage {
     if (fieldName.equals("message")) {
       return String.valueOf(message);
     }
-    throw new IOException(String.format("Field '%s' not found in Warnings fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -3010,7 +2922,6 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3100,7 +3011,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("access_token")) {
       return String.valueOf(access_token);
     }
@@ -3125,7 +3036,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     if (fieldName.equals("userIp")) {
       return String.valueOf(userIp);
     }
-    throw new IOException(String.format("Field '%s' not found in DeleteAddressHttpRequest fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -3423,7 +3334,6 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3513,7 +3423,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("access_token")) {
       return String.valueOf(access_token);
     }
@@ -3538,7 +3448,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
     if (fieldName.equals("userIp")) {
       return String.valueOf(userIp);
     }
-    throw new IOException(String.format("Field '%s' not found in GetAddressHttpRequest fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -3836,7 +3746,6 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3932,7 +3841,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("access_token")) {
       return String.valueOf(access_token);
     }
@@ -3960,7 +3869,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     if (fieldName.equals("userIp")) {
       return String.valueOf(userIp);
     }
-    throw new IOException(String.format("Field '%s' not found in InsertAddressHttpRequest fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -4282,7 +4191,6 @@ package com.google.cloud.simplecompute.v1;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -4399,7 +4307,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   }
 
   @Override
-  public String getFieldStringValue(String fieldName) throws IOException {
+  public String getFieldStringValue(String fieldName) {
     if (fieldName.equals("access_token")) {
       return String.valueOf(access_token);
     }
@@ -4436,7 +4344,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     if (fieldName.equals("userIp")) {
       return String.valueOf(userIp);
     }
-    throw new IOException(String.format("Field '%s' not found in ListAddressesHttpRequest fields", fieldName));
+    return null;
   }
 
   @Nullable
@@ -6386,9 +6294,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
-                                                                      "address", "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.newFactory()))
           .setHttpMethod(HttpMethods.DELETE)
           .setResourceNameField("address")
           .build();
@@ -6401,9 +6307,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.of(
-                                                                      "address", "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(AddressName.newFactory()))
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("address")
           .build();
@@ -6416,9 +6320,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setEndpointPathTemplate("{project}/regions/{region}/addresses")
           .setQueryParams(Sets.<String>newHashSet(
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
-                                                                      "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.newFactory()))
           .setHttpMethod(HttpMethods.POST)
           .setResourceNameField("region")
           .build();
@@ -6432,9 +6334,7 @@ public class HttpJsonAddressStub extends AddressStub {
           .setQueryParams(Sets.<String>newHashSet(
                              "filter",    "maxResults",    "orderBy",    "pageToken"
                              ))
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.of(
-                                                                      "project", "region"
-                                                                      )))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.newFactory()))
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("region")
           .build();
