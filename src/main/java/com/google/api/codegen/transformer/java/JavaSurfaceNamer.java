@@ -243,17 +243,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAndSaveResourceFactoryName(
-      ImportTypeTable typeTable, ResourceNameConfig resourceNameConfig) {
-    String resourceClassName =
-        publicClassName(getResourceTypeNameObject(resourceNameConfig).join("factory"));
-    return typeTable
-        .getTypeNameConverter()
-        .getTypeNameInImplicitPackage(resourceClassName)
-        .getAndSaveNicknameIn(typeTable.getTypeTable());
-  }
-
-  @Override
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();

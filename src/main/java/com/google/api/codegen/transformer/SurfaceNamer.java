@@ -1076,12 +1076,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
   }
 
-  /** The class name of the factory for creating a generated resource type from the entity name. */
-  public String getAndSaveResourceFactoryName(
-      ImportTypeTable typeTable, ResourceNameConfig resourceNameConfig) {
-    return getNotImplementedString("SurfaceNamer.getAndSaveResourceFactoryName");
-  }
-
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveResourceTypeFactoryName(
       ImportTypeTable typeTable, FieldConfig fieldConfig) {

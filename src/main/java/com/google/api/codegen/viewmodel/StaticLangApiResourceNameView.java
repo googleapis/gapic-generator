@@ -28,8 +28,6 @@ public abstract class StaticLangApiResourceNameView
   // The type name for this Schema when rendered as a field in its parent Schema, e.g. "List<Operation>".
   public abstract String typeName();
 
-  public abstract String factoryTypeName();
-
   // The template for the path, e.g. "projects/{projects}/topic/{topic}"
   public abstract String pathTemplate();
 
@@ -45,8 +43,6 @@ public abstract class StaticLangApiResourceNameView
     public abstract Builder name(String val);
 
     public abstract Builder typeName(String val);
-
-    public abstract Builder factoryTypeName(String val);
 
     public abstract Builder pathTemplate(String val);
 

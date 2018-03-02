@@ -72,9 +72,8 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
-    return languageNamer.localVarName(
-        Name.anyCamel(resourceNameConfig.getEntityName()).join("name"));
+  public static Name getResourceNameName(ResourceNameConfig resourceNameConfig) {
+    return Name.anyCamel(resourceNameConfig.getEntityName()).join("name");
   }
 
   /**
