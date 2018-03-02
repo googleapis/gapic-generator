@@ -53,7 +53,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
     if (method.response() != null) {
-      this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseField(method) : null;
+      this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseType(method) : null;
     } else {
       this.outputType = new EmptyTypeModel();
     }

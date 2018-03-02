@@ -77,15 +77,8 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
-    return languageNamer.localVarName(
-        Name.anyCamel(resourceNameConfig.getEntityName()).join("name"));
-  }
-
-  /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameTypeName(ResourceNameConfig resourceNameConfig) {
-    return languageNamer.publicClassName(
-        Name.anyCamel(resourceNameConfig.getEntityName()).join("name").join("type"));
+  public static Name getResourceNameName(ResourceNameConfig resourceNameConfig) {
+    return Name.anyCamel(resourceNameConfig.getEntityName()).join("name");
   }
 
   /**
@@ -175,7 +168,7 @@ public class DiscoGapicNamer {
 
   /** Get the response type from a method if the method has a non-null response type. */
   @Nullable
-  public DiscoveryField getResponseField(Method method) {
+  public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
       Schema responseSchema;
       if (method.response().reference() != null) {

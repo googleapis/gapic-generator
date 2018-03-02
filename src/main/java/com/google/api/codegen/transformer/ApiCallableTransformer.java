@@ -222,15 +222,12 @@ public class ApiCallableTransformer {
       httpMethodView.pathTemplate(method.path());
 
       // TODO(andrealin): handle multiple resource names.
+      DiscoGapicInterfaceConfig interfaceConfig =
+          (DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig();
       SingleResourceNameConfig nameConfig =
-          ((DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig())
-              .methodToResourceNameMap()
-              .get(context.getMethodConfig());
-      DiscoGapicNamer discoGapicNamer =
-          ((DiscoveryMethodModel) context.getMethodModel()).getDiscoGapicNamer();
-      String resourceName = discoGapicNamer.getResourceNameName(nameConfig);
-      String resourceNameTypeName = context.getNamer().publicClassName(Name.anyCamel(resourceName));
-      httpMethodView.resourceNameTypeName(resourceNameTypeName);
+          interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
+      httpMethodView.resourceNameTypeName(
+          context.getNamer().publicClassName(DiscoGapicNamer.getResourceNameName(nameConfig)));
       httpMethodView.resourceNameFieldName(
           context.getNamer().privateFieldName(Name.anyCamel(nameConfig.getEntityName())));
       return httpMethodView.build();
