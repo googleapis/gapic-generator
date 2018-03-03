@@ -18,7 +18,6 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -26,6 +25,7 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -51,7 +51,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +66,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       new GoImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+  private final MockServiceTransformer mockServiceTransformer = new GapicMockServiceTransformer();
   private final FeatureConfig featureConfig = new DefaultFeatureConfig();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
@@ -81,13 +80,12 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> models = new ArrayList<ViewModel>();
-    ProtoApiModel apiModel = new ProtoApiModel(model);
-    models.add(generateMockServiceView(apiModel, productConfig, namer));
+    models.add(generateMockServiceView(model, productConfig, namer));
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -115,7 +113,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
+              .mockRpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());

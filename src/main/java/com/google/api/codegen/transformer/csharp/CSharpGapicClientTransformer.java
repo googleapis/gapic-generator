@@ -23,7 +23,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -100,15 +99,13 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
-    ProtoApiModel apiModel = new ProtoApiModel(model);
-
     InterfaceModel lastApiInterface = null;
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -247,10 +244,11 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterfaceModel()));
-    String grpcTypeName = namer.getGrpcServiceClassName(context.getInterfaceModel());
-    int dotIndex = grpcTypeName.indexOf('.');
-    apiClass.grpcTypeNameOuter(grpcTypeName.substring(0, dotIndex));
-    apiClass.grpcTypeNameInner(grpcTypeName.substring(dotIndex + 1, grpcTypeName.length()));
+    String rpcTypeName =
+        namer.getRpcServiceClassName(context.getInterfaceModel(), context.getProductConfig());
+    int dotIndex = rpcTypeName.indexOf('.');
+    apiClass.grpcTypeNameOuter(rpcTypeName.substring(0, dotIndex));
+    apiClass.grpcTypeNameInner(rpcTypeName.substring(dotIndex + 1, rpcTypeName.length()));
     apiClass.settingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     List<ApiCallableView> callables = new ArrayList<>();

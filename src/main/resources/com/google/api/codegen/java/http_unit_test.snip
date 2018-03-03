@@ -1,0 +1,139 @@
+@extends "java/common.snip"
+@extends "java/initcode.snip"
+
+@snippet generate(xapiTest)
+  {@renderFileHeader(xapiTest.fileHeader)}
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xapiTest.testClass.name} {
+    private static final MockHttpService MOCK_SERVICE = new MockHttpService();
+    private static {@xapiTest.testClass.apiClassName} client;
+    private static {@xapiTest.testClass.apiSettingsClassName} clientSettings;
+
+    @@BeforeClass
+    public static void setUp() throws IOException {
+      clientSettings =
+          {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
+             .setTransportChannelProvider(
+                 {@xapiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
+                     .setHttpTransport(MOCK_SERVICE).build()).build();
+      client =
+         {@xapiTest.testClass.apiClassName}.create(clientSettings);
+    }
+
+    @@After
+    public void cleanUp() {
+      MOCK_SERVICE.reset();
+    }
+
+    @@AfterClass
+    public static void tearDown() throws Exception {
+      client.close();
+    }
+
+    @join test : xapiTest.testClass.testCases
+      {@testCase(test)}
+
+    @end
+  }
+@end
+
+@private testCase(test)
+  @switch test.clientMethodType
+  @case "FlattenedMethod"
+      {@unaryTestCase(test)}
+  @case "PagedFlattenedMethod"
+      {@unaryTestCase(test)}
+  @case "AsyncOperationFlattenedMethod"
+      {@longRunningMethodTestCase(test)}
+  @end
+@end
+
+@private unaryTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() {
+    {@addResponse(test)}
+
+    {@initCode(test.initCode)}
+
+    {@methodCall(test)}
+
+    {@unarySuccessAsserts(test)}
+  }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+
+    try {
+      {@initCode(test.initCode)}
+
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+@end
+
+@private addResponse(test)
+  @if test.hasReturnValue
+    {@initCode(test.mockResponse.initCode)}
+    MOCK_SERVICE.addResponse(expectedResponse);
+  @end
+  {@""}
+  MOCK_SERVICE.setSerializer({@test.methodDescriptor});
+@end
+
+@private addException(test)
+  ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+  MOCK_SERVICE.addException(exception);
+  MOCK_SERVICE.setSerializer({@test.methodDescriptor});
+@end
+
+@private methodCall(test)
+  @switch test.clientMethodType
+  @case "PagedFlattenedMethod"
+    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+      List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
+      Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+    @end
+  @case "FlattenedMethod"
+    @if test.hasReturnValue
+      {@test.responseTypeName} actualResponse =
+          client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse, actualResponse);
+    @else
+      client.{@test.clientMethodName}(\
+            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @end
+  @default
+    $unhandledCase: {@test.clientMethodType}$
+  @end
+@end
+
+@private longRunningMethodCall(test)
+  {@test.responseTypeName} actualResponse =
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
+  Assert.assertEquals(expectedResponse, actualResponse);
+@end
+
+@private unarySuccessAsserts(test)
+  List<String> actualRequests = MOCK_SERVICE.getRequestPaths();
+  Assert.assertEquals(1, actualRequests.size());
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end

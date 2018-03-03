@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -430,7 +431,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
+  public String getRpcServiceClassName(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
         + publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));

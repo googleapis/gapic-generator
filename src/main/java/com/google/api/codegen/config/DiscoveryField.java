@@ -127,7 +127,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isMessage() {
-    return false;
+    return !isPrimitiveType();
   }
 
   @Override
@@ -195,12 +195,13 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEnum() {
-    return schema.isEnum();
+    // TODO(andrealin): implement.
+    return false;
   }
 
   @Override
   public boolean isPrimitive() {
-    return schema.reference().isEmpty() && schema.items() == null;
+    return schema.reference().isEmpty() && schema.items() == null && schema.type() != Type.OBJECT;
   }
 
   @Override
@@ -329,7 +330,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
             return "double";
         }
       case BOOLEAN:
-        return "boolean";
+        return "bool";
       case STRING:
         if (schema.format() == null) {
           return "string";
@@ -363,7 +364,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isStringType() {
-    return schema.type().equals(Type.STRING) && schema.format() == null;
+    return schema.type().equals(Type.STRING);
   }
 
   @Override
