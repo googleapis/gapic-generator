@@ -41,6 +41,10 @@ public class ProtoApiModel implements ApiModel {
     this.protoModel = protoModel;
   }
 
+  public Model getProtoModel() {
+    return protoModel;
+  }
+
   @Override
   public ApiSource getApiSource() {
     return ApiSource.PROTO;

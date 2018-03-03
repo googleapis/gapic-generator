@@ -86,6 +86,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getEnumValue(TypeModel type, String value) {
+    // TODO(andrealin): implement.
     return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeModel type, String value)");
   }
 
@@ -248,8 +249,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getAndSaveNicknameForElementType(FieldModel type) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField()));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
   }
 
   @Override
@@ -261,9 +261,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(FieldModel type) {
-    return typeNameConverter
-        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override
@@ -275,9 +273,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getImplZeroValueAndSaveNicknameFor(FieldModel type) {
-    return typeNameConverter
-        .getImplZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Returns the imports accumulated so far. */

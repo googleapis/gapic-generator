@@ -39,7 +39,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private final DiscoveryRequestType inputType;
-  private final DiscoveryField outputType;
+  private final TypeModel outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -109,7 +109,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getInputFullName() {
-    // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();
   }
 
@@ -120,10 +119,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    // Maybe use Discogapic namer for this?
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(outputType));
   }
 
   @Override
@@ -133,9 +129,13 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    if (method.request() != null) {
+      return typeTable
+          .getTypeTable()
+          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    } else {
+      return discoGapicNamer.getRequestTypeName(method);
+    }
   }
 
   @Override
@@ -193,11 +193,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType != null) {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    } else {
-      return typeTable.getAndSaveNicknameFor("java.lang.Void");
-    }
+    return typeTable.getAndSaveNicknameFor(outputType);
   }
 
   @Override
