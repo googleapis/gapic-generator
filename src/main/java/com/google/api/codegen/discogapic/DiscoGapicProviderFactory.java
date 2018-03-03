@@ -22,7 +22,6 @@ import com.google.api.codegen.gapic.GapicProvider;
 import java.util.List;
 
 /** A factory for DiscoGapicProviders which perform code generation. */
-//TODO(andrealin): combine this with GapicProviderFactory.
 public interface DiscoGapicProviderFactory {
   /**
    * Create the provider from the given model, configs and the output path.
