@@ -17,6 +17,8 @@
 
     {@getters(resourceName)}
 
+    {@interfaceMethods(resourceName)}
+
     {@staticMethods(resourceName)}
 
     {@builder(resourceName)}
@@ -37,9 +39,40 @@
 
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("{@resourceName.pathTemplate}");
+
+  private volatile Map<String, String> fieldValuesMap;
+@end
+
+@private interfaceMethods(resourceName)
+  @@Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          @join param : resourceName.pathParams
+            fieldMapBuilder.put("{@param.name}", {@param.name});
+          @end
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
 @end
 
 @private staticMethods(resourceName)
+  public static ResourceNameFactory<{@resourceName.typeName}> newFactory() {
+    return new ResourceNameFactory<{@resourceName.typeName}>() {
+      public {@resourceName.typeName} parse(String formattedString) {return {@resourceName.typeName}.parse(formattedString);}
+    };
+  }
+
   public static {@resourceName.typeName} parse(String formattedString) {
     Map<String, String> matchMap =
         PATH_TEMPLATE.validatedMatch(formattedString, "{@resourceName.typeName}.parse: formattedString not in valid format");
@@ -52,18 +85,6 @@
 
   public static boolean isParsableFrom(String formattedString) {
     return PATH_TEMPLATE.matches(formattedString);
-  }
-
-  @@Override
-  public ResourceNameType getType() {
-    return {@resourceName.nameTypeName}.instance();
-  }
-@end
-
-@private getTypeFunction(resourceName)
-  @@Override
-  public ResourceNameType getType() {
-    return {@resourceName.nameType}.instance();
   }
 @end
 
@@ -141,6 +162,19 @@
       .{@param.fieldSetFunction}({@param.name})
     @end
       .build();
+  }
+
+  public static String format(
+      @join param : resourceName.pathParams on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      ) {
+    return of(
+        @join param : resourceName.pathParams on ",".add(BREAK)
+          {@param.name}
+        @end
+        )
+        .toString();
   }
 @end
 

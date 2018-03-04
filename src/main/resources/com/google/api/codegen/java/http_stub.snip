@@ -61,10 +61,11 @@
             .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
           @end
           .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
-          .setPathParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.pathParams)})
           .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(\
+              {@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory()))
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+          .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
           .build();
 @end
 
@@ -101,7 +102,7 @@
     {@apiCallableMember(apiCallable)}
   @end
 
-  private final CallableFactory callableFactory;
+  private final HttpJsonClientCallableFactory callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -136,15 +137,15 @@
 @end
 
 @private constructors(stubClass)
-  public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
+  public static final {@stubClass.name} create({@stubClass.stubSettingsClassName} settings) throws IOException {
     return new {@stubClass.name}(settings, ClientContext.create(settings));
   }
 
   public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
-    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
+    return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext);
   }
 
-  public static final {@stubClass.name} create(ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+  public static final {@stubClass.name} create(ClientContext clientContext, HttpJsonClientCallableFactory callableFactory) throws IOException {
     return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext, callableFactory);
   }
 
@@ -153,7 +154,7 @@
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
+  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext) throws IOException {
     this(settings, clientContext, new {@stubClass.callableFactoryClassName}();
   }
 
@@ -162,7 +163,7 @@
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, HttpJsonClientCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       # TODO reference a real class for httpjson when it is created
