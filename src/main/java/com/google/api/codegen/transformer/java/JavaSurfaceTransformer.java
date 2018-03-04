@@ -913,11 +913,11 @@ public class JavaSurfaceTransformer {
     switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.CallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcClientCallableFactory");
         break;
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.CallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonClientCallableFactory");
         break;
     }
   }
