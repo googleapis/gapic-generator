@@ -647,6 +647,7 @@ public final class Address implements ApiMessage {
     this.selfLink = selfLink;
     this.status = status;
     this.users = users;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -4946,6 +4947,11 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    AddressName resourceName = AddressName.parse(address);
+    mapBuilder.put("address", resourceName.getAddress());
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -5322,7 +5328,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   private final String key;
   private final String prettyPrint;
   private final String quotaUser;
-  private final String region;
   private final String userIp;
 
   private InsertAddressHttpRequest() {
@@ -5333,7 +5338,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.key = null;
     this.prettyPrint = null;
     this.quotaUser = null;
-    this.region = null;
     this.userIp = null;
   }
 
@@ -5346,7 +5350,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       String key,
       String prettyPrint,
       String quotaUser,
-      String region,
       String userIp
       ) {
     this.access_token = access_token;
@@ -5356,8 +5359,12 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.key = key;
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
-    this.region = region;
     this.userIp = userIp;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    AddressName resourceName = AddressName.parse(address);
+    mapBuilder.put("address", resourceName.getAddress());
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -5383,9 +5390,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     }
     if (fieldNames.contains("quotaUser") && quotaUser != null) {
       fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
     }
     if (fieldNames.contains("userIp") && userIp != null) {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
@@ -5459,10 +5463,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     return quotaUser;
   }
 
-  public String getRegion() {
-    return region;
-  }
-
   public String getUserIp() {
     return userIp;
   }
@@ -5495,7 +5495,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     private String key;
     private String prettyPrint;
     private String quotaUser;
-    private String region;
     private String userIp;
 
     Builder() {}
@@ -5523,9 +5522,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       if (other.getQuotaUser() != null) {
         this.quotaUser = other.quotaUser;
       }
-      if (other.getRegion() != null) {
-        this.region = other.region;
-      }
       if (other.getUserIp() != null) {
         this.userIp = other.userIp;
       }
@@ -5540,7 +5536,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
       this.quotaUser = source.quotaUser;
-      this.region = source.region;
       this.userIp = source.userIp;
     }
 
@@ -5607,15 +5602,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       return this;
     }
 
-    public String getRegion() {
-      return region;
-    }
-
-    public Builder setRegion(String region) {
-      this.region = region;
-      return this;
-    }
-
     public String getUserIp() {
       return userIp;
     }
@@ -5635,9 +5621,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
 
 
 
-      if (region == null) {
-        missing += " region";
-      }
 
       if (!missing.isEmpty()) {
         throw new IllegalStateException("Missing required properties:" + missing);
@@ -5650,7 +5633,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
         key,
         prettyPrint,
         quotaUser,
-        region,
         userIp
       );
     }
@@ -5664,7 +5646,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
       newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
@@ -5680,7 +5661,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "region=" + region + ", "
         + "userIp=" + userIp
         + "}";
   }
@@ -5700,7 +5680,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
-          Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.userIp, that.getUserIp())
           ;
     }
@@ -5717,7 +5696,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
       key,
       prettyPrint,
       quotaUser,
-      region,
       userIp
     );
   }
@@ -5899,8 +5877,8 @@ public final class ListAddressesHttpRequest implements ApiMessage {
 
   @Nullable
   @Override
-  public ApiMessage getApiMessageRequestBody() {
-    return null;
+  public Address getApiMessageRequestBody() {
+    return addressResource;
   }
 
   public String getAccessToken() {
@@ -5925,18 +5903,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
 
   public Integer getMaxResults() {
     return maxResults;
-  }
-
-  public String getOrderBy() {
-    return orderBy;
-  }
-
-  public String getPageToken() {
-    return pageToken;
-  }
-
-  public String getPrettyPrint() {
-    return prettyPrint;
   }
 
   public String getQuotaUser() {
@@ -6154,8 +6120,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
 
     public ListAddressesHttpRequest build() {
       String missing = "";
-
-
 
 
 
