@@ -19,29 +19,27 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /** No mock views are generated for clients created from Discovery documents. */
 public class DiscoGapicMockServiceTransformer implements MockServiceTransformer {
   public List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig) {
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(
       ApiModel model, ProductConfig productConfig, InterfaceModel apiInterface) {
-    return new HashMap<>();
+    return Collections.emptyMap();
   }
 
   public List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context) {
-    return new LinkedList<>();
+    return Collections.emptyList();
   }
 
   public List<MockServiceUsageView> createMockServices(
       SurfaceNamer namer, ApiModel model, ProductConfig productConfig) {
-    return new LinkedList<>();
+    return Collections.emptyList();
   }
 }

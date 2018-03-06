@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +61,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     this.packageConfigFileName = packageConfigFileName;
 
     for (String fileName : gapicConfigFileNames) {
-      gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
+      this.gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
     }
   }
 
@@ -71,7 +72,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),
-              new LinkedList<>(),
+              Collections.emptyList(),
               "");
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
