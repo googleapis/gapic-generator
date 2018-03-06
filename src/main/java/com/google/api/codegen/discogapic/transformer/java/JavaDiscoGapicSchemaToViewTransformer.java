@@ -147,8 +147,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
 
-    SchemaTypeTable schemaTypeTable =
-        (SchemaTypeTable) documentContext.getSchemaTypeTable().cloneEmpty();
+    SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
         SchemaTransformationContext.create(
@@ -170,11 +169,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.description(schema.description());
     // Getters and setters use unescaped name for better readability on public methods.
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
-    schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaId));
+    schemaView.fieldSetFunction(
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(schemaId, schema.type().equals(Type.ARRAY)));
+    schemaView.fieldAddFunction(context.getDiscoGapicNamer().getResourceAdderName(schemaId));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
-    if (schema.type() == Type.ARRAY) {
+    if (schema.repeated() || schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
     } else {
       schemaView.innerTypeName(schemaTypeName);
@@ -200,7 +203,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 
-    schemaView.canRepeat(schema.repeated());
+    schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);
@@ -221,9 +224,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
     typeTable.getAndSaveNicknameFor("java.util.List");
+    typeTable.getAndSaveNicknameFor("java.util.LinkedList");
     typeTable.getAndSaveNicknameFor("java.util.Map");
     typeTable.getAndSaveNicknameFor("java.util.Objects");
     typeTable.getAndSaveNicknameFor("java.util.Set");
+    typeTable.getAndSaveNicknameFor("java.util.stream.Collectors");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
     typeTable.getAndSaveNicknameFor("javax.annotation.Nullable");
   }

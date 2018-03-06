@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -58,7 +57,6 @@ import com.google.api.codegen.viewmodel.metadata.SimpleModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -105,16 +103,15 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(generateVersionIndexView(apiModel, productConfig));
+    views.add(generateVersionIndexView(model, productConfig));
     if (RubyUtil.hasMajorVersion(productConfig.getPackageName())) {
-      views.add(generateTopLevelIndexView(apiModel, productConfig));
+      views.add(generateTopLevelIndexView(model, productConfig));
     }
-    views.addAll(generateApiClasses(apiModel, productConfig));
+    views.addAll(generateApiClasses(model, productConfig));
     if (!RubyUtil.isLongrunning(productConfig.getPackageName())) {
-      views.add(generateCredentialsView(apiModel, productConfig));
+      views.add(generateCredentialsView(model, productConfig));
     }
     return views.build();
   }

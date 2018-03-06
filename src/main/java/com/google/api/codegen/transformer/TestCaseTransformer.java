@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.metacode.InitCodeLineType.ListInitLine;
+import static com.google.api.codegen.metacode.InitCodeLineType.StructureInitLine;
+
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -23,6 +26,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -32,6 +36,7 @@ import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -44,15 +49,17 @@ import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
-import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
+import com.google.api.codegen.viewmodel.testing.MockRpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -126,7 +133,7 @@ public class TestCaseTransformer {
 
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
-    MockGrpcResponseView mockGrpcResponseView =
+    MockRpcResponseView mockRpcResponseView =
         createMockResponseView(methodContext, responseInitCodeContext);
 
     GrpcStreamingView grpcStreamingView = null;
@@ -150,8 +157,24 @@ public class TestCaseTransformer {
                   createGrpcStreamingInitCodeViews(methodContext, initCodeContext, initCode))
               .responseInitCodeList(
                   createGrpcStreamingInitCodeViews(
-                      methodContext, responseInitCodeContext, mockGrpcResponseView.initCode()))
+                      methodContext, responseInitCodeContext, mockRpcResponseView.initCode()))
               .build();
+    }
+
+    String methodDescriptorName = null;
+    if (methodContext.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      TypeName rpcStubClassName =
+          new TypeName(
+              methodContext
+                  .getNamer()
+                  .getFullyQualifiedRpcStubType(
+                      methodContext.getInterfaceConfig().getInterfaceModel(),
+                      methodContext.getProductConfig().getTransportProtocol()));
+      methodDescriptorName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameForInnerType(
+                  rpcStubClassName.getFullName(), namer.getMethodDescriptorName(method));
     }
 
     return TestCaseView.newBuilder()
@@ -161,7 +184,7 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
-        .mockResponse(mockGrpcResponseView)
+        .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
@@ -184,6 +207,7 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
+        .methodDescriptor(methodDescriptorName)
         .build();
   }
 
@@ -192,8 +216,7 @@ public class TestCaseTransformer {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
-    List<PageStreamingResponseView> pageStreamingResponseViews =
-        new ArrayList<PageStreamingResponseView>();
+    List<PageStreamingResponseView> pageStreamingResponseViews = new ArrayList<>();
 
     if (!methodConfig.isPageStreaming()) {
       return pageStreamingResponseViews;
@@ -203,11 +226,15 @@ public class TestCaseTransformer {
     FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
-    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
+
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterName(resourcesFieldGetterName)
+            .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
@@ -219,18 +246,24 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName =
-          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
+      //<<<<<<< HEAD
+      resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+      for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+        resourcesFieldGetFunctionList.add(
+            namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig));
+      }
+      //=======
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
         expectedTransformFunction =
             namer.getResourceTypeParseMethodName(
                 methodContext.getTypeTable(), resourcesFieldConfig);
+        //>>>>>>> resource_names
       }
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
@@ -256,7 +289,7 @@ public class TestCaseTransformer {
     return requestInitCodeList;
   }
 
-  private MockGrpcResponseView createMockResponseView(
+  private MockRpcResponseView createMockResponseView(
       MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
     methodContext =
@@ -269,7 +302,7 @@ public class TestCaseTransformer {
         methodContext
             .getMethodModel()
             .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
-    return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
+    return MockRpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
   private InitCodeContext createResponseInitCodeContext(
@@ -282,8 +315,8 @@ public class TestCaseTransformer {
         .initObjectType(outputType)
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
-        .initFieldConfigStrings(ImmutableList.<String>of())
-        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
+        .initFieldConfigStrings(ImmutableList.of())
+        .initValueConfigMap(ImmutableMap.of())
         .initFields(responseInitFields(outputType.getFields()))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
@@ -311,8 +344,21 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesFieldName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      if (config.getResourcesFieldConfig().getFieldPath().size() == 1) {
+        String resourceFieldName = config.getResourcesFieldName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      } else {
+        Iterator<FieldModel> it =
+            Lists.reverse(config.getResourcesFieldConfig().getFieldPath()).iterator();
+        InitCodeNode initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
+        while (it.hasNext()) {
+          FieldModel field = it.next();
+          InitCodeLineType lineType = field.isRepeated() ? ListInitLine : StructureInitLine;
+          initCodeNode =
+              InitCodeNode.createWithChildren(field.getSimpleName(), lineType, initCodeNode);
+        }
+        additionalSubTrees.add(initCodeNode);
+      }
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available

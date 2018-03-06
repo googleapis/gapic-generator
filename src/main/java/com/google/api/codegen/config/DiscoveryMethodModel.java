@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -39,7 +40,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private final DiscoveryRequestType inputType;
-  private final DiscoveryField outputType;
+  private final TypeModel outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -51,7 +52,12 @@ public final class DiscoveryMethodModel implements MethodModel {
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
     this.inputType = DiscoveryRequestType.create(this);
-    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseType(method) : null;
+
+    if (method.response() != null) {
+      this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseType(method) : null;
+    } else {
+      this.outputType = new EmptyTypeModel();
+    }
   }
 
   public Method getDiscoMethod() {
@@ -109,7 +115,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getInputFullName() {
-    // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();
   }
 
@@ -120,10 +125,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    // Maybe use Discogapic namer for this?
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(outputType));
   }
 
   @Override
@@ -133,9 +135,13 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    if (method.request() != null) {
+      return typeTable
+          .getTypeTable()
+          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    } else {
+      return discoGapicNamer.getRequestTypeName(method);
+    }
   }
 
   @Override
@@ -193,11 +199,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType != null) {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    } else {
-      return typeTable.getAndSaveNicknameFor("java.lang.Void");
-    }
+    return typeTable.getAndSaveNicknameFor(outputType);
   }
 
   @Override
@@ -297,11 +299,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      String resourceNameString =
-          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
-      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
-          .toLowerCamel()
-          .equals(resourceNameString)) {
+      if (DiscoGapicNamer.getCanonicalPath(method).equals(entry.getKey())) {
+        String resourceNameString =
+            DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());
         break;
       }

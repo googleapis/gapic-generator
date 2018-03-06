@@ -19,7 +19,12 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
@@ -54,6 +59,64 @@ public abstract class Schema implements Node {
       }
     }
     return this;
+  }
+
+  /**
+   * Traverses the schema's child nodes to find a Schema with the given childName. Returns the
+   * schema traversal path to the target; this path will include the starting node if the target was
+   * found. Returns an empty list if the target is not found.
+   */
+  public List<Schema> findChild(String childName) {
+    Set<Schema> visitedNodes = new HashSet<>();
+    Map<Schema, Schema> nodeToPrevNode = new HashMap<>();
+
+    Schema currentNode = this;
+    Queue<Schema> queue = new LinkedList<>();
+    queue.add(this);
+    visitedNodes.add(this);
+
+    // BFS to find the target node.
+    while (queue.size() != 0 && !currentNode.getIdentifier().equals(childName)) {
+      currentNode = queue.poll();
+
+      Queue<Schema> localQueue = new LinkedList<>();
+      if (!Strings.isNullOrEmpty(currentNode.reference())) {
+        localQueue.add(currentNode.dereference());
+      } else {
+        if (currentNode.properties() != null && currentNode.properties().size() > 0) {
+          localQueue.addAll(currentNode.properties().values());
+        }
+        if (currentNode.additionalProperties() != null) {
+          localQueue.add(currentNode.additionalProperties());
+        }
+      }
+
+      while (localQueue.peek() != null) {
+        Schema next = localQueue.poll();
+        nodeToPrevNode.put(next, currentNode);
+        if (next.getIdentifier().equals(childName)) {
+          // Success.
+          currentNode = next;
+          break;
+        }
+        if (!visitedNodes.contains(next)) {
+          visitedNodes.add(next);
+          queue.add(next);
+        }
+      }
+    }
+
+    // Get the shortest path to the schema.
+    List<Schema> pathToChild = new LinkedList<Schema>();
+    if (currentNode.getIdentifier().equals(childName)) {
+      while (!currentNode.equals(this)) {
+        pathToChild.add(0, currentNode);
+        currentNode = nodeToPrevNode.get(currentNode);
+      }
+      pathToChild.add(0, currentNode);
+    }
+
+    return pathToChild;
   }
 
   /**

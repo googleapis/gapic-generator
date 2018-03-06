@@ -40,7 +40,7 @@
             // Embed for forward compatibility.
             // Tests will keep working if more methods are added
             // in the future.
-            {@impl.grpcClassName}
+            {@impl.mockRpcClassName}
 
             reqs []proto.Message
 
@@ -222,7 +222,7 @@
 
         @if test.clientMethodType == "PagedRequestObjectMethod"
             @join pageStreamingResponseView : test.pageStreamingResponseViews
-                want := (interface{})(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}[0])
+                want := (interface{})(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterNames.get(0)}[0])
                 got := (interface{})(resp)
                 var ok bool
 

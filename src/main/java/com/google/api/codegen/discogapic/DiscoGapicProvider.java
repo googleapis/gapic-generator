@@ -17,18 +17,22 @@ package com.google.api.codegen.discogapic;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicProvider {
+public class DiscoGapicProvider implements GapicProvider<Document> {
   private final Document document;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final List<DocumentToViewTransformer> transformers;
+
+  private final List<String> snippetFileNames;
 
   private DiscoGapicProvider(
       Document document,
@@ -39,6 +43,17 @@ public class DiscoGapicProvider {
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.transformers = transformers;
+
+    ImmutableList.Builder<String> snippetFileNames = ImmutableList.builder();
+    for (DocumentToViewTransformer transformer : transformers) {
+      snippetFileNames.addAll(transformer.getTemplateFileNames());
+    }
+    this.snippetFileNames = snippetFileNames.build();
+  }
+
+  @Override
+  public List<String> getSnippetFileNames() {
+    return snippetFileNames;
   }
 
   public Map<String, Doc> generate() {

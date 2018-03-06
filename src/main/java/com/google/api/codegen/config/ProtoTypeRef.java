@@ -44,6 +44,11 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
+  public ApiSource getApiSource() {
+    return ApiSource.PROTO;
+  }
+
+  @Override
   public boolean isMap() {
     return typeRef.isMap();
   }
@@ -150,6 +155,16 @@ public class ProtoTypeRef implements TypeModel {
 
     this.fields = fields.build();
     return this.fields;
+  }
+
+  @Override
+  public FieldModel getField(String key) {
+    for (FieldModel field : getFields()) {
+      if (field.getSimpleName().equals(key)) {
+        return field;
+      }
+    }
+    return null;
   }
 
   @Override

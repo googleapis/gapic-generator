@@ -18,6 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -795,12 +796,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
   }
 
-  /** The name of the http stub for a particular proto interface; not used in most languages. */
+  /** The name of the RPC stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
-      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
-            .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
+            .join(Name.anyCamel(interfaceModel.getSimpleName(), "Stub")));
   }
 
   /** The sample application class name. */
@@ -812,14 +813,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
    */
-  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
+  public String getRpcServiceClassName(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     NamePath namePath =
-        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
-    String grpcContainerName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+        typeNameConverter.getNamePath(getTypeFormatter().getFullNameFor(apiInterface));
+    String rpcContainerName =
+        publicClassName(
+            Name.upperCamelKeepUpperAcronyms(
+                namePath.getHead(),
+                Name.from(productConfig.getTransportProtocol().name().toLowerCase())
+                    .toUpperCamel()));
     String serviceClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName(), "ImplBase"));
-    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
+    return qualifiedName(namePath.withHead(rpcContainerName).append(serviceClassName));
   }
 
   /**
@@ -1092,6 +1098,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The fully qualified type name for the stub of an API interface. */
   public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
+  }
+
+  /** The fully qualified type name for the RPC stub of an API interface. */
+  public String getFullyQualifiedRpcStubType(
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
   }
 
