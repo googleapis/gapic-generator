@@ -128,7 +128,7 @@ public abstract class FieldConfig {
       messageFieldEntityName = messageConfigs.getFieldResourceName(field);
     }
     if (fieldNamePatterns != null) {
-      flattenedFieldEntityName = fieldNamePatterns.get(field.getSimpleName());
+      flattenedFieldEntityName = fieldNamePatterns.get(field.getNameAsParameter());
     }
     if (flattenedFieldEntityName == null) {
       flattenedFieldEntityName = messageFieldEntityName;

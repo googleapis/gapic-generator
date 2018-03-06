@@ -299,11 +299,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      String resourceNameString =
-          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
-      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
-          .toLowerCamel()
-          .equals(resourceNameString)) {
+      if (DiscoGapicNamer.getCanonicalPath(method).equals(entry.getKey())) {
+        String resourceNameString =
+            DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());
         break;
       }
