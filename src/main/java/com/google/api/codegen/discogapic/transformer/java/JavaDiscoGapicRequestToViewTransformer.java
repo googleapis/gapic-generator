@@ -234,7 +234,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.canRepeat(false);
       paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
       paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
-      paramView.properties(new LinkedList<StaticLangApiMessageView>());
+      paramView.properties(Collections.emptyList());
       paramView.isRequestMessage(false);
       paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
@@ -295,7 +295,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           schemaToParamView(
               context,
               requestBody,
-              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
+              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef.dereference()).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }

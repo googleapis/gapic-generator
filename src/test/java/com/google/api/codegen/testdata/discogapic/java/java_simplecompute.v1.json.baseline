@@ -211,6 +211,360 @@ public final class AddressName implements ResourceName {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectAddressName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectAddressName implements ResourceName {
+  private final String address;
+  private final String project;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/addresses/{address}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectAddressName(Builder builder) {
+    address = Preconditions.checkNotNull(builder.getAddress());
+    project = Preconditions.checkNotNull(builder.getProject());
+  }
+
+  public static ProjectAddressName of(
+      String address,
+      String project
+      ) {
+    return newBuilder()
+    .setAddress(address)
+    .setProject(project)
+      .build();
+  }
+
+  public static String format(
+      String address,
+      String project
+      ) {
+    return of(
+        address,
+        project
+        )
+        .toString();
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("address", address);
+          fieldMapBuilder.put("project", project);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ProjectAddressName> newFactory() {
+    return new ResourceNameFactory<ProjectAddressName>() {
+      public ProjectAddressName parse(String formattedString) {return ProjectAddressName.parse(formattedString);}
+    };
+  }
+
+  public static ProjectAddressName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectAddressName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("address"),
+      matchMap.get("project")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String address;
+    private String project;
+
+    public String getAddress() {
+      return address;
+    }
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectAddressName projectAddressName) {
+      address = projectAddressName.address;
+      project = projectAddressName.project;
+    }
+
+    public ProjectAddressName build() {
+      return new ProjectAddressName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "address", address,
+        "project", project
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectAddressName) {
+      ProjectAddressName that = (ProjectAddressName) o;
+      return
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.project, that.getProject())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      address,
+      project
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectName implements ResourceName {
+  private final String project;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+  }
+
+  public static ProjectName of(
+      String project
+      ) {
+    return newBuilder()
+    .setProject(project)
+      .build();
+  }
+
+  public static String format(
+      String project
+      ) {
+    return of(
+        project
+        )
+        .toString();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ProjectName> newFactory() {
+    return new ResourceNameFactory<ProjectName>() {
+      public ProjectName parse(String formattedString) {return ProjectName.parse(formattedString);}
+    };
+  }
+
+  public static ProjectName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String project;
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectName projectName) {
+      project = projectName.project;
+    }
+
+    public ProjectName build() {
+      return new ProjectName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectName) {
+      ProjectName that = (ProjectName) o;
+      return
+          Objects.equals(this.project, that.getProject())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -865,6 +1219,536 @@ public final class Address implements ApiMessage {
       selfLink,
       status,
       users
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressAggregatedList.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressAggregatedList implements ApiMessage {
+  private final String id;
+  private final AddressesScopedList items;
+  private final String kind;
+  private final String nextPageToken;
+  private final String selfLink;
+  private final Warning warning;
+
+  private AddressAggregatedList() {
+    this.id = null;
+    this.items = null;
+    this.kind = null;
+    this.nextPageToken = null;
+    this.selfLink = null;
+    this.warning = null;
+  }
+
+
+  private AddressAggregatedList(
+      String id,
+      AddressesScopedList items,
+      String kind,
+      String nextPageToken,
+      String selfLink,
+      Warning warning
+      ) {
+    this.id = id;
+    this.items = items;
+    this.kind = kind;
+    this.nextPageToken = nextPageToken;
+    this.selfLink = selfLink;
+    this.warning = warning;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("id") && id != null) {
+      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
+    }
+    if (fieldNames.contains("items") && items != null) {
+      fieldMap.put("items", Collections.singletonList(String.valueOf(items)));
+    }
+    if (fieldNames.contains("kind") && kind != null) {
+      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
+    }
+    if (fieldNames.contains("nextPageToken") && nextPageToken != null) {
+      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
+    }
+    if (fieldNames.contains("selfLink") && selfLink != null) {
+      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
+    }
+    if (fieldNames.contains("warning") && warning != null) {
+      fieldMap.put("warning", Collections.singletonList(String.valueOf(warning)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("id")) {
+      return String.valueOf(id);
+    }
+    if (fieldName.equals("items")) {
+      return String.valueOf(items);
+    }
+    if (fieldName.equals("kind")) {
+      return String.valueOf(kind);
+    }
+    if (fieldName.equals("nextPageToken")) {
+      return String.valueOf(nextPageToken);
+    }
+    if (fieldName.equals("selfLink")) {
+      return String.valueOf(selfLink);
+    }
+    if (fieldName.equals("warning")) {
+      return String.valueOf(warning);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public AddressesScopedList getItems() {
+    return items;
+  }
+
+  public String getKind() {
+    return kind;
+  }
+
+  public String getNextPageToken() {
+    return nextPageToken;
+  }
+
+  public String getSelfLink() {
+    return selfLink;
+  }
+
+  public Warning getWarning() {
+    return warning;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AddressAggregatedList prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AddressAggregatedList getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final AddressAggregatedList DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new AddressAggregatedList();
+  }
+
+  public static class Builder {
+    private String id;
+    private AddressesScopedList items;
+    private String kind;
+    private String nextPageToken;
+    private String selfLink;
+    private Warning warning;
+
+    Builder() {}
+
+    public Builder mergeFrom(AddressAggregatedList other) {
+      if (other == AddressAggregatedList.getDefaultInstance()) return this;
+      if (other.getId() != null) {
+        this.id = other.id;
+      }
+      if (other.getItems() != null) {
+        this.items = other.items;
+      }
+      if (other.getKind() != null) {
+        this.kind = other.kind;
+      }
+      if (other.getNextPageToken() != null) {
+        this.nextPageToken = other.nextPageToken;
+      }
+      if (other.getSelfLink() != null) {
+        this.selfLink = other.selfLink;
+      }
+      if (other.getWarning() != null) {
+        this.warning = other.warning;
+      }
+      return this;
+    }
+
+    Builder(AddressAggregatedList source) {
+      this.id = source.id;
+      this.items = source.items;
+      this.kind = source.kind;
+      this.nextPageToken = source.nextPageToken;
+      this.selfLink = source.selfLink;
+      this.warning = source.warning;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public AddressesScopedList getItems() {
+      return items;
+    }
+
+    public Builder setItems(AddressesScopedList items) {
+      this.items = items;
+      return this;
+    }
+
+    public String getKind() {
+      return kind;
+    }
+
+    public Builder setKind(String kind) {
+      this.kind = kind;
+      return this;
+    }
+
+    public String getNextPageToken() {
+      return nextPageToken;
+    }
+
+    public Builder setNextPageToken(String nextPageToken) {
+      this.nextPageToken = nextPageToken;
+      return this;
+    }
+
+    public String getSelfLink() {
+      return selfLink;
+    }
+
+    public Builder setSelfLink(String selfLink) {
+      this.selfLink = selfLink;
+      return this;
+    }
+
+    public Warning getWarning() {
+      return warning;
+    }
+
+    public Builder setWarning(Warning warning) {
+      this.warning = warning;
+      return this;
+    }
+
+
+    public AddressAggregatedList build() {
+
+
+
+
+
+      return new AddressAggregatedList(
+        id,
+        items,
+        kind,
+        nextPageToken,
+        selfLink,
+        warning
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setId(this.id);
+      newBuilder.setItems(this.items);
+      newBuilder.setKind(this.kind);
+      newBuilder.setNextPageToken(this.nextPageToken);
+      newBuilder.setSelfLink(this.selfLink);
+      newBuilder.setWarning(this.warning);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "AddressAggregatedList{"
+        + "id=" + id + ", "
+        + "items=" + items + ", "
+        + "kind=" + kind + ", "
+        + "nextPageToken=" + nextPageToken + ", "
+        + "selfLink=" + selfLink + ", "
+        + "warning=" + warning
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AddressAggregatedList) {
+      AddressAggregatedList that = (AddressAggregatedList) o;
+      return
+          Objects.equals(this.id, that.getId()) &&
+          Objects.equals(this.items, that.getItems()) &&
+          Objects.equals(this.kind, that.getKind()) &&
+          Objects.equals(this.nextPageToken, that.getNextPageToken()) &&
+          Objects.equals(this.selfLink, that.getSelfLink()) &&
+          Objects.equals(this.warning, that.getWarning())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      id,
+      items,
+      kind,
+      nextPageToken,
+      selfLink,
+      warning
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressesScopedList.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressesScopedList implements ApiMessage {
+  private final List<Address> addresses;
+  private final Warning warning;
+
+  private AddressesScopedList() {
+    this.addresses = null;
+    this.warning = null;
+  }
+
+
+  private AddressesScopedList(
+      List<Address> addresses,
+      Warning warning
+      ) {
+    this.addresses = addresses;
+    this.warning = warning;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("addresses") && addresses != null) {
+      fieldMap.put("addresses", Collections.singletonList(String.valueOf(addresses)));
+    }
+    if (fieldNames.contains("warning") && warning != null) {
+      fieldMap.put("warning", Collections.singletonList(String.valueOf(warning)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("addresses")) {
+      return String.valueOf(addresses);
+    }
+    if (fieldName.equals("warning")) {
+      return String.valueOf(warning);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public List<Address> getAddresses() {
+    return addresses;
+  }
+
+  public Warning getWarning() {
+    return warning;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AddressesScopedList prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AddressesScopedList getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final AddressesScopedList DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new AddressesScopedList();
+  }
+
+  public static class Builder {
+    private List<Address> addresses;
+    private Warning warning;
+
+    Builder() {}
+
+    public Builder mergeFrom(AddressesScopedList other) {
+      if (other == AddressesScopedList.getDefaultInstance()) return this;
+      if (other.getAddresses() != null) {
+        this.addresses = other.addresses;
+      }
+      if (other.getWarning() != null) {
+        this.warning = other.warning;
+      }
+      return this;
+    }
+
+    Builder(AddressesScopedList source) {
+      this.addresses = source.addresses;
+      this.warning = source.warning;
+    }
+
+    public List<Address> getAddresses() {
+      return addresses;
+    }
+
+    public Builder setAddresses(List<Address> addresses) {
+      this.addresses = addresses;
+      return this;
+    }
+
+    public Warning getWarning() {
+      return warning;
+    }
+
+    public Builder setWarning(Warning warning) {
+      this.warning = warning;
+      return this;
+    }
+
+
+    public AddressesScopedList build() {
+
+      return new AddressesScopedList(
+        addresses,
+        warning
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAddresses(this.addresses);
+      newBuilder.setWarning(this.warning);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "AddressesScopedList{"
+        + "addresses=" + addresses + ", "
+        + "warning=" + warning
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AddressesScopedList) {
+      AddressesScopedList that = (AddressesScopedList) o;
+      return
+          Objects.equals(this.addresses, that.getAddresses()) &&
+          Objects.equals(this.warning, that.getWarning())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      addresses,
+      warning
     );
   }
 }
@@ -2670,6 +3554,237 @@ public final class Operation implements ApiMessage {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/Warning.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Warning implements ApiMessage {
+  private final String code;
+  private final List<Data> data;
+  private final String message;
+
+  private Warning() {
+    this.code = null;
+    this.data = null;
+    this.message = null;
+  }
+
+
+  private Warning(
+      String code,
+      List<Data> data,
+      String message
+      ) {
+    this.code = code;
+    this.data = data;
+    this.message = message;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("code") && code != null) {
+      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
+    }
+    if (fieldNames.contains("data") && data != null) {
+      fieldMap.put("data", Collections.singletonList(String.valueOf(data)));
+    }
+    if (fieldNames.contains("message") && message != null) {
+      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("code")) {
+      return String.valueOf(code);
+    }
+    if (fieldName.equals("data")) {
+      return String.valueOf(data);
+    }
+    if (fieldName.equals("message")) {
+      return String.valueOf(message);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public List<Data> getData() {
+    return data;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Warning prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Warning getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final Warning DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new Warning();
+  }
+
+  public static class Builder {
+    private String code;
+    private List<Data> data;
+    private String message;
+
+    Builder() {}
+
+    public Builder mergeFrom(Warning other) {
+      if (other == Warning.getDefaultInstance()) return this;
+      if (other.getCode() != null) {
+        this.code = other.code;
+      }
+      if (other.getData() != null) {
+        this.data = other.data;
+      }
+      if (other.getMessage() != null) {
+        this.message = other.message;
+      }
+      return this;
+    }
+
+    Builder(Warning source) {
+      this.code = source.code;
+      this.data = source.data;
+      this.message = source.message;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public Builder setCode(String code) {
+      this.code = code;
+      return this;
+    }
+
+    public List<Data> getData() {
+      return data;
+    }
+
+    public Builder setData(List<Data> data) {
+      this.data = data;
+      return this;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public Builder setMessage(String message) {
+      this.message = message;
+      return this;
+    }
+
+
+    public Warning build() {
+
+
+      return new Warning(
+        code,
+        data,
+        message
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCode(this.code);
+      newBuilder.setData(this.data);
+      newBuilder.setMessage(this.message);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Warning{"
+        + "code=" + code + ", "
+        + "data=" + data + ", "
+        + "message=" + message
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Warning) {
+      Warning that = (Warning) o;
+      return
+          Objects.equals(this.code, that.getCode()) &&
+          Objects.equals(this.data, that.getData()) &&
+          Objects.equals(this.message, that.getMessage())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      code,
+      data,
+      message
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Warnings.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -2897,6 +4012,552 @@ public final class Warnings implements ApiMessage {
       code,
       data,
       message
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AggregatedListAddressesHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AggregatedListAddressesHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String filter;
+  private final String key;
+  private final Integer maxResults;
+  private final String orderBy;
+  private final String pageToken;
+  private final String prettyPrint;
+  private final String project;
+  private final String quotaUser;
+  private final String userIp;
+
+  private AggregatedListAddressesHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.filter = null;
+    this.key = null;
+    this.maxResults = null;
+    this.orderBy = null;
+    this.pageToken = null;
+    this.prettyPrint = null;
+    this.project = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
+  private AggregatedListAddressesHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String filter,
+      String key,
+      Integer maxResults,
+      String orderBy,
+      String pageToken,
+      String prettyPrint,
+      String project,
+      String quotaUser,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.filter = filter;
+    this.key = key;
+    this.maxResults = maxResults;
+    this.orderBy = orderBy;
+    this.pageToken = pageToken;
+    this.prettyPrint = prettyPrint;
+    this.project = project;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    ProjectName resourceName = ProjectName.parse(project);
+    mapBuilder.put("project", resourceName.getProject());
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("filter") && filter != null) {
+      fieldMap.put("filter", Collections.singletonList(String.valueOf(filter)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("maxResults") && maxResults != null) {
+      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
+    }
+    if (fieldNames.contains("orderBy") && orderBy != null) {
+      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
+    }
+    if (fieldNames.contains("pageToken") && pageToken != null) {
+      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("project") && project != null) {
+      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("filter")) {
+      return String.valueOf(filter);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("maxResults")) {
+      return String.valueOf(maxResults);
+    }
+    if (fieldName.equals("orderBy")) {
+      return String.valueOf(orderBy);
+    }
+    if (fieldName.equals("pageToken")) {
+      return String.valueOf(pageToken);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("project")) {
+      return String.valueOf(project);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getFilter() {
+    return filter;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public Integer getMaxResults() {
+    return maxResults;
+  }
+
+  public String getOrderBy() {
+    return orderBy;
+  }
+
+  public String getPageToken() {
+    return pageToken;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AggregatedListAddressesHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AggregatedListAddressesHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final AggregatedListAddressesHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new AggregatedListAddressesHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String filter;
+    private String key;
+    private Integer maxResults;
+    private String orderBy;
+    private String pageToken;
+    private String prettyPrint;
+    private String project;
+    private String quotaUser;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(AggregatedListAddressesHttpRequest other) {
+      if (other == AggregatedListAddressesHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getFilter() != null) {
+        this.filter = other.filter;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getMaxResults() != null) {
+        this.maxResults = other.maxResults;
+      }
+      if (other.getOrderBy() != null) {
+        this.orderBy = other.orderBy;
+      }
+      if (other.getPageToken() != null) {
+        this.pageToken = other.pageToken;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getProject() != null) {
+        this.project = other.project;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(AggregatedListAddressesHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.filter = source.filter;
+      this.key = source.key;
+      this.maxResults = source.maxResults;
+      this.orderBy = source.orderBy;
+      this.pageToken = source.pageToken;
+      this.prettyPrint = source.prettyPrint;
+      this.project = source.project;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getFilter() {
+      return filter;
+    }
+
+    public Builder setFilter(String filter) {
+      this.filter = filter;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public Integer getMaxResults() {
+      return maxResults;
+    }
+
+    public Builder setMaxResults(Integer maxResults) {
+      this.maxResults = maxResults;
+      return this;
+    }
+
+    public String getOrderBy() {
+      return orderBy;
+    }
+
+    public Builder setOrderBy(String orderBy) {
+      this.orderBy = orderBy;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getProject() {
+      return project;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public AggregatedListAddressesHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+
+      if (project == null) {
+        missing += " project";
+      }
+
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new AggregatedListAddressesHttpRequest(
+        access_token,
+        callback,
+        fields,
+        filter,
+        key,
+        maxResults,
+        orderBy,
+        pageToken,
+        prettyPrint,
+        project,
+        quotaUser,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setFilter(this.filter);
+      newBuilder.setKey(this.key);
+      newBuilder.setMaxResults(this.maxResults);
+      newBuilder.setOrderBy(this.orderBy);
+      newBuilder.setPageToken(this.pageToken);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setProject(this.project);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "AggregatedListAddressesHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "filter=" + filter + ", "
+        + "key=" + key + ", "
+        + "maxResults=" + maxResults + ", "
+        + "orderBy=" + orderBy + ", "
+        + "pageToken=" + pageToken + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "project=" + project + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AggregatedListAddressesHttpRequest) {
+      AggregatedListAddressesHttpRequest that = (AggregatedListAddressesHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.filter, that.getFilter()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.maxResults, that.getMaxResults()) &&
+          Objects.equals(this.orderBy, that.getOrderBy()) &&
+          Objects.equals(this.pageToken, that.getPageToken()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      filter,
+      key,
+      maxResults,
+      orderBy,
+      pageToken,
+      prettyPrint,
+      project,
+      quotaUser,
+      userIp
     );
   }
 }
@@ -4717,6 +6378,998 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/PatchAddressHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class PatchAddressHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String address;
+  private final Address addressResource;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String region;
+  private final String requestId;
+  private final String userIp;
+
+  private PatchAddressHttpRequest() {
+    this.access_token = null;
+    this.address = null;
+    this.addressResource = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.region = null;
+    this.requestId = null;
+    this.userIp = null;
+  }
+
+
+  private PatchAddressHttpRequest(
+      String access_token,
+      String address,
+      Address addressResource,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String region,
+      String requestId,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.address = address;
+    this.addressResource = addressResource;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.region = region;
+    this.requestId = requestId;
+    this.userIp = userIp;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    RegionName resourceName = RegionName.parse(region);
+    mapBuilder.put("project", resourceName.getProject());
+    mapBuilder.put("region", resourceName.getRegion());
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("addressResource") && addressResource != null) {
+      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("region") && region != null) {
+      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
+    }
+    if (fieldNames.contains("requestId") && requestId != null) {
+      fieldMap.put("requestId", Collections.singletonList(String.valueOf(requestId)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("address")) {
+      return String.valueOf(address);
+    }
+    if (fieldName.equals("addressResource")) {
+      return String.valueOf(addressResource);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("region")) {
+      return String.valueOf(region);
+    }
+    if (fieldName.equals("requestId")) {
+      return String.valueOf(requestId);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public Address getApiMessageRequestBody() {
+    return addressResource;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public Address getAddressResource() {
+    return addressResource;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+  public String getRequestId() {
+    return requestId;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(PatchAddressHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static PatchAddressHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final PatchAddressHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new PatchAddressHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String address;
+    private Address addressResource;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String region;
+    private String requestId;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(PatchAddressHttpRequest other) {
+      if (other == PatchAddressHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getAddress() != null) {
+        this.address = other.address;
+      }
+      if (other.getAddressResource() != null) {
+        this.addressResource = other.addressResource;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRegion() != null) {
+        this.region = other.region;
+      }
+      if (other.getRequestId() != null) {
+        this.requestId = other.requestId;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(PatchAddressHttpRequest source) {
+      this.access_token = source.access_token;
+      this.address = source.address;
+      this.addressResource = source.addressResource;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.region = source.region;
+      this.requestId = source.requestId;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+
+    public Address getAddressResource() {
+      return addressResource;
+    }
+
+    public Builder setAddressResource(Address addressResource) {
+      this.addressResource = addressResource;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    public String getRequestId() {
+      return requestId;
+    }
+
+    public Builder setRequestId(String requestId) {
+      this.requestId = requestId;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public PatchAddressHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+      if (region == null) {
+        missing += " region";
+      }
+
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new PatchAddressHttpRequest(
+        access_token,
+        address,
+        addressResource,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        region,
+        requestId,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddress(this.address);
+      newBuilder.setAddressResource(this.addressResource);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRegion(this.region);
+      newBuilder.setRequestId(this.requestId);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "PatchAddressHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "address=" + address + ", "
+        + "addressResource=" + addressResource + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "region=" + region + ", "
+        + "requestId=" + requestId + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof PatchAddressHttpRequest) {
+      PatchAddressHttpRequest that = (PatchAddressHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.addressResource, that.getAddressResource()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.region, that.getRegion()) &&
+          Objects.equals(this.requestId, that.getRequestId()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      address,
+      addressResource,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      region,
+      requestId,
+      userIp
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/UpdateAddressHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class UpdateAddressHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String address;
+  private final Address addressResource;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String requestId;
+  private final String userIp;
+
+  private UpdateAddressHttpRequest() {
+    this.access_token = null;
+    this.address = null;
+    this.addressResource = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.requestId = null;
+    this.userIp = null;
+  }
+
+
+  private UpdateAddressHttpRequest(
+      String access_token,
+      String address,
+      Address addressResource,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String requestId,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.address = address;
+    this.addressResource = addressResource;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.requestId = requestId;
+    this.userIp = userIp;
+    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+    ProjectAddressName resourceName = ProjectAddressName.parse(address);
+    mapBuilder.put("address", resourceName.getAddress());
+    mapBuilder.put("project", resourceName.getProject());
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("address") && address != null) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
+    }
+    if (fieldNames.contains("addressResource") && addressResource != null) {
+      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("requestId") && requestId != null) {
+      fieldMap.put("requestId", Collections.singletonList(String.valueOf(requestId)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("address")) {
+      return String.valueOf(address);
+    }
+    if (fieldName.equals("addressResource")) {
+      return String.valueOf(addressResource);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("requestId")) {
+      return String.valueOf(requestId);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public Address getApiMessageRequestBody() {
+    return addressResource;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public Address getAddressResource() {
+    return addressResource;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getRequestId() {
+    return requestId;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(UpdateAddressHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static UpdateAddressHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final UpdateAddressHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new UpdateAddressHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String address;
+    private Address addressResource;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String requestId;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(UpdateAddressHttpRequest other) {
+      if (other == UpdateAddressHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getAddress() != null) {
+        this.address = other.address;
+      }
+      if (other.getAddressResource() != null) {
+        this.addressResource = other.addressResource;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRequestId() != null) {
+        this.requestId = other.requestId;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(UpdateAddressHttpRequest source) {
+      this.access_token = source.access_token;
+      this.address = source.address;
+      this.addressResource = source.addressResource;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.requestId = source.requestId;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+
+    public Address getAddressResource() {
+      return addressResource;
+    }
+
+    public Builder setAddressResource(Address addressResource) {
+      this.addressResource = addressResource;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getRequestId() {
+      return requestId;
+    }
+
+    public Builder setRequestId(String requestId) {
+      this.requestId = requestId;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public UpdateAddressHttpRequest build() {
+      String missing = "";
+
+      if (address == null) {
+        missing += " address";
+      }
+
+
+
+
+
+
+
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new UpdateAddressHttpRequest(
+        access_token,
+        address,
+        addressResource,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        requestId,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddress(this.address);
+      newBuilder.setAddressResource(this.addressResource);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setRequestId(this.requestId);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "UpdateAddressHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "address=" + address + ", "
+        + "addressResource=" + addressResource + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "requestId=" + requestId + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof UpdateAddressHttpRequest) {
+      UpdateAddressHttpRequest that = (UpdateAddressHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.addressResource, that.getAddressResource()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.requestId, that.getRequestId()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      address,
+      addressResource,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      requestId,
+      userIp
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -4888,6 +7541,139 @@ public class AddressClient implements BackgroundResource {
     return stub;
   }
 
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   for (Address element : addressClient.aggregatedListAddresses(project).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(ProjectName project) {
+    AggregatedListAddressesHttpRequest request =
+        AggregatedListAddressesHttpRequest.newBuilder()
+        .setProject(project == null ? null : project.toString())
+        .build();
+    return aggregatedListAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   for (Address element : addressClient.aggregatedListAddresses(project.toString()).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(String project) {
+    AggregatedListAddressesHttpRequest request =
+        AggregatedListAddressesHttpRequest.newBuilder()
+        .setProject(project)
+        .build();
+    return aggregatedListAddresses(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   for (Address element : addressClient.aggregatedListAddresses(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final AggregatedListAddressesPagedResponse aggregatedListAddresses(AggregatedListAddressesHttpRequest request) {
+    return aggregatedListAddressesPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   ApiFuture&lt;AggregatedListAddressesPagedResponse&gt; future = addressClient.aggregatedListAddressesPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Address element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    return stub.aggregatedListAddressesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves an aggregated list of addresses.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
+   *     .setProject(project.toString())
+   *     .build();
+   *   while (true) {
+   *     AddressAggregatedList response = addressClient.aggregatedListAddressesCallable().call(request);
+   *     for (Address element : response.getAddresses()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    return stub.aggregatedListAddressesCallable();
+  }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
@@ -5087,8 +7873,8 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
-   *   Operation response = addressClient.insertAddress(region, address);
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region, addressResource);
    * }
    * </code></pre>
    *
@@ -5115,8 +7901,8 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
-   *   Operation response = addressClient.insertAddress(region.toString(), address);
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region.toString(), addressResource);
    * }
    * </code></pre>
    *
@@ -5143,10 +7929,10 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
+   *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   Operation response = addressClient.insertAddress(request);
    * }
@@ -5168,10 +7954,10 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
-   *   Address address = Address.newBuilder().build();
+   *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
-   *     .setAddressResource(address)
+   *     .setAddressResource(addressResource)
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall(request);
    *   // Do something
@@ -5317,6 +8103,262 @@ public class AddressClient implements BackgroundResource {
     return stub.listAddressesCallable();
   }
 
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates an address in the specified project using the data included in the request. This method supports PATCH semantics and uses the JSON merge patch format and processing rules.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   String address = "";
+   *   String requestId = "";
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.patchAddress(address, requestId, region, addressResource);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address to patch.
+   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
+   *
+   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
+   *
+   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
+   * @param region Name of the region for this request.
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation patchAddress(String address, String requestId, RegionName region, Address addressResource) {
+
+    PatchAddressHttpRequest request =
+        PatchAddressHttpRequest.newBuilder()
+        .setAddress(address)
+        .setRequestId(requestId)
+        .setRegion(region == null ? null : region.toString())
+        .setAddressResource(addressResource)
+        .build();
+    return patchAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates an address in the specified project using the data included in the request. This method supports PATCH semantics and uses the JSON merge patch format and processing rules.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   String address = "";
+   *   String requestId = "";
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.patchAddress(address, requestId, region.toString(), addressResource);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address to patch.
+   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
+   *
+   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
+   *
+   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
+   * @param region Name of the region for this request.
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation patchAddress(String address, String requestId, String region, Address addressResource) {
+
+    PatchAddressHttpRequest request =
+        PatchAddressHttpRequest.newBuilder()
+        .setAddress(address)
+        .setRequestId(requestId)
+        .setRegion(region)
+        .setAddressResource(addressResource)
+        .build();
+    return patchAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates an address in the specified project using the data included in the request. This method supports PATCH semantics and uses the JSON merge patch format and processing rules.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   String address = "";
+   *   String requestId = "";
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
+   *     .setAddress(address)
+   *     .setRequestId(requestId)
+   *     .setRegion(region.toString())
+   *     .setAddressResource(addressResource)
+   *     .build();
+   *   Operation response = addressClient.patchAddress(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation patchAddress(PatchAddressHttpRequest request) {
+    return patchAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates an address in the specified project using the data included in the request. This method supports PATCH semantics and uses the JSON merge patch format and processing rules.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   String address = "";
+   *   String requestId = "";
+   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
+   *     .setAddress(address)
+   *     .setRequestId(requestId)
+   *     .setRegion(region.toString())
+   *     .setAddressResource(addressResource)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.patchAddressCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+    return stub.patchAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the specified Address resource with the data included in the request. There are several restrictions and guidelines to keep in mind when updating an address. Read  Restrictions and Guidelines for more information.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   String requestId = "";
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.updateAddress(address, requestId, addressResource);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the Address resource to update.
+   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
+   *
+   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
+   *
+   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation updateAddress(ProjectAddressName address, String requestId, Address addressResource) {
+
+    UpdateAddressHttpRequest request =
+        UpdateAddressHttpRequest.newBuilder()
+        .setAddress(address == null ? null : address.toString())
+        .setRequestId(requestId)
+        .setAddressResource(addressResource)
+        .build();
+    return updateAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the specified Address resource with the data included in the request. There are several restrictions and guidelines to keep in mind when updating an address. Read  Restrictions and Guidelines for more information.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   String requestId = "";
+   *   Address addressResource = Address.newBuilder().build();
+   *   Operation response = addressClient.updateAddress(address.toString(), requestId, addressResource);
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the Address resource to update.
+   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
+   *
+   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
+   *
+   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
+   * @param addressResource A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation updateAddress(String address, String requestId, Address addressResource) {
+
+    UpdateAddressHttpRequest request =
+        UpdateAddressHttpRequest.newBuilder()
+        .setAddress(address)
+        .setRequestId(requestId)
+        .setAddressResource(addressResource)
+        .build();
+    return updateAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the specified Address resource with the data included in the request. There are several restrictions and guidelines to keep in mind when updating an address. Read  Restrictions and Guidelines for more information.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   String requestId = "";
+   *   Address addressResource = Address.newBuilder().build();
+   *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
+   *     .setAddress(address.toString())
+   *     .setRequestId(requestId)
+   *     .setAddressResource(addressResource)
+   *     .build();
+   *   Operation response = addressClient.updateAddress(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation updateAddress(UpdateAddressHttpRequest request) {
+    return updateAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the specified Address resource with the data included in the request. There are several restrictions and guidelines to keep in mind when updating an address. Read  Restrictions and Guidelines for more information.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   String requestId = "";
+   *   Address addressResource = Address.newBuilder().build();
+   *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
+   *     .setAddress(address.toString())
+   *     .setRequestId(requestId)
+   *     .setAddressResource(addressResource)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.updateAddressCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable() {
+    return stub.updateAddressCallable();
+  }
+
   @Override
   public final void close() throws Exception {
     stub.close();
@@ -5347,6 +8389,93 @@ public class AddressClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class AggregatedListAddressesPagedResponse extends AbstractPagedListResponse<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage,
+      AggregatedListAddressesFixedSizeCollection> {
+
+    public static ApiFuture<AggregatedListAddressesPagedResponse> createAsync(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        ApiFuture<AddressAggregatedList> futureResponse) {
+      ApiFuture<AggregatedListAddressesPage> futurePage =
+          AggregatedListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<AggregatedListAddressesPage, AggregatedListAddressesPagedResponse>() {
+            @Override
+            public AggregatedListAddressesPagedResponse apply(AggregatedListAddressesPage input) {
+              return new AggregatedListAddressesPagedResponse(input);
+            }
+          });
+    }
+
+    private AggregatedListAddressesPagedResponse(AggregatedListAddressesPage page) {
+      super(page, AggregatedListAddressesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class AggregatedListAddressesPage extends AbstractPage<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage> {
+
+    private AggregatedListAddressesPage(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        AddressAggregatedList response) {
+      super(context, response);
+    }
+
+    private static AggregatedListAddressesPage createEmptyPage() {
+      return new AggregatedListAddressesPage(null, null);
+    }
+
+    @Override
+    protected AggregatedListAddressesPage createPage(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        AddressAggregatedList response) {
+      return new AggregatedListAddressesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<AggregatedListAddressesPage> createPageAsync(
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        ApiFuture<AddressAggregatedList> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class AggregatedListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
+      AggregatedListAddressesHttpRequest,
+      AddressAggregatedList,
+      Address,
+      AggregatedListAddressesPage,
+      AggregatedListAddressesFixedSizeCollection> {
+
+    private AggregatedListAddressesFixedSizeCollection(List<AggregatedListAddressesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static AggregatedListAddressesFixedSizeCollection createEmptyCollection() {
+      return new AggregatedListAddressesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected AggregatedListAddressesFixedSizeCollection createCollection(
+        List<AggregatedListAddressesPage> pages, int collectionSize) {
+      return new AggregatedListAddressesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
   public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
       ListAddressesHttpRequest,
       AddressList,
@@ -5480,6 +8609,7 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.AddressStubSettings;
 import com.google.common.collect.ImmutableList;
@@ -5524,6 +8654,13 @@ import org.threeten.bp.Duration;
 @BetaApi
 public class AddressSettings extends ClientSettings<AddressSettings> {
   /**
+   * Returns the object with the settings used for calls to aggregatedListAddresses.
+   */
+  public PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+    return ((AddressStubSettings) getStubSettings()).aggregatedListAddressesSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to deleteAddress.
    */
   public UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
@@ -5549,6 +8686,20 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
    */
   public PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
     return ((AddressStubSettings) getStubSettings()).listAddressesSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to patchAddress.
+   */
+  public UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+    return ((AddressStubSettings) getStubSettings()).patchAddressSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to updateAddress.
+   */
+  public UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
+    return ((AddressStubSettings) getStubSettings()).updateAddressSettings();
   }
 
 
@@ -5671,6 +8822,13 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to aggregatedListAddresses.
+     */
+    public PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+      return getStubSettingsBuilder().aggregatedListAddressesSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to deleteAddress.
      */
     public UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
@@ -5696,6 +8854,20 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
      */
     public PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
       return getStubSettingsBuilder().listAddressesSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to patchAddress.
+     */
+    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+      return getStubSettingsBuilder().patchAddressSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to updateAddress.
+     */
+    public UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
+      return getStubSettingsBuilder().updateAddressSettings();
     }
 
     @Override
@@ -5750,13 +8922,18 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
+import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -5810,10 +8987,20 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       .add("https://www.googleapis.com/auth/devstorage.read_write")
       .build();
 
+  private final PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
   private final UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
   private final UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
   private final UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
   private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+  private final UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings;
+  private final UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings;
+
+  /**
+   * Returns the object with the settings used for calls to aggregatedListAddresses.
+   */
+  public PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+    return aggregatedListAddressesSettings;
+  }
 
   /**
    * Returns the object with the settings used for calls to deleteAddress.
@@ -5841,6 +9028,20 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
    */
   public PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
     return listAddressesSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to patchAddress.
+   */
+  public UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+    return patchAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to updateAddress.
+   */
+  public UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
+    return updateAddressSettings;
   }
 
 
@@ -5935,11 +9136,48 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   protected AddressStubSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
+    aggregatedListAddressesSettings = settingsBuilder.aggregatedListAddressesSettings().build();
     deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
     getAddressSettings = settingsBuilder.getAddressSettings().build();
     insertAddressSettings = settingsBuilder.insertAddressSettings().build();
     listAddressesSettings = settingsBuilder.listAddressesSettings().build();
+    patchAddressSettings = settingsBuilder.patchAddressSettings().build();
+    updateAddressSettings = settingsBuilder.updateAddressSettings().build();
   }
+
+  private static final PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC =
+      new PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public AggregatedListAddressesHttpRequest injectToken(AggregatedListAddressesHttpRequest payload, String token) {
+          return AggregatedListAddressesHttpRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public AggregatedListAddressesHttpRequest injectPageSize(AggregatedListAddressesHttpRequest payload, int pageSize) {
+          return AggregatedListAddressesHttpRequest
+            .newBuilder(payload)
+            .setMaxResults(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(AggregatedListAddressesHttpRequest payload) {
+          return payload.getMaxResults();
+        }
+        @Override
+        public String extractNextToken(AddressAggregatedList payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Address> extractResources(AddressAggregatedList payload) {
+          return payload.getItems().getAddresses();
+        }
+      };
 
   private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
       new PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address>() {
@@ -5975,6 +9213,20 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
       };
 
+  private static final PagedListResponseFactory<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> AGGREGATED_LIST_ADDRESSES_PAGE_STR_FACT =
+      new PagedListResponseFactory<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse>() {
+        @Override
+        public ApiFuture<AggregatedListAddressesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> callable,
+            AggregatedListAddressesHttpRequest request,
+            ApiCallContext context,
+            ApiFuture<AddressAggregatedList> futureResponse) {
+          PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> pageContext =
+              PageContext.create(callable, AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC, request, context);
+          return AggregatedListAddressesPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
   private static final PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> LIST_ADDRESSES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse>() {
         @Override
@@ -5996,10 +9248,13 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   public static class Builder extends StubSettings.Builder<AddressStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
+    private final PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
     private final UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
     private final UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
     private final UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
     private final PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+    private final UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings;
+    private final UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -6039,6 +9294,9 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     protected Builder(ClientContext clientContext) {
       super(clientContext);
 
+      aggregatedListAddressesSettings = PagedCallSettings.newBuilder(
+          AGGREGATED_LIST_ADDRESSES_PAGE_STR_FACT);
+
       deleteAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       getAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -6048,11 +9306,18 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       listAddressesSettings = PagedCallSettings.newBuilder(
           LIST_ADDRESSES_PAGE_STR_FACT);
 
+      patchAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      updateAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          aggregatedListAddressesSettings,
           deleteAddressSettings,
           getAddressSettings,
           insertAddressSettings,
-          listAddressesSettings
+          listAddressesSettings,
+          patchAddressSettings,
+          updateAddressSettings
       );
 
       initDefaults(this);
@@ -6068,6 +9333,10 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     }
 
     private static Builder initDefaults(Builder builder) {
+
+      builder.aggregatedListAddressesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteAddressSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
@@ -6085,22 +9354,36 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.patchAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.updateAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
     protected Builder(AddressStubSettings settings) {
       super(settings);
 
+      aggregatedListAddressesSettings = settings.aggregatedListAddressesSettings.toBuilder();
       deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
       getAddressSettings = settings.getAddressSettings.toBuilder();
       insertAddressSettings = settings.insertAddressSettings.toBuilder();
       listAddressesSettings = settings.listAddressesSettings.toBuilder();
+      patchAddressSettings = settings.patchAddressSettings.toBuilder();
+      updateAddressSettings = settings.updateAddressSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          aggregatedListAddressesSettings,
           deleteAddressSettings,
           getAddressSettings,
           insertAddressSettings,
-          listAddressesSettings
+          listAddressesSettings,
+          patchAddressSettings,
+          updateAddressSettings
       );
     }
 
@@ -6116,6 +9399,13 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
     public ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders() {
       return unaryMethodSettingsBuilders;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to aggregatedListAddresses.
+     */
+    public PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings() {
+      return aggregatedListAddressesSettings;
     }
 
     /**
@@ -6146,6 +9436,20 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       return listAddressesSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to patchAddress.
+     */
+    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+      return patchAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to updateAddress.
+     */
+    public UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
+      return updateAddressSettings;
+    }
+
     @Override
     public AddressStubSettings build() throws IOException {
       return new AddressStubSettings(this);
@@ -6174,15 +9478,22 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
+import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -6195,6 +9506,16 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class AddressStub implements BackgroundResource {
 
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: aggregatedListAddressesPagedCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: aggregatedListAddressesCallable()");
+  }
 
   @BetaApi
   public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
@@ -6219,6 +9540,16 @@ public abstract class AddressStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
     throw new UnsupportedOperationException("Not implemented: listAddressesCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: patchAddressCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: updateAddressCallable()");
   }
 
 }
@@ -6252,16 +9583,23 @@ import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
+import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
@@ -6284,6 +9622,19 @@ import javax.annotation.Generated;
 public class HttpJsonAddressStub extends AddressStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
+  private static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
+      ApiMethodDescriptor.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
+          .setMethodName("compute.addresses.aggregatedList")
+          .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
+          .setResponseInstance(AddressAggregatedList.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/aggregated/addresses")
+          .setQueryParams(Sets.<String>newHashSet(
+                             "filter",    "maxResults",    "orderBy",    "pageToken"
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(ProjectName.newFactory()))
+          .setHttpMethod(HttpMethods.GET)
+          .setResourceNameField("project")
+          .build();
   private static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
       ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.delete")
@@ -6333,14 +9684,44 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("region")
           .build();
+  private static final ApiMethodDescriptor<PatchAddressHttpRequest, Operation> patchAddressMethodDescriptor =
+      ApiMethodDescriptor.<PatchAddressHttpRequest, Operation>newBuilder()
+          .setMethodName("compute.addresses.patch")
+          .setRequestInstance(PatchAddressHttpRequest.getDefaultInstance())
+          .setResponseInstance(Operation.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
+          .setQueryParams(Sets.<String>newHashSet(
+                             "address",    "requestId"
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(RegionName.newFactory()))
+          .setHttpMethod(HttpMethods.PATCH)
+          .setResourceNameField("region")
+          .build();
+  private static final ApiMethodDescriptor<UpdateAddressHttpRequest, Operation> updateAddressMethodDescriptor =
+      ApiMethodDescriptor.<UpdateAddressHttpRequest, Operation>newBuilder()
+          .setMethodName("compute.addresses.update")
+          .setRequestInstance(UpdateAddressHttpRequest.getDefaultInstance())
+          .setResponseInstance(Operation.getDefaultInstance())
+          .setEndpointPathTemplate("{project}/global/addresses/{address}")
+          .setQueryParams(Sets.<String>newHashSet(
+                             "requestId"
+                             ))
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(ProjectAddressName.newFactory()))
+          .setHttpMethod(HttpMethods.PUT)
+          .setResourceNameField("projectAddress")
+          .build();
 
   private final BackgroundResource backgroundResources;
 
+  private final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable;
+  private final UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable;
   private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
   private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
   private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
+  private final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable;
+  private final UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable;
 
   public static final HttpJsonAddressStub create(AddressStubSettings settings) throws IOException {
     return new HttpJsonAddressStub(settings, ClientContext.create(settings));
@@ -6357,6 +9738,10 @@ public class HttpJsonAddressStub extends AddressStub {
    */
   protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext) throws IOException {
 
+    HttpJsonCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesTransportSettings =
+        HttpJsonCallSettings.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
+            .setMethodDescriptor(aggregatedListAddressesMethodDescriptor)
+            .build();
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
             .setMethodDescriptor(deleteAddressMethodDescriptor)
@@ -6373,14 +9758,36 @@ public class HttpJsonAddressStub extends AddressStub {
         HttpJsonCallSettings.<ListAddressesHttpRequest, AddressList>newBuilder()
             .setMethodDescriptor(listAddressesMethodDescriptor)
             .build();
+    HttpJsonCallSettings<PatchAddressHttpRequest, Operation> patchAddressTransportSettings =
+        HttpJsonCallSettings.<PatchAddressHttpRequest, Operation>newBuilder()
+            .setMethodDescriptor(patchAddressMethodDescriptor)
+            .build();
+    HttpJsonCallSettings<UpdateAddressHttpRequest, Operation> updateAddressTransportSettings =
+        HttpJsonCallSettings.<UpdateAddressHttpRequest, Operation>newBuilder()
+            .setMethodDescriptor(updateAddressMethodDescriptor)
+            .build();
 
+    this.aggregatedListAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
+    this.aggregatedListAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
     this.deleteAddressCallable = HttpJsonCallableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
     this.getAddressCallable = HttpJsonCallableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
     this.insertAddressCallable = HttpJsonCallableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
     this.listAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
     this.listAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.patchAddressCallable = HttpJsonCallableFactory.createUnaryCallable(patchAddressTransportSettings,settings.patchAddressSettings(), clientContext);
+    this.updateAddressCallable = HttpJsonCallableFactory.createUnaryCallable(updateAddressTransportSettings,settings.updateAddressSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
+    return aggregatedListAddressesPagedCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable() {
+    return aggregatedListAddressesCallable;
   }
 
   @BetaApi
@@ -6406,6 +9813,16 @@ public class HttpJsonAddressStub extends AddressStub {
   @BetaApi
   public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
     return listAddressesCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+    return patchAddressCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable() {
+    return updateAddressCallable;
   }
 
   @Override

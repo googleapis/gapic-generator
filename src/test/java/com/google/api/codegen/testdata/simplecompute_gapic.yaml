@@ -36,6 +36,10 @@ interfaces:
   # The entity_name is the name to be used as a basis for generated methods and
   # classes.
   collections:
+  - name_pattern: projects/{project}
+    entity_name: project
+  - name_pattern: projects/{project}/addresses/{address}
+    entity_name: projectAddress
   - name_pattern: projects/{project}/regions/{region}
     entity_name: region
   - name_pattern: projects/{project}/regions/{region}/addresses/{address}
@@ -109,6 +113,27 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
+  - name: compute.addresses.aggregatedList
+    flattening:
+      groups:
+      - parameters:
+        - project
+    required_fields:
+    - project
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: maxResults
+        token_field: pageToken
+      response:
+        token_field: nextPageToken
+        resources_field: AddressAggregatedList
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    timeout_millis: 60000
   - name: compute.addresses.delete
     flattening:
       groups:
@@ -174,7 +199,48 @@ interfaces:
     field_name_patterns:
       region: region
     timeout_millis: 60000
+  - name: compute.addresses.patch
+    flattening:
+      groups:
+      - parameters:
+        - address
+        - requestId
+        - region
+        - addressResource
+    required_fields:
+    - address
+    - requestId
+    - region
+    - addressResource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      region: region
+    timeout_millis: 60000
+  - name: compute.addresses.update
+    flattening:
+      groups:
+      - parameters:
+        - address
+        - requestId
+        - addressResource
+    required_fields:
+    - address
+    - requestId
+    - addressResource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      address: projectAddress
+    timeout_millis: 60000
 resource_name_generation:
+- message_name: AggregatedListAddressesHttpRequest
+  field_entity_map:
+    project: project
 - message_name: DeleteAddressHttpRequest
   field_entity_map:
     address: address
@@ -187,3 +253,9 @@ resource_name_generation:
 - message_name: ListAddressesHttpRequest
   field_entity_map:
     region: region
+- message_name: PatchAddressHttpRequest
+  field_entity_map:
+    region: region
+- message_name: UpdateAddressHttpRequest
+  field_entity_map:
+    address: projectAddress

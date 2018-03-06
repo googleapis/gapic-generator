@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
   private static final String REGEX_DELIMITER = "\\.";
+  private static final String PATH_DELIMITER = "/";
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
 
@@ -94,18 +95,25 @@ public class DiscoGapicNamer {
     return function.join(resource);
   }
 
-  /** Return the name of the qualified resource from a given method's path. */
-  public static Name getQualifiedResourceIdentifier(Method method, String qualifyingResource) {
-    String methodPath = method.flatPath();
-    Name qualifier = Name.anyCamel(qualifyingResource);
-    Name baseResourceName = Name.anyCamel(getResourceIdentifier(methodPath).toLowerCamel());
+  /**
+   * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
+   * #getCanonicalPath(Method)}} for canonicalization of the parameter.
+   */
+  public static Name getQualifiedResourceIdentifier(String canonicalPath) {
+    String[] pieces = canonicalPath.split(PATH_DELIMITER);
 
-    // If the qualifying resource is the same as the base resource, just return the base resource name.
-    if (!Inflector.singularize(qualifier.toLowerCamel()).equals(baseResourceName.toLowerCamel())) {
-      baseResourceName = qualifier.join(baseResourceName);
+    Name name = null;
+    for (String piece : pieces) {
+      if (!piece.contains("{")) {
+        if (name == null) {
+          name = Name.from(Inflector.singularize(piece));
+        } else {
+          name = name.join(Inflector.singularize(piece));
+        }
+      }
     }
 
-    return baseResourceName;
+    return name;
   }
 
   /** Return the name of the unqualified resource from a given method's path. */
@@ -142,7 +150,7 @@ public class DiscoGapicNamer {
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
     String[] pieces = paramString.split("_");
     Name param = Name.anyCamel(pieces);
-    if (Strings.isNullOrEmpty(schema.location())) {
+    if (Strings.isNullOrEmpty(schema.location()) && schema.type().equals(Schema.Type.OBJECT)) {
       param = param.join("resource");
     }
     return param;
@@ -167,7 +175,7 @@ public class DiscoGapicNamer {
     if (method.response() != null) {
       Schema responseSchema;
       if (method.response().reference() != null) {
-        responseSchema = method.response();
+        responseSchema = method.response().dereference();
       } else {
         responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
       }
@@ -207,6 +215,4 @@ public class DiscoGapicNamer {
     }
     return namePattern;
   }
-
-  //TODO(andrealin): Naming methods for service name.
 }

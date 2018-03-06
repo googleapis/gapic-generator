@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
@@ -229,7 +230,7 @@ public class InitCodeNode {
       // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
       for (FieldModel field : context.initFields()) {
-        String nameString = field.getSimpleName();
+        String nameString = field.getNameAsParameter();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
           newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
@@ -306,10 +307,12 @@ public class InitCodeNode {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
-        for (int i = 0; i < childKeys.size(); i++) {
-          if (!childKeys.contains(Integer.toString(i))) {
-            throw new IllegalArgumentException(
-                "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
+        if (typeRef.getApiSource().equals(ApiSource.PROTO)) {
+          for (int i = 0; i < childKeys.size(); i++) {
+            if (!childKeys.contains(Integer.toString(i))) {
+              throw new IllegalArgumentException(
+                  "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
+            }
           }
         }
         break;
@@ -353,7 +356,7 @@ public class InitCodeNode {
     if (parentType.isMap()) {
       TypeModel keyType = parentType.getMapKeyField().getType();
       validateValue(keyType, key);
-    } else if (parentType.isRepeated()) {
+    } else if (parentType.isRepeated() && parentType.getApiSource().equals(ApiSource.PROTO)) {
       TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
       validateValue(keyType, key);
     } else {
@@ -368,13 +371,12 @@ public class InitCodeNode {
       // Using the Optional cardinality replaces the Repeated cardinality
       return parentType.makeOptional();
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          return field.getType();
-        }
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      return childField.getType();
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);
@@ -391,17 +393,16 @@ public class InitCodeNode {
     } else if (parentType.isRepeated()) {
       return parentFieldConfig;
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
-          if (fieldConfig == null) {
-            fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-          }
-          return fieldConfig;
-        }
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      FieldConfig fieldConfig = fieldConfigMap.get(childField.getFullName());
+      if (fieldConfig == null) {
+        fieldConfig = FieldConfig.createDefaultFieldConfig(childField);
+      }
+      return fieldConfig;
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);

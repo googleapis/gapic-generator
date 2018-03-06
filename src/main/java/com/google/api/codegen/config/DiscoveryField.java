@@ -299,8 +299,21 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  public List<? extends FieldModel> getFields() {
+  public List<DiscoveryField> getFields() {
     return properties;
+  }
+
+  @Override
+  public DiscoveryField getField(String key) {
+    for (DiscoveryField field : getFields()) {
+      if (field.getNameAsParameter().equals(key)) {
+        return field;
+      }
+    }
+
+    Schema parentTypeSchema = getDiscoveryField();
+    List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+    return DiscoveryField.create(pathToKeySchema.get(pathToKeySchema.size() - 1), discoGapicNamer);
   }
 
   @Override
