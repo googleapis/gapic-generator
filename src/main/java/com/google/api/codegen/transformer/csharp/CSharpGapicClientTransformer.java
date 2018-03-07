@@ -244,8 +244,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterfaceModel()));
-    String rpcTypeName =
-        namer.getGrpcServiceClassName(context.getInterfaceModel());
+    String rpcTypeName = namer.getGrpcServiceClassName(context.getInterfaceModel());
     int dotIndex = rpcTypeName.indexOf('.');
     apiClass.grpcTypeNameOuter(rpcTypeName.substring(0, dotIndex));
     apiClass.grpcTypeNameInner(rpcTypeName.substring(dotIndex + 1, rpcTypeName.length()));
