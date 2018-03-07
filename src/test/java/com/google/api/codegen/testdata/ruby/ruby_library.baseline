@@ -954,6 +954,12 @@ module Library
 
       private_constant :RETURN_PATH_TEMPLATE
 
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive_path}/books/{book_id=**}"
+      )
+
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+
       # Returns a fully-qualified shelf resource name string.
       # @param shelf_id [String]
       # @return [String]
@@ -984,6 +990,17 @@ module Library
           :"shelf" => shelf,
           :"book" => book,
           :"return" => return_
+        )
+      end
+
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive_path [String]
+      # @param book_id [String]
+      # @return [String]
+      def self.archived_book_path archive_path, book_id
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive_path" => archive_path,
+          :"book_id" => book_id
         )
       end
 
