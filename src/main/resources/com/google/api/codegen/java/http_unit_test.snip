@@ -120,13 +120,6 @@
   @end
 @end
 
-@private longRunningMethodCall(test)
-  {@test.responseTypeName} actualResponse =
-      client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
-  Assert.assertEquals(expectedResponse, actualResponse);
-@end
-
 @private unarySuccessAsserts(test)
   List<String> actualRequests = MOCK_SERVICE.getRequestPaths();
   Assert.assertEquals(1, actualRequests.size());

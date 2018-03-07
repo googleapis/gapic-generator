@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
@@ -356,22 +355,12 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getMockGrpcServiceImplName(context.getInterfaceModel());
-    String rpcClassName;
-    if (context.getApiModel().getApiSource().equals(ApiSource.PROTO)) {
-      rpcClassName =
-          context
-              .getImportTypeTable()
-              .getAndSaveNicknameFor(
-                  namer.getRpcServiceClassName(
-                      context.getInterfaceModel(), context.getProductConfig()));
-    } else {
-      rpcClassName =
-          context
-              .getImportTypeTable()
-              .getAndSaveNicknameFor(
-                  namer.getRpcServiceClassName(
-                      context.getInterfaceModel(), context.getProductConfig()));
-    }
+    String rpcClassName =
+        context
+            .getImportTypeTable()
+            .getAndSaveNicknameFor(
+                namer.getRpcServiceClassName(
+                    context.getInterfaceModel(), context.getProductConfig()));
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
 
