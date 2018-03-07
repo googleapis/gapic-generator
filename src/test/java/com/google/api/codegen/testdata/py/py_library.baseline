@@ -1087,6 +1087,15 @@ class LibraryServiceClient(object):
             return=return_,
         )
 
+    @classmethod
+    def archived_book_path(cls, archive_path, book_id):
+        """Return a fully-qualified archived_book string."""
+        return google.api_core.path_template.expand(
+            'archives/{archive_path}/books/{book_id=**}',
+            archive_path=archive_path,
+            book_id=book_id,
+        )
+
     def __init__(self, channel=None, credentials=None,
             client_config=library_service_client_config.config,
             client_info=None):
