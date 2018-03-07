@@ -869,7 +869,7 @@ public class JavaSurfaceTransformer {
     }
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
-        typeTable.saveNicknameFor("com.google.api.gax.grpc.CallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");
         typeTable.saveNicknameFor("io.grpc.MethodDescriptor");
@@ -882,7 +882,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.CallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
