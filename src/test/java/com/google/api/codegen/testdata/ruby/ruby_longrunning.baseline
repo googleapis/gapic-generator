@@ -733,11 +733,14 @@ module Google
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
+    # @param metadata [Hash]
+    #   Default metadata to be sent with each request. This can be overridden on a per call basis.
     def self.new \
         credentials: nil,
         scopes: nil,
         client_config: nil,
         timeout: nil,
+        metadata: nil,
         lib_name: nil,
         lib_version: nil
       kwargs = {
@@ -745,6 +748,7 @@ module Google
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
+        metadata: metadata,
         lib_name: lib_name,
         lib_version: lib_version
       }.select { |_, v| v != nil }
@@ -861,11 +865,14 @@ module Google
       #   or the specified config is missing data points.
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
       def initialize \
           credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
+          metadata: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -901,6 +908,7 @@ module Google
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        headers.merge!(metadata) if metadata.is_a?(Hash)
         client_config_file = Pathname.new(__dir__).join(
           "operations_client_config.json"
         )
@@ -913,7 +921,7 @@ module Google
             timeout,
             page_descriptors: PAGE_DESCRIPTORS,
             errors: Google::Gax::Grpc::API_ERRORS,
-            kwargs: headers
+            metadata: headers
           )
         end
 
@@ -972,12 +980,13 @@ module Google
 
       def get_operation \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Longrunning::GetOperationRequest)
-        @get_operation.call(req, options)
+        @get_operation.call(req, options, &block)
       end
 
       # Lists operations that match the specified filter in the request. If the
@@ -1033,14 +1042,15 @@ module Google
           name,
           filter,
           page_size: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           filter: filter,
           page_size: page_size
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Longrunning::ListOperationsRequest)
-        @list_operations.call(req, options)
+        @list_operations.call(req, options, &block)
       end
 
       # Starts asynchronous cancellation on a long-running operation.  The server
@@ -1071,12 +1081,13 @@ module Google
 
       def cancel_operation \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Longrunning::CancelOperationRequest)
-        @cancel_operation.call(req, options)
+        @cancel_operation.call(req, options, &block)
         nil
       end
 
@@ -1102,12 +1113,13 @@ module Google
 
       def delete_operation \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Longrunning::DeleteOperationRequest)
-        @delete_operation.call(req, options)
+        @delete_operation.call(req, options, &block)
         nil
       end
     end

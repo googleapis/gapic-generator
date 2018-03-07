@@ -654,6 +654,8 @@ module Library
   #     or the specified config is missing data points.
   #   @param timeout [Numeric]
   #     The default timeout, in seconds, for calls made through this client.
+  #   @param metadata [Hash]
+  #     Default metadata to be sent with each request. This can be overridden on a per call basis.
   def self.new(*args, version: :v1, **kwargs)
     unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
       raise "The version: #{version} is not available. The available versions " \
@@ -802,11 +804,14 @@ module Library
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
+    # @param metadata [Hash]
+    #   Default metadata to be sent with each request. This can be overridden on a per call basis.
     def self.new \
         credentials: nil,
         scopes: nil,
         client_config: nil,
         timeout: nil,
+        metadata: nil,
         lib_name: nil,
         lib_version: nil
       kwargs = {
@@ -814,6 +819,7 @@ module Library
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
+        metadata: metadata,
         lib_name: lib_name,
         lib_version: lib_version
       }.select { |_, v| v != nil }
@@ -2575,11 +2581,14 @@ module Library
       #   or the specified config is missing data points.
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
       def initialize \
           credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
+          metadata: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -2625,6 +2634,7 @@ module Library
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        headers.merge!(metadata) if metadata.is_a?(Hash)
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
         )
@@ -2638,7 +2648,7 @@ module Library
             bundle_descriptors: BUNDLE_DESCRIPTORS,
             page_descriptors: PAGE_DESCRIPTORS,
             errors: Google::Gax::Grpc::API_ERRORS,
-            kwargs: headers
+            metadata: headers
           )
         end
 
@@ -2806,12 +2816,13 @@ module Library
 
       def create_shelf \
           shelf,
-          options: nil
+          options: nil,
+          &block
         req = {
           shelf: shelf
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateShelfRequest)
-        @create_shelf.call(req, options)
+        @create_shelf.call(req, options, &block)
       end
 
       # Gets a shelf.
@@ -2847,7 +2858,8 @@ module Library
           options_,
           message: nil,
           string_builder: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           options: options_,
@@ -2855,7 +2867,7 @@ module Library
           string_builder: string_builder
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetShelfRequest)
-        @get_shelf.call(req, options)
+        @get_shelf.call(req, options, &block)
       end
 
       # Lists shelves.
@@ -2887,9 +2899,9 @@ module Library
       #     end
       #   end
 
-      def list_shelves options: nil
+      def list_shelves options: nil, &block
         req = Google::Example::Library::V1::ListShelvesRequest.new
-        @list_shelves.call(req, options)
+        @list_shelves.call(req, options, &block)
       end
 
       # Deletes a shelf.
@@ -2909,12 +2921,13 @@ module Library
 
       def delete_shelf \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteShelfRequest)
-        @delete_shelf.call(req, options)
+        @delete_shelf.call(req, options, &block)
         nil
       end
 
@@ -2942,13 +2955,14 @@ module Library
       def merge_shelves \
           name,
           other_shelf_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           other_shelf_name: other_shelf_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MergeShelvesRequest)
-        @merge_shelves.call(req, options)
+        @merge_shelves.call(req, options, &block)
       end
 
       # Creates a book.
@@ -2977,13 +2991,14 @@ module Library
       def create_book \
           name,
           book,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           book: book
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateBookRequest)
-        @create_book.call(req, options)
+        @create_book.call(req, options, &block)
       end
 
       # Creates a series of books.
@@ -3029,7 +3044,8 @@ module Library
           series_uuid,
           edition: nil,
           review_copy: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           shelf: shelf,
           books: books,
@@ -3038,7 +3054,7 @@ module Library
           review_copy: review_copy
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::PublishSeriesRequest)
-        @publish_series.call(req, options)
+        @publish_series.call(req, options, &block)
       end
 
       # Gets a book.
@@ -3059,12 +3075,13 @@ module Library
 
       def get_book \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
-        @get_book.call(req, options)
+        @get_book.call(req, options, &block)
       end
 
       # Lists books in a shelf.
@@ -3112,14 +3129,15 @@ module Library
           name,
           page_size: nil,
           filter: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           page_size: page_size,
           filter: filter
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListBooksRequest)
-        @list_books.call(req, options)
+        @list_books.call(req, options, &block)
       end
 
       # Deletes a book.
@@ -3139,12 +3157,13 @@ module Library
 
       def delete_book \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteBookRequest)
-        @delete_book.call(req, options)
+        @delete_book.call(req, options, &block)
         nil
       end
 
@@ -3187,7 +3206,8 @@ module Library
           optional_foo: nil,
           update_mask: nil,
           physical_mask: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           book: book,
@@ -3196,7 +3216,7 @@ module Library
           physical_mask: physical_mask
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookRequest)
-        @update_book.call(req, options)
+        @update_book.call(req, options, &block)
       end
 
       # Moves a book to another shelf, and returns the new book.
@@ -3221,13 +3241,14 @@ module Library
       def move_book \
           name,
           other_shelf_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           other_shelf_name: other_shelf_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MoveBookRequest)
-        @move_book.call(req, options)
+        @move_book.call(req, options, &block)
       end
 
       # Lists a primitive resource. To test go page streaming.
@@ -3269,13 +3290,14 @@ module Library
       def list_strings \
           name: nil,
           page_size: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           page_size: page_size
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListStringsRequest)
-        @list_strings.call(req, options)
+        @list_strings.call(req, options, &block)
       end
 
       # Adds comments to a book
@@ -3307,13 +3329,14 @@ module Library
       def add_comments \
           name,
           comments,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           comments: comments
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::AddCommentsRequest)
-        @add_comments.call(req, options)
+        @add_comments.call(req, options, &block)
         nil
       end
 
@@ -3335,12 +3358,13 @@ module Library
 
       def get_book_from_archive \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromArchiveRequest)
-        @get_book_from_archive.call(req, options)
+        @get_book_from_archive.call(req, options, &block)
       end
 
       # Gets a book from a shelf or archive.
@@ -3366,13 +3390,14 @@ module Library
       def get_book_from_anywhere \
           name,
           alt_book_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           alt_book_name: alt_book_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
-        @get_book_from_anywhere.call(req, options)
+        @get_book_from_anywhere.call(req, options, &block)
       end
 
       # Test proper OneOf-Any resource name mapping
@@ -3393,12 +3418,13 @@ module Library
 
       def get_book_from_absolutely_anywhere \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
-        @get_book_from_absolutely_anywhere.call(req, options)
+        @get_book_from_absolutely_anywhere.call(req, options, &block)
       end
 
       # Updates the index of a book.
@@ -3429,14 +3455,15 @@ module Library
           name,
           index_name,
           index_map,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           index_name: index_name,
           index_map: index_map
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookIndexRequest)
-        @update_book_index.call(req, options)
+        @update_book_index.call(req, options, &block)
         nil
       end
 
@@ -3614,14 +3641,15 @@ module Library
           names,
           shelves,
           page_size: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           names: names,
           shelves: shelves,
           page_size: page_size
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::FindRelatedBooksRequest)
-        @find_related_books.call(req, options)
+        @find_related_books.call(req, options, &block)
       end
 
       # Adds a tag to the book. This RPC is a mixin.
@@ -3650,13 +3678,14 @@ module Library
       def add_tag \
           resource,
           tag,
-          options: nil
+          options: nil,
+          &block
         req = {
           resource: resource,
           tag: tag
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Tagger::V1::AddTagRequest)
-        @add_tag.call(req, options)
+        @add_tag.call(req, options, &block)
       end
 
       # Adds a label to the entity.
@@ -3685,13 +3714,14 @@ module Library
       def add_label \
           resource,
           label,
-          options: nil
+          options: nil,
+          &block
         req = {
           resource: resource,
           label: label
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Tagger::V1::AddLabelRequest)
-        @add_label.call(req, options)
+        @add_label.call(req, options, &block)
       end
 
       # Test long-running operations
@@ -4025,7 +4055,8 @@ module Library
           optional_repeated_fixed32: nil,
           optional_repeated_fixed64: nil,
           optional_map: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           required_singular_int32: required_singular_int32,
           required_singular_int64: required_singular_int64,
@@ -4083,7 +4114,7 @@ module Library
           optional_map: optional_map
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest)
-        @test_optional_required_flattening_params.call(req, options)
+        @test_optional_required_flattening_params.call(req, options, &block)
       end
     end
   end

@@ -131,7 +131,7 @@
         page_descriptors: PAGE_DESCRIPTORS,
       @end
       errors: Google::Gax::Grpc::API_ERRORS,
-      kwargs: headers
+      metadata: headers
     )
   end
 @end
@@ -143,6 +143,7 @@
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
+      metadata: nil,
       lib_name: nil,
       lib_version: ""
     @# These require statements are intentionally placed here to initialize
@@ -190,6 +191,7 @@
     google_api_client.freeze
 
     headers = { :"x-goog-api-client" => google_api_client }
+    headers.merge!(metadata) if metadata.is_a?(Hash)
     {@constructDefaults(xapiClass)}
     
     @# Allow overriding the service path/port in subclasses.
@@ -324,8 +326,7 @@
     end
   @else
     @if apiMethod.hasRequestParameters
-      def {@apiMethod.name} @\
-          {@paramList(apiMethod.methodParams)}
+      {@serviceDefStatement(apiMethod)}
         req = {
           @if apiMethod.requiredRequestObjectParams
             @if apiMethod.optionalRequestObjectParamsNoPageToken
@@ -342,7 +343,12 @@
         {@makeApiCall(apiMethod)}
       end
     @else
-      def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @else
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}, &block
+      @end
+
         req = {@apiMethod.requestTypeName}.new
         {@makeApiCall(apiMethod)}
       end
@@ -388,11 +394,27 @@
     operation.on_done { |operation| yield(operation) } if block_given?
     operation
   @else
-    @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @else
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options, &block)
+    @end
+
     @if apiMethod.hasReturnValue
     @else
       nil
     @end
+  @end
+@end
+
+@private serviceDefStatement(apiMethod)
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)}
+  @else
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)},
+        &block
   @end
 @end
 
