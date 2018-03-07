@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -228,8 +229,16 @@ public class ApiCallableTransformer {
           interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
       httpMethodView.resourceNameTypeName(
           context.getNamer().publicClassName(DiscoGapicNamer.getResourceNameName(nameConfig)));
-      httpMethodView.resourceNameFieldName(
-          context.getNamer().privateFieldName(Name.anyCamel(nameConfig.getEntityName())));
+      // Find the field with the resource name config.
+      for (FieldConfig fieldConfig : context.getMethodConfig().getRequiredFieldConfigs()) {
+        if (fieldConfig.getResourceNameConfig() != null
+            && fieldConfig.getResourceNameConfig().equals(nameConfig)) {
+          httpMethodView.resourceNameFieldName(
+              context
+                  .getNamer()
+                  .privateFieldName(Name.anyCamel(fieldConfig.getField().getNameAsParameter())));
+        }
+      }
       return httpMethodView.build();
     } else {
       return null;
