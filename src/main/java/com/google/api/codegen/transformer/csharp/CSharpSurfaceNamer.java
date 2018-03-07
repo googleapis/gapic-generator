@@ -431,7 +431,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRpcServiceClassName(
+  public String getGrpcServiceClassName(
       InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."

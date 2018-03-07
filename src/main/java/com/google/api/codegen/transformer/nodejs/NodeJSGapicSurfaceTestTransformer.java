@@ -111,7 +111,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .mockRpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
+              .mockGrpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());

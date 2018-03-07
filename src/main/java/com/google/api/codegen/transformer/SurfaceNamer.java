@@ -813,7 +813,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
    */
-  public String getRpcServiceClassName(
+  public String getGrpcServiceClassName(
       InterfaceModel apiInterface, GapicProductConfig productConfig) {
     NamePath namePath =
         typeNameConverter.getNamePath(getTypeFormatter().getFullNameFor(apiInterface));
