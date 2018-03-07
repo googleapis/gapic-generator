@@ -233,7 +233,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.isRequired(false);
       paramView.canRepeat(false);
       paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
-      paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param, false));
+      paramView.fieldSetFunction(
+          context
+              .getDiscoGapicNamer()
+              .getResourceSetterName(param, DiscoGapicNamer.Cardinality.NOT_REPEATED));
       paramView.properties(new LinkedList<>());
       paramView.isRequestMessage(false);
       paramView.hasRequiredProperties(false);
@@ -325,7 +328,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.canRepeat(schema.isRepeated());
     paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(name));
     paramView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(name, schema.isRepeated()));
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(
+                name, DiscoGapicNamer.Cardinality.setRepetition(schema.isRepeated())));
     paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);

@@ -25,7 +25,6 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -66,7 +65,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       new GoImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final MockServiceTransformer mockServiceTransformer = new GapicMockServiceTransformer();
+  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final FeatureConfig featureConfig = new DefaultFeatureConfig();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();

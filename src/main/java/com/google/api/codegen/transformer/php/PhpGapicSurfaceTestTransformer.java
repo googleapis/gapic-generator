@@ -28,7 +28,6 @@ import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -70,7 +69,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
 
   private final PhpFeatureConfig featureConfig = new PhpFeatureConfig();
-  private final MockServiceTransformer mockServiceTransformer = new GapicMockServiceTransformer();
+  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
 
   @Override
   public List<String> getTemplateFileNames() {

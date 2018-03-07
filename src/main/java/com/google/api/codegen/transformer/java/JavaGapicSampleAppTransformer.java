@@ -20,7 +20,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicMockServiceTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -50,7 +49,6 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
             javaPathMapper,
             new JavaGapicSurfaceTransformer(
                 javaPathMapper, PackageMetadataConfig.createDummyPackageMetadataConfig()),
-            new GapicMockServiceTransformer(),
             "java/test.snip");
   }
 

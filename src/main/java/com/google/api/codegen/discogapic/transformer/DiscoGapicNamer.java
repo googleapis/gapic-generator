@@ -35,6 +35,21 @@ public class DiscoGapicNamer {
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
 
+  public enum Cardinality implements Comparable<Cardinality> {
+    IS_REPEATED(true),
+    NOT_REPEATED(false);
+
+    Cardinality(boolean value) {
+      this.value = value;
+    }
+
+    public static Cardinality setRepetition(boolean value) {
+      return value ? IS_REPEATED : NOT_REPEATED;
+    }
+
+    private final boolean value;
+  }
+
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
   public DiscoGapicNamer(SurfaceNamer parentNamer) {
     this.languageNamer = parentNamer;
@@ -63,11 +78,14 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the resource setter method name for a resource field. */
-  public String getResourceSetterName(String fieldName, boolean isRepeated) {
-    if (isRepeated) {
-      return languageNamer.publicMethodName(Name.from("add", "all").join(stringToName(fieldName)));
-    } else {
-      return languageNamer.publicMethodName(Name.from("set").join(stringToName(fieldName)));
+  public String getResourceSetterName(String fieldName, Cardinality isRepeated) {
+    switch (isRepeated) {
+      case IS_REPEATED:
+        return languageNamer.publicMethodName(
+            Name.from("add", "all").join(stringToName(fieldName)));
+      case NOT_REPEATED:
+      default:
+        return languageNamer.publicMethodName(Name.from("set").join(stringToName(fieldName)));
     }
   }
 
