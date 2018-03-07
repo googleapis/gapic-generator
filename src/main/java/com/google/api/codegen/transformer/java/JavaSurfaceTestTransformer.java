@@ -362,8 +362,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         context
             .getImportTypeTable()
             .getAndSaveNicknameFor(
-                namer.getGrpcServiceClassName(
-                    context.getInterfaceModel(), context.getProductConfig()));
+                namer.getGrpcServiceClassName(context.getInterfaceModel()));
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
 
