@@ -191,7 +191,7 @@
     google_api_client.freeze
 
     headers = { :"x-goog-api-client" => google_api_client }
-    headers.merge!(metadata) if metadata.is_a?(Hash)
+    headers.merge!(metadata) unless metadata.nil?
     {@constructDefaults(xapiClass)}
     
     @# Allow overriding the service path/port in subclasses.
