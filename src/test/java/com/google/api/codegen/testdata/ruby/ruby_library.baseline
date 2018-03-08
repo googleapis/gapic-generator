@@ -1087,7 +1087,7 @@ module Library
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
-        headers.merge!(metadata) if metadata.is_a?(Hash)
+        headers.merge!(metadata) unless metadata.nil?
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
         )
