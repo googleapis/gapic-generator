@@ -452,11 +452,13 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
+    op = Minitest::Mock.new
     @if test.hasReturnValue
-      expected_response
+      op.expect :execute, expected_response
     @else
-      nil
+      op.expect :execute, nil
     @end
+    op
   end
 @end
 
