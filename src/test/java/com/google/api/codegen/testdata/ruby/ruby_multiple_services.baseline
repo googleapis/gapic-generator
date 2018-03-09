@@ -1267,7 +1267,9 @@ describe Google::Example::V1::DecrementerServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
@@ -1283,6 +1285,13 @@ describe Google::Example::V1::DecrementerServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.decrement do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -1390,7 +1399,9 @@ describe Google::Example::V1::IncrementerServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
@@ -1406,6 +1417,13 @@ describe Google::Example::V1::IncrementerServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.increment do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
