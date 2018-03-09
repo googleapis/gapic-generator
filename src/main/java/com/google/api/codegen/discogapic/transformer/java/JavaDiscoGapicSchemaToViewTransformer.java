@@ -174,7 +174,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schemaId,
-                DiscoGapicNamer.Cardinality.setRepetition(schema.type().equals(Type.ARRAY))));
+                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY))));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);

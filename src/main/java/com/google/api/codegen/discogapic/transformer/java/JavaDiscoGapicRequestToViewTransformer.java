@@ -331,7 +331,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         context
             .getDiscoGapicNamer()
             .getResourceSetterName(
-                name, DiscoGapicNamer.Cardinality.setRepetition(schema.isRepeated())));
+                name, DiscoGapicNamer.Cardinality.ofRepeated(schema.isRepeated())));
     paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);

@@ -43,7 +43,7 @@ public class DiscoGapicNamer {
       this.value = value;
     }
 
-    public static Cardinality setRepetition(boolean value) {
+    public static Cardinality ofRepeated(boolean value) {
       return value ? IS_REPEATED : NOT_REPEATED;
     }
 
