@@ -20,7 +20,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -73,11 +72,11 @@ public class JavaDiscoGapicSurfaceTransformer
   }
 
   @Override
-  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer surfaceTransformer =
         new JavaSurfaceTransformer(
             pathMapper, packageMetadataConfig, this, RPC_STUB_TEMPLATE_FILENAME);
-    return surfaceTransformer.transform(new DiscoApiModel(document), productConfig);
+    return surfaceTransformer.transform(model, productConfig);
   }
 
   @Override

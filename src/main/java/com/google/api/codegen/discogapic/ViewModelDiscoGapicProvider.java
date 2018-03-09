@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -21,22 +21,19 @@ import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.BoundedDiagCollector;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
-  private final Document model;
+  private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final ModelToViewTransformer modelToViewTransformer;
-  private final DiagCollector diagCollector;
 
   private ViewModelDiscoGapicProvider(
-      Document model,
+      DiscoApiModel model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
       ModelToViewTransformer modelToViewTransformer) {
@@ -44,7 +41,6 @@ public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.modelToViewTransformer = modelToViewTransformer;
-    this.diagCollector = new BoundedDiagCollector();
   }
 
   @Override
@@ -60,8 +56,8 @@ public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
   @Override
   public Map<String, Doc> generate(String snippetFileName) {
     List<ViewModel> surfaceDocs =
-        modelToViewTransformer.transform(new DiscoApiModel(model), productConfig);
-    if (diagCollector.getErrorCount() > 0) {
+        modelToViewTransformer.transform(model, productConfig);
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
@@ -86,14 +82,14 @@ public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
   }
 
   public static class Builder {
-    private Document model;
+    private DiscoApiModel model;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private ModelToViewTransformer modelToViewTransformer;
 
     private Builder() {}
 
-    public Builder setModel(Document model) {
+    public Builder setModel(DiscoApiModel model) {
       this.model = model;
       return this;
     }

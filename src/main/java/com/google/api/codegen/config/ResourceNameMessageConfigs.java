@@ -17,10 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -82,8 +80,7 @@ public abstract class ResourceNameMessageConfigs {
 
   @Nullable
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      Document document,
-      DiagCollector diagCollector,
+      DiscoApiModel model,
       ConfigProto configProto,
       String defaultPackage,
       DiscoGapicNamer discoGapicNamer) {
@@ -92,14 +89,14 @@ public abstract class ResourceNameMessageConfigs {
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
           ResourceNameMessageConfig.createResourceNameMessageConfig(
-              diagCollector, messageResourceTypesProto, defaultPackage);
+              model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
-    for (Method method : document.methods()) {
+    for (Method method : model.getDocument().methods()) {
       String fullName = discoGapicNamer.getRequestTypeName(method).getFullName();
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
       if (messageConfig == null) {

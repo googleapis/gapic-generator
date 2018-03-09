@@ -30,7 +30,6 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -118,11 +117,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   @Override
-  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceRequests = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoApiModel model = new DiscoApiModel(document);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();

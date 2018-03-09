@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.tools.framework.model.DiagCollector;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public interface ApiModel {
   ApiSource getApiSource();
 
   String getServiceName();
+
+  DiagCollector getDiagCollector();
 
   /** Return the service address. */
   String getServiceAddress();

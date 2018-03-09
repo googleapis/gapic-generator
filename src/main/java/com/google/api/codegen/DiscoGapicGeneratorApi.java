@@ -18,6 +18,7 @@ import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JA
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.configgen.ConfigHelper;
@@ -116,7 +117,7 @@ public class DiscoGapicGeneratorApi {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Document document = Document.from(new DiscoveryNode(root));
+    DiscoApiModel model = new DiscoApiModel(Document.from(new DiscoveryNode(root)));
 
     // Read the YAML config and convert it to proto.
     if (configFileNames.size() == 0) {
@@ -151,7 +152,7 @@ public class DiscoGapicGeneratorApi {
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
 
     GapicProductConfig productConfig =
-        GapicProductConfig.create(document, configProto, discoGapicNamer);
+        GapicProductConfig.create(model, configProto, discoGapicNamer);
 
     String factory = generator.getFactory();
     String id = generator.getId();
@@ -160,8 +161,7 @@ public class DiscoGapicGeneratorApi {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
 
-    return providerFactory.create(
-        document, productConfig, generatorConfig, packageConfig, outputPath);
+    return providerFactory.create(model, productConfig, generatorConfig, packageConfig, outputPath);
   }
 
   public void run() throws Exception {
