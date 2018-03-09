@@ -55,8 +55,7 @@ public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
 
   @Override
   public Map<String, Doc> generate(String snippetFileName) {
-    List<ViewModel> surfaceDocs =
-        modelToViewTransformer.transform(model, productConfig);
+    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
