@@ -18,7 +18,6 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
@@ -129,13 +128,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    if (method.request() != null) {
-      return typeTable
-          .getTypeTable()
-          .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
-    } else {
-      return discoGapicNamer.getRequestTypeName(method);
-    }
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(inputType));
   }
 
   @Override
