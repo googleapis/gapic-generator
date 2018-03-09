@@ -4425,7 +4425,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::CreateShelfRequest, request)
         assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
@@ -4441,6 +4443,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.create_shelf(shelf) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4500,7 +4509,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
@@ -4516,6 +4527,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_shelf(formatted_name, options_) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4566,7 +4584,9 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
@@ -4626,7 +4646,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::DeleteShelfRequest, request)
         assert_equal(formatted_name, request.name)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
@@ -4642,6 +4664,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.delete_shelf(formatted_name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4701,7 +4730,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::MergeShelvesRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
@@ -4717,6 +4748,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.merge_shelves(formatted_name, formatted_other_shelf_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4780,7 +4818,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::CreateBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
@@ -4796,6 +4836,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.create_book(formatted_name, book) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4858,7 +4905,9 @@ describe Library::V1::LibraryServiceClient do
         end
         assert_equal(books, request.books)
         assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
@@ -4878,6 +4927,17 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.publish_series(
+            shelf,
+            books,
+            series_uuid
+          ) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4949,7 +5009,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
@@ -4965,6 +5027,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5019,7 +5088,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
@@ -5085,7 +5156,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::DeleteBookRequest, request)
         assert_equal(formatted_name, request.name)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
@@ -5101,6 +5174,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.delete_book(formatted_name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5162,7 +5242,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::UpdateBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
@@ -5178,6 +5260,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.update_book(formatted_name, book) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5241,7 +5330,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::MoveBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
@@ -5257,6 +5348,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.move_book(formatted_name, formatted_other_shelf_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5307,7 +5405,9 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
@@ -5380,7 +5480,9 @@ describe Library::V1::LibraryServiceClient do
           Google::Gax::to_proto(req, Google::Example::Library::V1::Comment)
         end
         assert_equal(comments, request.comments)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
@@ -5396,6 +5498,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.add_comments(formatted_name, comments) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5468,7 +5577,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
@@ -5484,6 +5595,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_archive(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5545,7 +5663,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
@@ -5561,6 +5681,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5622,7 +5749,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
@@ -5638,6 +5767,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_absolutely_anywhere(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -5689,7 +5825,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         assert_equal(index_name, request.index_name)
         assert_equal(index_map, request.index_map)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
@@ -5709,6 +5847,17 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.update_book_index(
+            formatted_name,
+            index_name,
+            index_map
+          ) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -6054,7 +6203,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
         assert_equal(names, request.names)
         assert_equal(shelves, request.shelves)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
@@ -6128,7 +6279,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(tag, request.tag)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
@@ -6144,6 +6297,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.add_tag(formatted_resource, tag) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -6198,7 +6358,9 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(label, request.label)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
@@ -6214,6 +6376,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.add_label(formatted_resource, label) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -6554,7 +6723,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
@@ -6598,6 +6769,41 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.test_optional_required_flattening_params(
+            required_singular_int32,
+            required_singular_int64,
+            required_singular_float,
+            required_singular_double,
+            required_singular_bool,
+            required_singular_enum,
+            required_singular_string,
+            required_singular_bytes,
+            required_singular_message,
+            required_singular_resource_name,
+            required_singular_resource_name_oneof,
+            required_singular_fixed32,
+            required_singular_fixed64,
+            required_repeated_int32,
+            required_repeated_int64,
+            required_repeated_float,
+            required_repeated_double,
+            required_repeated_bool,
+            required_repeated_enum,
+            required_repeated_string,
+            required_repeated_bytes,
+            required_repeated_message,
+            formatted_required_repeated_resource_name,
+            formatted_required_repeated_resource_name_oneof,
+            required_repeated_fixed32,
+            required_repeated_fixed64,
+            required_map
+          ) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end

@@ -1276,7 +1276,9 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::GetOperationRequest, request)
         assert_equal(name, request.name)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
@@ -1292,6 +1294,13 @@ describe Google::Longrunning::OperationsClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_operation(name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -1347,7 +1356,9 @@ describe Google::Longrunning::OperationsClient do
         assert_instance_of(Google::Longrunning::ListOperationsRequest, request)
         assert_equal(name, request.name)
         assert_equal(filter, request.filter)
-        expected_response
+        op = Minitest::Mock.new
+        op.expect :execute, expected_response
+        op
       end
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
@@ -1414,7 +1425,9 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::CancelOperationRequest, request)
         assert_equal(name, request.name)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
@@ -1430,6 +1443,13 @@ describe Google::Longrunning::OperationsClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.cancel_operation(name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -1476,7 +1496,9 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::DeleteOperationRequest, request)
         assert_equal(name, request.name)
-        nil
+        op = Minitest::Mock.new
+        op.expect :execute, nil
+        op
       end
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 
@@ -1492,6 +1514,13 @@ describe Google::Longrunning::OperationsClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.delete_operation(name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
