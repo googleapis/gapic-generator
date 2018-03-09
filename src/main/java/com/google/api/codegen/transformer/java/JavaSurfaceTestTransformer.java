@@ -120,26 +120,26 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       }
     }
 
-    if (productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
-      for (InterfaceModel apiInterface :
-          mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
-        ImportTypeTable typeTable =
-            surfaceTransformer.createTypeTable(productConfig.getPackageName());
-        InterfaceContext context =
-            surfaceTransformer.createInterfaceContext(
-                apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
-        views.add(createMockServiceImplFileView(context));
+    //    if (productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
+    for (InterfaceModel apiInterface :
+        mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
+      ImportTypeTable typeTable =
+          surfaceTransformer.createTypeTable(productConfig.getPackageName());
+      InterfaceContext context =
+          surfaceTransformer.createInterfaceContext(
+              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+      views.add(createMockServiceImplFileView(context));
 
-        context =
-            surfaceTransformer.createInterfaceContext(
-                apiInterface,
-                productConfig,
-                namer,
-                typeTable.cloneEmpty(),
-                enableStringFormatFunctions);
-        views.add(createMockServiceView(context));
-      }
+      context =
+          surfaceTransformer.createInterfaceContext(
+              apiInterface,
+              productConfig,
+              namer,
+              typeTable.cloneEmpty(),
+              enableStringFormatFunctions);
+      views.add(createMockServiceView(context));
     }
+    //    }
     return views;
   }
 
