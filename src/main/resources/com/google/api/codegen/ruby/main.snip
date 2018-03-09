@@ -302,7 +302,7 @@
 @end
 
 @private flattenedMethod(apiMethod)
-  {@methodComments(apiMethod.doc)}
+  {@methodComments(apiMethod)}
   @if apiMethod.hasRequestStreaming
     @#
     @# @@note
@@ -356,30 +356,36 @@
   @end
 @end
 
-@private methodComments(apiMethodDoc)
-  @if apiMethodDoc.mainDocLines
-    {@toComments(apiMethodDoc.mainDocLines)}
+@private methodComments(apiMethod)
+  @if apiMethod.doc.mainDocLines
+    {@toComments(apiMethod.doc.mainDocLines)}
     @#
 
   @end
-  @if apiMethodDoc.paramDocs
-    @join paramDoc : apiMethodDoc.paramDocs
+  @if apiMethod.doc.paramDocs
+    @join paramDoc : apiMethod.doc.paramDocs
       @# @@param {@paramDoc.paramName} [{@paramDoc.typeName}]
       @join line : paramDoc.lines
         @#   {@line}
       @end
     @end
 
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+  @else
+    @# @@yield [result, operation] Access the result along with the RPC operation
+    @# @@yieldparam result [{@apiMethod.doc.returnTypeName}]
+    @# @@yieldparam operation [GRPC::ActiveCall::Operation]
+  @end
 
   @end
-  @if apiMethodDoc.returnTypeName
-    @# @@return [{@apiMethodDoc.returnTypeName}]
-    @join line : apiMethodDoc.returnsDocLines
+  @if apiMethod.doc.returnTypeName
+    @# @@return [{@apiMethod.doc.returnTypeName}]
+    @join line : apiMethod.doc.returnsDocLines
       @#   {@line}
     @end
 
   @end
-  {@toComments(apiMethodDoc.throwsDocLines)}
+  {@toComments(apiMethod.doc.throwsDocLines)}
 @end
 
 @private makeApiCall(apiMethod)
