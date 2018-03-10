@@ -88,7 +88,7 @@
     {@apiCallableMember(apiCallable)}
   @end
 
-  private final CallableFactory callableFactory;
+  private final GrpcStubCallableFactory callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -140,7 +140,7 @@
     return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext);
   }
 
-  public static final {@stubClass.name} create(ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+  public static final {@stubClass.name} create(ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
     return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext, callableFactory);
   }
 
@@ -158,7 +158,7 @@
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, CallableFactory callableFactory) throws IOException {
+  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
