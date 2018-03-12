@@ -156,11 +156,11 @@ public class DiscoGapicNamer {
    * request object, then returns "resource" appended to the schema's id().
    */
   public static Name getSchemaNameAsParameter(Schema schema) {
-    String paramString =
-        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    Schema deref = schema.dereference();
+    String paramString = deref.getIdentifier();
     String[] pieces = paramString.split("_");
     Name param = Name.anyCamel(pieces);
-    if (Strings.isNullOrEmpty(schema.location()) && schema.type().equals(Schema.Type.OBJECT)) {
+    if (Strings.isNullOrEmpty(deref.location()) && deref.type().equals(Schema.Type.OBJECT)) {
       param = param.join("resource");
     }
     return param;
@@ -183,13 +183,7 @@ public class DiscoGapicNamer {
   @Nullable
   public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
-      Schema responseSchema;
-      if (method.response().reference() != null) {
-        responseSchema = method.response().dereference();
-      } else {
-        responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
-      }
-      return DiscoveryField.create(responseSchema, this);
+      return DiscoveryField.create(method.response().dereference(), this);
     }
     return null;
   }

@@ -63,7 +63,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getOutputTypeSimpleName() {
-    return method.response() == null ? "none" : method.response().id();
+    return outputType.getTypeName();
   }
 
   @Override
@@ -82,8 +82,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       return DiscoveryField.create(targetSchema, discoGapicNamer);
     }
     if (method.request() != null
-        && !Strings.isNullOrEmpty(method.request().reference())
-        && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
+        && DiscoGapicNamer.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
       return DiscoveryField.create(method.request().dereference(), discoGapicNamer);
@@ -123,7 +122,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getOutputFullName() {
-    return method.response() == null ? "none" : method.response().getIdentifier();
+    return outputType.getTypeName();
   }
 
   @Override
@@ -154,7 +153,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return method.response() == null;
+    return outputType == null;
   }
 
   @Override
@@ -192,11 +191,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public String getScopedDescription() {
     return method.description();
-  }
-
-  @Override
-  public boolean hasReturnValue() {
-    return method.response() != null;
   }
 
   @Override

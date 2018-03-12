@@ -92,8 +92,6 @@ public interface MethodModel {
 
   boolean isOutputTypeEmpty();
 
-  boolean hasReturnValue();
-
   Iterable<? extends FieldModel> getInputFields();
 
   List<? extends FieldModel> getInputFieldsForResourceNameMethod();

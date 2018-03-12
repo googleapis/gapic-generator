@@ -219,11 +219,6 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public boolean hasReturnValue() {
-    return !(new ServiceMessages()).isEmptyType(method.getOutputType());
-  }
-
-  @Override
   public boolean isIdempotent() {
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
     if (httpAttr == null) {
