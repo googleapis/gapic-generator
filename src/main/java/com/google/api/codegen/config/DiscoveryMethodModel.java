@@ -23,7 +23,6 @@ import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -258,8 +257,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     ImmutableList.Builder<DiscoveryField> outputField = new Builder<>();
-    if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
-      DiscoveryField fieldModel = DiscoveryField.create(method.response().dereference(), null);
+    if (method.response() != null) {
+      DiscoveryField fieldModel = DiscoveryField.create(method.response(), null);
       outputField.add(fieldModel);
     }
     outputFields = outputField.build();
