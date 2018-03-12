@@ -307,12 +307,10 @@ public class InitCodeNode {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
-        if (typeRef.getApiSource().equals(ApiSource.PROTO)) {
-          for (int i = 0; i < childKeys.size(); i++) {
-            if (!childKeys.contains(Integer.toString(i))) {
-              throw new IllegalArgumentException(
-                  "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
-            }
+        for (int i = 0; i < childKeys.size(); i++) {
+          if (!childKeys.contains(Integer.toString(i))) {
+            throw new IllegalArgumentException(
+                "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
           }
         }
         break;
