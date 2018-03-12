@@ -425,13 +425,13 @@
 # snippetMethod: StaticLangApiMethodSnippetView
 @private sampleMethodCall(snippetMethod)
     {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}(\
-        {@sampleMethodCallArgList(snippetMethod.method.initCode.fieldSettings, snippetMethod.requiresNamedParameters)})
+        {@sampleMethodCallArgList(snippetMethod.method.initCode.fieldSettings, snippetMethod.requiresNamedArguments)})
 @end
 
-# fieldSettings: List[FieldSettingView], requiresNamedParameters: Boolean
-@private sampleMethodCallArgList(fieldSettings, requiresNamedParameters)
+# fieldSettings: List[FieldSettingView], requiresNamedArguments: Boolean
+@private sampleMethodCallArgList(fieldSettings, requiresNamedArguments)
     @join fieldSetting : fieldSettings on ", "
-        @if requiresNamedParameters
+        @if requiresNamedArguments
             {@fieldSetting.fieldName}: {@fieldSetting.identifier}
         @else
             {@fieldSetting.identifier}
