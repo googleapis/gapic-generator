@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGapicMethodConfig;
-
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -207,7 +205,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
         continue;
       }
       DiscoGapicMethodConfig methodConfig =
-          createDiscoGapicMethodConfig(
+          DiscoGapicMethodConfig.createDiscoGapicMethodConfig(
               model.getDiagCollector(),
               language,
               methodConfigProto,

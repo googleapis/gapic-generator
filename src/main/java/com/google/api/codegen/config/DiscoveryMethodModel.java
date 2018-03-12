@@ -38,7 +38,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private final DiscoveryRequestType inputType;
-  private final TypeModel outputType;
+  private final DiscoveryField outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -85,7 +85,7 @@ public final class DiscoveryMethodModel implements MethodModel {
         && DiscoGapicNamer.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
-      return DiscoveryField.create(method.request().dereference(), discoGapicNamer);
+      return DiscoveryField.create(method.request(), discoGapicNamer);
     }
     return null;
   }
@@ -117,7 +117,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(outputType));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((TypeModel) outputType));
   }
 
   @Override
@@ -185,7 +185,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    return typeTable.getAndSaveNicknameFor(outputType);
+    return typeTable.getAndSaveNicknameFor((TypeModel) outputType);
   }
 
   @Override
@@ -240,8 +240,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     for (Schema field : method.parameters().values()) {
       fieldsBuilder.add(DiscoveryField.create(field, discoGapicNamer));
     }
-    if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
-      fieldsBuilder.add(DiscoveryField.create(method.request().dereference(), discoGapicNamer));
+    if (method.request() != null) {
+      fieldsBuilder.add(DiscoveryField.create(method.request(), discoGapicNamer));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;

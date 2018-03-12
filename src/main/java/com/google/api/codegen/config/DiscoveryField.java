@@ -44,14 +44,14 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private final Schema schema;
   private final DiscoGapicNamer discoGapicNamer;
 
-  /* Create a FieldModel object from a non-null Schema object. */
+  /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
   private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
     this.schema = schema.dereference();
     this.discoGapicNamer = discoGapicNamer;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
-    for (Schema child : schema.properties().values()) {
+    for (Schema child : this.schema.properties().values()) {
       propertiesBuilder.add(DiscoveryField.create(child, discoGapicNamer));
     }
     this.properties = propertiesBuilder.build();

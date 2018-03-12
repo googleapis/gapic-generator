@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
+// TODO(andrealin): refactor this to split up language-specific and language-independent (ex configgen) functions.
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
@@ -183,7 +184,7 @@ public class DiscoGapicNamer {
   @Nullable
   public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
-      return DiscoveryField.create(method.response().dereference(), this);
+      return DiscoveryField.create(method.response(), this);
     }
     return null;
   }
