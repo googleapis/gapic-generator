@@ -4738,6 +4738,9 @@ import java.util.logging.Logger;
 
 @javax.annotation.Generated("by GAPIC")
 public class SampleApp {
+  private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
+  private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);
     try {
@@ -4749,6 +4752,7 @@ public class SampleApp {
       System.exit(1);
     }
   }
+
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
       ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
@@ -4761,12 +4765,10 @@ public class SampleApp {
       com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
       Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
-      System.out.println(response.toString());
     }
   }
-  private String getProjectId() {
-    final String PROJECT_ENV_NAME = "google_cloud_project";
-    final String LEGACY_PROJECT_ENV_NAME = "gcloud_project";
+
+  private static String getProjectId() {
     String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
     if (projectId == null) {
       projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));
@@ -9139,6 +9141,9 @@ import java.util.logging.Logger;
 
 @javax.annotation.Generated("by GAPIC")
 public class LibrarySmokeTest {
+  private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
+  private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);
     try {
@@ -9150,6 +9155,7 @@ public class LibrarySmokeTest {
       System.exit(1);
     }
   }
+
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
       ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
@@ -9162,12 +9168,10 @@ public class LibrarySmokeTest {
       com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
       Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
-      System.out.println(response.toString());
     }
   }
-  private String getProjectId() {
-    final String PROJECT_ENV_NAME = "google_cloud_project";
-    final String LEGACY_PROJECT_ENV_NAME = "gcloud_project";
+
+  private static String getProjectId() {
     String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
     if (projectId == null) {
       projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));

@@ -8,6 +8,9 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@smokeTest.name} {
+    private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
+    private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
     public static void main(String args[]) {
       Logger.getLogger("").setLevel(Level.WARNING);
       try {
@@ -19,11 +22,13 @@
         System.exit(1);
       }
     }
+
     @if smokeTest.requireProjectId
       {@executeWithProjectID(smokeTest)}
     @else
       {@executeWithNoProjectID(smokeTest)}
     @end
+
     {@getProjectIdForTest()}
   }
 @end
@@ -38,8 +43,6 @@
 
 @private getProjectIdForTest()
   private static String getProjectId() {
-    final String PROJECT_ENV_NAME = "google_cloud_project";
-    final String LEGACY_PROJECT_ENV_NAME = "gcloud_project";
     String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
     if (projectId == null) {
       projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));
@@ -77,16 +80,13 @@
     {@apiMethod.responseTypeName} pagedResponse =
         client.{@apiMethod.name}(\
           {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
-    System.out.println(pagedResponse.toString());
   @case "AsyncOperationFlattenedMethod"
       {@apiMethod.responseTypeName} response = \
         client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)}).get();
-      System.out.println(response.toString());
   @case "FlattenedMethod"
     @if apiMethod.hasReturnValue
       {@apiMethod.responseTypeName} response = \
         client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)});
-      System.out.println(response.toString());
     @else
       client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
@@ -99,3 +99,4 @@
     {@fieldSetting.identifier}
   @end
 @end
+
