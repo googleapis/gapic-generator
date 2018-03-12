@@ -29,8 +29,10 @@ public abstract class StaticLangApiMethodSnippetView {
 
   public abstract String apiVariableName();
 
+  public abstract boolean requiresNamedParameters();
+
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangApiMethodSnippetView.Builder();
+    return new AutoValue_StaticLangApiMethodSnippetView.Builder().requiresNamedParameters(false);
   }
 
   @AutoValue.Builder
@@ -44,6 +46,8 @@ public abstract class StaticLangApiMethodSnippetView {
     public abstract Builder apiClassName(String val);
 
     public abstract Builder apiVariableName(String val);
+
+    public abstract Builder requiresNamedParameters(boolean val);
 
     public abstract StaticLangApiMethodSnippetView build();
   }

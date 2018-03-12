@@ -134,14 +134,49 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          // Find flattenings that have ambiguous parameters, and mark them to use named parameters.
+          // These are page-stream flattenings that have one or two string parameters (that are not
+          // resource-names) than another flattening.
+          String[] stringParams =
+              flatteningGroups
+                  .stream()
+                  .map(
+                      flat ->
+                          flat.getFlattenedFieldConfigs()
+                              .values()
+                              .stream()
+                              .map(
+                                  field ->
+                                      field.getField().getType().isStringType()
+                                              && field.getResourceNameConfig() == null
+                                          ? 's'
+                                          : '.')
+                              .collect(
+                                  StringBuilder::new,
+                                  StringBuilder::appendCodePoint,
+                                  StringBuilder::append)
+                              .toString())
+                  .toArray(String[]::new);
+          Boolean[] requiresNamedParameters =
+              Arrays.stream(stringParams)
+                  .map(
+                      a ->
+                          Arrays.stream(stringParams)
+                              .anyMatch(b -> a.startsWith(b + "s") || a.startsWith(b + "ss")))
+                  .toArray(Boolean[]::new);
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
+          // Build method list
           for (int i = 0; i < flatteningGroups.size(); i++) {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            methods.add(generatePagedFlattenedAsyncMethod(methodContextFlat, nameSuffix));
-            methods.add(generatePagedFlattenedMethod(methodContextFlat, nameSuffix));
+            methods.add(
+                generatePagedFlattenedAsyncMethod(
+                    methodContextFlat, nameSuffix, requiresNamedParameters[i]));
+            methods.add(
+                generatePagedFlattenedMethod(
+                    methodContextFlat, nameSuffix, requiresNamedParameters[i]));
           }
         }
         methods.add(generatePagedRequestAsyncMethod(methodContext));
@@ -249,7 +284,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodSnippetView generatePagedFlattenedAsyncMethod(
-      MethodContext methodContext, String suffix) {
+      MethodContext methodContext, String suffix, boolean useNamedParams) {
     StaticLangApiMethodView method =
         apiMethodTransformer.generatePagedFlattenedAsyncMethod(
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
@@ -264,11 +299,12 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
         .callerResponseTypeName(callerResponseTypeName)
         .apiClassName(namer.getApiWrapperClassName(methodContext.getInterfaceConfig()))
         .apiVariableName(method.apiVariableName())
+        .requiresNamedParameters(useNamedParams)
         .build();
   }
 
   private StaticLangApiMethodSnippetView generatePagedFlattenedMethod(
-      MethodContext methodContext, String suffix) {
+      MethodContext methodContext, String suffix, boolean useNamedParams) {
     StaticLangApiMethodView method =
         apiMethodTransformer.generatePagedFlattenedMethod(
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
@@ -283,6 +319,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
         .callerResponseTypeName(callerResponseTypeName)
         .apiClassName(namer.getApiWrapperClassName(methodContext.getInterfaceConfig()))
         .apiVariableName(method.apiVariableName())
+        .requiresNamedParameters(useNamedParams)
         .build();
   }
 
