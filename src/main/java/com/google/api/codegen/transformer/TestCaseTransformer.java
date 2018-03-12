@@ -337,6 +337,7 @@ public class TestCaseTransformer {
         String resourceFieldName = config.getResourcesFieldName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
       } else {
+        //  Initialize all the objects between the response type and the resource element.
         Iterator<FieldModel> it =
             Lists.reverse(config.getResourcesFieldConfig().getFieldPath()).iterator();
         InitCodeNode initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
