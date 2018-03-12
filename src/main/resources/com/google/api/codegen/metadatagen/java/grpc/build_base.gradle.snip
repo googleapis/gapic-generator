@@ -9,7 +9,7 @@
   apply plugin: 'maven'
   apply plugin: 'signing'
 
-  description = '{@metadata.generationLayer} library for {@metadata.identifier}'
+  description = {@description(metadata)}
   group = "com.google.api.grpc"
   version = "{@metadata.packageVersionBound.lower}"
   sourceCompatibility = 1.7
@@ -20,7 +20,9 @@
     mavenLocal()
   }
 
-  {@dependencies(metadata)}
+  dependencies {
+    {@dependencies(metadata)}
+  }
 
   ext {
     packageName = '{@metadata.identifier}'
@@ -114,29 +116,6 @@
   }
 @end
 
-@private dependencies(metadata)
-  dependencies {
-    @switch metadata.generationLayer
-    @case "PROTO"
-      compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
-      @join dependency : metadata.additionalDependencies
-        compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
-      @end
-      @join dependency : metadata.protoPackageDependencies
-        @switch metadata.dependencyType
-        @case "RELEASE"
-          compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
-        @case "LOCAL"
-          compile project(":{@dependency.name}")
-        @default
-        @end
-      @end
-    @case "GRPC"
-      compile "io.grpc:grpc-stub:{@metadata.grpcVersionBound.lower}"
-      compile "io.grpc:grpc-protobuf:{@metadata.grpcVersionBound.lower}"
-      compile project(":{@metadata.protoPackageName}")
-    @default
-      $unhandledCase: {@metadata.generationLayer}$
-    @end
-  }
-@end
+@abstract dependencies(metadata)
+
+@abstract description(metadata)

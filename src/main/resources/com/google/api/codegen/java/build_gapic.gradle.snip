@@ -18,11 +18,19 @@
   }
 
   dependencies {
-    compile project(":{@metadata.protoPackageName}")
     compile libraries.gax, libraries.gaxGrpc
-    testCompile project(":{@metadata.grpcPackageName}")
+    @switch metadata.artifactType.toString
+    @case "GAPIC_ONLY"
+      @join dependency : metadata.protoPackageDependencies
+        compile project(":proto-{@dependency.name}")
+        testCompile project(":grpc-{@dependency.name}")
+      @end
+    @default
+      compile project(":{@metadata.protoPackageName}")
+      testCompile project(":{@metadata.grpcPackageName}")
+    @end
     @join dependency : metadata.protoPackageTestDependencies
-      testCompile project(":{@dependency.name}")
+      testCompile project(":grpc-{@dependency.name}")
     @end
   }
 

@@ -15,38 +15,56 @@
 package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcMetadataProvider;
-import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcPackageMetadataTransformer;
-import com.google.api.codegen.grpcmetadatagen.java.JavaProtoPackageMetadataTransformer;
+import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
 import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataProvider;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.ImmutableMap;
 
 /** A factory for GrpcMetadataProvider which performs gRPC meta-data generation. */
 public class GrpcMetadataProviderFactory {
 
   /** Create the GrpcMetadataProvider based on the given language */
   public static GrpcMetadataProvider create(
-      TargetLanguage language, PackageMetadataConfig config, ToolOptions options) {
+      TargetLanguage language, ArtifactType artifactType, ToolOptions options) {
     switch (language) {
       case PYTHON:
-        return new PythonGrpcMetadataProvider(options);
+        return createForPython(options);
       case JAVA:
-        if (config.generationLayer() == null) {
-          throw new IllegalArgumentException("Java requires a package division to be specified");
-        }
-        switch (config.generationLayer()) {
-          case GRPC:
-            return new JavaGrpcMetadataProvider(new JavaGrpcPackageMetadataTransformer(), options);
-          case PROTO:
-            return new JavaGrpcMetadataProvider(new JavaProtoPackageMetadataTransformer(), options);
-          default:
-            throw new IllegalArgumentException(
-                "Java does not support the package division \"" + config.generationLayer() + "\"");
-        }
+        return createForJava(artifactType, options);
       default:
         throw new IllegalArgumentException(
             "The target language \"" + language + "\" is not supported");
     }
+  }
+
+  private static GrpcMetadataProvider createForPython(ToolOptions options) {
+    return new PythonGrpcMetadataProvider(options);
+  }
+
+  private static GrpcMetadataProvider createForJava(
+      ArtifactType artifactType, ToolOptions options) {
+
+    switch (artifactType) {
+      case GRPC:
+        return new JavaGrpcMetadataProvider(
+            new JavaPackageMetadataTransformer(
+                ImmutableMap.of(
+                    "LICENSE.snip", "LICENSE",
+                    "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle"),
+                artifactType),
+            options);
+      case PROTOBUF:
+        return new JavaGrpcMetadataProvider(
+            new JavaPackageMetadataTransformer(
+                ImmutableMap.of(
+                    "LICENSE.snip", "LICENSE",
+                    "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle"),
+                artifactType),
+            options);
+    }
+
+    throw new IllegalArgumentException(
+        "Java does not support the artifact type \"" + artifactType + "\"");
   }
 }
