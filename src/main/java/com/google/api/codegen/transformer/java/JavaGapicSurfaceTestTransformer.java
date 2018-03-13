@@ -415,15 +415,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.logging.Logger");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.Arrays");
+    typeTable.saveNicknameFor("com.google.common.base.Preconditions");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
-    typeTable.saveNicknameFor("org.apache.commons.lang.builder.ReflectionToStringBuilder");
-    typeTable.saveNicknameFor("org.apache.commons.lang.builder.ToStringStyle");
-    typeTable.saveNicknameFor("org.apache.commons.cli.CommandLine");
-    typeTable.saveNicknameFor("org.apache.commons.cli.DefaultParser");
-    typeTable.saveNicknameFor("org.apache.commons.cli.HelpFormatter");
-    typeTable.saveNicknameFor("org.apache.commons.cli.Option");
-    typeTable.saveNicknameFor("org.apache.commons.cli.Options");
   }
 
   private void addMockServiceImplImports(InterfaceContext context) {
