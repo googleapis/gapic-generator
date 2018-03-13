@@ -77,29 +77,28 @@ public abstract class Schema implements Node {
 
     // BFS to find the target node.
     while (queue.size() != 0 && !currentNode.getIdentifier().equals(childName)) {
-      currentNode = queue.poll();
+      currentNode = queue.poll().dereference();
 
+      // Add all direct children of current node to local queue.
       Queue<Schema> localQueue = new LinkedList<>();
-      if (!Strings.isNullOrEmpty(currentNode.reference())) {
-        localQueue.add(currentNode.dereference());
-      } else {
-        if (currentNode.properties() != null && currentNode.properties().size() > 0) {
-          localQueue.addAll(currentNode.properties().values());
-        }
-        if (currentNode.additionalProperties() != null) {
-          localQueue.add(currentNode.additionalProperties());
-        }
+      if (currentNode.properties() != null && currentNode.properties().size() > 0) {
+        localQueue.addAll(currentNode.properties().values());
+      }
+      if (currentNode.additionalProperties() != null) {
+        localQueue.add(currentNode.additionalProperties());
       }
 
       while (localQueue.peek() != null) {
-        Schema next = localQueue.poll();
-        nodeToPrevNode.put(next, currentNode);
+        Schema next = localQueue.poll().dereference();
+
         if (next.getIdentifier().equals(childName)) {
           // Success.
+          nodeToPrevNode.put(next, currentNode);
           currentNode = next;
           break;
         }
         if (!visitedNodes.contains(next)) {
+          nodeToPrevNode.put(next, currentNode);
           visitedNodes.add(next);
           queue.add(next);
         }
@@ -107,7 +106,7 @@ public abstract class Schema implements Node {
     }
 
     // Get the shortest path to the schema.
-    List<Schema> pathToChild = new LinkedList<Schema>();
+    List<Schema> pathToChild = new LinkedList<>();
     if (currentNode.getIdentifier().equals(childName)) {
       while (!currentNode.equals(this)) {
         pathToChild.add(0, currentNode);
