@@ -547,11 +547,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
               "Invalid streaming: " + methodConfig.getGrpcStreamingType());
       }
     } else {
+      boolean hasReturn = !methodConfig.getMethodModel().isOutputTypeEmpty();
       switch (synchronicity) {
         case Sync:
-          return ImmutableList.of("The RPC response.");
+          return hasReturn ? ImmutableList.of("The RPC response.") : ImmutableList.of();
         case Async:
-          return ImmutableList.of("A Task containing the RPC response.");
+          return ImmutableList.of(
+              hasReturn
+                  ? "A Task containing the RPC response."
+                  : "A Task that completes when the RPC has completed.");
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
