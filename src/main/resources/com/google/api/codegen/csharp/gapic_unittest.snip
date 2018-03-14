@@ -1,0 +1,54 @@
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+
+# snippets: ClientTestFileView
+@snippet generate(test)
+    {@renderFileHeader(test.fileHeader)}
+
+    namespace {@test.fileHeader.packageName}.UnitTests
+    {
+        {@renderTests(test.testClass)}
+    }
+
+@end
+
+# testClass: ClientTestClassView
+@private renderTests(testClass)
+    /// <summary>Generated unit tests</summary>
+    public class Generated{@testClass.name}
+    {
+        # testCase: TestCaseView
+        @join testCase : testClass.testCases
+            @switch testCase.clientMethodType.toString
+            @case "FlattenedMethod"
+                {@flattenedMethodSync(testClass, testCase)}
+            @default
+                $unhandledCase: {@testCase.clientMethodType.toString}$
+            @end
+
+
+        @end
+    }
+@end
+
+# testClass: ClientTestClassView, testCase: TestCaseView
+@private flattenedMethodSync(testClass, testCase)
+    [Fact]
+    public void {@testCase.name}()
+    {
+        // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
+        Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}> { DefaultValue = DefaultValue.Mock };
+        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        // TODO: Add verification of request object
+        mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>())).Returns(expectedResponse);
+        {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
+        {@topLevelInitCode(testCase.initCode)}
+        @if testCase.hasReturnValue
+            {@testCase.responseTypeName} response = client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
+            Assert.Equal(expectedResponse, response);
+        @else
+            client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
+        @end
+        mockGrpcClient.VerifyAll();
+    }
+@end

@@ -82,6 +82,9 @@ public abstract class ClientTestClassView {
   @Nullable
   public abstract List<ClientInitParamView> clientInitOptionalParams();
 
+  @Nullable
+  public abstract String grpcServiceClassName();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder()
         .apiHasUnaryUnaryMethod(false)
@@ -131,6 +134,8 @@ public abstract class ClientTestClassView {
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
 
     public abstract Builder clientInitOptionalParams(List<ClientInitParamView> val);
+
+    public abstract Builder grpcServiceClassName(String val);
 
     public abstract ClientTestClassView build();
   }
