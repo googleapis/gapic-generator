@@ -184,6 +184,7 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
+        .grpcMethodName(namer.getApiMethodName(method, methodConfig.getVisibility()))
         .build();
   }
 

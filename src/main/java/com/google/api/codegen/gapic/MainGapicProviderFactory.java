@@ -28,6 +28,7 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSmokeTestTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicUnitTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
@@ -155,6 +156,19 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new CSharpGapicSmokeTestTransformer(smokeTestPathMapper))
                 .build();
         providers.add(smokeTestProvider);
+        GapicCodePathMapper unitTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix(packageName + File.separator + packageName + ".Tests")
+                .setPackageFilePathNameFormatter(new CSharpNameFormatter())
+                .build();
+        GapicProvider<? extends Object> unitTestProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+                .setModelToViewTransformer(new CSharpGapicUnitTestTransformer(unitTestPathMapper))
+                .build();
+        providers.add(unitTestProvider);
       }
 
     } else if (id.equals(GO)) {

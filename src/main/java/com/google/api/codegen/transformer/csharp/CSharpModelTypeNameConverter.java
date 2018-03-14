@@ -238,7 +238,7 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_STRING:
         return "\"" + value + "\"";
       case TYPE_BYTES:
-        return "ByteString.copyFromUtf8(\"" + value + "\")";
+        return "ByteString.CopyFromUtf8(\"" + value + "\")";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;
