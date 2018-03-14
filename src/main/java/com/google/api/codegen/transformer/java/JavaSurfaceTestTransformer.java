@@ -248,11 +248,9 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
 
-    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
-      testClass.mockServices(
-          mockServiceTransformer.createMockServices(
-              context.getNamer(), context.getApiModel(), context.getProductConfig()));
-    }
+    testClass.mockServices(
+        mockServiceTransformer.createMockServices(
+            context.getNamer(), context.getApiModel(), context.getProductConfig()));
 
     testClass.missingDefaultServiceAddress(
         !context.getInterfaceConfig().hasDefaultServiceAddress());

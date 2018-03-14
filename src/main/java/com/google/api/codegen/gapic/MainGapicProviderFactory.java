@@ -225,7 +225,7 @@ public class MainGapicProviderFactory
                     new JavaSurfaceTestTransformer(
                         javaTestPathMapper,
                         new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
-                        "java/grpc_test.snip"))
+                        "java/test.snip"))
                 .build();
         providers.add(testProvider);
       }

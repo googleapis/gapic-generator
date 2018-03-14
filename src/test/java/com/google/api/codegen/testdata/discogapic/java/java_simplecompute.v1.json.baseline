@@ -6532,28 +6532,34 @@ import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
 public class AddressClientTest {
-  private static final MockHttpService mockService = new MockHttpService();
-  private static AddressClient client;
-  private static AddressSettings clientSettings;
+  private static MockServiceHelper serviceHelper;
+  private AddressClient client;
+  private LocalChannelProvider channelProvider;
 
   @BeforeClass
-  public static void setUp() throws IOException {
-    clientSettings =
-        AddressSettings.newBuilder()
-           .setTransportChannelProvider(
-               AddressSettings.defaultHttpJsonTransportProviderBuilder()
-                   .setHttpTransport(mockService).build()).build();
-    client =
-       AddressClient.create(clientSettings);
-  }
-
-  @After
-  public void cleanUp() {
-    mockService.reset();
+  public static void startStaticServer() {
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList());
+    serviceHelper.start();
   }
 
   @AfterClass
-  public static void tearDown() throws Exception {
+  public static void stopServer() {
+    serviceHelper.stop();
+  }
+
+  @Before
+  public void setUp() throws IOException {
+    serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
+    AddressSettings settings = AddressSettings.newBuilder()
+        .setTransportChannelProvider(channelProvider)
+        .setCredentialsProvider(NoCredentialsProvider.create())
+        .build();
+    client = AddressClient.create(settings);
+  }
+
+  @After
+  public void tearDown() throws Exception {
     client.close();
   }
 
@@ -6604,8 +6610,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockService.addResponse(expectedResponse);
-    mockService.setMethodDescriptor(deleteAddressMethodDescriptor);
+    mockAddresses.addResponse(expectedResponse);
 
     AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
@@ -6613,16 +6618,22 @@ public class AddressClientTest {
         client.deleteAddress(address);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<String> actualRequests = mockService.getRequestPaths();
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
+    DeleteAddressHttpRequest actualRequest = (DeleteAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void deleteAddressExceptionTest() throws Exception {
-    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
-    mockService.addException(exception);
-    mockService.setMethodDescriptor(deleteAddressMethodDescriptor);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
 
     try {
       AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
@@ -6657,8 +6668,7 @@ public class AddressClientTest {
       .setSelfLink(selfLink)
       .setStatus(status)
       .build();
-    mockService.addResponse(expectedResponse);
-    mockService.setMethodDescriptor(getAddressMethodDescriptor);
+    mockAddresses.addResponse(expectedResponse);
 
     AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
@@ -6666,16 +6676,22 @@ public class AddressClientTest {
         client.getAddress(address);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<String> actualRequests = mockService.getRequestPaths();
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
+    GetAddressHttpRequest actualRequest = (GetAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void getAddressExceptionTest() throws Exception {
-    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
-    mockService.addException(exception);
-    mockService.setMethodDescriptor(getAddressMethodDescriptor);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
 
     try {
       AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
@@ -6734,8 +6750,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockService.addResponse(expectedResponse);
-    mockService.setMethodDescriptor(insertAddressMethodDescriptor);
+    mockAddresses.addResponse(expectedResponse);
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
     Address address = Address.newBuilder().build();
@@ -6744,16 +6759,23 @@ public class AddressClientTest {
         client.insertAddress(region, address);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<String> actualRequests = mockService.getRequestPaths();
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
+    InsertAddressHttpRequest actualRequest = (InsertAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
+    Assert.assertEquals(address, actualRequest.getAddress());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void insertAddressExceptionTest() throws Exception {
-    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
-    mockService.addException(exception);
-    mockService.setMethodDescriptor(insertAddressMethodDescriptor);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
@@ -6782,8 +6804,7 @@ public class AddressClientTest {
       .setSelfLink(selfLink)
       .addAllItems(items)
       .build();
-    mockService.addResponse(expectedResponse);
-    mockService.setMethodDescriptor(listAddressesMethodDescriptor);
+    mockAddresses.addResponse(expectedResponse);
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
 
@@ -6793,16 +6814,22 @@ public class AddressClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getItems().get(0), resources.get(0));
 
-    List<String> actualRequests = mockService.getRequestPaths();
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
+    ListAddressesHttpRequest actualRequest = (ListAddressesHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void listAddressesExceptionTest() throws Exception {
-    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
-    mockService.addException(exception);
-    mockService.setMethodDescriptor(listAddressesMethodDescriptor);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
