@@ -90,10 +90,6 @@
         const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
 
     @end
-    /**
-     * The default port of the service.
-     */
-    const DEFAULT_SERVICE_PORT = {@xapiClass.servicePort};
 
     /**
      * The name of the code generator, to be included in the agent header.
@@ -104,7 +100,17 @@
      * The code generator version, to be included in the agent header.
      */
     const CODEGEN_VERSION = '{@xapiClass.toolkitVersion}';
-    {@""}
+
+    @if xapiClass.hasDefaultServiceScopes
+        /**
+         * The default scopes required by the service.
+         */
+        public static $serviceScopes = [
+            @join scope : {@xapiClass.authScopes}
+                '{@scope}',
+            @end
+        ];
+    @end
 @end
 
 @private statics(xapiClass)
@@ -133,13 +139,8 @@
             @if xapiClass.hasDefaultServiceAddress
                 'serviceAddress' => self::SERVICE_ADDRESS,
             @end
-            'port' => self::DEFAULT_SERVICE_PORT,
             @if xapiClass.hasDefaultServiceScopes
-                'scopes' => [
-                    @join scope : {@xapiClass.authScopes}
-                        '{@scope}',
-                    @end
-                ],
+                'scopes' => self::$serviceScopes,
             @end
             'clientConfigPath' => __DIR__ . '{@xapiClass.clientConfigPath}',
             'restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',
@@ -319,10 +320,10 @@
          *     Optional. Options for configuring the service API wrapper.
      @end
      @if xapiClass.hasDefaultServiceAddress
-         *     @@type string $serviceAddress The address of the API remote host.
+         *     @@type string $serviceAddress The address of the API remote host. Must be formatted as "<uri>:<port>".
          *                                   Default '{@xapiClass.serviceAddress}'.
      @else
-         *     @@type string $serviceAddress Required. The address of the API remote host.
+         *     @@type string $serviceAddress Required. The address of the API remote host. Must be formatted as "<uri>:<port>".
      @end
      *     @@type array $keyFile The contents of the service account credentials
      *            .json file retrieved from the Google Developer's Console.
@@ -331,14 +332,12 @@
      *            credentials .json file retrieved from the Google Developers
      *            Console.
      *     @@type string $clientConfig
-     *            Array containing client method configuration, including retry settings. Method
-     *            configurations specified in this option will override settings specified via
-     *            $clientConfigPath.
+     *            Array containing client method configuration, including retry settings. If this argument
+     *            is specified, the value of the $clientConfigPath option will be ignored.
      *     @@type string $clientConfigPath
      *            Path to a JSON file containing client method configuration, including retry settings.
      *            Specify this setting to specify the retry behavior of all methods on the client.
-     *            By default this settings points to the default client config file, which is provided
-     *            in the resources folder.
+     *            If the $clientConfig option is specified, this will be ignored.
      *     @@type bool $disableRetries Determines whether or not retries defined
      *            by the client configuration should be disabled. Defaults to
      *            `false`.

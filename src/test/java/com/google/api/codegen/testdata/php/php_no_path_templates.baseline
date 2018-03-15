@@ -114,10 +114,6 @@ class NoTemplatesApiServiceGapicClient
      */
     const SERVICE_NAME = 'google.cloud.example.v1.NoTemplatesAPIService';
 
-    /**
-     * The default port of the service.
-     */
-    const DEFAULT_SERVICE_PORT = 443;
 
     /**
      * The name of the code generator, to be included in the agent header.
@@ -136,7 +132,6 @@ class NoTemplatesApiServiceGapicClient
     {
         return [
             'serviceName' => self::SERVICE_NAME,
-            'port' => self::DEFAULT_SERVICE_PORT,
             'clientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_client_config.json',
             'restClientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_rest_client_config.php',
             'descriptorsConfigPath' => __DIR__ . '/../resources/no_templates_api_service_descriptor_config.php',
@@ -153,7 +148,7 @@ class NoTemplatesApiServiceGapicClient
      * @param array $options {
      *     Required. Options for configuring the service API wrapper. Those options
      *     that must be provided are marked as Required.
-     *     @type string $serviceAddress Required. The address of the API remote host.
+     *     @type string $serviceAddress Required. The address of the API remote host. Must be formatted as "<uri>:<port>".
      *     @type array $keyFile The contents of the service account credentials
      *            .json file retrieved from the Google Developer's Console.
      *            Ex: `json_decode(file_get_contents($path), true)`.
@@ -161,14 +156,12 @@ class NoTemplatesApiServiceGapicClient
      *            credentials .json file retrieved from the Google Developers
      *            Console.
      *     @type string $clientConfig
-     *            Array containing client method configuration, including retry settings. Method
-     *            configurations specified in this option will override settings specified via
-     *            $clientConfigPath.
+     *            Array containing client method configuration, including retry settings. If this argument
+     *            is specified, the value of the $clientConfigPath option will be ignored.
      *     @type string $clientConfigPath
      *            Path to a JSON file containing client method configuration, including retry settings.
      *            Specify this setting to specify the retry behavior of all methods on the client.
-     *            By default this settings points to the default client config file, which is provided
-     *            in the resources folder.
+     *            If the $clientConfig option is specified, this will be ignored.
      *     @type bool $disableRetries Determines whether or not retries defined
      *            by the client configuration should be disabled. Defaults to
      *            `false`.
