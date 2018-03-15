@@ -33,6 +33,7 @@ public abstract class ClientTestClassView {
   @Nullable
   public abstract String apiName();
 
+  @Nullable
   public abstract List<MockServiceUsageView> mockServices();
 
   public abstract List<TestCaseView> testCases();

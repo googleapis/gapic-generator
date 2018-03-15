@@ -15,6 +15,7 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -61,7 +62,8 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       return null;
     }
 
-    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
+    List<ViewModel> surfaceDocs =
+        modelToViewTransformer.transform(new ProtoApiModel(model), productConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }

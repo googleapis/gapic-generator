@@ -71,7 +71,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
     return apiModel;
   }
 
-  /** Returns a list of language-agnostic methods. Some member functions may fail on the methods. */
+  /** Returns a list of language-agnostic methods. */
   @Override
   public List<MethodModel> getMethods() {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
