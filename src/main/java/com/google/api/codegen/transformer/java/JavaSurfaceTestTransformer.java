@@ -120,7 +120,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       }
     }
 
-    //    if (productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
     for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       ImportTypeTable typeTable =
@@ -139,7 +138,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
               enableStringFormatFunctions);
       views.add(createMockServiceView(context));
     }
-    //    }
     return views;
   }
 

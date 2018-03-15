@@ -110,6 +110,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(ApiModel apiModel, GapicProductConfig productConfig) {
+    // TODO(andrealin): Remove the ProtoApiModel cast.
     Model model = ((ProtoApiModel) apiModel).getProtoModel();
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.addAll(generateServiceSurfaces(model, productConfig));
