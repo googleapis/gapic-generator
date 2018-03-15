@@ -291,11 +291,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   /** Returns the DiscoGapicMethodConfig for the given method. */
   @Override
   public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
+    final String methodName = method.getFullName();
     DiscoGapicMethodConfig methodConfig =
-        (DiscoGapicMethodConfig) getMethodConfigMap().get(method.getFullName());
+        (DiscoGapicMethodConfig) getMethodConfigMap().get(methodName);
     if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
+      throw new IllegalArgumentException("no method config for method '" + methodName + "'");
     }
     return methodConfig;
   }

@@ -65,10 +65,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
 
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
-    JavaSurfaceTransformer surfaceTransformer =
+    JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
             pathMapper, packageMetadataConfig, this, GRPC_STUB_TEMPLATE_FILENAME);
-    return surfaceTransformer.transform(model, productConfig);
+    return commonSurfaceTransformer.transform(model, productConfig);
   }
 
   @Override

@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
@@ -28,6 +29,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -52,9 +54,11 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
+import com.google.api.codegen.viewmodel.SampleValueSetsModel;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
@@ -67,11 +71,16 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /** A transformer to transform an ApiModel into the standard GAPIC surface in Java. */
 public class JavaSurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
+
+  // TODO: Simplify by making JavaSurfaceTransformer abstract and making
+  // JavaDiscoGapicSurfaceTransformer and JavaGapicSurfaceTransformer derive from it and override
+  // the methods that are used below.
   private final SurfaceTransformer surfaceTransformer;
   private final String rpcStubTemplateFilename;
 
@@ -90,6 +99,7 @@ public class JavaSurfaceTransformer {
       new RetryDefinitionsTransformer();
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
+  private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
@@ -121,6 +131,7 @@ public class JavaSurfaceTransformer {
               apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
+      surfaceDocs.addAll(generateSampleFilesForApi(context, apiFile));
 
       serviceDocs.add(apiFile.classView().doc());
 
@@ -153,6 +164,81 @@ public class JavaSurfaceTransformer {
     surfaceDocs.add(packageInfo);
 
     return surfaceDocs;
+  }
+
+  /**
+   * Generates a list of standalone sample view models for the the API, at most one for each calling
+   * form for each method, as specified in each method view model's sampleValueSetsModel (which
+   * ultimately derives from user-provided configuration). If no samples are configured, no sample
+   * files are produced.
+   *
+   * @param context the interface for whose methods the sample files will be generated
+   * @param apiFile the previously generated API file view model for whose methods sample files will
+   *     be generated. The view models returned for each method are modified clones of the view
+   *     models for the methods in apiFile.
+   * @return A list of view models, each one corresponding to a distinct method sample
+   */
+  private List<ViewModel> generateSampleFilesForApi(
+      InterfaceContext context, StaticLangFileView<StaticLangApiView> apiFile) {
+    List<ViewModel> sampleDocs = new ArrayList<>();
+
+    StaticLangApiView classView = apiFile.classView();
+    for (StaticLangApiMethodView methodView : classView.apiMethods()) {
+      StaticLangFileView.Builder<StaticLangApiView> sampleFileBuilder =
+          StaticLangFileView.<StaticLangApiView>newBuilder();
+      sampleFileBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
+      SampleValueSetsModel valueSetsModel = methodView.sampleValueSetsModel();
+      final Set<SampleValueSet> matchingValueSets =
+          valueSetsModel.forSampleType(SampleType.STANDALONE);
+
+      Builder methodViewBuilder = methodView.toBuilder();
+
+      for (SampleValueSet values : matchingValueSets) {
+
+        methodViewBuilder.sampleValueSet(values);
+        final StaticLangApiMethodView sampleMethodView = methodViewBuilder.build();
+
+        sampleFileBuilder.classView(generateSampleClass(classView, sampleMethodView));
+        String outputPath =
+            pathMapper.getSamplesOutputPath(
+                context.getInterfaceModel().getFullName(),
+                context.getProductConfig(),
+                sampleMethodView.name());
+
+        String className =
+            context
+                .getNamer()
+                .getApiSampleClassName(
+                    context.getInterfaceConfig(), sampleMethodView, values.getId());
+        // TODO(vchudnov-g): Capture the sample class name in the View Model
+        sampleFileBuilder.outputPath(outputPath + File.separator + className + ".java");
+
+        // must be done as the last step to catch all imports
+        // TODO(vchudnov-g): Generate only the headers needed for the sample.
+        sampleFileBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
+
+        sampleDocs.add(sampleFileBuilder.build());
+      }
+    }
+
+    return sampleDocs;
+  }
+
+  /**
+   * Makes the specified API method the only method in a clone of apiView. This allows us to
+   * generate a class that creates a sample for just this one method.
+   *
+   * @param apiView the class view that we're cloning before paring down its methods
+   * @param method the single method that will be present in the clone of apiView
+   * @return a close of apiView with only one method, the one specified
+   */
+  private StaticLangApiView generateSampleClass(
+      StaticLangApiView apiView, StaticLangApiMethodView method) {
+    StaticLangApiView.Builder sampleViewBuilder = apiView.toBuilder();
+    List<StaticLangApiMethodView> methods = new ArrayList<>();
+    methods.add(method);
+    sampleViewBuilder.apiMethods(methods);
+    return sampleViewBuilder.build();
   }
 
   private StaticLangFileView<StaticLangApiView> generateApiFile(

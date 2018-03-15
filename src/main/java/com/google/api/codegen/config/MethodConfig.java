@@ -69,6 +69,8 @@ public abstract class MethodConfig {
 
   public abstract List<String> getSampleCodeInitFields();
 
+  public abstract SampleSpec getSampleSpec();
+
   @Nullable
   public abstract String getRerouteToGrpcInterface();
 

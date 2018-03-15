@@ -218,18 +218,18 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  /* Returns the GapicMethodConfig for the given method. */
+  /* Returns the DiscoGapicMethodConfig for the given method */
   public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
+    String methodName = method.getFullName();
     for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
       for (MethodConfig methodConfig : config.getMethodConfigs()) {
-        if (methodConfig.getMethodModel().getFullName().equals(method.getFullName())) {
+        if (methodConfig.getMethodModel().getFullName().equals(methodName)) {
           return (DiscoGapicMethodConfig) methodConfig;
         }
       }
     }
 
-    throw new IllegalArgumentException(
-        "Interface config does not exist for method: " + method.getFullName());
+    throw new IllegalArgumentException("Interface config does not exist for method: " + methodName);
   }
 
   @Override

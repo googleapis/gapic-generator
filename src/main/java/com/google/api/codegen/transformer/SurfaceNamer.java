@@ -42,6 +42,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
@@ -756,6 +757,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
+  }
+
+  /**
+   * The name of the class that holds a sample for an API method and variant. The variant is
+   * typically a calling form.
+   */
+  public String getApiSampleClassName(
+      InterfaceConfig interfaceConfig, ApiMethodView method, String variant) {
+    return publicClassName(
+        Name.anyCamel(method.name(), "sample", Name.anyLower(variant).toUpperCamel()));
   }
 
   /** The name of the class that operates on a particular Discovery Document resource type. */

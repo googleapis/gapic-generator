@@ -182,6 +182,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+    SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.ALPHA;
@@ -216,6 +217,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
+          sampleSpec,
           visibility,
           releaseLevel,
           longRunningConfig);

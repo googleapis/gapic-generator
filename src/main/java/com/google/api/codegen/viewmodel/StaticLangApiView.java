@@ -78,6 +78,8 @@ public abstract class StaticLangApiView {
     return new AutoValue_StaticLangApiView.Builder();
   }
 
+  public abstract Builder toBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
 

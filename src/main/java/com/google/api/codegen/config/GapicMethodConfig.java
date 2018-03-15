@@ -188,6 +188,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+    SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
 
     String rerouteToGrpcInterface =
         Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
@@ -237,6 +238,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
           hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
+          sampleSpec,
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
