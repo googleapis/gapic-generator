@@ -152,7 +152,7 @@ public class DiscoConfigTransformer {
    * configuration). Each resource path is merely a string describing the fields in the entity, and
    * the resource path might not be the same as the RPC endpoint URI. The resource identifier is
    * globally unique within each API. Many methods may use the same resource collection. The
-   * resource identifier will be full qualified iff there are two or more resource identifiers with
+   * resource identifier will be fully qualified iff there are two or more resource identifiers with
    * different canonical resource paths.
    */
   private Map<String, String> getResourceToEntityNameMap(
