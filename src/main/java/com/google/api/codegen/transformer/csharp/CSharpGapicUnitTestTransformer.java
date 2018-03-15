@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
@@ -82,8 +83,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
-      context.getImportTypeTable().saveNicknameFor("Xunit.FactAttribute");
-      context.getImportTypeTable().saveNicknameFor("Moq.Mock");
+      ModelTypeTable typeTable = context.getImportTypeTable();
+      typeTable.saveNicknameFor("Xunit.FactAttribute");
+      typeTable.saveNicknameFor("Moq.Mock");
+      if (context.getLongRunningMethods().iterator().hasNext()) {
+        typeTable.saveNicknameFor("Google.LongRunning.Operations");
+      }
       surfaceDocs.add(generateUnitTest(context));
       surfaceDocs.add(generateUnitTestCsproj(context));
     }
@@ -137,6 +142,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
     testClass.missingDefaultServiceAddress(
         !context.getInterfaceConfig().hasDefaultServiceAddress());
     testClass.missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes());
+    testClass.reroutedGrpcClients(csharpCommonTransformer.generateReroutedGrpcView(context));
+    testClass.hasLongRunningOperations(context.getLongRunningMethods().iterator().hasNext());
 
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
@@ -169,6 +176,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
           clientMethodTypeAsync = ClientMethodType.FlattenedAsyncCallSettingsMethod;
         }
         if (methodConfig.getRerouteToGrpcInterface() != null) {
+          // TODO: Add support for rerouted methods
           continue;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {

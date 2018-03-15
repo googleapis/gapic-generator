@@ -2774,6 +2774,8 @@ namespace Google.Example.Library.V1.Snippets
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
+using Google.Cloud.Tagger.V1;
+using Google.LongRunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
@@ -2795,8 +2797,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void CreateShelf()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2816,8 +2821,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task CreateShelfAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2837,8 +2845,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetShelf()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2858,8 +2869,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetShelfAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2879,8 +2893,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetShelf2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2901,8 +2918,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetShelfAsync2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2923,8 +2943,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetShelf3()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2946,8 +2969,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetShelfAsync3()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -2969,8 +2995,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void DeleteShelf()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.DeleteShelf(It.IsAny<DeleteShelfRequest>(), It.IsAny<CallOptions>()))
@@ -2984,8 +3013,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task DeleteShelfAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.DeleteShelfAsync(It.IsAny<DeleteShelfRequest>(), It.IsAny<CallOptions>()))
@@ -2999,8 +3031,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void MergeShelves()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -3021,8 +3056,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task MergeShelvesAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Shelf expectedResponse = new Shelf
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
@@ -3043,8 +3081,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void CreateBook()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3066,8 +3107,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task CreateBookAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3089,8 +3133,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void PublishSeries()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
                 BookNames = {
@@ -3116,8 +3163,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task PublishSeriesAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
                 BookNames = {
@@ -3143,8 +3193,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetBook()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3165,8 +3218,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetBookAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3187,8 +3243,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void DeleteBook()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.DeleteBook(It.IsAny<DeleteBookRequest>(), It.IsAny<CallOptions>()))
@@ -3202,8 +3261,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task DeleteBookAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.DeleteBookAsync(It.IsAny<DeleteBookRequest>(), It.IsAny<CallOptions>()))
@@ -3217,8 +3279,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void UpdateBook()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3240,8 +3305,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task UpdateBookAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3263,8 +3331,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void UpdateBook2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3289,8 +3360,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task UpdateBookAsync2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3315,8 +3389,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void MoveBook()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3338,8 +3415,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task MoveBookAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedResponse = new Book
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
@@ -3361,8 +3441,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void AddComments()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.AddComments(It.IsAny<AddCommentsRequest>(), It.IsAny<CallOptions>()))
@@ -3385,8 +3468,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task AddCommentsAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.AddCommentsAsync(It.IsAny<AddCommentsRequest>(), It.IsAny<CallOptions>()))
@@ -3409,8 +3495,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetBookFromArchive()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromArchive expectedResponse = new BookFromArchive
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]"),
@@ -3431,8 +3520,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetBookFromArchiveAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromArchive expectedResponse = new BookFromArchive
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]"),
@@ -3453,8 +3545,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetBookFromAnywhere()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
@@ -3476,8 +3571,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetBookFromAnywhereAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
@@ -3499,8 +3597,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void GetBookFromAbsolutelyAnywhere()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
@@ -3521,8 +3622,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task GetBookFromAbsolutelyAnywhereAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
@@ -3543,8 +3647,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void UpdateBookIndex()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.UpdateBookIndex(It.IsAny<UpdateBookIndexRequest>(), It.IsAny<CallOptions>()))
@@ -3563,8 +3670,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task UpdateBookIndexAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             Empty expectedResponse = new Empty();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.UpdateBookIndexAsync(It.IsAny<UpdateBookIndexRequest>(), It.IsAny<CallOptions>()))
@@ -3583,8 +3693,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void AddTag()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             AddTagResponse expectedResponse = new AddTagResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.AddTag(It.IsAny<AddTagRequest>(), It.IsAny<CallOptions>()))
@@ -3600,8 +3713,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task AddTagAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             AddTagResponse expectedResponse = new AddTagResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.AddTagAsync(It.IsAny<AddTagRequest>(), It.IsAny<CallOptions>()))
@@ -3617,8 +3733,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void TestOptionalRequiredFlatteningParams()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParams(It.IsAny<TestOptionalRequiredFlatteningParamsRequest>(), It.IsAny<CallOptions>()))
@@ -3633,8 +3752,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task TestOptionalRequiredFlatteningParamsAsync()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParamsAsync(It.IsAny<TestOptionalRequiredFlatteningParamsRequest>(), It.IsAny<CallOptions>()))
@@ -3649,8 +3771,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public void TestOptionalRequiredFlatteningParams2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParams(It.IsAny<TestOptionalRequiredFlatteningParamsRequest>(), It.IsAny<CallOptions>()))
@@ -3718,8 +3843,11 @@ namespace Google.Example.Library.V1.Tests
         [Fact]
         public async Task TestOptionalRequiredFlatteningParamsAsync2()
         {
-            // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient> { DefaultValue = DefaultValue.Mock };
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             // TODO: Add verification of request object
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParamsAsync(It.IsAny<TestOptionalRequiredFlatteningParamsRequest>(), It.IsAny<CallOptions>()))
