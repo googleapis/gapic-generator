@@ -31,7 +31,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,14 +44,14 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private final Schema schema;
   private final DiscoGapicNamer discoGapicNamer;
 
-  /* Create a FieldModel object from a non-null Schema object. */
+  /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
   private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
-    this.schema = schema;
+    this.schema = schema.dereference();
     this.discoGapicNamer = discoGapicNamer;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
-    for (Schema child : schema.properties().values()) {
+    for (Schema child : this.schema.properties().values()) {
       propertiesBuilder.add(DiscoveryField.create(child, discoGapicNamer));
     }
     this.properties = propertiesBuilder.build();
@@ -77,8 +76,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getSimpleName() {
-    String name =
-        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    String name = schema.getIdentifier();
     String[] pieces = name.split("_");
     return Name.anyCamel(pieces).toLowerCamel();
   }
@@ -127,7 +125,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isMessage() {
-    return false;
+    return !isPrimitiveType();
   }
 
   @Override
@@ -137,13 +135,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isRepeated() {
-    if (schema.type() == Type.ARRAY) {
-      return true;
-    }
-    if (!Strings.isNullOrEmpty(schema.reference()) && schema.dereference() != null) {
-      return schema.dereference().type() == Type.ARRAY;
-    }
-    return false;
+    return schema.type() == Type.ARRAY;
   }
 
   @Override
@@ -195,12 +187,13 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEnum() {
-    return schema.isEnum();
+    // TODO(andrealin): implement.
+    return false;
   }
 
   @Override
   public boolean isPrimitive() {
-    return schema.reference().isEmpty() && schema.items() == null;
+    return schema.items() == null && schema.type() != Type.OBJECT;
   }
 
   @Override
@@ -342,7 +335,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
             return "double";
         }
       case BOOLEAN:
-        return "boolean";
+        return "bool";
       case STRING:
         if (schema.format() == null) {
           return "string";
@@ -376,7 +369,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isStringType() {
-    return schema.type().equals(Type.STRING) && schema.format() == null;
+    return schema.type().equals(Type.STRING);
   }
 
   @Override

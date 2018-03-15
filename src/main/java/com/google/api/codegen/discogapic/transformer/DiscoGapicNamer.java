@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
+// TODO(andrealin): refactor this to split up language-specific and language-independent (ex configgen) functions.
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
@@ -35,6 +36,21 @@ public class DiscoGapicNamer {
   private static final String PATH_DELIMITER = "/";
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
+
+  public enum Cardinality implements Comparable<Cardinality> {
+    IS_REPEATED(true),
+    NOT_REPEATED(false);
+
+    Cardinality(boolean value) {
+      this.value = value;
+    }
+
+    public static Cardinality ofRepeated(boolean value) {
+      return value ? IS_REPEATED : NOT_REPEATED;
+    }
+
+    private final boolean value;
+  }
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
   public DiscoGapicNamer(SurfaceNamer parentNamer) {
@@ -50,26 +66,29 @@ public class DiscoGapicNamer {
     return languageNamer;
   }
 
+  public Name stringToName(String fieldName) {
+    if (fieldName.contains("_")) {
+      return Name.anyCamel(fieldName.split("_"));
+    } else {
+      return Name.anyCamel(fieldName);
+    }
+  }
+
   /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName) {
-    Name name;
-    if (fieldName.contains("_")) {
-      name = Name.anyCamel(fieldName.split("_"));
-    } else {
-      name = Name.anyCamel(fieldName);
-    }
-    return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("get").join(stringToName(fieldName)));
   }
 
   /** Returns the resource setter method name for a resource field. */
-  public String getResourceSetterName(String fieldName) {
-    Name name;
-    if (fieldName.contains("_")) {
-      name = Name.anyCamel(fieldName.split("_"));
-    } else {
-      name = Name.anyCamel(fieldName);
+  public String getResourceSetterName(String fieldName, Cardinality isRepeated) {
+    switch (isRepeated) {
+      case IS_REPEATED:
+        return languageNamer.publicMethodName(
+            Name.from("add", "all").join(stringToName(fieldName)));
+      case NOT_REPEATED:
+      default:
+        return languageNamer.publicMethodName(Name.from("set").join(stringToName(fieldName)));
     }
-    return languageNamer.publicMethodName(Name.anyCamel("set").join(name));
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
@@ -146,11 +165,11 @@ public class DiscoGapicNamer {
    * request object, then returns "resource" appended to the schema's id().
    */
   public static Name getSchemaNameAsParameter(Schema schema) {
-    String paramString =
-        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    Schema deref = schema.dereference();
+    String paramString = deref.getIdentifier();
     String[] pieces = paramString.split("_");
     Name param = Name.anyCamel(pieces);
-    if (Strings.isNullOrEmpty(schema.location()) && schema.type().equals(Schema.Type.OBJECT)) {
+    if (Strings.isNullOrEmpty(deref.location()) && deref.type().equals(Schema.Type.OBJECT)) {
       param = param.join("resource");
     }
     return param;
@@ -173,13 +192,7 @@ public class DiscoGapicNamer {
   @Nullable
   public DiscoveryField getResponseType(Method method) {
     if (method.response() != null) {
-      Schema responseSchema;
-      if (method.response().reference() != null) {
-        responseSchema = method.response().dereference();
-      } else {
-        responseSchema = method.getDocument().schemas().get(method.response().getIdentifier());
-      }
-      return DiscoveryField.create(responseSchema, this);
+      return DiscoveryField.create(method.response(), this);
     }
     return null;
   }

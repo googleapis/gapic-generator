@@ -15,15 +15,18 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,8 +34,13 @@ import java.util.Map;
 
 /** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
-  public List<InterfaceModel> getGrpcInterfacesToMock(ApiModel model, ProductConfig productConfig) {
+  public List<InterfaceModel> getGrpcInterfacesToMock(
+      ApiModel model, GapicProductConfig productConfig) {
     Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
+
+    if (!productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      return ImmutableList.of();
+    }
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       if (!apiInterface.isReachable()) {
@@ -45,7 +53,10 @@ public class MockServiceTransformer {
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(
-      ApiModel model, ProductConfig productConfig, InterfaceModel apiInterface) {
+      ApiModel model, GapicProductConfig productConfig, InterfaceModel apiInterface) {
+    if (!productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      return ImmutableMap.of();
+    }
     Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
     interfaces.put(apiInterface.getFullName(), apiInterface);
     InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
@@ -60,6 +71,9 @@ public class MockServiceTransformer {
   }
 
   public List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context) {
+    if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      return ImmutableList.of();
+    }
     List<MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (MethodModel method : methods) {
@@ -85,7 +99,7 @@ public class MockServiceTransformer {
   }
 
   public List<MockServiceUsageView> createMockServices(
-      SurfaceNamer namer, ApiModel model, ProductConfig productConfig) {
+      SurfaceNamer namer, ApiModel model, GapicProductConfig productConfig) {
     List<MockServiceUsageView> mockServices = new ArrayList<>();
 
     for (InterfaceModel apiInterface : getGrpcInterfacesToMock(model, productConfig)) {

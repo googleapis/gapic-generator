@@ -16,12 +16,12 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -82,14 +82,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   @Override
-  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
-            document,
+            model.getDocument(),
             productConfig,
             createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
@@ -147,8 +147,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
 
-    SchemaTypeTable schemaTypeTable =
-        (SchemaTypeTable) documentContext.getSchemaTypeTable().cloneEmpty();
+    SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
         SchemaTransformationContext.create(
@@ -170,7 +169,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.description(schema.description());
     // Getters and setters use unescaped name for better readability on public methods.
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
-    schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaId));
+    schemaView.fieldSetFunction(
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(
+                schemaId,
+                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY))));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);

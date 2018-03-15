@@ -1121,7 +1121,7 @@ public final class Address implements ApiMessage {
       return users;
     }
 
-    public Builder setUsers(List<String> users) {
+    public Builder addAllUsers(List<String> users) {
       this.users = users;
       return this;
     }
@@ -1162,7 +1162,7 @@ public final class Address implements ApiMessage {
       newBuilder.setRegion(this.region);
       newBuilder.setSelfLink(this.selfLink);
       newBuilder.setStatus(this.status);
-      newBuilder.setUsers(this.users);
+      newBuilder.addAllUsers(this.users);
       return newBuilder;
     }
   }
@@ -1690,7 +1690,7 @@ public final class AddressesScopedList implements ApiMessage {
       return addresses;
     }
 
-    public Builder setAddresses(List<Address> addresses) {
+    public Builder addAllAddresses(List<Address> addresses) {
       this.addresses = addresses;
       return this;
     }
@@ -1715,7 +1715,7 @@ public final class AddressesScopedList implements ApiMessage {
 
     public Builder clone() {
       Builder newBuilder = new Builder();
-      newBuilder.setAddresses(this.addresses);
+      newBuilder.addAllAddresses(this.addresses);
       newBuilder.setWarning(this.warning);
       return newBuilder;
     }
@@ -1953,7 +1953,7 @@ public final class AddressList implements ApiMessage {
       return items;
     }
 
-    public Builder setItems(List<Address> items) {
+    public Builder addAllItems(List<Address> items) {
       this.items = items;
       return this;
     }
@@ -2003,7 +2003,7 @@ public final class AddressList implements ApiMessage {
     public Builder clone() {
       Builder newBuilder = new Builder();
       newBuilder.setId(this.id);
-      newBuilder.setItems(this.items);
+      newBuilder.addAllItems(this.items);
       newBuilder.setKind(this.kind);
       newBuilder.setNextPageToken(this.nextPageToken);
       newBuilder.setSelfLink(this.selfLink);
@@ -2364,7 +2364,7 @@ public final class Error implements ApiMessage {
       return errors;
     }
 
-    public Builder setErrors(List<Errors> errors) {
+    public Builder addAllErrors(List<Errors> errors) {
       this.errors = errors;
       return this;
     }
@@ -2378,7 +2378,7 @@ public final class Error implements ApiMessage {
 
     public Builder clone() {
       Builder newBuilder = new Builder();
-      newBuilder.setErrors(this.errors);
+      newBuilder.addAllErrors(this.errors);
       return newBuilder;
     }
   }
@@ -3365,7 +3365,7 @@ public final class Operation implements ApiMessage {
       return warnings;
     }
 
-    public Builder setWarnings(List<Warnings> warnings) {
+    public Builder addAllWarnings(List<Warnings> warnings) {
       this.warnings = warnings;
       return this;
     }
@@ -3453,7 +3453,7 @@ public final class Operation implements ApiMessage {
       newBuilder.setTargetId(this.targetId);
       newBuilder.setTargetLink(this.targetLink);
       newBuilder.setUser(this.user);
-      newBuilder.setWarnings(this.warnings);
+      newBuilder.addAllWarnings(this.warnings);
       newBuilder.setZone(this.zone);
       return newBuilder;
     }
@@ -3716,7 +3716,7 @@ public final class Warning implements ApiMessage {
       return data;
     }
 
-    public Builder setData(List<Data> data) {
+    public Builder addAllData(List<Data> data) {
       this.data = data;
       return this;
     }
@@ -3744,7 +3744,7 @@ public final class Warning implements ApiMessage {
     public Builder clone() {
       Builder newBuilder = new Builder();
       newBuilder.setCode(this.code);
-      newBuilder.setData(this.data);
+      newBuilder.addAllData(this.data);
       newBuilder.setMessage(this.message);
       return newBuilder;
     }
@@ -3947,7 +3947,7 @@ public final class Warnings implements ApiMessage {
       return data;
     }
 
-    public Builder setData(List<Data> data) {
+    public Builder addAllData(List<Data> data) {
       this.data = data;
       return this;
     }
@@ -3975,7 +3975,7 @@ public final class Warnings implements ApiMessage {
     public Builder clone() {
       Builder newBuilder = new Builder();
       newBuilder.setCode(this.code);
-      newBuilder.setData(this.data);
+      newBuilder.addAllData(this.data);
       newBuilder.setMessage(this.message);
       return newBuilder;
     }
@@ -8644,7 +8644,7 @@ import org.threeten.bp.Duration;
  * <code>
  * AddressSettings.Builder addressSettingsBuilder =
  *     AddressSettings.newBuilder();
- * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
+ * addressSettingsBuilder.deleteAddressSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressSettings addressSettings = addressSettingsBuilder.build();
  * </code>
@@ -8966,7 +8966,7 @@ import org.threeten.bp.Duration;
  * <code>
  * AddressStubSettings.Builder addressSettingsBuilder =
  *     AddressStubSettings.newBuilder();
- * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
+ * addressSettingsBuilder.deleteAddressSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressStubSettings addressSettings = addressSettingsBuilder.build();
  * </code>
@@ -9573,6 +9573,7 @@ package com.google.cloud.simplecompute.v1.stub;
 
 import com.google.api.client.http.HttpMethods;
 import com.google.api.core.BetaApi;
+import com.google.api.core.InternalApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
@@ -9622,7 +9623,8 @@ import javax.annotation.Generated;
 public class HttpJsonAddressStub extends AddressStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
-  private static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
       ApiMethodDescriptor.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
           .setMethodName("compute.addresses.aggregatedList")
           .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
@@ -9635,7 +9637,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("project")
           .build();
-  private static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
       ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.delete")
           .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
@@ -9647,7 +9650,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.DELETE)
           .setResourceNameField("address")
           .build();
-  private static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
       ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
           .setMethodName("compute.addresses.get")
           .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
@@ -9659,7 +9663,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("address")
           .build();
-  private static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
       ApiMethodDescriptor.<InsertAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.insert")
           .setRequestInstance(InsertAddressHttpRequest.getDefaultInstance())
@@ -9671,7 +9676,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.POST)
           .setResourceNameField("region")
           .build();
-  private static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
       ApiMethodDescriptor.<ListAddressesHttpRequest, AddressList>newBuilder()
           .setMethodName("compute.addresses.list")
           .setRequestInstance(ListAddressesHttpRequest.getDefaultInstance())
@@ -9684,7 +9690,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setResourceNameField("region")
           .build();
-  private static final ApiMethodDescriptor<PatchAddressHttpRequest, Operation> patchAddressMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<PatchAddressHttpRequest, Operation> patchAddressMethodDescriptor =
       ApiMethodDescriptor.<PatchAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.patch")
           .setRequestInstance(PatchAddressHttpRequest.getDefaultInstance())
@@ -9697,7 +9704,8 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.PATCH)
           .setResourceNameField("region")
           .build();
-  private static final ApiMethodDescriptor<UpdateAddressHttpRequest, Operation> updateAddressMethodDescriptor =
+  @InternalApi
+  public static final ApiMethodDescriptor<UpdateAddressHttpRequest, Operation> updateAddressMethodDescriptor =
       ApiMethodDescriptor.<UpdateAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.update")
           .setRequestInstance(UpdateAddressHttpRequest.getDefaultInstance())
@@ -9897,3 +9905,591 @@ public class HttpJsonAddressStub extends AddressStub {
  */
 
 package com.google.cloud.simplecompute.v1;
+============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.gax.httpjson.MockHttpService;
+import com.google.api.gax.paging.PagedListResponse;
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.ApiExceptionFactory;
+import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.StatusCode.Code;
+import com.google.api.gax.rpc.testing.FakeStatusCode;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
+import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import com.google.common.collect.Lists;
+import com.google.protobuf.GeneratedMessageV3;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+@javax.annotation.Generated("by GAPIC")
+public class AddressClientTest {
+  private static MockServiceHelper serviceHelper;
+  private AddressClient client;
+  private LocalChannelProvider channelProvider;
+
+  @BeforeClass
+  public static void startStaticServer() {
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList());
+    serviceHelper.start();
+  }
+
+  @AfterClass
+  public static void stopServer() {
+    serviceHelper.stop();
+  }
+
+  @Before
+  public void setUp() throws IOException {
+    serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
+    AddressSettings settings = AddressSettings.newBuilder()
+        .setTransportChannelProvider(channelProvider)
+        .setCredentialsProvider(NoCredentialsProvider.create())
+        .build();
+    client = AddressClient.create(settings);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    client.close();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void aggregatedListAddressesTest() {
+    String kind = "kind3292052";
+    String nextPageToken = "";
+    String id = "id3355";
+    String selfLink = "selfLink-1691268851";
+    Address addresses = Address.newBuilder().build();
+    AddressesScopedList items = AddressesScopedList.newBuilder()
+      .addAllAddresses(addresses)
+      .build();
+    AddressAggregatedList expectedResponse = AddressAggregatedList.newBuilder()
+      .setKind(kind)
+      .setNextPageToken(nextPageToken)
+      .setId(id)
+      .setSelfLink(selfLink)
+      .setItems(items)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    AggregatedListAddressesPagedResponse pagedListResponse = client.aggregatedListAddresses(project);
+
+    List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getAddresses().get(0), resources.get(0));
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    AggregatedListAddressesHttpRequest actualRequest = (AggregatedListAddressesHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(project, ProjectName.parse(actualRequest.getProject()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void aggregatedListAddressesExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.aggregatedListAddresses(project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteAddressTest() {
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    String targetId = "targetId-815576439";
+    String kind = "kind3292052";
+    String description = "description-1724546052";
+    String statusMessage = "statusMessage-239442758";
+    String selfLink = "selfLink-1691268851";
+    String insertTime = "insertTime-103148397";
+    Integer httpErrorStatusCode = 1386087020;
+    String zone = "zone3744684";
+    String targetLink = "targetLink-2084812312";
+    String creationTimestamp = "creationTimestamp567396278";
+    String name = "name3373707";
+    Integer progress = 1001078227;
+    String operationType = "operationType-1432962286";
+    String startTime = "startTime-1573145462";
+    String endTime = "endTime1725551537";
+    String id = "id3355";
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    String clientOperationId = "clientOperationId-239630617";
+    String user = "user3599307";
+    String status = "status-892481550";
+    Operation expectedResponse = Operation.newBuilder()
+      .setHttpErrorMessage(httpErrorMessage)
+      .setTargetId(targetId)
+      .setKind(kind)
+      .setDescription(description)
+      .setStatusMessage(statusMessage)
+      .setSelfLink(selfLink)
+      .setInsertTime(insertTime)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setZone(zone)
+      .setTargetLink(targetLink)
+      .setCreationTimestamp(creationTimestamp)
+      .setName(name)
+      .setProgress(progress)
+      .setOperationType(operationType)
+      .setStartTime(startTime)
+      .setEndTime(endTime)
+      .setId(id)
+      .setRegion(region.toString())
+      .setClientOperationId(clientOperationId)
+      .setUser(user)
+      .setStatus(status)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+    Operation actualResponse =
+        client.deleteAddress(address);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    DeleteAddressHttpRequest actualRequest = (DeleteAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteAddressExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+      client.deleteAddress(address);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getAddressTest() {
+    AddressName address2 = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+    String kind = "kind3292052";
+    String creationTimestamp = "creationTimestamp567396278";
+    String name = "name3373707";
+    String description = "description-1724546052";
+    String id = "id3355";
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    String selfLink = "selfLink-1691268851";
+    String status = "status-892481550";
+    Address expectedResponse = Address.newBuilder()
+      .setAddress(address2.toString())
+      .setKind(kind)
+      .setCreationTimestamp(creationTimestamp)
+      .setName(name)
+      .setDescription(description)
+      .setId(id)
+      .setRegion(region.toString())
+      .setSelfLink(selfLink)
+      .setStatus(status)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+    Address actualResponse =
+        client.getAddress(address);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetAddressHttpRequest actualRequest = (GetAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getAddressExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+      client.getAddress(address);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void insertAddressTest() {
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    String targetId = "targetId-815576439";
+    String kind = "kind3292052";
+    String description = "description-1724546052";
+    String statusMessage = "statusMessage-239442758";
+    String selfLink = "selfLink-1691268851";
+    String insertTime = "insertTime-103148397";
+    Integer httpErrorStatusCode = 1386087020;
+    String zone = "zone3744684";
+    String targetLink = "targetLink-2084812312";
+    String creationTimestamp = "creationTimestamp567396278";
+    String name = "name3373707";
+    Integer progress = 1001078227;
+    String operationType = "operationType-1432962286";
+    String startTime = "startTime-1573145462";
+    String endTime = "endTime1725551537";
+    String id = "id3355";
+    RegionName region2 = RegionName.of("[PROJECT]", "[REGION]");
+    String clientOperationId = "clientOperationId-239630617";
+    String user = "user3599307";
+    String status = "status-892481550";
+    Operation expectedResponse = Operation.newBuilder()
+      .setHttpErrorMessage(httpErrorMessage)
+      .setTargetId(targetId)
+      .setKind(kind)
+      .setDescription(description)
+      .setStatusMessage(statusMessage)
+      .setSelfLink(selfLink)
+      .setInsertTime(insertTime)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setZone(zone)
+      .setTargetLink(targetLink)
+      .setCreationTimestamp(creationTimestamp)
+      .setName(name)
+      .setProgress(progress)
+      .setOperationType(operationType)
+      .setStartTime(startTime)
+      .setEndTime(endTime)
+      .setId(id)
+      .setRegion(region2.toString())
+      .setClientOperationId(clientOperationId)
+      .setUser(user)
+      .setStatus(status)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    Address addressResource = Address.newBuilder().build();
+
+    Operation actualResponse =
+        client.insertAddress(region, addressResource);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    InsertAddressHttpRequest actualRequest = (InsertAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
+    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void insertAddressExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+      Address addressResource = Address.newBuilder().build();
+
+      client.insertAddress(region, addressResource);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listAddressesTest() {
+    String kind = "kind3292052";
+    String nextPageToken = "";
+    String id = "id3355";
+    String selfLink = "selfLink-1691268851";
+    Address itemsElement = Address.newBuilder().build();
+    List<Address> items = Arrays.asList(itemsElement);
+    AddressList expectedResponse = AddressList.newBuilder()
+      .setKind(kind)
+      .setNextPageToken(nextPageToken)
+      .setId(id)
+      .setSelfLink(selfLink)
+      .addAllItems(items)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+
+    ListAddressesPagedResponse pagedListResponse = client.listAddresses(region);
+
+    List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getItems().get(0), resources.get(0));
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ListAddressesHttpRequest actualRequest = (ListAddressesHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listAddressesExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+
+      client.listAddresses(region);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void patchAddressTest() {
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    String targetId = "targetId-815576439";
+    String kind = "kind3292052";
+    String description = "description-1724546052";
+    String statusMessage = "statusMessage-239442758";
+    String selfLink = "selfLink-1691268851";
+    String insertTime = "insertTime-103148397";
+    Integer httpErrorStatusCode = 1386087020;
+    String zone = "zone3744684";
+    String targetLink = "targetLink-2084812312";
+    String creationTimestamp = "creationTimestamp567396278";
+    String name = "name3373707";
+    Integer progress = 1001078227;
+    String operationType = "operationType-1432962286";
+    String startTime = "startTime-1573145462";
+    String endTime = "endTime1725551537";
+    String id = "id3355";
+    RegionName region2 = RegionName.of("[PROJECT]", "[REGION]");
+    String clientOperationId = "clientOperationId-239630617";
+    String user = "user3599307";
+    String status = "status-892481550";
+    Operation expectedResponse = Operation.newBuilder()
+      .setHttpErrorMessage(httpErrorMessage)
+      .setTargetId(targetId)
+      .setKind(kind)
+      .setDescription(description)
+      .setStatusMessage(statusMessage)
+      .setSelfLink(selfLink)
+      .setInsertTime(insertTime)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setZone(zone)
+      .setTargetLink(targetLink)
+      .setCreationTimestamp(creationTimestamp)
+      .setName(name)
+      .setProgress(progress)
+      .setOperationType(operationType)
+      .setStartTime(startTime)
+      .setEndTime(endTime)
+      .setId(id)
+      .setRegion(region2.toString())
+      .setClientOperationId(clientOperationId)
+      .setUser(user)
+      .setStatus(status)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    String address = "address-1147692044";
+    String requestId = "requestId37109963";
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    Address addressResource = Address.newBuilder().build();
+
+    Operation actualResponse =
+        client.patchAddress(address, requestId, region, addressResource);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    PatchAddressHttpRequest actualRequest = (PatchAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, actualRequest.getAddress());
+    Assert.assertEquals(requestId, actualRequest.getRequestId());
+    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
+    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void patchAddressExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      String address = "address-1147692044";
+      String requestId = "requestId37109963";
+      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+      Address addressResource = Address.newBuilder().build();
+
+      client.patchAddress(address, requestId, region, addressResource);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateAddressTest() {
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    String targetId = "targetId-815576439";
+    String kind = "kind3292052";
+    String description = "description-1724546052";
+    String statusMessage = "statusMessage-239442758";
+    String selfLink = "selfLink-1691268851";
+    String insertTime = "insertTime-103148397";
+    Integer httpErrorStatusCode = 1386087020;
+    String zone = "zone3744684";
+    String targetLink = "targetLink-2084812312";
+    String creationTimestamp = "creationTimestamp567396278";
+    String name = "name3373707";
+    Integer progress = 1001078227;
+    String operationType = "operationType-1432962286";
+    String startTime = "startTime-1573145462";
+    String endTime = "endTime1725551537";
+    String id = "id3355";
+    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    String clientOperationId = "clientOperationId-239630617";
+    String user = "user3599307";
+    String status = "status-892481550";
+    Operation expectedResponse = Operation.newBuilder()
+      .setHttpErrorMessage(httpErrorMessage)
+      .setTargetId(targetId)
+      .setKind(kind)
+      .setDescription(description)
+      .setStatusMessage(statusMessage)
+      .setSelfLink(selfLink)
+      .setInsertTime(insertTime)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setZone(zone)
+      .setTargetLink(targetLink)
+      .setCreationTimestamp(creationTimestamp)
+      .setName(name)
+      .setProgress(progress)
+      .setOperationType(operationType)
+      .setStartTime(startTime)
+      .setEndTime(endTime)
+      .setId(id)
+      .setRegion(region.toString())
+      .setClientOperationId(clientOperationId)
+      .setUser(user)
+      .setStatus(status)
+      .build();
+    mockAddresses.addResponse(expectedResponse);
+
+    ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+    String requestId = "requestId37109963";
+    Address addressResource = Address.newBuilder().build();
+
+    Operation actualResponse =
+        client.updateAddress(address, requestId, addressResource);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    UpdateAddressHttpRequest actualRequest = (UpdateAddressHttpRequest)actualRequests.get(0);
+
+    Assert.assertEquals(address, ProjectAddressName.parse(actualRequest.getAddress()));
+    Assert.assertEquals(requestId, actualRequest.getRequestId());
+    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateAddressExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockAddresses.addException(exception);
+
+    try {
+      ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+      String requestId = "requestId37109963";
+      Address addressResource = Address.newBuilder().build();
+
+      client.updateAddress(address, requestId, addressResource);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+}

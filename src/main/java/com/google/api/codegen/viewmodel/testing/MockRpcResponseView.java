@@ -18,13 +18,13 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class MockGrpcResponseView {
+public abstract class MockRpcResponseView {
   public abstract String typeName();
 
   public abstract InitCodeView initCode();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockGrpcResponseView.Builder();
+    return new AutoValue_MockRpcResponseView.Builder();
   }
 
   @AutoValue.Builder
@@ -34,6 +34,6 @@ public abstract class MockGrpcResponseView {
 
     public abstract Builder typeName(String val);
 
-    public abstract MockGrpcResponseView build();
+    public abstract MockRpcResponseView build();
   }
 }

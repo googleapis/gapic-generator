@@ -18,13 +18,11 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -64,7 +62,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getOutputTypeSimpleName() {
-    return method.response() == null ? "none" : method.response().id();
+    return outputType.getTypeName();
   }
 
   @Override
@@ -83,11 +81,10 @@ public final class DiscoveryMethodModel implements MethodModel {
       return DiscoveryField.create(targetSchema, discoGapicNamer);
     }
     if (method.request() != null
-        && !Strings.isNullOrEmpty(method.request().reference())
-        && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
+        && DiscoGapicNamer.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
-      return DiscoveryField.create(method.request().dereference(), discoGapicNamer);
+      return DiscoveryField.create(method.request(), discoGapicNamer);
     }
     return null;
   }
@@ -109,7 +106,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getInputFullName() {
-    // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();
   }
 
@@ -120,22 +116,17 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    // Maybe use Discogapic namer for this?
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((TypeModel) outputType));
   }
 
   @Override
   public String getOutputFullName() {
-    return method.response() == null ? "none" : method.response().getIdentifier();
+    return outputType.getTypeName();
   }
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(inputType));
   }
 
   @Override
@@ -161,7 +152,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return method.response() == null;
+    return outputType == null;
   }
 
   @Override
@@ -193,21 +184,12 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType != null) {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    } else {
-      return typeTable.getAndSaveNicknameFor("java.lang.Void");
-    }
+    return typeTable.getAndSaveNicknameFor((TypeModel) outputType);
   }
 
   @Override
   public String getScopedDescription() {
     return method.description();
-  }
-
-  @Override
-  public boolean hasReturnValue() {
-    return method.response() != null;
   }
 
   @Override
@@ -257,8 +239,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     for (Schema field : method.parameters().values()) {
       fieldsBuilder.add(DiscoveryField.create(field, discoGapicNamer));
     }
-    if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
-      fieldsBuilder.add(DiscoveryField.create(method.request().dereference(), discoGapicNamer));
+    if (method.request() != null) {
+      fieldsBuilder.add(DiscoveryField.create(method.request(), discoGapicNamer));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
@@ -275,8 +257,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     ImmutableList.Builder<DiscoveryField> outputField = new Builder<>();
-    if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
-      DiscoveryField fieldModel = DiscoveryField.create(method.response().dereference(), null);
+    if (method.response() != null) {
+      DiscoveryField fieldModel = DiscoveryField.create(method.response(), null);
       outputField.add(fieldModel);
     }
     outputFields = outputField.build();

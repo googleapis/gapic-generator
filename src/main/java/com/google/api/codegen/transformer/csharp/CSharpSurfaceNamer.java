@@ -547,7 +547,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
               "Invalid streaming: " + methodConfig.getGrpcStreamingType());
       }
     } else {
-      boolean hasReturn = methodConfig.getMethodModel().hasReturnValue();
+      boolean hasReturn = !methodConfig.getMethodModel().isOutputTypeEmpty();
       switch (synchronicity) {
         case Sync:
           return hasReturn ? ImmutableList.of("The RPC response.") : ImmutableList.of();

@@ -211,7 +211,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
         || primitiveType.equals("float")) {
       return value;
     }
-    if (primitiveType.equals("String")) {
+    if (primitiveType.equals("java.lang.String")) {
       return "\"" + value + "\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
@@ -230,14 +230,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(Schema schema) {
-    if (schema.type() == Schema.Type.ARRAY || schema.repeated()) {
-      return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
-    }
     if (getPrimitiveTypeName(schema) != null) {
       return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
-    if (schema.type() == Type.OBJECT) {
-      return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
+    if (schema.type() == Type.OBJECT || schema.type() == Type.ARRAY) {
+      return TypedValue.create(getTypeNameForElementType(schema), "%s.newBuilder().build()");
     }
     return TypedValue.create(getTypeName(schema), "null");
   }

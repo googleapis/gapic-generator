@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -24,7 +25,6 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -85,7 +85,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   @Override
-  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(DiscoApiModel apiModel, GapicProductConfig productConfig) {
     List<ViewModel> surfaceRequests = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
@@ -93,7 +93,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
-            document,
+            apiModel.getDocument(),
             productConfig,
             createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
@@ -192,7 +192,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     paramView.fieldGetFunction(
         context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
     paramView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(
+                schema.getIdentifier(),
+                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY))));
     return paramView.build();
   }
 
