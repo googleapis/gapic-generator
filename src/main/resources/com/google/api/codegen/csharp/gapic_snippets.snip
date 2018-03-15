@@ -422,12 +422,8 @@
     @end
 @end
 
+# snippetMethod: StaticLangApiMethodSnippetView
 @private sampleMethodCall(snippetMethod)
-    {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}({@sampleMethodCallArgList(snippetMethod.method.initCode.fieldSettings)})
-@end
-
-@private sampleMethodCallArgList(fieldSettings)
-    @join fieldSetting : fieldSettings on ", "
-        {@fieldSetting.identifier}
-    @end
+    {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}(\
+        {@rpcMethodCallArgList(snippetMethod.method.initCode.fieldSettings, snippetMethod.requiresNamedArguments)})
 @end

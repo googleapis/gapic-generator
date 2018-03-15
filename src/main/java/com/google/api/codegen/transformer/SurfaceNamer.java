@@ -805,12 +805,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
             .join(Name.upperCamel(interfaceConfig.getRawName(), "Callable", "Factory")));
   }
 
-  /** The name of the http stub for a particular proto interface; not used in most languages. */
+  /** The name of the RPC stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
-      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
-            .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
+            .join(Name.anyCamel(interfaceModel.getSimpleName(), "Stub")));
   }
 
   /** The sample application class name. */
@@ -824,7 +824,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServiceClassName(InterfaceModel apiInterface) {
     NamePath namePath =
-        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
+        typeNameConverter.getNamePath(getTypeFormatter().getFullNameFor(apiInterface));
     String grpcContainerName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
     String serviceClassName =
@@ -994,7 +994,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getGrpcMethodName(MethodModel method) {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
-    return Name.upperCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
+    return Name.anyCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
+  }
+
+  /**
+   * The name used in Grpc for the given API async method. This needs to match what Grpc generates.
+   */
+  public String getAsyncGrpcMethodName(MethodModel method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncGrpcMethodName");
   }
 
   /** The GRPC streaming server type name for a given method. */
@@ -1102,6 +1109,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The fully qualified type name for the stub of an API interface. */
   public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
+  }
+
+  /** The fully qualified type name for the RPC stub of an API interface. */
+  public String getFullyQualifiedRpcStubType(
+      InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
   }
 
@@ -1470,6 +1483,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName = symbolTable.getNewSymbol(method.asName().join("test"));
     return publicMethodName(testCaseName);
+  }
+
+  public String getAsyncTestCaseName(SymbolTable symbolTable, MethodModel method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncTestCaseName");
   }
 
   /** The exception test case name for the given method. */

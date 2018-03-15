@@ -14,15 +14,15 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.util.List;
 
 public interface DocumentToViewTransformer {
 
   /** Generate a list of ViewModels from a given Document model. */
-  List<ViewModel> transform(Document document, GapicProductConfig productConfig);
+  List<ViewModel> transform(DiscoApiModel document, GapicProductConfig productConfig);
 
   /** Return the list of filenames of View templates to be applied to the transformed ViewModels. */
   List<String> getTemplateFileNames();

@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -493,6 +494,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAsyncGrpcMethodName(MethodModel method) {
+    return getGrpcMethodName(method) + "Async";
+  }
+
+  @Override
   public String getGrpcStreamingApiReturnTypeName(
       MethodContext methodContext, ImportTypeTable typeTable) {
     MethodModel method = methodContext.getMethodModel();
@@ -547,11 +553,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
               "Invalid streaming: " + methodConfig.getGrpcStreamingType());
       }
     } else {
+      boolean hasReturn = !methodConfig.getMethodModel().isOutputTypeEmpty();
       switch (synchronicity) {
         case Sync:
-          return ImmutableList.of("The RPC response.");
+          return hasReturn ? ImmutableList.of("The RPC response.") : ImmutableList.of();
         case Async:
-          return ImmutableList.of("A Task containing the RPC response.");
+          return ImmutableList.of(
+              hasReturn
+                  ? "A Task containing the RPC response."
+                  : "A Task that completes when the RPC has completed.");
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
@@ -632,5 +642,18 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         return null;
       }
     }
+  }
+
+  /** The test case name for the given method. */
+  @Override
+  public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
+    Name testCaseName = symbolTable.getNewSymbol(method.asName());
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getAsyncTestCaseName(SymbolTable symbolTable, MethodModel method) {
+    Name testCaseName = symbolTable.getNewSymbol(method.asName().join("async"));
+    return publicMethodName(testCaseName);
   }
 }

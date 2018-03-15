@@ -39,7 +39,6 @@ import com.google.api.codegen.viewmodel.metadata.SimpleModuleView;
 import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.codegen.viewmodel.metadata.TocModuleView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
@@ -66,12 +65,13 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
+    for (ProtoFile file :
+        new ProtoFileView().getElementIterable(((ProtoApiModel) model).getProtoModel())) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
-    surfaceDocs.add(generateOverview(new ProtoApiModel(model), productConfig));
+    surfaceDocs.add(generateOverview(model, productConfig));
     return surfaceDocs.build();
   }
 
