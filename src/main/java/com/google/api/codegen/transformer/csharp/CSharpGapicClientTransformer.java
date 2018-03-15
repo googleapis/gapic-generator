@@ -49,7 +49,6 @@ import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
-import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
@@ -66,7 +65,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -275,7 +273,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.apiMethodsImpl(methodsImpl);
     apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     apiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
-    apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
+    apiClass.reroutedGrpcClients(csharpCommonTransformer.generateReroutedGrpcView(context));
     apiClass.modifyMethods(generateModifyMethods(context));
 
     return apiClass.build();
@@ -332,25 +330,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
-  }
-
-  private List<ReroutedGrpcView> generateReroutedGrpcView(GapicInterfaceContext context) {
-    SurfaceNamer namer = context.getNamer();
-    Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
-    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      String reroute = methodConfig.getRerouteToGrpcInterface();
-      if (reroute != null) {
-        ReroutedGrpcView rerouted =
-            ReroutedGrpcView.newBuilder()
-                .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
-                .typeName(namer.getReroutedGrpcTypeName(context.getImportTypeTable(), methodConfig))
-                .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
-                .build();
-        reroutedViews.add(rerouted);
-      }
-    }
-    return new ArrayList<ReroutedGrpcView>(reroutedViews);
   }
 
   private List<ModifyMethodView> generateModifyMethods(GapicInterfaceContext context) {

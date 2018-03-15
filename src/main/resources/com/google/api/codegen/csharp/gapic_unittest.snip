@@ -38,8 +38,7 @@
     [Fact]
     public void {@testCase.name}()
     {
-        // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-        Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}> { DefaultValue = DefaultValue.Mock };
+        {@createMock(testClass)}
         {@topLevelInitCode(testCase.mockResponse.initCode)}
         // TODO: Add verification of request object
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>()))
@@ -61,8 +60,7 @@
     [Fact]
     public async Task {@testCase.name}()
     {
-        // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
-        Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}> { DefaultValue = DefaultValue.Mock };
+        {@createMock(testClass)}
         {@topLevelInitCode(testCase.mockResponse.initCode)}
         // TODO: Add verification of request object
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>()))
@@ -77,4 +75,17 @@
         @end
         mockGrpcClient.VerifyAll();
     }
+@end
+
+# testClass: ClientTestClassView
+@private createMock(testClass)
+    Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}>(MockBehavior.Strict);
+    @join rerouted : testClass.reroutedGrpcClients
+        mockGrpcClient.Setup(x => x.{@rerouted.getMethodName}())
+            .Returns(new Mock<{@rerouted.typeName}>().Object);
+    @end
+    @if testClass.hasLongRunningOperations
+        mockGrpcClient.Setup(x => x.CreateOperationsClient())
+            .Returns(new Mock<Operations.OperationsClient>().Object);
+    @end
 @end
