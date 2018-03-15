@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
@@ -155,7 +156,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
       if (methodConfig.isGrpcStreaming()) {
         // TODO: Add support for streaming methods
       } else if (methodConfig.isFlattening()) {
-        ClientMethodType clientMethodType;
+        ClientMethodType clientMethodTypeSync;
+        ClientMethodType clientMethodTypeAsync;
         if (methodConfig.isPageStreaming()) {
           // TODO: Add support for page-streaming methods
           continue;
@@ -163,8 +165,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
           // TODO: Add support for LRO methods
           continue;
         } else {
-          // TODO: Add tests for async flattened methods
-          clientMethodType = ClientMethodType.FlattenedMethod;
+          clientMethodTypeSync = ClientMethodType.FlattenedMethod;
+          clientMethodTypeAsync = ClientMethodType.FlattenedAsyncCallSettingsMethod;
         }
         if (methodConfig.getRerouteToGrpcInterface() != null) {
           continue;
@@ -172,7 +174,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
-          InitCodeContext initCodeContext =
+          InitCodeContext initCodeContextSync =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
                   new SymbolTable(),
@@ -181,7 +183,25 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
                   valueGenerator);
           testCaseViews.add(
               testCaseTransformer.createTestCaseView(
-                  methodContext, testNameTable, initCodeContext, clientMethodType));
+                  methodContext,
+                  testNameTable,
+                  initCodeContextSync,
+                  clientMethodTypeSync,
+                  Synchronicity.Sync));
+          InitCodeContext initCodeContextAsync =
+              initCodeTransformer.createRequestInitCodeContext(
+                  methodContext,
+                  new SymbolTable(),
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
+                  InitCodeOutputType.FieldList,
+                  valueGenerator);
+          testCaseViews.add(
+              testCaseTransformer.createTestCaseView(
+                  methodContext,
+                  testNameTable,
+                  initCodeContextAsync,
+                  clientMethodTypeAsync,
+                  Synchronicity.Async));
         }
       } else {
         // TODO: Add support for non-flattening method

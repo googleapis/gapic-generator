@@ -80,6 +80,16 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
+    return createTestCaseView(
+        methodContext, testNameTable, initCodeContext, clientMethodType, Synchronicity.Sync);
+  }
+
+  public TestCaseView createTestCaseView(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      InitCodeContext initCodeContext,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity) {
     MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -115,7 +125,10 @@ public class TestCaseTransformer {
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     } else {
-      clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
+      clientMethodName =
+          synchronicity == Synchronicity.Sync
+              ? namer.getApiMethodName(method, methodConfig.getVisibility())
+              : namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     }
@@ -167,7 +180,10 @@ public class TestCaseTransformer {
         .initCode(initCode)
         .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
-        .name(namer.getTestCaseName(testNameTable, method))
+        .name(
+            synchronicity == Synchronicity.Sync
+                ? namer.getTestCaseName(testNameTable, method)
+                : namer.getAsyncTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
@@ -188,7 +204,10 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
-        .grpcMethodName(namer.getApiMethodName(method, methodConfig.getVisibility()))
+        .grpcMethodName(
+            synchronicity == Synchronicity.Sync
+                ? namer.getGrpcMethodName(method)
+                : namer.getAsyncGrpcMethodName(method))
         .build();
   }
 
