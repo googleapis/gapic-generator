@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
@@ -22,7 +23,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
- * Utility class that provides data from "service config", as defined in a service yaml file.
+ * Utility class that provides data from a Discovery document.
  *
  * <p>The scope of this configuration is at the product level, and covers multiple API interfaces.
  */
@@ -30,6 +31,8 @@ public class DiscoApiModel implements ApiModel {
   private final Document document;
   private final DiagCollector diagCollector;
   private ImmutableList<DiscoInterfaceModel> interfaceModels;
+  private final String defaultPackageName;
+  private final DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
   @Override
   public String getServiceName() {
@@ -59,7 +62,7 @@ public class DiscoApiModel implements ApiModel {
       String interfaceName =
           String.format(
               "%s.%s.%s.%s", ownerName, document.name(), document.version(), resourceName);
-      builder.add(new DiscoInterfaceModel(interfaceName, document));
+      builder.add(new DiscoInterfaceModel(interfaceName, this));
     }
     interfaceModels = builder.build();
     return interfaceModels;
@@ -81,13 +84,18 @@ public class DiscoApiModel implements ApiModel {
     return null;
   }
 
-  public DiscoApiModel(Document document) {
+  public DiscoApiModel(Document document, String defaultPackageName) {
     this.document = document;
     this.diagCollector = new BoundedDiagCollector();
+    this.defaultPackageName = defaultPackageName;
   }
 
   public Document getDocument() {
     return document;
+  }
+
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
   }
 
   @Override
@@ -125,5 +133,9 @@ public class DiscoApiModel implements ApiModel {
   @Override
   public boolean equals(Object o) {
     return o != null && o instanceof DiscoApiModel && ((DiscoApiModel) o).document.equals(document);
+  }
+
+  public String getDefaultPackageName() {
+    return defaultPackageName;
   }
 }

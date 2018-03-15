@@ -100,7 +100,8 @@ public class JavaDiscoGapicSurfaceTransformer
         apiInterface,
         productConfig,
         importTypeTable,
-        new DiscoGapicNamer(namer),
+        new DiscoGapicNamer(),
+        namer,
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)
             .build());
@@ -111,7 +112,8 @@ public class JavaDiscoGapicSurfaceTransformer
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
+        new DiscoGapicNamer(),
+        new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
   }
 
   @Override

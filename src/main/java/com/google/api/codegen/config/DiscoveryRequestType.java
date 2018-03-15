@@ -26,6 +26,7 @@ public abstract class DiscoveryRequestType implements TypeModel {
     return ApiSource.DISCOVERY;
   }
 
+  // TODO(andrealin): store the created request types in the root ApiModel so they don't get duplicated.
   public static DiscoveryRequestType create(DiscoveryMethodModel method) {
     return newBuilder().typeName("message").parentMethod(method).build();
   }

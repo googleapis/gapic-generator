@@ -89,14 +89,15 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     List<ViewModel> surfaceRequests = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
-            apiModel.getDocument(),
+            apiModel,
             productConfig,
-            createTypeTable(productConfig.getPackageName(), discoGapicNamer),
-            discoGapicNamer,
+            createTypeTable(
+                productConfig.getPackageName(), apiModel.getDiscoGapicNamer(), surfaceNamer),
+            apiModel.getDiscoGapicNamer(),
+            surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
@@ -111,7 +112,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
       for (MethodConfig methodConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getMethodConfigs()) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        namePatternsToMethod.put(DiscoGapicNamer.getCanonicalPath(method), method);
+        namePatternsToMethod.put(context.getDiscoGapicNamer().getCanonicalPath(method), method);
       }
       for (SingleResourceNameConfig nameConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getSingleResourceNameConfigs()) {
@@ -190,13 +191,16 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
     paramView.typeName(typeName);
     paramView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
+        context
+            .getDiscoGapicNamer()
+            .getResourceGetterName(schema.getIdentifier(), context.getNamer()));
     paramView.fieldSetFunction(
         context
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schema.getIdentifier(),
-                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY))));
+                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY)),
+                context.getNamer()));
     return paramView.build();
   }
 
@@ -218,10 +222,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   private SchemaTypeTable createTypeTable(
-      String implicitPackageName, DiscoGapicNamer discoGapicNamer) {
+      String implicitPackageName, DiscoGapicNamer discoGapicNamer, SurfaceNamer languageNamer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        discoGapicNamer);
+        discoGapicNamer,
+        languageNamer);
   }
 }

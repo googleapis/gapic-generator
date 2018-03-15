@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
@@ -52,7 +53,8 @@ public class DiscoConfigTransformer {
   private final MethodTransformer methodTransformer =
       new MethodTransformer(new DiscoveryMethodTransformer());
 
-  public ViewModel generateConfig(Document model, String outputPath) {
+  public ViewModel generateConfig(DiscoApiModel model, String outputPath) {
+    DiscoGapicNamer namer = model.getDiscoGapicNamer();
     // Map of methods to unique resource names.
     Map<Method, Name> methodToResourceName = new HashMap<>();
 
@@ -61,15 +63,15 @@ public class DiscoConfigTransformer {
 
     // Maps visited simple resource names to canonical name patterns. Used to check for collisions in simple resource names.
     Map<Name, String> simpleResourceToFirstPatternMap = new HashMap<>();
-    for (Method method : model.methods()) {
-      String namePattern = DiscoGapicNamer.getCanonicalPath(method);
+    for (Method method : model.getDocument().methods()) {
+      String namePattern = model.getDiscoGapicNamer().getCanonicalPath(method);
       methodToNamePattern.put(method, namePattern);
 
-      Name simpleResourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath());
+      Name simpleResourceName = namer.getResourceIdentifier(method.flatPath());
       String collisionPattern = simpleResourceToFirstPatternMap.get(simpleResourceName);
       if (collisionPattern != null && !collisionPattern.equals(namePattern)) {
         // Collision with another path template with the same simple resource name; qualify this resource name.
-        Name qualifiedResourceName = DiscoGapicNamer.getQualifiedResourceIdentifier(namePattern);
+        Name qualifiedResourceName = namer.getQualifiedResourceIdentifier(namePattern);
         methodToResourceName.put(method, qualifiedResourceName);
       } else {
         simpleResourceToFirstPatternMap.put(simpleResourceName, namePattern);
@@ -85,10 +87,11 @@ public class DiscoConfigTransformer {
         .outputPath(outputPath)
         .type(CONFIG_PROTO_TYPE)
         .configSchemaVersion(DEFAULT_CONFIG_SCHEMA_VERSION)
-        .languageSettings(generateLanguageSettings(model))
+        .languageSettings(generateLanguageSettings(model.getDocument()))
         .license(generateLicense())
         .interfaces(generateInterfaces(model, methodToNamePattern.build(), methodToResourceNames))
-        .resourceNameGeneration(generateResourceNameGenerations(model, methodToResourceNames))
+        .resourceNameGeneration(
+            generateResourceNameGenerations(model.getDocument(), namer, methodToResourceNames))
         .build();
   }
 
@@ -112,21 +115,23 @@ public class DiscoConfigTransformer {
   }
 
   private List<InterfaceView> generateInterfaces(
-      Document model,
+      DiscoApiModel model,
       Map<Method, String> methodToNamePatterns,
       Map<Method, Name> methodToResourceNames) {
     ImmutableList.Builder<InterfaceView> interfaces = ImmutableList.builder();
-    for (String resource : model.resources().keySet()) {
-      List<Method> interfaceMethods = model.resources().get(resource);
+    for (String resource : model.getDocument().resources().keySet()) {
+      List<Method> interfaceMethods = model.getDocument().resources().get(resource);
 
       Map<String, String> collectionNameMap =
           getResourceToEntityNameMap(interfaceMethods, methodToNamePatterns, methodToResourceNames);
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
 
-      String ownerName = model.ownerDomain().split("\\.")[0];
+      String ownerName = model.getDocument().ownerDomain().split("\\.")[0];
       String resourceName = Name.anyCamel(resource).toUpperCamel();
       interfaceView.name(
-          String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
+          String.format(
+              "%s.%s.%s.%s",
+              ownerName, model.getDocument().name(), model.getDocument().version(), resourceName));
 
       retryTransformer.generateRetryDefinitions(
           interfaceView,
@@ -164,15 +169,14 @@ public class DiscoConfigTransformer {
   }
 
   private List<ResourceNameGenerationView> generateResourceNameGenerations(
-      Document model, Map<Method, Name> methodToResourceNameAndPatternMap) {
+      Document model, DiscoGapicNamer namer, Map<Method, Name> methodToResourceNameAndPatternMap) {
     ImmutableList.Builder<ResourceNameGenerationView> resourceNames = ImmutableList.builder();
     for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
       for (Method method : resource.getValue()) {
         if (!Strings.isNullOrEmpty(method.path())) {
           ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
-          view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
-          String parameterName =
-              DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+          view.messageName(namer.getRequestName(method).toUpperCamel());
+          String parameterName = namer.getResourceIdentifier(method.flatPath()).toLowerCamel();
           String resourceName = methodToResourceNameAndPatternMap.get(method).toLowerCamel();
           Map<String, String> fieldEntityMap = new HashMap<>();
           fieldEntityMap.put(parameterName, resourceName);

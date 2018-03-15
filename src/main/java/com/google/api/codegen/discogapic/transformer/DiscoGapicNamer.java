@@ -15,7 +15,6 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
-import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -26,12 +25,10 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 
 // TODO(andrealin): refactor this to split up language-specific and language-independent (ex configgen) functions.
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
-  private final SurfaceNamer languageNamer;
   private static final String REGEX_DELIMITER = "\\.";
   private static final String PATH_DELIMITER = "/";
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
@@ -52,19 +49,8 @@ public class DiscoGapicNamer {
     private final boolean value;
   }
 
-  /* Create a JavaSurfaceNamer for a Discovery-based API. */
-  public DiscoGapicNamer(SurfaceNamer parentNamer) {
-    this.languageNamer = parentNamer;
-  }
-
-  public DiscoGapicNamer cloneWithPackageName(String packageName) {
-    return new DiscoGapicNamer(languageNamer.cloneWithPackageNameForDiscovery(packageName));
-  }
-
-  /* @return the underlying language surface namer. */
-  public SurfaceNamer getLanguageNamer() {
-    return languageNamer;
-  }
+  /* Create a DiscoGapicNamer for a Discovery-based API. */
+  public DiscoGapicNamer() {}
 
   public Name stringToName(String fieldName) {
     if (fieldName.contains("_")) {
@@ -75,12 +61,13 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the resource getter method name for a resource field. */
-  public String getResourceGetterName(String fieldName) {
+  public String getResourceGetterName(String fieldName, SurfaceNamer languageNamer) {
     return languageNamer.publicMethodName(Name.anyCamel("get").join(stringToName(fieldName)));
   }
 
   /** Returns the resource setter method name for a resource field. */
-  public String getResourceSetterName(String fieldName, Cardinality isRepeated) {
+  public String getResourceSetterName(
+      String fieldName, Cardinality isRepeated, SurfaceNamer languageNamer) {
     switch (isRepeated) {
       case IS_REPEATED:
         return languageNamer.publicMethodName(
@@ -100,7 +87,7 @@ public class DiscoGapicNamer {
    * Formats the method as a Name. Methods are generally in the format
    * "[api].[resource].[function]".
    */
-  public static Name methodAsName(Method method) {
+  public Name methodAsName(Method method) {
     String[] pieces = method.id().split(REGEX_DELIMITER);
     String resourceLastName = pieces[pieces.length - 2];
     if (!method.isPluralMethod()) {
@@ -118,7 +105,7 @@ public class DiscoGapicNamer {
    * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
    * #getCanonicalPath(Method)}} for canonicalization of the parameter.
    */
-  public static Name getQualifiedResourceIdentifier(String canonicalPath) {
+  public Name getQualifiedResourceIdentifier(String canonicalPath) {
     String[] pieces = canonicalPath.split(PATH_DELIMITER);
 
     Name name = null;
@@ -136,20 +123,20 @@ public class DiscoGapicNamer {
   }
 
   /** Return the name of the unqualified resource from a given method's path. */
-  public static Name getResourceIdentifier(String methodPath) {
+  public Name getResourceIdentifier(String methodPath) {
     // Assumes the resource is the last curly-bracketed String in the path.
     String baseResource =
         methodPath.substring(methodPath.lastIndexOf('{') + 1, methodPath.lastIndexOf('}'));
     return Name.anyCamel(baseResource);
   }
 
-  public static String getSimpleInterfaceName(String interfaceName) {
+  public String getSimpleInterfaceName(String interfaceName) {
     String[] pieces = interfaceName.split(REGEX_DELIMITER);
     return pieces[pieces.length - 1];
   }
 
   /** Get the request type name from a method. */
-  public static Name getRequestName(Method method) {
+  public Name getRequestName(Method method) {
     String[] pieces = method.id().split(REGEX_DELIMITER);
     String methodName = pieces[pieces.length - 1];
     String resourceName = pieces[pieces.length - 2];
@@ -164,7 +151,7 @@ public class DiscoGapicNamer {
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the
    * request object, then returns "resource" appended to the schema's id().
    */
-  public static Name getSchemaNameAsParameter(Schema schema) {
+  public Name getSchemaNameAsParameter(Schema schema) {
     Schema deref = schema.dereference();
     String paramString = deref.getIdentifier();
     String[] pieces = paramString.split("_");
@@ -176,32 +163,23 @@ public class DiscoGapicNamer {
   }
 
   /** Get the request type name from a method. */
-  public TypeName getRequestTypeName(Method method) {
+  public TypeName getRequestTypeName(Method method, SurfaceNamer languageNamer) {
     TypeNameConverter typeNameConverter = languageNamer.getTypeNameConverter();
     return typeNameConverter.getTypeNameInImplicitPackage(
         languageNamer.publicClassName(getRequestName(method)));
   }
 
-  public static Name getInterfaceName(String defaultInterfaceName) {
+  public Name getInterfaceName(String defaultInterfaceName) {
     String[] pieces = defaultInterfaceName.split(REGEX_DELIMITER);
     String resource = pieces[pieces.length - 1];
     return Name.anyCamel(Inflector.singularize(resource));
-  }
-
-  /** Get the response type from a method if the method has a non-null response type. */
-  @Nullable
-  public DiscoveryField getResponseType(Method method) {
-    if (method.response() != null) {
-      return DiscoveryField.create(method.response(), this);
-    }
-    return null;
   }
 
   /**
    * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
    * "{project}/regions/{region}/addresses", this returns "projects/{project}/regions/{region}".
    */
-  public static String getCanonicalPath(Method method) {
+  public String getCanonicalPath(Method method) {
     String namePattern = method.flatPath();
     // Ensure the first path segment is a string literal representing a resource type.
     if (namePattern.charAt(0) == '{') {

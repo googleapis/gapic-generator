@@ -38,15 +38,18 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
   private DiscoGapicNamer discoGapicNamer;
+  private SurfaceNamer languageNamer;
 
   public SchemaTypeTable(
       TypeTable typeTable,
       SchemaTypeNameConverter typeNameConverter,
-      DiscoGapicNamer discoGapicNamer) {
+      DiscoGapicNamer discoGapicNamer,
+      SurfaceNamer languageNamer) {
     this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
     this.discoGapicNamer = discoGapicNamer;
+    this.languageNamer = languageNamer;
   }
 
   @Override
@@ -98,13 +101,14 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   @Override
   public SchemaTypeTable cloneEmpty() {
-    return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter, discoGapicNamer);
+    return new SchemaTypeTable(
+        typeTable.cloneEmpty(), typeNameConverter, discoGapicNamer, languageNamer);
   }
 
   @Override
   public SchemaTypeTable cloneEmpty(String packageName) {
     return new SchemaTypeTable(
-        typeTable.cloneEmpty(packageName), typeNameConverter, discoGapicNamer);
+        typeTable.cloneEmpty(packageName), typeNameConverter, discoGapicNamer, languageNamer);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
@@ -166,7 +170,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   public String getFullNameFor(TypeModel type) {
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
-      return discoGapicNamer.getRequestTypeName(method).getFullName();
+      return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
     return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
   }
