@@ -5,7 +5,7 @@
 @snippet generate(test)
     {@renderFileHeader(test.fileHeader)}
 
-    namespace {@test.fileHeader.packageName}.UnitTests
+    namespace {@test.fileHeader.packageName}.Tests
     {
         {@renderTests(test.testClass)}
     }
@@ -22,6 +22,8 @@
             @switch testCase.clientMethodType.toString
             @case "FlattenedMethod"
                 {@flattenedMethodSync(testClass, testCase)}
+            @case "FlattenedAsyncCallSettingsMethod"
+                {@flattenedMethodAsync(testClass, testCase)}
             @default
                 $unhandledCase: {@testCase.clientMethodType.toString}$
             @end
@@ -40,7 +42,8 @@
         Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}> { DefaultValue = DefaultValue.Mock };
         {@topLevelInitCode(testCase.mockResponse.initCode)}
         // TODO: Add verification of request object
-        mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>())).Returns(expectedResponse);
+        mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>()))
+            .Returns(expectedResponse);
         {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
         {@topLevelInitCode(testCase.initCode)}
         @if testCase.hasReturnValue
@@ -48,6 +51,29 @@
             Assert.Equal(expectedResponse, response);
         @else
             client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
+        @end
+        mockGrpcClient.VerifyAll();
+    }
+@end
+
+# testClass: ClientTestClassView, testCase: TestCaseView
+@private flattenedMethodAsync(testClass, testCase)
+    [Fact]
+    public async Task {@testCase.name}()
+    {
+        // TODO: Use a strict mock; need to handle getRerouteToGrpcInterface
+        Mock<{@testClass.grpcServiceClassName}> mockGrpcClient = new Mock<{@testClass.grpcServiceClassName}> { DefaultValue = DefaultValue.Mock };
+        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        // TODO: Add verification of request object
+        mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}(It.IsAny<{@testCase.requestTypeName}>(), It.IsAny<CallOptions>()))
+            .Returns(new Grpc.Core.AsyncUnaryCall<{@testCase.responseTypeName}>(Task.FromResult(expectedResponse), null, null, null, null));
+        {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
+        {@topLevelInitCode(testCase.initCode)}
+        @if testCase.hasReturnValue
+            {@testCase.responseTypeName} response = await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
+            Assert.Equal(expectedResponse, response);
+        @else
+            await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
         @end
         mockGrpcClient.VerifyAll();
     }
