@@ -81,7 +81,7 @@ public class TestCaseTransformer {
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
     return createTestCaseView(
-        methodContext, testNameTable, initCodeContext, clientMethodType, Synchronicity.Sync);
+        methodContext, testNameTable, initCodeContext, clientMethodType, Synchronicity.Sync, null);
   }
 
   public TestCaseView createTestCaseView(
@@ -89,7 +89,8 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType,
-      Synchronicity synchronicity) {
+      Synchronicity synchronicity,
+      InitCodeContext requestObjectInitCodeContext) {
     MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -134,6 +135,10 @@ public class TestCaseTransformer {
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
+    InitCodeView requestObjectInitCode =
+        requestObjectInitCodeContext != null
+            ? initCodeTransformer.generateInitCode(methodContext, requestObjectInitCodeContext)
+            : null;
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !method.isOutputTypeEmpty();
@@ -178,6 +183,7 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
+        .requestObjectInitCode(requestObjectInitCode)
         .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(
