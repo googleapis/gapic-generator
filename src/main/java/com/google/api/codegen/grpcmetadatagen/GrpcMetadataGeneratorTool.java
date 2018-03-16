@@ -81,7 +81,7 @@ public class GrpcMetadataGeneratorTool {
             .longOpt("artifact_type")
             .desc(
                 "Optional. Artifacts enabled for the generator. Currently supports "
-                    + "'grpc' and 'protobuf' and is ignored for all languges except Java")
+                    + "'GRPC' and 'PROTOBUF' and is ignored for all languages except Java")
             .hasArg()
             .argName("ARTIFACT-TYPE")
             .required(false)
