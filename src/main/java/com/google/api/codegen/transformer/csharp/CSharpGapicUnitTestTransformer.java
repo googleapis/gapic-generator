@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -34,6 +36,7 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -182,32 +185,18 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
-          InitCodeContext initCodeContextSync =
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  flatteningGroup.getFlattenedFieldConfigs().values(),
-                  InitCodeOutputType.FieldList,
-                  valueGenerator);
           testCaseViews.add(
-              testCaseTransformer.createTestCaseView(
+              createFlattenedTestCase(
                   methodContext,
                   testNameTable,
-                  initCodeContextSync,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeSync,
                   Synchronicity.Sync));
-          InitCodeContext initCodeContextAsync =
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  flatteningGroup.getFlattenedFieldConfigs().values(),
-                  InitCodeOutputType.FieldList,
-                  valueGenerator);
           testCaseViews.add(
-              testCaseTransformer.createTestCaseView(
+              createFlattenedTestCase(
                   methodContext,
                   testNameTable,
-                  initCodeContextAsync,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeAsync,
                   Synchronicity.Async));
         }
@@ -225,7 +214,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
                 testNameTable,
                 initCodeContextSync,
                 ClientMethodType.RequestObjectMethod,
-                Synchronicity.Sync));
+                Synchronicity.Sync,
+                null));
         InitCodeContext initCodeContextAsync =
             initCodeTransformer.createRequestInitCodeContext(
                 requestContext,
@@ -239,11 +229,46 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
                 testNameTable,
                 initCodeContextAsync,
                 ClientMethodType.AsyncRequestObjectMethod,
-                Synchronicity.Async));
+                Synchronicity.Async,
+                null));
       } else {
         // TODO: Add support for non-flattening method
       }
     }
     return testCaseViews;
+  }
+
+  private TestCaseView createFlattenedTestCase(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      Iterable<FieldConfig> fieldConfigs,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity) {
+    InitCodeContext initCodeContext =
+        initCodeTransformer.createRequestInitCodeContext(
+            methodContext,
+            new SymbolTable(),
+            fieldConfigs,
+            InitCodeOutputType.FieldList,
+            valueGenerator);
+    InitCodeContext initCodeRequestObjectContext =
+        InitCodeContext.newBuilder()
+            .initObjectType(methodContext.getMethodModel().getInputType())
+            .symbolTable(new SymbolTable())
+            .suggestedName(Name.from("expected_request"))
+            .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
+            .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+            .fieldConfigMap(methodContext.getProductConfig().getDefaultResourceNameFieldConfigMap())
+            .outputType(InitCodeOutputType.SingleObject)
+            .valueGenerator(valueGenerator)
+            .build();
+    return testCaseTransformer.createTestCaseView(
+        methodContext,
+        testNameTable,
+        initCodeContext,
+        clientMethodType,
+        synchronicity,
+        initCodeRequestObjectContext);
   }
 }
