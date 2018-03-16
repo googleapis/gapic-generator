@@ -28,6 +28,7 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
+import com.google.api.codegen.viewmodel.SampleValueSetsModel;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -66,14 +67,22 @@ public class DynamicLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
+    ClientMethodType methodType;
     if (context.getMethodConfig().isPageStreaming()) {
-      apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
+      methodType = ClientMethodType.PagedOptionalArrayMethod;
       apiMethod.pageStreamingView(
           pageStreamingTransformer.generateDescriptor(
               context.getSurfaceInterfaceContext(), method));
     } else {
-      apiMethod.type(ClientMethodType.OptionalArrayMethod);
+      // TODO: Here need to move logic from the snippet file for
+      // selecting the proper calling form. This may mean having a new
+      // field in OptionalArrayMethod during the transition
+      methodType = ClientMethodType.OptionalArrayMethod;
     }
+    apiMethod.type(methodType);
+    apiMethod.sampleValueSetsModel(
+        new SampleValueSetsModel(context.getMethodConfig().getSampleSpec(), methodType));
+
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));

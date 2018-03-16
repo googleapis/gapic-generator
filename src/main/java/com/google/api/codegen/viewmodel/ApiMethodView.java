@@ -15,5 +15,5 @@
 package com.google.api.codegen.viewmodel;
 
 public interface ApiMethodView {
-  public String name();
+  String name();
 }

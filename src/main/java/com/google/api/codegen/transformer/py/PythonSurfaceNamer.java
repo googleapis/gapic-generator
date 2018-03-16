@@ -44,6 +44,7 @@ import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -134,6 +135,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   private String getApiWrapperClassName(String interfaceName) {
     return publicClassName(Name.upperCamelKeepUpperAcronyms(interfaceName, "Client"));
+  }
+
+  @Override
+  public String getApiSampleClassName(ApiMethodView method, String variant) {
+    return publicClassName(
+        Name.anyLower(method.name(), "sample", Name.anyCamel(variant).toLowerUnderscore()));
+  }
+
+  @Override
+  public String getApiSampleFileName(String className) {
+    return Name.anyCamel(className).toLowerUnderscore() + ".py";
   }
 
   @Override

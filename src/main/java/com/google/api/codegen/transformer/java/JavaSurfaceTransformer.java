@@ -183,10 +183,12 @@ public class JavaSurfaceTransformer {
     List<ViewModel> sampleDocs = new ArrayList<>();
 
     StaticLangApiView classView = apiFile.classView();
+
+    final StaticLangFileView.Builder<StaticLangApiView> sampleFileBuilder =
+        StaticLangFileView.<StaticLangApiView>newBuilder();
+    sampleFileBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
+
     for (StaticLangApiMethodView methodView : classView.apiMethods()) {
-      StaticLangFileView.Builder<StaticLangApiView> sampleFileBuilder =
-          StaticLangFileView.<StaticLangApiView>newBuilder();
-      sampleFileBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
       SampleValueSetsModel valueSetsModel = methodView.sampleValueSetsModel();
       final Set<SampleValueSet> matchingValueSets =
           valueSetsModel.forSampleType(SampleType.STANDALONE);
@@ -205,13 +207,11 @@ public class JavaSurfaceTransformer {
                 context.getProductConfig(),
                 sampleMethodView.name());
 
-        String className =
-            context
-                .getNamer()
-                .getApiSampleClassName(
-                    context.getInterfaceConfig(), sampleMethodView, values.getId());
+        SurfaceNamer namer = context.getNamer();
+        String className = namer.getApiSampleClassName(sampleMethodView, values.getId());
         // TODO(vchudnov-g): Capture the sample class name in the View Model
-        sampleFileBuilder.outputPath(outputPath + File.separator + className + ".java");
+        sampleFileBuilder.outputPath(
+            outputPath + File.separator + namer.getApiSampleFileName(className));
 
         // must be done as the last step to catch all imports
         // TODO(vchudnov-g): Generate only the headers needed for the sample.

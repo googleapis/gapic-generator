@@ -759,16 +759,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
-  /**
-   * The name of the class that holds a sample for an API method and variant. The variant is
-   * typically a calling form.
-   */
-  public String getApiSampleClassName(
-      InterfaceConfig interfaceConfig, ApiMethodView method, String variant) {
-    return publicClassName(
-        Name.anyCamel(method.name(), "sample", Name.anyLower(variant).toUpperCamel()));
-  }
-
   /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(Document document) {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
@@ -777,6 +767,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the implementation class that implements a particular proto interface. */
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
+  }
+
+  /**
+   * The name of the class that holds a sample for an API method and variant. The variant is
+   * typically a calling form.
+   */
+  public String getApiSampleClassName(ApiMethodView method, String variant) {
+    return publicClassName(
+        Name.anyCamel(method.name(), "sample", Name.anyLower(variant).toUpperCamel()));
+  }
+
+  /**
+   * The name of the file holding the sample class for a single API method and variant. The variant
+   * is typically a calling form.
+   */
+  public String getApiSampleFileName(String className) {
+    return getNotImplementedString("SurfaceNamer.getApiSampleFileName");
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */

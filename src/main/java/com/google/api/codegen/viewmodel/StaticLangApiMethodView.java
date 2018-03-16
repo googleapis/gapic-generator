@@ -97,12 +97,14 @@ public abstract class StaticLangApiMethodView
 
   public abstract String serviceConstructorName();
 
-  // All the configured value sets for all samples for this method
+  /** All the configured value sets for all samples for this method. */
   public abstract SampleValueSetsModel sampleValueSetsModel();
 
-  // When this class is being used as a view model for a single sample, the one value set to be used in the sample
-  //
-  // TODO(vhcudnov-g): Consider subclassing a StaticLangApiMethodSampleView
+  /**
+   * When this class is being used as a view model for a single sample, the one value set to be used
+   * in the sample.
+   */
+  // TODO(vchudnov-g): Consider subclassing a StaticLangApiMethodSampleView
   @Nullable
   public abstract SampleValueSet sampleValueSet();
 
