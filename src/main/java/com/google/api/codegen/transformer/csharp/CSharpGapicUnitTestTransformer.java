@@ -211,6 +211,35 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
                   clientMethodTypeAsync,
                   Synchronicity.Async));
         }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        InitCodeContext initCodeContextSync =
+            initCodeTransformer.createRequestInitCodeContext(
+                requestContext,
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                requestContext,
+                testNameTable,
+                initCodeContextSync,
+                ClientMethodType.RequestObjectMethod,
+                Synchronicity.Sync));
+        InitCodeContext initCodeContextAsync =
+            initCodeTransformer.createRequestInitCodeContext(
+                requestContext,
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                requestContext,
+                testNameTable,
+                initCodeContextAsync,
+                ClientMethodType.AsyncRequestObjectMethod,
+                Synchronicity.Async));
       } else {
         // TODO: Add support for non-flattening method
       }
