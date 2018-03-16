@@ -41,15 +41,24 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private SurfaceNamer languageNamer;
 
   public SchemaTypeTable(
+      TypeTable typeTable, SchemaTypeNameConverter typeNameConverter, SurfaceNamer languageNamer) {
+    this(typeTable, typeNameConverter, languageNamer, new DiscoGapicNamer());
+  }
+
+  private SchemaTypeTable(
       TypeTable typeTable,
       SchemaTypeNameConverter typeNameConverter,
-      DiscoGapicNamer discoGapicNamer,
-      SurfaceNamer languageNamer) {
+      SurfaceNamer languageNamer,
+      DiscoGapicNamer discoGapicNamer) {
     this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
-    this.discoGapicNamer = discoGapicNamer;
     this.languageNamer = languageNamer;
+    this.discoGapicNamer = discoGapicNamer;
+  }
+
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
   }
 
   @Override
@@ -102,13 +111,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public SchemaTypeTable cloneEmpty() {
     return new SchemaTypeTable(
-        typeTable.cloneEmpty(), typeNameConverter, discoGapicNamer, languageNamer);
+        typeTable.cloneEmpty(), typeNameConverter, languageNamer, discoGapicNamer);
   }
 
   @Override
   public SchemaTypeTable cloneEmpty(String packageName) {
     return new SchemaTypeTable(
-        typeTable.cloneEmpty(packageName), typeNameConverter, discoGapicNamer, languageNamer);
+        typeTable.cloneEmpty(packageName), typeNameConverter, languageNamer, discoGapicNamer);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */

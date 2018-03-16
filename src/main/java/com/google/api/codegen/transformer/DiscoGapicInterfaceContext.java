@@ -49,13 +49,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       DiscoApiModel model,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
-      DiscoGapicNamer discoGapicNamer,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
         productConfig,
         typeTable,
-        discoGapicNamer,
+        new DiscoGapicNamer(),
         new DiscoInterfaceModel("", model),
         namer,
         featureConfig);
@@ -66,7 +65,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
-      DiscoGapicNamer discoGapicNamer,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
@@ -78,7 +76,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return new AutoValue_DiscoGapicInterfaceContext(
         productConfig,
         typeTable,
-        discoGapicNamer,
+        new DiscoGapicNamer(),
         new DiscoInterfaceModel(interfaceName, model),
         namer,
         featureConfig);
@@ -88,7 +86,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       InterfaceModel interfaceModel,
       GapicProductConfig productConfig,
       ImportTypeTable typeTable,
-      DiscoGapicNamer discoGapicNamer,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     Preconditions.checkArgument(interfaceModel.getApiSource().equals(ApiSource.DISCOVERY));
@@ -103,7 +100,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return new AutoValue_DiscoGapicInterfaceContext(
         productConfig,
         (SchemaTypeTable) typeTable,
-        discoGapicNamer,
+        new DiscoGapicNamer(),
         (DiscoInterfaceModel) interfaceModel,
         namer,
         featureConfig);
@@ -175,7 +172,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceName(),
         getProductConfig(),
         (SchemaTypeTable) getImportTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
         getNamer(),
         getFeatureConfig());
   }
@@ -187,7 +183,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceName(),
         getProductConfig().withPackageName(packageName),
         getSchemaTypeTable().cloneEmpty(packageName),
-        getDiscoGapicNamer(),
         getNamer().cloneWithPackageName(packageName),
         getFeatureConfig());
   }

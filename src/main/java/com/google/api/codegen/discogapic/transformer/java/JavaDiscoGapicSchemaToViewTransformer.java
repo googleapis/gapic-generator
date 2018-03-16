@@ -91,9 +91,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         DiscoGapicInterfaceContext.createWithoutInterface(
             model,
             productConfig,
-            createTypeTable(
-                productConfig.getPackageName(), model.getDiscoGapicNamer(), surfaceNamer),
-            model.getDiscoGapicNamer(),
+            createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
@@ -119,12 +117,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return surfaceSchemas;
   }
 
-  private SchemaTypeTable createTypeTable(
-      String implicitPackageName, DiscoGapicNamer discoGapicNamer, SurfaceNamer namer) {
+  private SchemaTypeTable createTypeTable(String implicitPackageName, SurfaceNamer namer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        discoGapicNamer,
         namer);
   }
 

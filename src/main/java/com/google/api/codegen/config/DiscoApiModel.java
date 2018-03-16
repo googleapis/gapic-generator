@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
@@ -32,7 +31,6 @@ public class DiscoApiModel implements ApiModel {
   private final DiagCollector diagCollector;
   private ImmutableList<DiscoInterfaceModel> interfaceModels;
   private final String defaultPackageName;
-  private final DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
   @Override
   public String getServiceName() {
@@ -92,10 +90,6 @@ public class DiscoApiModel implements ApiModel {
 
   public Document getDocument() {
     return document;
-  }
-
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
   }
 
   @Override

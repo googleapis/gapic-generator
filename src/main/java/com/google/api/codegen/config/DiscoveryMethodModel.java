@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -80,9 +81,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       return DiscoveryField.create(targetSchema, apiModel);
     }
     if (method.request() != null
-        && apiModel
-            .getDiscoGapicNamer()
-            .getSchemaNameAsParameter(method.request())
+        && DiscoGapicParser.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
       return DiscoveryField.create(method.request(), apiModel);
@@ -148,7 +147,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Name asName() {
-    return apiModel.getDiscoGapicNamer().methodAsName(method);
+    return DiscoGapicParser.methodAsName(method);
   }
 
   @Override
@@ -165,7 +164,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getSimpleName() {
-    return apiModel.getDiscoGapicNamer().methodAsName(method).toLowerCamel();
+    return DiscoGapicParser.methodAsName(method).toLowerCamel();
   }
 
   @Override
@@ -220,8 +219,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName =
-        apiModel.getDiscoGapicNamer().getResourceIdentifier(method.flatPath()).toLowerCamel();
+    String resourceName = DiscoGapicParser.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (DiscoveryField field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -281,9 +279,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      if (apiModel.getDiscoGapicNamer().getCanonicalPath(method).equals(entry.getKey())) {
+      if (DiscoGapicParser.getCanonicalPath(method).equals(entry.getKey())) {
         String resourceNameString =
-            apiModel.getDiscoGapicNamer().getResourceIdentifier(entry.getKey()).toLowerCamel();
+            DiscoGapicParser.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());
         break;
       }

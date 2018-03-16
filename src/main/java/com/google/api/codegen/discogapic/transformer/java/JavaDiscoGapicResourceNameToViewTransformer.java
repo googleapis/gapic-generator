@@ -24,6 +24,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -94,9 +95,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
         DiscoGapicInterfaceContext.createWithoutInterface(
             apiModel,
             productConfig,
-            createTypeTable(
-                productConfig.getPackageName(), apiModel.getDiscoGapicNamer(), surfaceNamer),
-            apiModel.getDiscoGapicNamer(),
+            createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
@@ -112,7 +111,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
       for (MethodConfig methodConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getMethodConfigs()) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        namePatternsToMethod.put(context.getDiscoGapicNamer().getCanonicalPath(method), method);
+        namePatternsToMethod.put(DiscoGapicParser.getCanonicalPath(method), method);
       }
       for (SingleResourceNameConfig nameConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getSingleResourceNameConfigs()) {
@@ -165,7 +164,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
     String resourceName =
-        nameFormatter.localVarName(DiscoGapicNamer.getResourceNameName(nameConfig));
+        nameFormatter.localVarName(DiscoGapicParser.getResourceNameName(nameConfig));
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
@@ -221,12 +220,10 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
-  private SchemaTypeTable createTypeTable(
-      String implicitPackageName, DiscoGapicNamer discoGapicNamer, SurfaceNamer languageNamer) {
+  private SchemaTypeTable createTypeTable(String implicitPackageName, SurfaceNamer languageNamer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        discoGapicNamer,
         languageNamer);
   }
 }

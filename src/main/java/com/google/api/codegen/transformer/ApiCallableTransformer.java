@@ -24,7 +24,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -228,7 +228,7 @@ public class ApiCallableTransformer {
       SingleResourceNameConfig nameConfig =
           interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
       httpMethodView.resourceNameTypeName(
-          context.getNamer().publicClassName(DiscoGapicNamer.getResourceNameName(nameConfig)));
+          context.getNamer().publicClassName(DiscoGapicParser.getResourceNameName(nameConfig)));
       // Find the field with the resource name config.
       for (FieldConfig fieldConfig : context.getMethodConfig().getRequiredFieldConfigs()) {
         if (fieldConfig.getResourceNameConfig() != null

@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -94,10 +95,10 @@ public abstract class ResourceNameMessageConfigs {
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
     for (Method method : model.getDocument().methods()) {
-      String fullName =
-          model.getDiscoGapicNamer().getRequestTypeName(method, languageNamer).getFullName();
+      String fullName = discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
       if (messageConfig == null) {
         continue;

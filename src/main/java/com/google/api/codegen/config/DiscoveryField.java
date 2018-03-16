@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -82,7 +83,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getFullName() {
-    return apiModel.getDiscoGapicNamer().getSchemaNameAsParameter(schema).toUpperCamel();
+    return DiscoGapicParser.getSchemaNameAsParameter(schema).toUpperCamel();
   }
 
   @Override
@@ -92,7 +93,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return apiModel.getDiscoGapicNamer().getSchemaNameAsParameter(schema);
+    return DiscoGapicParser.getSchemaNameAsParameter(schema);
   }
 
   @Override
@@ -145,8 +146,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public String getParentFullName() {
     String parentName;
     if (schema.parent() instanceof Method) {
-      parentName =
-          apiModel.getDiscoGapicNamer().getRequestName((Method) schema.parent()).toUpperCamel();
+      parentName = DiscoGapicParser.getRequestName((Method) schema.parent()).toUpperCamel();
     } else if (schema.parent() instanceof Schema) {
       parentName = Name.anyCamel(((Schema) schema.parent()).getIdentifier()).toUpperCamel();
     } else if (schema.parent() instanceof Document) {

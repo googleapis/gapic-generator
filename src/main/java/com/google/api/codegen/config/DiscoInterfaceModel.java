@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
 
   @Override
   public String getSimpleName() {
-    return apiModel.getDiscoGapicNamer().getSimpleInterfaceName(interfaceName);
+    return DiscoGapicParser.getSimpleInterfaceName(interfaceName);
   }
 
   @Override
