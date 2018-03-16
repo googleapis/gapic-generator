@@ -28,12 +28,13 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSmokeTestTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicUnitTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSampleAppTransformer;
-import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
@@ -155,6 +156,19 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new CSharpGapicSmokeTestTransformer(smokeTestPathMapper))
                 .build();
         providers.add(smokeTestProvider);
+        GapicCodePathMapper unitTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix(packageName + File.separator + packageName + ".Tests")
+                .setPackageFilePathNameFormatter(new CSharpNameFormatter())
+                .build();
+        GapicProvider<? extends Object> unitTestProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+                .setModelToViewTransformer(new CSharpGapicUnitTestTransformer(unitTestPathMapper))
+                .build();
+        providers.add(unitTestProvider);
       }
 
     } else if (id.equals(GO)) {
@@ -221,7 +235,11 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        "java/test.snip"))
                 .build();
         providers.add(testProvider);
       }

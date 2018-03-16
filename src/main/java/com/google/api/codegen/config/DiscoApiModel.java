@@ -16,6 +16,8 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.Name;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import java.util.List;
  */
 public class DiscoApiModel implements ApiModel {
   private final Document document;
+  private final DiagCollector diagCollector;
   private ImmutableList<DiscoInterfaceModel> interfaceModels;
 
   @Override
@@ -80,6 +83,7 @@ public class DiscoApiModel implements ApiModel {
 
   public DiscoApiModel(Document document) {
     this.document = document;
+    this.diagCollector = new BoundedDiagCollector();
   }
 
   public Document getDocument() {
@@ -111,6 +115,11 @@ public class DiscoApiModel implements ApiModel {
   @Override
   public List<String> getAuthScopes() {
     return document.authScopes();
+  }
+
+  @Override
+  public DiagCollector getDiagCollector() {
+    return diagCollector;
   }
 
   @Override

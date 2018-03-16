@@ -18,6 +18,7 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
@@ -39,6 +40,10 @@ public class ProtoApiModel implements ApiModel {
 
   public ProtoApiModel(Model protoModel) {
     this.protoModel = protoModel;
+  }
+
+  public Model getProtoModel() {
+    return protoModel;
   }
 
   @Override
@@ -121,6 +126,11 @@ public class ProtoApiModel implements ApiModel {
       models.add(new ProtoTypeRef(t));
     }
     return models.build();
+  }
+
+  @Override
+  public DiagCollector getDiagCollector() {
+    return protoModel.getDiagCollector();
   }
 
   /** Helper to extract the types from the underlying model. */

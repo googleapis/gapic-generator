@@ -157,7 +157,7 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the list of path parameters. */
   public abstract Map<String, Schema> queryParams();
 
-  /** @return the request schema, or null if none. */
+  /** @return the request's resource object schema, or null if none. */
   @Nullable
   public abstract Schema request();
 
