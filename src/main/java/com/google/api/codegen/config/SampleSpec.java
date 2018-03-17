@@ -48,7 +48,7 @@ public class SampleSpec {
 
   public SampleSpec(MethodConfigProto methodConfigProto) {
     this.sampleConfiguration = methodConfigProto.getSamples();
-    storeValueSets(methodConfigProto.getSampleValueSetsList());
+    storeValueSets(methodConfigProto.getSampleValueSetsList(), methodConfigProto.getName());
   }
 
   /**
@@ -59,7 +59,7 @@ public class SampleSpec {
    */
   public static boolean expressionMatchesId(String expression, String id) {
     // TODO(vchudnov-g): Implement more sophisticated matching as per design.
-    return true;
+    return id.matches(expression);
   }
 
   /** Returns the SampleValueSets that were specified for this methodForm and sampleType. */
@@ -121,7 +121,7 @@ public class SampleSpec {
   }
 
   /** Populates the map valueSets so as to be able to access each SampleValueSet by its ID. */
-  private void storeValueSets(List<SampleValueSet> sampleValueSets) {
+  private void storeValueSets(List<SampleValueSet> sampleValueSets, String methodName) {
     valueSets = new HashMap<>();
     if (sampleConfiguration != null && sampleValueSets != null) {
       for (SampleValueSet set : sampleValueSets) {
@@ -129,7 +129,8 @@ public class SampleSpec {
         SampleValueSet previous = valueSets.put(id, set);
         if (previous != null) {
           throw new IllegalArgumentException(
-              "value set defined multiple times"); // TODO(vchudnov-g): make this more informative: method, name
+              String.format(
+                  "value set \"%s\" defined multiple times in method \"%s\"", id, methodName));
         }
       }
     }
