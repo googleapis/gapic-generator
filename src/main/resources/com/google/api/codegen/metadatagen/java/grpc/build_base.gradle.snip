@@ -6,8 +6,6 @@
   }
 
   apply plugin: 'java'
-  apply plugin: 'maven'
-  apply plugin: 'signing'
 
   description = {@description(metadata)}
   group = "com.google.api.grpc"
@@ -22,11 +20,6 @@
 
   dependencies {
     {@dependencies(metadata)}
-  }
-
-  ext {
-    packageName = '{@metadata.identifier}'
-    javaDocRoot = projectDir.getAbsolutePath() + '/tmp_gh-pages'
   }
 
   sourceSets {
@@ -56,64 +49,7 @@
     archives javadocJar, sourcesJar
   }
 
-  signing {
-    required false
-    sign configurations.archives
-  }
-
   compileJava.options.encoding = "UTF-8"
-
-  if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-    uploadArchives {
-      repositories {
-        mavenDeployer {
-          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-          repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-            authentication(userName: ossrhUsername, password: ossrhPassword)
-          }
-
-          snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-            authentication(userName: ossrhUsername, password: ossrhPassword)
-          }
-
-          pom.project {
-            name "com.google.api.grpc:{@metadata.identifier}"
-            description project.description
-            url '{@metadata.homepage}'
-            scm {
-              url '{@metadata.homepage}'
-              connection 'scm:git:{@metadata.homepage}'
-            }
-
-            licenses {
-              license {
-                name '{@metadata.licenseName}'
-                url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-              }
-            }
-
-            developers {
-              developer {
-                id '{@metadata.author}'
-                name '{@metadata.author}'
-                email '{@metadata.email}'
-                url '{@metadata.homepage}'
-                organization 'Google LLC'
-                organizationUrl 'https://www.google.com'
-              }
-            }
-          }
-        }
-      }
-    }
-  } else {
-    task failUploadArchives << {
-      throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
-        + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
-    }
-    tasks.uploadArchives.dependsOn(failUploadArchives)
-  }
 @end
 
 @abstract dependencies(metadata)

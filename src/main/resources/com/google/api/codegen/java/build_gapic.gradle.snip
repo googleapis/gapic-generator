@@ -18,7 +18,8 @@
   }
 
   dependencies {
-    compile libraries.gax, libraries.gaxGrpc
+    compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
+    compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
     @switch metadata.artifactType.toString
     @case "GAPIC_ONLY"
       @join dependency : metadata.protoPackageDependencies
