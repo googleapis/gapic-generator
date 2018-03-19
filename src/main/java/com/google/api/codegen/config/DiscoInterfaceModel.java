@@ -14,8 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -25,9 +24,9 @@ public class DiscoInterfaceModel implements InterfaceModel {
   private final String interfaceName;
   private final DiscoApiModel apiModel;
 
-  public DiscoInterfaceModel(String interfaceName, Document document) {
+  public DiscoInterfaceModel(String interfaceName, DiscoApiModel apiModel) {
     this.interfaceName = interfaceName;
-    this.apiModel = new DiscoApiModel(document);
+    this.apiModel = apiModel;
   }
 
   @Override
@@ -37,7 +36,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
 
   @Override
   public String getSimpleName() {
-    return DiscoGapicNamer.getSimpleInterfaceName(interfaceName);
+    return DiscoGapicParser.getSimpleInterfaceName(interfaceName);
   }
 
   @Override
@@ -79,7 +78,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
       return ImmutableList.of();
     }
     for (Method method : apiModel.getDocument().resources().get(interfaceName)) {
-      methods.add(new DiscoveryMethodModel(method, null));
+      methods.add(new DiscoveryMethodModel(method, apiModel));
     }
     return methods.build();
   }
