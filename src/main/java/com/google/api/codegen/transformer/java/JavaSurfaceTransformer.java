@@ -861,7 +861,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractFixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.Page");
-    typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
