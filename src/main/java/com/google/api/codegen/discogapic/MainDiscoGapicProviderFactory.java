@@ -102,7 +102,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                     new JavaSurfaceTestTransformer(
                         javaTestPathMapper,
                         new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
-                        "java/test.snip"))
+                        "java/http_unit_test.snip"))
                 .build();
         providers.add(testProvider);
       }

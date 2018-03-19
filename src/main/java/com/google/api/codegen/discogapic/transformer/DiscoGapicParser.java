@@ -52,7 +52,9 @@ public class DiscoGapicParser {
     String paramString = deref.getIdentifier();
     String[] pieces = paramString.split("_");
     Name param = Name.anyCamel(pieces);
-    if (Strings.isNullOrEmpty(deref.location()) && deref.type().equals(Schema.Type.OBJECT)) {
+    if (Strings.isNullOrEmpty(deref.location())
+        && deref.type().equals(Schema.Type.OBJECT)
+        && schema.parent() instanceof Method) {
       param = param.join("resource");
     }
     return param;

@@ -82,6 +82,9 @@ public abstract class TestCaseView {
 
   public abstract boolean clientHasDefaultInstance();
 
+  @Nullable
+  public abstract String methodDescriptor();
+
   public abstract String grpcMethodName();
 
   public static Builder newBuilder() {
@@ -142,6 +145,8 @@ public abstract class TestCaseView {
     public abstract Builder grpcStubCallString(String val);
 
     public abstract Builder clientHasDefaultInstance(boolean val);
+
+    public abstract Builder methodDescriptor(String val);
 
     public abstract Builder grpcMethodName(String val);
 

@@ -303,8 +303,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           schemaToParamView(
               context,
               requestBody,
-              DiscoGapicParser.getSchemaNameAsParameter(requestBodyDef.dereference())
-                  .toLowerCamel(),
+              DiscoGapicParser.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }
@@ -341,6 +340,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
                 name,
                 SurfaceNamer.Cardinality.ofRepeated(schema.isRepeated()),
                 context.getNamer()));
+    paramView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schema));
     paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
@@ -353,6 +353,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.List");
+    typeTable.getAndSaveNicknameFor("java.util.LinkedList");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
     typeTable.getAndSaveNicknameFor("java.util.Map");
     typeTable.getAndSaveNicknameFor("java.util.Objects");

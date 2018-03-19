@@ -29,6 +29,9 @@ public abstract class ClientTestClassView {
   public abstract String apiSettingsClassName();
 
   @Nullable
+  public abstract String apiStubSettingsClassName();
+
+  @Nullable
   public abstract String apiVariableName();
 
   @Nullable
@@ -109,6 +112,8 @@ public abstract class ClientTestClassView {
     public abstract Builder apiClassName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
+
+    public abstract Builder apiStubSettingsClassName(String val);
 
     public abstract Builder apiVariableName(String val);
 

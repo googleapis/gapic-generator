@@ -1,0 +1,135 @@
+@extends "java/common.snip"
+@extends "java/initcode.snip"
+
+@snippet generate(xapiTest)
+  {@renderFileHeader(xapiTest.fileHeader)}
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xapiTest.testClass.name} {
+    private static final List<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>> METHOD_DESCRIPTORS
+        = ImmutableList.copyOf(Lists.<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>newArrayList(
+                @join test : xapiTest.testClass.testCases on ", ".add(BREAK)
+                  {@test.methodDescriptor}
+                @end
+            ));
+    private static final MockHttpService mockService
+        = new MockHttpService(METHOD_DESCRIPTORS, {@xapiTest.testClass.apiStubSettingsClassName}.getDefaultEndpoint());
+    private static {@xapiTest.testClass.apiClassName} client;
+    private static {@xapiTest.testClass.apiSettingsClassName} clientSettings;
+
+    @@BeforeClass
+    public static void setUp() throws IOException {
+      clientSettings =
+          {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
+             .setTransportChannelProvider(
+                 {@xapiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
+                     .setHttpTransport(mockService).build()).build();
+      client =
+         {@xapiTest.testClass.apiClassName}.create(clientSettings);
+    }
+
+    @@After
+    public void cleanUp() {
+      mockService.reset();
+    }
+
+    @@AfterClass
+    public static void tearDown() throws Exception {
+      client.close();
+    }
+
+    @join test : xapiTest.testClass.testCases
+      {@testCase(test)}
+
+    @end
+  }
+@end
+
+@private testCase(test)
+  @switch test.clientMethodType
+  @case "FlattenedMethod"
+      {@unaryTestCase(test)}
+  @case "PagedFlattenedMethod"
+      {@unaryTestCase(test)}
+  @end
+@end
+
+@private unaryTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() {
+    {@addResponse(test)}
+
+    {@initCode(test.initCode)}
+
+    {@methodCall(test)}
+
+    {@unarySuccessAsserts(test)}
+  }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+
+    try {
+      {@initCode(test.initCode)}
+
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+@end
+
+@private addResponse(test)
+  @if test.hasReturnValue
+    {@initCode(test.mockResponse.initCode)}
+    mockService.addResponse(expectedResponse);
+  @end
+  {@""}
+@end
+
+@private addException(test)
+  ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+  mockService.addException(exception);
+@end
+
+@private methodCall(test)
+  @switch test.clientMethodType
+  @case "PagedFlattenedMethod"
+    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+      List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
+      Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
+      Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+    @end
+  @case "FlattenedMethod"
+    @if test.hasReturnValue
+      {@test.responseTypeName} actualResponse =
+          client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse, actualResponse);
+    @else
+      client.{@test.clientMethodName}(\
+            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @end
+  @default
+    $unhandledCase: {@test.clientMethodType}$
+  @end
+@end
+
+@private unarySuccessAsserts(test)
+  List<String> actualRequests = mockService.getRequestPaths();
+  Assert.assertEquals(1, actualRequests.size());
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
