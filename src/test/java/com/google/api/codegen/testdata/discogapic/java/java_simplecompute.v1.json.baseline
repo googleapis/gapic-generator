@@ -7656,7 +7656,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     AddressAggregatedList response = addressClient.aggregatedListAddressesCallable().call(request);
-   *     for (Address element : response.getAddresses()) {
+   *     for (Address element : response.getAddressesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -8084,7 +8084,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     AddressList response = addressClient.listAddressesCallable().call(request);
-   *     for (Address element : response.getItems()) {
+   *     for (Address element : response.getItemsList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -9174,7 +9174,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressAggregatedList payload) {
-          return payload.getItems().getAddresses();
+          return payload.getItemsResource().getAddressesList();
         }
       };
 
@@ -9208,7 +9208,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressList payload) {
-          return payload.getItems();
+          return payload.getItemsList();
         }
       };
 
@@ -9620,8 +9620,6 @@ import javax.annotation.Generated;
 @Generated("by GAPIC v0.0.5")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonAddressStub extends AddressStub {
-  private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
-
   @InternalApi
   public static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
       ApiMethodDescriptor.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
@@ -9717,7 +9715,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.PUT)
           .setResourceNameField("address")
           .build();
-
   private final BackgroundResource backgroundResources;
 
   private final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable;
@@ -10004,7 +10001,7 @@ public class AddressClientTest {
 
     List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getAddresses().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getAddressesList().get(0), resources.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -10234,7 +10231,7 @@ public class AddressClientTest {
     InsertAddressHttpRequest actualRequest = (InsertAddressHttpRequest)actualRequests.get(0);
 
     Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
-    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10282,7 +10279,7 @@ public class AddressClientTest {
 
     List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getItems().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getItemsList().get(0), resources.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -10376,7 +10373,7 @@ public class AddressClientTest {
     Assert.assertEquals(address, actualRequest.getAddress());
     Assert.assertEquals(requestId, actualRequest.getRequestId());
     Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
-    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10465,7 +10462,7 @@ public class AddressClientTest {
 
     Assert.assertEquals(address, ProjectAddressName.parse(actualRequest.getAddress()));
     Assert.assertEquals(requestId, actualRequest.getRequestId());
-    Assert.assertEquals(addressResource, actualRequest.getAddress());
+    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),

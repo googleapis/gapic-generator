@@ -36,7 +36,7 @@ import org.threeten.bp.Duration;
  * <p>Subclasses should have a field to contain the method for which this a config.
  */
 public abstract class MethodConfig {
-  // TODO(andrealin): Consider combining this with MethodModel.
+
   public abstract MethodModel getMethodModel();
 
   @Nullable

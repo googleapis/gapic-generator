@@ -44,11 +44,6 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
-  }
-
-  @Override
   public boolean isMap() {
     return typeRef.isMap();
   }

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
@@ -88,7 +87,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       ImportTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
-    Preconditions.checkArgument(interfaceModel.getApiSource().equals(ApiSource.DISCOVERY));
     Preconditions.checkArgument(typeTable instanceof SchemaTypeTable);
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
 
@@ -143,7 +141,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   /** Returns a list of methods for this interface. Memoize the result. */
   @Override
   public List<MethodModel> getInterfaceMethods() {
-    // TODO(andrealin): Should this be different from getInterfaceConfigMethods()?
     return getInterfaceConfigMethods();
   }
 
@@ -219,7 +216,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  /* Returns the GapicMethodConfig for the given method. */
+  /* Returns the DiscoGapicMethodConfig for the given method. */
   public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
     for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
       for (MethodConfig methodConfig : config.getMethodConfigs()) {
@@ -263,7 +260,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public DiscoGapicMethodContext asFlattenedMethodContext(
       MethodModel method, FlatteningConfig flatteningConfig) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
@@ -278,7 +274,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public DiscoGapicMethodContext asRequestMethodContext(MethodModel method) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
@@ -293,7 +288,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public DiscoGapicMethodContext asDynamicMethodContext(MethodModel method) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
@@ -318,7 +312,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   public DiscoGapicMethodContext asFlattenedMethodContext(
       MethodModel method, FlatteningConfig flatteningConfig, String interfaceName) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
     return DiscoGapicMethodContext.create(
         this,
         interfaceName,

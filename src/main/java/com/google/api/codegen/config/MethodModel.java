@@ -27,9 +27,6 @@ import javax.annotation.Nullable;
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
-
   /* @return find a nested field in the method's input type by the nested field's name. */
   @Nullable
   FieldModel getInputField(String fieldName);

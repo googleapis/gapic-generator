@@ -93,13 +93,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.DISCOVERY;
-  }
-
-  @Override
   public String getServiceAddress() {
-    // TODO(andrealin): Implement.
     return document.baseUrl();
   }
 

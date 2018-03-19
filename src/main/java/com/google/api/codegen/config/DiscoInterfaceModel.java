@@ -30,11 +30,6 @@ public class DiscoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.DISCOVERY;
-  }
-
-  @Override
   public String getSimpleName() {
     return DiscoGapicParser.getSimpleInterfaceName(interfaceName);
   }
@@ -61,7 +56,6 @@ public class DiscoInterfaceModel implements InterfaceModel {
 
   @Override
   public boolean isReachable() {
-    // TODO(andrealin): Implement.
     return true;
   }
 
