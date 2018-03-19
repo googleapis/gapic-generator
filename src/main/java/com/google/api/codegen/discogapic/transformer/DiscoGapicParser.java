@@ -23,7 +23,10 @@ import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// Utility class for parsing Discovery document fields into canonical inputs for the discogapic transformer pipeline.
+/**
+ * Utility class for parsing Discovery document fields into canonical inputs for the discogapic
+ * transformer pipeline.
+ */
 public class DiscoGapicParser {
   private static final String REGEX_DELIMITER = "\\.";
   private static final String PATH_DELIMITER = "/";
