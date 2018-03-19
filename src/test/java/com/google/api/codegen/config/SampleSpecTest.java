@@ -15,6 +15,8 @@
 package com.google.api.codegen.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.SampleConfiguration;
@@ -22,6 +24,7 @@ import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import java.util.Set;
 import org.junit.Test;
 
 public class SampleSpecTest {
@@ -42,16 +45,44 @@ public class SampleSpecTest {
                     .addStandalone(
                         SampleTypeConfiguration.newBuilder()
                             .addValueSets("bob")
-                            .addCallingForms(".*"))
-                    .addStandalone(
-                        SampleTypeConfiguration.newBuilder()
-                            .addValueSets("alice")
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
   }
 
-  // add valueSetsMatching()
+  @Test
+  public void valueSetsMatching() {
+    SampleValueSet valueSetAlice =
+        SampleValueSet.newBuilder().setId("alice").addParameters("apple").build();
+    SampleValueSet valueSetBob =
+        SampleValueSet.newBuilder().setId("bob").addParameters("banana").build();
+    SampleValueSet valueSetAlison =
+        SampleValueSet.newBuilder().setId("alison").addParameters("apricot").build();
+
+    final MethodConfigProto methodConfigProto =
+        MethodConfigProto.newBuilder()
+            .addSampleValueSets(valueSetAlice)
+            .addSampleValueSets(valueSetBob)
+            .addSampleValueSets(valueSetAlison)
+            .setSamples(
+                SampleConfiguration.newBuilder()
+                    .addStandalone(
+                        SampleTypeConfiguration.newBuilder()
+                            .addValueSets("ali.*")
+                            .addCallingForms(".*"))
+                    .addStandalone(
+                        SampleTypeConfiguration.newBuilder()
+                            .addValueSets("be.*")
+                            .addCallingForms(".*")))
+            .build();
+    SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
+    final Set<SampleValueSet> matchingValueSets =
+        sampleSpec.valueSetsMatching(ClientMethodType.CallableMethod, SampleType.STANDALONE);
+    assertEquals(2, matchingValueSets.size());
+    assertTrue(matchingValueSets.contains(valueSetAlice));
+    assertTrue(matchingValueSets.contains(valueSetAlison));
+    assertFalse(matchingValueSets.contains(valueSetBob));
+  }
 
   @Test
   public void valueSetsReferencedMultipleTimes() {
