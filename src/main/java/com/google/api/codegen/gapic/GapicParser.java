@@ -18,7 +18,9 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 
-/* Util class for parsing ProtoElements into canonical inputs for the gapic transformer pipeline. */
+/**
+ * Util class for parsing ProtoElements into canonical inputs for the gapic transformer pipeline.
+ */
 public class GapicParser {
 
   /** Provides the doc lines for the given proto element in the current language. */
