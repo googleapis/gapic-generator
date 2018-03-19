@@ -18,7 +18,6 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
@@ -100,7 +99,7 @@ public class JavaDiscoGapicSurfaceTransformer
         apiInterface,
         productConfig,
         importTypeTable,
-        new DiscoGapicNamer(namer),
+        namer,
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)
             .build());
@@ -111,7 +110,7 @@ public class JavaDiscoGapicSurfaceTransformer
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
+        new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
   }
 
   @Override
