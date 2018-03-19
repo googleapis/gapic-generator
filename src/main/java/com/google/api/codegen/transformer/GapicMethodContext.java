@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
-
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -61,11 +58,6 @@ public abstract class GapicMethodContext implements MethodContext {
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return PROTO;
   }
 
   @Override

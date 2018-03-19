@@ -195,6 +195,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(TypeModel type) {
+    return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
+  }
+
   @Override
   public String getAndSaveNicknameForElementType(TypeModel type) {
     return getAndSaveNicknameForElementType(((FieldModel) type));

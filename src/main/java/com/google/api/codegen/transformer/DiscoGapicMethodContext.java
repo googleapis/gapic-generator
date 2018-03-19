@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.DISCOVERY;
-
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
@@ -26,7 +23,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -41,7 +37,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
-    Preconditions.checkArgument(method != null && method.getApiSource().equals(DISCOVERY));
     return new AutoValue_DiscoGapicMethodContext(
         productConfig,
         flatteningConfig,
@@ -101,11 +96,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public abstract DiscoveryMethodModel getMethodModel();
-
-  @Override
-  public ApiSource getApiSource() {
-    return DISCOVERY;
-  }
 
   @Override
   public abstract SurfaceNamer getNamer();

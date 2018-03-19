@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.ApiSource.DISCOVERY;
-
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -41,11 +39,13 @@ import javax.annotation.Nullable;
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
   private final Schema schema;
+  private final Schema originalSchema; // not dereferenced.
   private final DiscoApiModel apiModel;
 
   /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
   private DiscoveryField(Schema schema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(schema);
+    this.originalSchema = schema;
     this.schema = schema.dereference();
     this.apiModel = apiModel;
 
@@ -61,12 +61,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
     return new DiscoveryField(schema, rootApiModel);
-  }
-
-  @Override
-  /* @return the type of the underlying model resource. */
-  public ApiSource getApiSource() {
-    return DISCOVERY;
   }
 
   /* @return the underlying Discovery Schema. */
@@ -413,7 +407,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
+    return String.format("Discovery FieldModel: {%s}", schema.toString());
   }
 
   @Override

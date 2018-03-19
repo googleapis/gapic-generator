@@ -398,7 +398,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<String> getters = ImmutableList.builder();
 
     for (String getter : var.split("\\.")) {
-      getters.add(namer.getFieldGetFunctionName(Name.anyLower(getter)));
+      getters.add(
+          namer.getFieldGetFunctionName(
+              Name.anyLower(getter),
+              SurfaceNamer.MapType.NOT_MAP,
+              SurfaceNamer.Cardinality.NOT_REPEATED));
     }
 
     placeholderView.name(var);

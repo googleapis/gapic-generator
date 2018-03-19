@@ -47,11 +47,6 @@ public class ProtoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
-  }
-
-  @Override
   public String getSimpleName() {
     return protoInterface.getSimpleName();
   }

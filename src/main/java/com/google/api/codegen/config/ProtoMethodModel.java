@@ -53,11 +53,6 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
-  }
-
-  @Override
   public ProtoField getInputField(String fieldName) {
     Field inputField = method.getInputType().getMessageType().lookupField(fieldName);
     return inputField == null ? null : new ProtoField(inputField);
