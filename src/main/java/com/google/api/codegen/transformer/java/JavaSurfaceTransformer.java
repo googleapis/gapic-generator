@@ -225,12 +225,12 @@ public class JavaSurfaceTransformer {
   }
 
   /**
-   * Makes the specified API method the only method in a clone of apiView. This allows us to
+   * Makes the specified API method the only method in a near-clone of apiView. This allows us to
    * generate a class that creates a sample for just this one method.
    *
    * @param apiView the class view that we're cloning before paring down its methods
    * @param method the single method that will be present in the clone of apiView
-   * @return a close of apiView with only one method, the one specified
+   * @return a near-clone of apiView but with only one method, the one specified
    */
   private StaticLangApiView generateSampleClass(
       StaticLangApiView apiView, StaticLangApiMethodView method) {

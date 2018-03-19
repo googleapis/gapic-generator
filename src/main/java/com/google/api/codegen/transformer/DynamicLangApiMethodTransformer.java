@@ -74,7 +74,7 @@ public class DynamicLangApiMethodTransformer {
           pageStreamingTransformer.generateDescriptor(
               context.getSurfaceInterfaceContext(), method));
     } else {
-      // TODO: Here need to move logic from the snippet file for
+      // TODO(vchudnov-g): Here we need to import the logic from the snippet file for
       // selecting the proper calling form. This may mean having a new
       // field in OptionalArrayMethod during the transition
       methodType = ClientMethodType.OptionalArrayMethod;

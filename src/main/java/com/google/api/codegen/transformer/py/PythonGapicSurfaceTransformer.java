@@ -49,6 +49,7 @@ import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView.Builder;
 import com.google.api.codegen.viewmodel.GrpcDocView;
@@ -188,6 +189,20 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
+  /**
+   * Generates a list of standalone sample view models for the the API, at most one for each calling
+   * form for each method, as specified in each method view model's sampleValueSetsModel (which
+   * ultimately derives from user-provided configuration). If no samples are configured, no sample
+   * files are produced.
+   *
+   * <p>TODO(vchudnov-g): Properly set the method form in the views thus generated.
+   *
+   * @param context the interface for whose methods the sample files will be generated
+   * @param apClass the previously generated API class view model for whose methods sample files
+   *     will be generated. The view models returned for each method are modified clones of the view
+   *     models for the methods in apiClass.
+   * @return A list of view models, each one corresponding to a distinct method sample
+   */
   private Iterable<ViewModel> generateSampleClassesForApi(
       GapicInterfaceContext context, DynamicLangXApiView apiClass) {
     SurfaceNamer namer = context.getNamer();
@@ -196,14 +211,13 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     final Builder sampleClassBuilder = apiClass.toBuilder();
     sampleClassBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
 
-    for (ApiMethodView methodView : apiClass.apiMethods()) {
-      SampleValueSetsModel valueSetsModel =
-          ((OptionalArrayMethodView) methodView).sampleValueSetsModel();
+    for (ApiMethodView view : apiClass.apiMethods()) {
+      OptionalArrayMethodView methodView = (OptionalArrayMethodView) view;
+      SampleValueSetsModel valueSetsModel = (methodView).sampleValueSetsModel();
       final Set<SampleValueSet> matchingValueSets =
           valueSetsModel.forSampleType(SampleType.STANDALONE);
 
-      OptionalArrayMethodView.Builder methodViewBuilder =
-          ((OptionalArrayMethodView) methodView).toBuilder();
+      OptionalArrayMethodView.Builder methodViewBuilder = (methodView).toBuilder();
 
       for (SampleValueSet values : matchingValueSets) {
 
@@ -217,10 +231,10 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
                 context.getProductConfig(),
                 sampleMethodView.name());
 
-        // TODO(vchudnov-g): Replace placeholder with actual calling form.
-        String className =
-            namer.getApiSampleClassName(
-                sampleMethodView, ((OptionalArrayMethodView) methodView).type().toString());
+        // TODO(vchudnov-g): Replace this placeholder with actual calling form; right now, it's
+        // always just an OptionalArrayMethodView.
+        ClientMethodType callingForm = methodView.type();
+        String className = namer.getApiSampleClassName(sampleMethodView, callingForm.toString());
 
         String outputPath = subPath + File.separator + namer.getApiSampleFileName(className);
 
@@ -239,21 +253,11 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
-    String outputPath = namer.getSourceFilePath(subPath, name);
 
-    return xapiClassFor(context, methods, XAPI_TEMPLATE_FILENAME, namer, name, outputPath);
-  }
-
-  private DynamicLangXApiView xapiClassFor(
-      GapicInterfaceContext context,
-      List<ApiMethodView> methods,
-      String templateFileName,
-      SurfaceNamer namer,
-      String name,
-      String outputPath) {
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
-    xapiClass.templateFileName(templateFileName);
-    xapiClass.outputPath(outputPath);
+
+    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));

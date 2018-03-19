@@ -123,7 +123,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
    * When this class is being used as a view model for a single sample, the one value set to be used
    * in the sample.
    */
-  // TODO(vchudnov-g): Consider subclassing a StaticLangApiMethodSampleView
   @Nullable
   public abstract SampleValueSet sampleValueSet();
 
