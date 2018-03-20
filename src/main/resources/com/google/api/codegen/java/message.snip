@@ -39,11 +39,11 @@
     @join param : schema.properties
       if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
-          List<String> stringList = new LinkedList<>();
+          ImmutableList.Builder stringList = ImmutableList.builder();
           for ({@param.innerTypeName} item : {@param.name}) {
             stringList.add(item.toString());
           }
-          fieldMap.put("{@param.name}", stringList);
+          fieldMap.put("{@param.name}", stringList.build());
         @else
           fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end
