@@ -9253,7 +9253,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressAggregatedList payload) {
-          return payload.getItemsResource().getAddressesList();
+          return payload.getItems().getAddressesList();
         }
       };
 
@@ -10119,7 +10119,6 @@ package com.google.cloud.simplecompute.v1;
  */
 package com.google.cloud.simplecompute.v1;
 
-import com.google.api.gax.httpjson.MockHttpService;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.testing.MockHttpService;
@@ -10219,7 +10218,7 @@ public class AddressClientTest {
 
     List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getItems().getAddresses().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getItems().getAddressesList().get(0), resources.get(0));
 
     List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
