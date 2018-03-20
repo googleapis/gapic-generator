@@ -500,7 +500,7 @@ public class StaticLangApiMethodTransformer {
       methodViewBuilder.hasReturnValue(
           !context.getMethodConfig().getLongRunningConfig().getReturnType().isEmptyType());
     } else {
-      methodViewBuilder.hasReturnValue(method.hasReturnValue());
+      methodViewBuilder.hasReturnValue(!method.isOutputTypeEmpty());
     }
     methodViewBuilder.headerRequestParams(
         headerRequestParamTransformer.generateHeaderRequestParams(context));

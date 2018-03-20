@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.discogapic.DiscoGapicProvider;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  List<DiscoGapicProvider> discoGapicProviders;
+  List<GapicProvider<? extends Object>> discoGapicProviders;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -60,7 +61,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     this.packageConfigFileName = packageConfigFileName;
 
     for (String fileName : gapicConfigFileNames) {
-      gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
+      this.gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
     }
   }
 
@@ -71,7 +72,8 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),
-              new LinkedList<String>());
+              Collections.emptyList(),
+              "");
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
@@ -88,7 +90,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected Map<String, Doc> run() {
     Map<String, Doc> outputDocs = new LinkedHashMap<>();
 
-    for (DiscoGapicProvider provider : discoGapicProviders) {
+    for (GapicProvider<? extends Object> provider : discoGapicProviders) {
       Map<String, Doc> docs = provider.generate();
       outputDocs.putAll(docs);
     }

@@ -21,6 +21,7 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -38,14 +39,14 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   private final TypeNameConverter typeNameConverter;
   private final JavaNameFormatter nameFormatter;
   private final String implicitPackageName;
-  private final DiscoGapicNamer discoGapicNamer;
+  private final DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
+  private final JavaSurfaceNamer namer;
 
   public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
     this.nameFormatter = nameFormatter;
     this.implicitPackageName = implicitPackageName;
-    this.discoGapicNamer =
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
+    this.namer = new JavaSurfaceNamer(implicitPackageName, implicitPackageName);
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
@@ -93,6 +94,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public DiscoGapicNamer getDiscoGapicNamer() {
     return discoGapicNamer;
+  }
+
+  @Override
+  public SurfaceNamer getNamer() {
+    return namer;
   }
 
   @Override
@@ -211,7 +217,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
         || primitiveType.equals("float")) {
       return value;
     }
-    if (primitiveType.equals("String")) {
+    if (primitiveType.equals("java.lang.String")) {
       return "\"" + value + "\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
@@ -230,14 +236,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(Schema schema) {
-    if (schema.type() == Schema.Type.ARRAY || schema.repeated()) {
-      return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
-    }
     if (getPrimitiveTypeName(schema) != null) {
       return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
-    if (schema.type() == Type.OBJECT) {
-      return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
+    if (schema.type() == Type.OBJECT || schema.type() == Type.ARRAY) {
+      return TypedValue.create(getTypeNameForElementType(schema), "%s.newBuilder().build()");
     }
     return TypedValue.create(getTypeName(schema), "null");
   }

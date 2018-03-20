@@ -32,7 +32,6 @@ import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
-import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -95,8 +94,6 @@ public class JavaSurfaceTransformer {
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
 
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
-  private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
-      "java/page_streaming_response.snip";
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,
@@ -482,7 +479,8 @@ public class JavaSurfaceTransformer {
     xsettingsClass.rpcStubClassName(
         getAndSaveNicknameForStubType(
             context,
-            namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol())));
+            namer.getApiRpcStubClassName(
+                interfaceConfig.getInterfaceModel(), productConfig.getTransportProtocol())));
 
     return xsettingsClass.build();
   }
@@ -540,8 +538,7 @@ public class JavaSurfaceTransformer {
 
   private StaticLangFileView<StaticLangRpcStubView> generateRpcStubClassFile(
       InterfaceContext context, GapicProductConfig productConfig) {
-    StaticLangFileView.Builder<StaticLangRpcStubView> fileView =
-        StaticLangFileView.<StaticLangRpcStubView>newBuilder();
+    StaticLangFileView.Builder<StaticLangRpcStubView> fileView = StaticLangFileView.newBuilder();
 
     fileView.classView(generateRpcStubClass(context, productConfig));
     fileView.templateFileName(rpcStubTemplateFilename);
@@ -553,7 +550,8 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getApiRpcStubClassName(
-                context.getInterfaceConfig(), productConfig.getTransportProtocol());
+                context.getInterfaceConfig().getInterfaceModel(),
+                productConfig.getTransportProtocol());
     fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -579,7 +577,8 @@ public class JavaSurfaceTransformer {
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
     String name =
-        namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol());
+        namer.getApiRpcStubClassName(
+            interfaceConfig.getInterfaceModel(), productConfig.getTransportProtocol());
     stubClass.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
@@ -600,11 +599,6 @@ public class JavaSurfaceTransformer {
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
-    }
-
-    // TODO(andrealin): Move the baseUrl to gapic.yaml and pull value from GapicProductConfig.
-    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      stubClass.baseUrl(((DiscoGapicInterfaceContext) context).getDocument().baseUrl());
     }
 
     return stubClass.build();
@@ -688,8 +682,8 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
     }
 
-    switch (context.getApiModel().getApiSource()) {
-      case DISCOVERY:
+    switch (context.getProductConfig().getTransportProtocol()) {
+      case HTTP:
         typeTable.saveNicknameFor("java.util.List");
         typeTable.saveNicknameFor("java.util.ArrayList");
         typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
@@ -763,8 +757,8 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationTimedPollAlgorithm");
     }
-    switch (context.getApiModel().getApiSource()) {
-      case PROTO:
+    switch (context.getProductConfig().getTransportProtocol()) {
+      case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportChannel");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
         if (interfaceConfig.hasLongRunningOperations()) {
@@ -772,11 +766,12 @@ public class JavaSurfaceTransformer {
         }
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
         break;
-      case DISCOVERY:
+      case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
+        typeTable.saveNicknameFor("java.lang.Void");
         break;
     }
   }
@@ -827,11 +822,13 @@ public class JavaSurfaceTransformer {
         break;
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
+        typeTable.saveNicknameFor("com.google.api.core.InternalApi");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
+        typeTable.saveNicknameFor("java.lang.Void");
         typeTable.saveNicknameFor("java.util.HashSet");
         typeTable.saveNicknameFor("java.util.Arrays");
         break;
@@ -845,6 +842,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("java.lang.Void");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasLongRunningOperations()) {
@@ -863,7 +861,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractFixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.Page");
-    typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");

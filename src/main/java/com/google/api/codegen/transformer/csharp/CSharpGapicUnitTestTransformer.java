@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -26,11 +28,15 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -41,8 +47,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +73,11 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -82,8 +86,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
-      context.getImportTypeTable().saveNicknameFor("Xunit.FactAttribute");
-      context.getImportTypeTable().saveNicknameFor("Moq.Mock");
+      ModelTypeTable typeTable = context.getImportTypeTable();
+      typeTable.saveNicknameFor("Xunit.FactAttribute");
+      typeTable.saveNicknameFor("Moq.Mock");
+      if (context.getLongRunningMethods().iterator().hasNext()) {
+        typeTable.saveNicknameFor("Google.LongRunning.Operations");
+      }
       surfaceDocs.add(generateUnitTest(context));
       surfaceDocs.add(generateUnitTestCsproj(context));
     }
@@ -137,6 +145,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
     testClass.missingDefaultServiceAddress(
         !context.getInterfaceConfig().hasDefaultServiceAddress());
     testClass.missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes());
+    testClass.reroutedGrpcClients(csharpCommonTransformer.generateReroutedGrpcView(context));
+    testClass.hasLongRunningOperations(context.getLongRunningMethods().iterator().hasNext());
 
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
@@ -156,7 +166,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
       if (methodConfig.isGrpcStreaming()) {
         // TODO: Add support for streaming methods
       } else if (methodConfig.isFlattening()) {
-        ClientMethodType clientMethodType;
+        ClientMethodType clientMethodTypeSync;
+        ClientMethodType clientMethodTypeAsync;
         if (methodConfig.isPageStreaming()) {
           // TODO: Add support for page-streaming methods
           continue;
@@ -164,30 +175,100 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
           // TODO: Add support for LRO methods
           continue;
         } else {
-          // TODO: Add tests for async flattened methods
-          clientMethodType = ClientMethodType.FlattenedMethod;
+          clientMethodTypeSync = ClientMethodType.FlattenedMethod;
+          clientMethodTypeAsync = ClientMethodType.FlattenedAsyncCallSettingsMethod;
         }
         if (methodConfig.getRerouteToGrpcInterface() != null) {
+          // TODO: Add support for rerouted methods
           continue;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
-          InitCodeContext initCodeContext =
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  flatteningGroup.getFlattenedFieldConfigs().values(),
-                  InitCodeOutputType.FieldList,
-                  valueGenerator);
           testCaseViews.add(
-              testCaseTransformer.createTestCaseView(
-                  methodContext, testNameTable, initCodeContext, clientMethodType));
+              createFlattenedTestCase(
+                  methodContext,
+                  testNameTable,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
+                  clientMethodTypeSync,
+                  Synchronicity.Sync));
+          testCaseViews.add(
+              createFlattenedTestCase(
+                  methodContext,
+                  testNameTable,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
+                  clientMethodTypeAsync,
+                  Synchronicity.Async));
         }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        InitCodeContext initCodeContextSync =
+            initCodeTransformer.createRequestInitCodeContext(
+                requestContext,
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                requestContext,
+                testNameTable,
+                initCodeContextSync,
+                ClientMethodType.RequestObjectMethod,
+                Synchronicity.Sync,
+                null));
+        InitCodeContext initCodeContextAsync =
+            initCodeTransformer.createRequestInitCodeContext(
+                requestContext,
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                requestContext,
+                testNameTable,
+                initCodeContextAsync,
+                ClientMethodType.AsyncRequestObjectMethod,
+                Synchronicity.Async,
+                null));
       } else {
         // TODO: Add support for non-flattening method
       }
     }
     return testCaseViews;
+  }
+
+  private TestCaseView createFlattenedTestCase(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      Iterable<FieldConfig> fieldConfigs,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity) {
+    InitCodeContext initCodeContext =
+        initCodeTransformer.createRequestInitCodeContext(
+            methodContext,
+            new SymbolTable(),
+            fieldConfigs,
+            InitCodeOutputType.FieldList,
+            valueGenerator);
+    InitCodeContext initCodeRequestObjectContext =
+        InitCodeContext.newBuilder()
+            .initObjectType(methodContext.getMethodModel().getInputType())
+            .symbolTable(new SymbolTable())
+            .suggestedName(Name.from("expected_request"))
+            .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
+            .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+            .fieldConfigMap(methodContext.getProductConfig().getDefaultResourceNameFieldConfigMap())
+            .outputType(InitCodeOutputType.SingleObject)
+            .valueGenerator(valueGenerator)
+            .build();
+    return testCaseTransformer.createTestCaseView(
+        methodContext,
+        testNameTable,
+        initCodeContext,
+        clientMethodType,
+        synchronicity,
+        initCodeRequestObjectContext);
   }
 }

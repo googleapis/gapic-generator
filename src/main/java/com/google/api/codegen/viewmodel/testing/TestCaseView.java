@@ -28,9 +28,12 @@ public abstract class TestCaseView {
 
   public abstract InitCodeView initCode();
 
+  @Nullable // Use in C#
+  public abstract InitCodeView requestObjectInitCode();
+
   public abstract ClientMethodType clientMethodType();
 
-  public abstract MockGrpcResponseView mockResponse();
+  public abstract MockRpcResponseView mockResponse();
 
   public abstract List<ClientTestAssertView> asserts();
 
@@ -104,9 +107,11 @@ public abstract class TestCaseView {
 
     public abstract Builder initCode(InitCodeView val);
 
+    public abstract Builder requestObjectInitCode(InitCodeView val);
+
     public abstract Builder clientMethodType(ClientMethodType val);
 
-    public abstract Builder mockResponse(MockGrpcResponseView val);
+    public abstract Builder mockResponse(MockRpcResponseView val);
 
     public abstract Builder asserts(List<ClientTestAssertView> val);
 

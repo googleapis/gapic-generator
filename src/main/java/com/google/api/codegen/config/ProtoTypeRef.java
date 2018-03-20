@@ -153,6 +153,16 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
+  public FieldModel getField(String key) {
+    for (FieldModel field : getFields()) {
+      if (field.getSimpleName().equals(key)) {
+        return field;
+      }
+    }
+    return null;
+  }
+
+  @Override
   public TypeModel makeOptional() {
     return new ProtoTypeRef(typeRef.makeOptional());
   }

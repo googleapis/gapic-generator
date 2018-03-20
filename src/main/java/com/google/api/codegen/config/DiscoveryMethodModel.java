@@ -14,17 +14,15 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -43,33 +41,28 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
-  private final DiscoGapicNamer discoGapicNamer;
+  private final DiscoApiModel apiModel;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
-  public DiscoveryMethodModel(Method method, DiscoGapicNamer discoGapicNamer) {
+  public DiscoveryMethodModel(Method method, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(method);
     this.method = method;
-    this.discoGapicNamer = discoGapicNamer;
+    this.apiModel = apiModel;
     this.inputType = DiscoveryRequestType.create(this);
-    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseType(method) : null;
+    if (method.response() != null) {
+      this.outputType = DiscoveryField.create(method.response(), apiModel);
+    } else {
+      this.outputType = null;
+    }
   }
 
   public Method getDiscoMethod() {
     return method;
   }
 
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
-  }
-
   @Override
   public String getOutputTypeSimpleName() {
-    return method.response() == null ? "none" : method.response().id();
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.DISCOVERY;
+    return outputType.getTypeName();
   }
 
   /**
@@ -80,14 +73,13 @@ public final class DiscoveryMethodModel implements MethodModel {
   public DiscoveryField getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
     if (targetSchema != null) {
-      return DiscoveryField.create(targetSchema, discoGapicNamer);
+      return DiscoveryField.create(targetSchema, apiModel);
     }
     if (method.request() != null
-        && !Strings.isNullOrEmpty(method.request().reference())
-        && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
+        && DiscoGapicParser.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
-      return DiscoveryField.create(method.request().dereference(), discoGapicNamer);
+      return DiscoveryField.create(method.request(), apiModel);
     }
     return null;
   }
@@ -109,7 +101,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getInputFullName() {
-    // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();
   }
 
@@ -120,22 +111,17 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    // Maybe use Discogapic namer for this?
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((TypeModel) outputType));
   }
 
   @Override
   public String getOutputFullName() {
-    return method.response() == null ? "none" : method.response().getIdentifier();
+    return outputType.getTypeName();
   }
 
   @Override
   public TypeName getInputTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(inputType));
   }
 
   @Override
@@ -156,12 +142,12 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Name asName() {
-    return DiscoGapicNamer.methodAsName(method);
+    return DiscoGapicParser.methodAsName(method);
   }
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return method.response() == null;
+    return outputType == null;
   }
 
   @Override
@@ -173,7 +159,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getSimpleName() {
-    return DiscoGapicNamer.methodAsName(method).toLowerCamel();
+    return DiscoGapicParser.methodAsName(method).toLowerCamel();
   }
 
   @Override
@@ -193,21 +179,12 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    if (outputType != null) {
-      return typeTable.getAndSaveNicknameFor((FieldModel) outputType);
-    } else {
-      return typeTable.getAndSaveNicknameFor("java.lang.Void");
-    }
+    return typeTable.getAndSaveNicknameFor((TypeModel) outputType);
   }
 
   @Override
   public String getScopedDescription() {
     return method.description();
-  }
-
-  @Override
-  public boolean hasReturnValue() {
-    return method.response() != null;
   }
 
   @Override
@@ -237,7 +214,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+    String resourceName = DiscoGapicParser.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (DiscoveryField field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -255,10 +232,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
     ImmutableList.Builder<DiscoveryField> fieldsBuilder = ImmutableList.builder();
     for (Schema field : method.parameters().values()) {
-      fieldsBuilder.add(DiscoveryField.create(field, discoGapicNamer));
+      fieldsBuilder.add(DiscoveryField.create(field, apiModel));
     }
-    if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
-      fieldsBuilder.add(DiscoveryField.create(method.request().dereference(), discoGapicNamer));
+    if (method.request() != null) {
+      fieldsBuilder.add(DiscoveryField.create(method.request(), apiModel));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
@@ -275,8 +252,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     ImmutableList.Builder<DiscoveryField> outputField = new Builder<>();
-    if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
-      DiscoveryField fieldModel = DiscoveryField.create(method.response().dereference(), null);
+    if (method.response() != null) {
+      DiscoveryField fieldModel = DiscoveryField.create(method.response(), apiModel);
       outputField.add(fieldModel);
     }
     outputFields = outputField.build();
@@ -297,11 +274,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      String resourceNameString =
-          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
-      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
-          .toLowerCamel()
-          .equals(resourceNameString)) {
+      if (DiscoGapicParser.getCanonicalPath(method).equals(entry.getKey())) {
+        String resourceNameString =
+            DiscoGapicParser.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());
         break;
       }

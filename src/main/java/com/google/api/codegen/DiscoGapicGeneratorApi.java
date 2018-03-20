@@ -18,18 +18,18 @@ import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JA
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
@@ -101,11 +101,12 @@ public class DiscoGapicGeneratorApi {
 
   /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  static List<DiscoGapicProvider> getProviders(
+  static List<GapicProvider<? extends Object>> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfigFile,
-      List<String> enabledArtifacts)
+      List<String> enabledArtifacts,
+      String outputPath)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
       throw new IOException("File not found: " + discoveryDocPath);
@@ -114,8 +115,6 @@ public class DiscoGapicGeneratorApi {
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
-
-    Document document = Document.from(new DiscoveryNode(root));
 
     // Read the YAML config and convert it to proto.
     if (configFileNames.size() == 0) {
@@ -147,10 +146,10 @@ public class DiscoGapicGeneratorApi {
           "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
     }
 
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
+    DiscoApiModel model =
+        new DiscoApiModel(Document.from(new DiscoveryNode(root)), defaultPackageName);
 
-    GapicProductConfig productConfig =
-        GapicProductConfig.create(document, configProto, discoGapicNamer);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, surfaceNamer);
 
     String factory = generator.getFactory();
     String id = generator.getId();
@@ -159,7 +158,7 @@ public class DiscoGapicGeneratorApi {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
 
-    return providerFactory.create(document, productConfig, generatorConfig, packageConfig);
+    return providerFactory.create(model, productConfig, generatorConfig, packageConfig, outputPath);
   }
 
   public void run() throws Exception {
@@ -168,13 +167,14 @@ public class DiscoGapicGeneratorApi {
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
-
-    List<DiscoGapicProvider> providers =
-        getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
-
     String outputFile = options.get(OUTPUT_FILE);
+
+    List<GapicProvider<? extends Object>> providers =
+        getProviders(
+            discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts, outputFile);
+
     Map<String, Doc> outputFiles = Maps.newHashMap();
-    for (DiscoGapicProvider provider : providers) {
+    for (GapicProvider<? extends Object> provider : providers) {
       outputFiles.putAll(provider.generate());
     }
     ToolUtil.writeFiles(outputFiles, outputFile);

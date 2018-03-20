@@ -70,6 +70,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameForElementType(TypeModel type) {
+    return typeFormatter.getFullNameForElementType(((ProtoTypeRef) type).getProtoType());
+  }
+
+  @Override
   public String getNicknameFor(TypeRef type) {
     return typeFormatter.getNicknameFor(type);
   }

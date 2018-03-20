@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,68 +16,61 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-public class DiscoGapicProvider implements GapicProvider<Document> {
+public class ViewModelDiscoGapicProvider implements GapicProvider<Document> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
-  private final List<DocumentToViewTransformer> transformers;
+  private final ModelToViewTransformer modelToViewTransformer;
 
-  private final List<String> snippetFileNames;
-
-  private DiscoGapicProvider(
+  private ViewModelDiscoGapicProvider(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      List<DocumentToViewTransformer> transformers) {
+      ModelToViewTransformer modelToViewTransformer) {
     this.model = model;
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
-    this.transformers = transformers;
-
-    ImmutableList.Builder<String> snippetFileNames = ImmutableList.builder();
-    for (DocumentToViewTransformer transformer : transformers) {
-      snippetFileNames.addAll(transformer.getTemplateFileNames());
-    }
-    this.snippetFileNames = snippetFileNames.build();
+    this.modelToViewTransformer = modelToViewTransformer;
   }
 
   @Override
   public List<String> getSnippetFileNames() {
-    return snippetFileNames;
+    return modelToViewTransformer.getTemplateFileNames();
   }
 
+  @Override
   public Map<String, Doc> generate() {
     return generate(null);
   }
 
+  @Override
   public Map<String, Doc> generate(String snippetFileName) {
-    Map<String, Doc> docs = new LinkedTreeMap<>();
+    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
+    if (model.getDiagCollector().getErrorCount() > 0) {
+      return null;
+    }
 
-    for (DocumentToViewTransformer transformer : transformers) {
-      List<ViewModel> surfaceDocs = transformer.transform(model, productConfig);
-
-      for (ViewModel surfaceDoc : surfaceDocs) {
-        if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-          continue;
-        }
-        Doc doc = snippetSetRunner.generate(surfaceDoc);
-        if (doc == null) {
-          // generation failed; failures are captured in the model.
-          continue;
-        }
-        docs.put(surfaceDoc.outputPath(), doc);
+    Map<String, Doc> docs = new TreeMap<>();
+    for (ViewModel surfaceDoc : surfaceDocs) {
+      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
+        continue;
       }
+      Doc doc = snippetSetRunner.generate(surfaceDoc);
+      if (doc == null) {
+        // generation failed; failures are captured in the model.
+        continue;
+      }
+      docs.put(surfaceDoc.outputPath(), doc);
     }
 
     return docs;
@@ -91,11 +84,11 @@ public class DiscoGapicProvider implements GapicProvider<Document> {
     private DiscoApiModel model;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
-    private List<DocumentToViewTransformer> transformers;
+    private ModelToViewTransformer modelToViewTransformer;
 
     private Builder() {}
 
-    public Builder setDiscoApiModel(DiscoApiModel model) {
+    public Builder setModel(DiscoApiModel model) {
       this.model = model;
       return this;
     }
@@ -110,13 +103,14 @@ public class DiscoGapicProvider implements GapicProvider<Document> {
       return this;
     }
 
-    public Builder setDocumentToViewTransformers(List<DocumentToViewTransformer> transformers) {
-      this.transformers = transformers;
+    public Builder setModelToViewTransformer(ModelToViewTransformer modelToViewTransformer) {
+      this.modelToViewTransformer = modelToViewTransformer;
       return this;
     }
 
-    public DiscoGapicProvider build() {
-      return new DiscoGapicProvider(model, productConfig, snippetSetRunner, transformers);
+    public ViewModelDiscoGapicProvider build() {
+      return new ViewModelDiscoGapicProvider(
+          model, productConfig, snippetSetRunner, modelToViewTransformer);
     }
   }
 }

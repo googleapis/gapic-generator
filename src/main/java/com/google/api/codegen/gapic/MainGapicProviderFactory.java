@@ -33,8 +33,8 @@ import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSampleAppTransformer;
-import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
@@ -235,7 +235,11 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        "java/test.snip"))
                 .build();
         providers.add(testProvider);
       }
