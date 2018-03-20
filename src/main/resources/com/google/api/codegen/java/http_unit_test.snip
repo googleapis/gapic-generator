@@ -1,31 +1,31 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
 
-@snippet generate(xapiTest)
-  {@renderFileHeader(xapiTest.fileHeader)}
+@snippet generate(apiTest)
+  {@renderFileHeader(apiTest.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@xapiTest.testClass.name} {
+  public class {@apiTest.testClass.name} {
     private static final List<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>> METHOD_DESCRIPTORS
         = ImmutableList.copyOf(Lists.<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>newArrayList(
-                @join test : xapiTest.testClass.testCases on ", ".add(BREAK)
+                @join test : apiTest.testClass.testCases on ", ".add(BREAK)
                   {@test.methodDescriptor}
                 @end
             ));
     private static final MockHttpService mockService
-        = new MockHttpService(METHOD_DESCRIPTORS, {@xapiTest.testClass.apiStubSettingsClassName}.getDefaultEndpoint());
-    private static {@xapiTest.testClass.apiClassName} client;
-    private static {@xapiTest.testClass.apiSettingsClassName} clientSettings;
+        = new MockHttpService(METHOD_DESCRIPTORS, {@apiTest.testClass.apiStubSettingsClassName}.getDefaultEndpoint());
+    private static {@apiTest.testClass.apiClassName} client;
+    private static {@apiTest.testClass.apiSettingsClassName} clientSettings;
 
     @@BeforeClass
     public static void setUp() throws IOException {
       clientSettings =
-          {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
+          {@apiTest.testClass.apiSettingsClassName}.newBuilder()
              .setTransportChannelProvider(
-                 {@xapiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
+                 {@apiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
                      .setHttpTransport(mockService).build()).build();
       client =
-         {@xapiTest.testClass.apiClassName}.create(clientSettings);
+         {@apiTest.testClass.apiClassName}.create(clientSettings);
     }
 
     @@After
@@ -38,7 +38,7 @@
       client.close();
     }
 
-    @join test : xapiTest.testClass.testCases
+    @join test : apiTest.testClass.testCases
       {@testCase(test)}
 
     @end
