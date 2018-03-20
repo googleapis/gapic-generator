@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
-/** Indicates the type of the package */
-public enum PackageType {
-
-  /** Common protos package generated from core protos */
+public enum ArtifactType {
+  UNKNOWN,
+  GAPIC,
+  GAPIC_CONFIG,
+  GRPC,
   GRPC_COMMON,
+  PROTOBUF,
+  GAPIC_ONLY;
 
-  /** API client protos package generated from API protos e.g. pubsub */
-  GRPC_CLIENT;
-
-  public static PackageType of(String packageTypeString) {
-    if (packageTypeString != null) {
-      return PackageType.valueOf(packageTypeString.toUpperCase());
+  public static ArtifactType of(String generationLayerString) {
+    if (generationLayerString != null) {
+      return ArtifactType.valueOf(generationLayerString.toUpperCase());
     } else {
-      return null;
+      return UNKNOWN;
     }
   }
 }
