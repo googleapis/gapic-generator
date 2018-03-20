@@ -23,6 +23,7 @@ import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -83,7 +84,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     // Use file path for package name to get file-specific package instead of package for the API.
     SurfaceNamer namer = new RubySurfaceNamer(typeTable.getFullNameFor(file));
     String subPath = pathMapper.getOutputPath(file.getFullName(), productConfig);
-    String baseFilename = namer.getProtoFileName(file);
+    String baseFilename = namer.getProtoFileName(file.getSimpleName());
     GrpcDocView.Builder doc = GrpcDocView.newBuilder();
     doc.templateFileName(DOC_TEMPLATE_FILENAME);
     doc.outputPath(subPath + "/doc/" + baseFilename);
@@ -158,7 +159,8 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     for (Interface apiInterface : file.getReachableInterfaces()) {
-      String description = RubyUtil.getSentence(namer.getDocLines(apiInterface));
+      String description =
+          RubyUtil.getSentence(namer.getDocLines(GapicParser.getDocString(apiInterface)));
       InterfaceConfig interfaceConfig =
           productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface));
       tocContents.add(

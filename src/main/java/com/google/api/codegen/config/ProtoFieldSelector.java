@@ -27,12 +27,6 @@ public final class ProtoFieldSelector implements GenericFieldSelector {
   }
 
   @Override
-  /* @return the type of source that this FieldModel is based on. */
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
-  }
-
-  @Override
   public String getParamName() {
     return fieldSelector.getParamName();
   }

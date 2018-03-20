@@ -40,6 +40,9 @@ public interface TypeFormatter {
   /** Get the full name for the element type of the given type. */
   String getFullNameForElementType(FieldModel type);
 
+  /** Get the full name for the element type of the given type. */
+  String getFullNameForElementType(TypeModel type);
+
   /** Get the full name for the message type of the given type. */
   String getFullNameForMessageType(TypeModel type);
 

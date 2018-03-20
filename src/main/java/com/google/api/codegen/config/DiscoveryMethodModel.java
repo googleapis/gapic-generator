@@ -65,11 +65,6 @@ public final class DiscoveryMethodModel implements MethodModel {
     return outputType.getTypeName();
   }
 
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.DISCOVERY;
-  }
-
   /**
    * Returns the parameter with the fieldName if it exists, otherwise returns the request object
    * with name fieldName, if it exists.

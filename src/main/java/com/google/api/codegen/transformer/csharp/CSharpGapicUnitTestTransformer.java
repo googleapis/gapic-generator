@@ -201,41 +201,52 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
                   Synchronicity.Async));
         }
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
-        InitCodeContext initCodeContextSync =
-            initCodeTransformer.createRequestInitCodeContext(
-                requestContext,
-                new SymbolTable(),
-                methodConfig.getRequiredFieldConfigs(),
-                InitCodeOutputType.SingleObject,
-                valueGenerator);
         testCaseViews.add(
-            testCaseTransformer.createTestCaseView(
-                requestContext,
-                testNameTable,
-                initCodeContextSync,
-                ClientMethodType.RequestObjectMethod,
-                Synchronicity.Sync,
-                null));
-        InitCodeContext initCodeContextAsync =
-            initCodeTransformer.createRequestInitCodeContext(
-                requestContext,
-                new SymbolTable(),
-                methodConfig.getRequiredFieldConfigs(),
-                InitCodeOutputType.SingleObject,
-                valueGenerator);
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Sync));
         testCaseViews.add(
-            testCaseTransformer.createTestCaseView(
-                requestContext,
-                testNameTable,
-                initCodeContextAsync,
-                ClientMethodType.AsyncRequestObjectMethod,
-                Synchronicity.Async,
-                null));
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Async));
       } else {
-        // TODO: Add support for non-flattening method
+        if (methodConfig.isPageStreaming()
+            || methodConfig.isLongRunningOperation()
+            || methodConfig.getRerouteToGrpcInterface() != null) {
+          // TODO: Add support for page-streaming, LRO, and rerouted methods
+          continue;
+        }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Sync));
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Async));
       }
     }
     return testCaseViews;
+  }
+
+  private TestCaseView createRequestObjectTestCase(
+      GapicMethodContext requestContext,
+      MethodConfig methodConfig,
+      SymbolTable testNameTable,
+      Synchronicity synchronicity) {
+    InitCodeContext initCodeContextSync =
+        initCodeTransformer.createRequestInitCodeContext(
+            requestContext,
+            new SymbolTable(),
+            methodConfig.getRequiredFieldConfigs(),
+            InitCodeOutputType.SingleObject,
+            valueGenerator);
+    return testCaseTransformer.createTestCaseView(
+        requestContext,
+        testNameTable,
+        initCodeContextSync,
+        synchronicity == Synchronicity.Sync
+            ? ClientMethodType.RequestObjectMethod
+            : ClientMethodType.AsyncRequestObjectMethod,
+        synchronicity,
+        null);
   }
 
   private TestCaseView createFlattenedTestCase(

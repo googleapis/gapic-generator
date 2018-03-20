@@ -155,10 +155,7 @@ public abstract class FieldConfig {
       // messageField uses a oneof containing that type, or when the messageField accepts any
       // resource name, or for Discovery fields.
       ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
-      boolean ok =
-          resourceTypeName == ResourceNameType.ANY
-              || (resourceTypeName == ResourceNameType.SINGLE
-                  && field.getApiSource().equals(ApiSource.DISCOVERY));
+      boolean ok = resourceTypeName == ResourceNameType.ANY;
       if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
@@ -245,8 +242,7 @@ public abstract class FieldConfig {
   public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && !getResourceNameConfig().equals(getMessageResourceNameConfig())
-        && getField().getApiSource() != ApiSource.DISCOVERY;
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
   }
 
   public boolean requiresParamTransformationFromAny() {
@@ -272,10 +268,6 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
-    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-      // There are no proto messages in Discovery.
-      return;
-    }
     switch (treatment) {
       case NONE:
         break;

@@ -88,6 +88,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
     return getFullNameFor(type);
   }
 
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(TypeModel type) {
+    return getFullNameFor(type);
+  }
+
   @Override
   public String renderPrimitiveValue(FieldModel type, String value) {
     return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), value);

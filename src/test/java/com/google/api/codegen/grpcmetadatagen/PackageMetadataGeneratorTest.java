@@ -33,8 +33,6 @@ import javax.annotation.Nullable;
 import org.junit.Test;
 
 public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
-  String packageConfig = null;
-
   private class OutputCollector extends SimpleFileVisitor<Path> {
     Map<String, Doc> collectedFiles = new TreeMap<>();
     Path testDir;
@@ -56,6 +54,8 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   }
 
   private String language;
+  private String packageConfig;
+  private ArtifactType artifactType;
 
   @Override
   protected boolean suppressDiagnosis() {
@@ -63,9 +63,11 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     return true;
   }
 
-  private void test(String name, String packageConfig, String language) throws Exception {
+  private void test(String name, String packageConfig, String language, ArtifactType artifactType)
+      throws Exception {
     this.language = language;
     this.packageConfig = packageConfig;
+    this.artifactType = artifactType;
     test(name);
   }
 
@@ -82,6 +84,7 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
         getTestDataLocator().findTestData("fakeprotodir").getPath());
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfigPath);
     options.set(GrpcMetadataGenerator.LANGUAGE, language);
+    options.set(GrpcMetadataGenerator.ARTIFACT_TYPE, artifactType);
     Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generate(model);
 
     if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
@@ -100,21 +103,21 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   // =====
   @Test
   public void java_library() throws Exception {
-    test("library", "library_pkg.yaml", "java");
+    test("library", "library_pkg.yaml", "java", ArtifactType.PROTOBUF);
   }
 
   @Test
   public void java_grpc_stubs() throws Exception {
-    test("library", "library_stubs_pkg.yaml", "java");
+    test("library", "library_stubs_pkg.yaml", "java", ArtifactType.GRPC);
   }
 
   @Test
   public void java_common_protos() throws Exception {
-    test("library", "common_protos_pkg.yaml", "java");
+    test("library", "common_protos_pkg.yaml", "java", ArtifactType.PROTOBUF);
   }
 
   @Test
   public void python_library() throws Exception {
-    test("library", "library_pkg.yaml", "python");
+    test("library", "library_pkg.yaml", "python", ArtifactType.GRPC);
   }
 }

@@ -23,7 +23,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
@@ -198,7 +197,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schema.getIdentifier(),
-                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY)),
+                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY)),
                 context.getNamer()));
     return paramView.build();
   }

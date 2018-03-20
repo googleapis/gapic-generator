@@ -28,7 +28,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
@@ -232,13 +231,18 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.isRequired(false);
       paramView.canRepeat(false);
       paramView.fieldGetFunction(
-          context.getDiscoGapicNamer().getResourceGetterName(param, context.getNamer()));
-      paramView.properties(Collections.emptyList());
+          context
+              .getNamer()
+              .getFieldGetFunctionName(
+                  DiscoGapicParser.stringToName(param),
+                  SurfaceNamer.MapType.NOT_MAP,
+                  SurfaceNamer.Cardinality.NOT_REPEATED));
       paramView.fieldSetFunction(
           context
               .getDiscoGapicNamer()
               .getResourceSetterName(
-                  param, DiscoGapicNamer.Cardinality.NOT_REPEATED, context.getNamer()));
+                  param, SurfaceNamer.Cardinality.NOT_REPEATED, context.getNamer()));
+      paramView.properties(Collections.emptyList());
       paramView.isRequestMessage(false);
       paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
@@ -335,7 +339,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 name,
-                DiscoGapicNamer.Cardinality.ofRepeated(schema.isRepeated()),
+                SurfaceNamer.Cardinality.ofRepeated(schema.isRepeated()),
                 context.getNamer()));
     paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);

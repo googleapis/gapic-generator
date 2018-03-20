@@ -34,6 +34,14 @@ public class DiscoGapicParser {
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
 
+  public static Name stringToName(String fieldName) {
+    if (fieldName.contains("_")) {
+      return Name.anyCamel(fieldName.split("_"));
+    } else {
+      return Name.anyCamel(fieldName);
+    }
+  }
+
   /**
    * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the

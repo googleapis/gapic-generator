@@ -12,10 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.grpcmetadatagen;
 
-/* The file type that of the API definition. */
-public enum ApiSource {
-  DISCOVERY, // Discovery Document.
-  PROTO // Protobuf.
+public enum ArtifactType {
+  UNKNOWN,
+  GAPIC,
+  GAPIC_CONFIG,
+  GRPC,
+  GRPC_COMMON,
+  PROTOBUF,
+  GAPIC_ONLY;
+
+  public static ArtifactType of(String generationLayerString) {
+    if (generationLayerString != null) {
+      return ArtifactType.valueOf(generationLayerString.toUpperCase());
+    } else {
+      return UNKNOWN;
+    }
+  }
 }

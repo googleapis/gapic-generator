@@ -115,7 +115,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(namer.getVariableName(field));
-      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field));
+      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field.getType()));
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(

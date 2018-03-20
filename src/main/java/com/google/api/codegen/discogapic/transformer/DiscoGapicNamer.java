@@ -23,47 +23,26 @@ import com.google.api.codegen.util.TypeNameConverter;
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
 
-  public enum Cardinality implements Comparable<Cardinality> {
-    IS_REPEATED(true),
-    NOT_REPEATED(false);
-
-    Cardinality(boolean value) {
-      this.value = value;
-    }
-
-    public static Cardinality ofRepeated(boolean value) {
-      return value ? IS_REPEATED : NOT_REPEATED;
-    }
-
-    private final boolean value;
-  }
-
   /* Create a DiscoGapicNamer for a Discovery-based API. */
   public DiscoGapicNamer() {}
 
-  public Name stringToName(String fieldName) {
-    if (fieldName.contains("_")) {
-      return Name.anyCamel(fieldName.split("_"));
-    } else {
-      return Name.anyCamel(fieldName);
-    }
-  }
-
   /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName, SurfaceNamer languageNamer) {
-    return languageNamer.publicMethodName(Name.anyCamel("get").join(stringToName(fieldName)));
+    return languageNamer.publicMethodName(
+        Name.anyCamel("get").join(DiscoGapicParser.stringToName(fieldName)));
   }
 
   /** Returns the resource setter method name for a resource field. */
   public String getResourceSetterName(
-      String fieldName, Cardinality isRepeated, SurfaceNamer languageNamer) {
+      String fieldName, SurfaceNamer.Cardinality isRepeated, SurfaceNamer languageNamer) {
     switch (isRepeated) {
       case IS_REPEATED:
         return languageNamer.publicMethodName(
-            Name.from("add", "all").join(stringToName(fieldName)));
+            Name.from("add", "all").join(DiscoGapicParser.stringToName(fieldName)));
       case NOT_REPEATED:
       default:
-        return languageNamer.publicMethodName(Name.from("set").join(stringToName(fieldName)));
+        return languageNamer.publicMethodName(
+            Name.from("set").join(DiscoGapicParser.stringToName(fieldName)));
     }
   }
 

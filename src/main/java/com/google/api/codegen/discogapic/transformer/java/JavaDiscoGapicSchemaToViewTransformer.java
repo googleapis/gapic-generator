@@ -20,7 +20,6 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -145,7 +144,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
-
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
@@ -174,7 +172,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schemaId,
-                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY)),
+                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY)),
                 context.getNamer()));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
