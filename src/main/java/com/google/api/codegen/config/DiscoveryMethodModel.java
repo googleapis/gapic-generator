@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -41,33 +41,28 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
-  private final DiscoGapicNamer discoGapicNamer;
+  private final DiscoApiModel apiModel;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
-  public DiscoveryMethodModel(Method method, DiscoGapicNamer discoGapicNamer) {
+  public DiscoveryMethodModel(Method method, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(method);
     this.method = method;
-    this.discoGapicNamer = discoGapicNamer;
+    this.apiModel = apiModel;
     this.inputType = DiscoveryRequestType.create(this);
-    this.outputType = discoGapicNamer != null ? discoGapicNamer.getResponseType(method) : null;
+    if (method.response() != null) {
+      this.outputType = DiscoveryField.create(method.response(), apiModel);
+    } else {
+      this.outputType = null;
+    }
   }
 
   public Method getDiscoMethod() {
     return method;
   }
 
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
-  }
-
   @Override
   public String getOutputTypeSimpleName() {
     return outputType.getTypeName();
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.DISCOVERY;
   }
 
   /**
@@ -78,13 +73,13 @@ public final class DiscoveryMethodModel implements MethodModel {
   public DiscoveryField getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
     if (targetSchema != null) {
-      return DiscoveryField.create(targetSchema, discoGapicNamer);
+      return DiscoveryField.create(targetSchema, apiModel);
     }
     if (method.request() != null
-        && DiscoGapicNamer.getSchemaNameAsParameter(method.request())
+        && DiscoGapicParser.getSchemaNameAsParameter(method.request())
             .toLowerCamel()
             .equals(fieldName)) {
-      return DiscoveryField.create(method.request(), discoGapicNamer);
+      return DiscoveryField.create(method.request(), apiModel);
     }
     return null;
   }
@@ -147,7 +142,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Name asName() {
-    return DiscoGapicNamer.methodAsName(method);
+    return DiscoGapicParser.methodAsName(method);
   }
 
   @Override
@@ -164,7 +159,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getSimpleName() {
-    return DiscoGapicNamer.methodAsName(method).toLowerCamel();
+    return DiscoGapicParser.methodAsName(method).toLowerCamel();
   }
 
   @Override
@@ -219,7 +214,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+    String resourceName = DiscoGapicParser.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (DiscoveryField field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -237,10 +232,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
     ImmutableList.Builder<DiscoveryField> fieldsBuilder = ImmutableList.builder();
     for (Schema field : method.parameters().values()) {
-      fieldsBuilder.add(DiscoveryField.create(field, discoGapicNamer));
+      fieldsBuilder.add(DiscoveryField.create(field, apiModel));
     }
     if (method.request() != null) {
-      fieldsBuilder.add(DiscoveryField.create(method.request(), discoGapicNamer));
+      fieldsBuilder.add(DiscoveryField.create(method.request(), apiModel));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
@@ -258,7 +253,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
     ImmutableList.Builder<DiscoveryField> outputField = new Builder<>();
     if (method.response() != null) {
-      DiscoveryField fieldModel = DiscoveryField.create(method.response(), null);
+      DiscoveryField fieldModel = DiscoveryField.create(method.response(), apiModel);
       outputField.add(fieldModel);
     }
     outputFields = outputField.build();
@@ -279,11 +274,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      String resourceNameString =
-          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
-      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
-          .toLowerCamel()
-          .equals(resourceNameString)) {
+      if (DiscoGapicParser.getCanonicalPath(method).equals(entry.getKey())) {
+        String resourceNameString =
+            DiscoGapicParser.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());
         break;
       }

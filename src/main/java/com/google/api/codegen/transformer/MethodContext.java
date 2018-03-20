@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -29,8 +28,6 @@ public interface MethodContext {
   InterfaceContext getSurfaceInterfaceContext();
 
   MethodModel getMethodModel();
-
-  ApiSource getApiSource();
 
   InterfaceModel getTargetInterface();
 

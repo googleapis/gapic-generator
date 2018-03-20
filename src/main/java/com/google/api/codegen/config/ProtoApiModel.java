@@ -47,11 +47,6 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
-  }
-
-  @Override
   public String getServiceAddress() {
     return protoModel.getServiceConfig().getName();
   }

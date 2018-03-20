@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -27,12 +28,15 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -82,8 +86,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
-      context.getImportTypeTable().saveNicknameFor("Xunit.FactAttribute");
-      context.getImportTypeTable().saveNicknameFor("Moq.Mock");
+      ModelTypeTable typeTable = context.getImportTypeTable();
+      typeTable.saveNicknameFor("Xunit.FactAttribute");
+      typeTable.saveNicknameFor("Moq.Mock");
+      if (context.getLongRunningMethods().iterator().hasNext()) {
+        typeTable.saveNicknameFor("Google.LongRunning.Operations");
+      }
       surfaceDocs.add(generateUnitTest(context));
       surfaceDocs.add(generateUnitTestCsproj(context));
     }
@@ -137,6 +145,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
     testClass.missingDefaultServiceAddress(
         !context.getInterfaceConfig().hasDefaultServiceAddress());
     testClass.missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes());
+    testClass.reroutedGrpcClients(csharpCommonTransformer.generateReroutedGrpcView(context));
+    testClass.hasLongRunningOperations(context.getLongRunningMethods().iterator().hasNext());
 
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
@@ -169,44 +179,107 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
           clientMethodTypeAsync = ClientMethodType.FlattenedAsyncCallSettingsMethod;
         }
         if (methodConfig.getRerouteToGrpcInterface() != null) {
+          // TODO: Add support for rerouted methods
           continue;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
-          InitCodeContext initCodeContextSync =
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  flatteningGroup.getFlattenedFieldConfigs().values(),
-                  InitCodeOutputType.FieldList,
-                  valueGenerator);
           testCaseViews.add(
-              testCaseTransformer.createTestCaseView(
+              createFlattenedTestCase(
                   methodContext,
                   testNameTable,
-                  initCodeContextSync,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeSync,
                   Synchronicity.Sync));
-          InitCodeContext initCodeContextAsync =
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  flatteningGroup.getFlattenedFieldConfigs().values(),
-                  InitCodeOutputType.FieldList,
-                  valueGenerator);
           testCaseViews.add(
-              testCaseTransformer.createTestCaseView(
+              createFlattenedTestCase(
                   methodContext,
                   testNameTable,
-                  initCodeContextAsync,
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeAsync,
                   Synchronicity.Async));
         }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Sync));
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Async));
       } else {
-        // TODO: Add support for non-flattening method
+        if (methodConfig.isPageStreaming()
+            || methodConfig.isLongRunningOperation()
+            || methodConfig.getRerouteToGrpcInterface() != null) {
+          // TODO: Add support for page-streaming, LRO, and rerouted methods
+          continue;
+        }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Sync));
+        testCaseViews.add(
+            createRequestObjectTestCase(
+                requestContext, methodConfig, testNameTable, Synchronicity.Async));
       }
     }
     return testCaseViews;
+  }
+
+  private TestCaseView createRequestObjectTestCase(
+      GapicMethodContext requestContext,
+      MethodConfig methodConfig,
+      SymbolTable testNameTable,
+      Synchronicity synchronicity) {
+    InitCodeContext initCodeContextSync =
+        initCodeTransformer.createRequestInitCodeContext(
+            requestContext,
+            new SymbolTable(),
+            methodConfig.getRequiredFieldConfigs(),
+            InitCodeOutputType.SingleObject,
+            valueGenerator);
+    return testCaseTransformer.createTestCaseView(
+        requestContext,
+        testNameTable,
+        initCodeContextSync,
+        synchronicity == Synchronicity.Sync
+            ? ClientMethodType.RequestObjectMethod
+            : ClientMethodType.AsyncRequestObjectMethod,
+        synchronicity,
+        null);
+  }
+
+  private TestCaseView createFlattenedTestCase(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      Iterable<FieldConfig> fieldConfigs,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity) {
+    InitCodeContext initCodeContext =
+        initCodeTransformer.createRequestInitCodeContext(
+            methodContext,
+            new SymbolTable(),
+            fieldConfigs,
+            InitCodeOutputType.FieldList,
+            valueGenerator);
+    InitCodeContext initCodeRequestObjectContext =
+        InitCodeContext.newBuilder()
+            .initObjectType(methodContext.getMethodModel().getInputType())
+            .symbolTable(new SymbolTable())
+            .suggestedName(Name.from("expected_request"))
+            .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
+            .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+            .fieldConfigMap(methodContext.getProductConfig().getDefaultResourceNameFieldConfigMap())
+            .outputType(InitCodeOutputType.SingleObject)
+            .valueGenerator(valueGenerator)
+            .build();
+    return testCaseTransformer.createTestCaseView(
+        methodContext,
+        testNameTable,
+        initCodeContext,
+        clientMethodType,
+        synchronicity,
+        initCodeRequestObjectContext);
   }
 }

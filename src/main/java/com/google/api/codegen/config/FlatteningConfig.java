@@ -96,10 +96,10 @@ public abstract class FlatteningConfig {
           FieldConfig.createFieldConfig(
               diagCollector,
               messageConfigs,
-              methodConfigProto.getFieldNamePatterns(),
+              methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              flatteningGroup.getParameterResourceNameTreatment().get(parameter),
+              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;

@@ -19,6 +19,7 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -78,12 +79,11 @@ public abstract class ResourceNameMessageConfigs {
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }
 
-  @Nullable
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       DiscoApiModel model,
       ConfigProto configProto,
       String defaultPackage,
-      DiscoGapicNamer discoGapicNamer) {
+      SurfaceNamer languageNamer) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
@@ -95,16 +95,17 @@ public abstract class ResourceNameMessageConfigs {
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
     for (Method method : model.getDocument().methods()) {
-      String fullName = discoGapicNamer.getRequestTypeName(method).getFullName();
+      String fullName = discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
       if (messageConfig == null) {
         continue;
       }
       for (Schema property : method.parameters().values()) {
         if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
-          fieldsByMessage.put(fullName, DiscoveryField.create(property, discoGapicNamer));
+          fieldsByMessage.put(fullName, DiscoveryField.create(property, model));
         }
       }
     }

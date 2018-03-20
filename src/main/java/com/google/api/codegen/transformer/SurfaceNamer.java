@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -25,7 +24,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -43,13 +41,10 @@ import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -79,6 +74,36 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public enum TestKind {
     UNIT,
     SYSTEM
+  }
+
+  public enum Cardinality implements Comparable<Cardinality> {
+    IS_REPEATED(true),
+    NOT_REPEATED(false);
+
+    Cardinality(boolean value) {
+      this.value = value;
+    }
+
+    public static Cardinality ofRepeated(boolean value) {
+      return value ? IS_REPEATED : NOT_REPEATED;
+    }
+
+    private final boolean value;
+  }
+
+  public enum MapType implements Comparable<MapType> {
+    IS_MAP(true),
+    NOT_MAP(false);
+
+    MapType(boolean value) {
+      this.value = value;
+    }
+
+    public static MapType ofMap(boolean value) {
+      return value ? IS_MAP : NOT_MAP;
+    }
+
+    private final boolean value;
   }
 
   public SurfaceNamer(
@@ -276,20 +301,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given field. */
   public String getFieldSetFunctionName(FieldModel field) {
-    if (field.isMap()) {
-      return publicMethodName(Name.from("put", "all").join(field.asName()));
-    } else if (field.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(field.asName()));
-    } else {
-      return publicMethodName(Name.from("set").join(field.getNameAsParameterName()));
-    }
+    return getFieldSetFunctionName(
+        field.getNameAsParameterName(),
+        MapType.ofMap(field.isMap()),
+        Cardinality.ofRepeated(field.isRepeated()));
   }
 
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeModel type, Name identifier) {
-    if (type.isMap()) {
+    return getFieldSetFunctionName(
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
+  }
+  /** The function name to get a field having the given name. */
+  public String getFieldSetFunctionName(Name identifier, MapType mapType, Cardinality cardinality) {
+    if (mapType == MapType.IS_MAP) {
       return publicMethodName(Name.from("put", "all").join(identifier));
-    } else if (type.isRepeated()) {
+    } else if (cardinality == Cardinality.IS_REPEATED) {
       return publicMethodName(Name.from("add", "all").join(identifier));
     } else {
       return publicMethodName(Name.from("set").join(identifier));
@@ -299,11 +326,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(FieldModel field) {
     if (field.isMap()) {
-      return publicMethodName(Name.from("put", "all").join(field.asName()));
+      return publicMethodName(Name.from("put", "all").join(field.getNameAsParameterName()));
     } else if (field.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(field.asName()));
+      return publicMethodName(Name.from("add", "all").join(field.getNameAsParameterName()));
     } else {
-      return publicMethodName(Name.from("set").join(field.asName()));
+      return publicMethodName(Name.from("set").join(field.getNameAsParameterName()));
     }
   }
 
@@ -315,7 +342,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = fieldConfig.getField().asName();
+    Name identifier = fieldConfig.getField().getNameAsParameterName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
@@ -328,13 +355,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getFullNameForElementType(FieldModel type) {
-    switch (type.getApiSource()) {
-      case PROTO:
-        getModelTypeFormatter().getFullNameForElementType(type);
-      case DISCOVERY:
-      default:
-        throw new IllegalArgumentException("Unhandled model type.");
-    }
+    return getTypeFormatter().getFullNameForElementType(type);
   }
 
   /** The function name to get the given field. */
@@ -347,46 +368,38 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get the given proto field. */
+  /** The function name to get the given field. */
   public String getFieldGetFunctionName(FieldModel field) {
-    return getFieldGetFunctionName(field, field.asName());
+    return getFieldGetFunctionName(field, field.getNameAsParameterName());
   }
 
   /** The function name to get a field having the given name. */
-  public String getFieldGetFunctionName(Name identifier) {
-    return publicMethodName(Name.from("get").join(identifier));
+  public String getFieldGetFunctionName(Name identifier, MapType mapType, Cardinality cardinality) {
+    if (mapType != MapType.IS_MAP && cardinality == Cardinality.IS_REPEATED) {
+      return publicMethodName(Name.from("get").join(identifier).join("list"));
+    } else if (mapType == MapType.IS_MAP) {
+      return publicMethodName(Name.from("get").join(identifier).join("map"));
+    } else {
+      return publicMethodName(Name.from("get").join(identifier));
+    }
   }
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
-    if (type.isRepeated() && !type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else if (type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("map"));
-    } else {
-      return publicMethodName(Name.from("get").join(identifier));
-    }
+    return getFieldGetFunctionName(
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldModel type, Name identifier) {
-    // TODO(andrealin): Make a Disco subclass of SurfaceNamer so that ApiSource is not exposed here.
-    if (type.getApiSource().equals(ApiSource.DISCOVERY)) {
-      return publicMethodName(Name.from("get").join(identifier));
-    }
-    if (type.isRepeated() && !type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else if (type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("map"));
-    } else {
-      return publicMethodName(Name.from("get").join(identifier));
-    }
+    return getFieldGetFunctionName(
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field that is a resource name class. */
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = fieldConfig.getField().asName();
+    Name identifier = fieldConfig.getField().getNameAsParameterName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
@@ -405,7 +418,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFieldCountGetFunctionName(FieldModel field) {
     if (field.isRepeated()) {
-      return publicMethodName(Name.from("get").join(field.asName()).join("count"));
+      return publicMethodName(Name.from("get").join(field.getNameAsParameterName()).join("count"));
     } else {
       throw new IllegalArgumentException(
           "Non-repeated field " + field.getSimpleName() + " has no count function.");
@@ -649,7 +662,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getAsyncApiMethodName(method, visibility);
   }
 
-  public String getByteLengthFunctionName(FieldModel typeRef) {
+  public String getByteLengthFunctionName(FieldModel field) {
     return getNotImplementedString("SurfaceNamer.getByteLengthFunctionName");
   }
 
@@ -923,24 +936,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the method param */
-  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
-    // TODO(andrealin): Remove the switch statement and getProtoTypeRef().
-    switch (type.getApiSource()) {
-      case PROTO:
-        return getParamTypeName(typeTable, ((ProtoField) type).getType().getProtoType());
-      default:
-        return getNotImplementedString("SurfaceNamer.getParamTypeName");
-    }
-  }
-
-  /** The type name for the method param */
-  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     return getNotImplementedString("SurfaceNamer.getParamTypeName");
   }
 
   /** The type name for the message property */
   public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldModel type) {
-    return getParamTypeName(typeTable, type);
+    return getParamTypeName(typeTable, type.getType());
   }
 
   /** The type name for an optional array argument; not used in most languages. */
@@ -1141,7 +1143,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the gPRC request. */
-  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return getNotImplementedString("SurfaceNamer.getAndSaveTypeName");
   }
 
@@ -1272,7 +1274,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The key to use in a dictionary for the given field. */
   public String getFieldKey(FieldModel field) {
-    return keyName(field.asName());
+    return keyName(field.getNameAsParameterName());
   }
 
   /** The key to use in a dictionary for the given field. */
@@ -1398,11 +1400,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
   }
 
-  /** Provides the doc lines for the given proto element in the current language. */
-  public List<String> getDocLines(ProtoElement element) {
-    return getDocLines(DocumentationUtil.getScopedDescription(element));
-  }
-
   /** Provides the doc lines for the given field in the current language. */
   public List<String> getDocLines(FieldModel field) {
     return getDocLines(field.getScopedDocumentation());
@@ -1429,28 +1426,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of a type with with qualifying articles and descriptions. */
-  public String getTypeNameDoc(ImportTypeTable typeTable, TypeRef type) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, TypeModel type) {
     return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
-  }
-
-  /** The name of a type with with qualifying articles and descriptions. */
-  public String getTypeNameDoc(ImportTypeTable typeTable, FieldModel type) {
-    switch (type.getApiSource()) {
-      case PROTO:
-        return getTypeNameDoc(typeTable, ((ProtoField) type).getType().getProtoType());
-      default:
-        return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
-    }
-  }
-
-  /** Get the url to the protobuf file located in github. */
-  public String getFileUrl(ProtoFile file) {
-    String filePath = file.getSimpleName();
-    if (filePath.startsWith("google/protobuf")) {
-      return "https://github.com/google/protobuf/blob/master/src/" + filePath;
-    } else {
-      return "https://github.com/googleapis/googleapis/blob/master/" + filePath;
-    }
   }
 
   //////////////////////////////////////// File names ////////////////////////////////////////////
@@ -1465,7 +1442,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The language-specific file name for a proto file. */
-  public String getProtoFileName(ProtoFile file) {
+  public String getProtoFileName(String fileSimpleName) {
     return getNotImplementedString("SurfaceNamer.getProtoFileName");
   }
 

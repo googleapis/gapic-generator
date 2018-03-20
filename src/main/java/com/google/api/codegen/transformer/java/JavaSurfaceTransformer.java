@@ -32,7 +32,6 @@ import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
-import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -612,11 +611,6 @@ public class JavaSurfaceTransformer {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
     }
 
-    // TODO(andrealin): Move the baseUrl to gapic.yaml and pull value from GapicProductConfig.
-    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      stubClass.baseUrl(((DiscoGapicInterfaceContext) context).getDocument().baseUrl());
-    }
-
     return stubClass.build();
   }
 
@@ -741,8 +735,8 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
     }
 
-    switch (context.getApiModel().getApiSource()) {
-      case DISCOVERY:
+    switch (context.getProductConfig().getTransportProtocol()) {
+      case HTTP:
         typeTable.saveNicknameFor("java.util.List");
         typeTable.saveNicknameFor("java.util.ArrayList");
         typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
@@ -951,7 +945,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractFixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.paging.Page");
-    typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");

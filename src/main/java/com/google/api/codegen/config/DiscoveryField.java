@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.ApiSource.DISCOVERY;
-
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -27,7 +25,6 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
-import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -42,31 +39,28 @@ import javax.annotation.Nullable;
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
   private final Schema schema;
-  private final DiscoGapicNamer discoGapicNamer;
+  private final Schema originalSchema; // not dereferenced.
+  private final DiscoApiModel apiModel;
 
   /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
-  private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
+  private DiscoveryField(Schema schema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(schema);
+    this.originalSchema = schema;
     this.schema = schema.dereference();
-    this.discoGapicNamer = discoGapicNamer;
+    this.apiModel = apiModel;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
     for (Schema child : this.schema.properties().values()) {
-      propertiesBuilder.add(DiscoveryField.create(child, discoGapicNamer));
+      propertiesBuilder.add(DiscoveryField.create(child, apiModel));
     }
     this.properties = propertiesBuilder.build();
   }
 
   /* Create a FieldModel object from a non-null Schema object. */
-  public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
+  public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
-    return new DiscoveryField(schema, discoGapicNamer);
-  }
-
-  @Override
-  /* @return the type of the underlying model resource. */
-  public ApiSource getApiSource() {
-    return DISCOVERY;
+    Preconditions.checkNotNull(rootApiModel);
+    return new DiscoveryField(schema, rootApiModel);
   }
 
   /* @return the underlying Discovery Schema. */
@@ -83,9 +77,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getFullName() {
-    return discoGapicNamer
-        .getLanguageNamer()
-        .publicClassName(DiscoGapicNamer.getSchemaNameAsParameter(schema));
+    return DiscoGapicParser.getSchemaNameAsParameter(schema).toUpperCamel();
   }
 
   @Override
@@ -95,7 +87,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return DiscoGapicNamer.getSchemaNameAsParameter(schema);
+    return DiscoGapicParser.getSchemaNameAsParameter(schema);
   }
 
   @Override
@@ -146,24 +138,19 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getParentFullName() {
-    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
-    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
+    String parentName;
     if (schema.parent() instanceof Method) {
-      return typeNameConverter
-          .getTypeNameInImplicitPackage(
-              surfaceNamer.publicClassName(
-                  DiscoGapicNamer.getRequestName((Method) schema.parent())))
-          .getFullName();
+      parentName = DiscoGapicParser.getRequestName((Method) schema.parent()).toUpperCamel();
     } else if (schema.parent() instanceof Schema) {
-      return typeNameConverter
-          .getTypeNameInImplicitPackage(
-              surfaceNamer.publicClassName(
-                  Name.anyCamel(((Schema) schema.parent()).getIdentifier())))
-          .getFullName();
+      parentName = Name.anyCamel(((Schema) schema.parent()).getIdentifier()).toUpperCamel();
     } else if (schema.parent() instanceof Document) {
-      return ((Document) schema.parent()).name();
+      parentName = ((Document) schema.parent()).name();
+    } else {
+      parentName = "";
     }
-    return "";
+
+    return ResourceNameMessageConfig.getFullyQualifiedMessageName(
+        apiModel.getDefaultPackageName(), parentName);
   }
 
   @Override
@@ -174,7 +161,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
     if (schema.parent() instanceof Schema) {
-      DiscoveryField parent = DiscoveryField.create((Schema) schema.parent(), discoGapicNamer);
+      DiscoveryField parent = DiscoveryField.create((Schema) schema.parent(), apiModel);
       return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) parent));
     }
     return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) this));
@@ -216,10 +203,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public String getKind() {
     return schema.type().toString();
-  }
-
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
   }
 
   @Nullable
@@ -292,8 +275,21 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  public List<? extends FieldModel> getFields() {
+  public List<DiscoveryField> getFields() {
     return properties;
+  }
+
+  @Override
+  public DiscoveryField getField(String key) {
+    for (DiscoveryField field : getFields()) {
+      if (field.getNameAsParameter().equals(key)) {
+        return field;
+      }
+    }
+
+    Schema parentTypeSchema = getDiscoveryField();
+    List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+    return DiscoveryField.create(pathToKeySchema.get(pathToKeySchema.size() - 1), apiModel);
   }
 
   @Override
@@ -411,7 +407,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
+    return String.format("Discovery FieldModel: {%s}", schema.toString());
   }
 
   @Override

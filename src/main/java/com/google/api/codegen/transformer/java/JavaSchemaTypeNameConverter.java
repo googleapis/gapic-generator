@@ -21,6 +21,7 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -38,14 +39,14 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   private final TypeNameConverter typeNameConverter;
   private final JavaNameFormatter nameFormatter;
   private final String implicitPackageName;
-  private final DiscoGapicNamer discoGapicNamer;
+  private final DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
+  private final JavaSurfaceNamer namer;
 
   public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
     this.nameFormatter = nameFormatter;
     this.implicitPackageName = implicitPackageName;
-    this.discoGapicNamer =
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
+    this.namer = new JavaSurfaceNamer(implicitPackageName, implicitPackageName);
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
@@ -93,6 +94,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public DiscoGapicNamer getDiscoGapicNamer() {
     return discoGapicNamer;
+  }
+
+  @Override
+  public SurfaceNamer getNamer() {
+    return namer;
   }
 
   @Override

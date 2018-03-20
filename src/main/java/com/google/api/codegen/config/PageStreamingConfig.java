@@ -20,7 +20,6 @@ import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_PA
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Diag;
@@ -137,10 +136,9 @@ public abstract class PageStreamingConfig {
   @Nullable
   // TODO(andrealin): Merge this function into the createPageStreaming(... Method protoMethod) function.
   static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector,
-      com.google.api.codegen.discovery.Method method,
-      DiscoGapicNamer discoGapicNamer) {
+      DiscoApiModel apiModel, com.google.api.codegen.discovery.Method method) {
     Schema requestTokenField = method.parameters().get(PARAMETER_PAGE_TOKEN);
+    DiagCollector diagCollector = apiModel.getDiagCollector();
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -183,7 +181,7 @@ public abstract class PageStreamingConfig {
 
     Schema responseField = method.response().dereference();
     ImmutableList<FieldModel> resourcesFieldPath =
-        ImmutableList.copyOf(getResourcesGetterPath(responseField, discoGapicNamer));
+        ImmutableList.copyOf(getResourcesGetterPath(responseField, apiModel));
 
     FieldConfig resourcesFieldConfig;
     if (resourcesFieldPath.isEmpty()) {
@@ -205,31 +203,31 @@ public abstract class PageStreamingConfig {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        DiscoveryField.create(requestTokenField, discoGapicNamer),
-        DiscoveryField.create(pageSizeField, discoGapicNamer),
-        DiscoveryField.create(responseTokenField, discoGapicNamer),
+        DiscoveryField.create(requestTokenField, apiModel),
+        DiscoveryField.create(pageSizeField, apiModel),
+        DiscoveryField.create(responseTokenField, apiModel),
         resourcesFieldConfig);
   }
 
   private static List<FieldModel> getResourcesGetterPath(
-      Schema responseField, DiscoGapicNamer namer) {
+      Schema responseField, DiscoApiModel apiModel) {
     List<FieldModel> resourcesFieldPath = new LinkedList<>();
     for (Schema property : responseField.properties().values()) {
       // Assume the List response has exactly one Array property.
       if (property.type().equals(Type.ARRAY)) {
-        resourcesFieldPath.add(DiscoveryField.create(property, namer));
+        resourcesFieldPath.add(DiscoveryField.create(property, apiModel));
         break;
       } else if (property.additionalProperties() != null
           && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
         Schema additionalProperties = property.additionalProperties().dereference();
         if (additionalProperties.type().equals(Type.ARRAY)) {
-          resourcesFieldPath.add(DiscoveryField.create(additionalProperties, namer));
+          resourcesFieldPath.add(DiscoveryField.create(additionalProperties, apiModel));
           break;
         }
         for (Schema subProperty : additionalProperties.properties().values()) {
           if (subProperty.type().equals(Type.ARRAY)) {
-            resourcesFieldPath.add(DiscoveryField.create(property, namer));
-            resourcesFieldPath.add(DiscoveryField.create(subProperty, namer));
+            resourcesFieldPath.add(DiscoveryField.create(property, apiModel));
+            resourcesFieldPath.add(DiscoveryField.create(subProperty, apiModel));
             break;
           }
         }

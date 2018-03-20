@@ -20,7 +20,6 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -30,6 +29,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
@@ -86,13 +86,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
-            model.getDocument(),
+            model,
             productConfig,
-            createTypeTable(productConfig.getPackageName(), discoGapicNamer),
-            discoGapicNamer,
+            createTypeTable(productConfig.getPackageName(), surfaceNamer),
+            surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
     // Escape any schema's field names that are Java keywords.
@@ -117,12 +116,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return surfaceSchemas;
   }
 
-  private SchemaTypeTable createTypeTable(
-      String implicitPackageName, DiscoGapicNamer discoGapicNamer) {
+  private SchemaTypeTable createTypeTable(String implicitPackageName, SurfaceNamer namer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        discoGapicNamer);
+        namer);
   }
 
   /* Given a message view, creates a top-level message file view. */
@@ -146,7 +144,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
-
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
@@ -168,17 +165,19 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     // Getters and setters use unescaped name for better readability on public methods.
-    schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
+    schemaView.fieldGetFunction(
+        context.getDiscoGapicNamer().getResourceGetterName(schemaId, context.getNamer()));
     schemaView.fieldSetFunction(
         context
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schemaId,
-                DiscoGapicNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY))));
+                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY)),
+                context.getNamer()));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
-    if (schema.type() == Type.ARRAY) {
+    if (schema.repeated() || schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
     } else {
       schemaView.innerTypeName(schemaTypeName);
