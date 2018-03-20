@@ -431,7 +431,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.testing.MockHttpService");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.MockHttpService");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
