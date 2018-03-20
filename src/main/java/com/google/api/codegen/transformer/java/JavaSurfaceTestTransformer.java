@@ -408,9 +408,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.Before");
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
-    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
-    }
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.protobuf.Any");
     }
@@ -449,7 +446,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("com.google.common.base.Preconditions");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
-    typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
   }
 
   private void addMockServiceImplImports(InterfaceContext context) {

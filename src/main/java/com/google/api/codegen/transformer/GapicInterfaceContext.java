@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -33,7 +32,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -66,9 +64,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
-    Preconditions.checkArgument(apiInterface.getApiSource().equals(ApiSource.PROTO));
     ProtoInterfaceModel protoInterface = (ProtoInterfaceModel) apiInterface;
-    Preconditions.checkArgument(typeTable instanceof ModelTypeTable);
     return new AutoValue_GapicInterfaceContext(
         protoInterface,
         productConfig,
@@ -177,7 +173,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public GapicMethodContext asFlattenedMethodContext(
       MethodModel method, FlatteningConfig flatteningConfig) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.PROTO));
     return GapicMethodContext.create(
         this,
         getInterface(),
@@ -192,7 +187,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public GapicMethodContext asRequestMethodContext(MethodModel method) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.PROTO));
     return GapicMethodContext.create(
         this,
         getInterface(),
@@ -207,7 +201,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public GapicMethodContext asDynamicMethodContext(MethodModel method) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.PROTO));
     return GapicMethodContext.create(
         this,
         getInterface(),

@@ -26,7 +26,6 @@ import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
@@ -117,8 +116,6 @@ public class DiscoGapicGeneratorApi {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    DiscoApiModel model = new DiscoApiModel(Document.from(new DiscoveryNode(root)));
-
     // Read the YAML config and convert it to proto.
     if (configFileNames.size() == 0) {
       throw new IOException(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
@@ -149,10 +146,10 @@ public class DiscoGapicGeneratorApi {
           "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
     }
 
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
+    DiscoApiModel model =
+        new DiscoApiModel(Document.from(new DiscoveryNode(root)), defaultPackageName);
 
-    GapicProductConfig productConfig =
-        GapicProductConfig.create(model, configProto, discoGapicNamer);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, surfaceNamer);
 
     String factory = generator.getFactory();
     String id = generator.getId();

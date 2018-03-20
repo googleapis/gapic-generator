@@ -30,6 +30,8 @@ import com.google.api.tools.framework.model.EnumValue;
 public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
+  public abstract SurfaceNamer getNamer();
+
   public enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
     BOX_PRIMITIVES,
@@ -86,7 +88,7 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   public TypeName getTypeName(TypeModel type) {
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
-      return getDiscoGapicNamer().getRequestTypeName(method);
+      return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
     }
     return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }

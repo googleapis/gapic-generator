@@ -1,0 +1,44 @@
+{
+  "description": "Represents a graph with the following directed edges: {Apple->items(Banana); items(Banana)->Banana; Banana->Cat; Cat->Banana; Cat->items(Dog); items(Dog)->Dog",
+  "schemas": {
+    "Apple": {
+      "id": "Apple",
+      "type": "object",
+      "properties": {
+        "items": {
+          "additionalProperties": {
+            "$ref": "Banana"
+          }
+        }
+      }
+    },
+    "Banana": {
+      "id": "Banana",
+      "type": "object",
+      "properties": {
+        "Cat": {
+          "$ref": "Cat"
+        }
+      }
+    },
+    "Cat": {
+      "id": "Cat",
+      "type": "array",
+      "properties": {
+        "Banana": {
+          "$ref": "Banana"
+
+        },
+        "items": {
+          "additionalProperties": {
+            "$ref": "Dog"
+          }
+        }
+      }
+    },
+    "Dog": {
+      "id": "Dog",
+      "type": "string"
+    }
+  }
+}

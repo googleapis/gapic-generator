@@ -87,6 +87,6 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
     } else {
       packageDirPath = "";
     }
-    return path + packageDirPath + "doc_" + namer.getProtoFileName(file);
+    return path + packageDirPath + "doc_" + namer.getProtoFileName(file.getSimpleName());
   }
 }

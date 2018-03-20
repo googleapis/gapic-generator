@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
@@ -38,12 +37,6 @@ import javax.annotation.Nullable;
 public class ProtoField implements FieldModel {
   private final Field protoField;
   private final ProtoTypeRef protoTypeRef;
-
-  @Override
-  /* @return the type of the underlying model resource. */
-  public ApiSource getApiSource() {
-    return PROTO;
-  }
 
   /* Create a FieldModel object from a non-null Field object. */
   public ProtoField(Field protoField) {
@@ -223,7 +216,7 @@ public class ProtoField implements FieldModel {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
+    return String.format("Protobuf FieldModel: {%s}", protoField.toString());
   }
 
   @Override

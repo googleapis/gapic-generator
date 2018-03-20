@@ -24,8 +24,6 @@ import java.util.List;
  * definition.
  */
 public interface ApiModel {
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
 
   String getServiceName();
 

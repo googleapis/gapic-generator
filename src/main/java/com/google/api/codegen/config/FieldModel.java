@@ -32,9 +32,6 @@ import javax.annotation.Nullable;
  */
 public interface FieldModel {
 
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
-
   String getSimpleName();
 
   String getFullName();
