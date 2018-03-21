@@ -48,6 +48,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,7 +106,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
-        .add(generateGemspecView(model, namer))
+        .add(generateGemspecView(model, namer, productConfig.getPackageSettings()))
         .add(generateReadmeView(model, productConfig, namer))
         .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
         .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
@@ -150,7 +151,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
+  private ViewModel generateGemspecView(
+      ApiModel model, RubyPackageMetadataNamer namer, Map<String, String> packageSettings) {
     // Whitelist is just the complement of the blacklist
     Set<String> whitelist =
         packageConfig
@@ -164,6 +166,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .generateMetadataView(
             namer,
             packageConfig,
+            packageSettings,
             model,
             GEMSPEC_FILE,
             namer.getOutputFileName(),
@@ -181,7 +184,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       ApiModel model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            namer, packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
+            namer,
+            packageConfig,
+            productConfig.getPackageSettings(),
+            model,
+            README_FILE,
+            README_OUTPUT_FILE,
+            TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -291,7 +300,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
     return metadataTransformer
         .generateMetadataView(
-            namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
+            namer,
+            packageConfig,
+            productConfig.getPackageSettings(),
+            model,
+            template,
+            outputPath,
+            TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(productConfig, importSection, surfaceNamer))
