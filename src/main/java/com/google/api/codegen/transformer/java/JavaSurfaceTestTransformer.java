@@ -38,6 +38,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
@@ -241,6 +242,8 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
 
     ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiStubSettingsClassName(
+        namer.getApiStubSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
@@ -426,13 +429,25 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
         break;
       case HTTP:
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.testing.MockHttpService");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.MockHttpService");
-        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
-        typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
-        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
+        typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
         typeTable.saveNicknameFor("java.io.UnsupportedEncodingException");
+
+        // Import stub settings class in unit test file.
+        SurfaceNamer stubNamer =
+            context.getNamer().cloneWithPackageName(context.getNamer().getStubPackageName());
+        TypeName rpcStubClassName =
+            stubNamer
+                .getTypeNameConverter()
+                .getTypeNameInImplicitPackage(
+                    stubNamer.getApiStubSettingsClassName(context.getInterfaceConfig()));
+        rpcStubClassName.getAndSaveNicknameIn(typeTable.getTypeTable());
         break;
     }
   }

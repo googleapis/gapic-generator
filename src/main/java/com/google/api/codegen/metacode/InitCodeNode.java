@@ -37,6 +37,7 @@ import java.util.Set;
  * Represents a node in an tree of objects to be initialized.
  */
 public class InitCodeNode {
+  private static final TypeModel INT_TYPE = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
 
   private String key;
   private InitCodeLineType lineType;
@@ -354,8 +355,7 @@ public class InitCodeNode {
       TypeModel keyType = parentType.getMapKeyField().getType();
       validateValue(keyType, key);
     } else if (parentType.isRepeated()) {
-      TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
-      validateValue(keyType, key);
+      validateValue(INT_TYPE, key);
     } else {
       // Don't validate message types, field will be missing for a bad key
     }

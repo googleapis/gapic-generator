@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
   private final Schema schema;
-  private final Schema originalSchema; // not dereferenced.
+  private final Schema originalSchema; // Not dereferenced schema.
   private final DiscoApiModel apiModel;
 
   /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
@@ -77,7 +77,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getFullName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(schema).toUpperCamel();
+    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema).toUpperCamel();
   }
 
   @Override
@@ -87,12 +87,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(schema);
-  }
-
-  @Override
-  public Name asName() {
-    return Name.anyCamel(getSimpleName());
+    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema);
   }
 
   @Override
