@@ -146,6 +146,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
+
     FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
@@ -168,15 +169,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     // Getters and setters use unescaped name for better readability on public methods.
-    schemaView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(schemaId, context.getNamer()));
-    schemaView.fieldSetFunction(
-        context
-            .getDiscoGapicNamer()
-            .getResourceSetterName(
-                schemaId,
-                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY)),
-                context.getNamer()));
+    schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
+    schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
