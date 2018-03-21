@@ -55,6 +55,7 @@ import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
+import com.google.api.codegen.viewmodel.StaticLangCallableFactoryView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
 import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
@@ -73,6 +74,7 @@ public class JavaSurfaceTransformer {
   private final PackageMetadataConfig packageMetadataConfig;
   private final SurfaceTransformer surfaceTransformer;
   private final String rpcStubTemplateFilename;
+  private final String callableFactoryTemplateFilename;
 
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
@@ -99,11 +101,13 @@ public class JavaSurfaceTransformer {
       GapicCodePathMapper pathMapper,
       PackageMetadataConfig packageMetadataConfig,
       SurfaceTransformer surfaceTransformer,
-      String rpcStubSnippetFileName) {
+      String rpcStubSnippetFileName,
+      String callableFactoryTemplateFilename) {
     this.pathMapper = pathMapper;
     this.packageMetadataConfig = packageMetadataConfig;
     this.surfaceTransformer = surfaceTransformer;
     this.rpcStubTemplateFilename = rpcStubSnippetFileName;
+    this.callableFactoryTemplateFilename = callableFactoryTemplateFilename;
   }
 
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
@@ -146,6 +150,7 @@ public class JavaSurfaceTransformer {
       StaticLangFileView<StaticLangRpcStubView> grpcStubFile =
           generateRpcStubClassFile(context, productConfig);
       surfaceDocs.add(grpcStubFile);
+      surfaceDocs.add(generateCallableFactoryClassFile(context, productConfig));
     }
 
     PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
@@ -588,6 +593,11 @@ public class JavaSurfaceTransformer {
     stubClass.stubSettingsClassName(
         getAndSaveNicknameForStubType(
             apiMethodsContext, namer.getApiStubSettingsClassName(interfaceConfig)));
+    stubClass.callableFactoryClassName(
+        getAndSaveNicknameForStubType(
+            apiMethodsContext,
+            namer.getCallableFactoryClassName(
+                interfaceConfig, productConfig.getTransportProtocol())));
     stubClass.methodDescriptors(
         apiCallableTransformer.generateMethodDescriptors(apiMethodsContext));
     stubClass.apiCallables(
@@ -602,6 +612,49 @@ public class JavaSurfaceTransformer {
     }
 
     return stubClass.build();
+  }
+
+  private StaticLangFileView<StaticLangCallableFactoryView> generateCallableFactoryClassFile(
+      InterfaceContext context, GapicProductConfig productConfig) {
+    StaticLangFileView.Builder<StaticLangCallableFactoryView> fileView =
+        StaticLangFileView.newBuilder();
+
+    fileView.classView(generateCallableFactoryClass(context, productConfig));
+    fileView.templateFileName(callableFactoryTemplateFilename);
+
+    String outputPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
+    String className =
+        context
+            .getNamer()
+            .getCallableFactoryClassName(
+                context.getInterfaceConfig(), productConfig.getTransportProtocol());
+    fileView.outputPath(outputPath + File.separator + className + ".java");
+
+    // must be done as the last step to catch all imports
+    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
+
+    return fileView.build();
+  }
+
+  private StaticLangCallableFactoryView generateCallableFactoryClass(
+      InterfaceContext context, GapicProductConfig productConfig) {
+    SurfaceNamer namer = context.getNamer();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+
+    addCallableFactoryImports(context);
+
+    StaticLangCallableFactoryView.Builder callableFactory =
+        StaticLangCallableFactoryView.newBuilder();
+
+    callableFactory.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
+
+    callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
+    callableFactory.name(
+        namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
+
+    return callableFactory.build();
   }
 
   private String getAndSaveNicknameForRootType(InterfaceContext context, String nickname) {
@@ -811,6 +864,7 @@ public class JavaSurfaceTransformer {
     }
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallSettings");
         typeTable.saveNicknameFor("io.grpc.MethodDescriptor");
@@ -824,6 +878,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
@@ -831,6 +886,35 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("java.lang.Void");
         typeTable.saveNicknameFor("java.util.HashSet");
         typeTable.saveNicknameFor("java.util.Arrays");
+        break;
+    }
+  }
+
+  private void addCallableFactoryImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
+    typeTable.saveNicknameFor("com.google.longrunning.Operation");
+    typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
+
+    switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
+      case GRPC:
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
+        break;
+      case HTTP:
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         break;
     }
   }
