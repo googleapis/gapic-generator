@@ -21,7 +21,9 @@
     compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
     compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
     testCompile 'junit:junit:4.12'
+    testCompile 'commons-lang:commons-lang:2.6'
     testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
+    testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
     @switch metadata.artifactType.toString
     @case "GAPIC_ONLY"
       @join dependency : metadata.protoPackageDependencies
@@ -35,6 +37,13 @@
     @join dependency : metadata.protoPackageTestDependencies
       testCompile project(':grpc-{@dependency.name}')
     @end
+  }
+
+  task smokeTest(type: Test) {
+    filter {
+      includeTestsMatching "*SmokeTest"
+      setFailOnNoMatchingTests false
+    }
   }
 
   sourceSets {

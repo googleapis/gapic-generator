@@ -461,6 +461,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("com.google.common.base.Preconditions");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
+    typeTable.saveNicknameFor("org.junit.Test");
   }
 
   private void addMockServiceImplImports(InterfaceContext context) {
