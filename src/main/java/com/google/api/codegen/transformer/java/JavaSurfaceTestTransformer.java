@@ -434,8 +434,8 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         typeTable.saveNicknameFor("org.junit.Before");
         break;
       case HTTP:
-        typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpResponseParser");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.testing.MockHttpService");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
@@ -443,10 +443,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
         typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
-        typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
-        typeTable.saveNicknameFor("com.google.common.collect.ImmutableMultimap");
-        typeTable.saveNicknameFor("com.google.common.collect.Multimap");
-        typeTable.saveNicknameFor("java.util.AbstractMap.SimpleEntry");
         typeTable.saveNicknameFor("java.util.HashMap");
         typeTable.saveNicknameFor("java.util.Map");
 

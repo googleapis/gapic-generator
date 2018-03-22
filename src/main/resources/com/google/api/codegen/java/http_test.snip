@@ -6,39 +6,36 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@apiTest.testClass.name} {
-    private static final Multimap<String, Map.Entry<String, HttpResponseParser<? extends ApiMessage>>>
-        SERVER_METHOD_DESCRIPTORS =
-            new ImmutableMultimap.Builder<String, Map.Entry<String, HttpResponseParser<? extends ApiMessage>>>()
-                @join test : apiTest.testClass.testCases
-                  .put("{@test.endpointPathTemplate}",
-                      new SimpleEntry<String, HttpResponseParser<? extends ApiMessage>>(
-                          HttpMethods.{@test.httpMethodName}, {@test.responseFormatterName}))
+    private static final List<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>
+        METHOD_DESCRIPTORS = ImmutableList.copyOf(
+            Lists.<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>newArrayList(
+                @join test : apiTest.testClass.testCases on ", ".add(BREAK)
+                  {@test.methodDescriptor}
                 @end
-                .build();
+            ));
     private static MockHttpService mockService;
-
     private static {@apiTest.testClass.apiClassName} client;
     private static {@apiTest.testClass.apiSettingsClassName} clientSettings;
 
     @@BeforeClass
     public static void setUp() throws IOException {
-      // Collapse the multimap of {endpointPathTemplate, [ {httpMethod, parser} ]}
-      // into a map of maps {endpointPathTemplate, {httpMethod, parser}} for MockHttpService.
-      Map<String, Map<String, HttpResponseParser<?>>> methodDescriptorMap = new HashMap<>();
-      for (String endpointPathTemplate : SERVER_METHOD_DESCRIPTORS.keys()) {
-
-        ImmutableMap.Builder methodToParserMap = ImmutableMap.builder();
-        for (Map.Entry<String, HttpResponseParser<? extends ApiMessage>> methodToParser
-              : SERVER_METHOD_DESCRIPTORS.get(endpointPathTemplate)) {
-          String httpMethod = methodToParser.getKey();
-          HttpResponseParser<? extends ApiMessage> responseParser = methodToParser.getValue();
-          methodToParserMap.put(httpMethod, responseParser);
+      // Create the nested map of {endpointPathTemplate, {httpMethod, parser}} for MockHttpService.
+      Map<String, Map<String, HttpResponseParser<?>>> endpointToParserMap = new HashMap<>();
+      for (ApiMethodDescriptor methodDescriptor : METHOD_DESCRIPTORS) {
+        String pathTemplate = methodDescriptor.endpointPathTemplate();
+        Map<String, HttpResponseParser<?>> httpMethodToParserMap;
+        if (endpointToParserMap.containsKey(pathTemplate)) {
+          httpMethodToParserMap = endpointToParserMap.get(pathTemplate);
+        } else {
+          httpMethodToParserMap = new HashMap<>();
+          endpointToParserMap.put(pathTemplate, httpMethodToParserMap);
         }
-        methodDescriptorMap.put(endpointPathTemplate, methodToParserMap.build());
+        httpMethodToParserMap.put(
+            methodDescriptor.getHttpMethod(), methodDescriptor.getResponseParser());
       }
 
       mockService = new MockHttpService(
-          methodDescriptorMap, AddressStubSettings.getDefaultEndpoint());
+          endpointToParserMap, AddressStubSettings.getDefaultEndpoint());
 
       clientSettings =
           {@apiTest.testClass.apiSettingsClassName}.newBuilder()

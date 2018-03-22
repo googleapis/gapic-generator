@@ -45,13 +45,14 @@
 
 @private constants(stubClass)
   @join methodDescriptor : stubClass.methodDescriptors
-    {@httpFormatters(methodDescriptor)}
+    {@methodDescriptors(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private httpFormatters(methodDescriptor)
-  private static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> \
+@private methodDescriptors(methodDescriptor)
+  @@InternalApi
+  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> \
     {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
           .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
@@ -65,13 +66,6 @@
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
           .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
           .build();
-  @@InternalApi
-  public static final HttpRequestFormatter<{@methodDescriptor.requestTypeName}> {@methodDescriptor.requestFormatterName} = \
-      new ApiMessageHttpRequestFormatter({@methodDescriptor.name});
-  @@InternalApi
-  public static final HttpResponseParser<{@methodDescriptor.responseTypeName}> {@methodDescriptor.responseFormatterName} = \
-      new ApiMessageHttpResponseParser({@methodDescriptor.name});
-
 @end
 
 @private paramsInMethodDescriptor(params)
@@ -163,8 +157,8 @@
     @join methodDescriptor : stubClass.methodDescriptors
       HttpJsonCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
           HttpJsonCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
-              .setRequestFormatter({@methodDescriptor.requestFormatterName})
-              .setResponseFormatter({@methodDescriptor.responseFormatterName})
+              .setRequestFormatter({@methodDescriptor.name}.getRequestFormatter())
+              .setResponseFormatter({@methodDescriptor.name}.getResponseParser())
               .build();
     @end
 
