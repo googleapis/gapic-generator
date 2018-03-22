@@ -45,14 +45,14 @@
 
 @private constants(stubClass)
   @join methodDescriptor : stubClass.methodDescriptors
-    {@httpMethodCallable(methodDescriptor)}
+    {@httpFormatters(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private httpMethodCallable(methodDescriptor)
-  @@InternalApi
-  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+@private httpFormatters(methodDescriptor)
+  private static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> \
+    {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
           .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
           .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
@@ -61,11 +61,17 @@
           @end
           .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
           .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(\
-              {@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory()))
+          .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
           .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
           .build();
+  @@InternalApi
+  public static final HttpRequestFormatter<{@methodDescriptor.requestTypeName}> {@methodDescriptor.requestFormatterName} = \
+      new ApiMessageHttpRequestFormatter({@methodDescriptor.name});
+  @@InternalApi
+  public static final HttpResponseParser<{@methodDescriptor.responseTypeName}> {@methodDescriptor.responseFormatterName} = \
+      new ApiMessageHttpResponseParser({@methodDescriptor.name});
+
 @end
 
 @private paramsInMethodDescriptor(params)
@@ -157,7 +163,8 @@
     @join methodDescriptor : stubClass.methodDescriptors
       HttpJsonCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
           HttpJsonCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
-              .setMethodDescriptor({@methodDescriptor.name})
+              .setRequestFormatter({@methodDescriptor.requestFormatterName})
+              .setResponseFormatter({@methodDescriptor.responseFormatterName})
               .build();
     @end
 

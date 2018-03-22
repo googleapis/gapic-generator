@@ -101,4 +101,7 @@ public interface MethodModel {
   boolean isIdempotent();
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
+
+  /* @return the endpoint path template for this method. */
+  String getEndpointPathTemplate();
 }

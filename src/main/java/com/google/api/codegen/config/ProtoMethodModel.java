@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
@@ -242,5 +243,11 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public TypeModel getOutputType() {
     return outputType;
+  }
+
+  @Nullable
+  @Override
+  public String getEndpointPathTemplate() {
+    return null;
   }
 }

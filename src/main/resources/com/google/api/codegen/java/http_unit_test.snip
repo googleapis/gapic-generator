@@ -1,52 +1,24 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
 
-@snippet generate(apiTest)
-  {@renderFileHeader(apiTest.fileHeader)}
+@snippet generate(xapiTest)
+  {@renderFileHeader(xapiTest.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@apiTest.testClass.name} {
-    private static final Multimap<String, Map.Entry<String, HttpResponseParser<? extends ApiMessage>>>
-        SERVER_METHOD_DESCRIPTORS =
-            new ImmutableMultimap.Builder<String, Map.Entry<String, HttpResponseParser<? extends ApiMessage>>>()
-                @join test : apiTest.testClass.testCases
-                  .put("{@test.endpointPathTemplate}",
-                      new SimpleEntry<String, HttpResponseParser<? extends ApiMessage>>(
-                          HttpMethods.{@test.httpMethodName}, {@test.responseFormatterName}))
-                @end
-                .build();
-    private static MockHttpService mockService;
-
-    private static {@apiTest.testClass.apiClassName} client;
-    private static {@apiTest.testClass.apiSettingsClassName} clientSettings;
+  public class {@xapiTest.testClass.name} {
+    private static final MockHttpService mockService = new MockHttpService();
+    private static {@xapiTest.testClass.apiClassName} client;
+    private static {@xapiTest.testClass.apiSettingsClassName} clientSettings;
 
     @@BeforeClass
     public static void setUp() throws IOException {
-      // Collapse the multimap of {endpointPathTemplate, [ {httpMethod, parser} ]}
-      // into a map of maps {endpointPathTemplate, {httpMethod, parser}} for MockHttpService.
-      Map<String, Map<String, HttpResponseParser<?>>> methodDescriptorMap = new HashMap<>();
-      for (String endpointPathTemplate : SERVER_METHOD_DESCRIPTORS.keys()) {
-
-        ImmutableMap.Builder methodToParserMap = ImmutableMap.builder();
-        for (Map.Entry<String, HttpResponseParser<? extends ApiMessage>> methodToParser
-              : SERVER_METHOD_DESCRIPTORS.get(endpointPathTemplate)) {
-          String httpMethod = methodToParser.getKey();
-          HttpResponseParser<? extends ApiMessage> responseParser = methodToParser.getValue();
-          methodToParserMap.put(httpMethod, responseParser);
-        }
-        methodDescriptorMap.put(endpointPathTemplate, methodToParserMap.build());
-      }
-
-      mockService = new MockHttpService(
-          methodDescriptorMap, AddressStubSettings.getDefaultEndpoint());
-
       clientSettings =
-          {@apiTest.testClass.apiSettingsClassName}.newBuilder()
+          {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
              .setTransportChannelProvider(
-                 {@apiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
+                 {@xapiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
                      .setHttpTransport(mockService).build()).build();
       client =
-         {@apiTest.testClass.apiClassName}.create(clientSettings);
+         {@xapiTest.testClass.apiClassName}.create(clientSettings);
     }
 
     @@After
@@ -59,7 +31,7 @@
       client.close();
     }
 
-    @join test : apiTest.testClass.testCases
+    @join test : xapiTest.testClass.testCases
       {@testCase(test)}
 
     @end
@@ -72,6 +44,8 @@
       {@unaryTestCase(test)}
   @case "PagedFlattenedMethod"
       {@unaryTestCase(test)}
+  @case "AsyncOperationFlattenedMethod"
+      {@longRunningMethodTestCase(test)}
   @end
 @end
 
@@ -111,11 +85,13 @@
     mockService.addResponse(expectedResponse);
   @end
   {@""}
+  mockService.setResponseFormatter({@test.responseFormatterName});
 @end
 
 @private addException(test)
   ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
   mockService.addException(exception);
+  mockService.setResponseFormatter({@test.responseFormatterName});
 @end
 
 @private methodCall(test)
@@ -127,7 +103,7 @@
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
       Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
   @case "FlattenedMethod"
     @if test.hasReturnValue
@@ -144,8 +120,6 @@
   @end
 @end
 
-# TODO(andrealin) comparison of request content.
-# TODO(andrealin) check for header being sent.
 @private unarySuccessAsserts(test)
   List<String> actualRequests = mockService.getRequestPaths();
   Assert.assertEquals(1, actualRequests.size());

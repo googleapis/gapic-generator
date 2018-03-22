@@ -83,7 +83,13 @@ public abstract class TestCaseView {
   public abstract boolean clientHasDefaultInstance();
 
   @Nullable
-  public abstract String methodDescriptor();
+  public abstract String responseFormatterName();
+
+  @Nullable
+  public abstract String endpointPathTemplate();
+
+  @Nullable
+  public abstract String httpMethodName();
 
   public abstract String grpcMethodName();
 
@@ -146,7 +152,11 @@ public abstract class TestCaseView {
 
     public abstract Builder clientHasDefaultInstance(boolean val);
 
-    public abstract Builder methodDescriptor(String val);
+    public abstract Builder responseFormatterName(String val);
+
+    public abstract Builder endpointPathTemplate(String val);
+
+    public abstract Builder httpMethodName(String val);
 
     public abstract Builder grpcMethodName(String val);
 

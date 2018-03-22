@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -605,6 +606,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.anyCamel(method.getSimpleName(), "MethodDescriptor"));
   }
 
+  public String getTransportRequestFormatterName(MethodModel method) {
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "HttpRequestFormatter"));
+  }
+
+  public String getTransportResponseFormatterName(MethodModel method) {
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "HttpResponseParser"));
+  }
+
   public String getTransportSettingsVar(MethodModel method) {
     return localVarName(Name.anyCamel(method.getSimpleName(), "TransportSettings"));
   }
@@ -1003,6 +1012,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getAsyncGrpcMethodName(MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getAsyncGrpcMethodName");
+  }
+
+  /** The name used in Grpc for the given API method. This needs to match what Grpc generates. */
+  public String getHttpMethodName(MethodModel method) {
+    // This might seem silly, but it makes clear what we're dealing with (upper camel).
+    // This is language-independent because of gRPC conventions.
+    return Name.anyCamelKeepUpperAcronyms(
+            ((DiscoveryMethodModel) method).getDiscoMethod().httpMethod())
+        .toUpperCamel();
   }
 
   /** The GRPC streaming server type name for a given method. */

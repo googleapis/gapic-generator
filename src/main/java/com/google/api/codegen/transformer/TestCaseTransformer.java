@@ -178,6 +178,24 @@ public class TestCaseTransformer {
               .build();
     }
 
+    String responseFormatterName = null;
+    String httpMethodName = null;
+    if (methodContext.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      TypeName rpcStubClassName =
+          new TypeName(
+              methodContext
+                  .getNamer()
+                  .getFullyQualifiedRpcStubType(
+                      methodContext.getInterfaceConfig().getInterfaceModel(),
+                      methodContext.getProductConfig().getTransportProtocol()));
+      responseFormatterName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameForInnerType(
+                  rpcStubClassName.getFullName(), namer.getTransportResponseFormatterName(method));
+      httpMethodName = namer.getHttpMethodName(methodContext.getMethodModel());
+    }
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
@@ -212,30 +230,14 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
-        .methodDescriptor(getMethodDescriptorName(methodContext))
+        .responseFormatterName(responseFormatterName)
+        .endpointPathTemplate(methodContext.getMethodModel().getEndpointPathTemplate())
+        .httpMethodName(httpMethodName)
         .grpcMethodName(
             synchronicity == Synchronicity.Sync
                 ? namer.getGrpcMethodName(method)
                 : namer.getAsyncGrpcMethodName(method))
         .build();
-  }
-
-  private String getMethodDescriptorName(MethodContext context) {
-    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      TypeName rpcStubClassName =
-          new TypeName(
-              context
-                  .getNamer()
-                  .getFullyQualifiedRpcStubType(
-                      context.getInterfaceConfig().getInterfaceModel(),
-                      context.getProductConfig().getTransportProtocol()));
-      return context
-          .getTypeTable()
-          .getAndSaveNicknameForInnerType(
-              rpcStubClassName.getFullName(),
-              context.getNamer().getMethodDescriptorName(context.getMethodModel()));
-    }
-    return null;
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
