@@ -774,7 +774,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -834,7 +836,6 @@ public final class Address implements ApiMessage {
     this.selfLink = selfLink;
     this.status = status;
     this.users = users;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -868,7 +869,11 @@ public final class Address implements ApiMessage {
       fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
     }
     if (fieldNames.contains("users") && users != null) {
-      fieldMap.put("users", Collections.singletonList(String.valueOf(users)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (String item : users) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("users", stringList.build());
     }
     return fieldMap;
   }
@@ -950,7 +955,7 @@ public final class Address implements ApiMessage {
     return status;
   }
 
-  public List<String> getUsers() {
+  public List<String> getUsersList() {
     return users;
   }
 
@@ -1017,7 +1022,7 @@ public final class Address implements ApiMessage {
       if (other.getStatus() != null) {
         this.status = other.status;
       }
-      if (other.getUsers() != null) {
+      if (other.getUsersList() != null) {
         this.users = other.users;
       }
       return this;
@@ -1117,12 +1122,20 @@ public final class Address implements ApiMessage {
       return this;
     }
 
-    public List<String> getUsers() {
+    public List<String> getUsersList() {
       return users;
     }
 
     public Builder addAllUsers(List<String> users) {
-      this.users = users;
+      if (this.users == null) {
+        this.users = new ArrayList<>(users.size());
+      }
+      this.users.addAll(users);
+      return this;
+    }
+
+    public Builder addUsers(String users) {
+      this.users.add(users);
       return this;
     }
 
@@ -1200,7 +1213,7 @@ public final class Address implements ApiMessage {
           Objects.equals(this.region, that.getRegion()) &&
           Objects.equals(this.selfLink, that.getSelfLink()) &&
           Objects.equals(this.status, that.getStatus()) &&
-          Objects.equals(this.users, that.getUsers())
+          Objects.equals(this.users, that.getUsersList())
           ;
     }
     return false;
@@ -1243,7 +1256,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1287,7 +1302,6 @@ public final class AddressAggregatedList implements ApiMessage {
     this.nextPageToken = nextPageToken;
     this.selfLink = selfLink;
     this.warning = warning;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -1576,7 +1590,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1604,14 +1620,17 @@ public final class AddressesScopedList implements ApiMessage {
       ) {
     this.addresses = addresses;
     this.warning = warning;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("addresses") && addresses != null) {
-      fieldMap.put("addresses", Collections.singletonList(String.valueOf(addresses)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Address item : addresses) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("addresses", stringList.build());
     }
     if (fieldNames.contains("warning") && warning != null) {
       fieldMap.put("warning", Collections.singletonList(String.valueOf(warning)));
@@ -1636,7 +1655,7 @@ public final class AddressesScopedList implements ApiMessage {
     return null;
   }
 
-  public List<Address> getAddresses() {
+  public List<Address> getAddressesList() {
     return addresses;
   }
 
@@ -1672,7 +1691,7 @@ public final class AddressesScopedList implements ApiMessage {
 
     public Builder mergeFrom(AddressesScopedList other) {
       if (other == AddressesScopedList.getDefaultInstance()) return this;
-      if (other.getAddresses() != null) {
+      if (other.getAddressesList() != null) {
         this.addresses = other.addresses;
       }
       if (other.getWarning() != null) {
@@ -1686,12 +1705,20 @@ public final class AddressesScopedList implements ApiMessage {
       this.warning = source.warning;
     }
 
-    public List<Address> getAddresses() {
+    public List<Address> getAddressesList() {
       return addresses;
     }
 
     public Builder addAllAddresses(List<Address> addresses) {
-      this.addresses = addresses;
+      if (this.addresses == null) {
+        this.addresses = new ArrayList<>(addresses.size());
+      }
+      this.addresses.addAll(addresses);
+      return this;
+    }
+
+    public Builder addAddresses(Address addresses) {
+      this.addresses.add(addresses);
       return this;
     }
 
@@ -1737,7 +1764,7 @@ public final class AddressesScopedList implements ApiMessage {
     if (o instanceof AddressesScopedList) {
       AddressesScopedList that = (AddressesScopedList) o;
       return
-          Objects.equals(this.addresses, that.getAddresses()) &&
+          Objects.equals(this.addresses, that.getAddressesList()) &&
           Objects.equals(this.warning, that.getWarning())
           ;
     }
@@ -1773,7 +1800,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1813,7 +1842,6 @@ public final class AddressList implements ApiMessage {
     this.kind = kind;
     this.nextPageToken = nextPageToken;
     this.selfLink = selfLink;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -1823,7 +1851,11 @@ public final class AddressList implements ApiMessage {
       fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
     }
     if (fieldNames.contains("items") && items != null) {
-      fieldMap.put("items", Collections.singletonList(String.valueOf(items)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Address item : items) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("items", stringList.build());
     }
     if (fieldNames.contains("kind") && kind != null) {
       fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
@@ -1867,7 +1899,7 @@ public final class AddressList implements ApiMessage {
     return id;
   }
 
-  public List<Address> getItems() {
+  public List<Address> getItemsList() {
     return items;
   }
 
@@ -1917,7 +1949,7 @@ public final class AddressList implements ApiMessage {
       if (other.getId() != null) {
         this.id = other.id;
       }
-      if (other.getItems() != null) {
+      if (other.getItemsList() != null) {
         this.items = other.items;
       }
       if (other.getKind() != null) {
@@ -1949,12 +1981,20 @@ public final class AddressList implements ApiMessage {
       return this;
     }
 
-    public List<Address> getItems() {
+    public List<Address> getItemsList() {
       return items;
     }
 
     public Builder addAllItems(List<Address> items) {
-      this.items = items;
+      if (this.items == null) {
+        this.items = new ArrayList<>(items.size());
+      }
+      this.items.addAll(items);
+      return this;
+    }
+
+    public Builder addItems(Address items) {
+      this.items.add(items);
       return this;
     }
 
@@ -2031,7 +2071,7 @@ public final class AddressList implements ApiMessage {
       AddressList that = (AddressList) o;
       return
           Objects.equals(this.id, that.getId()) &&
-          Objects.equals(this.items, that.getItems()) &&
+          Objects.equals(this.items, that.getItemsList()) &&
           Objects.equals(this.kind, that.getKind()) &&
           Objects.equals(this.nextPageToken, that.getNextPageToken()) &&
           Objects.equals(this.selfLink, that.getSelfLink())
@@ -2072,7 +2112,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2100,7 +2142,6 @@ public final class Data implements ApiMessage {
       ) {
     this.key = key;
     this.value = value;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -2269,7 +2310,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2293,14 +2336,17 @@ public final class Error implements ApiMessage {
       List<Errors> errors
       ) {
     this.errors = errors;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("errors") && errors != null) {
-      fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Errors item : errors) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("errors", stringList.build());
     }
     return fieldMap;
   }
@@ -2319,7 +2365,7 @@ public final class Error implements ApiMessage {
     return null;
   }
 
-  public List<Errors> getErrors() {
+  public List<Errors> getErrorsList() {
     return errors;
   }
 
@@ -2350,7 +2396,7 @@ public final class Error implements ApiMessage {
 
     public Builder mergeFrom(Error other) {
       if (other == Error.getDefaultInstance()) return this;
-      if (other.getErrors() != null) {
+      if (other.getErrorsList() != null) {
         this.errors = other.errors;
       }
       return this;
@@ -2360,12 +2406,20 @@ public final class Error implements ApiMessage {
       this.errors = source.errors;
     }
 
-    public List<Errors> getErrors() {
+    public List<Errors> getErrorsList() {
       return errors;
     }
 
     public Builder addAllErrors(List<Errors> errors) {
-      this.errors = errors;
+      if (this.errors == null) {
+        this.errors = new ArrayList<>(errors.size());
+      }
+      this.errors.addAll(errors);
+      return this;
+    }
+
+    public Builder addErrors(Errors errors) {
+      this.errors.add(errors);
       return this;
     }
 
@@ -2398,7 +2452,7 @@ public final class Error implements ApiMessage {
     if (o instanceof Error) {
       Error that = (Error) o;
       return
-          Objects.equals(this.errors, that.getErrors())
+          Objects.equals(this.errors, that.getErrorsList())
           ;
     }
     return false;
@@ -2432,7 +2486,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2464,7 +2520,6 @@ public final class Errors implements ApiMessage {
     this.code = code;
     this.location = location;
     this.message = message;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -2663,7 +2718,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -2775,7 +2832,6 @@ public final class Operation implements ApiMessage {
     this.user = user;
     this.warnings = warnings;
     this.zone = zone;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -2845,7 +2901,11 @@ public final class Operation implements ApiMessage {
       fieldMap.put("user", Collections.singletonList(String.valueOf(user)));
     }
     if (fieldNames.contains("warnings") && warnings != null) {
-      fieldMap.put("warnings", Collections.singletonList(String.valueOf(warnings)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Warnings item : warnings) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("warnings", stringList.build());
     }
     if (fieldNames.contains("zone") && zone != null) {
       fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
@@ -3017,7 +3077,7 @@ public final class Operation implements ApiMessage {
     return user;
   }
 
-  public List<Warnings> getWarnings() {
+  public List<Warnings> getWarningsList() {
     return warnings;
   }
 
@@ -3137,7 +3197,7 @@ public final class Operation implements ApiMessage {
       if (other.getUser() != null) {
         this.user = other.user;
       }
-      if (other.getWarnings() != null) {
+      if (other.getWarningsList() != null) {
         this.warnings = other.warnings;
       }
       if (other.getZone() != null) {
@@ -3361,12 +3421,20 @@ public final class Operation implements ApiMessage {
       return this;
     }
 
-    public List<Warnings> getWarnings() {
+    public List<Warnings> getWarningsList() {
       return warnings;
     }
 
     public Builder addAllWarnings(List<Warnings> warnings) {
-      this.warnings = warnings;
+      if (this.warnings == null) {
+        this.warnings = new ArrayList<>(warnings.size());
+      }
+      this.warnings.addAll(warnings);
+      return this;
+    }
+
+    public Builder addWarnings(Warnings warnings) {
+      this.warnings.add(warnings);
       return this;
     }
 
@@ -3517,7 +3585,7 @@ public final class Operation implements ApiMessage {
           Objects.equals(this.targetId, that.getTargetId()) &&
           Objects.equals(this.targetLink, that.getTargetLink()) &&
           Objects.equals(this.user, that.getUser()) &&
-          Objects.equals(this.warnings, that.getWarnings()) &&
+          Objects.equals(this.warnings, that.getWarningsList()) &&
           Objects.equals(this.zone, that.getZone())
           ;
     }
@@ -3574,7 +3642,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3606,7 +3676,6 @@ public final class Warning implements ApiMessage {
     this.code = code;
     this.data = data;
     this.message = message;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -3616,7 +3685,11 @@ public final class Warning implements ApiMessage {
       fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
     }
     if (fieldNames.contains("data") && data != null) {
-      fieldMap.put("data", Collections.singletonList(String.valueOf(data)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Data item : data) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("data", stringList.build());
     }
     if (fieldNames.contains("message") && message != null) {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
@@ -3648,7 +3721,7 @@ public final class Warning implements ApiMessage {
     return code;
   }
 
-  public List<Data> getData() {
+  public List<Data> getDataList() {
     return data;
   }
 
@@ -3688,7 +3761,7 @@ public final class Warning implements ApiMessage {
       if (other.getCode() != null) {
         this.code = other.code;
       }
-      if (other.getData() != null) {
+      if (other.getDataList() != null) {
         this.data = other.data;
       }
       if (other.getMessage() != null) {
@@ -3712,12 +3785,20 @@ public final class Warning implements ApiMessage {
       return this;
     }
 
-    public List<Data> getData() {
+    public List<Data> getDataList() {
       return data;
     }
 
     public Builder addAllData(List<Data> data) {
-      this.data = data;
+      if (this.data == null) {
+        this.data = new ArrayList<>(data.size());
+      }
+      this.data.addAll(data);
+      return this;
+    }
+
+    public Builder addData(Data data) {
+      this.data.add(data);
       return this;
     }
 
@@ -3768,7 +3849,7 @@ public final class Warning implements ApiMessage {
       Warning that = (Warning) o;
       return
           Objects.equals(this.code, that.getCode()) &&
-          Objects.equals(this.data, that.getData()) &&
+          Objects.equals(this.data, that.getDataList()) &&
           Objects.equals(this.message, that.getMessage())
           ;
     }
@@ -3805,7 +3886,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -3837,7 +3920,6 @@ public final class Warnings implements ApiMessage {
     this.code = code;
     this.data = data;
     this.message = message;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
   }
 
   @Override
@@ -3847,7 +3929,11 @@ public final class Warnings implements ApiMessage {
       fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
     }
     if (fieldNames.contains("data") && data != null) {
-      fieldMap.put("data", Collections.singletonList(String.valueOf(data)));
+      ImmutableList.Builder stringList = ImmutableList.builder();
+      for (Data item : data) {
+        stringList.add(item.toString());
+      }
+      fieldMap.put("data", stringList.build());
     }
     if (fieldNames.contains("message") && message != null) {
       fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
@@ -3879,7 +3965,7 @@ public final class Warnings implements ApiMessage {
     return code;
   }
 
-  public List<Data> getData() {
+  public List<Data> getDataList() {
     return data;
   }
 
@@ -3919,7 +4005,7 @@ public final class Warnings implements ApiMessage {
       if (other.getCode() != null) {
         this.code = other.code;
       }
-      if (other.getData() != null) {
+      if (other.getDataList() != null) {
         this.data = other.data;
       }
       if (other.getMessage() != null) {
@@ -3943,12 +4029,20 @@ public final class Warnings implements ApiMessage {
       return this;
     }
 
-    public List<Data> getData() {
+    public List<Data> getDataList() {
       return data;
     }
 
     public Builder addAllData(List<Data> data) {
-      this.data = data;
+      if (this.data == null) {
+        this.data = new ArrayList<>(data.size());
+      }
+      this.data.addAll(data);
+      return this;
+    }
+
+    public Builder addData(Data data) {
+      this.data.add(data);
       return this;
     }
 
@@ -3999,7 +4093,7 @@ public final class Warnings implements ApiMessage {
       Warnings that = (Warnings) o;
       return
           Objects.equals(this.code, that.getCode()) &&
-          Objects.equals(this.data, that.getData()) &&
+          Objects.equals(this.data, that.getDataList()) &&
           Objects.equals(this.message, that.getMessage())
           ;
     }
@@ -4036,7 +4130,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -4104,9 +4200,6 @@ public final class AggregatedListAddressesHttpRequest implements ApiMessage {
     this.project = project;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    ProjectName resourceName = ProjectName.parse(project);
-    mapBuilder.put("project", resourceName.getProject());
   }
 
   @Override
@@ -4582,7 +4675,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -4634,11 +4729,6 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    AddressName resourceName = AddressName.parse(address);
-    mapBuilder.put("address", resourceName.getAddress());
-    mapBuilder.put("project", resourceName.getProject());
-    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -4994,7 +5084,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -5046,11 +5138,6 @@ public final class GetAddressHttpRequest implements ApiMessage {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    AddressName resourceName = AddressName.parse(address);
-    mapBuilder.put("address", resourceName.getAddress());
-    mapBuilder.put("project", resourceName.getProject());
-    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -5406,7 +5493,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -5462,10 +5551,6 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    RegionName resourceName = RegionName.parse(region);
-    mapBuilder.put("project", resourceName.getProject());
-    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -5851,7 +5936,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -5919,10 +6006,6 @@ public final class ListAddressesHttpRequest implements ApiMessage {
     this.quotaUser = quotaUser;
     this.region = region;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    RegionName resourceName = RegionName.parse(region);
-    mapBuilder.put("project", resourceName.getProject());
-    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -6398,7 +6481,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -6462,10 +6547,6 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     this.region = region;
     this.requestId = requestId;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    RegionName resourceName = RegionName.parse(region);
-    mapBuilder.put("project", resourceName.getProject());
-    mapBuilder.put("region", resourceName.getRegion());
   }
 
   @Override
@@ -6911,7 +6992,9 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -6971,10 +7054,6 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     this.quotaUser = quotaUser;
     this.requestId = requestId;
     this.userIp = userIp;
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    ProjectAddressName resourceName = ProjectAddressName.parse(address);
-    mapBuilder.put("address", resourceName.getAddress());
-    mapBuilder.put("project", resourceName.getProject());
   }
 
   @Override
@@ -9174,7 +9253,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressAggregatedList payload) {
-          return payload.getItemsResource().getAddressesList();
+          return payload.getItems().getAddressesList();
         }
       };
 
@@ -9579,6 +9658,7 @@ import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -9727,6 +9807,7 @@ public class HttpJsonAddressStub extends AddressStub {
   private final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable;
   private final UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable;
 
+  private final HttpJsonClientCallableFactory callableFactory;
   public static final HttpJsonAddressStub create(AddressStubSettings settings) throws IOException {
     return new HttpJsonAddressStub(settings, ClientContext.create(settings));
   }
@@ -9735,12 +9816,26 @@ public class HttpJsonAddressStub extends AddressStub {
     return new HttpJsonAddressStub(AddressStubSettings.newBuilder().build(), clientContext);
   }
 
+  public static final HttpJsonAddressStub create(ClientContext clientContext, HttpJsonClientCallableFactory callableFactory) throws IOException {
+    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of HttpJsonAddressStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new HttpJsonAddressCallableFactory();
+  }
+
+  /**
+   * Constructs an instance of HttpJsonAddressStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext, HttpJsonClientCallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
 
     HttpJsonCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesTransportSettings =
         HttpJsonCallSettings.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
@@ -9771,15 +9866,15 @@ public class HttpJsonAddressStub extends AddressStub {
             .setMethodDescriptor(updateAddressMethodDescriptor)
             .build();
 
-    this.aggregatedListAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
-    this.aggregatedListAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
-    this.deleteAddressCallable = HttpJsonCallableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
-    this.getAddressCallable = HttpJsonCallableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
-    this.insertAddressCallable = HttpJsonCallableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
-    this.listAddressesCallable = HttpJsonCallableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
-    this.listAddressesPagedCallable = HttpJsonCallableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
-    this.patchAddressCallable = HttpJsonCallableFactory.createUnaryCallable(patchAddressTransportSettings,settings.patchAddressSettings(), clientContext);
-    this.updateAddressCallable = HttpJsonCallableFactory.createUnaryCallable(updateAddressTransportSettings,settings.updateAddressSettings(), clientContext);
+    this.aggregatedListAddressesCallable = callableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
+    this.aggregatedListAddressesPagedCallable = callableFactory.createPagedCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
+    this.deleteAddressCallable = callableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
+    this.getAddressCallable = callableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
+    this.insertAddressCallable = callableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
+    this.listAddressesCallable = callableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.listAddressesPagedCallable = callableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
+    this.patchAddressCallable = callableFactory.createUnaryCallable(patchAddressTransportSettings,settings.patchAddressSettings(), clientContext);
+    this.updateAddressCallable = callableFactory.createUnaryCallable(updateAddressTransportSettings,settings.updateAddressSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -9860,6 +9955,111 @@ public class HttpJsonAddressStub extends AddressStub {
   }
 
 }
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressCallableFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.stub;
+
+import com.google.api.client.http.HttpMethods;
+import com.google.api.core.BetaApi;
+import com.google.api.core.InternalApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
+import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.HttpJsonCallSettings;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.simplecompute.v1.Address;
+import com.google.cloud.simplecompute.v1.AddressAggregatedList;
+import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
+import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
+import com.google.cloud.simplecompute.v1.Operation;
+import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectName;
+import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import com.google.longrunning.stub.OperationsStub;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * HTTP callable factory implementation for simplecompute.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT>
+      UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createPagedCallable(httpJsonCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings,
+      ClientContext clientContext) {
+    return HttpJsonCallableFactory.createBatchingCallable(httpJsonCallSettings, batchingCallSettings, clientContext);
+  }
+}
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/package-info.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -9919,7 +10119,9 @@ package com.google.cloud.simplecompute.v1;
  */
 package com.google.cloud.simplecompute.v1;
 
-import com.google.api.gax.httpjson.MockHttpService;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.testing.MockHttpService;
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.ApiExceptionFactory;
 import com.google.api.gax.rpc.InvalidArgumentException;
@@ -9927,6 +10129,15 @@ import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.api.gax.rpc.testing.FakeStatusCode;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
+import com.google.cloud.simplecompute.v1.stub.AddressStubSettings;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.aggregatedListAddressesMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.deleteAddressMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.getAddressMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.insertAddressMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.listAddressesMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.patchAddressMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.updateAddressMethodDescriptor;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.protobuf.GeneratedMessageV3;
 import java.io.IOException;
@@ -9944,34 +10155,39 @@ import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
 public class AddressClientTest {
-  private static MockServiceHelper serviceHelper;
-  private AddressClient client;
-  private LocalChannelProvider channelProvider;
+  private static final List<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>> METHOD_DESCRIPTORS
+      = ImmutableList.copyOf(Lists.<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>newArrayList(
+              aggregatedListAddressesMethodDescriptor,
+              deleteAddressMethodDescriptor,
+              getAddressMethodDescriptor,
+              insertAddressMethodDescriptor,
+              listAddressesMethodDescriptor,
+              patchAddressMethodDescriptor,
+              updateAddressMethodDescriptor
+          ));
+  private static final MockHttpService mockService
+      = new MockHttpService(METHOD_DESCRIPTORS, AddressStubSettings.getDefaultEndpoint());
+  private static AddressClient client;
+  private static AddressSettings clientSettings;
 
   @BeforeClass
-  public static void startStaticServer() {
-    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList());
-    serviceHelper.start();
-  }
-
-  @AfterClass
-  public static void stopServer() {
-    serviceHelper.stop();
-  }
-
-  @Before
-  public void setUp() throws IOException {
-    serviceHelper.reset();
-    channelProvider = serviceHelper.createChannelProvider();
-    AddressSettings settings = AddressSettings.newBuilder()
-        .setTransportChannelProvider(channelProvider)
-        .setCredentialsProvider(NoCredentialsProvider.create())
-        .build();
-    client = AddressClient.create(settings);
+  public static void setUp() throws IOException {
+    clientSettings =
+        AddressSettings.newBuilder()
+           .setTransportChannelProvider(
+               AddressSettings.defaultHttpJsonTransportProviderBuilder()
+                   .setHttpTransport(mockService).build()).build();
+    client =
+       AddressClient.create(clientSettings);
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void cleanUp() {
+    mockService.reset();
+  }
+
+  @AfterClass
+  public static void tearDown() throws Exception {
     client.close();
   }
 
@@ -9982,7 +10198,8 @@ public class AddressClientTest {
     String nextPageToken = "";
     String id = "id3355";
     String selfLink = "selfLink-1691268851";
-    Address addresses = Address.newBuilder().build();
+    Address addressesElement = Address.newBuilder().build();
+    List<Address> addresses = Arrays.asList(addressesElement);
     AddressesScopedList items = AddressesScopedList.newBuilder()
       .addAllAddresses(addresses)
       .build();
@@ -9993,7 +10210,7 @@ public class AddressClientTest {
       .setSelfLink(selfLink)
       .setItems(items)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     ProjectName project = ProjectName.of("[PROJECT]");
 
@@ -10001,24 +10218,17 @@ public class AddressClientTest {
 
     List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getAddressesList().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getItems().getAddressesList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    AggregatedListAddressesHttpRequest actualRequest = (AggregatedListAddressesHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(project, ProjectName.parse(actualRequest.getProject()));
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void aggregatedListAddressesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       ProjectName project = ProjectName.of("[PROJECT]");
@@ -10077,7 +10287,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
@@ -10085,22 +10295,15 @@ public class AddressClientTest {
         client.deleteAddress(address);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    DeleteAddressHttpRequest actualRequest = (DeleteAddressHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void deleteAddressExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
@@ -10135,7 +10338,7 @@ public class AddressClientTest {
       .setSelfLink(selfLink)
       .setStatus(status)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
@@ -10143,22 +10346,15 @@ public class AddressClientTest {
         client.getAddress(address);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    GetAddressHttpRequest actualRequest = (GetAddressHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(address, AddressName.parse(actualRequest.getAddress()));
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void getAddressExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
@@ -10217,7 +10413,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
@@ -10226,23 +10422,15 @@ public class AddressClientTest {
         client.insertAddress(region, addressResource);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    InsertAddressHttpRequest actualRequest = (InsertAddressHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
-    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void insertAddressExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
@@ -10271,7 +10459,7 @@ public class AddressClientTest {
       .setSelfLink(selfLink)
       .addAllItems(items)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     RegionName region = RegionName.of("[PROJECT]", "[REGION]");
 
@@ -10281,22 +10469,15 @@ public class AddressClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getItemsList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    ListAddressesHttpRequest actualRequest = (ListAddressesHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void listAddressesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       RegionName region = RegionName.of("[PROJECT]", "[REGION]");
@@ -10355,7 +10536,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     String address = "address-1147692044";
     String requestId = "requestId37109963";
@@ -10366,25 +10547,15 @@ public class AddressClientTest {
         client.patchAddress(address, requestId, region, addressResource);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    PatchAddressHttpRequest actualRequest = (PatchAddressHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(address, actualRequest.getAddress());
-    Assert.assertEquals(requestId, actualRequest.getRequestId());
-    Assert.assertEquals(region, RegionName.parse(actualRequest.getRegion()));
-    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void patchAddressExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       String address = "address-1147692044";
@@ -10446,7 +10617,7 @@ public class AddressClientTest {
       .setUser(user)
       .setStatus(status)
       .build();
-    mockAddresses.addResponse(expectedResponse);
+    mockService.addResponse(expectedResponse);
 
     ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
     String requestId = "requestId37109963";
@@ -10456,24 +10627,15 @@ public class AddressClientTest {
         client.updateAddress(address, requestId, addressResource);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockAddresses.getRequests();
+    List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
-    UpdateAddressHttpRequest actualRequest = (UpdateAddressHttpRequest)actualRequests.get(0);
-
-    Assert.assertEquals(address, ProjectAddressName.parse(actualRequest.getAddress()));
-    Assert.assertEquals(requestId, actualRequest.getRequestId());
-    Assert.assertEquals(addressResource, actualRequest.getAddressResource());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   }
 
   @Test
   @SuppressWarnings("all")
   public void updateAddressExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockAddresses.addException(exception);
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
 
     try {
       ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");

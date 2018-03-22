@@ -62,9 +62,9 @@ public abstract class Schema implements Node {
   }
 
   /**
-   * Traverses the schema's child nodes to find a Schema with the given childName. Returns the
-   * schema traversal path to the target; this path will include the starting node if the target was
-   * found. Returns an empty list if the target is not found.
+   * Traverses the schema's child nodes to find a Schema with the given childName. Returns a schema
+   * traversal path to the target; this path will include the starting node if the target was found.
+   * Returns an empty list if the target is not found.
    */
   public List<Schema> findChild(String childName) {
     Set<Schema> visitedNodes = new HashSet<>();
@@ -105,7 +105,7 @@ public abstract class Schema implements Node {
       }
     }
 
-    // Get the shortest path to the schema.
+    // Get the path to the schema.
     List<Schema> pathToChild = new LinkedList<>();
     if (currentNode.getIdentifier().equals(childName)) {
       while (!currentNode.equals(this)) {

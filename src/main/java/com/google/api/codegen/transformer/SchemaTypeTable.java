@@ -99,7 +99,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getEnumValue(TypeModel type, String value) {
     // TODO(andrealin): implement.
-    return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeModel type, String value)");
+    return getNotImplementedString("SchemaTypeTable.getEnumValue(TypeModel type, String value)");
   }
 
   @Override
