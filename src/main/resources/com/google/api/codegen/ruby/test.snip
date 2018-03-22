@@ -155,6 +155,17 @@
         @else
           assert_nil(response)
         @end
+
+        @# Call method with block
+        {@methodCall(test)} do |response, operation|
+          @# Verify the response
+          @if test.hasReturnValue
+            assert_equal(expected_response, response)
+          @else
+            assert_nil(response)
+          @end
+          assert_not_nil(operation)
+        end
       end
     end
   end
@@ -452,11 +463,13 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
+    op = Minitest::Mock.new
     @if test.hasReturnValue
-      expected_response
+      op.expect :execute, expected_response
     @else
-      nil
+      op.expect :execute, nil
     @end
+    op
   end
 @end
 
