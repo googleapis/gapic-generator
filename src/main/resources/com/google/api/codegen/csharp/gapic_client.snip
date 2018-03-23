@@ -405,24 +405,24 @@
             @end
             @join call : api.apiCallableMembers
                 # call: ApiCallableView
-                OnConstruction__ApiCall(ref {@call.name});
-                OnConstruction_{@call.methodName}Call(ref {@call.name});
+                Modify_ApiCall(ref {@call.name});
+                Modify_ApiCall_{@call.methodName}(ref {@call.name});
             @end
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
         @if api.apiHasUnaryMethod
-            partial void OnConstruction__ApiCall<TRequest, TResponse>(ref ApiCall<TRequest, TResponse> call)
+            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiCall<TRequest, TResponse> call)
                 where TRequest : class, IMessage<TRequest>
                 where TResponse : class, IMessage<TResponse>;
         @end
         @if api.apiHasServerStreamingMethod
-            partial void OnConstruction__ApiCall<TRequest, TResponse>(ref ApiServerStreamingCall<TRequest, TResponse> call)
+            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiServerStreamingCall<TRequest, TResponse> call)
                 where TRequest : class, IMessage<TRequest>
                 where TResponse : class, IMessage<TResponse>;
         @end
         @if api.apiHasBidiStreamingMethod
-            partial void OnConstruction__ApiCall<TRequest, TResponse>(ref ApiBidirectionalStreamingCall<TRequest, TResponse> call)
+            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiBidirectionalStreamingCall<TRequest, TResponse> call)
                 where TRequest : class, IMessage<TRequest>
                 where TResponse : class, IMessage<TResponse>;
         @end
@@ -430,11 +430,11 @@
             # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
-                partial void OnConstruction_{@call.methodName}Call(ref ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_ApiCall_{@call.methodName}(ref ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "ServerStreaming"
-                partial void OnConstruction_{@call.methodName}Call(ref ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_ApiCall_{@call.methodName}(ref ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "BidiStreaming"
-                partial void OnConstruction_{@call.methodName}Call(ref ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_ApiCall_{@call.methodName}(ref ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
