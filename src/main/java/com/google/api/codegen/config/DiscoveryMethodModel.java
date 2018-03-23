@@ -295,7 +295,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getEndpointPathTemplate() {
+  public String getPathTemplate() {
     return method.flatPath();
   }
 }

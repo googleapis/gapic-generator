@@ -395,8 +395,6 @@ public class ApiCallableTransformer {
     methodDescriptorBuilder.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
     methodDescriptorBuilder.hasResponse(!method.isOutputTypeEmpty());
     methodDescriptorBuilder.name(namer.getMethodDescriptorName(method));
-    methodDescriptorBuilder.requestFormatterName(namer.getTransportRequestFormatterName(method));
-    methodDescriptorBuilder.responseFormatterName(namer.getTransportResponseFormatterName(method));
     methodDescriptorBuilder.protoMethodName(method.getSimpleName());
     methodDescriptorBuilder.fullServiceName(context.getTargetInterface().getFullName());
     methodDescriptorBuilder.transportSettingsVar(namer.getTransportSettingsVar(method));

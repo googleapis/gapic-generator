@@ -40,12 +40,6 @@ public abstract class MethodDescriptorView {
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
-  @Nullable
-  public abstract String requestFormatterName();
-
-  @Nullable
-  public abstract String responseFormatterName();
-
   public boolean hasHeaderRequestParams() {
     return headerRequestParams() != null && !headerRequestParams().isEmpty();
   }
@@ -80,10 +74,6 @@ public abstract class MethodDescriptorView {
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder httpMethod(HttpMethodView val);
-
-    public abstract Builder requestFormatterName(String val);
-
-    public abstract Builder responseFormatterName(String val);
 
     public abstract MethodDescriptorView build();
   }

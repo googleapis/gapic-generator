@@ -247,7 +247,7 @@ public final class ProtoMethodModel implements MethodModel {
 
   @Nullable
   @Override
-  public String getEndpointPathTemplate() {
+  public String getPathTemplate() {
     return null;
   }
 }
