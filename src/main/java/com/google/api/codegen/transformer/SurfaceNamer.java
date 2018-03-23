@@ -605,14 +605,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.anyCamel(method.getSimpleName(), "MethodDescriptor"));
   }
 
-  public String getTransportRequestFormatterName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "HttpRequestFormatter"));
-  }
-
-  public String getTransportResponseFormatterName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "HttpResponseParser"));
-  }
-
   public String getTransportSettingsVar(MethodModel method) {
     return localVarName(Name.anyCamel(method.getSimpleName(), "TransportSettings"));
   }
