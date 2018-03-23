@@ -338,6 +338,10 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
+    // TODO(andrealin): Remove this hack when null response types are implemented.
+    if (outputType == null) {
+      outputType = context.getMethodModel().getInputType().makeOptional();
+    }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)
         .symbolTable(symbolTable)
