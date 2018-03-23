@@ -33,6 +33,7 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System;
@@ -10249,9 +10250,106 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            Modify_ApiCall(ref _callCreateShelf);
+            Modify_CreateShelfApiCall(ref _callCreateShelf);
+            Modify_ApiCall(ref _callGetShelf);
+            Modify_GetShelfApiCall(ref _callGetShelf);
+            Modify_ApiCall(ref _callListShelves);
+            Modify_ListShelvesApiCall(ref _callListShelves);
+            Modify_ApiCall(ref _callDeleteShelf);
+            Modify_DeleteShelfApiCall(ref _callDeleteShelf);
+            Modify_ApiCall(ref _callMergeShelves);
+            Modify_MergeShelvesApiCall(ref _callMergeShelves);
+            Modify_ApiCall(ref _callCreateBook);
+            Modify_CreateBookApiCall(ref _callCreateBook);
+            Modify_ApiCall(ref _callPublishSeries);
+            Modify_PublishSeriesApiCall(ref _callPublishSeries);
+            Modify_ApiCall(ref _callGetBook);
+            Modify_GetBookApiCall(ref _callGetBook);
+            Modify_ApiCall(ref _callListBooks);
+            Modify_ListBooksApiCall(ref _callListBooks);
+            Modify_ApiCall(ref _callDeleteBook);
+            Modify_DeleteBookApiCall(ref _callDeleteBook);
+            Modify_ApiCall(ref _callUpdateBook);
+            Modify_UpdateBookApiCall(ref _callUpdateBook);
+            Modify_ApiCall(ref _callMoveBook);
+            Modify_MoveBookApiCall(ref _callMoveBook);
+            Modify_ApiCall(ref _callListStrings);
+            Modify_ListStringsApiCall(ref _callListStrings);
+            Modify_ApiCall(ref _callAddComments);
+            Modify_AddCommentsApiCall(ref _callAddComments);
+            Modify_ApiCall(ref _callGetBookFromArchive);
+            Modify_GetBookFromArchiveApiCall(ref _callGetBookFromArchive);
+            Modify_ApiCall(ref _callGetBookFromAnywhere);
+            Modify_GetBookFromAnywhereApiCall(ref _callGetBookFromAnywhere);
+            Modify_ApiCall(ref _callGetBookFromAbsolutelyAnywhere);
+            Modify_GetBookFromAbsolutelyAnywhereApiCall(ref _callGetBookFromAbsolutelyAnywhere);
+            Modify_ApiCall(ref _callUpdateBookIndex);
+            Modify_UpdateBookIndexApiCall(ref _callUpdateBookIndex);
+            Modify_ApiCall(ref _callStreamShelves);
+            Modify_StreamShelvesApiCall(ref _callStreamShelves);
+            Modify_ApiCall(ref _callStreamBooks);
+            Modify_StreamBooksApiCall(ref _callStreamBooks);
+            Modify_ApiCall(ref _callDiscussBook);
+            Modify_DiscussBookApiCall(ref _callDiscussBook);
+            Modify_ApiCall(ref _callFindRelatedBooks);
+            Modify_FindRelatedBooksApiCall(ref _callFindRelatedBooks);
+            Modify_ApiCall(ref _callAddTag);
+            Modify_AddTagApiCall(ref _callAddTag);
+            Modify_ApiCall(ref _callAddLabel);
+            Modify_AddLabelApiCall(ref _callAddLabel);
+            Modify_ApiCall(ref _callGetBigBook);
+            Modify_GetBigBookApiCall(ref _callGetBigBook);
+            Modify_ApiCall(ref _callGetBigNothing);
+            Modify_GetBigNothingApiCall(ref _callGetBigNothing);
+            Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
+        // Partial methods are named to (mostly) ensure there cannot be conflicts with RPC method names.
+
+        // Partial methods called for every ApiCall on construction.
+        // Allows modification of all the underlying ApiCall objects.
+        partial void Modify_ApiCall<TRequest, TResponse>(ref ApiCall<TRequest, TResponse> call)
+            where TRequest : class, IMessage<TRequest>
+            where TResponse : class, IMessage<TResponse>;
+        partial void Modify_ApiCall<TRequest, TResponse>(ref ApiServerStreamingCall<TRequest, TResponse> call)
+            where TRequest : class, IMessage<TRequest>
+            where TResponse : class, IMessage<TResponse>;
+        partial void Modify_ApiCall<TRequest, TResponse>(ref ApiBidirectionalStreamingCall<TRequest, TResponse> call)
+            where TRequest : class, IMessage<TRequest>
+            where TResponse : class, IMessage<TResponse>;
+
+        // Partial methods called for each ApiCall on construction.
+        // Allows per-RPC-method modification of the underlying ApiCall object.
+        partial void Modify_CreateShelfApiCall(ref ApiCall<CreateShelfRequest, Shelf> call);
+        partial void Modify_GetShelfApiCall(ref ApiCall<GetShelfRequest, Shelf> call);
+        partial void Modify_ListShelvesApiCall(ref ApiCall<ListShelvesRequest, ListShelvesResponse> call);
+        partial void Modify_DeleteShelfApiCall(ref ApiCall<DeleteShelfRequest, Empty> call);
+        partial void Modify_MergeShelvesApiCall(ref ApiCall<MergeShelvesRequest, Shelf> call);
+        partial void Modify_CreateBookApiCall(ref ApiCall<CreateBookRequest, Book> call);
+        partial void Modify_PublishSeriesApiCall(ref ApiCall<PublishSeriesRequest, PublishSeriesResponse> call);
+        partial void Modify_GetBookApiCall(ref ApiCall<GetBookRequest, Book> call);
+        partial void Modify_ListBooksApiCall(ref ApiCall<ListBooksRequest, ListBooksResponse> call);
+        partial void Modify_DeleteBookApiCall(ref ApiCall<DeleteBookRequest, Empty> call);
+        partial void Modify_UpdateBookApiCall(ref ApiCall<UpdateBookRequest, Book> call);
+        partial void Modify_MoveBookApiCall(ref ApiCall<MoveBookRequest, Book> call);
+        partial void Modify_ListStringsApiCall(ref ApiCall<ListStringsRequest, ListStringsResponse> call);
+        partial void Modify_AddCommentsApiCall(ref ApiCall<AddCommentsRequest, Empty> call);
+        partial void Modify_GetBookFromArchiveApiCall(ref ApiCall<GetBookFromArchiveRequest, BookFromArchive> call);
+        partial void Modify_GetBookFromAnywhereApiCall(ref ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> call);
+        partial void Modify_GetBookFromAbsolutelyAnywhereApiCall(ref ApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> call);
+        partial void Modify_UpdateBookIndexApiCall(ref ApiCall<UpdateBookIndexRequest, Empty> call);
+        partial void Modify_StreamShelvesApiCall(ref ApiServerStreamingCall<StreamShelvesRequest, StreamShelvesResponse> call);
+        partial void Modify_StreamBooksApiCall(ref ApiServerStreamingCall<StreamBooksRequest, Book> call);
+        partial void Modify_DiscussBookApiCall(ref ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> call);
+        partial void Modify_FindRelatedBooksApiCall(ref ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> call);
+        partial void Modify_AddTagApiCall(ref ApiCall<AddTagRequest, AddTagResponse> call);
+        partial void Modify_AddLabelApiCall(ref ApiCall<AddLabelRequest, AddLabelResponse> call);
+        partial void Modify_GetBigBookApiCall(ref ApiCall<GetBookRequest, Operation> call);
+        partial void Modify_GetBigNothingApiCall(ref ApiCall<GetBookRequest, Operation> call);
+        partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
         partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
@@ -10259,7 +10357,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
 
-        // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        // Partial methods called on each request.
+        // Allows per-RPC-call modification to the request and CallSettings objects,
+        // before the underlying RPC is performed.
         partial void Modify_CreateShelfRequest(ref CreateShelfRequest request, ref CallSettings settings);
         partial void Modify_GetShelfRequest(ref GetShelfRequest request, ref CallSettings settings);
         partial void Modify_ListShelvesRequest(ref ListShelvesRequest request, ref CallSettings settings);

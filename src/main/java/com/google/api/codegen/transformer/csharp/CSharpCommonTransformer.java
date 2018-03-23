@@ -45,6 +45,7 @@ public class CSharpCommonTransformer {
     typeTable.saveNicknameFor("Google.Api.Gax.GaxPreconditions");
     typeTable.saveNicknameFor("Google.Api.Gax.Grpc.ServiceSettingsBase");
     typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
+    typeTable.saveNicknameFor("Google.Protobuf.SomeKindOfProtobuf");
     typeTable.saveNicknameFor("Grpc.Core.StatusCode");
     typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");
     typeTable.saveNicknameFor("System.Threading.Tasks.Task");
