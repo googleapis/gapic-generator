@@ -406,11 +406,15 @@
             @join call : api.apiCallableMembers
                 # call: ApiCallableView
                 Modify_ApiCall(ref {@call.name});
-                Modify_ApiCall_{@call.methodName}(ref {@call.name});
+                Modify_{@call.methodName}ApiCall(ref {@call.name});
             @end
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
+        // Partial methods are named to (mostly) ensure there cannot be conflicts with RPC method names.
+
+        // Partial methods called for every ApiCall on construction.
+        // Allows modification of all the underlying ApiCall objects.
         @if api.apiHasUnaryMethod
             partial void Modify_ApiCall<TRequest, TResponse>(ref ApiCall<TRequest, TResponse> call)
                 where TRequest : class, IMessage<TRequest>
@@ -426,15 +430,18 @@
                 where TRequest : class, IMessage<TRequest>
                 where TResponse : class, IMessage<TResponse>;
         @end
+
+        // Partial methods called for each ApiCall on construction.
+        // Allows per-RPC-method modification of the underlying ApiCall object.
         @join call : api.apiCallableMembers
             # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
-                partial void Modify_ApiCall_{@call.methodName}(ref ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "ServerStreaming"
-                partial void Modify_ApiCall_{@call.methodName}(ref ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "BidiStreaming"
-                partial void Modify_ApiCall_{@call.methodName}(ref ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
@@ -446,7 +453,9 @@
         /// </summary>
         public override {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient { get; }
 
-        // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        // Partial methods called on each request.
+        // Allows per-RPC-call modification to the request and CallSettings objects,
+        // before the underlying RPC is performed.
         # method: ModifyMethodView
         @join method : api.modifyMethods
             @switch method.grpcStreamingType.toString
