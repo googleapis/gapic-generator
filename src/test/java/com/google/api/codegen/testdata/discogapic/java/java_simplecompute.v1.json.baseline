@@ -9654,12 +9654,15 @@ import com.google.api.core.BetaApi;
 import com.google.api.core.InternalApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
+import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
@@ -9700,96 +9703,138 @@ public class HttpJsonAddressStub extends AddressStub {
   public static final ApiMethodDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesMethodDescriptor =
       ApiMethodDescriptor.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
           .setMethodName("compute.addresses.aggregatedList")
-          .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
-          .setResponseInstance(AddressAggregatedList.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/aggregated/addresses")
-          .setQueryParams(Sets.<String>newHashSet(
-                             "filter",    "maxResults",    "orderBy",    "pageToken"
-                             ))
-          .setResourceNameFactory(ProjectName.newFactory())
-          .setHttpMethod(HttpMethods.GET)
-          .setResourceNameField("project")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<AggregatedListAddressesHttpRequest>newBuilder()
+                  .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/aggregated/addresses"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     "filter",    "maxResults",    "orderBy",    "pageToken"
+                                     ))
+                  .setResourceNameFactory(ProjectName.newFactory())
+                  .setHttpMethod(HttpMethods.GET)
+                  .setResourceNameField("project")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<AddressAggregatedList>newBuilder()
+                  .setResponseInstance(AddressAggregatedList.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<DeleteAddressHttpRequest, Operation> deleteAddressMethodDescriptor =
       ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.delete")
-          .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
-          .setResponseInstance(Operation.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
-          .setQueryParams(Sets.<String>newHashSet(
-                             ))
-          .setResourceNameFactory(AddressName.newFactory())
-          .setHttpMethod(HttpMethods.DELETE)
-          .setResourceNameField("address")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<DeleteAddressHttpRequest>newBuilder()
+                  .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     ))
+                  .setResourceNameFactory(AddressName.newFactory())
+                  .setHttpMethod(HttpMethods.DELETE)
+                  .setResourceNameField("address")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<Operation>newBuilder()
+                  .setResponseInstance(Operation.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<GetAddressHttpRequest, Address> getAddressMethodDescriptor =
       ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
           .setMethodName("compute.addresses.get")
-          .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
-          .setResponseInstance(Address.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
-          .setQueryParams(Sets.<String>newHashSet(
-                             ))
-          .setResourceNameFactory(AddressName.newFactory())
-          .setHttpMethod(HttpMethods.GET)
-          .setResourceNameField("address")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<GetAddressHttpRequest>newBuilder()
+                  .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     ))
+                  .setResourceNameFactory(AddressName.newFactory())
+                  .setHttpMethod(HttpMethods.GET)
+                  .setResourceNameField("address")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<Address>newBuilder()
+                  .setResponseInstance(Address.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<InsertAddressHttpRequest, Operation> insertAddressMethodDescriptor =
       ApiMethodDescriptor.<InsertAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.insert")
-          .setRequestInstance(InsertAddressHttpRequest.getDefaultInstance())
-          .setResponseInstance(Operation.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
-          .setQueryParams(Sets.<String>newHashSet(
-                             ))
-          .setResourceNameFactory(RegionName.newFactory())
-          .setHttpMethod(HttpMethods.POST)
-          .setResourceNameField("region")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<InsertAddressHttpRequest>newBuilder()
+                  .setRequestInstance(InsertAddressHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     ))
+                  .setResourceNameFactory(RegionName.newFactory())
+                  .setHttpMethod(HttpMethods.POST)
+                  .setResourceNameField("region")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<Operation>newBuilder()
+                  .setResponseInstance(Operation.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<ListAddressesHttpRequest, AddressList> listAddressesMethodDescriptor =
       ApiMethodDescriptor.<ListAddressesHttpRequest, AddressList>newBuilder()
           .setMethodName("compute.addresses.list")
-          .setRequestInstance(ListAddressesHttpRequest.getDefaultInstance())
-          .setResponseInstance(AddressList.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
-          .setQueryParams(Sets.<String>newHashSet(
-                             "filter",    "maxResults",    "orderBy",    "pageToken"
-                             ))
-          .setResourceNameFactory(RegionName.newFactory())
-          .setHttpMethod(HttpMethods.GET)
-          .setResourceNameField("region")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<ListAddressesHttpRequest>newBuilder()
+                  .setRequestInstance(ListAddressesHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     "filter",    "maxResults",    "orderBy",    "pageToken"
+                                     ))
+                  .setResourceNameFactory(RegionName.newFactory())
+                  .setHttpMethod(HttpMethods.GET)
+                  .setResourceNameField("region")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<AddressList>newBuilder()
+                  .setResponseInstance(AddressList.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<PatchAddressHttpRequest, Operation> patchAddressMethodDescriptor =
       ApiMethodDescriptor.<PatchAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.patch")
-          .setRequestInstance(PatchAddressHttpRequest.getDefaultInstance())
-          .setResponseInstance(Operation.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/regions/{region}/addresses")
-          .setQueryParams(Sets.<String>newHashSet(
-                             "address",    "requestId"
-                             ))
-          .setResourceNameFactory(RegionName.newFactory())
-          .setHttpMethod(HttpMethods.PATCH)
-          .setResourceNameField("region")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<PatchAddressHttpRequest>newBuilder()
+                  .setRequestInstance(PatchAddressHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     "address",    "requestId"
+                                     ))
+                  .setResourceNameFactory(RegionName.newFactory())
+                  .setHttpMethod(HttpMethods.PATCH)
+                  .setResourceNameField("region")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<Operation>newBuilder()
+                  .setResponseInstance(Operation.getDefaultInstance())
+                  .build())
           .build();
   @InternalApi
   public static final ApiMethodDescriptor<UpdateAddressHttpRequest, Operation> updateAddressMethodDescriptor =
       ApiMethodDescriptor.<UpdateAddressHttpRequest, Operation>newBuilder()
           .setMethodName("compute.addresses.update")
-          .setRequestInstance(UpdateAddressHttpRequest.getDefaultInstance())
-          .setResponseInstance(Operation.getDefaultInstance())
-          .setEndpointPathTemplate("{project}/global/addresses/{address}")
-          .setQueryParams(Sets.<String>newHashSet(
-                             "requestId"
-                             ))
-          .setResourceNameFactory(ProjectAddressName.newFactory())
-          .setHttpMethod(HttpMethods.PUT)
-          .setResourceNameField("address")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<UpdateAddressHttpRequest>newBuilder()
+                  .setRequestInstance(UpdateAddressHttpRequest.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{project}/global/addresses/{address}"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     "requestId"
+                                     ))
+                  .setResourceNameFactory(ProjectAddressName.newFactory())
+                  .setHttpMethod(HttpMethods.PUT)
+                  .setResourceNameField("address")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<Operation>newBuilder()
+                  .setResponseInstance(Operation.getDefaultInstance())
+                  .build())
           .build();
   private final BackgroundResource backgroundResources;
 
@@ -9835,38 +9880,31 @@ public class HttpJsonAddressStub extends AddressStub {
 
     HttpJsonCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesTransportSettings =
         HttpJsonCallSettings.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
-            .setRequestFormatter(aggregatedListAddressesMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(aggregatedListAddressesMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(aggregatedListAddressesMethodDescriptor)
             .build();
     HttpJsonCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressTransportSettings =
         HttpJsonCallSettings.<DeleteAddressHttpRequest, Operation>newBuilder()
-            .setRequestFormatter(deleteAddressMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(deleteAddressMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(deleteAddressMethodDescriptor)
             .build();
     HttpJsonCallSettings<GetAddressHttpRequest, Address> getAddressTransportSettings =
         HttpJsonCallSettings.<GetAddressHttpRequest, Address>newBuilder()
-            .setRequestFormatter(getAddressMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(getAddressMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(getAddressMethodDescriptor)
             .build();
     HttpJsonCallSettings<InsertAddressHttpRequest, Operation> insertAddressTransportSettings =
         HttpJsonCallSettings.<InsertAddressHttpRequest, Operation>newBuilder()
-            .setRequestFormatter(insertAddressMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(insertAddressMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(insertAddressMethodDescriptor)
             .build();
     HttpJsonCallSettings<ListAddressesHttpRequest, AddressList> listAddressesTransportSettings =
         HttpJsonCallSettings.<ListAddressesHttpRequest, AddressList>newBuilder()
-            .setRequestFormatter(listAddressesMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(listAddressesMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(listAddressesMethodDescriptor)
             .build();
     HttpJsonCallSettings<PatchAddressHttpRequest, Operation> patchAddressTransportSettings =
         HttpJsonCallSettings.<PatchAddressHttpRequest, Operation>newBuilder()
-            .setRequestFormatter(patchAddressMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(patchAddressMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(patchAddressMethodDescriptor)
             .build();
     HttpJsonCallSettings<UpdateAddressHttpRequest, Operation> updateAddressTransportSettings =
         HttpJsonCallSettings.<UpdateAddressHttpRequest, Operation>newBuilder()
-            .setRequestFormatter(updateAddressMethodDescriptor.getRequestFormatter())
-            .setResponseFormatter(updateAddressMethodDescriptor.getResponseParser())
+            .setMethodDescriptor(updateAddressMethodDescriptor)
             .build();
 
     this.aggregatedListAddressesCallable = callableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
@@ -9981,6 +10019,8 @@ import com.google.api.core.BetaApi;
 import com.google.api.core.InternalApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
+import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
@@ -9998,6 +10038,7 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
@@ -10181,7 +10222,7 @@ public class AddressClientTest {
         endpointToParserMap.put(pathTemplate, httpMethodToParserMap);
       }
       httpMethodToParserMap.put(
-          methodDescriptor.getHttpMethod(), methodDescriptor.getResponseParser());
+          methodDescriptor.getRequestFormatter().getHttpMethod(), methodDescriptor.getResponseParser());
     }
 
     mockService = new MockHttpService(

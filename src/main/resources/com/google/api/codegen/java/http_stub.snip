@@ -56,15 +56,21 @@
     {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
           .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
-          .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
-          @if methodDescriptor.hasResponse
-            .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
-          @end
-          .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
-          .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
-          .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
-          .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<{@methodDescriptor.requestTypeName}>newBuilder()
+                  .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
+                  .setEndpointPathTemplate(PathTemplate.create("{@methodDescriptor.httpMethod.pathTemplate}"))
+                  .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
+                  .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
+                  .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+                  .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
+                  @if methodDescriptor.hasResponse
+                    .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+                  @end
+                  .build())
           .build();
 @end
 
@@ -157,8 +163,7 @@
     @join methodDescriptor : stubClass.methodDescriptors
       HttpJsonCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
           HttpJsonCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
-              .setRequestFormatter({@methodDescriptor.name}.getRequestFormatter())
-              .setResponseFormatter({@methodDescriptor.name}.getResponseParser())
+              .setMethodDescriptor({@methodDescriptor.name})
               .build();
     @end
 
