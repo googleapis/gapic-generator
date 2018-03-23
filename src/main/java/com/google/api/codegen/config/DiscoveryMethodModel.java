@@ -293,9 +293,4 @@ public final class DiscoveryMethodModel implements MethodModel {
   public TypeModel getOutputType() {
     return outputType;
   }
-
-  @Override
-  public String getPathTemplate() {
-    return method.flatPath();
-  }
 }
