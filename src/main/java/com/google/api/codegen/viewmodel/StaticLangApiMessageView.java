@@ -54,6 +54,10 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @Nullable
   public abstract String fieldSetFunction();
 
+  // For static languages, function name for adding an element to this repeated message type.
+  @Nullable
+  public abstract String fieldAddFunction();
+
   public abstract boolean isRequired();
 
   public abstract boolean canRepeat();
@@ -100,6 +104,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder fieldGetFunction(String val);
 
     public abstract Builder fieldSetFunction(String val);
+
+    public abstract Builder fieldAddFunction(String val);
 
     public abstract Builder properties(List<StaticLangApiMessageView> val);
 

@@ -17,6 +17,8 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoveryField;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
@@ -144,6 +146,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
+
+    FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
@@ -165,15 +169,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     // Getters and setters use unescaped name for better readability on public methods.
-    schemaView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(schemaId, context.getNamer()));
-    schemaView.fieldSetFunction(
-        context
-            .getDiscoGapicNamer()
-            .getResourceSetterName(
-                schemaId,
-                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Type.ARRAY)),
-                context.getNamer()));
+    schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
+    schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
+    schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
@@ -203,7 +201,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 
-    schemaView.canRepeat(schema.repeated());
+    schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);
@@ -220,7 +218,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
+    typeTable.getAndSaveNicknameFor("java.util.ArrayList");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
     typeTable.getAndSaveNicknameFor("java.util.List");

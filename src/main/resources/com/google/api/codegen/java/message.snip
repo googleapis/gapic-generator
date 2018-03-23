@@ -39,11 +39,11 @@
     @join param : schema.properties
       if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
-          List<String> stringList = new LinkedList<>();
+          ImmutableList.Builder stringList = ImmutableList.builder();
           for ({@param.innerTypeName} item : {@param.name}) {
             stringList.add(item.toString());
           }
-          fieldMap.put("{@param.name}", stringList);
+          fieldMap.put("{@param.name}", stringList.build());
         @else
           fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end
@@ -169,13 +169,6 @@
     @join param : schema.properties
       this.{@param.name} = {@param.name};
     @end
-    ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-    @if schema.hasResourceName
-      {@schema.pathAsResourceName.typeName} resourceName = {@schema.pathAsResourceName.typeName}.parse({@schema.pathAsResourceName.name});
-      @join nameField : schema.pathAsResourceName.fieldCopyMethods
-        mapBuilder.put("{@nameField.name}", resourceName.{@nameField.fieldGetFunction}());
-      @end
-    @end
   }
 @end
 
@@ -208,10 +201,25 @@
         return {@property.name};
       }
 
-      public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
-        this.{@property.name} = {@property.name};
-        return this;
-      }
+      @if property.canRepeat
+        public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
+          if (this.{@property.name} == null) {
+            this.{@property.name} = new ArrayList<>({@property.name}.size());
+          }
+          this.{@property.name}.addAll({@property.name});
+          return this;
+        }
+
+        public Builder {@property.fieldAddFunction}({@property.innerTypeName} {@property.name}) {
+          this.{@property.name}.add({@property.name});
+          return this;
+        }
+      @else
+        public Builder {@property.fieldSetFunction}({@property.innerTypeName} {@property.name}) {
+          this.{@property.name} = {@property.name};
+          return this;
+        }
+      @end
 
     @end
 
