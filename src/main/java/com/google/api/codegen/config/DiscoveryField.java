@@ -38,8 +38,11 @@ import javax.annotation.Nullable;
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
+  // Dereferenced schema for use rendering type names and determining properties, type, and format.
   private final Schema schema;
-  private final Schema originalSchema; // Not dereferenced schema.
+
+  // Not dereferenced schema; used in rendering this FieldModel's parameter name.
+  private final Schema originalSchema;
   private final DiscoApiModel apiModel;
 
   /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
@@ -70,9 +73,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getSimpleName() {
-    String name = schema.getIdentifier();
-    String[] pieces = name.split("_");
-    return Name.anyCamel(pieces).toLowerCamel();
+    return DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
   }
 
   @Override
@@ -92,7 +93,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getTypeFullName() {
-    return schema.getIdentifier();
+    return originalSchema.getIdentifier();
   }
 
   @Override

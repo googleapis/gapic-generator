@@ -49,15 +49,15 @@ public class DiscoGapicParser {
    */
   public static Name getSchemaNameAsParameter(Schema schema) {
     Schema deref = schema.dereference();
-    String paramString = deref.getIdentifier();
-    String[] pieces = paramString.split("_");
-    Name param = Name.anyCamel(pieces);
     if (Strings.isNullOrEmpty(deref.location())
         && deref.type().equals(Schema.Type.OBJECT)
         && schema.parent() instanceof Method) {
-      param = param.join("resource");
+      // This is the resource object for an API request message type.
+      Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
+      return param.join("resource");
+    } else {
+      return DiscoGapicParser.stringToName(schema.getIdentifier());
     }
-    return param;
   }
 
   /** Get the request type name from a method. */
@@ -153,7 +153,7 @@ public class DiscoGapicParser {
         if (name == null) {
           name = Name.from(Inflector.singularize(piece));
         } else {
-          name = name.join(Inflector.singularize(piece));
+          name = name.join(stringToName(Inflector.singularize(piece)));
         }
       }
     }
