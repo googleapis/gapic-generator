@@ -228,6 +228,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
     // must be done as the last step to catch all imports
     csharpCommonTransformer.addCommonImports(context);
+    context.getImportTypeTable().saveNicknameFor("Google.Protobuf.SomeKindOfProtobuf");
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return fileView.build();
