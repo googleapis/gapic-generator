@@ -10193,41 +10193,25 @@ import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
 public class AddressClientTest {
-  private static final List<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>
-      METHOD_DESCRIPTORS = ImmutableList.copyOf(
-          Lists.<ApiMethodDescriptor<? extends ApiMessage, ? extends ApiMessage>>newArrayList(
-              aggregatedListAddressesMethodDescriptor,
-              deleteAddressMethodDescriptor,
-              getAddressMethodDescriptor,
-              insertAddressMethodDescriptor,
-              listAddressesMethodDescriptor,
-              patchAddressMethodDescriptor,
-              updateAddressMethodDescriptor
-          ));
-  private static MockHttpService mockService;
+
+   private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
+        Lists.<ApiMethodDescriptor>newArrayList(
+          aggregatedListAddressesMethodDescriptor,
+          deleteAddressMethodDescriptor,
+          getAddressMethodDescriptor,
+          insertAddressMethodDescriptor,
+          listAddressesMethodDescriptor,
+          patchAddressMethodDescriptor,
+          updateAddressMethodDescriptor
+      ));
+  private static final MockHttpService mockService
+      = new MockHttpService(METHOD_DESCRIPTORS, AddressStubSettings.getDefaultEndpoint());
+
   private static AddressClient client;
   private static AddressSettings clientSettings;
 
   @BeforeClass
   public static void setUp() throws IOException {
-    // Create the nested map of {endpointPathTemplate, {httpMethod, parser}} for MockHttpService.
-    Map<String, Map<String, HttpResponseParser<?>>> endpointToParserMap = new HashMap<>();
-    for (ApiMethodDescriptor methodDescriptor : METHOD_DESCRIPTORS) {
-      String pathTemplate = methodDescriptor.endpointPathTemplate();
-      Map<String, HttpResponseParser<?>> httpMethodToParserMap;
-      if (endpointToParserMap.containsKey(pathTemplate)) {
-        httpMethodToParserMap = endpointToParserMap.get(pathTemplate);
-      } else {
-        httpMethodToParserMap = new HashMap<>();
-        endpointToParserMap.put(pathTemplate, httpMethodToParserMap);
-      }
-      httpMethodToParserMap.put(
-          methodDescriptor.getRequestFormatter().getHttpMethod(), methodDescriptor.getResponseParser());
-    }
-
-    mockService = new MockHttpService(
-        endpointToParserMap, AddressStubSettings.getDefaultEndpoint());
-
     clientSettings =
         AddressSettings.newBuilder()
            .setTransportChannelProvider(
