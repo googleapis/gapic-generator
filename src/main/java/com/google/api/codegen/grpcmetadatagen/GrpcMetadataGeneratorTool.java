@@ -76,6 +76,16 @@ public class GrpcMetadataGeneratorTool {
             .argName("METADATA-CONFIG")
             .required(true)
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("artifact_type")
+            .desc(
+                "Optional. Artifacts enabled for the generator. Currently supports "
+                    + "'GRPC' and 'PROTOBUF' and is ignored for all languages except Java")
+            .hasArg()
+            .argName("ARTIFACT-TYPE")
+            .required(false)
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -89,7 +99,8 @@ public class GrpcMetadataGeneratorTool {
         cl.getOptionValue("input"),
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
-        cl.getOptionValue("metadata_config"));
+        cl.getOptionValue("metadata_config"),
+        cl.getOptionValue("artifact_type"));
   }
 
   private static void generate(
@@ -98,7 +109,8 @@ public class GrpcMetadataGeneratorTool {
       String inputDir,
       String outputDir,
       String languageString,
-      String metadataConfig) {
+      String metadataConfig,
+      String artifactType) {
     TargetLanguage language = TargetLanguage.fromString(languageString);
     ToolOptions options = ToolOptions.create();
     options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
@@ -109,6 +121,11 @@ public class GrpcMetadataGeneratorTool {
     }
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfig);
     options.set(GrpcMetadataGenerator.LANGUAGE, languageString);
+
+    if (artifactType != null) {
+      options.set(GrpcMetadataGenerator.ARTIFACT_TYPE, ArtifactType.of(artifactType));
+    }
+
     GrpcMetadataGenerator generator = new GrpcMetadataGenerator(options);
     generator.run();
   }

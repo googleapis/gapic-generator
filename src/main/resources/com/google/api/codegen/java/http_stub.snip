@@ -45,26 +45,32 @@
 
 @private constants(stubClass)
   @join methodDescriptor : stubClass.methodDescriptors
-    {@httpMethodCallable(methodDescriptor)}
+    {@methodDescriptors(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private httpMethodCallable(methodDescriptor)
+@private methodDescriptors(methodDescriptor)
   @@InternalApi
-  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> \
+    {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
-          .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
-          .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
-          @if methodDescriptor.hasResponse
-            .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
-          @end
-          .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
-          .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(\
-              {@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory()))
+          .setFullMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
-          .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<{@methodDescriptor.requestTypeName}>newBuilder()
+                  .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
+                  .setPathTemplate(PathTemplate.create("{@methodDescriptor.httpMethod.pathTemplate}"))
+                  .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
+                  .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
+                  .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
+                  @if methodDescriptor.hasResponse
+                    .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+                  @end
+                  .build())
           .build();
 @end
 
@@ -85,7 +91,8 @@
   @join apiCallable : stubClass.apiCallables
     {@apiCallableMember(apiCallable)}
   @end
-  {@""}
+
+  private final HttpJsonStubCallableFactory callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -128,15 +135,29 @@
     return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext);
   }
 
+  public static final {@stubClass.name} create(ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
+    return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of {@stubClass.name}, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new {@stubClass.callableFactoryClassName}());
+  }
+
+  /**
+   * Constructs an instance of {@stubClass.name}, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       # TODO reference a real class for httpjson when it is created
-      this.operationsStub = GrpcOperationsStub.create(clientContext);
+      this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors
@@ -147,7 +168,7 @@
     @end
 
     @join callable : stubClass.apiCallables
-      this.{@callable.name} = HttpJsonCallableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+      this.{@callable.name} = callableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
           settings.{@callable.settingsFunctionName}(), clientContext);
     @end
 

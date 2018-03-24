@@ -16,9 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.grpcmetadatagen.DependencyType;
-import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
-import com.google.api.codegen.grpcmetadatagen.PackageType;
+import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -41,10 +39,6 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class PackageMetadataConfig {
 
   private static final String CONFIG_KEY_DEFAULT = "default";
-  private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
-      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "proto-").build();
-  private static final ImmutableMap<TargetLanguage, String> TEST_PROTO_PACKAGE_PREFIX =
-      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
@@ -149,16 +143,8 @@ public abstract class PackageMetadataConfig {
     return packageName().get(language);
   }
 
-  /** Returns the type of the package */
   @Nullable
-  public abstract PackageType packageType();
-
-  /** Returns the type of the dependency */
-  @Nullable
-  public abstract DependencyType dependencyType();
-
-  @Nullable
-  public abstract GenerationLayer generationLayer();
+  public abstract ArtifactType artifactType();
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
@@ -219,11 +205,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder shortName(String val);
 
-    abstract Builder packageType(PackageType val);
-
-    abstract Builder dependencyType(DependencyType val);
-
-    abstract Builder generationLayer(GenerationLayer val);
+    abstract Builder artifactType(ArtifactType val);
 
     abstract Builder apiVersion(String val);
 
@@ -258,9 +240,7 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .releaseLevel(ImmutableMap.<TargetLanguage, ReleaseLevel>of())
         .shortName("")
-        .packageType(PackageType.GRPC_CLIENT)
-        .dependencyType(DependencyType.RELEASE)
-        .generationLayer(GenerationLayer.PROTO)
+        .artifactType(ArtifactType.GRPC)
         .apiVersion("")
         .protoPath("")
         .author("")
@@ -297,14 +277,10 @@ public abstract class PackageMetadataConfig {
                     (Map<String, Map<String, String>>) configMap.get("api_common_version")))
             .releaseLevel(
                 createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
-            .protoPackageDependencies(
-                createProtoPackageDependencies(
-                    configMap, "proto_deps", DEFAULT_PROTO_PACKAGE_PREFIX))
+            .protoPackageDependencies(createProtoPackageDependencies(configMap, "proto_deps"))
             .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
             .shortName((String) configMap.get("short_name"))
-            .packageType(PackageType.of((String) configMap.get("package_type")))
-            .dependencyType(DependencyType.of((String) configMap.get("dependency_type")))
-            .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
+            .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
             .apiVersion((String) configMap.get("major_version"))
             .protoPath((String) configMap.get("proto_path"))
             .author((String) configMap.get("author"))
@@ -314,7 +290,7 @@ public abstract class PackageMetadataConfig {
             .gapicConfigName((String) configMap.get("gapic_config_name"));
     if (configMap.containsKey("proto_test_deps")) {
       builder.protoPackageTestDependencies(
-          createProtoPackageDependencies(configMap, "proto_test_deps", TEST_PROTO_PACKAGE_PREFIX));
+          createProtoPackageDependencies(configMap, "proto_test_deps"));
     }
 
     if (configMap.containsKey("generated_ga_package_version")) {
@@ -327,7 +303,7 @@ public abstract class PackageMetadataConfig {
 
   @SuppressWarnings("unchecked")
   private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependencies(
-      Map<String, Object> configMap, String key, ImmutableMap<TargetLanguage, String> prefixMap) {
+      Map<String, Object> configMap, String key) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
     List<String> packages = (List<String>) configMap.get(key);
 
@@ -350,8 +326,7 @@ public abstract class PackageMetadataConfig {
 
         String packageNameForLanguage = entry.getValue().get("name_override");
         if (packageNameForLanguage == null) {
-          packageNameForLanguage =
-              getDefaultProtoPackageName(entry.getKey(), packageName, prefixMap);
+          packageNameForLanguage = packageName;
         }
         VersionBound version =
             VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
@@ -360,14 +335,6 @@ public abstract class PackageMetadataConfig {
     }
 
     return packageDependencies;
-  }
-
-  private static String getDefaultProtoPackageName(
-      TargetLanguage language, String packageName, ImmutableMap<TargetLanguage, String> prefixMap) {
-    if (prefixMap.containsKey(language)) {
-      return prefixMap.get(language) + packageName;
-    }
-    return packageName;
   }
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(

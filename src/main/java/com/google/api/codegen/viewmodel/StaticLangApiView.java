@@ -65,6 +65,18 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  // Used in C#
+  public abstract boolean apiHasUnaryMethod();
+
+  // Used in C#
+  public abstract boolean apiHasServerStreamingMethod();
+
+  // Used in C#
+  public abstract boolean apiHasClientStreamingMethod();
+
+  // Used in C#
+  public abstract boolean apiHasBidiStreamingMethod();
+
   @Nullable // Used in Java
   public abstract String stubInterfaceName();
 
@@ -75,7 +87,11 @@ public abstract class StaticLangApiView {
   public abstract List<StaticLangPagedResponseView> pagedResponseViews();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangApiView.Builder();
+    return new AutoValue_StaticLangApiView.Builder()
+        .apiHasUnaryMethod(false)
+        .apiHasServerStreamingMethod(false)
+        .apiHasClientStreamingMethod(false)
+        .apiHasBidiStreamingMethod(false);
   }
 
   @AutoValue.Builder
@@ -116,6 +132,14 @@ public abstract class StaticLangApiView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder apiHasUnaryMethod(boolean val);
+
+    public abstract Builder apiHasServerStreamingMethod(boolean val);
+
+    public abstract Builder apiHasClientStreamingMethod(boolean val);
+
+    public abstract Builder apiHasBidiStreamingMethod(boolean val);
 
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
