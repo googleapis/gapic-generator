@@ -1288,9 +1288,7 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::GetOperationRequest, request)
         assert_equal(name, request.name)
-        op = Minitest::Mock.new
-        op.expect :execute, expected_response
-        op
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
@@ -1368,9 +1366,7 @@ describe Google::Longrunning::OperationsClient do
         assert_instance_of(Google::Longrunning::ListOperationsRequest, request)
         assert_equal(name, request.name)
         assert_equal(filter, request.filter)
-        op = Minitest::Mock.new
-        op.expect :execute, expected_response
-        op
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
@@ -1437,9 +1433,7 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::CancelOperationRequest, request)
         assert_equal(name, request.name)
-        op = Minitest::Mock.new
-        op.expect :execute, nil
-        op
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
@@ -1508,9 +1502,7 @@ describe Google::Longrunning::OperationsClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Longrunning::DeleteOperationRequest, request)
         assert_equal(name, request.name)
-        op = Minitest::Mock.new
-        op.expect :execute, nil
-        op
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 

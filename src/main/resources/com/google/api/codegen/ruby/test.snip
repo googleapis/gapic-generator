@@ -463,13 +463,11 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
-    op = Minitest::Mock.new
     @if test.hasReturnValue
-      op.expect :execute, expected_response
+      OpenStruct.new(execute: expected_response)
     @else
-      op.expect :execute, nil
+      OpenStruct.new(execute: nil)
     @end
-    op
   end
 @end
 
