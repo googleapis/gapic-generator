@@ -877,15 +877,14 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
         typeTable.saveNicknameFor("java.lang.Void");
-        typeTable.saveNicknameFor("java.util.HashSet");
-        typeTable.saveNicknameFor("java.util.Arrays");
         break;
     }
   }
@@ -905,12 +904,12 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
     typeTable.saveNicknameFor("com.google.longrunning.Operation");
-    typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
 
-    switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
+    switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
+        typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
         break;
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
