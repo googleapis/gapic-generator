@@ -20,7 +20,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -188,7 +187,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
       return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
     Schema schema = null;
-    if (!(type instanceof EmptyTypeModel)) {
+    if (!type.isEmptyType()) {
       schema = ((DiscoveryField) type).getDiscoveryField();
     }
     return getFullNameFor(schema);
@@ -296,7 +295,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
     Schema schema = null;
-    if (!(type instanceof EmptyTypeModel)) {
+    if (!type.isEmptyType()) {
       schema = ((DiscoveryField) type).getDiscoveryField();
     }
     TypedValue typedValue = typeNameConverter.getSnippetZeroValue(schema);

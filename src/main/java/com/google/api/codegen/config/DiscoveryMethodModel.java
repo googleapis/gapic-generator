@@ -148,7 +148,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return outputType == null || outputType instanceof EmptyTypeModel;
+    return outputType == null || outputType.isEmptyType();
   }
 
   @Override
