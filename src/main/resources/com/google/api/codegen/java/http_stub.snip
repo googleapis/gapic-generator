@@ -65,12 +65,14 @@
                   .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
                   .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
                   .build())
-          .setResponseParser(
-              ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
-                  @if methodDescriptor.hasResponse
-                    .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
-                  @end
-                  .build())
+          @if methodDescriptor.hasResponse
+            .setResponseParser(
+                ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
+                    @if methodDescriptor.hasResponse
+                      .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+                    @end
+                    .build())
+          @end
           .build();
 @end
 
