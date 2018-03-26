@@ -132,6 +132,11 @@
 @private unarySuccessAsserts(test)
   List<String> actualRequests = mockService.getRequestPaths();
   Assert.assertEquals(1, actualRequests.size());
+
+  String apiClientHeaderKey =  mockService.getRequestHeaders()
+      .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+  Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+      .matcher(apiClientHeaderKey).matches());
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
