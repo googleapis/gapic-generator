@@ -68,9 +68,7 @@
           @if methodDescriptor.hasResponse
             .setResponseParser(
                 ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
-                    @if methodDescriptor.hasResponse
-                      .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
-                    @end
+                    .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
                     .build())
           @end
           .build();
