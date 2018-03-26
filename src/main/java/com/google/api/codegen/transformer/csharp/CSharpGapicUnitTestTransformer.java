@@ -244,7 +244,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
         initCodeContextSync,
         synchronicity == Synchronicity.Sync
             ? ClientMethodType.RequestObjectMethod
-            : ClientMethodType.AsyncRequestObjectMethod,
+            : ClientMethodType.AsyncRequestObjectCallSettingsMethod,
         synchronicity,
         null);
   }
