@@ -45,26 +45,32 @@
 
 @private constants(stubClass)
   @join methodDescriptor : stubClass.methodDescriptors
-    {@httpMethodCallable(methodDescriptor)}
+    {@methodDescriptors(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private httpMethodCallable(methodDescriptor)
+@private methodDescriptors(methodDescriptor)
   @@InternalApi
-  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> \
+    {@methodDescriptor.name} =
       ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
-          .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
-          .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
-          @if methodDescriptor.hasResponse
-            .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
-          @end
-          .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
-          .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
-          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter(\
-              {@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory()))
+          .setFullMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
-          .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<{@methodDescriptor.requestTypeName}>newBuilder()
+                  .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
+                  .setPathTemplate(PathTemplate.create("{@methodDescriptor.httpMethod.pathTemplate}"))
+                  .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
+                  .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
+                  .setResourceNameField("{@methodDescriptor.httpMethod.resourceNameFieldName}")
+                  .build())
+          .setResponseParser(
+              ApiMessageHttpResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
+                  @if methodDescriptor.hasResponse
+                    .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+                  @end
+                  .build())
           .build();
 @end
 

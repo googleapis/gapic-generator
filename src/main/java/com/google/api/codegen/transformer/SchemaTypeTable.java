@@ -177,6 +177,10 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
+    // TODO(andrealin): Remove this hack when null response types are implemented.
+    if (type == null) {
+      return "nullFullName";
+    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
