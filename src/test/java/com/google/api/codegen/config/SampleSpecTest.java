@@ -77,7 +77,7 @@ public class SampleSpecTest {
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
     final Set<SampleValueSet> matchingValueSets =
-        sampleSpec.valueSetsMatching(ClientMethodType.CallableMethod, SampleType.STANDALONE);
+        sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE);
     assertEquals(2, matchingValueSets.size());
     assertTrue(matchingValueSets.contains(valueSetAlice));
     assertTrue(matchingValueSets.contains(valueSetAlison));
@@ -109,7 +109,7 @@ public class SampleSpecTest {
     assertEquals(
         2,
         sampleSpec
-            .valueSetsMatching(ClientMethodType.CallableMethod, SampleType.STANDALONE)
+            .getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE)
             .size());
   }
 }

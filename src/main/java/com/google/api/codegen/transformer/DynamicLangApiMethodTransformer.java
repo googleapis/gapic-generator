@@ -28,7 +28,7 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.codegen.viewmodel.SampleValueSetsModel;
+import com.google.api.codegen.viewmodel.SampleValueSetCollection;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class DynamicLangApiMethodTransformer {
       methodType = ClientMethodType.OptionalArrayMethod;
     }
     apiMethod.type(methodType);
-    apiMethod.sampleValueSetsModel(
-        new SampleValueSetsModel(context.getMethodConfig().getSampleSpec(), methodType));
+    apiMethod.sampleValueSetsCollection(
+        new SampleValueSetCollection(context.getMethodConfig().getSampleSpec(), methodType));
 
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(

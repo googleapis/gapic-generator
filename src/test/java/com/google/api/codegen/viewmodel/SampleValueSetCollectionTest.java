@@ -27,7 +27,7 @@ import com.google.api.codegen.config.SampleSpec.SampleType;
 import java.util.Set;
 import org.junit.Test;
 
-public class SampleValueSetsModelTest {
+public class SampleValueSetCollectionTest {
   @Test
   public void forSampleType() {
     SampleValueSet valueSetAlice =
@@ -54,12 +54,13 @@ public class SampleValueSetsModelTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    final SampleValueSetsModel model =
-        new SampleValueSetsModel(sampleSpec, ClientMethodType.CallableMethod);
-    final Set<SampleValueSet> matchingValueSets = model.forSampleType(SampleType.STANDALONE);
+    final SampleValueSetCollection model =
+        new SampleValueSetCollection(sampleSpec, ClientMethodType.CallableMethod);
+    final Set<SampleValueSetView> matchingValueSets = model.forSampleType(SampleType.STANDALONE);
     assertEquals(2, matchingValueSets.size());
-    assertTrue(matchingValueSets.contains(valueSetAlice));
-    assertTrue(matchingValueSets.contains(valueSetAlison));
-    assertFalse(matchingValueSets.contains(valueSetBob));
+
+    assertTrue(matchingValueSets.contains(SampleValueSetView.New(valueSetAlice)));
+    assertTrue(matchingValueSets.contains(SampleValueSetView.New(valueSetAlison)));
+    assertFalse(matchingValueSets.contains(SampleValueSetView.New(valueSetBob)));
   }
 }

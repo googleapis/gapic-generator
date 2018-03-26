@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
@@ -47,11 +46,9 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.ApiAndSamples;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
-import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
-import com.google.api.codegen.viewmodel.DynamicLangXApiView.Builder;
 import com.google.api.codegen.viewmodel.GrpcDocView;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcMessageDocView;
@@ -61,7 +58,9 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
-import com.google.api.codegen.viewmodel.SampleValueSetsModel;
+import com.google.api.codegen.viewmodel.SampleInfo;
+import com.google.api.codegen.viewmodel.SampleValueSetView;
+import com.google.api.codegen.viewmodel.SampleView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
@@ -75,6 +74,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "py/main.snip";
@@ -138,23 +138,20 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     FeatureConfig featureConfig = new DefaultFeatureConfig();
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    ImmutableList.Builder<ViewModel> sampleSurfaces = ImmutableList.builder();
 
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
       addApiImports(context);
-      final ViewModel apiClass = generateApiClass(context);
-      serviceSurfaces.add(apiClass);
-      sampleSurfaces.addAll(generateSampleClassesForApi(context, (DynamicLangXApiView) apiClass));
+      serviceSurfaces.addAll(generateApiAndSampleClasses(context));
     }
 
     GrpcDocView enumFile = generateEnumView(productConfig, modelTypeTable, namer, model.getFiles());
     if (!enumFile.elementDocs().isEmpty()) {
       serviceSurfaces.add(enumFile);
     }
-    return serviceSurfaces.addAll(sampleSurfaces.build()).build();
+    return serviceSurfaces.build();
   }
 
   private void addApiImports(GapicInterfaceContext context) {
@@ -189,133 +186,143 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
-  /**
-   * Generates a list of standalone sample view models for the the API, at most one for each calling
-   * form for each method, as specified in each method view model's sampleValueSetsModel (which
-   * ultimately derives from user-provided configuration). If no samples are configured, no sample
-   * files are produced.
-   *
-   * <p>TODO(vchudnov-g): Properly set the method form in the views thus generated.
-   *
-   * @param context the interface for whose methods the sample files will be generated
-   * @param apClass the previously generated API class view model for whose methods sample files
-   *     will be generated. The view models returned for each method are modified clones of the view
-   *     models for the methods in apiClass.
-   * @return A list of view models, each one corresponding to a distinct method sample
-   */
-  private Iterable<ViewModel> generateSampleClassesForApi(
-      GapicInterfaceContext context, DynamicLangXApiView apiClass) {
-    SurfaceNamer namer = context.getNamer();
-    ImmutableList.Builder<ViewModel> viewModelBuilder = ImmutableList.builder();
-
-    final Builder sampleClassBuilder = apiClass.toBuilder();
-    sampleClassBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-
-    for (ApiMethodView view : apiClass.apiMethods()) {
-      OptionalArrayMethodView methodView = (OptionalArrayMethodView) view;
-      SampleValueSetsModel valueSetsModel = (methodView).sampleValueSetsModel();
-      final Set<SampleValueSet> matchingValueSets =
-          valueSetsModel.forSampleType(SampleType.STANDALONE);
-
-      OptionalArrayMethodView.Builder methodViewBuilder = (methodView).toBuilder();
-
-      for (SampleValueSet values : matchingValueSets) {
-
-        methodViewBuilder.sampleValueSet(values);
-        final ApiMethodView sampleMethodView = methodViewBuilder.build();
-
-        List<ApiMethodView> methodList = ImmutableList.of(sampleMethodView);
-        String subPath =
-            pathMapper.getSamplesOutputPath(
-                context.getInterfaceModel().getFullName(),
-                context.getProductConfig(),
-                sampleMethodView.name());
-
-        // TODO(vchudnov-g): Replace this placeholder with actual calling form; right now, it's
-        // always just an OptionalArrayMethodView.
-        ClientMethodType callingForm = methodView.type();
-        String className = namer.getApiSampleClassName(sampleMethodView, callingForm.toString());
-
-        String outputPath = subPath + File.separator + namer.getApiSampleFileName(className);
-
-        sampleClassBuilder.apiMethods(methodList).name(className).outputPath(outputPath);
-
-        viewModelBuilder.add(sampleClassBuilder.build());
-      }
-    }
-    return viewModelBuilder.build();
-  }
-
-  private ViewModel generateApiClass(GapicInterfaceContext context) {
+  private List<ViewModel> generateApiAndSampleClasses(GapicInterfaceContext context) {
+    ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
     String subPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
-    List<ApiMethodView> methods = generateApiMethods(context);
+    List<ApiAndSamples<OptionalArrayMethodView, OptionalArrayMethodView>> methods =
+        generateApiMethodsAndSamples(context);
 
-    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
+    DynamicLangXApiView.Builder xapiClassBuilder = DynamicLangXApiView.newBuilder();
 
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
+    xapiClassBuilder.protoFilename(context.getInterface().getFile().getSimpleName());
+    xapiClassBuilder.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
 
-    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
-
-    xapiClass.name(name);
-    xapiClass.doc(
-        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
-    xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
+    xapiClassBuilder.doc(
+        serviceTransformer.generateServiceDoc(
+            context, methods.get(0).api(), context.getProductConfig()));
+    xapiClassBuilder.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(model.getServiceAddress());
-    xapiClass.servicePort(model.getServicePort());
-    xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
-    xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
-    xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+    xapiClassBuilder.serviceAddress(model.getServiceAddress());
+    xapiClassBuilder.servicePort(model.getServicePort());
+    xapiClassBuilder.serviceTitle(model.getTitle());
+    xapiClassBuilder.authScopes(model.getAuthScopes());
+    xapiClassBuilder.hasDefaultServiceAddress(
+        context.getInterfaceConfig().hasDefaultServiceAddress());
+    xapiClassBuilder.hasDefaultServiceScopes(
+        context.getInterfaceConfig().hasDefaultServiceScopes());
 
-    xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.batchingDescriptors(ImmutableList.<BatchingDescriptorView>of());
-    xapiClass.longRunningDescriptors(ImmutableList.<LongRunningOperationDetailView>of());
-    xapiClass.grpcStreamingDescriptors(ImmutableList.<GrpcStreamingDetailView>of());
-    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
-    xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
-    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
+    xapiClassBuilder.pageStreamingDescriptors(
+        pageStreamingTransformer.generateDescriptors(context));
+    xapiClassBuilder.batchingDescriptors(ImmutableList.<BatchingDescriptorView>of());
+    xapiClassBuilder.longRunningDescriptors(ImmutableList.<LongRunningOperationDetailView>of());
+    xapiClassBuilder.grpcStreamingDescriptors(ImmutableList.<GrpcStreamingDetailView>of());
+    xapiClassBuilder.hasPageStreamingMethods(
+        context.getInterfaceConfig().hasPageStreamingMethods());
+    xapiClassBuilder.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
+    xapiClassBuilder.hasLongRunningOperations(
+        context.getInterfaceConfig().hasLongRunningOperations());
 
-    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    xapiClass.formatResourceFunctions(
+    xapiClassBuilder.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    xapiClassBuilder.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
-    xapiClass.parseResourceFunctions(
+    xapiClassBuilder.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
+    xapiClassBuilder.pathTemplateGetterFunctions(
+        ImmutableList.<PathTemplateGetterFunctionView>of());
 
-    xapiClass.methodKeys(ImmutableList.<String>of());
-    xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
-    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
-    xapiClass.grpcClientTypeName(
+    xapiClassBuilder.methodKeys(ImmutableList.<String>of());
+    xapiClassBuilder.interfaceKey(context.getInterface().getFullName());
+    xapiClassBuilder.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
+    xapiClassBuilder.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
+    xapiClassBuilder.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.apiMethods(methods);
-
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
-    xapiClass.gapicPackageName(
+    xapiClassBuilder.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
+    xapiClassBuilder.gapicPackageName(
         namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    xapiClassBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
-    return xapiClass.build();
-  }
+    // Generate the view for the API class.
+    xapiClassBuilder.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClassBuilder.outputPath(namer.getSourceFilePath(subPath, name));
+    xapiClassBuilder.name(name);
+    xapiClassBuilder.apiMethods(
+        methods.stream().map(ApiAndSamples::api).collect(Collectors.toList()));
+    DynamicLangXApiView xapiClass = xapiClassBuilder.build();
+    viewModels.add(xapiClass);
 
-  private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
-    ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
+    // Generate the views for each sample class that containing a single method of th4e API class.
+    SampleView.Builder<DynamicLangXApiView, OptionalArrayMethodView> sampleViewBuilder =
+        SampleView.<DynamicLangXApiView, OptionalArrayMethodView>newBuilder();
+    sampleViewBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME).api(xapiClass);
 
-    for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+    for (ApiAndSamples<OptionalArrayMethodView, OptionalArrayMethodView> methodAndSamples :
+        methods) {
+      for (SampleInfo<OptionalArrayMethodView> sampleInfo : methodAndSamples.samples()) {
+        subPath =
+            pathMapper.getSamplesOutputPath(
+                context.getInterfaceModel().getFullName(),
+                context.getProductConfig(),
+                methodAndSamples.api().name());
+        String sampleOutputPath =
+            subPath + File.separator + namer.getApiSampleFileName(sampleInfo.className());
+
+        viewModels.add(sampleViewBuilder.info(sampleInfo).outputPath(sampleOutputPath).build());
+      }
     }
 
-    return apiMethods.build();
+    return viewModels.build();
+  }
+
+  private List<ApiAndSamples<OptionalArrayMethodView, OptionalArrayMethodView>>
+      generateApiMethodsAndSamples(GapicInterfaceContext context) {
+    ImmutableList.Builder<ApiAndSamples<OptionalArrayMethodView, OptionalArrayMethodView>>
+        apiMethodsAndSamples = ImmutableList.builder();
+
+    for (MethodModel method : context.getSupportedMethods()) {
+      OptionalArrayMethodView methodView =
+          apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method));
+      Set<SampleValueSetView> matchingValueSets =
+          methodView.sampleValueSetsCollection().forSampleType(SampleType.STANDALONE);
+
+      SampleInfo.Builder<OptionalArrayMethodView> sampleInfoBuilder =
+          SampleInfo.<OptionalArrayMethodView>newBuilder();
+
+      ImmutableList.Builder<SampleInfo<OptionalArrayMethodView>> sampleInfos =
+          ImmutableList.builder();
+      for (SampleValueSetView values : matchingValueSets) {
+        // TODO(vchudnov-g): Import calling form selection logic here from template files.
+        String callingForm = "ChangemeForm";
+        sampleInfos.add(
+            sampleInfoBuilder
+                .valueSet(values)
+                .className(
+                    context
+                        .getNamer()
+                        .getApiSampleClassName(
+                            methodView.name(),
+                            callingForm,
+                            // TODO(vchudnov-g): Simplify so we don't need all these casing conversions
+                            Name.anyLower(values.id()).toLowerCamel()))
+                .method(methodView)
+                .callingForm(callingForm)
+                .build());
+      }
+
+      apiMethodsAndSamples.add(
+          ApiAndSamples.<OptionalArrayMethodView, OptionalArrayMethodView>newBuilder()
+              .api(methodView)
+              .samples(sampleInfos.build())
+              .build());
+    }
+
+    return apiMethodsAndSamples.build();
   }
 
   private GrpcDocView generateEnumView(

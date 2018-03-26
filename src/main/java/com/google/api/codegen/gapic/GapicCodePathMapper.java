@@ -22,7 +22,7 @@ import com.google.api.codegen.config.ProductConfig;
  */
 public interface GapicCodePathMapper {
 
-  /** Returns the path to the directory containg the generated libraries */
+  /** Returns the path to the directory containing the generated libraries */
   String getOutputPath(String elementFullName, ProductConfig config);
 
   /**

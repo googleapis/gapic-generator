@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -98,15 +97,7 @@ public abstract class StaticLangApiMethodView
   public abstract String serviceConstructorName();
 
   /** All the configured value sets for all samples for this method. */
-  public abstract SampleValueSetsModel sampleValueSetsModel();
-
-  /**
-   * When this class is being used as a view model for a single sample, the one value set to be used
-   * in the sample.
-   */
-  // TODO(vchudnov-g): Consider subclassing a StaticLangApiMethodSampleView
-  @Nullable
-  public abstract SampleValueSet sampleValueSet();
+  public abstract SampleValueSetCollection sampleValueSetsCollection();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
@@ -176,9 +167,7 @@ public abstract class StaticLangApiMethodView
 
     public abstract Builder serviceConstructorName(String val);
 
-    public abstract Builder sampleValueSet(SampleValueSet valueSet);
-
-    public abstract Builder sampleValueSetsModel(SampleValueSetsModel sampleValueSetsModel);
+    public abstract Builder sampleValueSetsCollection(SampleValueSetCollection collection);
 
     public abstract StaticLangApiMethodView build();
   }

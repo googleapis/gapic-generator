@@ -1,23 +1,23 @@
 @extends "java/common.snip"
 @extends "java/method_sample.snip"
 
-# TODO(vchudnov-g): This file is a stub for now. Fill in.
-
-@snippet generate(classFile)
-  @join apiMethod : classFile.classView.apiMethods
-     //// Standalone sample for {@apiMethod.name} of type {@apiMethod.type} ////
-     // THIS IS A STUB! Replace with a real sample
+@snippet generate(sampleView)
+   //// STUB standalone sample "{@sampleView.info.className}" /////
+   //     calling form "{@sampleView.info.callingForm}"
+   //     valueSet "{@sampleView.info.valueSet.id}"
+   @let apiMethod = sampleView.info.method
+     //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+     // TODO: Replace with a real sample
      /*
      @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
        {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
      @end
      */
-  @end
+   @end
 @end
 
 # copied & modified from main.snip
 @private methodDoc(apiMethodDoc, methodSampleCode)
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
   @if apiMethodDoc.mainDocLines
     @join commentLine : apiMethodDoc.mainDocLines

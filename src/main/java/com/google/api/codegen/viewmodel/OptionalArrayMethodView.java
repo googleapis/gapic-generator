@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -116,15 +115,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
-  /** All the configured value sets for all samples for this method. */
-  public abstract SampleValueSetsModel sampleValueSetsModel();
-
-  /**
-   * When this class is being used as a view model for a single sample, the one value set to be used
-   * in the sample.
-   */
-  @Nullable
-  public abstract SampleValueSet sampleValueSet();
+  /** All the configured value sets for all samples for this method */
+  public abstract SampleValueSetCollection sampleValueSetsCollection();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -210,9 +202,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
-    public abstract Builder sampleValueSet(SampleValueSet valueSet);
-
-    public abstract Builder sampleValueSetsModel(SampleValueSetsModel sampleValueSetsModel);
+    public abstract Builder sampleValueSetsCollection(SampleValueSetCollection collection);
 
     public abstract OptionalArrayMethodView build();
   }

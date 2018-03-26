@@ -42,7 +42,6 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
-import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
@@ -771,11 +770,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The name of the class that holds a sample for an API method and variant. The variant is
-   * typically a calling form.
+   * typically a calling form and/or a value set id.
    */
-  public String getApiSampleClassName(ApiMethodView method, String variant) {
+  public String getApiSampleClassName(String methodName, String... variant) {
     return publicClassName(
-        Name.anyCamel(method.name(), "sample", Name.anyLower(variant).toUpperCamel()));
+        Name.anyCamel(methodName, "sample", Name.anyLower(variant).toUpperCamel()));
   }
 
   /**

@@ -36,7 +36,7 @@ import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateCheckView;
 import com.google.api.codegen.viewmodel.RequestObjectMethodDetailView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.codegen.viewmodel.SampleValueSetsModel;
+import com.google.api.codegen.viewmodel.SampleValueSetCollection;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
@@ -873,15 +873,16 @@ public class StaticLangApiMethodTransformer {
     return ImmutableList.of(doc);
   }
 
-  /** Builds the method view model after setting its type and sampleValueSetsModel. */
+  /** Builds the method view model after setting its type and sampleValueSetsCollection */
   private StaticLangApiMethodView buildMethodForCallingForm(
+      // return a MethodAndSamples, one for each calling form
       StaticLangApiMethodView.Builder methodViewBuilder,
       MethodContext context,
       ClientMethodType callingForm) {
     return methodViewBuilder
         .type(callingForm)
-        .sampleValueSetsModel(
-            new SampleValueSetsModel(context.getMethodConfig().getSampleSpec(), callingForm))
+        .sampleValueSetsCollection(
+            new SampleValueSetCollection(context.getMethodConfig().getSampleSpec(), callingForm))
         .build();
   }
 

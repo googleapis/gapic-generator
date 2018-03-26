@@ -1,16 +1,15 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-# Top of file standalone_vchudnov
-@snippet generate(xapiClass)
-  @join apiMethod : xapiClass.apiMethods
-     @### Standalone sample for {@apiMethod.name} of type {@apiMethod.type} ###
-     @### THIS IS A STUB! Replace with a real sample
-
+@snippet generate(sampleView)
+   @#### STUB standalone sample "{@sampleView.info.className}" #####
+   @##     calling form "{@sampleView.info.callingForm}"
+   @##     valueSet "{@sampleView.info.valueSet.id}"
+   @let apiMethod = sampleView.info.method
+     @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+     @## TODO: Replace with a real sample
      sample = """
         {@sampleCode(apiMethod)}
      """
-
   @end
-
 @end

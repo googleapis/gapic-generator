@@ -19,13 +19,12 @@ import com.google.api.codegen.SampleConfiguration;
 import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /**
  * Class SampleSpec stores the sample specification for a given method, and provides methods to
@@ -37,11 +36,11 @@ public class SampleSpec {
   private final SampleConfiguration sampleConfiguration;
 
   /** All the SampleValueSets defined for this method, indexed by their IDs. */
-  private HashMap<String, SampleValueSet> valueSets;
+  private Map<String, SampleValueSet> valueSets;
 
   /** The various types of supported samples. */
   public enum SampleType {
-    INCODE,
+    IN_CODE,
     STANDALONE,
     EXPLORER,
   }
@@ -52,19 +51,17 @@ public class SampleSpec {
   }
 
   /**
-   * Returns true if id is a match for the given expression. This is the function used to determine
-   * whether calling forms and value sets match expressions referencing them by ID.
-   *
-   * <p>CAUTION: This is a stub at the moment, always returning true.
+   * Returns true if id is a regexp match for the given expression. This is the function used to
+   * determine whether calling forms and value sets match expressions referencing them by ID.
    */
   public static boolean expressionMatchesId(String expression, String id) {
-    // TODO(vchudnov-g): Implement more sophisticated matching as per design.
     return id.matches(expression);
   }
 
   /** Returns the SampleValueSets that were specified for this methodForm and sampleType. */
-  public Set<SampleValueSet> valueSetsMatching(ClientMethodType methodForm, SampleType sampleType) {
-    Set<SampleValueSet> matchingValueSets = new HashSet<>();
+  public Set<SampleValueSet> getMatchingValueSets(
+      ClientMethodType methodForm, SampleType sampleType) {
+    Set<SampleValueSet> matchingValueSets = new LinkedHashSet<>();
     List<SampleTypeConfiguration> sampleConfigList = getConfigFor(sampleType);
     String methodFormString = methodForm.toString();
 
@@ -84,7 +81,9 @@ public class SampleSpec {
 
       // Add the value sets referenced in this sampleConfig.
       for (String valueSetExpression : sampleConfig.getValueSetsList()) {
-        Iterable<String> valueSetNames = getValueSetNamesMatchingExpression(valueSetExpression);
+        Iterable<String> valueSetNames =
+            Iterables.filter(
+                valueSets.keySet(), (String id) -> expressionMatchesId(valueSetExpression, id));
         for (String name : valueSetNames) {
           matchingValueSets.add(valueSets.get(name));
         }
@@ -94,25 +93,12 @@ public class SampleSpec {
     return matchingValueSets;
   }
 
-  /** Returns the IDs of the ValueSets that match valueSetExpression. */
-  private Iterable<String> getValueSetNamesMatchingExpression(String valueSetExpression) {
-    Predicate<String> expressionMatch =
-        new Predicate<String>() {
-          @Override
-          public boolean apply(@Nullable String id) {
-            return expressionMatchesId(valueSetExpression, id);
-          }
-        };
-
-    return Iterables.filter(valueSets.keySet(), expressionMatch);
-  }
-
   /** Returns the single SampleTypeConfiguration for the specified sampleType. */
   private List<SampleTypeConfiguration> getConfigFor(SampleType sampleType) {
     switch (sampleType) {
       case STANDALONE:
         return sampleConfiguration.getStandaloneList();
-      case INCODE:
+      case IN_CODE:
         return sampleConfiguration.getInCodeList();
       case EXPLORER:
         return sampleConfiguration.getApiExplorerList();
