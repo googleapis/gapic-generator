@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
 /**
@@ -185,7 +186,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    Schema schema = null;
+    if (!type.isEmptyType()) {
+      schema = ((DiscoveryField) type).getDiscoveryField();
+    }
+    return getFullNameFor(schema);
   }
 
   @Override
@@ -289,9 +294,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    return typeNameConverter
-        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    Schema schema = null;
+    if (!type.isEmptyType()) {
+      schema = ((DiscoveryField) type).getDiscoveryField();
+    }
+    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(schema);
+    return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override

@@ -9,10 +9,10 @@
 
      private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
           Lists.<ApiMethodDescriptor>newArrayList(
-            @join test : apiTest.testClass.testCases if test.hasReturnValue on ", ".add(BREAK)
+            @join test : apiTest.testClass.testCases on ", ".add(BREAK)
               {@test.methodDescriptor}
             @end
-        ));
+          ));
     private static final MockHttpService mockService
         = new MockHttpService(METHOD_DESCRIPTORS, {@apiTest.testClass.apiStubSettingsClassName}.getDefaultEndpoint());
 
@@ -90,6 +90,8 @@
   @if test.hasReturnValue
     {@initCode(test.mockResponse.initCode)}
     mockService.addResponse(expectedResponse);
+  @else
+    mockService.addNullResponse();
   @end
   {@""}
 @end

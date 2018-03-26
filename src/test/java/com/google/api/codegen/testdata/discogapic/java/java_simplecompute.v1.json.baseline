@@ -2602,11 +2602,11 @@ public final class DummyObject implements ApiMessage {
     return precisionFloatie;
   }
 
-  public Address getAddress() {
+  public Address getPrimaryAddress() {
     return primaryAddress;
   }
 
-  public Address getAddress() {
+  public Address getSecondaryAddress() {
     return secondaryAddress;
   }
 
@@ -2650,10 +2650,10 @@ public final class DummyObject implements ApiMessage {
       if (other.getPrecisionFloatie() != null) {
         this.precisionFloatie = other.precisionFloatie;
       }
-      if (other.getAddress() != null) {
+      if (other.getPrimaryAddress() != null) {
         this.primaryAddress = other.primaryAddress;
       }
-      if (other.getAddress() != null) {
+      if (other.getSecondaryAddress() != null) {
         this.secondaryAddress = other.secondaryAddress;
       }
       return this;
@@ -2694,20 +2694,20 @@ public final class DummyObject implements ApiMessage {
       return this;
     }
 
-    public Address getAddress() {
+    public Address getPrimaryAddress() {
       return primaryAddress;
     }
 
-    public Builder setAddress(Address primaryAddress) {
+    public Builder setPrimaryAddress(Address primaryAddress) {
       this.primaryAddress = primaryAddress;
       return this;
     }
 
-    public Address getAddress() {
+    public Address getSecondaryAddress() {
       return secondaryAddress;
     }
 
-    public Builder setAddress(Address secondaryAddress) {
+    public Builder setSecondaryAddress(Address secondaryAddress) {
       this.secondaryAddress = secondaryAddress;
       return this;
     }
@@ -2732,8 +2732,8 @@ public final class DummyObject implements ApiMessage {
       newBuilder.setFloatie(this.floatie);
       newBuilder.setName(this.name);
       newBuilder.setPrecisionFloatie(this.precisionFloatie);
-      newBuilder.setAddress(this.primaryAddress);
-      newBuilder.setAddress(this.secondaryAddress);
+      newBuilder.setPrimaryAddress(this.primaryAddress);
+      newBuilder.setSecondaryAddress(this.secondaryAddress);
       return newBuilder;
     }
   }
@@ -2760,8 +2760,8 @@ public final class DummyObject implements ApiMessage {
           Objects.equals(this.floatie, that.getFloatie()) &&
           Objects.equals(this.name, that.getName()) &&
           Objects.equals(this.precisionFloatie, that.getPrecisionFloatie()) &&
-          Objects.equals(this.primaryAddress, that.getAddress()) &&
-          Objects.equals(this.secondaryAddress, that.getAddress())
+          Objects.equals(this.primaryAddress, that.getPrimaryAddress()) &&
+          Objects.equals(this.secondaryAddress, that.getSecondaryAddress())
           ;
     }
     return false;
@@ -11260,7 +11260,7 @@ public class DummyObjectClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectCallable() {
+  public final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
     return stub.deleteDummyObjectCallable();
   }
 
@@ -11379,7 +11379,7 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
   /**
    * Returns the object with the settings used for calls to deleteDummyObject.
    */
-  public UnaryCallSettings<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings() {
+  public UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).deleteDummyObjectSettings();
   }
 
@@ -11505,7 +11505,7 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
     /**
      * Returns the builder for the settings used for calls to deleteDummyObject.
      */
-    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings() {
+    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
       return getStubSettingsBuilder().deleteDummyObjectSettings();
     }
 
@@ -11607,12 +11607,12 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       .add("https://www.googleapis.com/auth/devstorage.read_write")
       .build();
 
-  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings;
+  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
   /**
    * Returns the object with the settings used for calls to deleteDummyObject.
    */
-  public UnaryCallSettings<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings() {
+  public UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
     return deleteDummyObjectSettings;
   }
 
@@ -11720,7 +11720,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   public static class Builder extends StubSettings.Builder<DummyObjectStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
-    private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings;
+    private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -11814,7 +11814,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     /**
      * Returns the builder for the settings used for calls to deleteDummyObject.
      */
-    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectSettings() {
+    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
       return deleteDummyObjectSettings;
     }
 
@@ -11861,7 +11861,7 @@ public abstract class DummyObjectStub implements BackgroundResource {
 
 
   @BetaApi
-  public UnaryCallable<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectCallable() {
+  public UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
     throw new UnsupportedOperationException("Not implemented: deleteDummyObjectCallable()");
   }
 
@@ -11920,8 +11920,8 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @InternalApi
-  public static final ApiMethodDescriptor<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectMethodDescriptor =
-      ApiMethodDescriptor.<DeleteDummyObjectHttpRequest, nullTypeName>newBuilder()
+  public static final ApiMethodDescriptor<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectMethodDescriptor =
+      ApiMethodDescriptor.<DeleteDummyObjectHttpRequest, Void>newBuilder()
           .setFullMethodName("compute.dummyObjects.delete")
           .setHttpMethod(HttpMethods.DELETE)
           .setRequestFormatter(
@@ -11933,13 +11933,10 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .setResourceNameFactory(DummyObjectName.newFactory())
                   .setResourceNameField("dummyObject")
                   .build())
-          .setResponseParser(
-              ApiMessageHttpResponseParser.<nullTypeName>newBuilder()
-                  .build())
           .build();
   private final BackgroundResource backgroundResources;
 
-  private final UnaryCallable<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectCallable;
+  private final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
   public static final HttpJsonDummyObjectStub create(DummyObjectStubSettings settings) throws IOException {
@@ -11971,8 +11968,8 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   protected HttpJsonDummyObjectStub(DummyObjectStubSettings settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
 
-    HttpJsonCallSettings<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectTransportSettings =
-        HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, nullTypeName>newBuilder()
+    HttpJsonCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectTransportSettings =
+        HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, Void>newBuilder()
             .setMethodDescriptor(deleteDummyObjectMethodDescriptor)
             .build();
 
@@ -11982,7 +11979,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   }
 
   @BetaApi
-  public UnaryCallable<DeleteDummyObjectHttpRequest, nullTypeName> deleteDummyObjectCallable() {
+  public UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
     return deleteDummyObjectCallable;
   }
 
@@ -12226,7 +12223,7 @@ public class AddressClientTest {
           listAddressesMethodDescriptor,
           patchAddressMethodDescriptor,
           updateAddressMethodDescriptor
-      ));
+        ));
   private static final MockHttpService mockService
       = new MockHttpService(METHOD_DESCRIPTORS, AddressStubSettings.getDefaultEndpoint());
 
@@ -12760,7 +12757,8 @@ public class DummyObjectClientTest {
 
    private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
         Lists.<ApiMethodDescriptor>newArrayList(
-      ));
+          deleteDummyObjectMethodDescriptor
+        ));
   private static final MockHttpService mockService
       = new MockHttpService(METHOD_DESCRIPTORS, DummyObjectStubSettings.getDefaultEndpoint());
 
@@ -12791,7 +12789,7 @@ public class DummyObjectClientTest {
   @Test
   @SuppressWarnings("all")
   public void deleteDummyObjectTest() {
-
+    mockService.addNullResponse();
 
     DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
 

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -52,7 +53,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
     } else {
-      this.outputType = null;
+      this.outputType = new EmptyTypeModel();
     }
   }
 
@@ -147,7 +148,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return outputType == null;
+    return outputType == null || outputType.isEmptyType();
   }
 
   @Override
