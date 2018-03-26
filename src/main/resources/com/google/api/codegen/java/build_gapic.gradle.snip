@@ -8,7 +8,7 @@
   apply plugin: 'java'
 
   description = 'GAPIC library for {@metadata.identifier}'
-  group = "com.google.api"
+  group = 'com.google.api'
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
@@ -25,15 +25,15 @@
     @switch metadata.artifactType.toString
     @case "GAPIC_ONLY"
       @join dependency : metadata.protoPackageDependencies
-        compile project(":proto-{@dependency.name}")
-        testCompile project(":grpc-{@dependency.name}")
+        compile project(':proto-{@dependency.name}')
+        testCompile project(':grpc-{@dependency.name}')
       @end
     @default
-      compile project(":{@metadata.protoPackageName}")
-      testCompile project(":{@metadata.grpcPackageName}")
+      compile project(':{@metadata.protoPackageName}')
+      testCompile project(':{@metadata.grpcPackageName}')
     @end
     @join dependency : metadata.protoPackageTestDependencies
-      testCompile project(":grpc-{@dependency.name}")
+      testCompile project(':grpc-{@dependency.name}')
     @end
   }
 
@@ -45,6 +45,6 @@
     }
   }
 
-  compileJava.options.encoding = "UTF-8"
-
+  compileJava.options.encoding = 'UTF-8'
+  javadoc.options.encoding = 'UTF-8'
 @end

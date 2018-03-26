@@ -26,14 +26,10 @@ import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
-import com.google.api.codegen.gapic.StaticGapicProvider;
-import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.transformer.java.JavaGapicSampleAppTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,23 +39,14 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   public static final String JAVA = "java";
 
-  private static final ImmutableList<String> JAVA_SAMPLE_APP_STATIC_FILES =
-      ImmutableList.of(
-          "gradlew",
-          "gradle/wrapper/gradle-wrapper.jar",
-          "gradle/wrapper/gradle-wrapper.properties",
-          "gradlew.bat",
-          "settings.gradle");
-
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<GapicProvider<? extends Object>> defaultCreate(
+  public static List<GapicProvider<?>> defaultCreate(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig,
-      String outputPath) {
+      PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider<? extends Object>> providers = new ArrayList<>();
+    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
@@ -93,7 +80,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<? extends Object> testProvider =
+        GapicProvider<?> testProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -106,28 +93,6 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .build();
         providers.add(testProvider);
       }
-      if (generatorConfig.enableSampleAppGenerator()) {
-        GapicCodePathMapper javaSampleAppPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/main/java")
-                .setShouldAppendPackage(true)
-                .build();
-        GapicProvider<? extends Object> sampleAppProvider =
-            ViewModelDiscoGapicProvider.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new JavaGapicSampleAppTransformer(javaSampleAppPathMapper))
-                .build();
-        providers.add(sampleAppProvider);
-
-        // Copy static files for the Java sample application (e.g. gradle wrapper, build files)
-        GapicProvider<? extends Object> staticFileProvider =
-            new StaticGapicProvider<>(
-                new JavaPackageCopier(JAVA_SAMPLE_APP_STATIC_FILES, outputPath));
-        providers.add(staticFileProvider);
-      }
       return providers;
 
     } else {
@@ -137,12 +102,11 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   /** Create the DiscoGapicProvider based on the given id */
   @Override
-  public List<GapicProvider<? extends Object>> create(
+  public List<GapicProvider<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig,
-      String outputPath) {
-    return defaultCreate(model, productConfig, generatorConfig, packageConfig, outputPath);
+      PackageMetadataConfig packageConfig) {
+    return defaultCreate(model, productConfig, generatorConfig, packageConfig);
   }
 }

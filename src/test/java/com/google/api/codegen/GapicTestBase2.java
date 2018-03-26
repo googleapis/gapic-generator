@@ -124,14 +124,14 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .enabledArtifacts(Arrays.asList("surface", "test", "sample_app"))
+            .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
-    List<GapicProvider<? extends Object>> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig, "");
+            model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
-    for (GapicProvider<? extends Object> provider : providers) {
+    for (GapicProvider<?> provider : providers) {
       snippetNames.addAll(provider.getSnippetFileNames());
     }
 
@@ -167,7 +167,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test", "sample_app"));
+      enabledArtifacts.addAll(Arrays.asList("surface", "test"));
     }
 
     GapicGeneratorConfig generatorConfig =
@@ -175,12 +175,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(enabledArtifacts)
             .build();
-    List<GapicProvider<? extends Object>> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig, "");
+            model, productConfig, generatorConfig, packageConfig);
 
     List<String> disabledGen = new ArrayList<>(snippetNames);
-    for (GapicProvider<? extends Object> provider : providers) {
+    for (GapicProvider<?> provider : providers) {
       disabledGen.removeAll(provider.getSnippetFileNames());
     }
     for (String gen : disabledGen) {
@@ -188,8 +188,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     }
 
     // Don't run any providers we're not testing.
-    ArrayList<GapicProvider<? extends Object>> testedProviders = new ArrayList<>();
-    for (GapicProvider<? extends Object> provider : providers) {
+    ArrayList<GapicProvider<?>> testedProviders = new ArrayList<>();
+    for (GapicProvider<?> provider : providers) {
       if (!Collections.disjoint(provider.getSnippetFileNames(), snippetNames)) {
         testedProviders.add(provider);
       }
@@ -197,7 +197,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     boolean reportDiag = false;
     Map<String, Doc> output = new TreeMap<>();
-    for (GapicProvider<? extends Object> provider : testedProviders) {
+    for (GapicProvider<?> provider : testedProviders) {
       Map<String, Doc> out = provider.generate();
       if (output == null) {
         reportDiag = true;

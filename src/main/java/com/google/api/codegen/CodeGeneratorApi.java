@@ -144,7 +144,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String factory = generator.getFactory();
       String id = generator.getId();
 
-      GapicProviderFactory<GapicProvider<? extends Object>> providerFactory =
+      GapicProviderFactory<GapicProvider<?>> providerFactory =
           createProviderFactory(model, factory);
       GapicGeneratorConfig generatorConfig =
           GapicGeneratorConfig.newBuilder()
@@ -153,10 +153,10 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       String outputPath = options.get(OUTPUT_FILE);
-      List<GapicProvider<? extends Object>> providers =
-          providerFactory.create(model, productConfig, generatorConfig, packageConfig, outputPath);
+      List<GapicProvider<?>> providers =
+          providerFactory.create(model, productConfig, generatorConfig, packageConfig);
       Map<String, Doc> outputFiles = Maps.newHashMap();
-      for (GapicProvider<? extends Object> provider : providers) {
+      for (GapicProvider<?> provider : providers) {
         outputFiles.putAll(provider.generate());
       }
       writeCodeGenOutput(outputFiles, outputPath);
@@ -174,10 +174,10 @@ public class CodeGeneratorApi extends ToolDriverBase {
     }
   }
 
-  private static GapicProviderFactory<GapicProvider<? extends Object>> createProviderFactory(
+  private static GapicProviderFactory<GapicProvider<?>> createProviderFactory(
       final Model model, String factory) {
     @SuppressWarnings("unchecked")
-    GapicProviderFactory<GapicProvider<? extends Object>> provider =
+    GapicProviderFactory<GapicProvider<?>> provider =
         ClassInstantiator.createClass(
             factory,
             GapicProviderFactory.class,

@@ -153,12 +153,6 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract ReadmeMetadataView readmeMetadata();
 
   @Nullable
-  public abstract String sampleAppName();
-
-  @Nullable
-  public abstract String sampleAppPackage();
-
-  @Nullable
   public abstract String smokeTestProjectVariable();
 
   @Nullable
@@ -286,12 +280,6 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder credentialsClassName(String val);
 
     public abstract Builder readmeMetadata(ReadmeMetadataView val);
-
-    /** Class name of the sample application. */
-    public abstract Builder sampleAppName(String s);
-
-    /** Package name of the sample application. */
-    public abstract Builder sampleAppPackage(String s);
 
     /** Environment variable to determine the Google Cloud project used to run smoke tests. */
     public abstract Builder smokeTestProjectVariable(String s);
