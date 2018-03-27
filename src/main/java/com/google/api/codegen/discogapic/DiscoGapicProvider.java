@@ -26,7 +26,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicProvider implements GapicProvider<DiscoApiModel> {
+public class DiscoGapicProvider implements GapicProvider {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
