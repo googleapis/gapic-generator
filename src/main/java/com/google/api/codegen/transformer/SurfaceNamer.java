@@ -42,7 +42,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
@@ -326,9 +325,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(FieldModel field) {
     if (field.isMap()) {
-      return publicMethodName(Name.from("put", "all").join(field.getNameAsParameterName()));
+      return publicMethodName(Name.from("put").join(field.getNameAsParameterName()));
     } else if (field.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(field.getNameAsParameterName()));
+      return publicMethodName(Name.from("add").join(field.getNameAsParameterName()));
     } else {
       return publicMethodName(Name.from("set").join(field.getNameAsParameterName()));
     }
@@ -741,7 +740,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the field. */
   public String getFieldName(FieldModel field) {
-    return publicFieldName(field.asName());
+    return publicFieldName(field.getNameAsParameterName());
   }
 
   /** The page streaming descriptor name for the given method. */
@@ -808,17 +807,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub", "Settings"));
   }
 
+  /**
+   * The name of the callable factory for a particular stub interface; not used in most languages.
+   */
+  public String getCallableFactoryClassName(
+      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+    return publicClassName(
+        getTransportProtocolName(transportProtocol)
+            .join(Name.upperCamel(interfaceConfig.getRawName(), "Callable", "Factory")));
+  }
+
   /** The name of the RPC stub for a particular proto interface; not used in most languages. */
   public String getApiRpcStubClassName(
       InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
             .join(Name.anyCamel(interfaceModel.getSimpleName(), "Stub")));
-  }
-
-  /** The sample application class name. */
-  public String getSampleAppClassName() {
-    return publicClassName(Name.upperCamel("SampleApp"));
   }
 
   /**
@@ -1265,11 +1269,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The key to use in a dictionary for the given field. */
   public String getFieldKey(FieldModel field) {
     return keyName(field.getNameAsParameterName());
-  }
-
-  /** The key to use in a dictionary for the given field. */
-  public String getFieldKey(Field field) {
-    return keyName(Name.from(field.getSimpleName()));
   }
 
   /** The path to the client config for the given interface. */

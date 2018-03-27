@@ -86,11 +86,16 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeModel type) {
+    // TODO(andrealin): Remove this hack when null response types are implemented.
+    if (type == null) {
+      return new TypeName("nullTypeName");
+    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
     }
-    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    Schema schema = type.isEmptyType() ? null : ((DiscoveryField) type).getDiscoveryField();
+    return getTypeNameForElementType(schema);
   }
 
   @Override

@@ -238,6 +238,41 @@ interfaces:
     field_name_patterns:
       address: projectAddress
     timeout_millis: 60000
+- name: google.simplecompute.v1.DummyObjects
+  collections:
+  - name_pattern: projects/{project}/dummyObjects/{dummyObject}
+    entity_name: dummyObject
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - UNAVAILABLE
+    - DEADLINE_EXCEEDED
+  - name: non_idempotent
+    retry_codes: []
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.3
+    max_retry_delay_millis: 60000
+    initial_rpc_timeout_millis: 20000
+    rpc_timeout_multiplier: 1
+    max_rpc_timeout_millis: 20000
+    total_timeout_millis: 600000
+  methods:
+  - name: compute.dummyObjects.delete
+    flattening:
+      groups:
+      - parameters:
+        - dummyObject
+    required_fields:
+    - dummyObject
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      dummyObject: dummyObject
+    timeout_millis: 60000
 resource_name_generation:
 - message_name: AggregatedListAddressesHttpRequest
   field_entity_map:
@@ -260,3 +295,6 @@ resource_name_generation:
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
     address: projectAddress
+- message_name: DeleteDummyObjectHttpRequest
+  field_entity_map:
+    dummyObject: dummyObject

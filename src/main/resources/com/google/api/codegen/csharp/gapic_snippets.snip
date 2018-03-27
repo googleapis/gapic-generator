@@ -40,8 +40,8 @@
         @else
             {@requestObjectMethodSync(snippetMethod)}
         @end
-    @case "AsyncRequestObjectMethod"
-        {@requestObjectMethodAsync(snippetMethod)}
+    @case "AsyncRequestObjectCallSettingsMethod"
+        {@requestObjectMethodAsyncCallSettings(snippetMethod)}
     @case "PagedRequestObjectMethod"
         {@pagedRequestObjectMethodSync(snippetMethod)}
     @case "AsyncPagedRequestObjectMethod"
@@ -301,10 +301,11 @@
 @end
 
 # snippetMethod: StaticLangApiMethodSnippetView
-@private requestObjectMethodAsync(snippetMethod)
+@private requestObjectMethodAsyncCallSettings(snippetMethod)
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CancellationToken)
         {@preparations(snippetMethod, TRUE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};

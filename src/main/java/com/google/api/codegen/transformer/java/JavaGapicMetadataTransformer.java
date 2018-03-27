@@ -14,14 +14,10 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
@@ -32,45 +28,18 @@ import java.util.List;
 /** Responsible for producing package meta-data related views for Java GAPIC clients */
 public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
     implements ModelToViewTransformer {
-  private static final String GAPIC_BUILD_TEMPLATE_FILENAME = "java/build_gapic.gradle.snip";
-  private static final String SAMPLE_BUILD_TEMPLATE_FILENAME = "java/sample.gradle.snip";
-
   private final PackageMetadataConfig packageConfig;
-  private final GapicGeneratorConfig generatorConfig;
-  private final GapicProductConfig productConfig;
-  private final GapicCodePathMapper pathMapper;
 
-  public JavaGapicMetadataTransformer(
-      GapicCodePathMapper pathMapper,
-      GapicProductConfig productConfig,
-      PackageMetadataConfig packageConfig,
-      GapicGeneratorConfig generatorConfig) {
-    super(
-        generatorConfig.enableSampleAppGenerator()
-            // Includes sample build file if the sample application generation is enabled
-            ? ImmutableMap.of(SAMPLE_BUILD_TEMPLATE_FILENAME, "build.gradle")
-            : ImmutableMap.of(GAPIC_BUILD_TEMPLATE_FILENAME, "build.gradle"),
-        null);
-
+  public JavaGapicMetadataTransformer(PackageMetadataConfig packageConfig) {
+    super(ImmutableMap.of("java/build_gapic.gradle.snip", "build.gradle"), null);
     this.packageConfig = packageConfig;
-    this.generatorConfig = generatorConfig;
-    this.productConfig = productConfig;
-    this.pathMapper = pathMapper;
   }
 
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
-    String packageName = packageConfig.packageName(TargetLanguage.JAVA);
-    JavaSurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName);
-
     List<ViewModel> viewModels = Lists.newArrayList();
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {
-      if (generatorConfig.enableSampleAppGenerator()) {
-        builder
-            .sampleAppName(namer.getSampleAppClassName())
-            .sampleAppPackage(getSamplePackageName(model));
-      }
       viewModels.add(builder.build());
     }
     return viewModels;
@@ -79,12 +48,5 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
   @Override
   public List<String> getTemplateFileNames() {
     return Lists.newArrayList(getSnippetsOutput().keySet());
-  }
-
-  private String getSamplePackageName(ApiModel model) {
-    JavaGapicSampleAppTransformer sampleAppTransformer =
-        new JavaGapicSampleAppTransformer(pathMapper);
-    InterfaceContext context = sampleAppTransformer.getSampleContext(model, productConfig);
-    return context.getNamer().getPackageName();
   }
 }

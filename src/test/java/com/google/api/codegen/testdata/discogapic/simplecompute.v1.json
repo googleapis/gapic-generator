@@ -596,6 +596,35 @@
      "description": "[Output Only] The URL of the zone where the operation resides. Only available when performing per-zone operations."
     }
    }
+  },
+  "DummyObject": {
+   "id": "DummyObject",
+   "type": "object",
+   "description": "A fake object to test discogapic generation.",
+   "properties": {
+    "name": {
+     "type": "string",
+     "description": "Name of this object."
+    },
+    "floatie": {
+     "type": "number",
+     "format": "float",
+     "description": "A float type number."
+    },
+    "precisionFloatie": {
+     "type": "number",
+     "format": "double",
+     "description": "A double type number."
+    },
+    "primaryAddress": {
+     "$ref": "Address",
+     "description": "One address."
+    },
+    "secondaryAddress": {
+     "$ref": "Address",
+     "description": "Address two."
+    }
+   }
   }
  },
  "resources": {
@@ -910,6 +939,40 @@
      "response": {
       "$ref": "Operation"
      },
+     "scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/compute"
+     ]
+    }
+   }
+  },
+  "dummyObjects": {
+   "methods": {
+    "delete": {
+     "id": "compute.dummyObjects.delete",
+     "path": "{project}/dummyObjects/{dummyObject}",
+     "httpMethod": "DELETE",
+     "description": "Method with no response object.",
+     "parameters": {
+      "dummyObject": {
+       "type": "string",
+       "description": "Name of the dummyObject resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Project ID for this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "dummyObject"
+     ],
      "scopes": [
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/compute"

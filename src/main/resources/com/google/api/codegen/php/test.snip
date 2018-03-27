@@ -290,7 +290,7 @@
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
             $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
-            $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
+            $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterNames.get(0)}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
         @end
 
         {@singleCallSuccessAsserts(test)}

@@ -1,4 +1,41 @@
-java/sample.gradle.snip generation is not enabled for this test case.
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-library-v1'
+group = 'com.google.api'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  compile project(':proto-google-cloud-library-v1')
+  testCompile project(':grpc-google-cloud-library-v1')
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -433,6 +470,121 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
  */
 
 package com.google.gcloud.example;
+============== file: src/main/java/com/google/gcloud/example/stub/GrpcNoTemplatesApiServiceCallableFactory.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
+import com.google.example.noPathTemplates.v1.IncrementRequest;
+import com.google.gcloud.example.NoTemplatesApiServiceSettings;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.OperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC callable factory implementation for Google Fake API.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by GAPIC v0.0.5")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class GrpcNoTemplatesApiServiceCallableFactory implements GrpcStubCallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT> UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createPagedCallable(grpcCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      GrpcCallSettings<RequestT, com.google.longrunning.Operation> grpcCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, OperationsStub operationsStub) {
+    return GrpcCallableFactory.createOperationCallable(grpcCallSettings, operationCallSettings, clientContext, operationsStub);
+  }
+
+  @Override
+  public <RequestT, ResponseT> BidiStreamingCallable<RequestT, ResponseT> createBidiStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createBidiStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ServerStreamingCallable<RequestT, ResponseT> createServerStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      ServerStreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createServerStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ClientStreamingCallable<RequestT, ResponseT> createClientStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+}
 ============== file: src/main/java/com/google/gcloud/example/stub/GrpcNoTemplatesApiServiceStub.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -456,6 +608,7 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.grpc.GrpcCallSettings;
 import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -495,6 +648,7 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
 
   private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
 
+  private final GrpcStubCallableFactory callableFactory;
 
   public static final GrpcNoTemplatesApiServiceStub create(NoTemplatesApiServiceStubSettings settings) throws IOException {
     return new GrpcNoTemplatesApiServiceStub(settings, ClientContext.create(settings));
@@ -504,19 +658,33 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
     return new GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceStubSettings.newBuilder().build(), clientContext);
   }
 
+  public static final GrpcNoTemplatesApiServiceStub create(ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    return new GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceStubSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
   /**
    * Constructs an instance of GrpcNoTemplatesApiServiceStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceStubSettings settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new GrpcNoTemplatesApiServiceCallableFactory());
+  }
+
+  /**
+   * Constructs an instance of GrpcNoTemplatesApiServiceStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceStubSettings settings, ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
 
     GrpcCallSettings<IncrementRequest, Empty> incrementTransportSettings =
         GrpcCallSettings.<IncrementRequest, Empty>newBuilder()
             .setMethodDescriptor(incrementMethodDescriptor)
             .build();
 
-    this.incrementCallable = GrpcCallableFactory.createUnaryCallable(incrementTransportSettings,settings.incrementSettings(), clientContext);
+    this.incrementCallable = callableFactory.createUnaryCallable(incrementTransportSettings,settings.incrementSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }

@@ -66,11 +66,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public Name asName() {
-    return Name.from(protoField.getSimpleName());
-  }
-
-  @Override
   public String getTypeFullName() {
     return protoField.getType().getMessageType().getFullName();
   }

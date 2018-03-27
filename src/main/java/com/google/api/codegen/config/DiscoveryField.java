@@ -38,11 +38,17 @@ import javax.annotation.Nullable;
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
+  // Dereferenced schema to use for rendering type names and determining properties, type, and format.
   private final Schema schema;
-  private final Schema originalSchema; // not dereferenced.
+
+  // Not dereferenced schema; used in rendering this FieldModel's parameter name.
+  private final Schema originalSchema;
   private final DiscoApiModel apiModel;
 
-  /* Create a FieldModel object from a non-null Schema object, and internally dereference the input schema. */
+  /**
+   * Create a FieldModel object from a non-null Schema object, and internally dereference the input
+   * schema.
+   */
   private DiscoveryField(Schema schema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(schema);
     this.originalSchema = schema;
@@ -56,28 +62,26 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.properties = propertiesBuilder.build();
   }
 
-  /* Create a FieldModel object from a non-null Schema object. */
+  /** Create a FieldModel object from a non-null Schema object. */
   public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
     return new DiscoveryField(schema, rootApiModel);
   }
 
-  /* @return the underlying Discovery Schema. */
+  /** @return the underlying Discovery Schema. */
   public Schema getDiscoveryField() {
     return schema;
   }
 
   @Override
   public String getSimpleName() {
-    String name = schema.getIdentifier();
-    String[] pieces = name.split("_");
-    return Name.anyCamel(pieces).toLowerCamel();
+    return DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
   }
 
   @Override
   public String getFullName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(schema).toUpperCamel();
+    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema).toUpperCamel();
   }
 
   @Override
@@ -87,17 +91,12 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(schema);
-  }
-
-  @Override
-  public Name asName() {
-    return Name.anyCamel(getSimpleName());
+    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema);
   }
 
   @Override
   public String getTypeFullName() {
-    return schema.getIdentifier();
+    return originalSchema.getIdentifier();
   }
 
   @Override

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -37,7 +38,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private final DiscoveryRequestType inputType;
-  private final DiscoveryField outputType;
+  private final TypeModel outputType;
   private List<DiscoveryField> inputFields;
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
@@ -52,7 +53,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
     } else {
-      this.outputType = null;
+      this.outputType = new EmptyTypeModel();
     }
   }
 
@@ -111,7 +112,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeName getOutputTypeName(ImportTypeTable typeTable) {
-    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((TypeModel) outputType));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(outputType));
   }
 
   @Override
@@ -147,7 +148,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean isOutputTypeEmpty() {
-    return outputType == null;
+    return outputType == null || outputType.isEmptyType();
   }
 
   @Override
@@ -179,7 +180,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    return typeTable.getAndSaveNicknameFor((TypeModel) outputType);
+    return typeTable.getAndSaveNicknameFor(outputType);
   }
 
   @Override
@@ -216,7 +217,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     // Add the field that represents the ResourceName.
     String resourceName = DiscoGapicParser.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (DiscoveryField field : getInputFields()) {
-      if (field.asName().toLowerCamel().equals(resourceName)) {
+      if (field.getNameAsParameterName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
         break;
       }
