@@ -50,6 +50,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
+    if (schema == null) {
+      return "java.lang.Void";
+    }
     switch (schema.type()) {
       case INTEGER:
         return "int";
@@ -70,7 +73,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
   }
 
-  /** A map from primitive types in proto to zero values in Java. */
+  /**
+   * A map from primitive types in proto to zero values in Java. Returns 'Void' if input is null.
+   */
   private static String getPrimitiveZeroValue(Schema schema) {
     String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
@@ -87,6 +92,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
     if (primitiveType.equals("java.lang.String")) {
       return "\"\"";
+    }
+    if (primitiveType.equals("java.lang.Void")) {
+      return "null";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
@@ -124,6 +132,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    *     <p>This method will be recursively called on the given schema's children.
    */
   private TypeName getTypeNameForElementType(Schema schema, BoxingBehavior boxingBehavior) {
+    if (schema == null) {
+      return new TypeName("java.lang.Void", "Void");
+    }
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -184,6 +195,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
     TypeName elementTypeName = getTypeNameForElementType(schema, BoxingBehavior.BOX_PRIMITIVES);
+    if (schema == null) {
+      return elementTypeName;
+    }
     if (schema.repeated() || schema.type().equals(Type.ARRAY)) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       return new TypeName(
@@ -210,11 +224,12 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
     if (primitiveType.equals("boolean")) {
       return value.toLowerCase();
+    } else if (primitiveType.equals("long")) {
+      return value + "L";
+    } else if (primitiveType.equals("float")) {
+      return value + "F";
     }
-    if (primitiveType.equals("int")
-        || primitiveType.equals("long")
-        || primitiveType.equals("double")
-        || primitiveType.equals("float")) {
+    if (primitiveType.equals("int") || primitiveType.equals("double")) {
       return value;
     }
     if (primitiveType.equals("java.lang.String")) {

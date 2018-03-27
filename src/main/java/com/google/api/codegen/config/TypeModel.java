@@ -23,6 +23,7 @@ import java.util.List;
  * definition.
  */
 public interface TypeModel {
+
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 
