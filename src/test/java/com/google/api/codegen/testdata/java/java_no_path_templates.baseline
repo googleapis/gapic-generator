@@ -1,4 +1,41 @@
-java/sample.gradle.snip generation is not enabled for this test case.
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-library-v1'
+group = 'com.google.api'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  compile project(':proto-google-cloud-library-v1')
+  testCompile project(':grpc-google-cloud-library-v1')
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
  * Copyright 2018 Google LLC
