@@ -29,7 +29,6 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
@@ -42,8 +41,6 @@ import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -123,7 +120,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
@@ -220,12 +217,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(type);
+    return typeTable.getFullNameFor(type);
   }
 
   @Override
-  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getFullNameFor(type);
   }
 
   @Override
@@ -284,9 +281,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getProtoFileName(ProtoFile file) {
-    String protoFilename = file.getSimpleName();
-    return protoFilename.substring(0, protoFilename.length() - "proto".length()) + "rb";
+  public String getProtoFileName(String fileSimpleName) {
+    return fileSimpleName.substring(0, fileSimpleName.length() - "proto".length()) + "rb";
   }
 
   @Override

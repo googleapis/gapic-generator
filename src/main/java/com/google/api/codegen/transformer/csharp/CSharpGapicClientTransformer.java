@@ -18,6 +18,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -49,7 +50,6 @@ import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
-import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
@@ -66,7 +66,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -229,6 +228,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
     // must be done as the last step to catch all imports
     csharpCommonTransformer.addCommonImports(context);
+    context.getImportTypeTable().saveNicknameFor("Google.Protobuf.SomeKindOfProtobuf");
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return fileView.build();
@@ -275,8 +275,16 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.apiMethodsImpl(methodsImpl);
     apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     apiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
-    apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
+    apiClass.reroutedGrpcClients(csharpCommonTransformer.generateReroutedGrpcView(context));
     apiClass.modifyMethods(generateModifyMethods(context));
+    apiClass.apiHasUnaryMethod(
+        methods.stream().anyMatch(m -> m.grpcStreamingType() == GrpcStreamingType.NonStreaming));
+    apiClass.apiHasServerStreamingMethod(
+        methods.stream().anyMatch(m -> m.grpcStreamingType() == GrpcStreamingType.ServerStreaming));
+    apiClass.apiHasClientStreamingMethod(
+        methods.stream().anyMatch(m -> m.grpcStreamingType() == GrpcStreamingType.ClientStreaming));
+    apiClass.apiHasBidiStreamingMethod(
+        methods.stream().anyMatch(m -> m.grpcStreamingType() == GrpcStreamingType.BidiStreaming));
 
     return apiClass.build();
   }
@@ -284,7 +292,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private boolean methodTypeHasImpl(ClientMethodType type) {
     switch (type) {
       case RequestObjectMethod:
-      case AsyncRequestObjectMethod:
+      case AsyncRequestObjectCallSettingsMethod:
       case PagedRequestObjectMethod:
       case AsyncPagedRequestObjectMethod:
       case OperationRequestObjectMethod:
@@ -332,25 +340,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
-  }
-
-  private List<ReroutedGrpcView> generateReroutedGrpcView(GapicInterfaceContext context) {
-    SurfaceNamer namer = context.getNamer();
-    Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
-    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      String reroute = methodConfig.getRerouteToGrpcInterface();
-      if (reroute != null) {
-        ReroutedGrpcView rerouted =
-            ReroutedGrpcView.newBuilder()
-                .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
-                .typeName(namer.getReroutedGrpcTypeName(context.getImportTypeTable(), methodConfig))
-                .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
-                .build();
-        reroutedViews.add(rerouted);
-      }
-    }
-    return new ArrayList<ReroutedGrpcView>(reroutedViews);
   }
 
   private List<ModifyMethodView> generateModifyMethods(GapicInterfaceContext context) {
@@ -462,7 +451,14 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         }
         apiMethods.add(
             apiMethodTransformer.generateRequestObjectAsyncMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                requestMethodContext,
+                csharpCommonTransformer.callSettingsParam(),
+                ClientMethodType.AsyncRequestObjectCallSettingsMethod));
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectAsyncMethod(
+                requestMethodContext,
+                csharpCommonTransformer.cancellationTokenParam(),
+                ClientMethodType.AsyncRequestObjectCancellationMethod));
         apiMethods.add(
             apiMethodTransformer.generateRequestObjectMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam()));

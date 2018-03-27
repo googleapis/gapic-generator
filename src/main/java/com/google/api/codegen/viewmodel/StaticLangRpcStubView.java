@@ -31,6 +31,8 @@ public abstract class StaticLangRpcStubView {
 
   public abstract String stubSettingsClassName();
 
+  public abstract String callableFactoryClassName();
+
   public abstract List<ApiCallableView> apiCallables();
 
   public abstract List<MethodDescriptorView> methodDescriptors();
@@ -42,10 +44,6 @@ public abstract class StaticLangRpcStubView {
   public abstract boolean hasLongRunningOperations();
 
   public abstract String parentName();
-
-  @Nullable
-  // Base URL for HTTP calls.
-  public abstract String baseUrl();
 
   public static StaticLangRpcStubView.Builder newBuilder() {
     return new AutoValue_StaticLangRpcStubView.Builder();
@@ -64,6 +62,8 @@ public abstract class StaticLangRpcStubView {
 
     public abstract Builder stubSettingsClassName(String val);
 
+    public abstract Builder callableFactoryClassName(String val);
+
     public abstract Builder apiCallables(List<ApiCallableView> val);
 
     public abstract Builder methodDescriptors(List<MethodDescriptorView> val);
@@ -75,8 +75,6 @@ public abstract class StaticLangRpcStubView {
     public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract Builder parentName(String apiStubInterfaceName);
-
-    public abstract Builder baseUrl(String baseUrl);
 
     public abstract StaticLangRpcStubView build();
   }

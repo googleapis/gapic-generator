@@ -111,9 +111,9 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
     apiMethod.requestVariableName(namer.getRequestVariableName(method));
     apiMethod.requestTypeName(
-        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethod().getInputType()));
+        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethodModel().getInputType()));
     apiMethod.responseTypeName(
-        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethod().getOutputType()));
+        namer.getAndSaveTypeName(context.getTypeTable(), context.getMethodModel().getOutputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(method));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(method));
@@ -174,7 +174,8 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(
-              context.getTypeTable(), methodConfig.getPageStreaming().getResourcesField()));
+              context.getTypeTable(),
+              methodConfig.getPageStreaming().getResourcesField().getType()));
     }
     docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines(methodConfig));
 

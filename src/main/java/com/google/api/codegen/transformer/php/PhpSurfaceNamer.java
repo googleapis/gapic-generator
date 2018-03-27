@@ -26,7 +26,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -35,7 +34,6 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
@@ -192,12 +190,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override

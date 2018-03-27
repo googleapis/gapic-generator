@@ -18,6 +18,7 @@ import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION
 
 import com.google.api.codegen.DiscoGapicGeneratorApi;
 import com.google.api.codegen.DocumentGenerator;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.configgen.transformer.DiscoConfigTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -65,7 +66,8 @@ public class DiscoConfigGeneratorApi extends GenericToolDriverBase {
 
   private Map<String, Doc> generateConfig(String outputPath) {
     Document document = setupDocument();
-    ViewModel viewModel = new DiscoConfigTransformer().generateConfig(document, outputPath);
+    ViewModel viewModel =
+        new DiscoConfigTransformer().generateConfig(new DiscoApiModel(document, ""), outputPath);
     Doc generatedConfig = new CommonSnippetSetRunner(new CommonRenderingUtil()).generate(viewModel);
     return ImmutableMap.of(outputPath, generatedConfig);
   }

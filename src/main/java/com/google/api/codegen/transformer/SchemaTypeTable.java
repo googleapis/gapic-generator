@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
 /**
@@ -38,15 +39,27 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
   private DiscoGapicNamer discoGapicNamer;
+  private SurfaceNamer languageNamer;
 
   public SchemaTypeTable(
+      TypeTable typeTable, SchemaTypeNameConverter typeNameConverter, SurfaceNamer languageNamer) {
+    this(typeTable, typeNameConverter, languageNamer, new DiscoGapicNamer());
+  }
+
+  private SchemaTypeTable(
       TypeTable typeTable,
       SchemaTypeNameConverter typeNameConverter,
+      SurfaceNamer languageNamer,
       DiscoGapicNamer discoGapicNamer) {
     this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
+    this.languageNamer = languageNamer;
     this.discoGapicNamer = discoGapicNamer;
+  }
+
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
   }
 
   @Override
@@ -87,7 +100,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getEnumValue(TypeModel type, String value) {
     // TODO(andrealin): implement.
-    return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeModel type, String value)");
+    return getNotImplementedString("SchemaTypeTable.getEnumValue(TypeModel type, String value)");
   }
 
   @Override
@@ -98,13 +111,14 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   @Override
   public SchemaTypeTable cloneEmpty() {
-    return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter, discoGapicNamer);
+    return new SchemaTypeTable(
+        typeTable.cloneEmpty(), typeNameConverter, languageNamer, discoGapicNamer);
   }
 
   @Override
   public SchemaTypeTable cloneEmpty(String packageName) {
     return new SchemaTypeTable(
-        typeTable.cloneEmpty(packageName), typeNameConverter, discoGapicNamer);
+        typeTable.cloneEmpty(packageName), typeNameConverter, languageNamer, discoGapicNamer);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
@@ -164,11 +178,19 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
+    // TODO(andrealin): Remove this hack when null response types are implemented.
+    if (type == null) {
+      return "nullFullName";
+    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
-      return discoGapicNamer.getRequestTypeName(method).getFullName();
+      return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    Schema schema = null;
+    if (!type.isEmptyType()) {
+      schema = ((DiscoveryField) type).getDiscoveryField();
+    }
+    return getFullNameFor(schema);
   }
 
   @Override
@@ -179,6 +201,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Get the full name for the element type of the given type. */
   @Override
   public String getFullNameForElementType(FieldModel type) {
+    return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
+  }
+
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(TypeModel type) {
     return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
@@ -266,9 +294,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    return typeNameConverter
-        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    Schema schema = null;
+    if (!type.isEmptyType()) {
+      schema = ((DiscoveryField) type).getDiscoveryField();
+    }
+    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(schema);
+    return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override

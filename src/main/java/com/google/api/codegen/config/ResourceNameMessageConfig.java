@@ -34,16 +34,19 @@ public abstract class ResourceNameMessageConfig {
       ResourceNameMessageConfigProto messageResourceTypesProto,
       String defaultPackage) {
     String messageName = messageResourceTypesProto.getMessageName();
-    String fullyQualifiedMessageName;
-    if (messageName.contains(".")) {
-      fullyQualifiedMessageName = messageName;
-    } else {
-      fullyQualifiedMessageName = defaultPackage + "." + messageName;
-    }
+    String fullyQualifiedMessageName = getFullyQualifiedMessageName(defaultPackage, messageName);
     ImmutableMap<String, String> fieldEntityMap =
         ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
 
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
+  }
+
+  public static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
+    if (messageName.contains(".")) {
+      return messageName;
+    } else {
+      return defaultPackage + "." + messageName;
+    }
   }
 
   public String getEntityNameForField(String fieldSimpleName) {

@@ -21,10 +21,7 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.tools.ToolOptions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -32,26 +29,15 @@ import java.util.Map;
 public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
 
   private final JavaPackageMetadataTransformer transformer;
-  private final JavaPackageCopier copier;
 
-  private static final ImmutableList<String> STATIC_FILES =
-      ImmutableList.of(
-          "gradlew",
-          "gradle/wrapper/gradle-wrapper.jar",
-          "gradle/wrapper/gradle-wrapper.properties",
-          "gradlew.bat",
-          "PUBLISHING.md",
-          "templates/apidocs_index.html.template");
-
-  public JavaGrpcMetadataProvider(JavaPackageMetadataTransformer transformer, ToolOptions options) {
+  public JavaGrpcMetadataProvider(JavaPackageMetadataTransformer transformer) {
     this.transformer = transformer;
-    this.copier = new JavaPackageCopier(STATIC_FILES, options);
   }
 
   @Override
-  public Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException {
-    ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    copier.run();
+  public Map<String, Doc> generate(Model model, PackageMetadataConfig config) {
+    ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<>();
+
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
     metadataViews.addAll(transformer.transform(apiModel, config));

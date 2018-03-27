@@ -23,7 +23,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -198,13 +198,13 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   public static GapicProductConfig create(
-      DiscoApiModel model, ConfigProto configProto, DiscoGapicNamer discoGapicNamer) {
+      DiscoApiModel model, ConfigProto configProto, SurfaceNamer namer) {
     String defaultPackage =
         configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model, configProto, defaultPackage, discoGapicNamer);
+            model, configProto, defaultPackage, namer);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(model.getDiagCollector(), configProto, null);
@@ -219,7 +219,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            model, configProto, settings, messageConfigs, resourceNameConfigs, discoGapicNamer);
+            model, configProto, settings, messageConfigs, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -353,8 +353,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
@@ -367,8 +366,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceConfigProto,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs,
-              discoGapicNamer);
+              resourceNameConfigs);
       if (interfaceConfig == null) {
         continue;
       }

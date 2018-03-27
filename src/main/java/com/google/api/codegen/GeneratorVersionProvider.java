@@ -15,20 +15,32 @@
 package com.google.api.codegen;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class GeneratorVersionProvider {
 
-  private static final String DEFAULT_VERSION = "";
+  private static final String GENERATOR_VERSION = readGeneratorVersion();
 
   public static String getGeneratorVersion() {
-    String version = DEFAULT_VERSION;
-    Properties properties = new Properties();
+    return GENERATOR_VERSION;
+  }
+
+  private static String readGeneratorVersion() {
+    String version = "";
     try {
-      properties.load(
+      InputStream inputStream =
           GeneratorVersionProvider.class
-              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
-      version = properties.getProperty("version");
+              .getResourceAsStream("/com/google/api/codegen/codegen.properties");
+      if (inputStream != null) {
+        Properties properties = new Properties();
+        properties.load(inputStream);
+        version = properties.getProperty("version");
+      } else {
+        version = Files.readAllLines(Paths.get("version.txt")).get(0);
+      }
     } catch (IOException e) {
       e.printStackTrace(System.err);
     }

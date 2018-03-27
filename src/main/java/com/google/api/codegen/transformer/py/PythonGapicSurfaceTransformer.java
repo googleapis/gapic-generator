@@ -27,6 +27,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -360,8 +361,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         GrpcMessageDocView.Builder messageView = GrpcMessageDocView.newBuilder();
         messageView.name(namer.publicClassName(Name.upperCamel(message.getSimpleName())));
         messageView.fullName(typeTable.getFullNameFor(TypeRef.of(message)));
-        messageView.fileUrl(namer.getFileUrl(message.getFile()));
-        messageView.lines(namer.getDocLines(message));
+        messageView.fileUrl(GapicParser.getFileUrl(message.getFile()));
+        messageView.lines(namer.getDocLines(GapicParser.getDocString(message)));
         messageView.properties(ImmutableList.<ParamDocView>of());
         messageView.elementDocs(elementDocs);
         messageView.packageName(message.getFile().getFullName());

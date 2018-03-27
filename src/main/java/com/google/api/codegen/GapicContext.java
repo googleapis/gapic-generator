@@ -14,18 +14,14 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +36,6 @@ public class GapicContext extends CodegenContext {
   private final GapicProductConfig productConfig;
 
   private final ServiceMessages serviceMessages;
-
-  public static final String API_WRAPPER_SUFFIX = "Client";
 
   /** Constructs the abstract instance. */
   protected GapicContext(Model model, GapicProductConfig productConfig) {
@@ -68,41 +62,9 @@ public class GapicContext extends CodegenContext {
     return serviceMessages;
   }
 
-  /** Return the name of the class which is the GAPIC wrapper for this API interface. */
-  public String getApiWrapperName(Interface apiInterface) {
-    return apiInterface.getSimpleName() + API_WRAPPER_SUFFIX;
-  }
-
-  /** Returns the description of the proto element, in markdown format. */
-  public String getDescription(ProtoElement element) {
-    return DocumentationUtil.getDescription(element);
-  }
-
-  /** Get collection configuration for a method. */
-  public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
-    return getApiConfig().getSingleResourceNameConfig(entityName);
-  }
-
-  /**
-   * Returns the list of optional fields from the given GapicMethodConfig, excluding the Page Token
-   * field
-   */
-  public List<FieldModel> removePageTokenFromFields(
-      Iterable<FieldModel> fields, MethodConfig methodConfig) {
-    List<FieldModel> newFields = new ArrayList<>();
-    for (FieldModel field : fields) {
-      if (methodConfig.isPageStreaming()
-          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
-        continue;
-      }
-      newFields.add(field);
-    }
-    return newFields;
-  }
-
   /**
    * Returns true when the method is supported by the current codegen context. By default, only non
-   * stremaing methods are supported unless subclass explicitly allows. TODO: remove this method
+   * streaming methods are supported unless subclass explicitly allows. TODO: remove this method
    * when all languages support gRPC streaming.
    */
   protected boolean isSupported(Method method) {

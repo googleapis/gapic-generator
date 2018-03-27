@@ -18,7 +18,6 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
@@ -49,6 +48,8 @@ public class JavaDiscoGapicSurfaceTransformer
   private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String RPC_STUB_TEMPLATE_FILENAME = "java/http_stub.snip";
+  private static final String CALLABLE_FACTORY_TEMPLATE_FILENAME =
+      "java/http_callable_factory.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
@@ -67,6 +68,7 @@ public class JavaDiscoGapicSurfaceTransformer
         STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
         RPC_STUB_TEMPLATE_FILENAME,
+        CALLABLE_FACTORY_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
@@ -75,7 +77,11 @@ public class JavaDiscoGapicSurfaceTransformer
   public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper, packageMetadataConfig, this, RPC_STUB_TEMPLATE_FILENAME);
+            pathMapper,
+            packageMetadataConfig,
+            this,
+            RPC_STUB_TEMPLATE_FILENAME,
+            CALLABLE_FACTORY_TEMPLATE_FILENAME);
     return commonSurfaceTransformer.transform(model, productConfig);
   }
 
@@ -100,7 +106,7 @@ public class JavaDiscoGapicSurfaceTransformer
         apiInterface,
         productConfig,
         importTypeTable,
-        new DiscoGapicNamer(namer),
+        namer,
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)
             .build());
@@ -111,7 +117,7 @@ public class JavaDiscoGapicSurfaceTransformer
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
+        new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
   }
 
   @Override

@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -72,8 +72,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
@@ -93,8 +92,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet(),
-              discoGapicNamer);
+              retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
@@ -139,7 +137,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     if (methodConfigs != null) {
       for (MethodConfig methodConfig : methodConfigs) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        String canonicalMethodPath = DiscoGapicNamer.getCanonicalPath(method);
+        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method);
         for (SingleResourceNameConfig nameConfig : singleResourceNames) {
           if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
             methodToSingleResourceNameMap.put(methodConfig, nameConfig);
@@ -153,7 +151,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     String interfaceName =
         interfaceNameOverride != null
             ? interfaceNameOverride
-            : DiscoGapicNamer.getInterfaceName(interfaceConfigProto.getName()).toUpperCamel();
+            : DiscoGapicParser.getInterfaceName(interfaceConfigProto.getName()).toUpperCamel();
 
     if (model.getDiagCollector().hasErrors()) {
       return null;
@@ -165,7 +163,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           requiredConstructorParams,
           manualDoc,
           interfaceNameOverride,
-          new DiscoInterfaceModel(interfaceName, model.getDocument()),
+          new DiscoInterfaceModel(interfaceName, model),
           smokeTestConfig,
           methodToSingleResourceNameMap.build(),
           methodConfigMap,
@@ -189,8 +187,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
@@ -206,15 +203,14 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
       DiscoGapicMethodConfig methodConfig =
           DiscoGapicMethodConfig.createDiscoGapicMethodConfig(
-              model.getDiagCollector(),
+              model,
               language,
               methodConfigProto,
               method,
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfigNames,
-              retryParamsConfigNames,
-              discoGapicNamer);
+              retryParamsConfigNames);
       if (methodConfig == null) {
         continue;
       }

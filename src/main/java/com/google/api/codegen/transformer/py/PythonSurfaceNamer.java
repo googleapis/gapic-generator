@@ -23,7 +23,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -31,7 +30,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
@@ -46,7 +44,6 @@ import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -164,17 +161,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
@@ -209,8 +206,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
   }
 
-  private String getParamTypeNameForElementType(TypeRef type) {
-    String typeName = getModelTypeFormatter().getFullNameForElementType(type);
+  private String getParamTypeNameForElementType(TypeModel type) {
+    String typeName = getTypeFormatter().getFullNameForElementType(type);
 
     if (type.isMessage() || type.isEnum()) {
       typeName = PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
@@ -226,9 +223,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return typeName;
   }
 
-  private String getResponseTypeNameForElementType(TypeRef type) {
+  private String getResponseTypeNameForElementType(TypeModel type) {
     if (type.isMessage()) {
-      String typeName = getModelTypeFormatter().getFullNameForElementType(type);
+      String typeName = getTypeFormatter().getFullNameForElementType(type);
       return PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
     }
 
@@ -316,12 +313,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      ProtoField fieldModel = (ProtoField) methodConfig.getPageStreaming().getResourcesField();
-      TypeRef resourceType = fieldModel.getType().getProtoType();
+      FieldModel fieldModel = methodConfig.getPageStreaming().getResourcesField();
       return ImmutableList.of(
           "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "
-              + annotateWithClass(getResponseTypeNameForElementType(resourceType))
+              + annotateWithClass(getResponseTypeNameForElementType(fieldModel.getType()))
               + " instances.",
           "This object can also be configured to iterate over the pages",
           "of the response through the `options` parameter.");
@@ -368,9 +364,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getProtoFileName(ProtoFile file) {
-    String protoFilename = file.getSimpleName();
-    return protoFilename.substring(0, protoFilename.lastIndexOf('.')) + ".py";
+  public String getProtoFileName(String fileSimpleName) {
+    return fileSimpleName.substring(0, fileSimpleName.lastIndexOf('.')) + ".py";
   }
 
   @Override

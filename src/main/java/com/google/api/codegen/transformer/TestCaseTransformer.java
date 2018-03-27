@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.metacode.InitCodeLineType.ListInitLine;
 import static com.google.api.codegen.metacode.InitCodeLineType.StructureInitLine;
 
 import com.google.api.codegen.config.BatchingConfig;
@@ -25,6 +26,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -34,6 +36,7 @@ import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -56,7 +59,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +82,17 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
+    return createTestCaseView(
+        methodContext, testNameTable, initCodeContext, clientMethodType, Synchronicity.Sync, null);
+  }
+
+  public TestCaseView createTestCaseView(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      InitCodeContext initCodeContext,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity,
+      InitCodeContext requestObjectInitCodeContext) {
     MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -115,12 +128,19 @@ public class TestCaseTransformer {
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     } else {
-      clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
+      clientMethodName =
+          synchronicity == Synchronicity.Sync
+              ? namer.getApiMethodName(method, methodConfig.getVisibility())
+              : namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
+    InitCodeView requestObjectInitCode =
+        requestObjectInitCodeContext != null
+            ? initCodeTransformer.generateInitCode(methodContext, requestObjectInitCodeContext)
+            : null;
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !method.isOutputTypeEmpty();
@@ -165,9 +185,13 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
+        .requestObjectInitCode(requestObjectInitCode)
         .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
-        .name(namer.getTestCaseName(testNameTable, method))
+        .name(
+            synchronicity == Synchronicity.Sync
+                ? namer.getTestCaseName(testNameTable, method)
+                : namer.getAsyncTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
@@ -188,8 +212,30 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
-        .grpcMethodName(namer.getApiMethodName(method, methodConfig.getVisibility()))
+        .methodDescriptor(getMethodDescriptorName(methodContext))
+        .grpcMethodName(
+            synchronicity == Synchronicity.Sync
+                ? namer.getGrpcMethodName(method)
+                : namer.getAsyncGrpcMethodName(method))
         .build();
+  }
+
+  private String getMethodDescriptorName(MethodContext context) {
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      TypeName rpcStubClassName =
+          new TypeName(
+              context
+                  .getNamer()
+                  .getFullyQualifiedRpcStubType(
+                      context.getInterfaceConfig().getInterfaceModel(),
+                      context.getProductConfig().getTransportProtocol()));
+      return context
+          .getTypeTable()
+          .getAndSaveNicknameForInnerType(
+              rpcStubClassName.getFullName(),
+              context.getNamer().getMethodDescriptorName(context.getMethodModel()));
+    }
+    return null;
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
@@ -207,11 +253,17 @@ public class TestCaseTransformer {
     FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
-    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
+
+    // Construct the list of function calls needed to retrieve paged resource from response object.
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
+
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterName(resourcesFieldGetterName)
+            .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
@@ -223,8 +275,12 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName =
-          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
+      resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+      for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
+        resourcesFieldGetFunctionList.add(
+            namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig));
+      }
+
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
         expectedTransformFunction =
@@ -234,7 +290,7 @@ public class TestCaseTransformer {
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
@@ -282,6 +338,10 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
+    // TODO(andrealin): Remove this hack when null response types are implemented.
+    if (outputType == null) {
+      outputType = context.getMethodModel().getInputType().makeOptional();
+    }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)
         .symbolTable(symbolTable)
@@ -320,15 +380,20 @@ public class TestCaseTransformer {
         additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
       } else {
         //  Initialize all the objects between the response type and the resource element.
-        Iterator<FieldModel> it =
-            Lists.reverse(config.getResourcesFieldConfig().getFieldPath()).iterator();
-        InitCodeNode initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
-        it.next();
-        while (it.hasNext()) {
-          FieldModel field = it.next();
+        List<FieldModel> fieldGetters =
+            Lists.reverse(config.getResourcesFieldConfig().getFieldPath());
+        InitCodeNode initCodeNode = null;
+
+        for (FieldModel field : fieldGetters) {
+          if (config.getResourcesField().isRepeated()) {
+            initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
+          } else {
+            initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
+          }
+
+          InitCodeLineType lineType = field.isRepeated() ? ListInitLine : StructureInitLine;
           initCodeNode =
-              InitCodeNode.createWithChildren(
-                  field.getSimpleName(), StructureInitLine, initCodeNode);
+              InitCodeNode.createWithChildren(field.getSimpleName(), lineType, initCodeNode);
         }
         additionalSubTrees.add(initCodeNode);
       }

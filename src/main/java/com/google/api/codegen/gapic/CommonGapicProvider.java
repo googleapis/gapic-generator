@@ -30,7 +30,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /** Common GapicProvider which runs code generation. */
-public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
+public class CommonGapicProvider<ElementT> implements GapicProvider {
   private final Model model;
   private final InputElementView<ElementT> view;
   private final GapicContext context;

@@ -23,6 +23,7 @@ import java.util.List;
  * definition.
  */
 public interface TypeModel {
+
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 
@@ -50,6 +51,9 @@ public interface TypeModel {
   void validateValue(String value);
 
   List<? extends FieldModel> getFields();
+
+  /* @return the field with the given targetName, or null if targetName not found. */
+  FieldModel getField(String targetName);
 
   TypeModel makeOptional();
 
