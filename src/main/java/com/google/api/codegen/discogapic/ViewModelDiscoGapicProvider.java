@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ViewModelDiscoGapicProvider implements GapicProvider<DiscoApiModel> {
+public class ViewModelDiscoGapicProvider implements GapicProvider {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
