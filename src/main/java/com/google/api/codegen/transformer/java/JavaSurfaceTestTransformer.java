@@ -429,17 +429,15 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         typeTable.saveNicknameFor("org.junit.Before");
         break;
       case HTTP:
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpResponseParser");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.testing.MockHttpService");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
         typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
-        typeTable.saveNicknameFor("java.util.HashMap");
-        typeTable.saveNicknameFor("java.util.Map");
 
         // Import stub settings class in unit test file.
         SurfaceNamer stubNamer =
