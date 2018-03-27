@@ -43,7 +43,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  private List<GapicProvider<?>> discoGapicProviders;
+  private List<GapicProvider> discoGapicProviders;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -89,7 +89,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected Map<String, Doc> run() {
     Map<String, Doc> outputDocs = new LinkedHashMap<>();
 
-    for (GapicProvider<?> provider : discoGapicProviders) {
+    for (GapicProvider provider : discoGapicProviders) {
       Map<String, Doc> docs = provider.generate();
       outputDocs.putAll(docs);
     }

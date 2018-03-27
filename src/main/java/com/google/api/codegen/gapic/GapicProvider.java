@@ -22,7 +22,7 @@ import java.util.Map;
  * A GapicProvider performs code or fragment generation using on a proto-based Model for a
  * particular language.
  */
-public interface GapicProvider<InputElementT> {
+public interface GapicProvider {
 
   /** Returns the snippet files that this provider will use for code generation. */
   List<String> getSnippetFileNames();

@@ -40,13 +40,13 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
   public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<GapicProvider<?>> defaultCreate(
+  public static List<GapicProvider> defaultCreate(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
+    ArrayList<GapicProvider> providers = new ArrayList<>();
     String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
@@ -80,7 +80,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -102,7 +102,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   /** Create the DiscoGapicProvider based on the given id */
   @Override
-  public List<GapicProvider<?>> create(
+  public List<GapicProvider> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,

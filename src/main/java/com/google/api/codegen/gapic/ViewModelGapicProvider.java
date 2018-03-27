@@ -19,7 +19,6 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ViewModelGapicProvider implements GapicProvider<Interface> {
+public class ViewModelGapicProvider implements GapicProvider {
   private final Model model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;

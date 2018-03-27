@@ -101,7 +101,7 @@ public class DiscoGapicGeneratorApi {
 
   /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  static List<GapicProvider<?>> getProviders(
+  static List<GapicProvider> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfigFile,
@@ -167,11 +167,11 @@ public class DiscoGapicGeneratorApi {
     String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<GapicProvider<?>> providers =
+    List<GapicProvider> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
 
     Map<String, Doc> outputFiles = Maps.newHashMap();
-    for (GapicProvider<?> provider : providers) {
+    for (GapicProvider provider : providers) {
       outputFiles.putAll(provider.generate());
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));

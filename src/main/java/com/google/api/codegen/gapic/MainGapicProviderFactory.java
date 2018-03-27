@@ -62,7 +62,7 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
-public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvider<?>> {
+public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvider> {
 
   public static final String CLIENT_CONFIG = "client_config";
   public static final String CSHARP = "csharp";
@@ -76,17 +76,17 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
   public static final String RUBY_DOC = "ruby_doc";
 
   /** Create the GapicProviders based on the given id */
-  public static List<GapicProvider<?>> defaultCreate(
+  public static List<GapicProvider> defaultCreate(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
+    ArrayList<GapicProvider> providers = new ArrayList<>();
     String id = generatorConfig.id();
     // Please keep the following IDs in alphabetical order
     if (id.equals(CLIENT_CONFIG)) {
-      GapicProvider<?> provider =
+      GapicProvider provider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
@@ -105,7 +105,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix(packageName + File.separator + packageName)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        GapicProvider<?> mainProvider =
+        GapicProvider mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -119,7 +119,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix(packageName + File.separator + packageName + ".Snippets")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        GapicProvider<?> snippetProvider =
+        GapicProvider snippetProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -134,7 +134,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix(packageName + File.separator + packageName + ".SmokeTests")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        GapicProvider<?> smokeTestProvider =
+        GapicProvider smokeTestProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -147,7 +147,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix(packageName + File.separator + packageName + ".Tests")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        GapicProvider<?> unitTestProvider =
+        GapicProvider unitTestProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -159,7 +159,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
     } else if (id.equals(GO)) {
       if (generatorConfig.enableSurfaceGenerator()) {
-        GapicProvider<?> provider =
+        GapicProvider provider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -170,7 +170,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         providers.add(provider);
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -187,7 +187,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<?> mainProvider =
+        GapicProvider mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -198,7 +198,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
         providers.add(mainProvider);
 
-        GapicProvider<?> metadataProvider =
+        GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -214,7 +214,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -232,7 +232,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
     } else if (id.equals(NODEJS) || id.equals(NODEJS_DOC)) {
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
-        GapicProvider<?> mainProvider =
+        GapicProvider mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -240,14 +240,14 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setModelToViewTransformer(
                     new NodeJSGapicSurfaceTransformer(nodeJSPathMapper, packageConfig))
                 .build();
-        GapicProvider<?> metadataProvider =
+        GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
-        GapicProvider<?> clientConfigProvider =
+        GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
@@ -263,7 +263,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         providers.add(clientConfigProvider);
 
         if (id.equals(NODEJS_DOC)) {
-          GapicProvider<?> messageProvider =
+          GapicProvider messageProvider =
               ViewModelGapicProvider.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
@@ -274,7 +274,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         }
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -288,7 +288,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper phpPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").build();
-        GapicProvider<?> provider =
+        GapicProvider provider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -299,7 +299,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
         GapicCodePathMapper phpClientConfigPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").setSuffix("resources").build();
-        GapicProvider<?> clientConfigProvider =
+        GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
@@ -310,7 +310,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setCodePathMapper(phpClientConfigPathMapper)
                 .build();
 
-        GapicProvider<?> metadataProvider =
+        GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -323,7 +323,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         providers.add(metadataProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -337,7 +337,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper pythonPathMapper =
             CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
-        GapicProvider<?> mainProvider =
+        GapicProvider mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -345,7 +345,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
-        GapicProvider<?> clientConfigProvider =
+        GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
@@ -358,7 +358,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
 
-        GapicProvider<?> metadataProvider =
+        GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -373,7 +373,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setPrefix("test")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -392,7 +392,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
-        GapicProvider<?> mainProvider =
+        GapicProvider mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -400,7 +400,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setModelToViewTransformer(
                     new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
-        GapicProvider<?> clientConfigProvider =
+        GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
@@ -410,7 +410,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
-        GapicProvider<?> metadataProvider =
+        GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -423,7 +423,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
         providers.add(metadataProvider);
 
         if (id.equals(RUBY_DOC)) {
-          GapicProvider<?> messageProvider =
+          GapicProvider messageProvider =
               ViewModelGapicProvider.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
@@ -439,7 +439,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
             CommonGapicCodePathMapper.newBuilder()
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter());
-        GapicProvider<?> testProvider =
+        GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -464,7 +464,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
   /** Create the GapicProviders based on the given id */
   @Override
-  public List<GapicProvider<?>> create(
+  public List<GapicProvider> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
