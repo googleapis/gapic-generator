@@ -22,9 +22,21 @@ dependencies {
   compile 'com.google.api:gax-grpc:0.18.0'
   testCompile 'junit:junit:4.12'
   testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
   compile project(':proto-google-cloud-library-v1')
   testCompile project(':grpc-google-cloud-library-v1')
   testCompile project(':grpc-google-some-test-package-v1')
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
 }
 
 sourceSets {
