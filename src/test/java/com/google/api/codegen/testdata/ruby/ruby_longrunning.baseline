@@ -733,11 +733,15 @@ module Google
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
+    # @param exception_transformer [Proc]
+    #   An optional proc that intercepts any exceptions raised during an API call to inject
+    #   custom error handling.
     def self.new \
         credentials: nil,
         scopes: nil,
         client_config: nil,
         timeout: nil,
+        exception_transformer: nil,
         lib_name: nil,
         lib_version: nil
       kwargs = {
@@ -745,6 +749,7 @@ module Google
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
+        exception_transformer: exception_transformer,
         lib_name: lib_name,
         lib_version: lib_version
       }.select { |_, v| v != nil }
@@ -861,11 +866,15 @@ module Google
       #   or the specified config is missing data points.
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
+      # @param exception_transformer [Proc]
+      #   An optional proc that intercepts any exceptions raised during an API call to inject
+      #   custom error handling.
       def initialize \
           credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
+          exception_transformer: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -932,19 +941,23 @@ module Google
 
         @get_operation = Google::Gax.create_api_call(
           @operations_stub.method(:get_operation),
-          defaults["get_operation"]
+          defaults["get_operation"],
+          exception_transformer: exception_transformer
         )
         @list_operations = Google::Gax.create_api_call(
           @operations_stub.method(:list_operations),
-          defaults["list_operations"]
+          defaults["list_operations"],
+          exception_transformer: exception_transformer
         )
         @cancel_operation = Google::Gax.create_api_call(
           @operations_stub.method(:cancel_operation),
-          defaults["cancel_operation"]
+          defaults["cancel_operation"],
+          exception_transformer: exception_transformer
         )
         @delete_operation = Google::Gax.create_api_call(
           @operations_stub.method(:delete_operation),
-          defaults["delete_operation"]
+          defaults["delete_operation"],
+          exception_transformer: exception_transformer
         )
       end
 
