@@ -144,6 +144,7 @@
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
       metadata: nil,
+      exception_transformer: nil,
       lib_name: nil,
       lib_version: ""
     @# These require statements are intentionally placed here to initialize
@@ -214,11 +215,13 @@
         @@{@apiMethod.stubName}.method(:{@apiMethod.name}),
         @if apiMethod.headerRequestParams
           defaults["{@apiMethod.name}"],
+          exception_transformer: exception_transformer,
           params_extractor: proc do |request|
             {{@extractedRequestParams(apiMethod.headerRequestParams)}}
           end
         @else
-          defaults["{@apiMethod.name}"]
+          defaults["{@apiMethod.name}"],
+          exception_transformer: exception_transformer
         @end
       )
     @end
