@@ -71,8 +71,13 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(Schema schema, String value);
 
+  /** Renders the given value if it is a primitive type. */
+  public abstract String renderPrimitiveValue(TypeModel type, String value);
+
   /** Renders the value as a string. */
   public abstract String renderValueAsString(String value);
+
+  protected abstract TypeName getTypeNameForStringType();
 
   @Override
   public TypeName getTypeName(InterfaceModel interfaceModel) {
@@ -86,13 +91,12 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeModel type) {
-    // TODO(andrealin): Remove this hack when null response types are implemented.
-    if (type == null) {
-      return new TypeName("nullTypeName");
-    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
+    }
+    if (type.isStringType()) {
+      return getTypeNameForStringType();
     }
     Schema schema = type.isEmptyType() ? null : ((DiscoveryField) type).getDiscoveryField();
     return getTypeNameForElementType(schema);

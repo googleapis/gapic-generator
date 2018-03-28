@@ -178,9 +178,8 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
-    // TODO(andrealin): Remove this hack when null response types are implemented.
-    if (type == null) {
-      return "nullFullName";
+    if (type.isEmptyType()) {
+      return "java.lang.Void";
     }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
@@ -229,12 +228,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Renders the primitive value of the given type. */
   @Override
   public String renderPrimitiveValue(FieldModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeNameConverter.renderPrimitiveValue(type, key);
   }
 
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeFormatter.renderPrimitiveValue(type, key);
   }
 
   @Override

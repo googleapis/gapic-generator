@@ -127,12 +127,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
       } else {
         docLines.addAll(namer.getDocLines(field));
         boolean isMessageField = field.isMessage() && !field.isMap();
-        boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
+        boolean isMapContainingMessage =
+            field.isMap() && field.getType().getMapValueType().isMessage();
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {
             messageType =
-                context.getTypeTable().getFullNameForElementType(field.getMapValueField());
+                context.getTypeTable().getFullNameForElementType(field.getType().getMapValueType());
           } else {
             messageType = context.getTypeTable().getFullNameForElementType(field);
           }

@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Enums;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -34,7 +35,7 @@ public class DiscoGapicNamer {
 
   /** Returns the resource setter method name for a resource field. */
   public String getResourceSetterName(
-      String fieldName, SurfaceNamer.Cardinality isRepeated, SurfaceNamer languageNamer) {
+      String fieldName, Enums.Cardinality isRepeated, SurfaceNamer languageNamer) {
     switch (isRepeated) {
       case IS_REPEATED:
         return languageNamer.publicMethodName(
