@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.StringTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -101,17 +102,24 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isMap() {
-    return false;
+    return originalSchema.additionalProperties() != null;
   }
 
   @Override
-  public FieldModel getMapKeyField() {
-    throw new IllegalArgumentException("Discovery model types have no map keys.");
+  public TypeModel getMapKeyType() {
+    if (isMap()) {
+      // Assume that the schema's additionalProperties map keys are Strings.
+      return StringTypeModel.getInstance();
+    }
+    return null;
   }
 
   @Override
-  public FieldModel getMapValueField() {
-    throw new IllegalArgumentException("Discovery model types have no map values.");
+  public TypeModel getMapValueType() {
+    if (isMap()) {
+      return DiscoveryField.create(originalSchema.additionalProperties(), apiModel);
+    }
+    return null;
   }
 
   @Override

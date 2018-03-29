@@ -28,10 +28,10 @@ public interface TypeModel {
   boolean isMap();
 
   /* @return the resource type of the map key. */
-  FieldModel getMapKeyField();
+  TypeModel getMapKeyType();
 
   /* @return the resource type of the map value. */
-  FieldModel getMapValueField();
+  TypeModel getMapValueType();
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();

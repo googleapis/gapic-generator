@@ -46,6 +46,8 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract List<String> resourcesFieldGetFunctions();
 
+  public abstract boolean resourcesFieldIsMap();
+
   public boolean requestHasPageSize() {
     return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
   }
@@ -80,6 +82,8 @@ public abstract class PageStreamingDescriptorClassView {
     public abstract Builder responseTokenGetFunction(String val);
 
     public abstract Builder resourcesFieldGetFunctions(List<String> val);
+
+    public abstract Builder resourcesFieldIsMap(boolean val);
 
     public abstract PageStreamingDescriptorClassView build();
   }

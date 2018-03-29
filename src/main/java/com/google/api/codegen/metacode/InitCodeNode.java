@@ -352,7 +352,7 @@ public class InitCodeNode {
 
   private static void validateKeyValue(TypeModel parentType, String key) {
     if (parentType.isMap()) {
-      TypeModel keyType = parentType.getMapKeyField().getType();
+      TypeModel keyType = parentType.getMapKeyType();
       validateValue(keyType, key);
     } else if (parentType.isRepeated()) {
       validateValue(INT_TYPE, key);
@@ -363,7 +363,7 @@ public class InitCodeNode {
 
   private static TypeModel getChildType(TypeModel parentType, String key) {
     if (parentType.isMap()) {
-      return parentType.getMapValueField().getType();
+      return parentType.getMapValueType();
     } else if (parentType.isRepeated()) {
       // Using the Optional cardinality replaces the Repeated cardinality
       return parentType.makeOptional();
