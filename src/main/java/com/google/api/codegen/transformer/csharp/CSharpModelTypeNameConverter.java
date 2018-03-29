@@ -21,6 +21,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
@@ -78,8 +79,8 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
   private CSharpEnumNamer enumNamer;
 
-  public CSharpModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new CSharpTypeTable(implicitPackageName);
+  public CSharpModelTypeNameConverter(String implicitPackageName, CSharpAliasMode aliasMode) {
+    this.typeNameConverter = new CSharpTypeTable(implicitPackageName, aliasMode);
     this.enumNamer = new CSharpEnumNamer();
   }
 
@@ -125,6 +126,7 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
     }
   }
 
+  // TODO: Change this to use CSharpTypeTable.getTypeName
   @Override
   public TypeName getTypeName(ProtoElement elem) {
     // Handle nested types, construct the required type prefix
@@ -147,7 +149,8 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       }
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
-    return new TypeName(prefix + shortName, shortName);
+    return typeNameConverter.getTypeName(prefix + shortName);
+    //return new TypeName(prefix + shortName, shortName);
   }
 
   @Override

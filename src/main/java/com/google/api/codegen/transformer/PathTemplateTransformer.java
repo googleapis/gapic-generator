@@ -205,7 +205,7 @@ public class PathTemplateTransformer {
                 .getImportTypeTable()
                 .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
         if (field.isRepeated()) {
-          fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "ResourceNameList");
+          fieldTypeName = fieldTypeName.replaceFirst("scg::IEnumerable", "gax::ResourceNameList");
         }
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
         String fieldElementTypeName =

@@ -32,7 +32,6 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -43,7 +42,7 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -75,6 +74,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
   private static final String CSPROJ_TEMPLATE_FILENAME = "csharp/gapic_csproj.snip";
 
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
+
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
   private final StaticLangApiMethodTransformer apiMethodTransformer =
@@ -100,7 +101,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
     InterfaceModel lastApiInterface = null;
@@ -109,7 +110,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              createTypeTable(productConfig.getPackageName()),
+              csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE),
               namer,
               featureConfig);
 
@@ -121,7 +122,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         GapicInterfaceContext.create(
             lastApiInterface,
             productConfig,
-            createTypeTable(productConfig.getPackageName()),
+            csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE),
             namer,
             featureConfig);
     surfaceDocs.add(generateResourceNamesView(context));
@@ -134,12 +135,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   public List<String> getTemplateFileNames() {
     return Arrays.asList(
         XAPI_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME, CSPROJ_TEMPLATE_FILENAME);
-  }
-
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName),
-        new CSharpModelTypeNameConverter(implicitPackageName));
   }
 
   private PackageInfoView generateCsProjView(GapicInterfaceContext context) {

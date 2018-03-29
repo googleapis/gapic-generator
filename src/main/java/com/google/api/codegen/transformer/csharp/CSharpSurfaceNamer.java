@@ -38,6 +38,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -136,19 +137,22 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return keywords.contains(name) ? "@" + name : name;
   }
 
-  public CSharpSurfaceNamer(String packageName) {
+  private CSharpAliasMode aliasMode;
+
+  public CSharpSurfaceNamer(String packageName, CSharpAliasMode aliasMode) {
     super(
         new CSharpNameFormatter(),
-        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
-        new CSharpTypeTable(packageName),
+        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName, aliasMode)),
+        new CSharpTypeTable(packageName, aliasMode),
         new CSharpCommentReformatter(),
         packageName,
         packageName);
+    this.aliasMode = aliasMode;
   }
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
-    return new CSharpSurfaceNamer(packageName);
+    return new CSharpSurfaceNamer(packageName, aliasMode);
   }
 
   @Override
@@ -225,13 +229,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getModifyMethodName(MethodContext methodContext) {
-    return "Modify_"
-        + privateMethodName(
-            Name.upperCamel(
-                methodContext
-                    .getMethodModel()
-                    .getInputTypeName(methodContext.getTypeTable())
-                    .getNickname()));
+    String[] nameParts =
+        methodContext
+            .getMethodModel()
+            .getInputTypeName(methodContext.getTypeTable())
+            .getNickname()
+            .split("::");
+    String name = nameParts[nameParts.length - 1];
+    return "Modify_" + privateMethodName(Name.upperCamel(name));
   }
 
   @Override
@@ -297,6 +302,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getExamplePackageName() {
     return getPackageName() + ".Snippets";
+  }
+
+  @Override
+  public String getTestPackageName() {
+    return getPackageName() + ".Tests";
   }
 
   @Override

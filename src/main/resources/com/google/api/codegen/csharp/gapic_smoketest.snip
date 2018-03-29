@@ -1,14 +1,15 @@
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
 
-
 # smoke: SmokeTestClassView
 # smoke.apiMethod: StaticLangApiMethodView
 @snippet generate(smoke)
-    {@renderFileHeader(smoke.fileHeader)}
+    {@initialComments(smoke.fileHeader)}
 
     namespace {@smoke.fileHeader.packageName}.SmokeTests
     {
+        {@imports(smoke.fileHeader)}
+
         public class {@smoke.name}
         {
             public static int Main(string[] args)

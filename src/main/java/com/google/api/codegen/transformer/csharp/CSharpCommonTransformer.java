@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.common.collect.ImmutableList;
@@ -33,10 +34,10 @@ import java.util.Set;
 
 public class CSharpCommonTransformer {
 
-  public ModelTypeTable createTypeTable(String implicitPackageName) {
+  public ModelTypeTable createTypeTable(String implicitPackageName, CSharpAliasMode aliasMode) {
     return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName),
-        new CSharpModelTypeNameConverter(implicitPackageName));
+        new CSharpTypeTable(implicitPackageName, aliasMode),
+        new CSharpModelTypeNameConverter(implicitPackageName, aliasMode));
   }
 
   public void addCommonImports(GapicInterfaceContext context) {
@@ -94,7 +95,7 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> callSettingsParam() {
     return ImmutableList.of(
         makeParam(
-            "CallSettings",
+            "gaxgrpc::CallSettings",
             "callSettings",
             "null",
             "If not null, applies overrides to this RPC call."));
@@ -103,10 +104,10 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> cancellationTokenParam() {
     return ImmutableList.of(
         makeParam(
-            "CancellationToken",
+            "st::CancellationToken",
             "cancellationToken",
             null,
-            "A <see cref=\"CancellationToken\"/> to use for this RPC."));
+            "A <see cref=\"st::CancellationToken\"/> to use for this RPC."));
   }
 
   public List<ParamWithSimpleDoc> pagedMethodAdditionalParams() {
