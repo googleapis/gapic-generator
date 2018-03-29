@@ -25,7 +25,9 @@
           {@apiTest.testClass.apiSettingsClassName}.newBuilder()
              .setTransportChannelProvider(
                  {@apiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
-                     .setHttpTransport(mockService).build()).build();
+                     .setHttpTransport(mockService).build())
+             .setCredentialsProvider(NoCredentialsProvider.create())
+             .build();
       client =
          {@apiTest.testClass.apiClassName}.create(clientSettings);
     }
