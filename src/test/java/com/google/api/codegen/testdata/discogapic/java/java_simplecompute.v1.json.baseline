@@ -8526,7 +8526,7 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectName project = ProjectName.of("[PROJECT]");
-   *   for (Address element : addressClient.aggregatedListAddresses(project).iterateAll()) {
+   *   for (AddressesScopedList element : addressClient.aggregatedListAddresses(project).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -8552,7 +8552,7 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectName project = ProjectName.of("[PROJECT]");
-   *   for (Address element : addressClient.aggregatedListAddresses(project.toString()).iterateAll()) {
+   *   for (AddressesScopedList element : addressClient.aggregatedListAddresses(project.toString()).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -8581,7 +8581,7 @@ public class AddressClient implements BackgroundResource {
    *   AggregatedListAddressesHttpRequest request = AggregatedListAddressesHttpRequest.newBuilder()
    *     .setProject(project.toString())
    *     .build();
-   *   for (Address element : addressClient.aggregatedListAddresses(request).iterateAll()) {
+   *   for (AddressesScopedList element : addressClient.aggregatedListAddresses(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -8609,7 +8609,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;AggregatedListAddressesPagedResponse&gt; future = addressClient.aggregatedListAddressesPagedCallable().futureCall(request);
    *   // Do something
-   *   for (Address element : future.get().iterateAll()) {
+   *   for (AddressesScopedList element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -8633,7 +8633,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     AddressAggregatedList response = addressClient.aggregatedListAddressesCallable().call(request);
-   *     for (Address element : response.getAddressesList()) {
+   *     for (AddressesScopedList element : response.getItems()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -9368,12 +9368,12 @@ public class AddressClient implements BackgroundResource {
   public static class AggregatedListAddressesPagedResponse extends AbstractPagedListResponse<
       AggregatedListAddressesHttpRequest,
       AddressAggregatedList,
-      Address,
+      AddressesScopedList,
       AggregatedListAddressesPage,
       AggregatedListAddressesFixedSizeCollection> {
 
     public static ApiFuture<AggregatedListAddressesPagedResponse> createAsync(
-        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> context,
         ApiFuture<AddressAggregatedList> futureResponse) {
       ApiFuture<AggregatedListAddressesPage> futurePage =
           AggregatedListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
@@ -9397,11 +9397,11 @@ public class AddressClient implements BackgroundResource {
   public static class AggregatedListAddressesPage extends AbstractPage<
       AggregatedListAddressesHttpRequest,
       AddressAggregatedList,
-      Address,
+      AddressesScopedList,
       AggregatedListAddressesPage> {
 
     private AggregatedListAddressesPage(
-        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> context,
         AddressAggregatedList response) {
       super(context, response);
     }
@@ -9412,14 +9412,14 @@ public class AddressClient implements BackgroundResource {
 
     @Override
     protected AggregatedListAddressesPage createPage(
-        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> context,
         AddressAggregatedList response) {
       return new AggregatedListAddressesPage(context, response);
     }
 
     @Override
     public ApiFuture<AggregatedListAddressesPage> createPageAsync(
-        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> context,
+        PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> context,
         ApiFuture<AddressAggregatedList> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
@@ -9432,7 +9432,7 @@ public class AddressClient implements BackgroundResource {
   public static class AggregatedListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
       AggregatedListAddressesHttpRequest,
       AddressAggregatedList,
-      Address,
+      AddressesScopedList,
       AggregatedListAddressesPage,
       AggregatedListAddressesFixedSizeCollection> {
 
@@ -9902,6 +9902,7 @@ import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
@@ -10121,8 +10122,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     updateAddressSettings = settingsBuilder.updateAddressSettings().build();
   }
 
-  private static final PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC =
-      new PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address>() {
+  private static final PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC =
+      new PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList>() {
         @Override
         public String emptyToken() {
           return "";
@@ -10150,8 +10151,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
           return payload.getNextPageToken();
         }
         @Override
-        public Iterable<Address> extractResources(AddressAggregatedList payload) {
-          return payload.getItems().getAddressesList();
+        public Iterable<AddressesScopedList> extractResources(AddressAggregatedList payload) {
+          return payload.getItems();
         }
       };
 
@@ -10197,7 +10198,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
             AggregatedListAddressesHttpRequest request,
             ApiCallContext context,
             ApiFuture<AddressAggregatedList> futureResponse) {
-          PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, Address> pageContext =
+          PageContext<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> pageContext =
               PageContext.create(callable, AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC, request, context);
           return AggregatedListAddressesPagedResponse.createAsync(pageContext, futureResponse);
         }
@@ -10459,6 +10460,7 @@ import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddr
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
@@ -10568,6 +10570,7 @@ import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPaged
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
@@ -10944,6 +10947,7 @@ import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPaged
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
+import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
@@ -12259,11 +12263,7 @@ public class AddressClientTest {
     String nextPageToken = "";
     String id = "id3355";
     String selfLink = "selfLink-1691268851";
-    Address addressesElement = Address.newBuilder().build();
-    List<Address> addresses = Arrays.asList(addressesElement);
-    AddressesScopedList items = AddressesScopedList.newBuilder()
-      .addAllAddresses(addresses)
-      .build();
+    AddressesScopedList items = AddressesScopedList.newBuilder().build();
     AddressAggregatedList expectedResponse = AddressAggregatedList.newBuilder()
       .setKind(kind)
       .setNextPageToken(nextPageToken)
@@ -12277,9 +12277,9 @@ public class AddressClientTest {
 
     AggregatedListAddressesPagedResponse pagedListResponse = client.aggregatedListAddresses(project);
 
-    List<Address> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    List<AddressesScopedList> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getItems().getAddressesList().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getItems().get(0), resources.get(0));
 
     List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
