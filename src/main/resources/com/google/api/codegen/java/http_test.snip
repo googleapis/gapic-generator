@@ -112,7 +112,7 @@
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
       Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
   @case "FlattenedMethod"
     @if test.hasReturnValue

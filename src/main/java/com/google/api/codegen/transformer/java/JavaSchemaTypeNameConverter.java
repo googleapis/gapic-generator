@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -265,8 +264,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     return getSnippetZeroValue(type);
   }
 
-  private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, FieldModel type, String typedResourceShortName) {
+  private TypeName getTypeNameForTypedResourceName(FieldModel type, String typedResourceShortName) {
     String packageName = implicitPackageName;
     String longName = packageName + "." + typedResourceShortName;
 
@@ -286,14 +284,12 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+    return getTypeNameForTypedResourceName(fieldConfig.getField(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+    return getTypeNameForTypedResourceName(fieldConfig.getField(), typedResourceShortName);
   }
 }

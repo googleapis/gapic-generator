@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.metacode.InitCodeLineType.ListInitLine;
-import static com.google.api.codegen.metacode.InitCodeLineType.StructureInitLine;
-
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -56,7 +53,6 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -254,16 +250,10 @@ public class TestCaseTransformer {
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
 
-    // Construct the list of function calls needed to retrieve paged resource from response object.
-    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-    for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
-      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
-    }
-
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
+            .resourcesFieldGetterName(namer.getFieldGetFunctionName(resourcesField))
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
@@ -275,11 +265,8 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-      for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
-        resourcesFieldGetFunctionList.add(
-            namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig));
-      }
+      String resourceGetterName =
+          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
 
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
@@ -290,7 +277,7 @@ public class TestCaseTransformer {
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
+              .resourcesFieldGetterName(resourceGetterName)
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
@@ -375,28 +362,14 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      if (config.getResourcesFieldConfig().getFieldPath().size() == 1) {
-        String resourceFieldName = config.getResourcesFieldName();
-        additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      FieldModel field = config.getResourcesField();
+      InitCodeNode initCodeNode;
+      if (field.isRepeated()) {
+        initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
       } else {
-        //  Initialize all the objects between the response type and the resource element.
-        List<FieldModel> fieldGetters =
-            Lists.reverse(config.getResourcesFieldConfig().getFieldPath());
-        InitCodeNode initCodeNode = null;
-
-        for (FieldModel field : fieldGetters) {
-          if (config.getResourcesField().isRepeated()) {
-            initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
-          } else {
-            initCodeNode = InitCodeNode.create(config.getResourcesFieldName());
-          }
-
-          InitCodeLineType lineType = field.isRepeated() ? ListInitLine : StructureInitLine;
-          initCodeNode =
-              InitCodeNode.createWithChildren(field.getSimpleName(), lineType, initCodeNode);
-        }
-        additionalSubTrees.add(initCodeNode);
+        initCodeNode = InitCodeNode.create(field.getNameAsParameter());
       }
+      additionalSubTrees.add(initCodeNode);
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available
