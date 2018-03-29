@@ -20,16 +20,13 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -208,16 +205,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public Oneof getOneof() {
     return null;
-  }
-
-  @Override
-  public List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    List<String> methodNames = new LinkedList<>();
-    for (FieldModel field : startingFieldConfig.getFieldPath()) {
-      methodNames.add(0, namer.getFieldGetFunctionName(field));
-    }
-    return ImmutableList.copyOf(methodNames);
   }
 
   @Override

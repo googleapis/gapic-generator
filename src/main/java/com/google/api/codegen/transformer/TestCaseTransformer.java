@@ -250,16 +250,10 @@ public class TestCaseTransformer {
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
 
-    // Construct the list of function calls needed to retrieve paged resource from response object.
-    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-    for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
-      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
-    }
-
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
+            .resourcesFieldGetterName(namer.getFieldGetFunctionName(resourcesField))
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
@@ -271,11 +265,8 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-      for (FieldModel field : resourcesFieldConfig.getFieldPath()) {
-        resourcesFieldGetFunctionList.add(
-            namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig));
-      }
+      String resourceGetterName =
+          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
 
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
@@ -286,7 +277,7 @@ public class TestCaseTransformer {
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterNames(resourcesFieldGetFunctionList.build())
+              .resourcesFieldGetterName(resourceGetterName)
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))

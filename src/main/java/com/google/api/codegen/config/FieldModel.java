@@ -14,14 +14,11 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /**
@@ -99,12 +96,6 @@ public interface FieldModel {
 
   @Nullable
   Oneof getOneof();
-
-  /* The ordered list of method calls necessary to reach the object representing the resource array
-   * in the response of paged RPCs.
-   */
-  List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer);
 
   TypeModel getType();
 }

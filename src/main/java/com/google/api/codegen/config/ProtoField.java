@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -30,7 +29,6 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a protobuf Field. */
@@ -189,14 +187,6 @@ public class ProtoField implements FieldModel {
   @Override
   public Oneof getOneof() {
     return protoField.getOneof();
-  }
-
-  @Override
-  public List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    String resourceFieldGetFunctionName =
-        namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
-    return ImmutableList.of(resourceFieldGetFunctionName);
   }
 
   @Override

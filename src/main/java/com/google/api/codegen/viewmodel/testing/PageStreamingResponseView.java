@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -25,8 +24,7 @@ public abstract class PageStreamingResponseView {
 
   public abstract String resourceTypeName();
 
-  // The sequence of method calls to retrieve the paged resource field from the RPC response object.
-  public abstract List<String> resourcesFieldGetterNames();
+  public abstract String resourcesFieldGetterName();
 
   public abstract String resourcesIterateMethod();
 
@@ -48,7 +46,7 @@ public abstract class PageStreamingResponseView {
 
     public abstract Builder resourceTypeName(String val);
 
-    public abstract Builder resourcesFieldGetterNames(List<String> val);
+    public abstract Builder resourcesFieldGetterName(String val);
 
     public abstract Builder resourcesIterateMethod(String val);
 
