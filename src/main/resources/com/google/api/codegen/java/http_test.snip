@@ -112,7 +112,12 @@
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
       Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+      @if pageStreamingResponseView.resourcesFieldIsMap
+        Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.values().iterator().next(),
+      @else
+        Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0),
+      @end
+          {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
   @case "FlattenedMethod"
     @if test.hasReturnValue
@@ -130,7 +135,6 @@
 @end
 
 # TODO(andrealin) comparison of request content.
-# TODO(andrealin) check for header being sent.
 @private unarySuccessAsserts(test)
   List<String> actualRequests = mockService.getRequestPaths();
   Assert.assertEquals(1, actualRequests.size());

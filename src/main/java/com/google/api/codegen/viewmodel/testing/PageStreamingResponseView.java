@@ -30,6 +30,8 @@ public abstract class PageStreamingResponseView {
 
   public abstract String resourcesIterateMethod();
 
+  public abstract Boolean resourcesFieldIsMap();
+
   @Nullable
   public abstract String expectedValueTransformFunction();
 
@@ -49,6 +51,8 @@ public abstract class PageStreamingResponseView {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder resourcesFieldGetterNames(List<String> val);
+
+    public abstract Builder resourcesFieldIsMap(Boolean val);
 
     public abstract Builder resourcesIterateMethod(String val);
 

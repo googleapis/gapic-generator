@@ -47,12 +47,6 @@ public interface FieldModel {
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 
-  /* @return the resource type of the map key. */
-  FieldModel getMapKeyField();
-
-  /* @return the resource type of the map value. */
-  FieldModel getMapValueField();
-
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();
 

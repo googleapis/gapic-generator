@@ -49,13 +49,13 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
-  public FieldModel getMapKeyField() {
-    return new ProtoField(typeRef.getMapKeyField());
+  public TypeModel getMapKeyType() {
+    return new ProtoTypeRef(typeRef.getMapKeyField().getType());
   }
 
   @Override
-  public FieldModel getMapValueField() {
-    return new ProtoField(typeRef.getMapValueField());
+  public TypeModel getMapValueType() {
+    return new ProtoTypeRef(typeRef.getMapValueField().getType());
   }
 
   @Override

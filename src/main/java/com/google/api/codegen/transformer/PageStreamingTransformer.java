@@ -118,6 +118,8 @@ public class PageStreamingTransformer {
     }
     desc.resourcesFieldGetFunctions(resourcesFieldGetFunctionList.build());
 
+    desc.resourcesFieldIsMap(resourceField.isMap());
+
     return desc.build();
   }
 

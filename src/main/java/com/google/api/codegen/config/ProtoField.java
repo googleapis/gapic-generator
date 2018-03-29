@@ -76,16 +76,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public ProtoField getMapKeyField() {
-    return new ProtoField(protoField.getType().getMapKeyField());
-  }
-
-  @Override
-  public ProtoField getMapValueField() {
-    return new ProtoField(protoField.getType().getMapValueField());
-  }
-
-  @Override
   public boolean isMessage() {
     return protoField.getType().isMessage();
   }

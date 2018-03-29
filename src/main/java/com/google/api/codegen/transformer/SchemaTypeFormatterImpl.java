@@ -60,7 +60,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeNameConverter.renderPrimitiveValue(type, key);
   }
 
   @Override
