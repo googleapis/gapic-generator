@@ -44,7 +44,6 @@ import com.google.api.codegen.transformer.StaticLangResourceObjectTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.Enums;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
@@ -236,12 +235,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               .getNamer()
               .getFieldGetFunctionName(
                   DiscoGapicParser.stringToName(param),
-                  Enums.MapType.NOT_MAP,
-                  Enums.Cardinality.NOT_REPEATED));
+                  SurfaceNamer.MapType.NOT_MAP,
+                  SurfaceNamer.Cardinality.NOT_REPEATED));
       paramView.fieldSetFunction(
           context
               .getDiscoGapicNamer()
-              .getResourceSetterName(param, Enums.Cardinality.NOT_REPEATED, context.getNamer()));
+              .getResourceSetterName(
+                  param, SurfaceNamer.Cardinality.NOT_REPEATED, context.getNamer()));
       paramView.properties(Collections.emptyList());
       paramView.isRequestMessage(false);
       paramView.hasRequiredProperties(false);
@@ -337,7 +337,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         context
             .getDiscoGapicNamer()
             .getResourceSetterName(
-                name, Enums.Cardinality.ofRepeated(schema.isRepeated()), context.getNamer()));
+                name,
+                SurfaceNamer.Cardinality.ofRepeated(schema.isRepeated()),
+                context.getNamer()));
     paramView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schema));
     paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);

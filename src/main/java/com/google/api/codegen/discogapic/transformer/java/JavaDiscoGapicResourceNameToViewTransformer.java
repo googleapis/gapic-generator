@@ -37,7 +37,6 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.Enums;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
@@ -198,7 +197,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
             .getDiscoGapicNamer()
             .getResourceSetterName(
                 schema.getIdentifier(),
-                Enums.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY)),
+                SurfaceNamer.Cardinality.ofRepeated(schema.type().equals(Schema.Type.ARRAY)),
                 context.getNamer()));
     return paramView.build();
   }

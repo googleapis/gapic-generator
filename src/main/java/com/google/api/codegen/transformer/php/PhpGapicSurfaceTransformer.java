@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
-import com.google.api.HttpRule.Builder;
 import com.google.api.Service;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.ApiModel;
@@ -41,7 +40,6 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Enums;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
@@ -401,7 +399,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     for (String getter : var.split("\\.")) {
       getters.add(
           namer.getFieldGetFunctionName(
-              Name.anyLower(getter), Enums.MapType.NOT_MAP, Enums.Cardinality.NOT_REPEATED));
+              Name.anyLower(getter),
+              SurfaceNamer.MapType.NOT_MAP,
+              SurfaceNamer.Cardinality.NOT_REPEATED));
     }
 
     placeholderView.name(var);

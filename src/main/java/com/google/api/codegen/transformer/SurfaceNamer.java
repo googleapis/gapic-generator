@@ -33,7 +33,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
-import com.google.api.codegen.util.Enums;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
@@ -74,6 +73,36 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public enum TestKind {
     UNIT,
     SYSTEM
+  }
+
+  public enum Cardinality implements Comparable<Cardinality> {
+    IS_REPEATED(true),
+    NOT_REPEATED(false);
+
+    Cardinality(boolean value) {
+      this.value = value;
+    }
+
+    public static Cardinality ofRepeated(boolean value) {
+      return value ? IS_REPEATED : NOT_REPEATED;
+    }
+
+    private final boolean value;
+  }
+
+  public enum MapType implements Comparable<MapType> {
+    IS_MAP(true),
+    NOT_MAP(false);
+
+    MapType(boolean value) {
+      this.value = value;
+    }
+
+    public static MapType ofMap(boolean value) {
+      return value ? IS_MAP : NOT_MAP;
+    }
+
+    private final boolean value;
   }
 
   public SurfaceNamer(
@@ -273,23 +302,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FieldModel field) {
     return getFieldSetFunctionName(
         field.getNameAsParameterName(),
-        Enums.MapType.ofMap(field.isMap()),
-        Enums.Cardinality.ofRepeated(field.isRepeated()));
+        SurfaceNamer.MapType.ofMap(field.isMap()),
+        SurfaceNamer.Cardinality.ofRepeated(field.isRepeated()));
   }
 
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     return getFieldSetFunctionName(
         identifier,
-        Enums.MapType.ofMap(type.isMap()),
-        Enums.Cardinality.ofRepeated(type.isRepeated()));
+        SurfaceNamer.MapType.ofMap(type.isMap()),
+        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
   }
   /** The function name to get a field having the given name. */
   public String getFieldSetFunctionName(
-      Name identifier, Enums.MapType mapType, Enums.Cardinality cardinality) {
-    if (mapType == Enums.MapType.IS_MAP) {
+      Name identifier, SurfaceNamer.MapType mapType, SurfaceNamer.Cardinality cardinality) {
+    if (mapType == SurfaceNamer.MapType.IS_MAP) {
       return publicMethodName(Name.from("put", "all").join(identifier));
-    } else if (cardinality == Enums.Cardinality.IS_REPEATED) {
+    } else if (cardinality == SurfaceNamer.Cardinality.IS_REPEATED) {
       return publicMethodName(Name.from("add", "all").join(identifier));
     } else {
       return publicMethodName(Name.from("set").join(identifier));
@@ -348,10 +377,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get a field having the given name. */
   public String getFieldGetFunctionName(
-      Name identifier, Enums.MapType mapType, Enums.Cardinality cardinality) {
-    if (mapType != Enums.MapType.IS_MAP && cardinality == Enums.Cardinality.IS_REPEATED) {
+      Name identifier, SurfaceNamer.MapType mapType, SurfaceNamer.Cardinality cardinality) {
+    if (mapType != SurfaceNamer.MapType.IS_MAP
+        && cardinality == SurfaceNamer.Cardinality.IS_REPEATED) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else if (mapType == Enums.MapType.IS_MAP) {
+    } else if (mapType == SurfaceNamer.MapType.IS_MAP) {
       return publicMethodName(Name.from("get").join(identifier).join("map"));
     } else {
       return publicMethodName(Name.from("get").join(identifier));
@@ -362,16 +392,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     return getFieldGetFunctionName(
         identifier,
-        Enums.MapType.ofMap(type.isMap()),
-        Enums.Cardinality.ofRepeated(type.isRepeated()));
+        SurfaceNamer.MapType.ofMap(type.isMap()),
+        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return getFieldGetFunctionName(
         identifier,
-        Enums.MapType.ofMap(type.isMap()),
-        Enums.Cardinality.ofRepeated(type.isRepeated()));
+        SurfaceNamer.MapType.ofMap(type.isMap()),
+        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field that is a resource name class. */
