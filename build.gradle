@@ -438,6 +438,19 @@ task runConfigGen(type: JavaExec) {
   }
 }
 
+// Task to run DiscoveryConfigGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runDiscoveryConfigGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.configgen.DiscoConfigGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 // Task to run GrpcMetadataGeneratorTool
 // =============================
 //
