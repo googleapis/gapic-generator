@@ -29,7 +29,8 @@ import javax.annotation.Nullable;
 public class DiscoveryMethodTransformer implements InputSpecificMethodTransformer {
   private final PagingParameters pagingParameters = new HttpPagingParameters();
 
-  // For Discovery doc configgen, assume that paged resource field name is "items".
+  // For Discovery doc configgen, assume that paged resource field name is "items". This is the only resource name
+  // seen in Google Cloud Compute API.
   private static String PAGING_RESOURCE_FIELD_NAME = "items";
 
   @Override
