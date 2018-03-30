@@ -397,6 +397,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addUnitTestImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("java.io.IOException");
@@ -412,7 +413,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     }
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
-        typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
@@ -461,6 +461,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("com.google.common.base.Preconditions");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
+    typeTable.saveNicknameFor("org.junit.Test");
   }
 
   private void addMockServiceImplImports(InterfaceContext context) {
