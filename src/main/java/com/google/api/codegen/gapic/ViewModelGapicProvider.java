@@ -22,8 +22,11 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class ViewModelGapicProvider implements GapicProvider {
@@ -44,17 +47,12 @@ public class ViewModelGapicProvider implements GapicProvider {
   }
 
   @Override
-  public List<String> getSnippetFileNames() {
+  public Collection<String> getFileNames() {
     return modelToViewTransformer.getTemplateFileNames();
   }
 
   @Override
   public Map<String, Doc> generate() {
-    return generate(null);
-  }
-
-  @Override
-  public Map<String, Doc> generate(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
     if (model.getDiagCollector().getErrorCount() > 0) {
@@ -69,9 +67,6 @@ public class ViewModelGapicProvider implements GapicProvider {
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-        continue;
-      }
       Doc doc = snippetSetRunner.generate(surfaceDoc);
       if (doc == null) {
         // generation failed; failures are captured in the model.
@@ -81,6 +76,11 @@ public class ViewModelGapicProvider implements GapicProvider {
     }
 
     return docs;
+  }
+
+  @Override
+  public Set<String> getGeneratedExecutables() {
+    return Collections.emptySet();
   }
 
   public static Builder newBuilder() {

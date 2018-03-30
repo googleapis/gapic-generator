@@ -21,8 +21,11 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class ViewModelDiscoGapicProvider implements GapicProvider {
@@ -43,17 +46,12 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public List<String> getSnippetFileNames() {
+  public Collection<String> getFileNames() {
     return modelToViewTransformer.getTemplateFileNames();
   }
 
   @Override
   public Map<String, Doc> generate() {
-    return generate(null);
-  }
-
-  @Override
-  public Map<String, Doc> generate(String snippetFileName) {
     List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
@@ -61,9 +59,6 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-        continue;
-      }
       Doc doc = snippetSetRunner.generate(surfaceDoc);
       if (doc == null) {
         // generation failed; failures are captured in the model.
@@ -73,6 +68,11 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
     }
 
     return docs;
+  }
+
+  @Override
+  public Set<String> getGeneratedExecutables() {
+    return Collections.emptySet();
   }
 
   public static Builder newBuilder() {

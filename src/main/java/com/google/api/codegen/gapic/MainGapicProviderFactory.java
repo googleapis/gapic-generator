@@ -55,6 +55,8 @@ import com.google.api.codegen.util.py.PythonRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -205,8 +207,25 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
                 .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
                 .build();
-
         providers.add(metadataProvider);
+
+        GapicProvider staticResourcesProvider =
+            new StaticResourcesProvider(
+                ImmutableMap.<String, String>builder()
+                    .put("java/static/build.gradle", "../build.gradle")
+                    .put("java/static/settings.gradle", "../settings.gradle")
+                    .put("java/static/gradlew", "../gradlew")
+                    .put("java/static/gradlew.bat", "../gradlew.bat")
+                    .put(
+                        "java/static/gradle/wrapper/gradle-wrapper.jar",
+                        "../gradle/wrapper/gradle-wrapper.jar")
+                    .put(
+                        "java/static/gradle/wrapper/gradle-wrapper.properties",
+                        "../gradle/wrapper/gradle-wrapper.properties")
+                    .build(),
+                ImmutableSet.of("../gradlew"));
+
+        providers.add(staticResourcesProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper javaTestPathMapper =

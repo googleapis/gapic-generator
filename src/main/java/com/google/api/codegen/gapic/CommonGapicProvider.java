@@ -24,8 +24,10 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
 
@@ -54,7 +56,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
   }
 
   @Override
-  public List<String> getSnippetFileNames() {
+  public List<String> getFileNames() {
     return snippetFileNames;
   }
 
@@ -70,9 +72,12 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
     return docs;
   }
 
-  @Nullable
   @Override
-  public Map<String, Doc> generate(String snippetFileName) {
+  public Set<String> getGeneratedExecutables() {
+    return Collections.emptySet();
+  }
+
+  private Map<String, Doc> generate(String snippetFileName) {
     Map<String, Doc> docs = new TreeMap<>();
     List<GeneratedResult> generatedOutput = generateSnip(snippetFileName);
     if (generatedOutput == null) {

@@ -14,25 +14,24 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.tools.framework.snippet.Doc;
-import java.util.List;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 /**
- * A GapicProvider performs code or fragment generation using on a proto-based Model for a
- * particular language.
+ * A GapicProvider performs files generation (code, static resources, etc.) using a proto-based
+ * Model for a particular language.
  */
 public interface GapicProvider {
-
-  /** Returns the snippet files that this provider will use for code generation. */
-  List<String> getSnippetFileNames();
-
-  /** Runs code generation and returns a map from relative file paths to generated Doc. */
-  Map<String, Doc> generate();
-
   /**
-   * Runs code generation for a single snippet and returns a map from relative file paths to
-   * generated Doc.
+   * Returns the file names that this provider will use for generation. They can be static files,
+   * snippet templates or any other type of files, depending on the actual provider implementation.
    */
-  Map<String, Doc> generate(String snippetFileName);
+  Collection<String> getFileNames();
+
+  /** Returns a set of relative file paths to generated files, which must be set executable. */
+  Collection<String> getGeneratedExecutables();
+
+  /** Runs code generation and returns a map from relative file paths to generated files. */
+  Map<String, ?> generate() throws IOException;
 }

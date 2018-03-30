@@ -36,7 +36,6 @@ import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
@@ -170,7 +169,7 @@ public class DiscoGapicGeneratorApi {
     List<GapicProvider> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
 
-    Map<String, Doc> outputFiles = Maps.newHashMap();
+    Map<String, Object> outputFiles = Maps.newHashMap();
     for (GapicProvider provider : providers) {
       outputFiles.putAll(provider.generate());
     }

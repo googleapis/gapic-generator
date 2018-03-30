@@ -31,7 +31,7 @@ public class GrpcMetadataProviderFactory {
       case PYTHON:
         return createForPython(options);
       case JAVA:
-        return createForJava(artifactType, options);
+        return createForJava(artifactType);
       default:
         throw new IllegalArgumentException(
             "The target language \"" + language + "\" is not supported");
@@ -42,8 +42,7 @@ public class GrpcMetadataProviderFactory {
     return new PythonGrpcMetadataProvider(options);
   }
 
-  private static GrpcMetadataProvider createForJava(
-      ArtifactType artifactType, ToolOptions options) {
+  private static GrpcMetadataProvider createForJava(ArtifactType artifactType) {
 
     switch (artifactType) {
       case GRPC:

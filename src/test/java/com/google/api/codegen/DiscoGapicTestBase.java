@@ -86,11 +86,11 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   }
 
   @Override
-  protected Map<String, Doc> run() {
-    Map<String, Doc> outputDocs = new LinkedHashMap<>();
+  protected Map<String, ?> run() throws IOException {
+    Map<String, Object> outputDocs = new LinkedHashMap<>();
 
     for (GapicProvider provider : discoGapicProviders) {
-      Map<String, Doc> docs = provider.generate();
+      Map<String, ?> docs = provider.generate();
       outputDocs.putAll(docs);
     }
     return outputDocs;

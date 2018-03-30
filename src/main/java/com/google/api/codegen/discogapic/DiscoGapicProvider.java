@@ -23,6 +23,8 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.internal.LinkedTreeMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,24 +54,18 @@ public class DiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public List<String> getSnippetFileNames() {
+  public List<String> getFileNames() {
     return snippetFileNames;
   }
 
+  @Override
   public Map<String, Doc> generate() {
-    return generate(null);
-  }
-
-  public Map<String, Doc> generate(String snippetFileName) {
     Map<String, Doc> docs = new LinkedTreeMap<>();
 
     for (DocumentToViewTransformer transformer : transformers) {
       List<ViewModel> surfaceDocs = transformer.transform(model, productConfig);
 
       for (ViewModel surfaceDoc : surfaceDocs) {
-        if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-          continue;
-        }
         Doc doc = snippetSetRunner.generate(surfaceDoc);
         if (doc == null) {
           // generation failed; failures are captured in the model.
@@ -80,6 +76,11 @@ public class DiscoGapicProvider implements GapicProvider {
     }
 
     return docs;
+  }
+
+  @Override
+  public Collection<String> getGeneratedExecutables() {
+    return Collections.emptySet();
   }
 
   public static Builder newBuilder() {
