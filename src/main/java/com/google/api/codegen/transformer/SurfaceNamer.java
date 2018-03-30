@@ -302,23 +302,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FieldModel field) {
     return getFieldSetFunctionName(
         field.getNameAsParameterName(),
-        SurfaceNamer.MapType.ofMap(field.isMap()),
-        SurfaceNamer.Cardinality.ofRepeated(field.isRepeated()));
+        MapType.ofMap(field.isMap()),
+        Cardinality.ofRepeated(field.isRepeated()));
   }
 
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     return getFieldSetFunctionName(
-        identifier,
-        SurfaceNamer.MapType.ofMap(type.isMap()),
-        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
   }
   /** The function name to get a field having the given name. */
-  public String getFieldSetFunctionName(
-      Name identifier, SurfaceNamer.MapType mapType, SurfaceNamer.Cardinality cardinality) {
-    if (mapType == SurfaceNamer.MapType.IS_MAP) {
+  public String getFieldSetFunctionName(Name identifier, MapType mapType, Cardinality cardinality) {
+    if (mapType == MapType.IS_MAP) {
       return publicMethodName(Name.from("put", "all").join(identifier));
-    } else if (cardinality == SurfaceNamer.Cardinality.IS_REPEATED) {
+    } else if (cardinality == Cardinality.IS_REPEATED) {
       return publicMethodName(Name.from("add", "all").join(identifier));
     } else {
       return publicMethodName(Name.from("set").join(identifier));
@@ -376,12 +373,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get a field having the given name. */
-  public String getFieldGetFunctionName(
-      Name identifier, SurfaceNamer.MapType mapType, SurfaceNamer.Cardinality cardinality) {
-    if (mapType != SurfaceNamer.MapType.IS_MAP
-        && cardinality == SurfaceNamer.Cardinality.IS_REPEATED) {
+  public String getFieldGetFunctionName(Name identifier, MapType mapType, Cardinality cardinality) {
+    if (mapType != MapType.IS_MAP && cardinality == Cardinality.IS_REPEATED) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else if (mapType == SurfaceNamer.MapType.IS_MAP) {
+    } else if (mapType == MapType.IS_MAP) {
       return publicMethodName(Name.from("get").join(identifier).join("map"));
     } else {
       return publicMethodName(Name.from("get").join(identifier));
@@ -391,17 +386,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     return getFieldGetFunctionName(
-        identifier,
-        SurfaceNamer.MapType.ofMap(type.isMap()),
-        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return getFieldGetFunctionName(
-        identifier,
-        SurfaceNamer.MapType.ofMap(type.isMap()),
-        SurfaceNamer.Cardinality.ofRepeated(type.isRepeated()));
+        identifier, MapType.ofMap(type.isMap()), Cardinality.ofRepeated(type.isRepeated()));
   }
 
   /** The function name to get a field that is a resource name class. */
