@@ -20,14 +20,14 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-public class EmptyTypeModel implements TypeModel {
-  private static EmptyTypeModel instance = null;
+public class StringTypeModel implements TypeModel {
+  private static StringTypeModel instance = null;
 
-  private EmptyTypeModel() {}
+  private StringTypeModel() {}
 
-  public static EmptyTypeModel getInstance() {
+  public static StringTypeModel getInstance() {
     if (instance == null) {
-      instance = new EmptyTypeModel();
+      instance = new StringTypeModel();
     }
     return instance;
   }
@@ -51,7 +51,7 @@ public class EmptyTypeModel implements TypeModel {
 
   @Override
   public boolean isMessage() {
-    return true;
+    return false;
   }
 
   @Override
@@ -71,7 +71,7 @@ public class EmptyTypeModel implements TypeModel {
 
   @Override
   public boolean isEmptyType() {
-    return true;
+    return false;
   }
 
   @Override
@@ -104,7 +104,7 @@ public class EmptyTypeModel implements TypeModel {
 
   @Override
   public boolean isStringType() {
-    return false;
+    return true;
   }
 
   @Override
@@ -124,7 +124,7 @@ public class EmptyTypeModel implements TypeModel {
 
   @Override
   public String getTypeName() {
-    return "EmptyTypeModel";
+    return "StringTypeModel";
   }
 
   @Override
