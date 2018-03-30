@@ -58,10 +58,6 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     this.discoGapicNamer = discoGapicNamer;
   }
 
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
-  }
-
   @Override
   public SchemaTypeNameConverter getTypeNameConverter() {
     return typeNameConverter;
@@ -178,18 +174,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
-    if (type.isEmptyType()) {
-      return "java.lang.Void";
-    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
-    Schema schema = null;
-    if (!type.isEmptyType()) {
-      schema = ((DiscoveryField) type).getDiscoveryField();
-    }
-    return getFullNameFor(schema);
+    return typeFormatter.getFullNameFor(type);
   }
 
   @Override
@@ -293,11 +282,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    Schema schema = null;
-    if (!type.isEmptyType()) {
-      schema = ((DiscoveryField) type).getDiscoveryField();
-    }
-    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(schema);
+    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(type);
     return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
   }
 

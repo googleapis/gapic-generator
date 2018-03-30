@@ -125,6 +125,17 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     return TypedValue.create(getTypeName(schema), "%s." + value);
   }
 
+  @Override
+  public TypeName getTypeNameForElementType(TypeModel type) {
+    if (type.isStringType()) {
+      return typeNameConverter.getTypeName("java.lang.String");
+    } else if (type.isEmptyType()) {
+      return typeNameConverter.getTypeName("java.lang.Void");
+    }
+
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+  }
+
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
@@ -284,6 +295,25 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     return TypedValue.create(getTypeName(schema), "null");
   }
 
+  /**
+   * Returns the Java representation of a zero value for that type, to be used in code sample doc.
+   *
+   * <p>Parametric types may use the diamond operator, since the return value will be used only in
+   * initialization.
+   */
+  @Override
+  public TypedValue getSnippetZeroValue(TypeModel typeModel) {
+    if (typeModel.isStringType()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.lang.String"), "\"\"");
+    }
+
+    Schema schema = null;
+    if (!typeModel.isEmptyType()) {
+      schema = ((DiscoveryField) typeModel).getDiscoveryField();
+    }
+    return getSnippetZeroValue(schema);
+  }
+
   @Override
   public TypedValue getImplZeroValue(Schema type) {
     return getSnippetZeroValue(type);
@@ -316,10 +346,5 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(fieldConfig.getField(), typedResourceShortName);
-  }
-
-  @Override
-  protected TypeName getTypeNameForStringType() {
-    return typeNameConverter.getTypeName("java.lang.String");
   }
 }
