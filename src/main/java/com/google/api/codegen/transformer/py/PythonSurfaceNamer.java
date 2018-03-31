@@ -163,10 +163,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
-      TypeName keyTypeName =
-          new TypeName(getParamTypeNameForElementType(type.getMapKeyField().getType()));
-      TypeName valueTypeName =
-          new TypeName(getParamTypeNameForElementType(type.getMapValueField().getType()));
+      TypeName keyTypeName = new TypeName(getParamTypeNameForElementType(type.getMapKeyType()));
+      TypeName valueTypeName = new TypeName(getParamTypeNameForElementType(type.getMapValueType()));
       return new TypeName(
               mapTypeName.getFullName(),
               mapTypeName.getNickname(),

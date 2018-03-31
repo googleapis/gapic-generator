@@ -242,10 +242,10 @@
       Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
       @if pageStreamingResponseView.hasExpectedValueTransformFunction
         Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
-            expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0)),
+            expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0)),
             {@pageStreamingResponseView.resourcesVarName}.get(0));
       @else
-        Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+        Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
       @end
     @end
   @case "FlattenedMethod"
