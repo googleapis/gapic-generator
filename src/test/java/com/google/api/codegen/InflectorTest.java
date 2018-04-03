@@ -21,15 +21,14 @@ public class InflectorTest {
 
   @Test
   public void testSingularize() {
-    Truth.assertThat(Inflector.singularize("scarves")).isEqualTo("scarf");
-    Truth.assertThat(Inflector.singularize("halves")).isEqualTo("half");
-    Truth.assertThat(Inflector.singularize("cars")).isEqualTo("car");
-    Truth.assertThat(Inflector.singularize("fuzzes")).isEqualTo("fuzz");
-    Truth.assertThat(Inflector.singularize("sneezes")).isEqualTo("sneeze");
     Truth.assertThat(Inflector.singularize("blesses")).isEqualTo("bless");
-    Truth.assertThat(Inflector.singularize("scarves")).isEqualTo("scarf");
-    Truth.assertThat(Inflector.singularize("licenses")).isEqualTo("license");
     Truth.assertThat(Inflector.singularize("cares")).isEqualTo("care");
+    Truth.assertThat(Inflector.singularize("cars")).isEqualTo("car");
     Truth.assertThat(Inflector.singularize("fishes")).isEqualTo("fish");
+    Truth.assertThat(Inflector.singularize("fuzzes")).isEqualTo("fuzz");
+    Truth.assertThat(Inflector.singularize("halves")).isEqualTo("half");
+    Truth.assertThat(Inflector.singularize("licenses")).isEqualTo("license");
+    Truth.assertThat(Inflector.singularize("scarves")).isEqualTo("scarf");
+    Truth.assertThat(Inflector.singularize("sneezes")).isEqualTo("sneeze");
   }
 }
