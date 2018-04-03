@@ -14,22 +14,20 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.StringTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,17 +99,24 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isMap() {
-    return false;
+    return originalSchema.additionalProperties() != null;
   }
 
   @Override
-  public FieldModel getMapKeyField() {
-    throw new IllegalArgumentException("Discovery model types have no map keys.");
+  public TypeModel getMapKeyType() {
+    if (isMap()) {
+      // Assume that the schema's additionalProperties map keys are Strings.
+      return StringTypeModel.getInstance();
+    }
+    return null;
   }
 
   @Override
-  public FieldModel getMapValueField() {
-    throw new IllegalArgumentException("Discovery model types have no map values.");
+  public TypeModel getMapValueType() {
+    if (isMap()) {
+      return DiscoveryField.create(originalSchema.additionalProperties(), apiModel);
+    }
+    return null;
   }
 
   @Override
@@ -208,16 +213,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public Oneof getOneof() {
     return null;
-  }
-
-  @Override
-  public List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    List<String> methodNames = new LinkedList<>();
-    for (FieldModel field : startingFieldConfig.getFieldPath()) {
-      methodNames.add(0, namer.getFieldGetFunctionName(field));
-    }
-    return ImmutableList.copyOf(methodNames);
   }
 
   @Override

@@ -271,7 +271,11 @@
           }
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
-            return payload.{@functionChain(desc.resourcesFieldGetFunctions)};
+            @if desc.resourcesFieldIsMap
+              return payload.{@desc.resourcesFieldGetFunction}().values();
+            @else
+              return payload.{@desc.resourcesFieldGetFunction}();
+            @end
           }
         };
     {@""}

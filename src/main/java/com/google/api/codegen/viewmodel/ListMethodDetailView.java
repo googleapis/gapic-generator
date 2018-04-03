@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
 public abstract class ListMethodDetailView {
@@ -29,7 +28,7 @@ public abstract class ListMethodDetailView {
 
   public abstract String iterateMethodName();
 
-  public abstract List<String> resourcesFieldGetFunctions();
+  public abstract String resourcesFieldGetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
@@ -47,7 +46,7 @@ public abstract class ListMethodDetailView {
 
     public abstract Builder iterateMethodName(String name);
 
-    public abstract Builder resourcesFieldGetFunctions(List<String> name);
+    public abstract Builder resourcesFieldGetFunction(String name);
 
     public abstract ListMethodDetailView build();
   }

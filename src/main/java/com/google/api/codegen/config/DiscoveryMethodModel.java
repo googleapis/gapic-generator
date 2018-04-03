@@ -53,7 +53,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
     } else {
-      this.outputType = new EmptyTypeModel();
+      this.outputType = EmptyTypeModel.getInstance();
     }
   }
 
@@ -87,7 +87,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public DiscoveryField getOutputField(String fieldName) {
-    return null;
+    if (outputType.isEmptyType() || outputType.isPrimitive()) {
+      return null;
+    }
+    return ((DiscoveryField) outputType).getField(fieldName);
   }
 
   @Override
