@@ -29,6 +29,10 @@ import javax.annotation.Nullable;
 public class DiscoveryMethodTransformer implements InputSpecificMethodTransformer {
   private final PagingParameters pagingParameters = new HttpPagingParameters();
 
+  // For Discovery doc configgen, assume that paged resource field name is "items". This is the only resource name
+  // seen in Google Cloud Compute API.
+  private static String PAGING_RESOURCE_FIELD_NAME = "items";
+
   @Override
   public PagingParameters getPagingParameters() {
     return pagingParameters;
@@ -47,28 +51,37 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   @Override
   public PageStreamingResponseView generatePageStreamingResponse(MethodModel methodModel) {
     DiscoveryMethodModel method = (DiscoveryMethodModel) methodModel;
-    String resourcesField = null;
+    String resourcesName = null;
     boolean hasNextPageToken = false;
+
+    // Find the paged resource object from inside the response object.
     for (DiscoveryField field : method.getOutputFields()) {
-      String fieldName = field.getSimpleName();
-      if (!fieldName.equals(pagingParameters.getNameForNextPageToken())) {
-        for (Schema property : field.getDiscoveryField().properties().values()) {
-          if (property.getIdentifier().equals(pagingParameters.getNameForNextPageToken())) {
-            hasNextPageToken = true;
-            resourcesField = Name.anyCamel(fieldName).toUpperCamel();
-            break;
-          }
+      if (field.getDiscoveryField().properties() == null) {
+        continue;
+      }
+      // Verify that the paging response object contains a paging token.
+      for (Schema property : field.getDiscoveryField().properties().values()) {
+        if (property.getIdentifier().equals(pagingParameters.getNameForNextPageToken())) {
+          hasNextPageToken = true;
+          break;
         }
       }
+
+      Schema itemCollectionSchema =
+          field.getDiscoveryField().properties().get(PAGING_RESOURCE_FIELD_NAME);
+      if (itemCollectionSchema == null) {
+        continue;
+      }
+      resourcesName = PAGING_RESOURCE_FIELD_NAME;
     }
 
-    if (resourcesField == null || !hasNextPageToken) {
+    if (!hasNextPageToken) {
       return null;
     }
 
     return PageStreamingResponseView.newBuilder()
         .tokenField(pagingParameters.getNameForNextPageToken())
-        .resourcesField(resourcesField)
+        .resourcesField(Name.anyCamel(resourcesName).toLowerCamel())
         .build();
   }
 }

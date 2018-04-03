@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -44,7 +43,9 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String responseTokenGetFunction();
 
-  public abstract List<String> resourcesFieldGetFunctions();
+  public abstract String resourcesFieldGetFunction();
+
+  public abstract boolean resourcesFieldIsMap();
 
   public boolean requestHasPageSize() {
     return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
@@ -79,7 +80,9 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder responseTokenGetFunction(String val);
 
-    public abstract Builder resourcesFieldGetFunctions(List<String> val);
+    public abstract Builder resourcesFieldGetFunction(String val);
+
+    public abstract Builder resourcesFieldIsMap(boolean val);
 
     public abstract PageStreamingDescriptorClassView build();
   }

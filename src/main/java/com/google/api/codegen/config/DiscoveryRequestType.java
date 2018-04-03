@@ -37,13 +37,13 @@ public abstract class DiscoveryRequestType implements TypeModel {
 
   /* @return the resource type of the map key. */
   @Override
-  public FieldModel getMapKeyField() {
+  public TypeModel getMapKeyType() {
     return null;
   }
 
   /* @return the resource type of the map value. */
   @Override
-  public FieldModel getMapValueField() {
+  public TypeModel getMapValueType() {
     return null;
   }
 

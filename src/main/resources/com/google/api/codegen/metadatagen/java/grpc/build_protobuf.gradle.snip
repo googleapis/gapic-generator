@@ -5,11 +5,11 @@
 @end
 
 @override dependencies(metadata)
-  compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
+  compile 'com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}'
   @join dependency : metadata.additionalDependencies
-    compile "{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}"
+    compile '{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}'
   @end
   @join dependency : metadata.protoPackageDependencies
-    compile project(":proto-{@dependency.name}")
+    compile project(':proto-{@dependency.name}')
   @end
 @end

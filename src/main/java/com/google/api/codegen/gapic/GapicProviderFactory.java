@@ -30,6 +30,5 @@ public interface GapicProviderFactory<ProviderT> {
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig,
-      String outputPath);
+      PackageMetadataConfig packageConfig);
 }

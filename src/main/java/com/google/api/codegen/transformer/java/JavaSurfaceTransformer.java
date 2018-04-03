@@ -877,15 +877,14 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
         typeTable.saveNicknameFor("java.lang.Void");
-        typeTable.saveNicknameFor("java.util.HashSet");
-        typeTable.saveNicknameFor("java.util.Arrays");
         break;
     }
   }

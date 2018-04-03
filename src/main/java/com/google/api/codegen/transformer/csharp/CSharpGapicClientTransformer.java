@@ -292,7 +292,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private boolean methodTypeHasImpl(ClientMethodType type) {
     switch (type) {
       case RequestObjectMethod:
-      case AsyncRequestObjectMethod:
+      case AsyncRequestObjectCallSettingsMethod:
       case PagedRequestObjectMethod:
       case AsyncPagedRequestObjectMethod:
       case OperationRequestObjectMethod:
@@ -451,7 +451,14 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         }
         apiMethods.add(
             apiMethodTransformer.generateRequestObjectAsyncMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                requestMethodContext,
+                csharpCommonTransformer.callSettingsParam(),
+                ClientMethodType.AsyncRequestObjectCallSettingsMethod));
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectAsyncMethod(
+                requestMethodContext,
+                csharpCommonTransformer.cancellationTokenParam(),
+                ClientMethodType.AsyncRequestObjectCancellationMethod));
         apiMethods.add(
             apiMethodTransformer.generateRequestObjectMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam()));

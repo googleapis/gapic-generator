@@ -513,8 +513,10 @@
         @else
             {@requestObjectMethodSync(method, isImpl)}
         @end
-    @case "AsyncRequestObjectMethod"
-        {@requestObjectMethodAsync(method, isImpl)}
+    @case "AsyncRequestObjectCallSettingsMethod"
+        {@requestObjectMethodAsyncCallSettings(method, isImpl)}
+    @case "AsyncRequestObjectCancellationMethod"
+        {@requestObjectMethodAsyncCancellationToken(method, isImpl)}
     @case "PagedRequestObjectMethod"
         {@pagedRequestObjectMethodSync(method, isImpl)}
     @case "AsyncPagedRequestObjectMethod"
@@ -768,7 +770,7 @@
 @end
 
 # method: StaticLangApiMethodView, isImp: boolean
-@private requestObjectMethodAsync(method, isImpl)
+@private requestObjectMethodAsyncCallSettings(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
@@ -784,6 +786,19 @@
         {
             throw new NotImplementedException();
         }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private requestObjectMethodAsyncCancellationToken(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected requestObjectMethodAsyncCancellationToken implementation ***
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CancellationToken cancellationToken) => {@method.name}(
+                request,
+                CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
 
@@ -1048,7 +1063,7 @@
             /// <summary>
             /// Returns an enumerator that iterates through the resources in this response.
             /// </summary>
-            public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunctions.get(0)}.GetEnumerator();
+            public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
 
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

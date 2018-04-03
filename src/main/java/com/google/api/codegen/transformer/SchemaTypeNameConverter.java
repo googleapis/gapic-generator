@@ -56,10 +56,19 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
+  public abstract TypedValue getSnippetZeroValue(TypeModel type);
+
+  /**
+   * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
+   * type; suitable for use within code snippets.
+   */
   public abstract TypedValue getEnumValue(Schema schema, String value);
 
-  /** Provides a TypeName for the element type of the given FieldType. */
+  /** Provides a TypeName for the element type of the given schema. */
   public abstract TypeName getTypeNameForElementType(Schema type);
+
+  /** Provides a TypeName for the element type of the given TypeModel. */
+  public abstract TypeName getTypeNameForElementType(TypeModel type);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
@@ -70,6 +79,9 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(Schema schema, String value);
+
+  /** Renders the given value if it is a primitive type. */
+  public abstract String renderPrimitiveValue(TypeModel type, String value);
 
   /** Renders the value as a string. */
   public abstract String renderValueAsString(String value);
@@ -90,7 +102,7 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
     }
-    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getTypeNameForElementType(type);
   }
 
   @Override
@@ -100,12 +112,12 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(FieldModel type) {
-    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getTypeNameForElementType(type.getType());
   }
 
   @Override
   public TypedValue getSnippetZeroValue(FieldModel type) {
-    return getSnippetZeroValue((((DiscoveryField) type).getDiscoveryField()));
+    return getSnippetZeroValue(type.getType());
   }
 
   @Override
