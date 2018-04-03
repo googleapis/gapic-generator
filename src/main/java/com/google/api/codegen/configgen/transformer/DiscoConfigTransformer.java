@@ -17,7 +17,6 @@ package com.google.api.codegen.configgen.transformer;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoInterfaceModel;
-import com.google.api.codegen.configgen.ResourceNamePathTemplate;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
@@ -36,10 +35,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /** Generates the config view object using a model and output path. */
@@ -63,22 +60,8 @@ public class DiscoConfigTransformer {
     // Map of Methods to resource name patterns.
     ImmutableMap.Builder<Method, String> methodToNamePattern = ImmutableMap.builder();
 
-    // Set of already-seen name-patterns. The key is the String version of the name patter, and the value is the
-    // ResourceNamePathTemplate version.
-    Set<String> visitedNamePatterns = new HashSet<>();
-    Map<ResourceNamePathTemplate, String> visitedResourceNameTemplates = new HashMap<>();
-
     for (Method method : model.getDocument().methods()) {
       String namePattern = DiscoGapicParser.getCanonicalPath(method);
-      //      if (!visitedNamePatterns.contains(namePattern)) {
-      //        ResourceNamePathTemplate pathTemplate = ResourceNamePathTemplate.create(namePattern);
-      //        if (visitedResourceNameTemplates.containsKey(pathTemplate)) {
-      //          namePattern = visitedResourceNameTemplates.get(pathTemplate);
-      //        } else {
-      //          // Store this namePattern as the name pattern to use for all name patterns that act the same.
-      //          visitedResourceNameTemplates.put(pathTemplate, namePattern);
-      //        }
-      //      }
       methodToNamePattern.put(method, namePattern);
       Name qualifiedResourceName = DiscoGapicParser.getQualifiedResourceIdentifier(namePattern);
       methodToResourceName.put(method, qualifiedResourceName);
