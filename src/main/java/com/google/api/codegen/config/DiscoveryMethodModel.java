@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discogapic.EmptyTypeModel;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -278,7 +278,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      if (DiscoGapicParser.getCanonicalPath(method).equals(entry.getKey())) {
+      if (DiscoGapicParser.getCanonicalPath(method.flatPath()).equals(entry.getKey())) {
         String resourceNameString =
             DiscoGapicParser.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());

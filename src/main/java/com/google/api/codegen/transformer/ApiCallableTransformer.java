@@ -24,7 +24,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
+import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;

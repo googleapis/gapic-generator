@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
+import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -137,7 +137,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     if (methodConfigs != null) {
       for (MethodConfig methodConfig : methodConfigs) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method);
+        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method.flatPath());
         for (SingleResourceNameConfig nameConfig : singleResourceNames) {
           if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
             methodToSingleResourceNameMap.put(methodConfig, nameConfig);

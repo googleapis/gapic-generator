@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer;
+package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -74,11 +74,10 @@ public class DiscoGapicParser {
   }
 
   /**
-   * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
+   * Get the canonical path for a path, in the form "(%s/\{%s\})+" e.g. for a method path
    * "{project}/regions/{foo}/addresses", this returns "projects/{project}/regions/{region}".
    */
-  public static String getCanonicalPath(Method method) {
-    String namePattern = method.flatPath();
+  public static String getCanonicalPath(String namePattern) {
     // Ensure the first path segment is a string literal representing a resource type.
     if (namePattern.charAt(0) == '{') {
       String firstResource =
@@ -159,7 +158,7 @@ public class DiscoGapicParser {
 
   /**
    * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
-   * #getCanonicalPath(Method)}} for canonicalization of the parameter.
+   * #getCanonicalPath(String)}} for canonicalization of the parameter.
    */
   public static Name getQualifiedResourceIdentifier(String canonicalPath) {
     String[] pieces = canonicalPath.split(PATH_DELIMITER);

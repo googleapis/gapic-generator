@@ -22,7 +22,7 @@ import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
 import com.google.api.codegen.configgen.viewmodel.LicenseView;
 import com.google.api.codegen.configgen.viewmodel.ResourceNameGenerationView;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
+import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
@@ -61,7 +61,7 @@ public class DiscoConfigTransformer {
     ImmutableMap.Builder<Method, String> methodToNamePattern = ImmutableMap.builder();
 
     for (Method method : model.getDocument().methods()) {
-      String namePattern = DiscoGapicParser.getCanonicalPath(method);
+      String namePattern = DiscoGapicParser.getCanonicalPath(method.flatPath());
       methodToNamePattern.put(method, namePattern);
       Name qualifiedResourceName = DiscoGapicParser.getQualifiedResourceIdentifier(namePattern);
       methodToResourceName.put(method, qualifiedResourceName);

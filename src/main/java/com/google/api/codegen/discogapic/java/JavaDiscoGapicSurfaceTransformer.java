@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer.java;
+package com.google.api.codegen.discogapic.java;
 
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
+import com.google.api.codegen.discogapic.DocumentToViewTransformer;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
