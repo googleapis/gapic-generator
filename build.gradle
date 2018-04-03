@@ -385,6 +385,19 @@ task runCodeGen(type: JavaExec) {
   }
 }
 
+// Task to run CodeGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runDiscoCodeGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.DiscoGapicGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 // Task to run SynchronizerTool
 // =============================
 //
@@ -442,8 +455,8 @@ task runConfigGen(type: JavaExec) {
 // =============================
 //
 // Command line args can be passed to the tool as a comma-separated list:
-//   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
-task runDiscoveryConfigGen(type: JavaExec) {
+//   ./gradlew runDiscoConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runDiscoConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.configgen.DiscoConfigGeneratorTool'
   if (project.hasProperty('clargs')) {
