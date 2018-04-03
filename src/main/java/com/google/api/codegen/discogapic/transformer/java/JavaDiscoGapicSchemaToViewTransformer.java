@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
@@ -88,6 +89,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
+    reservedKeywords.add(TestCaseTransformer.getPagedResourceName(surfaceNamer));
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
             model,
