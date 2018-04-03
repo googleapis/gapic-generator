@@ -70,7 +70,6 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
-    reservedKeywords.add("ResourceName");
   }
 
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
