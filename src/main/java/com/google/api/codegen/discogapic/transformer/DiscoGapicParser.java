@@ -19,6 +19,8 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class DiscoGapicParser {
   private static final String REGEX_DELIMITER = "\\.";
-  private static final String PATH_DELIMITER = "/";
+  public static final String PATH_DELIMITER = "/";
 
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
@@ -73,7 +75,7 @@ public class DiscoGapicParser {
 
   /**
    * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
-   * "{project}/regions/{region}/addresses", this returns "projects/{project}/regions/{region}".
+   * "{project}/regions/{foo}/addresses", this returns "projects/{project}/regions/{region}".
    */
   public static String getCanonicalPath(Method method) {
     String namePattern = method.flatPath();
@@ -100,7 +102,22 @@ public class DiscoGapicParser {
       }
       namePattern = m.appendTail(sb).toString();
     }
-    return namePattern;
+
+    // Assume that there is no more than one wildcard segment in a row. Now the path segments alternative between
+    // exactly one literal segment and exactly one wildcard segment.
+    String[] patternPieces = namePattern.split("/");
+    for (int i = 0; i < patternPieces.length - 1; i = i + 2) {
+      // Check that wildcard segment follows the literal segment.
+      Preconditions.checkArgument(
+          patternPieces[i + 1].startsWith("{") && patternPieces[i + 1].endsWith("}"));
+
+      // For each literal segment (index i), make the following wildcard segment (index i+1) the singularized version
+      // of that literal segment.
+      String singular = Inflector.singularize(patternPieces[i]);
+      patternPieces[i + 1] = String.format("{%s}", singular);
+    }
+
+    return Joiner.on("/").join(patternPieces);
   }
 
   public static Name getInterfaceName(String defaultInterfaceName) {
