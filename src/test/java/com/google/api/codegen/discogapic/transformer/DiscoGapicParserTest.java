@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.common.truth.Truth;
 import org.junit.Test;
 

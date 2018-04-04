@@ -22,7 +22,7 @@ import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
 import com.google.api.codegen.configgen.viewmodel.LicenseView;
 import com.google.api.codegen.configgen.viewmodel.ResourceNameGenerationView;
-import com.google.api.codegen.discogapic.DiscoGapicParser;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
@@ -54,7 +54,7 @@ public class DiscoConfigTransformer {
       new MethodTransformer(new DiscoveryMethodTransformer());
 
   public ViewModel generateConfig(DiscoApiModel model, String outputPath) {
-    // Map of methods to unique resource names.
+    // Map of methods to unique, fully qualified resource names.
     Map<Method, Name> methodToResourceName = new HashMap<>();
 
     // Map of Methods to resource name patterns.

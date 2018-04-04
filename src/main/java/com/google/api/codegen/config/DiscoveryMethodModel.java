@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discogapic.EmptyTypeModel;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;

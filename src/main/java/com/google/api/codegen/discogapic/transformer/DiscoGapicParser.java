@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic;
+package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.config.ResourceNameConfig;

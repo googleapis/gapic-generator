@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.java;
+package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
@@ -22,9 +22,9 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.discogapic.DiscoGapicParser;
-import com.google.api.codegen.discogapic.DocumentToViewTransformer;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
+import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;

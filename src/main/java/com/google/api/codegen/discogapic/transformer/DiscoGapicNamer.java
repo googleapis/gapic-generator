@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.discogapic.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
