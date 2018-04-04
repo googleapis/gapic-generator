@@ -23,6 +23,7 @@ import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -172,6 +173,10 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract boolean publishProtos();
 
+  /** Overrides for packaging / publish settings */
+  @Nullable
+  public abstract Map<String, String> packageSettings();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -316,6 +321,8 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Whether .proto files should be included in the package. */
     public abstract Builder publishProtos(boolean val);
+
+    public abstract Builder packageSettings(Map<String, String> val);
 
     public abstract PackageMetadataView build();
   }

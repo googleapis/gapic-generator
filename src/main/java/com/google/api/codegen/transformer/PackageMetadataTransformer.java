@@ -22,6 +22,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,11 +40,25 @@ public class PackageMetadataTransformer {
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataNamer namer,
       PackageMetadataConfig packageConfig,
+      Map<String, String> packageSettings,
       ApiModel model,
       String template,
       String outputPath,
       TargetLanguage language) {
-    return generateMetadataView(namer, packageConfig, model, template, outputPath, language, null);
+    return generateMetadataView(
+        namer, packageConfig, packageSettings, model, template, outputPath, language, null);
+  }
+
+  // variant of the above without packageSettings (only used by Ruby)
+  public PackageMetadataView.Builder generateMetadataView(
+      PackageMetadataNamer namer,
+      PackageMetadataConfig packageConfig,
+      ApiModel model,
+      String template,
+      String outputPath,
+      TargetLanguage language) {
+    return generateMetadataView(
+        namer, packageConfig, ImmutableMap.of(), model, template, outputPath, language, null);
   }
 
   /**
@@ -53,6 +68,7 @@ public class PackageMetadataTransformer {
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataNamer namer,
       PackageMetadataConfig packageConfig,
+      Map<String, String> packageSettings,
       ApiModel model,
       String template,
       String outputPath,
@@ -98,7 +114,28 @@ public class PackageMetadataTransformer {
         .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false)
-        .publishProtos(false);
+        .publishProtos(false)
+        .packageSettings(packageSettings);
+  }
+
+  // variant of the above without packageSettings (only used by Ruby)
+  public PackageMetadataView.Builder generateMetadataView(
+      PackageMetadataNamer namer,
+      PackageMetadataConfig packageConfig,
+      ApiModel model,
+      String template,
+      String outputPath,
+      TargetLanguage language,
+      Set<String> whitelistedDependencies) {
+    return generateMetadataView(
+        namer,
+        packageConfig,
+        ImmutableMap.of(),
+        model,
+        template,
+        outputPath,
+        language,
+        whitelistedDependencies);
   }
 
   /**

@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -106,6 +107,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   @Nullable
   public abstract String packageVersion();
+
+  @Nullable
+  public abstract Map<String, String> packageSettings();
 
   public abstract boolean packageHasMultipleServices();
 
@@ -215,6 +219,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder packageSettings(Map<String, String> val);
 
     public abstract Builder packageHasMultipleServices(boolean val);
 

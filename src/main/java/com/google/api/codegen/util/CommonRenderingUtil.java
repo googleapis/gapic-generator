@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,5 +112,15 @@ public class CommonRenderingUtil {
    */
   public static int toInt(String value) {
     return Integer.valueOf(value);
+  }
+
+  /** Checks for the existence of a key (the given key will be coerced to a String). */
+  public static <K> boolean hasKey(Map<String, String> map, K key) {
+    return key != null ? map.containsKey(key.toString()) : false;
+  }
+
+  /** Gets the value of a key (the given key will be coerced to a String). */
+  public static <K> String getValueForKey(Map<String, String> map, K key) {
+    return key != null ? map.get(key.toString()) : "";
   }
 }

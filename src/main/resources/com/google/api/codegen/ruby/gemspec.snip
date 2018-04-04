@@ -3,7 +3,11 @@
   @# encoding: utf-8
 
   Gem::Specification.new do |gem|
-    gem.name          = "{@metadata.identifier}"
+    @if util.hasKey(metadata.packageSettings, "gem_name")
+      gem.name          = "{@util.getValueForKey(metadata.packageSettings, "gem_name")}"
+    @else
+      gem.name          = "{@metadata.identifier}"
+    @end
     gem.version       = "{@metadata.packageVersionBound.lower}"
 
     gem.authors       = ["{@metadata.author}"]

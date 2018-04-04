@@ -59,10 +59,13 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Ruby. */
@@ -77,6 +80,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
   private static final List<String> DEFAULT_PATHS =
       ImmutableList.of("~/.config/gcloud/application_default_credentials.json");
+
+  private static final String OVERRIDE_GEM_NAME = "gem_name";
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -187,16 +192,24 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
+
+    final boolean isLongRunning =
+        RubyUtil.isLongrunning(context.getProductConfig().getPackageName());
+
+    // use explicit gem name if provided in the configuration
+    Map<String, String> packageSettings =
+        new HashMap<>(context.getProductConfig().getPackageSettings());
+    if (!packageSettings.containsKey(OVERRIDE_GEM_NAME)) {
+      packageSettings.put(
+          OVERRIDE_GEM_NAME, isLongRunning ? "google-gax" : metadataNamer.getMetadataIdentifier());
+    }
+    xapiClass.packageSettings(ImmutableMap.copyOf(packageSettings));
     xapiClass.gapicPackageName(
-        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
-            ? "google-gax"
-            : metadataNamer.getMetadataIdentifier());
+        isLongRunning ? "google-gax" : packageSettings.get(OVERRIDE_GEM_NAME));
 
     xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
     xapiClass.defaultCredentialsInitializerCall(
-        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
-            ? "default(scopes: scopes)"
-            : "default");
+        isLongRunning ? "default(scopes: scopes)" : "default");
     return xapiClass.build();
   }
 
