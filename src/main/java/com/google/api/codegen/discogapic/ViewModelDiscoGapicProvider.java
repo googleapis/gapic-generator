@@ -46,7 +46,7 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public Collection<String> getFileNames() {
+  public Collection<String> getInputFileNames() {
     return modelToViewTransformer.getTemplateFileNames();
   }
 
@@ -71,7 +71,7 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public Set<String> getGeneratedExecutables() {
+  public Set<String> getOutputExecutableNames() {
     return Collections.emptySet();
   }
 

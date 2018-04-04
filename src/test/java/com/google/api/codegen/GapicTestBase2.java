@@ -131,7 +131,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> snippetNames = new ArrayList<>();
     for (GapicProvider provider : providers) {
-      snippetNames.addAll(provider.getFileNames());
+      snippetNames.addAll(provider.getInputFileNames());
     }
 
     String baseline = idForFactory + "_" + apiName + ".baseline";
@@ -181,7 +181,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     // Don't run any providers we're not testing.
     ArrayList<GapicProvider> testedProviders = new ArrayList<>();
     for (GapicProvider provider : providers) {
-      if (!Collections.disjoint(provider.getFileNames(), snippetNames)) {
+      if (!Collections.disjoint(provider.getInputFileNames(), snippetNames)) {
         testedProviders.add(provider);
       }
     }

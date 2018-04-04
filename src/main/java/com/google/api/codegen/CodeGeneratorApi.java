@@ -159,7 +159,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       Set<String> executables = Sets.newHashSet();
       for (GapicProvider provider : providers) {
         outputFiles.putAll(provider.generate());
-        executables.addAll(provider.getGeneratedExecutables());
+        executables.addAll(provider.getOutputExecutableNames());
       }
       writeCodeGenOutput(outputFiles, outputPath);
       setOutputFilesPermissions(executables, outputPath);

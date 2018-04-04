@@ -27,12 +27,12 @@ public class StaticResourcesProvider implements GapicProvider {
   }
 
   @Override
-  public Set<String> getFileNames() {
+  public Set<String> getInputFileNames() {
     return resourcesExtractor.getResourceFilesMap().keySet();
   }
 
   @Override
-  public Set<String> getGeneratedExecutables() {
+  public Set<String> getOutputExecutableNames() {
     return resourcesExtractor.getExecutableFilenames();
   }
 

@@ -19,18 +19,18 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * A GapicProvider performs files generation (code, static resources, etc.) using a proto-based
- * Model for a particular language.
+ * A GapicProvider performs file generation (code, static resources, etc.) using a proto-based Model
+ * for a particular language.
  */
 public interface GapicProvider {
   /**
    * Returns the file names that this provider will use for generation. They can be static files,
    * snippet templates or any other type of files, depending on the actual provider implementation.
    */
-  Collection<String> getFileNames();
+  Collection<String> getInputFileNames();
 
   /** Returns a set of relative file paths to generated files, which must be set executable. */
-  Collection<String> getGeneratedExecutables();
+  Collection<String> getOutputExecutableNames();
 
   /** Runs code generation and returns a map from relative file paths to generated files. */
   Map<String, ?> generate() throws IOException;

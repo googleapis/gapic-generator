@@ -54,7 +54,7 @@ public class DiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public List<String> getFileNames() {
+  public List<String> getInputFileNames() {
     return snippetFileNames;
   }
 
@@ -79,7 +79,7 @@ public class DiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public Collection<String> getGeneratedExecutables() {
+  public Collection<String> getOutputExecutableNames() {
     return Collections.emptySet();
   }
 

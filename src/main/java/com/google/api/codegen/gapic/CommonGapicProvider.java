@@ -56,7 +56,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
   }
 
   @Override
-  public List<String> getFileNames() {
+  public List<String> getInputFileNames() {
     return snippetFileNames;
   }
 
@@ -73,7 +73,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
   }
 
   @Override
-  public Set<String> getGeneratedExecutables() {
+  public Set<String> getOutputExecutableNames() {
     return Collections.emptySet();
   }
 
