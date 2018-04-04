@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class DiscoGapicParser {
   private static final String REGEX_DELIMITER = "\\.";
-  public static final String PATH_DELIMITER = "/";
+  private static final String PATH_DELIMITER = "/";
 
   private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
       Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
@@ -102,10 +102,12 @@ public class DiscoGapicParser {
       namePattern = m.appendTail(sb).toString();
     }
 
-    // Assume that there is no more than one wildcard segment in a row. Now the path segments alternative between
-    // exactly one literal segment and exactly one wildcard segment.
+    // Assume, based on the Google Compute API, that there is no more than one wildcard segment in a row.
+    // Now the path segments alternate between exactly one literal segment and exactly one wildcard segment.
     String[] patternPieces = namePattern.split("/");
     for (int i = 0; i < patternPieces.length - 1; i = i + 2) {
+      Preconditions.checkArgument(
+          !patternPieces[i].contains("{") && !patternPieces[i].contains("}"));
       // Check that wildcard segment follows the literal segment.
       Preconditions.checkArgument(
           patternPieces[i + 1].startsWith("{") && patternPieces[i + 1].endsWith("}"));
