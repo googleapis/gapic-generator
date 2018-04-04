@@ -322,14 +322,24 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getTopLevelApiModules() {
-    List<String> apiModules = getApiModules();
-    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
+    List<String> ret = new ArrayList<>();
+    for (String m : getApiModules()) {
+      if (VersionMatcher.isVersion(Name.upperCamel(m).toLowerUnderscore())) {
+        break;
+      }
+      ret.add(m);
+    }
+    return ImmutableList.copyOf(ret);
   }
 
   private static boolean hasVersionModule(List<String> apiModules) {
-    String versionModule = apiModules.get(apiModules.size() - 1);
-    String version = Name.upperCamel(versionModule).toLowerUnderscore();
-    return VersionMatcher.isVersion(version);
+    return apiModules
+            .stream()
+            .map(m -> Name.upperCamel(m).toLowerUnderscore())
+            .filter(m -> VersionMatcher.isVersion(m))
+            .findFirst()
+            .orElse(null)
+        != null;
   }
 
   @Override
