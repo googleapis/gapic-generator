@@ -58,7 +58,7 @@
 @end
 
 @private executeWithProjectID(smokeTest)
-  public static void executeNoCatch(String projectId) {
+  public static void executeNoCatch(String projectId) throws Exception {
     try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
       {@methodCall(smokeTest.apiMethod)}
     }
@@ -66,7 +66,7 @@
 @end
 
 @private executeWithNoProjectID(smokeTest)
-  public static void executeNoCatch() {
+  public static void executeNoCatch() throws Exception {
     try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
       @if smokeTest.hasMethod
         {@methodCall(smokeTest.apiMethod)}

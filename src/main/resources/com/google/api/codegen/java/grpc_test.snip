@@ -39,7 +39,7 @@
     }
 
     @@After
-    public void tearDown() {
+    public void tearDown() throws Exception {
       client.close();
     }
 
@@ -91,7 +91,7 @@
 
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.nameWithException}() {
+  public void {@test.nameWithException}() throws Exception {
     {@addException(test)}
 
     try {
@@ -109,7 +109,7 @@
 @private grpcStreamingTestCase(test)
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.name}() {
+  public void {@test.name}() throws Exception {
     {@addResponse(test)}
     {@initCode(test.initCode)}
 
@@ -122,7 +122,7 @@
 
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.nameWithException}() {
+  public void {@test.nameWithException}() throws Exception {
     {@addException(test)}
     {@initCode(test.initCode)}
 
@@ -142,7 +142,7 @@
 @private longRunningMethodTestCase(test)
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.name}() {
+  public void {@test.name}() throws Exception {
     {@initCode(test.mockResponse.initCode)}
     Operation resultOperation =
         Operation.newBuilder()
@@ -161,7 +161,7 @@
 
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.nameWithException}() {
+  public void {@test.nameWithException}() throws Exception {
     {@addException(test)}
 
     try {
