@@ -19,7 +19,6 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import java.util.regex.Pattern;
 
@@ -86,38 +85,8 @@ public class DiscoGapicParser {
     if (!namePattern.endsWith("}") && namePattern.contains("}")) {
       namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
     }
-    //    // For each sequence of consecutive non-bracketed path segments,
-    //    // replace those segments with the last one in the sequence.
-    //    Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
-    //    if (m.find()) {
-    //      StringBuffer sb = new StringBuffer();
-    //      for (int i = 1; i <= m.groupCount(); i++) {
-    //        String multipleSegment = m.group(i);
-    //        String[] segmentPieces = multipleSegment.split("/");
-    //        Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
-    //        m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
-    //      }
-    //      namePattern = m.appendTail(sb).toString();
-    //    }
 
-    // Assume, based on the Google Compute API, that there is no more than one wildcard segment in a row.
-    // Now the path segments alternate between a series of literal segments and exactly one wildcard segment.
-    String[] patternPieces = namePattern.split("/");
-    int i = 0; // index into patternPieces
-    while (i < patternPieces.length) {
-      // Find the next wildcard segment.
-      while (!patternPieces[i].contains("{")) {
-        i++; // Index now at wildcard segment.
-      }
-
-      // For each wildcard segment (index i), make the wildcard segment the singularized version of the preceding
-      // literal segment (index i-1)
-      String singular = Inflector.singularize(patternPieces[i - 1]);
-      patternPieces[i] = String.format("{%s}", singular);
-      i++;
-    }
-
-    return Joiner.on("/").join(patternPieces);
+    return namePattern;
   }
 
   public static Name getInterfaceName(String defaultInterfaceName) {
@@ -159,19 +128,33 @@ public class DiscoGapicParser {
 
   /**
    * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
-   * #getCanonicalPath(String)}} for canonicalization of the parameter.
+   * #getCanonicalPath(String)}} for canonicalization of the parameter. This method includes all
+   * wildcards from the input path in the resulting Name, and it includes literal segments from the
+   * input path
    */
   public static Name getQualifiedResourceIdentifier(String canonicalPath) {
     String[] pieces = canonicalPath.split(PATH_DELIMITER);
 
     Name name = null;
-    for (String piece : pieces) {
-      if (!piece.contains("{")) {
-        if (name == null) {
-          name = Name.from(Inflector.singularize(piece));
-        } else {
-          name = name.join(stringToName(Inflector.singularize(piece)));
+    for (int i = 0; i < pieces.length; i++) {
+      if (i < pieces.length - 1 && pieces[i + 1].contains("{")) {
+        // Current index at a literal segment directly preceding a wildcard segment.
+        // Skip literal segment iff it is the same as or the pluralized version of the wildcard string.
+        String wildCard = pieces[i + 1].substring(1, pieces[i + 1].length() - 1);
+        if (pieces[i].toLowerCase().equals(wildCard.toLowerCase())
+            || Inflector.singularize(pieces[i].toLowerCase()).equals(wildCard.toLowerCase())) {
+          continue;
         }
+      }
+
+      String namePiece = pieces[i];
+      if (namePiece.contains("}")) {
+        namePiece = namePiece.substring(1, namePiece.length() - 1);
+      }
+      if (name == null) {
+        name = Name.from(Inflector.singularize(namePiece));
+      } else {
+        name = name.join(stringToName(Inflector.singularize(namePiece)));
       }
     }
 

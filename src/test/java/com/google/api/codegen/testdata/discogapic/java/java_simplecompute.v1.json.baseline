@@ -187,6 +187,195 @@ public final class ProjectDummyObjectName implements ResourceName {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectDummyObjectResourceName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectDummyObjectResourceName implements ResourceName {
+  private final String project;
+  private final String resource;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/dummyObjects/{resource}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectDummyObjectResourceName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+    resource = Preconditions.checkNotNull(builder.getResource());
+  }
+
+  public static ProjectDummyObjectResourceName of(
+      String project,
+      String resource
+      ) {
+    return newBuilder()
+    .setProject(project)
+    .setResource(resource)
+      .build();
+  }
+
+  public static String format(
+      String project,
+      String resource
+      ) {
+    return of(
+        project,
+        resource
+        )
+        .toString();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldMapBuilder.put("resource", resource);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ProjectDummyObjectResourceName> newFactory() {
+    return new ResourceNameFactory<ProjectDummyObjectResourceName>() {
+      public ProjectDummyObjectResourceName parse(String formattedString) {return ProjectDummyObjectResourceName.parse(formattedString);}
+    };
+  }
+
+  public static ProjectDummyObjectResourceName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectDummyObjectResourceName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project"),
+      matchMap.get("resource")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String project;
+    private String resource;
+
+    public String getProject() {
+      return project;
+    }
+    public String getResource() {
+      return resource;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setResource(String resource) {
+      this.resource = resource;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectDummyObjectResourceName projectDummyObjectResourceName) {
+      project = projectDummyObjectResourceName.project;
+      resource = projectDummyObjectResourceName.resource;
+    }
+
+    public ProjectDummyObjectResourceName build() {
+      return new ProjectDummyObjectResourceName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project,
+        "resource", resource
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectDummyObjectResourceName) {
+      ProjectDummyObjectResourceName that = (ProjectDummyObjectResourceName) o;
+      return
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.resource, that.getResource())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project,
+      resource
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectGlobalAddressName.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -12225,7 +12414,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+ *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
  *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
@@ -12481,7 +12670,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
    *   dummyObjectClient.getResourceDummyObject(resource);
    * }
    * </code></pre>
@@ -12490,7 +12679,7 @@ public class DummyObjectClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final void getResourceDummyObject(ProjectDummyObjectName resource) {
+  public final void getResourceDummyObject(ProjectDummyObjectResourceName resource) {
 
     GetResourceDummyObjectHttpRequest request =
         GetResourceDummyObjectHttpRequest.newBuilder()
@@ -12506,7 +12695,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
    *   dummyObjectClient.getResourceDummyObject(resource.toString());
    * }
    * </code></pre>
@@ -12531,7 +12720,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
    *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
    *     .setResource(resource.toString())
    *     .build();
@@ -12554,7 +12743,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
    *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
    *     .setResource(resource.toString())
    *     .build();
@@ -13519,7 +13708,11 @@ import com.google.cloud.simplecompute.v1.ResourceName;
 =======
 import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+<<<<<<< HEAD
 >>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
+=======
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
+>>>>>>> update DiscoGapicParser and test
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -13607,7 +13800,11 @@ import com.google.cloud.simplecompute.v1.ResourceName;
 >>>>>>> fully qualify ResourceName import
 =======
 import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+<<<<<<< HEAD
 >>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
+=======
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
+>>>>>>> update DiscoGapicParser and test
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
@@ -13656,7 +13853,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{resource}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
-                  .setResourceNameFactory(ProjectDummyObjectName.newFactory())
+                  .setResourceNameFactory(ProjectDummyObjectResourceName.newFactory())
                   .setResourceNameField("resource")
 >>>>>>> fully qualify ResourceName import
                   .build())
@@ -13855,7 +14052,11 @@ import com.google.cloud.simplecompute.v1.ResourceName;
 >>>>>>> fully qualify ResourceName import
 =======
 import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+<<<<<<< HEAD
 >>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
+=======
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
+>>>>>>> update DiscoGapicParser and test
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.longrunning.Operation;
@@ -13948,7 +14149,7 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+ *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
  *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
@@ -14661,7 +14862,7 @@ public class DummyObjectClientTest {
   public void getResourceDummyObjectTest() {
     mockService.addNullResponse();
 
-    ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+    ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
 
     client.getResourceDummyObject(resource);
 >>>>>>> fully qualify ResourceName import
@@ -14688,6 +14889,7 @@ public class DummyObjectClientTest {
     try {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       ProjectName project = ProjectName.of("[PROJECT]");
 
       client.listResourcesDummyObjects(project);
@@ -14696,6 +14898,9 @@ public class DummyObjectClientTest {
 =======
       ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
 >>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
+=======
+      ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+>>>>>>> update DiscoGapicParser and test
 
       client.getResourceDummyObject(resource);
 >>>>>>> fully qualify ResourceName import

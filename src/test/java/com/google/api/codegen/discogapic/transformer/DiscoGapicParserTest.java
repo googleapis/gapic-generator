@@ -30,11 +30,32 @@ public class DiscoGapicParserTest {
         .isEqualTo("projects/{project}/global/backendBuckets/{backendBucket}");
     Truth.assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/zones/{zone}/disks/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/zones/{zone}/disks/{disk}");
-    Truth.assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/addresses/{address}"))
-        .isEqualTo("projects/{project}/global/addresses/{address}");
+        .isEqualTo("projects/{project}/zones/{zone}/disks/{resource}");
     Truth.assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/global/images/{image}");
+        .isEqualTo("projects/{project}/global/images/{resource}");
+  }
+
+  @Test
+  public void testGetQualifiedResourceIdentifier() {
+    Truth.assertThat(
+            DiscoGapicParser.getQualifiedResourceIdentifier(
+                    "{project}/backendBuckets/{backendBucket}")
+                .toUpperCamel())
+        .isEqualTo("ProjectBackendBucket");
+    Truth.assertThat(
+            DiscoGapicParser.getQualifiedResourceIdentifier(
+                    "{project}/global/backendBuckets/{backendBucket}")
+                .toUpperCamel())
+        .isEqualTo("ProjectGlobalBackendBucket");
+    Truth.assertThat(
+            DiscoGapicParser.getQualifiedResourceIdentifier(
+                    "{project}/zones/{zone}/disks/{resource}")
+                .toUpperCamel())
+        .isEqualTo("ProjectZoneDiskResource");
+    Truth.assertThat(
+            DiscoGapicParser.getQualifiedResourceIdentifier("{project}/global/images/{resource}")
+                .toUpperCamel())
+        .isEqualTo("ProjectGlobalImageResource");
   }
 }
