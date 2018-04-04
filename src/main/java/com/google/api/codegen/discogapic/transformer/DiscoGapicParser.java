@@ -20,9 +20,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -88,34 +86,35 @@ public class DiscoGapicParser {
     if (!namePattern.endsWith("}") && namePattern.contains("}")) {
       namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
     }
-    // For each sequence of consecutive non-bracketed path segments,
-    // replace those segments with the last one in the sequence.
-    Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
-    if (m.find()) {
-      StringBuffer sb = new StringBuffer();
-      for (int i = 1; i <= m.groupCount(); i++) {
-        String multipleSegment = m.group(i);
-        String[] segmentPieces = multipleSegment.split("/");
-        Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
-        m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
-      }
-      namePattern = m.appendTail(sb).toString();
-    }
+    //    // For each sequence of consecutive non-bracketed path segments,
+    //    // replace those segments with the last one in the sequence.
+    //    Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
+    //    if (m.find()) {
+    //      StringBuffer sb = new StringBuffer();
+    //      for (int i = 1; i <= m.groupCount(); i++) {
+    //        String multipleSegment = m.group(i);
+    //        String[] segmentPieces = multipleSegment.split("/");
+    //        Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
+    //        m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
+    //      }
+    //      namePattern = m.appendTail(sb).toString();
+    //    }
 
     // Assume, based on the Google Compute API, that there is no more than one wildcard segment in a row.
-    // Now the path segments alternate between exactly one literal segment and exactly one wildcard segment.
+    // Now the path segments alternate between a series of literal segments and exactly one wildcard segment.
     String[] patternPieces = namePattern.split("/");
-    for (int i = 0; i < patternPieces.length - 1; i = i + 2) {
-      Preconditions.checkArgument(
-          !patternPieces[i].contains("{") && !patternPieces[i].contains("}"));
-      // Check that wildcard segment follows the literal segment.
-      Preconditions.checkArgument(
-          patternPieces[i + 1].startsWith("{") && patternPieces[i + 1].endsWith("}"));
+    int i = 0; // index into patternPieces
+    while (i < patternPieces.length) {
+      // Find the next wildcard segment.
+      while (!patternPieces[i].contains("{")) {
+        i++; // Index now at wildcard segment.
+      }
 
-      // For each literal segment (index i), make the following wildcard segment (index i+1) the singularized version
-      // of that literal segment.
-      String singular = Inflector.singularize(patternPieces[i]);
-      patternPieces[i + 1] = String.format("{%s}", singular);
+      // For each wildcard segment (index i), make the wildcard segment the singularized version of the preceding
+      // literal segment (index i-1)
+      String singular = Inflector.singularize(patternPieces[i - 1]);
+      patternPieces[i] = String.format("{%s}", singular);
+      i++;
     }
 
     return Joiner.on("/").join(patternPieces);

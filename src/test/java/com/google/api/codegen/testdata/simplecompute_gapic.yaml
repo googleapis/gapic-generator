@@ -39,8 +39,8 @@ interfaces:
   collections:
   - name_pattern: projects/{project}
     entity_name: project
-  - name_pattern: projects/{project}/addresses/{address}
-    entity_name: projectAddress
+  - name_pattern: projects/{project}/global/addresses/{address}
+    entity_name: projectGlobalAddress
   - name_pattern: projects/{project}/regions/{region}
     entity_name: projectRegion
   - name_pattern: projects/{project}/regions/{region}/addresses/{address}
@@ -236,7 +236,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      address: projectAddress
+      address: projectGlobalAddress
     timeout_millis: 60000
 - name: google.simplecompute.v1.DummyObjects
   collections:
@@ -338,7 +338,7 @@ resource_name_generation:
     region: projectRegion
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
-    address: projectAddress
+    address: projectGlobalAddress
 - message_name: GetResourceDummyObjectHttpRequest
   field_entity_map:
 <<<<<<< HEAD

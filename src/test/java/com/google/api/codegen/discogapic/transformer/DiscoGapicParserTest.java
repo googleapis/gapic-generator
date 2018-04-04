@@ -27,9 +27,14 @@ public class DiscoGapicParserTest {
         .isEqualTo("projects/{project}/backendBuckets/{backendBucket}");
     Truth.assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/global/backendBuckets/{backendBucket}"))
-        .isEqualTo("projects/{project}/backendBuckets/{backendBucket}");
+        .isEqualTo("projects/{project}/global/backendBuckets/{backendBucket}");
     Truth.assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/zones/{zone}/disks/{resource}/setLabels"))
         .isEqualTo("projects/{project}/zones/{zone}/disks/{disk}");
+    Truth.assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/addresses/{address}"))
+        .isEqualTo("projects/{project}/global/addresses/{address}");
+    Truth.assertThat(
+            DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
+        .isEqualTo("projects/{project}/global/images/{image}");
   }
 }
