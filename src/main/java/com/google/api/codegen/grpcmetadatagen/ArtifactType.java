@@ -17,7 +17,9 @@ package com.google.api.codegen.grpcmetadatagen;
 public enum ArtifactType {
   UNKNOWN,
   GAPIC,
+  DISCOGAPIC,
   GAPIC_CONFIG,
+  DISCOGAPIC_CONFIG,
   GRPC,
   GRPC_COMMON,
   PROTOBUF,
