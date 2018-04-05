@@ -19,14 +19,28 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.Objects;
 
-/** Represents a generated document plus the filename for the document. */
+/** Represents a generated result and its properties. */
 @AutoValue
 public abstract class GeneratedResult<T> {
 
+  /**
+   * Creates a new instance.
+   *
+   * @param body body (content) of the generated result
+   * @param executable {@code true} if the generated result should be specified as executable when
+   *     persisted to a file, {@code false} otherwise
+   * @param <T> class, which represents result body, usually {@code Doc} or {@code byte[]}
+   */
   public static <T> GeneratedResult<T> create(T body, boolean executable) {
     return new AutoValue_GeneratedResult<>(body, executable);
   }
 
+  /**
+   * Converts a map of results (body plus properties) to a map of bodies (stripping properties).
+   *
+   * @param results results map to convert
+   * @param <T> class, which represents result body
+   */
   public static <T> Map<String, T> extractBodies(Map<String, GeneratedResult<T>> results) {
     ImmutableMap.Builder<String, T> extractedResults = ImmutableMap.builder();
     for (Map.Entry<String, GeneratedResult<T>> entry : results.entrySet()) {
@@ -35,7 +49,9 @@ public abstract class GeneratedResult<T> {
     return extractedResults.build();
   }
 
+  /** Returns the body (content) of the result. */
   public abstract T getBody();
 
+  /** Returns {@code true} if the result represents an executable file, {@code false} otherwise. */
   public abstract boolean isExecutable();
 }
