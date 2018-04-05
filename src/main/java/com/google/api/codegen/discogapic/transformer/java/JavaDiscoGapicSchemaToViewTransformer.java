@@ -89,7 +89,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    reservedKeywords.add(TestCaseTransformer.getPagedResourceName(surfaceNamer));
+    reservedKeywords.add(surfaceNamer.getPagedResourceName());
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
             model,
@@ -97,8 +97,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
-
-    // Escape any schema's field names that are Java keywords.
 
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =

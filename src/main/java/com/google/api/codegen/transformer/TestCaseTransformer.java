@@ -258,7 +258,7 @@ public class TestCaseTransformer {
             .resourcesFieldGetterName(namer.getFieldGetFunctionName(resourcesField))
             .resourcesFieldIsMap(resourcesField.isMap())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
-            .resourcesVarName(getPagedResourceName(namer))
+            .resourcesVarName(namer.getPagedResourceName())
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
@@ -290,10 +290,6 @@ public class TestCaseTransformer {
               .build());
     }
     return pageStreamingResponseViews;
-  }
-
-  public static String getPagedResourceName(SurfaceNamer namer) {
-    return namer.localVarName(Name.from("resources"));
   }
 
   /**
