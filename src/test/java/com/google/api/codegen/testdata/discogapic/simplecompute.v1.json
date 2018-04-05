@@ -625,6 +625,28 @@
      "description": "Address two."
     }
    }
+  },
+  "ProjectsGetDummyObjectResources": {
+   "id": "ProjectsGetDummyObjectResources",
+   "type": "object",
+   "properties": {
+    "kind": {
+     "type": "string",
+     "description": "[Output Only] Type of resource. Always compute#projectsGetXpnResources for lists of service resources (a.k.a service projects)",
+     "default": "compute#projectsGetXpnResources"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "[Output Only] This token allows you to get the next page of results for list requests. If the number of results is larger than maxResults, use the nextPageToken as a value for the query parameter pageToken in the next list request. Subsequent list requests will have their own nextPageToken to continue paging through the results."
+    },
+    "resources": {
+     "type": "array",
+     "description": "Service resources (a.k.a service projects) attached to this project as their shared VPC host.",
+     "items": {
+      "$ref": "Address"
+     }
+    }
+   }
   }
  },
  "resources": {
@@ -948,6 +970,43 @@
   },
   "dummyObjects": {
    "methods": {
+    "listResources": {
+     "id": "compute.dummyObjects.listResources",
+     "path": "{project}/dummyObjects",
+     "httpMethod": "GET",
+     "description": "Method with parameter 'resources'",
+     "parameters": {
+       "maxResults": {
+        "type": "integer",
+        "description": "The maximum number of results per page that should be returned. If the number of available results is larger than maxResults, Compute Engine returns a nextPageToken that can be used to get the next page of results in subsequent list requests.",
+        "default": "500",
+        "format": "uint32",
+        "minimum": "0",
+        "maximum": "500",
+        "location": "query"
+       },
+       "orderBy": {
+        "type": "string",
+        "description": "Sorts list results by a certain order. By default, results are returned in alphanumerical order based on the resource name.\n\nYou can also sort results in descending order based on the creation timestamp using orderBy=\"creationTimestamp desc\". This sorts results based on the creationTimestamp field in reverse chronological order (newest result first). Use this to sort resources like operations so that the newest operation is returned first.\n\nCurrently, only sorting by name or creationTimestamp desc is supported.",
+        "location": "query"
+       },
+       "pageToken": {
+        "type": "string",
+        "description": "Specifies a page token to use. Set pageToken to the nextPageToken returned by a previous list request to get the next page of results.",
+        "location": "query"
+       },
+       "project": {
+        "type": "string",
+        "description": "Project ID for this request.",
+        "required": true,
+        "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+        "location": "path"
+       }
+     },
+     "response": {
+      "$ref": "ProjectsGetDummyObjectResources"
+     }
+    },
     "delete": {
      "id": "compute.dummyObjects.delete",
      "path": "{project}/dummyObjects/{dummyObject}",

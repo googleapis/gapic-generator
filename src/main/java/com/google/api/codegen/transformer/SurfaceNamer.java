@@ -477,9 +477,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /**
-   * The name of the paged resource variable name used in generated test cases.
-   */
+  /** The name of the paged resource variable name used in generated test cases. */
   public String getPagedResourceName() {
     return localVarName(Name.from("resources"));
   }

@@ -32,7 +32,6 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
@@ -89,7 +88,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    reservedKeywords.add(surfaceNamer.getPagedResourceName());
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
             model,
@@ -97,6 +95,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
+
+    // Escape any schema's field names that are Java keywords.
 
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
