@@ -29,7 +29,7 @@ public abstract class GeneratedResult<T> {
    * @param body body (content) of the generated result
    * @param executable {@code true} if the generated result should be specified as executable when
    *     persisted to a file, {@code false} otherwise
-   * @param <T> class, which represents result body, usually {@code Doc} or {@code byte[]}
+   * @param <T> class which represents result body, usually {@code Doc} or {@code byte[]}
    */
   public static <T> GeneratedResult<T> create(T body, boolean executable) {
     return new AutoValue_GeneratedResult<>(body, executable);
@@ -39,7 +39,7 @@ public abstract class GeneratedResult<T> {
    * Converts a map of results (body plus properties) to a map of bodies (stripping properties).
    *
    * @param results results map to convert
-   * @param <T> class, which represents result body
+   * @param <T> class which represents result body
    */
   public static <T> Map<String, T> extractBodies(Map<String, GeneratedResult<T>> results) {
     ImmutableMap.Builder<String, T> extractedResults = ImmutableMap.builder();
