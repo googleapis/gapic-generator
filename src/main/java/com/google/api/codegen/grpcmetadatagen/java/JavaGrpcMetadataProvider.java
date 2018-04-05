@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.java;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /** Performs gRPC meta-data generation for Java */
-public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
+public class JavaGrpcMetadataProvider implements GrpcMetadataProvider<Doc> {
 
   private final JavaPackageMetadataTransformer transformer;
 
@@ -35,20 +36,17 @@ public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
   }
 
   @Override
-  public Map<String, Doc> generate(Model model, PackageMetadataConfig config) {
-    ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<>();
+  public Map<String, GeneratedResult<Doc>> generate(Model model, PackageMetadataConfig config) {
+    ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
 
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
     metadataViews.addAll(transformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {
-      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
-      Doc result = runner.generate(view);
-      if (!result.isWhitespace()) {
-        docs.put(view.outputPath(), result);
-      }
+      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view, false);
+      results.putAll(runner.generate(view));
     }
-    return docs.build();
+    return results.build();
   }
 }
