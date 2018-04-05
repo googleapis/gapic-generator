@@ -51,9 +51,7 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   @Override
   public PageStreamingResponseView generatePageStreamingResponse(MethodModel methodModel) {
     DiscoveryMethodModel method = (DiscoveryMethodModel) methodModel;
-
-    // In the resulting gapic config, the resources_object must be a non-null value for the yaml to be parseable.
-    String resourcesName = "TODO";
+    String resourcesName = null;
     boolean hasNextPageToken = false;
 
     // Find the paged resource object from inside the response object.
@@ -81,9 +79,17 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
       return null;
     }
 
+    // In the resulting gapic config, the resources_object must be a non-null value for the yaml to be parseable.
+    String configResourcesName;
+    if (resourcesName == null) {
+      configResourcesName = MethodTransformer.TODO_STRING;
+    } else {
+      configResourcesName = Name.anyCamel(resourcesName).toLowerCamel();
+    }
+
     return PageStreamingResponseView.newBuilder()
         .tokenField(pagingParameters.getNameForNextPageToken())
-        .resourcesField(Name.anyCamel(resourcesName).toLowerCamel())
+        .resourcesField(configResourcesName)
         .build();
   }
 }
