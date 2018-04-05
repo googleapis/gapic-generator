@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.snippet.Doc;
 import java.io.IOException;
 import java.util.Map;
 
 /** A GrpcMetadataProvider performs gRPC meta-data generation. */
-public interface GrpcMetadataProvider {
-  Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException;
+public interface GrpcMetadataProvider<T> {
+  Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
+      throws IOException;
 }
