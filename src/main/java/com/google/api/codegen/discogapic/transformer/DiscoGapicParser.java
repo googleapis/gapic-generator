@@ -129,32 +129,23 @@ public class DiscoGapicParser {
   /**
    * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
    * #getCanonicalPath(String)}} for canonicalization of the parameter. This method includes all
-   * wildcards from the input path in the resulting Name, and it includes literal segments from the
-   * input path
+   * segments from the input path in the resulting Name except for consecutive duplicate segments.
    */
   public static Name getQualifiedResourceIdentifier(String canonicalPath) {
     String[] pieces = canonicalPath.split(PATH_DELIMITER);
 
-    Name name = null;
-    for (int i = 0; i < pieces.length; i++) {
-      if (i < pieces.length - 1 && pieces[i + 1].contains("{")) {
-        // Current index at a literal segment directly preceding a wildcard segment.
-        // Skip literal segment iff it is the same as or the pluralized version of the wildcard string.
-        String wildCard = pieces[i + 1].substring(1, pieces[i + 1].length() - 1);
-        if (pieces[i].toLowerCase().equals(wildCard.toLowerCase())
-            || Inflector.singularize(pieces[i].toLowerCase()).equals(wildCard.toLowerCase())) {
-          continue;
-        }
+    Name name = Name.from();
+    String previous = null;
+    for (String segment : pieces) {
+      String next = segment;
+      if (segment.contains("}")) {
+        next = segment.substring(1, segment.length() - 1);
       }
-
-      String namePiece = pieces[i];
-      if (namePiece.contains("}")) {
-        namePiece = namePiece.substring(1, namePiece.length() - 1);
-      }
-      if (name == null) {
-        name = Name.from(Inflector.singularize(namePiece));
-      } else {
-        name = name.join(stringToName(Inflector.singularize(namePiece)));
+      next = Inflector.singularize(next);
+      if (!next.equals(previous)) {
+        // Only append to the name if this segment is not identical to the previous segment.
+        name = name.join(stringToName(next));
+        previous = next;
       }
     }
 
