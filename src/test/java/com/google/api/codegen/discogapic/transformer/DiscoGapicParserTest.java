@@ -49,6 +49,10 @@ public class DiscoGapicParserTest {
                 .toUpperCamel())
         .isEqualTo("ProjectGlobalBackendBucket");
     Truth.assertThat(
+            DiscoGapicParser.getQualifiedResourceIdentifier("{project}/zones/{zone}/disks/{disk}")
+                .toUpperCamel())
+        .isEqualTo("ProjectZoneDisk");
+    Truth.assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier(
                     "{project}/zones/{zone}/disks/{resource}")
                 .toUpperCamel())
