@@ -64,7 +64,7 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
-public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvider> {
+public class MainGapicProviderFactory implements GapicProviderFactory {
 
   public static final String CLIENT_CONFIG = "client_config";
   public static final String CSHARP = "csharp";
@@ -78,13 +78,13 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
   public static final String RUBY_DOC = "ruby_doc";
 
   /** Create the GapicProviders based on the given id */
-  public static List<GapicProvider> defaultCreate(
+  public static List<GapicProvider<?>> defaultCreate(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider> providers = new ArrayList<>();
+    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
     // Please keep the following IDs in alphabetical order
     if (id.equals(CLIENT_CONFIG)) {
@@ -483,7 +483,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
   /** Create the GapicProviders based on the given id */
   @Override
-  public List<GapicProvider> create(
+  public List<GapicProvider<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,

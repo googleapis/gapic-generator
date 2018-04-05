@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -23,12 +24,10 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.internal.LinkedTreeMap;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicProvider implements GapicProvider {
+public class DiscoGapicProvider implements GapicProvider<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
@@ -59,28 +58,18 @@ public class DiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public Map<String, Doc> generate() {
-    Map<String, Doc> docs = new LinkedTreeMap<>();
+  public Map<String, GeneratedResult<Doc>> generate() {
+    Map<String, GeneratedResult<Doc>> results = new LinkedTreeMap<>();
 
     for (DocumentToViewTransformer transformer : transformers) {
       List<ViewModel> surfaceDocs = transformer.transform(model, productConfig);
 
       for (ViewModel surfaceDoc : surfaceDocs) {
-        Doc doc = snippetSetRunner.generate(surfaceDoc);
-        if (doc == null) {
-          // generation failed; failures are captured in the model.
-          continue;
-        }
-        docs.put(surfaceDoc.outputPath(), doc);
+        results.putAll(snippetSetRunner.generate(surfaceDoc));
       }
     }
 
-    return docs;
-  }
-
-  @Override
-  public Collection<String> getOutputExecutableNames() {
-    return Collections.emptySet();
+    return results;
   }
 
   public static Builder newBuilder() {

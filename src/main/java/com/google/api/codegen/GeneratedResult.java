@@ -14,18 +14,28 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.Objects;
 
 /** Represents a generated document plus the filename for the document. */
 @AutoValue
-public abstract class GeneratedResult {
+public abstract class GeneratedResult<T> {
 
-  public static GeneratedResult create(Doc doc, String filename) {
-    return new AutoValue_GeneratedResult(doc, filename);
+  public static <T> GeneratedResult<T> create(T body, boolean executable) {
+    return new AutoValue_GeneratedResult<>(body, executable);
   }
 
-  public abstract Doc getDoc();
+  public static <T> Map<String, T> extractBodies(Map<String, GeneratedResult<T>> results) {
+    ImmutableMap.Builder<String, T> extractedResults = ImmutableMap.builder();
+    for (Map.Entry<String, GeneratedResult<T>> entry : results.entrySet()) {
+      extractedResults.put(entry.getKey(), Objects.requireNonNull(entry.getValue().getBody()));
+    }
+    return extractedResults.build();
+  }
 
-  public abstract String getFilename();
+  public abstract T getBody();
+
+  public abstract boolean isExecutable();
 }

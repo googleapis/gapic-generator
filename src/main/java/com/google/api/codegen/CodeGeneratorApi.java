@@ -145,7 +145,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String factory = generator.getFactory();
       String id = generator.getId();
 
-      GapicProviderFactory<GapicProvider> providerFactory = createProviderFactory(model, factory);
+      GapicProviderFactory providerFactory = createProviderFactory(model, factory);
       GapicGeneratorConfig generatorConfig =
           GapicGeneratorConfig.newBuilder()
               .id(id)
@@ -153,13 +153,18 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       String outputPath = options.get(OUTPUT_FILE);
-      List<GapicProvider> providers =
+      List<GapicProvider<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
       Map<String, Object> outputFiles = Maps.newHashMap();
       Set<String> executables = Sets.newHashSet();
-      for (GapicProvider provider : providers) {
-        outputFiles.putAll(provider.generate());
-        executables.addAll(provider.getOutputExecutableNames());
+      for (GapicProvider<?> provider : providers) {
+        Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
+        for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
+          outputFiles.put(entry.getKey(), entry.getValue().getBody());
+          if (entry.getValue().isExecutable()) {
+            executables.add(entry.getKey());
+          }
+        }
       }
       writeCodeGenOutput(outputFiles, outputPath);
       setOutputFilesPermissions(executables, outputPath);
@@ -192,10 +197,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
     }
   }
 
-  private static GapicProviderFactory<GapicProvider> createProviderFactory(
-      final Model model, String factory) {
+  private static GapicProviderFactory createProviderFactory(final Model model, String factory) {
     @SuppressWarnings("unchecked")
-    GapicProviderFactory<GapicProvider> provider =
+    GapicProviderFactory provider =
         ClassInstantiator.createClass(
             factory,
             GapicProviderFactory.class,

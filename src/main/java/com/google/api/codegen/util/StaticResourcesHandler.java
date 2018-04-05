@@ -16,32 +16,19 @@ package com.google.api.codegen.util;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 
 public class StaticResourcesHandler {
   private Map<String, String> resourceFilesMap;
-  private Set<String> executableFilenames;
 
-  public StaticResourcesHandler(
-      Map<String, String> resourceFilesMap, Set<String> executableFilenames) {
-    if (!resourceFilesMap.values().containsAll(executableFilenames)) {
-      throw new IllegalArgumentException(
-          "executableFilenames contains a filename not found in resourceFilesMap");
-    }
+  public StaticResourcesHandler(Map<String, String> resourceFilesMap) {
     this.resourceFilesMap = ImmutableMap.copyOf(resourceFilesMap);
-    this.executableFilenames = ImmutableSet.copyOf(executableFilenames);
   }
 
   public Map<String, String> getResourceFilesMap() {
     return this.resourceFilesMap;
-  }
-
-  public Set<String> getExecutableFilenames() {
-    return this.executableFilenames;
   }
 
   public Map<String, byte[]> getResources() throws IOException {

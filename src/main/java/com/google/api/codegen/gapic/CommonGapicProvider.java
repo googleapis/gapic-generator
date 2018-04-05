@@ -23,16 +23,13 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
-import java.util.ArrayList;
-import java.util.Collections;
+import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import javax.annotation.Nullable;
 
 /** Common GapicProvider which runs code generation. */
-public class CommonGapicProvider<ElementT> implements GapicProvider {
+public class CommonGapicProvider<ElementT> implements GapicProvider<Doc> {
   private final Model model;
   private final InputElementView<ElementT> view;
   private final GapicContext context;
@@ -61,48 +58,27 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
   }
 
   @Override
-  public Map<String, Doc> generate() {
-    Map<String, Doc> docs = new TreeMap<>();
+  public Map<String, GeneratedResult<Doc>> generate() {
+    Map<String, GeneratedResult<Doc>> docs = new TreeMap<>();
 
     for (String snippetFileName : snippetFileNames) {
-      Map<String, Doc> snippetDocs = generate(snippetFileName);
+      Map<String, GeneratedResult<Doc>> snippetDocs = generate(snippetFileName);
       docs.putAll(snippetDocs);
     }
 
     return docs;
   }
 
-  @Override
-  public Set<String> getOutputExecutableNames() {
-    return Collections.emptySet();
-  }
-
-  private Map<String, Doc> generate(String snippetFileName) {
-    Map<String, Doc> docs = new TreeMap<>();
-    List<GeneratedResult> generatedOutput = generateSnip(snippetFileName);
-    if (generatedOutput == null) {
-      return docs;
-    }
-    for (GeneratedResult result : generatedOutput) {
-      if (!result.getDoc().isWhitespace()) {
-        docs.put(result.getFilename(), result.getDoc());
-      }
-    }
-    return docs;
-  }
-
-  @Nullable
-  private List<GeneratedResult> generateSnip(String snippetFileName) {
+  private Map<String, GeneratedResult<Doc>> generate(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
     if (model.getDiagCollector().getErrorCount() > 0) {
-      return null;
+      return ImmutableMap.of();
     }
 
     // Run the generator for each service.
-    List<GeneratedResult> generated = new ArrayList<>();
+    Map<String, GeneratedResult<Doc>> generated = new TreeMap<>();
     for (ElementT element : view.getElementIterable(model)) {
-      GeneratedResult result = generator.generate(element, snippetFileName, context);
 
       String subPath;
       // Note on usage of instanceof: there is one case (as of this writing)
@@ -115,26 +91,26 @@ public class CommonGapicProvider<ElementT> implements GapicProvider {
         subPath = pathMapper.getOutputPath(null, context.getApiConfig());
       }
 
-      if (!Strings.isNullOrEmpty(subPath)) {
-        subPath = subPath + "/" + result.getFilename();
-      } else {
-        subPath = result.getFilename();
-      }
+      Map<String, GeneratedResult<Doc>> result =
+          generator.generate(element, snippetFileName, context);
 
-      GeneratedResult outputResult = GeneratedResult.create(result.getDoc(), subPath);
-      generated.add(outputResult);
+      for (Map.Entry<String, GeneratedResult<Doc>> resEntry : result.entrySet()) {
+        String resSubPath =
+            Strings.isNullOrEmpty(subPath) ? resEntry.getKey() : subPath + "/" + resEntry.getKey();
+        generated.put(resSubPath, resEntry.getValue());
+      }
     }
 
     // Return result.
     if (model.getDiagCollector().getErrorCount() > 0) {
-      return null;
+      return ImmutableMap.of();
     }
 
     return generated;
   }
 
   public static <ElementT> Builder<ElementT> newBuilder() {
-    return new Builder<ElementT>();
+    return new Builder<>();
   }
 
   public static class Builder<ElementT> {

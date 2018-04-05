@@ -125,12 +125,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
-    List<GapicProvider> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
-    for (GapicProvider provider : providers) {
+    for (GapicProvider<?> provider : providers) {
       snippetNames.addAll(provider.getInputFileNames());
     }
 
@@ -174,42 +174,31 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(enabledArtifacts)
             .build();
-    List<GapicProvider> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig);
 
     // Don't run any providers we're not testing.
-    ArrayList<GapicProvider> testedProviders = new ArrayList<>();
-    for (GapicProvider provider : providers) {
+    ArrayList<GapicProvider<?>> testedProviders = new ArrayList<>();
+    for (GapicProvider<?> provider : providers) {
       if (!Collections.disjoint(provider.getInputFileNames(), snippetNames)) {
         testedProviders.add(provider);
       }
     }
 
-    boolean reportDiag = false;
     Map<String, Object> output = new TreeMap<>();
-    for (GapicProvider provider : testedProviders) {
-      Map<String, ?> out = provider.generate();
+    for (GapicProvider<?> provider : testedProviders) {
+      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
 
-      if (output == null) {
-        reportDiag = true;
-      } else {
-        if (!Collections.disjoint(out.keySet(), output.keySet())) {
-          throw new IllegalStateException("file conflict");
-        }
-        for (Map.Entry<String, ?> entry : out.entrySet()) {
-          Object value =
-              (entry.getValue() instanceof byte[])
-                  ? "Static or binary file content is not shown."
-                  : entry.getValue();
-          output.put(entry.getKey(), value);
-        }
+      if (!Collections.disjoint(out.keySet(), output.keySet())) {
+        throw new IllegalStateException("file conflict");
       }
-    }
-
-    if (reportDiag) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
-        testOutput().println(diag.toString());
+      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
+        Object value =
+            (entry.getValue().getBody() instanceof byte[])
+                ? "Static or binary file content is not shown."
+                : entry.getValue().getBody();
+        output.put(entry.getKey(), value);
       }
     }
 

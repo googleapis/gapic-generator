@@ -14,24 +14,23 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.GeneratedResult;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-
 /**
  * A GapicProvider performs file generation (code, static resources, etc.) using a proto-based Model
  * for a particular language.
+ *
+ * @param <T> Class which represent generated file body (may be {@code byte[]})
  */
-public interface GapicProvider {
+public interface GapicProvider<T> {
   /**
    * Returns the file names that this provider will use for generation. They can be static files,
    * snippet templates or any other type of files, depending on the actual provider implementation.
    */
   Collection<String> getInputFileNames();
 
-  /** Returns a set of relative file paths to generated files, which must be set executable. */
-  Collection<String> getOutputExecutableNames();
-
   /** Runs code generation and returns a map from relative file paths to generated files. */
-  Map<String, ?> generate() throws IOException;
+  Map<String, GeneratedResult<T>> generate() throws IOException;
 }

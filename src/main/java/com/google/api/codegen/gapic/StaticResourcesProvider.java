@@ -14,16 +14,25 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.util.StaticResourcesHandler;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class StaticResourcesProvider implements GapicProvider {
+public class StaticResourcesProvider implements GapicProvider<byte[]> {
   private StaticResourcesHandler resourcesExtractor;
+  private Set<String> executableFilenames;
 
   public StaticResourcesProvider(Map<String, String> staticFiles, Set<String> executableFilenames) {
-    this.resourcesExtractor = new StaticResourcesHandler(staticFiles, executableFilenames);
+    if (!staticFiles.values().containsAll(executableFilenames)) {
+      throw new IllegalArgumentException(
+          "executableFilenames contains a filename not found in staticFiles");
+    }
+    this.resourcesExtractor = new StaticResourcesHandler(staticFiles);
+    this.executableFilenames = ImmutableSet.copyOf(executableFilenames);
   }
 
   @Override
@@ -32,12 +41,14 @@ public class StaticResourcesProvider implements GapicProvider {
   }
 
   @Override
-  public Set<String> getOutputExecutableNames() {
-    return resourcesExtractor.getExecutableFilenames();
-  }
+  public Map<String, GeneratedResult<byte[]>> generate() throws IOException {
+    ImmutableMap.Builder<String, GeneratedResult<byte[]>> results = ImmutableMap.builder();
+    for (Map.Entry<String, byte[]> entry : resourcesExtractor.getResources().entrySet()) {
+      GeneratedResult<byte[]> result =
+          GeneratedResult.create(entry.getValue(), executableFilenames.contains(entry.getKey()));
+      results.put(entry.getKey(), result);
+    }
 
-  @Override
-  public Map<String, ?> generate() throws IOException {
-    return resourcesExtractor.getResources();
+    return results.build();
   }
 }

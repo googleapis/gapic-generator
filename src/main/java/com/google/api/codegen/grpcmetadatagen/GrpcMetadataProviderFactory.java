@@ -18,6 +18,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcMetadataProvider;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
 import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataProvider;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 
@@ -25,7 +26,7 @@ import com.google.common.collect.ImmutableMap;
 public class GrpcMetadataProviderFactory {
 
   /** Create the GrpcMetadataProvider based on the given language */
-  public static GrpcMetadataProvider create(
+  public static GrpcMetadataProvider<Doc> create(
       TargetLanguage language, ArtifactType artifactType, ToolOptions options) {
     switch (language) {
       case PYTHON:
@@ -38,12 +39,11 @@ public class GrpcMetadataProviderFactory {
     }
   }
 
-  private static GrpcMetadataProvider createForPython(ToolOptions options) {
+  private static GrpcMetadataProvider<Doc> createForPython(ToolOptions options) {
     return new PythonGrpcMetadataProvider(options);
   }
 
-  private static GrpcMetadataProvider createForJava(ArtifactType artifactType) {
-
+  private static GrpcMetadataProvider<Doc> createForJava(ArtifactType artifactType) {
     switch (artifactType) {
       case GRPC:
         return new JavaGrpcMetadataProvider(
