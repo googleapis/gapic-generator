@@ -283,6 +283,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
     Schema parentTypeSchema = getDiscoveryField();
     List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+    if (pathToKeySchema.size() == 0) {
+      return null; // key not found.
+    }
     return DiscoveryField.create(pathToKeySchema.get(pathToKeySchema.size() - 1), apiModel);
   }
 
