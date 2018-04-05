@@ -18,7 +18,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +32,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceName {
+public final class AddressName implements com.google.api.resourcenames.ResourceName {
   private final String address;
   private final String project;
   private final String region;
@@ -231,7 +230,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -246,7 +244,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class DummyObjectName implements ResourceName {
+public final class DummyObjectName implements com.google.api.resourcenames.ResourceName {
   private final String dummyObject;
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
@@ -420,7 +418,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -435,7 +432,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectAddressName implements ResourceName {
+public final class ProjectAddressName implements com.google.api.resourcenames.ResourceName {
   private final String address;
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
@@ -609,7 +606,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -624,7 +620,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectName implements ResourceName {
+public final class ProjectName implements com.google.api.resourcenames.ResourceName {
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
         PathTemplate.createWithoutUrlEncoding("projects/{project}");
@@ -774,7 +770,6 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.api.resourcenames.ResourceNameFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -789,7 +784,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceName {
+public final class RegionName implements com.google.api.resourcenames.ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -939,6 +934,194 @@ public final class RegionName implements ResourceName {
     return Objects.hash(
       project,
       region
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ResourceName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ResourceName implements com.google.api.resourcenames.ResourceName {
+  private final String project;
+  private final String resource;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/dummyObjects/{resource}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ResourceName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+    resource = Preconditions.checkNotNull(builder.getResource());
+  }
+
+  public static ResourceName of(
+      String project,
+      String resource
+      ) {
+    return newBuilder()
+    .setProject(project)
+    .setResource(resource)
+      .build();
+  }
+
+  public static String format(
+      String project,
+      String resource
+      ) {
+    return of(
+        project,
+        resource
+        )
+        .toString();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldMapBuilder.put("resource", resource);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ResourceName> newFactory() {
+    return new ResourceNameFactory<ResourceName>() {
+      public ResourceName parse(String formattedString) {return ResourceName.parse(formattedString);}
+    };
+  }
+
+  public static ResourceName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ResourceName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project"),
+      matchMap.get("resource")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String project;
+    private String resource;
+
+    public String getProject() {
+      return project;
+    }
+    public String getResource() {
+      return resource;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setResource(String resource) {
+      this.resource = resource;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ResourceName resourceName) {
+      project = resourceName.project;
+      resource = resourceName.resource;
+    }
+
+    public ResourceName build() {
+      return new ResourceName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project,
+        "resource", resource
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ResourceName) {
+      ResourceName that = (ResourceName) o;
+      return
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.resource, that.getResource())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project,
+      resource
     );
   }
 }
@@ -6615,6 +6798,415 @@ public final class GetAddressHttpRequest implements ApiMessage {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/GetResourceDummyObjectHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class GetResourceDummyObjectHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String resource;
+  private final String userIp;
+
+  private GetResourceDummyObjectHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.resource = null;
+    this.userIp = null;
+  }
+
+
+  private GetResourceDummyObjectHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String resource,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.resource = resource;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("resource") && resource != null) {
+      fieldMap.put("resource", Collections.singletonList(String.valueOf(resource)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("resource")) {
+      return String.valueOf(resource);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(GetResourceDummyObjectHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static GetResourceDummyObjectHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final GetResourceDummyObjectHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new GetResourceDummyObjectHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String resource;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(GetResourceDummyObjectHttpRequest other) {
+      if (other == GetResourceDummyObjectHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getResource() != null) {
+        this.resource = other.resource;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(GetResourceDummyObjectHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.resource = source.resource;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getResource() {
+      return resource;
+    }
+
+    public Builder setResource(String resource) {
+      this.resource = resource;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public GetResourceDummyObjectHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+      if (resource == null) {
+        missing += " resource";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new GetResourceDummyObjectHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        resource,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setResource(this.resource);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "GetResourceDummyObjectHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "resource=" + resource + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof GetResourceDummyObjectHttpRequest) {
+      GetResourceDummyObjectHttpRequest that = (GetResourceDummyObjectHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.resource, that.getResource()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      resource,
+      userIp
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/InsertAddressHttpRequest.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -11816,8 +12408,8 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
- *   dummyObjectClient.deleteDummyObject(dummyObject);
+ *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+ *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
  * </pre>
@@ -12063,6 +12655,101 @@ public class DummyObjectClient implements BackgroundResource {
   @BetaApi
   public final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     return stub.listResourcesDummyObjectsCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   dummyObjectClient.getResourceDummyObject(resource);
+   * }
+   * </code></pre>
+   *
+   * @param resource Name of the dummyObject resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(ResourceName resource) {
+
+    GetResourceDummyObjectHttpRequest request =
+        GetResourceDummyObjectHttpRequest.newBuilder()
+        .setResource(resource == null ? null : resource.toString())
+        .build();
+    getResourceDummyObject(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   dummyObjectClient.getResourceDummyObject(resource.toString());
+   * }
+   * </code></pre>
+   *
+   * @param resource Name of the dummyObject resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(String resource) {
+
+    GetResourceDummyObjectHttpRequest request =
+        GetResourceDummyObjectHttpRequest.newBuilder()
+        .setResource(resource)
+        .build();
+    getResourceDummyObject(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
+   *     .setResource(resource.toString())
+   *     .build();
+   *   dummyObjectClient.getResourceDummyObject(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(GetResourceDummyObjectHttpRequest request) {
+    getResourceDummyObjectCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
+   *     .setResource(resource.toString())
+   *     .build();
+   *   ApiFuture&lt;Void&gt; future = dummyObjectClient.getResourceDummyObjectCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    return stub.getResourceDummyObjectCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12351,13 +13038,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteDummyObject to 30 seconds:
+ * object. For example, to set the total timeout of getResourceDummyObject to 30 seconds:
  *
  * <pre>
  * <code>
  * DummyObjectSettings.Builder dummyObjectSettingsBuilder =
  *     DummyObjectSettings.newBuilder();
- * dummyObjectSettingsBuilder.deleteDummyObjectSettings().getRetrySettings().toBuilder()
+ * dummyObjectSettingsBuilder.getResourceDummyObjectSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * DummyObjectSettings dummyObjectSettings = dummyObjectSettingsBuilder.build();
  * </code>
@@ -12367,10 +13054,17 @@ import org.threeten.bp.Duration;
 @BetaApi
 public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
   /**
+<<<<<<< HEAD
    * Returns the object with the settings used for calls to listResourcesDummyObjects.
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).listResourcesDummyObjectsSettings();
+=======
+   * Returns the object with the settings used for calls to getResourceDummyObject.
+   */
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    return ((DummyObjectStubSettings) getStubSettings()).getResourceDummyObjectSettings();
+>>>>>>> fully qualify ResourceName import
   }
 
   /**
@@ -12501,10 +13195,17 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
     }
 
     /**
+<<<<<<< HEAD
      * Returns the builder for the settings used for calls to listResourcesDummyObjects.
      */
     public PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
       return getStubSettingsBuilder().listResourcesDummyObjectsSettings();
+=======
+     * Returns the builder for the settings used for calls to getResourceDummyObject.
+     */
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+      return getStubSettingsBuilder().getResourceDummyObjectSettings();
+>>>>>>> fully qualify ResourceName import
     }
 
     /**
@@ -12567,9 +13268,13 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
+<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
+=======
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
+>>>>>>> fully qualify ResourceName import
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -12596,13 +13301,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteDummyObject to 30 seconds:
+ * object. For example, to set the total timeout of getResourceDummyObject to 30 seconds:
  *
  * <pre>
  * <code>
  * DummyObjectStubSettings.Builder dummyObjectSettingsBuilder =
  *     DummyObjectStubSettings.newBuilder();
- * dummyObjectSettingsBuilder.deleteDummyObjectSettings().getRetrySettings().toBuilder()
+ * dummyObjectSettingsBuilder.getResourceDummyObjectSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * DummyObjectStubSettings dummyObjectSettings = dummyObjectSettingsBuilder.build();
  * </code>
@@ -12623,6 +13328,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       .add("https://www.googleapis.com/auth/devstorage.read_write")
       .build();
 
+<<<<<<< HEAD
   private final PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
   private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
@@ -12631,6 +13337,16 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return listResourcesDummyObjectsSettings;
+=======
+  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
+  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
+
+  /**
+   * Returns the object with the settings used for calls to getResourceDummyObject.
+   */
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    return getResourceDummyObjectSettings;
+>>>>>>> fully qualify ResourceName import
   }
 
   /**
@@ -12732,7 +13448,11 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   protected DummyObjectStubSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
+<<<<<<< HEAD
     listResourcesDummyObjectsSettings = settingsBuilder.listResourcesDummyObjectsSettings().build();
+=======
+    getResourceDummyObjectSettings = settingsBuilder.getResourceDummyObjectSettings().build();
+>>>>>>> fully qualify ResourceName import
     deleteDummyObjectSettings = settingsBuilder.deleteDummyObjectSettings().build();
   }
 
@@ -12791,7 +13511,11 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   public static class Builder extends StubSettings.Builder<DummyObjectStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
+<<<<<<< HEAD
     private final PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
+=======
+    private final UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
+>>>>>>> fully qualify ResourceName import
     private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -12832,13 +13556,21 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     protected Builder(ClientContext clientContext) {
       super(clientContext);
 
+<<<<<<< HEAD
       listResourcesDummyObjectsSettings = PagedCallSettings.newBuilder(
           LIST_RESOURCES_DUMMY_OBJECTS_PAGE_STR_FACT);
+=======
+      getResourceDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+>>>>>>> fully qualify ResourceName import
 
       deleteDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+<<<<<<< HEAD
           listResourcesDummyObjectsSettings,
+=======
+          getResourceDummyObjectSettings,
+>>>>>>> fully qualify ResourceName import
           deleteDummyObjectSettings
       );
 
@@ -12856,7 +13588,11 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
 
     private static Builder initDefaults(Builder builder) {
 
+<<<<<<< HEAD
       builder.listResourcesDummyObjectsSettings()
+=======
+      builder.getResourceDummyObjectSettings()
+>>>>>>> fully qualify ResourceName import
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -12870,11 +13606,19 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     protected Builder(DummyObjectStubSettings settings) {
       super(settings);
 
+<<<<<<< HEAD
       listResourcesDummyObjectsSettings = settings.listResourcesDummyObjectsSettings.toBuilder();
       deleteDummyObjectSettings = settings.deleteDummyObjectSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           listResourcesDummyObjectsSettings,
+=======
+      getResourceDummyObjectSettings = settings.getResourceDummyObjectSettings.toBuilder();
+      deleteDummyObjectSettings = settings.deleteDummyObjectSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          getResourceDummyObjectSettings,
+>>>>>>> fully qualify ResourceName import
           deleteDummyObjectSettings
       );
     }
@@ -12895,10 +13639,17 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     }
 
     /**
+<<<<<<< HEAD
      * Returns the builder for the settings used for calls to listResourcesDummyObjects.
      */
     public PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
       return listResourcesDummyObjectsSettings;
+=======
+     * Returns the builder for the settings used for calls to getResourceDummyObject.
+     */
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+      return getResourceDummyObjectSettings;
+>>>>>>> fully qualify ResourceName import
     }
 
     /**
@@ -12939,9 +13690,14 @@ import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.DummyObjectName;
+<<<<<<< HEAD
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
+=======
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
+import com.google.cloud.simplecompute.v1.ResourceName;
+>>>>>>> fully qualify ResourceName import
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -12956,6 +13712,7 @@ public abstract class DummyObjectStub implements BackgroundResource {
 
 
   @BetaApi
+<<<<<<< HEAD
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable() {
     throw new UnsupportedOperationException("Not implemented: listResourcesDummyObjectsPagedCallable()");
   }
@@ -12963,6 +13720,10 @@ public abstract class DummyObjectStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     throw new UnsupportedOperationException("Not implemented: listResourcesDummyObjectsCallable()");
+=======
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    throw new UnsupportedOperationException("Not implemented: getResourceDummyObjectCallable()");
+>>>>>>> fully qualify ResourceName import
   }
 
   @BetaApi
@@ -13010,9 +13771,14 @@ import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.DummyObjectName;
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
+<<<<<<< HEAD
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
+=======
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
+import com.google.cloud.simplecompute.v1.ResourceName;
+>>>>>>> fully qualify ResourceName import
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
@@ -13032,6 +13798,7 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @InternalApi
+<<<<<<< HEAD
   public static final ApiMethodDescriptor<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsMethodDescriptor =
       ApiMethodDescriptor.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
           .setFullMethodName("compute.dummyObjects.listResources")
@@ -13049,6 +13816,20 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .setResponseParser(
               ApiMessageHttpResponseParser.<ProjectsGetDummyObjectResources>newBuilder()
                   .setResponseInstance(ProjectsGetDummyObjectResources.getDefaultInstance())
+=======
+  public static final ApiMethodDescriptor<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectMethodDescriptor =
+      ApiMethodDescriptor.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+          .setFullMethodName("compute.dummyObjects.getResource")
+          .setHttpMethod(HttpMethods.GET)
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<GetResourceDummyObjectHttpRequest>newBuilder()
+                  .setRequestInstance(GetResourceDummyObjectHttpRequest.getDefaultInstance())
+                  .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{resource}"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     ))
+                  .setResourceNameFactory(ResourceName.newFactory())
+                  .setResourceNameField("resource")
+>>>>>>> fully qualify ResourceName import
                   .build())
           .build();
   @InternalApi
@@ -13068,8 +13849,12 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .build();
   private final BackgroundResource backgroundResources;
 
+<<<<<<< HEAD
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable;
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable;
+=======
+  private final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable;
+>>>>>>> fully qualify ResourceName import
   private final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
@@ -13102,23 +13887,34 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   protected HttpJsonDummyObjectStub(DummyObjectStubSettings settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
 
+<<<<<<< HEAD
     HttpJsonCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsTransportSettings =
         HttpJsonCallSettings.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
             .setMethodDescriptor(listResourcesDummyObjectsMethodDescriptor)
+=======
+    HttpJsonCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectTransportSettings =
+        HttpJsonCallSettings.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+            .setMethodDescriptor(getResourceDummyObjectMethodDescriptor)
+>>>>>>> fully qualify ResourceName import
             .build();
     HttpJsonCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectTransportSettings =
         HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, Void>newBuilder()
             .setMethodDescriptor(deleteDummyObjectMethodDescriptor)
             .build();
 
+<<<<<<< HEAD
     this.listResourcesDummyObjectsCallable = callableFactory.createUnaryCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
     this.listResourcesDummyObjectsPagedCallable = callableFactory.createPagedCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
+=======
+    this.getResourceDummyObjectCallable = callableFactory.createUnaryCallable(getResourceDummyObjectTransportSettings,settings.getResourceDummyObjectSettings(), clientContext);
+>>>>>>> fully qualify ResourceName import
     this.deleteDummyObjectCallable = callableFactory.createUnaryCallable(deleteDummyObjectTransportSettings,settings.deleteDummyObjectSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
 
   @BetaApi
+<<<<<<< HEAD
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable() {
     return listResourcesDummyObjectsPagedCallable;
   }
@@ -13126,6 +13922,10 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     return listResourcesDummyObjectsCallable;
+=======
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    return getResourceDummyObjectCallable;
+>>>>>>> fully qualify ResourceName import
   }
 
   @BetaApi
@@ -13212,9 +14012,14 @@ import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.DummyObjectName;
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
+<<<<<<< HEAD
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
+=======
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
+import com.google.cloud.simplecompute.v1.ResourceName;
+>>>>>>> fully qualify ResourceName import
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.longrunning.Operation;
@@ -13307,8 +14112,8 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
- *   dummyObjectClient.deleteDummyObject(dummyObject);
+ *   ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+ *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
  * </pre>
@@ -13934,7 +14739,11 @@ import com.google.api.gax.rpc.testing.FakeStatusCode;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.DummyObjectStubSettings;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.deleteDummyObjectMethodDescriptor;
+<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.listResourcesDummyObjectsMethodDescriptor;
+=======
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.getResourceDummyObjectMethodDescriptor;
+>>>>>>> fully qualify ResourceName import
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.IOException;
@@ -13953,7 +14762,11 @@ public class DummyObjectClientTest {
 
    private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
         Lists.<ApiMethodDescriptor>newArrayList(
+<<<<<<< HEAD
           listResourcesDummyObjectsMethodDescriptor,
+=======
+          getResourceDummyObjectMethodDescriptor,
+>>>>>>> fully qualify ResourceName import
           deleteDummyObjectMethodDescriptor
         ));
   private static final MockHttpService mockService
@@ -13987,6 +14800,7 @@ public class DummyObjectClientTest {
 
   @Test
   @SuppressWarnings("all")
+<<<<<<< HEAD
   public void listResourcesDummyObjectsTest() {
     String kind = "kind3292052";
     String nextPageToken = "";
@@ -14007,6 +14821,14 @@ public class DummyObjectClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getResourcesList().get(0),
         resources.get(0));
+=======
+  public void getResourceDummyObjectTest() {
+    mockService.addNullResponse();
+
+    ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+
+    client.getResourceDummyObject(resource);
+>>>>>>> fully qualify ResourceName import
 
     List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
@@ -14019,14 +14841,24 @@ public class DummyObjectClientTest {
 
   @Test
   @SuppressWarnings("all")
+<<<<<<< HEAD
   public void listResourcesDummyObjectsExceptionTest() throws Exception {
+=======
+  public void getResourceDummyObjectExceptionTest() throws Exception {
+>>>>>>> fully qualify ResourceName import
     ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
     mockService.addException(exception);
 
     try {
+<<<<<<< HEAD
       ProjectName project = ProjectName.of("[PROJECT]");
 
       client.listResourcesDummyObjects(project);
+=======
+      ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
+
+      client.getResourceDummyObject(resource);
+>>>>>>> fully qualify ResourceName import
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

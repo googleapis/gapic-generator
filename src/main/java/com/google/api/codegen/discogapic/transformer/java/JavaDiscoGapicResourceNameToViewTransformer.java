@@ -70,6 +70,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
+    reservedKeywords.add("ResourceName");
   }
 
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
@@ -207,7 +208,6 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("com.google.common.base.Preconditions");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.pathtemplate.PathTemplate");
-    typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceName");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameFactory");
     typeTable.getAndSaveNicknameFor("java.io.IOException");
     typeTable.getAndSaveNicknameFor("java.util.Collections");

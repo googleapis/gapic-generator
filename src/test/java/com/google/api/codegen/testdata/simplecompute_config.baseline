@@ -302,6 +302,8 @@ interfaces:
     entity_name: project
   - name_pattern: projects/{project}/dummyObjects/{dummyObject}
     entity_name: dummyObject
+  - name_pattern: projects/{project}/dummyObjects/{resource}
+    entity_name: resource
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -371,12 +373,17 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
+<<<<<<< HEAD
   - name: compute.dummyObjects.listResources
+=======
+  - name: compute.dummyObjects.getResource
+>>>>>>> fully qualify ResourceName import
     # TODO: Configure which groups of fields should be flattened into method
     # params.
     flattening:
       groups:
       - parameters:
+<<<<<<< HEAD
         - project
     # TODO: Configure which fields are required.
     required_fields:
@@ -390,12 +397,24 @@ interfaces:
       response:
         token_field: nextPageToken
         resources_field: _TODO_
+=======
+        - resource
+    # TODO: Configure which fields are required.
+    required_fields:
+    - resource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+>>>>>>> fully qualify ResourceName import
     # TODO: Configure the retryable codes for this method.
     retry_codes_name: idempotent
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
+<<<<<<< HEAD
       project: project
+=======
+      resource: resource
+>>>>>>> fully qualify ResourceName import
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.dummyObjects.delete
@@ -440,9 +459,15 @@ resource_name_generation:
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
     address: projectAddress
+<<<<<<< HEAD
 - message_name: ListResourcesDummyObjectsHttpRequest
   field_entity_map:
     project: project
+=======
+- message_name: GetResourceDummyObjectHttpRequest
+  field_entity_map:
+    resource: resource
+>>>>>>> fully qualify ResourceName import
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
     dummyObject: dummyObject

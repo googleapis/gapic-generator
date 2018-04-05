@@ -244,6 +244,8 @@ interfaces:
     entity_name: project
   - name_pattern: projects/{project}/dummyObjects/{dummyObject}
     entity_name: dummyObject
+  - name_pattern: projects/{project}/dummyObjects/{resource}
+    entity_name: resource
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -261,6 +263,7 @@ interfaces:
     max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
   methods:
+<<<<<<< HEAD
   - name: compute.dummyObjects.listResources
     flattening:
       groups:
@@ -282,6 +285,21 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       project: project
+=======
+  - name: compute.dummyObjects.getResource
+    flattening:
+      groups:
+      - parameters:
+        - resource
+    required_fields:
+    - resource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: resource
+>>>>>>> fully qualify ResourceName import
     timeout_millis: 60000
   - name: compute.dummyObjects.delete
     flattening:
@@ -321,10 +339,14 @@ resource_name_generation:
     address: projectAddress
 - message_name: GetResourceDummyObjectHttpRequest
   field_entity_map:
+<<<<<<< HEAD
     resource: projectDummyObjectResource
 - message_name: ListResourcesDummyObjectsHttpRequest
   field_entity_map:
     project: project
+=======
+    resource: resource
+>>>>>>> fully qualify ResourceName import
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
     dummyObject: dummyObject
