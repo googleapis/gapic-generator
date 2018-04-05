@@ -98,9 +98,6 @@ public class InitCodeTransformer {
   public InitCodeView generateInitCode(
       MethodContext methodContext, InitCodeContext initCodeContext) {
 
-    // Escape variables names that may clash with hardcoded variable names in generated test surface.
-    initCodeContext.symbolTable().getNewSymbol(methodContext.getNamer().getPagedResourceName());
-
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
       return buildInitCodeViewFlattened(methodContext, rootNode);

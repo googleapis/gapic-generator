@@ -146,6 +146,9 @@ public class TestCaseTransformer {
       hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
+    // Escape variables names that may clash with hardcoded variable names in generated test surface.
+    initCodeContext.symbolTable().getNewSymbol(methodContext.getNamer().getPagedResourceName());
+
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
     MockRpcResponseView mockRpcResponseView =
