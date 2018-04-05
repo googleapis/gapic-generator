@@ -3571,7 +3571,7 @@ public class LibraryClient implements BackgroundResource {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     stub.close();
   }
 
@@ -4478,6 +4478,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       return ((LibraryServiceStubSettings.Builder) getStubSettings());
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *
@@ -5687,7 +5688,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     shutdown();
   }
 
@@ -5958,6 +5959,8 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
+  @Override
+  public abstract void close();
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStubSettings.java ==============
 /*
@@ -7192,6 +7195,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       );
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *
