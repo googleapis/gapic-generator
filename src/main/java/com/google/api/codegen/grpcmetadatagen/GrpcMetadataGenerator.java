@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.Diag;
@@ -70,11 +71,11 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
       }
       return;
     }
-    Map<String, Doc> docs = generate(model);
-    ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
+    Map<String, GeneratedResult<Doc>> results = generate(model);
+    ToolUtil.writeFiles(GeneratedResult.extractBodies(results), options.get(OUTPUT_DIR));
   }
 
-  protected Map<String, Doc> generate(Model model) throws IOException {
+  protected Map<String, GeneratedResult<Doc>> generate(Model model) throws IOException {
     TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
     String configContent =
         new String(
@@ -85,8 +86,9 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     if (artifactType == null) {
       artifactType = config.artifactType();
     }
-    GrpcMetadataProvider provider =
+    GrpcMetadataProvider<Doc> provider =
         GrpcMetadataProviderFactory.create(language, artifactType, options);
+
     return provider.generate(model, config);
   }
 }

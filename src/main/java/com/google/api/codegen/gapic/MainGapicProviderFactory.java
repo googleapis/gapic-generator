@@ -55,6 +55,8 @@ import com.google.api.codegen.util.py.PythonRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +64,7 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
-public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvider> {
+public class MainGapicProviderFactory implements GapicProviderFactory {
 
   public static final String CLIENT_CONFIG = "client_config";
   public static final String CSHARP = "csharp";
@@ -76,13 +78,13 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
   public static final String RUBY_DOC = "ruby_doc";
 
   /** Create the GapicProviders based on the given id */
-  public static List<GapicProvider> defaultCreate(
+  public static List<GapicProvider<?>> defaultCreate(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider> providers = new ArrayList<>();
+    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
     // Please keep the following IDs in alphabetical order
     if (id.equals(CLIENT_CONFIG)) {
@@ -205,8 +207,25 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
                 .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
                 .build();
-
         providers.add(metadataProvider);
+
+        GapicProvider staticResourcesProvider =
+            new StaticResourcesProvider(
+                ImmutableMap.<String, String>builder()
+                    .put("java/static/build.gradle", "../build.gradle")
+                    .put("java/static/settings.gradle", "../settings.gradle")
+                    .put("java/static/gradlew", "../gradlew")
+                    .put("java/static/gradlew.bat", "../gradlew.bat")
+                    .put(
+                        "java/static/gradle/wrapper/gradle-wrapper.jar",
+                        "../gradle/wrapper/gradle-wrapper.jar")
+                    .put(
+                        "java/static/gradle/wrapper/gradle-wrapper.properties",
+                        "../gradle/wrapper/gradle-wrapper.properties")
+                    .build(),
+                ImmutableSet.of("../gradlew"));
+
+        providers.add(staticResourcesProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper javaTestPathMapper =
@@ -464,7 +483,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory<GapicProvi
 
   /** Create the GapicProviders based on the given id */
   @Override
-  public List<GapicProvider> create(
+  public List<GapicProvider<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
