@@ -20,6 +20,7 @@ import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.HashMap;
@@ -306,6 +307,7 @@ public abstract class PackageMetadataConfig {
       Map<String, Object> configMap, String key) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
     List<String> packages = (List<String>) configMap.get(key);
+    Preconditions.checkArgument(packages != null, key + " is missing from package metadata config");
 
     for (String packageName : packages) {
       Map<String, Map<String, String>> config =

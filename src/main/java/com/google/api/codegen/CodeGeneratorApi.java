@@ -31,6 +31,7 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -136,6 +137,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
+    if (GeneratorProto.getDefaultInstance().equals(generator)) {
+      throw new IllegalArgumentException("Language-specific generator config not provided");
+    }
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
     if (productConfig == null) {
@@ -144,6 +148,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
     if (generator != null) {
       String factory = generator.getFactory();
       String id = generator.getId();
+      Preconditions.checkArgument(!Strings.isNullOrEmpty(factory), "generator.factory is not set");
+      Preconditions.checkArgument(!Strings.isNullOrEmpty(id), "generator.id is not set");
 
       GapicProviderFactory providerFactory = createProviderFactory(model, factory);
       GapicGeneratorConfig generatorConfig =
