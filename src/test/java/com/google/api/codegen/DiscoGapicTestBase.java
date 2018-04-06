@@ -43,7 +43,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  private List<GapicProvider> discoGapicProviders;
+  private List<GapicProvider<?>> discoGapicProviders;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -86,14 +86,20 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   }
 
   @Override
-  protected Map<String, Doc> run() {
-    Map<String, Doc> outputDocs = new LinkedHashMap<>();
+  protected Map<String, ?> run() throws IOException {
+    Map<String, Object> output = new LinkedHashMap<>();
 
-    for (GapicProvider provider : discoGapicProviders) {
-      Map<String, Doc> docs = provider.generate();
-      outputDocs.putAll(docs);
+    for (GapicProvider<?> provider : discoGapicProviders) {
+      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
+      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
+        Object value =
+            (entry.getValue().getBody() instanceof byte[])
+                ? "Static or binary file content is not shown."
+                : entry.getValue().getBody();
+        output.put(entry.getKey(), value);
+      }
     }
-    return outputDocs;
+    return output;
   }
 
   @Override

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /** Performs gRPC meta-data generation for Python */
-public class PythonGrpcMetadataProvider implements GrpcMetadataProvider {
+public class PythonGrpcMetadataProvider implements GrpcMetadataProvider<Doc> {
 
   private final ToolOptions options;
 
@@ -37,25 +38,24 @@ public class PythonGrpcMetadataProvider implements GrpcMetadataProvider {
   }
 
   @Override
-  public Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException {
-    ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
+  public Map<String, GeneratedResult<Doc>> generate(Model model, PackageMetadataConfig config)
+      throws IOException {
+    ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
 
     PythonPackageCopier copier = new PythonPackageCopier();
     PythonPackageCopierResult copierResult = copier.run(options, config);
-    docs.putAll(copierResult.docs());
+
+    results.putAll(copierResult.results());
     PythonGrpcMetadataTransformer pythonTransformer =
         new PythonGrpcMetadataTransformer(copierResult);
     ProtoApiModel apiModel = new ProtoApiModel(model);
     metadataViews.addAll(pythonTransformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {
-      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
-      Doc result = runner.generate(view);
-      if (!result.isWhitespace()) {
-        docs.put(view.outputPath(), result);
-      }
+      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view, false);
+      results.putAll(runner.generate(view));
     }
-    return docs.build();
+    return results.build();
   }
 }

@@ -146,6 +146,9 @@ public class TestCaseTransformer {
       hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
+    // Escape variables names that may clash with hardcoded variable names in generated test surface.
+    initCodeContext.symbolTable().getNewSymbol(methodContext.getNamer().getPagedResourceName());
+
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
     MockRpcResponseView mockRpcResponseView =
@@ -258,7 +261,7 @@ public class TestCaseTransformer {
             .resourcesFieldGetterName(namer.getFieldGetFunctionName(resourcesField))
             .resourcesFieldIsMap(resourcesField.isMap())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
-            .resourcesVarName(namer.localVarName(Name.from("resources")))
+            .resourcesVarName(namer.getPagedResourceName())
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
@@ -328,10 +331,6 @@ public class TestCaseTransformer {
     TypeModel outputType = context.getMethodModel().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
-    }
-    // TODO(andrealin): Remove this hack when null response types are implemented.
-    if (outputType == null) {
-      outputType = context.getMethodModel().getInputType().makeOptional();
     }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)
