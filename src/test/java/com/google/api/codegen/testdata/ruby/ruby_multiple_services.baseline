@@ -369,10 +369,10 @@ task :jsondoc => :yard do
     documents: [
       {
         type: "toc",
-        title: "Google::Cloud::Example::V1::DataTypes",
+        title: "Google::Cloud::Example::V1::Foo::DataTypes",
         modules: [
           {
-            title: "Google::Cloud::Example::V1",
+            title: "Google::Cloud::Example::V1::Foo",
             include: ["google/example/v1/foo"]
           },
           {
@@ -563,7 +563,7 @@ module Google
             "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
         end
 
-        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        require "#{FILE_DIR}/#{version.to_s.downcase}/foo"
         version_module = Google::Example
           .constants
           .select {|sym| sym.to_s.downcase == version.to_s.downcase}
@@ -829,7 +829,7 @@ module Google
     module V1
       module Foo
         # @!attribute [r] decrementer_service_stub
-        #   @return [Google::Cloud::Example::V1::DecrementerService::Stub]
+        #   @return [Google::Cloud::Example::V1::Foo::DecrementerService::Stub]
         class DecrementerServiceClient
           attr_reader :decrementer_service_stub
 
@@ -916,7 +916,7 @@ module Google
             )
             defaults = client_config_file.open do |f|
               Google::Gax.construct_settings(
-                "google.cloud.example.v1.DecrementerService",
+                "google.cloud.example.v1.foo.DecrementerService",
                 JSON.parse(f.read),
                 client_config,
                 Google::Gax::Grpc::STATUS_CODE_NAMES,
@@ -936,7 +936,7 @@ module Google
               channel: channel,
               updater_proc: updater_proc,
               scopes: scopes,
-              &Google::Cloud::Example::V1::DecrementerService::Stub.method(:new)
+              &Google::Cloud::Example::V1::Foo::DecrementerService::Stub.method(:new)
             )
 
             @decrement = Google::Gax.create_api_call(
@@ -960,7 +960,7 @@ module Google
           #   decrementer_service_client.decrement
 
           def decrement options: nil
-            req = Google::Cloud::Example::V1::DecrementRequest.new
+            req = Google::Cloud::Example::V1::Foo::DecrementRequest.new
             @decrement.call(req, options)
             nil
           end
@@ -1020,7 +1020,7 @@ module Google
     module V1
       module Foo
         # @!attribute [r] incrementer_service_stub
-        #   @return [Google::Cloud::Example::V1::IncrementerService::Stub]
+        #   @return [Google::Cloud::Example::V1::Foo::IncrementerService::Stub]
         class IncrementerServiceClient
           attr_reader :incrementer_service_stub
 
@@ -1107,7 +1107,7 @@ module Google
             )
             defaults = client_config_file.open do |f|
               Google::Gax.construct_settings(
-                "google.cloud.example.v1.IncrementerService",
+                "google.cloud.example.v1.foo.IncrementerService",
                 JSON.parse(f.read),
                 client_config,
                 Google::Gax::Grpc::STATUS_CODE_NAMES,
@@ -1127,7 +1127,7 @@ module Google
               channel: channel,
               updater_proc: updater_proc,
               scopes: scopes,
-              &Google::Cloud::Example::V1::IncrementerService::Stub.method(:new)
+              &Google::Cloud::Example::V1::Foo::IncrementerService::Stub.method(:new)
             )
 
             @increment = Google::Gax.create_api_call(
@@ -1151,7 +1151,7 @@ module Google
           #   incrementer_service_client.increment
 
           def increment options: nil
-            req = Google::Cloud::Example::V1::IncrementRequest.new
+            req = Google::Cloud::Example::V1::Foo::IncrementRequest.new
             @increment.call(req, options)
             nil
           end
@@ -1260,7 +1260,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
-      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
@@ -1283,7 +1283,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
-      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
@@ -1383,7 +1383,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
-      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
@@ -1406,7 +1406,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
-      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
