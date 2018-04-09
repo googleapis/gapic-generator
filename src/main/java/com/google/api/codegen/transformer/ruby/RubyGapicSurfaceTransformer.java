@@ -369,14 +369,20 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
 
     for (String moduleName : namer.getApiModules()) {
+      boolean isVersion = moduleName.equals(namer.getModuleVersionName());
+
       if (moduleName.equals(namer.getModuleServiceName())) {
         moduleViews.add(
             metadataTransformer
                 .generateReadmeMetadataView(model, productConfig, packageNamer)
                 .moduleName(moduleName)
                 .build());
-      } else if (includeVersionModule || !moduleName.equals(namer.getModuleVersionName())) {
+      } else if (includeVersionModule || !isVersion) {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
+      }
+
+      if (!includeVersionModule && isVersion) {
+        break;
       }
     }
     return moduleViews.build();

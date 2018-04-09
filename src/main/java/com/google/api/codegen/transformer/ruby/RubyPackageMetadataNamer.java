@@ -15,13 +15,13 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** A RubyPackageMetadataNamer provides ruby specific names for metadata views. */
 public class RubyPackageMetadataNamer extends PackageMetadataNamer {
@@ -33,12 +33,10 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     this.packageName = packageName;
   }
 
-  private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("(.+?)::[vV][0-9]+(::.*)?");
-
   @Override
   public String getMetadataIdentifier() {
     // strip out the string before the first v0 part of the path
-    Matcher m = IDENTIFIER_PATTERN.matcher(packageName);
+    Matcher m = RubyUtil.getVersionMatcher(packageName);
     List<String> names = Splitter.on("::").splitToList(m.matches() ? m.group(1) : packageName);
 
     // drop last if not a versioned id

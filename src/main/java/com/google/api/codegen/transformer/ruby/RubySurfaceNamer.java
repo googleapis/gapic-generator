@@ -332,16 +332,6 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return ImmutableList.copyOf(ret);
   }
 
-  private static boolean hasVersionModule(List<String> apiModules) {
-    return apiModules
-            .stream()
-            .map(m -> Name.upperCamel(m).toLowerUnderscore())
-            .filter(m -> VersionMatcher.isVersion(m))
-            .findFirst()
-            .orElse(null)
-        != null;
-  }
-
   @Override
   public String getApiMethodName(MethodModel method, VisibilityConfig visibility) {
     // This is defined in grpc/generic/service.rb
@@ -355,7 +345,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getModuleVersionName() {
-    List<String> apiModules = getApiModules();
+    List<String> apiModules = getTopLevelApiModules();
+    for (String m : apiModules) {
+      if (VersionMatcher.isVersion(Name.upperCamel(m).toLowerUnderscore())) {
+        return m;
+      }
+    }
     return apiModules.get(apiModules.size() - 1);
   }
 
