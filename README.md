@@ -97,8 +97,8 @@ protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
 You need to locate/decide on the following before you can generate the proto message classes:
 
 1. The output directory to contain the proto files. Hereafter, this will be referenced as `${GENERATED_PROTO_DIR}`.
-2. The language you are generating for. The values for protobuf are in
-`["java", "go", "php", "ruby", "python", "csharp"]`. (Node is special - see below.)
+2. The language you are generating for. The possible values for protoc
+`["java", "go", "php", "ruby", "python", "csharp"]`.
 Hereafter, this will be referenced as `${PROTO_OUTPUT_LANG}`.
 
 Run the following command to generate the proto message classes:
@@ -161,7 +161,7 @@ the quality of the generated output.
 
 ### Create a package metadata config file
 
-You need to decide on the following before you create the package metadata config file:
+You need to locate/decide on the following before you create the package metadata config file:
 
 1. The output file to contain the package metadata for your client generation. Hereafter, this will be
    referenced as `${PKG_META_CONFIG}`.
@@ -216,13 +216,15 @@ java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGene
 
 The generated client library code will appear in `${GENERATED_CLIENT_DIR}`.
 
+You can safely ignore the warning about control-presence.
+
 Special note for java: several files will be dumped into the parent directory of `${GENERATED_CLIENT_DIR}`:
 
 - gradle/
 - gradlew
 - gradlew.bat
 
-You can safely ignore the warning about control-presence.
+(There is an open issue to fix this: https://github.com/googleapis/toolkit/issues/1918 )
 
 ### Perform fix-ups to get a working library
 
@@ -236,10 +238,10 @@ Copy the proto-generated classes into the client directory tree:
 cp -r ${GENERATED_PROTO_DIR}/* ${GENERATED_CLIENT_DIR}/src/main/java
 ```
 
-In ${GENERATED_CLIENT_DIR}/build.gradle, there are a couple dependencies that need to be removed if you
-are bundling our proto-generated classes and grpc stubs in the same package as the client. They have a
-comment starting with "// Remove this line if you are bundling". Warning: If you regenerate again, you will
-need to remove the lines from the build.gradle file again. (There is an option issue to fix this:
+In `${GENERATED_CLIENT_DIR}/build.gradle`, there are a couple dependencies that need to be removed if you
+are bundling your proto-generated classes and grpc stubs in the same package as the client. They have a
+comment starting with "`// Remove this line if you are bundling`". Warning: If you regenerate again, you will
+need to remove the lines from the build.gradle file again. (There is an open issue to fix this:
 https://github.com/googleapis/toolkit/issues/1917 ).
 
 #### Node
