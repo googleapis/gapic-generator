@@ -1,3 +1,9 @@
+# C# utils
+
+This directory contains C# utilities.
+
+## CSharpImports.java
+
 CSharpImports.java is an auto-generated file,
 used for C# only.
 

@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
@@ -24,6 +26,8 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ResourceNameMessageConfigs;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -42,6 +46,7 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
@@ -49,6 +54,8 @@ import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
+import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
+import com.google.api.codegen.viewmodel.ResourceProtoView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
@@ -61,11 +68,17 @@ import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class CSharpGapicClientTransformer implements ModelToViewTransformer {
@@ -198,12 +211,73 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     view.outputPath(outputPath + File.separator + "ResourceNames.cs");
     view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
-    view.resourceProtos(pathTemplateTransformer.generateResourceProtos(context));
+    view.resourceProtos(generateResourceProtos(context));
     context.getImportTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
     context.getImportTypeTable().saveNicknameFor("System.Linq.Enumerable");
     context.getImportTypeTable().saveNicknameFor("System.InvalidOperationException");
     view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     return view.build();
+  }
+
+  private List<ResourceProtoView> generateResourceProtos(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ResourceNameMessageConfigs resourceConfigs =
+        context.getProductConfig().getResourceNameMessageConfigs();
+    ListMultimap<String, FieldModel> fieldsByMessage =
+        resourceConfigs.getFieldsWithResourceNamesByMessage();
+    Map<String, FieldConfig> fieldConfigMap =
+        context.getProductConfig().getDefaultResourceNameFieldConfigMap();
+    List<ResourceProtoView> protos = new ArrayList<>();
+    for (Entry<String, Collection<FieldModel>> entry : fieldsByMessage.asMap().entrySet()) {
+      String msgName = entry.getKey();
+      Collection<FieldModel> fields = new ArrayList<>(entry.getValue());
+      ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
+      protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
+      List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
+      for (FieldModel field : fields) {
+        FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
+        String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
+        if (fieldTypeSimpleName.equals("IResourceName")) {
+          fieldTypeSimpleName = "gax::IResourceName";
+        }
+        String fieldTypeName =
+            context
+                .getImportTypeTable()
+                .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
+        if (field.isRepeated()) {
+          fieldTypeName = fieldTypeName.replaceFirst("scg::IEnumerable", "gax::ResourceNameList");
+        }
+        String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
+        String fieldElementTypeName =
+            context
+                .getImportTypeTable()
+                .getAndSaveNicknameForResourceNameElementType(fieldConfig, fieldTypeSimpleName);
+        ResourceProtoFieldView fieldView =
+            ResourceProtoFieldView.newBuilder()
+                .typeName(fieldTypeName)
+                .parseMethodTypeName(namer.getPackageName() + "." + fieldTypeName)
+                .docTypeName(fieldDocTypeName)
+                .elementTypeName(fieldElementTypeName)
+                .isAny(fieldConfig.getResourceNameType() == ResourceNameType.ANY)
+                .isRepeated(field.isRepeated())
+                .isOneof(fieldConfig.getResourceNameType() == ResourceNameType.ONEOF)
+                .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
+                .underlyingPropertyName(namer.publicMethodName(Name.from(field.getSimpleName())))
+                .build();
+        fieldViews.add(fieldView);
+      }
+      protoBuilder.fields(fieldViews);
+      protos.add(protoBuilder.build());
+    }
+    Collections.sort(
+        protos,
+        new Comparator<ResourceProtoView>() {
+          @Override
+          public int compare(ResourceProtoView a, ResourceProtoView b) {
+            return a.protoClassName().compareTo(b.protoClassName());
+          }
+        });
+    return protos;
   }
 
   private StaticLangApiAndSettingsFileView generateApiAndSettingsView(
