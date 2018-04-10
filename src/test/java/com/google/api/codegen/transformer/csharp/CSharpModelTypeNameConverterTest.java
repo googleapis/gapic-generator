@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
@@ -32,12 +33,14 @@ public class CSharpModelTypeNameConverterTest {
     String packageName = "Google.Example.Library.V1";
     TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
     EnumValue value = type.getEnumType().getValues().get(0);
-    CSharpModelTypeNameConverter converter = new CSharpModelTypeNameConverter(packageName);
+    CSharpModelTypeNameConverter converter =
+        new CSharpModelTypeNameConverter(packageName, CSharpAliasMode.Global);
 
     Truth.assertThat(
             converter
                 .getEnumValue(type, value)
-                .getValueAndSaveTypeNicknameIn(new CSharpTypeTable(packageName)))
+                .getValueAndSaveTypeNicknameIn(
+                    new CSharpTypeTable(packageName, CSharpAliasMode.Global)))
         .isEqualTo("Book.Types.Rating.Good");
   }
 }

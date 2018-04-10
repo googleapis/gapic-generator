@@ -59,6 +59,13 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameForElementType(TypeModel type) {
+    return typeNameConverter
+        .getTypeNameForElementType(((ProtoTypeRef) type).getProtoType())
+        .getFullName();
+  }
+
+  @Override
   public String getFullNameFor(TypeModel type) {
     return typeNameConverter.getTypeName(type).getFullName();
   }

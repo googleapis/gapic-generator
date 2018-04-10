@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.DISCOVERY;
-
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
@@ -25,9 +22,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -37,22 +32,21 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
-      DiscoGapicNamer discoNamer,
+      SurfaceNamer namer,
       DiscoveryMethodModel method,
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
-    Preconditions.checkArgument(method != null && method.getApiSource().equals(DISCOVERY));
     return new AutoValue_DiscoGapicMethodContext(
         productConfig,
         flatteningConfig,
         featureConfig,
-        new DiscoInterfaceModel(interfaceName, surfaceTransformerContext.getDocument()),
+        new DiscoInterfaceModel(interfaceName, surfaceTransformerContext.getApiModel()),
         methodConfig,
         surfaceTransformerContext,
         typeTable,
         method,
-        discoNamer);
+        namer);
   }
 
   public String interfaceName() {
@@ -87,7 +81,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         interfaceName(),
         getProductConfig(),
         getTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
+        getNamer(),
         getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
@@ -104,16 +98,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   public abstract DiscoveryMethodModel getMethodModel();
 
   @Override
-  public ApiSource getApiSource() {
-    return DISCOVERY;
-  }
-
-  @Override
-  public SurfaceNamer getNamer() {
-    return getDiscoGapicNamer().getLanguageNamer();
-  }
-
-  public abstract DiscoGapicNamer getDiscoGapicNamer();
+  public abstract SurfaceNamer getNamer();
 
   @Override
   public String getGrpcContainerTypeName() {
@@ -123,6 +108,22 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   @Override
   public DiscoInterfaceModel getTargetInterface() {
     return new DiscoInterfaceModel(
-        getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getDocument());
+        getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getApiModel());
+  }
+
+  @Override
+  public MethodContext withResourceNamesInSamplesOnly() {
+    return create(
+        getSurfaceInterfaceContext(),
+        interfaceName(),
+        getProductConfig(),
+        getTypeTable(),
+        getNamer(),
+        getMethodModel(),
+        getMethodConfig(),
+        getFlatteningConfig() == null
+            ? null
+            : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getFeatureConfig());
   }
 }

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
@@ -50,12 +51,33 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     return getMetadataIdentifier() + ".gemspec";
   }
 
-  public String getSmokeTestProjectVariable() {
-    return Name.from(getSimpleMetadataIdentifier(), "test", "project").toUpperUnderscore();
+  public String getProjectVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "project")
+        .toUpperUnderscore();
+  }
+
+  public String getKeyfileVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "keyfile")
+        .toUpperUnderscore();
+  }
+
+  public String getJsonKeyVariable(boolean test) {
+    return Name.from(getSimpleMetadataIdentifier(), test ? "test" : "", "keyfile", "json")
+        .toUpperUnderscore();
   }
 
   private String getSimpleMetadataIdentifier() {
     return Iterables.getLast(
         Splitter.on(METADATA_IDENTIFIER_SEPARATOR).split(getMetadataIdentifier()));
+  }
+
+  @Override
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    switch (releaseLevel) {
+      case GA:
+        return "GA";
+      default:
+        return super.getReleaseAnnotation(releaseLevel);
+    }
   }
 }

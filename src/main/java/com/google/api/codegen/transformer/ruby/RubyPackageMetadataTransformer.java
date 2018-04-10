@@ -21,13 +21,11 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -44,13 +42,14 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.codegen.viewmodel.metadata.TocContentView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** Responsible for producing package metadata related views for Ruby */
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
@@ -71,8 +70,16 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String MAIN_README_PATH = "/blob/master/README.md";
   private static final String VERSIONING_DOC_PATH = "#versioning";
 
+  private final RubyImportSectionTransformer importSectionTransformer =
+      new RubyImportSectionTransformer();
+
+  // These dependencies are pulled in transitively through GAX and should not be declared
+  // explicitly to reduce the chance of version conflicts
+  private static final Set<String> BLACKLISTED_DEPENDENCIES =
+      ImmutableSet.of("googleapis-common-protos");
+
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new RubyImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final ValueProducer valueProducer = new StandardValueProducer();
@@ -95,14 +102,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
-        .add(generateGemspecView(apiModel, namer))
-        .add(generateReadmeView(apiModel, productConfig, namer))
-        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_FILES))
-        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
+        .add(generateGemspecView(model, namer))
+        .add(generateReadmeView(model, productConfig, namer))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
   }
 
@@ -117,7 +123,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .majorVersion(packageConfig.apiVersion())
         .hasMultipleServices(false)
         .developmentStatusTitle(
-            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
+            namer.getReleaseAnnotation(
+                metadataTransformer.getMergedReleaseLevel(
+                    packageConfig, productConfig, TargetLanguage.RUBY)))
         .targetLanguage("Ruby")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink("")
@@ -127,18 +135,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   public TocContentView generateTocContent(
-      ApiModel model, RubyPackageMetadataNamer namer, String packageFilePath, String clientName) {
-    String description = model.getDocumentationSummary();
-    description = description.replace("\n", " ").trim();
-    return generateTocContent(description, namer, packageFilePath, clientName);
-  }
-
-  public TocContentView generateDataTypeTocContent(
-      String apiModule, RubyPackageMetadataNamer namer, String packageFilePath) {
-    return generateTocContent("Data types for " + apiModule, namer, packageFilePath, "Data Types");
-  }
-
-  private TocContentView generateTocContent(
       String description,
       RubyPackageMetadataNamer namer,
       String packageFilePath,
@@ -155,6 +151,15 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel generateGemspecView(ApiModel model, RubyPackageMetadataNamer namer) {
+    // Whitelist is just the complement of the blacklist
+    Set<String> whitelist =
+        packageConfig
+            .protoPackageDependencies(TargetLanguage.RUBY)
+            .entrySet()
+            .stream()
+            .map(v -> v.getKey())
+            .filter(s -> !BLACKLISTED_DEPENDENCIES.contains(s))
+            .collect(Collectors.toSet());
     return metadataTransformer
         .generateMetadataView(
             namer,
@@ -162,12 +167,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             model,
             GEMSPEC_FILE,
             namer.getOutputFileName(),
-            TargetLanguage.RUBY)
+            TargetLanguage.RUBY,
+            whitelist)
         .identifier(namer.getMetadataIdentifier())
         .additionalDependencies(
             ImmutableList.of(
-                PackageDependencyView.create(
-                    "googleauth", packageConfig.authVersionBound(TargetLanguage.RUBY)),
                 PackageDependencyView.create(
                     "google-gax", packageConfig.gaxVersionBound(TargetLanguage.RUBY))))
         .build();
@@ -271,28 +275,36 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
     boolean hasSmokeTests = false;
     List<InterfaceModel> interfaceModels = new LinkedList<>();
+    List<GapicInterfaceContext> contexts = new LinkedList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      InterfaceContext context = createContext(apiInterface, productConfig);
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       interfaceModels.add(context.getInterfaceModel());
+      contexts.add(context);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
-        break;
       }
     }
 
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
+    ImportSectionView importSection =
+        importSectionTransformer.generateRakefileAcceptanceTaskImportSection(contexts);
 
     return metadataTransformer
         .generateMetadataView(
             namer, packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
-            fileHeaderTransformer.generateFileHeader(
-                productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
+            fileHeaderTransformer.generateFileHeader(productConfig, importSection, surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .versionNamespace(validVersionNamespace(interfaceModels, surfaceNamer))
-        .smokeTestProjectVariable(namer.getSmokeTestProjectVariable())
+        .credentialsClassName(surfaceNamer.getFullyQualifiedCredentialsClassName())
+        .smokeTestProjectVariable(namer.getProjectVariable(true))
+        .smokeTestKeyfileVariable(namer.getKeyfileVariable(true))
+        .smokeTestJsonKeyVariable(namer.getJsonKeyVariable(true))
+        .projectVariable(namer.getProjectVariable(false))
+        .keyfileVariable(namer.getKeyfileVariable(false))
+        .jsonKeyVariable(namer.getJsonKeyVariable(false))
         .build();
   }
 

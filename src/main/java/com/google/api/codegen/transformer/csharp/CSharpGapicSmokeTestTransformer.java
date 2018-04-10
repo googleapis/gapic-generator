@@ -14,26 +14,33 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
-import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,28 +52,32 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   private static final String SMOKETEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_smoketest_csproj.snip";
 
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
+
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new CSharpApiMethodTransformer();
 
   public CSharpGapicSmokeTestTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getPackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
@@ -130,15 +141,44 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
     smokeTestBuilder.apiSettingsClassName(
         namer.getApiSettingsClassName(context.getInterfaceConfig()));
 
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
-    smokeTestBuilder.method(testCaseView);
+    StaticLangApiMethodView apiMethodView =
+        createSmokeTestCaseApiMethodView(context, methodContext);
+    smokeTestBuilder.apiMethod(apiMethodView);
     smokeTestBuilder.requireProjectId(
-        testCaseTransformer.requireProjectIdInSmokeTest(testCaseView.initCode(), namer));
+        testCaseTransformer.requireProjectIdInSmokeTest(apiMethodView.initCode(), namer));
 
     // must be done as the last step to catch all imports
     smokeTestBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return smokeTestBuilder;
+  }
+
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(
+      GapicInterfaceContext context, MethodContext methodContext) {
+    SurfaceNamer namer = context.getNamer();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    StaticLangApiMethodView.Builder apiMethodView;
+    if (methodConfig.isPageStreaming()) {
+      apiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext).toBuilder();
+      FieldConfig resourceFieldConfig =
+          methodContext.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+      String callerResponseTypeName =
+          namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
+      apiMethodView.responseTypeName(callerResponseTypeName);
+    } else if (methodConfig.isLongRunningOperation()) {
+      ArrayList<ParamWithSimpleDoc> emptyParams = new ArrayList<ParamWithSimpleDoc>();
+      apiMethodView =
+          apiMethodTransformer
+              .generateOperationFlattenedMethod(methodContext, emptyParams)
+              .toBuilder();
+    } else {
+      apiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext).toBuilder();
+    }
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, testCaseTransformer.createSmokeTestInitContext(methodContext));
+    apiMethodView.initCode(initCodeView);
+    return apiMethodView.build();
   }
 }

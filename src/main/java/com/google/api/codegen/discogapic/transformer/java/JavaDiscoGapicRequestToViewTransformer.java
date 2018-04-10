@@ -28,9 +28,9 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
@@ -117,11 +117,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   @Override
-  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceRequests = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoApiModel model = new DiscoApiModel(document);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
@@ -134,7 +133,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               enableStringFormatFunctions);
 
       for (MethodModel method : context.getSupportedMethods()) {
-        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
+        RequestObjectParamView params = getRequestObjectParams(context, method);
 
         SchemaTransformationContext requestContext =
             SchemaTransformationContext.create(
@@ -154,11 +153,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return surfaceRequests;
   }
 
-  private List<RequestObjectParamView> getRequestObjectParams(
+  private RequestObjectParamView getRequestObjectParams(
       DiscoGapicInterfaceContext context, MethodModel method) {
     MethodConfig methodConfig = context.getMethodConfig(method);
-
-    List<RequestObjectParamView> params = new LinkedList<>();
 
     // Generate the ResourceName methods.
     if (methodConfig.isFlattening()) {
@@ -169,16 +166,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
             flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
         for (FieldConfig fieldConfig : fieldConfigs) {
           if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-            params.add(
-                resourceObjectTransformer.generateRequestObjectParam(
-                    flattenedMethodContext, fieldConfig));
+            return resourceObjectTransformer.generateRequestObjectParam(
+                flattenedMethodContext, fieldConfig);
           }
         }
       }
     }
-
-    Collections.sort(params);
-    return params;
+    return null;
   }
 
   /* Given a message view, creates a top-level message file view. */
@@ -201,7 +195,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   private StaticLangApiMessageView generateRequestClass(
       SchemaTransformationContext context,
       MethodModel method,
-      List<RequestObjectParamView> resourceNames) {
+      RequestObjectParamView resourceNameView) {
     StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
@@ -210,7 +204,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         context
             .getNamer()
             .privateFieldName(
-                DiscoGapicNamer.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
+                DiscoGapicParser.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
     boolean hasRequiredProperties = false;
@@ -236,15 +230,29 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.innerTypeName("String");
       paramView.isRequired(false);
       paramView.canRepeat(false);
-      paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
-      paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
-      paramView.properties(new LinkedList<StaticLangApiMessageView>());
+      paramView.fieldGetFunction(
+          context
+              .getNamer()
+              .getFieldGetFunctionName(
+                  DiscoGapicParser.stringToName(param),
+                  SurfaceNamer.MapType.NOT_MAP,
+                  SurfaceNamer.Cardinality.NOT_REPEATED));
+      paramView.fieldSetFunction(
+          context
+              .getDiscoGapicNamer()
+              .getResourceSetterName(
+                  param, SurfaceNamer.Cardinality.NOT_REPEATED, context.getNamer()));
+      paramView.properties(Collections.emptyList());
       paramView.isRequestMessage(false);
       paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
     }
 
     for (FieldModel entry : method.getInputFields()) {
+      if (entry.mayBeInResourceName()) {
+        hasRequiredProperties = true;
+        continue;
+      }
       String parameterName = entry.getNameAsParameter();
       properties.add(
           schemaToParamView(context, entry, parameterName, symbolTable, EscapeName.ESCAPE_NAME));
@@ -252,6 +260,32 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         hasRequiredProperties = true;
       }
     }
+
+    StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
+    Method discoMethod = ((DiscoveryMethodModel) method).getDiscoMethod();
+    String resourceName = DiscoGapicParser.getResourceIdentifier(discoMethod.path()).toLowerCamel();
+    StringBuilder description =
+        new StringBuilder(discoMethod.parameters().get(resourceName).description());
+    description.append(String.format("\nIt must have the format `%s`. ", discoMethod.path()));
+    description.append(String.format("\\`{%s}\\` must start with a letter,\n", resourceName));
+    description.append(
+        "and contain only letters (\\`[A-Za-z]\\`), numbers (\\`[0-9]\\`), dashes (\\`-\\`),\n"
+            + "     * underscores (\\`_\\`), periods (\\`.\\`), tildes (\\`~\\`), plus (\\`+\\`) or percent\n"
+            + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
+            + "     * must not start with \\`\"goog\"\\`.");
+    paramView.description(description.toString());
+    paramView.name(symbolTable.getNewSymbol(resourceNameView.name()));
+    paramView.typeName("String");
+    paramView.innerTypeName("String");
+    paramView.isRequired(true);
+    paramView.canRepeat(false);
+    paramView.fieldGetFunction(resourceNameView.getCallName());
+    paramView.fieldSetFunction(resourceNameView.setCallName());
+    paramView.properties(new LinkedList<>());
+    paramView.isRequestMessage(false);
+    paramView.hasRequiredProperties(false);
+    properties.add(paramView.build());
+
     Collections.sort(properties);
 
     requestView.canRepeat(false);
@@ -259,17 +293,17 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.properties(properties);
     requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
-    requestView.resourceNames(resourceNames);
+    requestView.pathAsResourceName(resourceNameView);
 
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
       FieldModel requestBody =
-          DiscoveryField.create(requestBodyDef.dereference(), context.getDiscoGapicNamer());
+          DiscoveryField.create(requestBodyDef, context.getDocContext().getApiModel());
       requestView.requestBodyType(
           schemaToParamView(
               context,
               requestBody,
-              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
+              DiscoGapicParser.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }
@@ -297,9 +331,17 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.innerTypeName(typeName);
     paramView.isRequired(schema.isRequired());
     paramView.canRepeat(schema.isRepeated());
-    paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(name));
-    paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(name));
-    paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.fieldGetFunction(
+        context.getDiscoGapicNamer().getResourceGetterName(name, context.getNamer()));
+    paramView.fieldSetFunction(
+        context
+            .getDiscoGapicNamer()
+            .getResourceSetterName(
+                name,
+                SurfaceNamer.Cardinality.ofRepeated(schema.isRepeated()),
+                context.getNamer()));
+    paramView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schema));
+    paramView.properties(new LinkedList<>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
     return paramView.build();
@@ -308,8 +350,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
-    typeTable.getAndSaveNicknameFor("java.io.Serializable");
+    typeTable.getAndSaveNicknameFor("java.util.ArrayList");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.List");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
@@ -327,7 +370,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return new SchemaTypeTable(
         typeTable,
         typeNameConverter,
-        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
+        new JavaSurfaceNamer(implicitPackageName, implicitPackageName));
   }
 
   public enum EscapeName {

@@ -26,7 +26,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -35,7 +34,6 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
@@ -107,7 +105,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
-    return "../resources/"
+    return "/../resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join("client_config")
             .toLowerUnderscore()
@@ -115,13 +113,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldModel field) {
-    return field.isMap();
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return "/resources/"
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join(name)
+            .toLowerUnderscore()
+        + ".php";
   }
 
   @Override
-  public String getRetrySettingsTypeName() {
-    return "\\Google\\ApiCore\\RetrySettings";
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
+    return field.isMap();
   }
 
   @Override
@@ -169,6 +171,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getClientConfigName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).toLowerUnderscore();
+  }
+
+  @Override
   public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
@@ -183,12 +190,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override

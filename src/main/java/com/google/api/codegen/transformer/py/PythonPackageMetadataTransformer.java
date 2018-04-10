@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -22,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -41,14 +39,14 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.util.testing.PythonValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.codegen.viewmodel.metadata.SimpleInitFileView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -107,14 +105,15 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
+  public List<ViewModel> transform(final ApiModel model, final GapicProductConfig productConfig) {
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
-    ProtoApiModel apiModel = new ProtoApiModel(model);
     return ImmutableList.<ViewModel>builder()
-        .addAll(computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer))
-        .addAll(generateTopLevelFiles(apiModel, productConfig))
-        .addAll(generateDocFiles(apiModel, productConfig))
-        .add(generateNoxFile(apiModel, productConfig))
+        .addAll(
+            computeInitFiles(
+                computePackages(productConfig.getPackageName()), surfaceNamer, productConfig))
+        .addAll(generateTopLevelFiles(model, productConfig))
+        .addAll(generateDocFiles(model, productConfig))
+        .add(generateNoxFile(model, productConfig))
         .build();
   }
 
@@ -195,7 +194,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName()))
         .developmentStatus(
-            surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+            surfaceNamer.getReleaseAnnotation(
+                metadataTransformer.getMergedReleaseLevel(
+                    packageConfig, productConfig, TargetLanguage.PYTHON)))
         .clientModules(clientModules(surfaceNamer))
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
@@ -220,7 +221,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     metadataNamer.getReleaseAnnotation(
-                        packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+                        metadataTransformer.getMergedReleaseLevel(
+                            packageConfig, productConfig, TargetLanguage.PYTHON)))
                 .targetLanguage("Python")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(
@@ -267,11 +269,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
         PackageDependencyView.create("google-api-core", VersionBound.create("0.1.0", "0.2.0dev")));
-    dependencies.add(
-        PackageDependencyView.create(
-            "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));
-    dependencies.add(
-        PackageDependencyView.create("requests", VersionBound.create("2.18.4", "3.0dev")));
     return dependencies.build();
   }
 
@@ -358,7 +355,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
    * package corresponds to exactly one __init__.py file, although the contents of that file depend
    * on whether the package is a namespace package.
    */
-  private List<ViewModel> computeInitFiles(List<String> packages, SurfaceNamer namer) {
+  private List<ViewModel> computeInitFiles(
+      List<String> packages, SurfaceNamer namer, GapicProductConfig productConfig) {
     List<ViewModel> initFiles = new ArrayList<>();
     for (String packageName : packages) {
       final String template;
@@ -371,8 +369,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       }
       String outputPath =
           Paths.get(packageName.replace(".", File.separator)).resolve("__init__.py").toString();
-      initFiles.add(
-          SimpleViewModel.create(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, template, outputPath));
+      FileHeaderView fileHeader =
+          fileHeaderTransformer.generateFileHeader(
+              productConfig,
+              ImportSectionView.newBuilder().build(),
+              new PythonSurfaceNamer(productConfig.getPackageName()));
+      initFiles.add(SimpleInitFileView.create(template, outputPath, fileHeader));
     }
     return initFiles;
   }

@@ -42,11 +42,20 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String requestTypeName();
 
+  public abstract String responseTypeName();
+
   public abstract String key();
+
+  @Nullable
+  public abstract String rerouteToGrpcInterface();
 
   public abstract String grpcMethodName();
 
   public abstract GrpcStreamingType grpcStreamingType();
+
+  public boolean hasRerouteToGrpcInterface() {
+    return rerouteToGrpcInterface() != null;
+  }
 
   public boolean isGrpcStreamingMethod() {
     return grpcStreamingType() == GrpcStreamingType.BidiStreaming
@@ -138,7 +147,11 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder requestTypeName(String val);
 
+    public abstract Builder responseTypeName(String val);
+
     public abstract Builder key(String val);
+
+    public abstract Builder rerouteToGrpcInterface(String val);
 
     public abstract Builder grpcMethodName(String val);
 

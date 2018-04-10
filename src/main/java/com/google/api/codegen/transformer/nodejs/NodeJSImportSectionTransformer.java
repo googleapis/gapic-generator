@@ -32,7 +32,7 @@ import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context, String className) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));
     return importSection.build();

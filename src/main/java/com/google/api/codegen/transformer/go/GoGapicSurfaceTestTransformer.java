@@ -18,7 +18,6 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -42,6 +41,8 @@ import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
@@ -49,7 +50,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +70,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -77,13 +79,12 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> models = new ArrayList<ViewModel>();
-    ProtoApiModel apiModel = new ProtoApiModel(model);
-    models.add(generateMockServiceView(apiModel, productConfig, namer));
+    models.add(generateMockServiceView(model, productConfig, namer));
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -111,7 +112,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
+              .mockGrpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
@@ -183,7 +184,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     MethodContext methodContext = context.asRequestMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
+    StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -194,12 +195,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
             + method.getSimpleName()
             + "_smoke_test.go");
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    testClass.apiMethod(
-        new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext));
-    testClass.method(testCaseView);
+    testClass.apiMethod(apiMethodView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
-            testCaseView.initCode(), context.getNamer()));
+            apiMethodView.initCode(), context.getNamer()));
 
     // The shared code above add imports both for input and output.
     // Since we use short decls, we don't need to import anything for output.
@@ -210,5 +209,20 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.fileHeader(fileHeader);
 
     return testClass.build();
+  }
+
+  private StaticLangApiMethodView createSmokeTestCaseApiMethodView(MethodContext methodContext) {
+    StaticLangApiMethodView initialApiMethodView;
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      initialApiMethodView = apiMethodTransformer.generatePagedRequestObjectMethod(methodContext);
+    } else {
+      initialApiMethodView = apiMethodTransformer.generateRequestObjectMethod(methodContext);
+    }
+    StaticLangApiMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, testCaseTransformer.createSmokeTestInitContext(methodContext));
+    apiMethodView.initCode(initCodeView);
+    return apiMethodView.build();
   }
 }

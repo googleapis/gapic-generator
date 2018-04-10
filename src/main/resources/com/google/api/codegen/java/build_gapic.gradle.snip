@@ -8,7 +8,7 @@
   apply plugin: 'java'
 
   description = 'GAPIC library for {@metadata.identifier}'
-  group = "com.google.api"
+  group = 'com.google.api'
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
@@ -18,12 +18,35 @@
   }
 
   dependencies {
-    compile project(":{@metadata.protoPackageName}")
-    compile libraries.gax, libraries.gaxGrpc
-    testCompile project(":{@metadata.grpcPackageName}")
-    @join dependency : metadata.protoPackageTestDependencies
-      testCompile project(":{@dependency.name}")
+    compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
+    compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
+    testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    @switch metadata.artifactType.toString
+    @case "GAPIC_ONLY"
+      @join dependency : metadata.protoPackageDependencies
+        compile project(':proto-{@dependency.name}')
+        testCompile project(':grpc-{@dependency.name}')
+      @end
+    @default
+      compile project(':{@metadata.protoPackageName}')
+      testCompile project(':{@metadata.grpcPackageName}')
     @end
+    @join dependency : metadata.protoPackageTestDependencies
+      testCompile project(':grpc-{@dependency.name}')
+    @end
+  }
+
+  task smokeTest(type: Test) {
+    filter {
+      includeTestsMatching "*SmokeTest"
+      setFailOnNoMatchingTests false
+    }
+  }
+
+  test {
+    exclude "**/*SmokeTest*"
   }
 
   sourceSets {
@@ -34,4 +57,6 @@
     }
   }
 
+  compileJava.options.encoding = 'UTF-8'
+  javadoc.options.encoding = 'UTF-8'
 @end

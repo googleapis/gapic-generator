@@ -17,9 +17,6 @@ package com.google.api.codegen.config;
 /** API source-agnostic interface for FieldSelectors. */
 public interface GenericFieldSelector {
 
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
-
   String getParamName();
 
   FieldModel getLastField();

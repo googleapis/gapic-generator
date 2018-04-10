@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -27,7 +27,6 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Model;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,8 +38,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
+  private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String GRPC_STUB_TEMPLATE_FILENAME = "java/grpc_stub.snip";
+  private static final String GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME =
+      "java/grpc_callable_factory.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
@@ -56,18 +58,24 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
     return Arrays.asList(
         API_TEMPLATE_FILENAME,
         SETTINGS_TEMPLATE_FILENAME,
+        STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
         GRPC_STUB_TEMPLATE_FILENAME,
+        GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer surfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper, packageMetadataConfig, this, GRPC_STUB_TEMPLATE_FILENAME);
-    return surfaceTransformer.transform(new ProtoApiModel(model), productConfig);
+            pathMapper,
+            packageMetadataConfig,
+            this,
+            GRPC_STUB_TEMPLATE_FILENAME,
+            GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME);
+    return surfaceTransformer.transform(model, productConfig);
   }
 
   @Override

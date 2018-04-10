@@ -209,11 +209,9 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
 description = 'PROTO library for proto-google-common-protos'
-group = "com.google.api.grpc"
+group = 'com.google.api.grpc'
 version = "0.1.7"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -224,16 +222,14 @@ repositories {
 }
 
 dependencies {
-  compile "com.google.protobuf:protobuf-java:3.0.0"
-}
-
-ext {
-  packageName = 'proto-google-common-protos'
-  javaDocRoot = projectDir.getAbsolutePath() + '/tmp_gh-pages'
+  compile 'com.google.protobuf:protobuf-java:3.0.0'
 }
 
 sourceSets {
   main {
+    resources {
+      srcDir 'src/main/proto'
+    }
     java {
       srcDir 'src/main/java'
     }
@@ -254,117 +250,5 @@ artifacts {
   archives javadocJar, sourcesJar
 }
 
-signing {
-  required false
-  sign configurations.archives
-}
-
-if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        pom.project {
-          name "com.google.api.grpc:proto-google-common-protos"
-          description project.description
-          url 'https://github.com/googleapis/googleapis'
-          scm {
-            url 'https://github.com/googleapis/googleapis'
-            connection 'scm:git:https://github.com/googleapis/googleapis'
-          }
-
-          licenses {
-            license {
-              name 'Apache-2.0'
-              url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-            }
-          }
-
-          developers {
-            developer {
-              id 'Google LLC'
-              name 'Google LLC'
-              email 'googleapis-packages@google.com'
-              url 'https://github.com/googleapis/googleapis'
-              organization 'Google LLC'
-              organizationUrl 'https://www.google.com'
-            }
-          }
-        }
-      }
-    }
-  }
-} else {
-  task failUploadArchives << {
-    throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
-      + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
-  }
-  tasks.uploadArchives.dependsOn(failUploadArchives)
-}
-
-task checkOutGhPages << {
-  if (!new File(javaDocRoot).exists()) {
-    exec {
-      workingDir projectDir
-      commandLine 'git', 'clone', '--branch', 'gh-pages',
-          '--single-branch', 'git@github.com:googleapis/googleapis.git', 'tmp_gh-pages'
-    }
-  }
-}
-
-task copyFilesToGhPages {
-  dependsOn 'checkOutGhPages'
-  dependsOn 'javadoc'
-  doLast {
-    def newSiteDirPath = javaDocRoot + "/java/${packageName}/${project.version}/apidocs/"
-    new File(newSiteDirPath).mkdirs()
-    copy {
-      from 'build/docs/javadoc'
-      into newSiteDirPath
-    }
-  }
-}
-
-// Regenerates the gh-pages branch under tmp_gh-pages
-task updateDocs {
-  dependsOn 'copyFilesToGhPages'
-  doLast {
-    def outputContent = new File(projectDir.getAbsolutePath() + '/templates/apidocs_index.html.template').text
-    outputContent = outputContent.replace('{{siteVersion}}', project.version)
-    outputContent = outputContent.replace('{{packageName}}', packageName)
-    new File(javaDocRoot + "/java/${packageName}/apidocs").mkdirs()
-    new File(javaDocRoot + "/java/${packageName}/apidocs/index.html").write(outputContent)
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'add', '.'
-    }
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'commit', '-m', "Regenerating docs for ${packageName} ${project.version}"
-    }
-    println 'New docs have been generated under tmp_gh-pages and have been committed;'
-    println 'Next they just need to be pushed with "git push".'
-  }
-}
-
-// Regenerates and push the gh-pages branch under tmp_gh-pages
-task updateAndPushDocs {
-  dependsOn 'updateDocs'
-  doLast {
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'push'
-      println "New docs have been pushed to Github for ${packageName} ${project.version}"
-    }
-  }
-}
-
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'

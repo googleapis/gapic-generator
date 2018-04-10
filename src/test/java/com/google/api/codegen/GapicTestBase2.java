@@ -24,7 +24,6 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -124,15 +123,15 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .enabledArtifacts(Arrays.asList("surface", "test", "sample_app"))
+            .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
-    List<GapicProvider<? extends Object>> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig, "");
+            model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
-    for (GapicProvider<? extends Object> provider : providers) {
-      snippetNames.addAll(provider.getSnippetFileNames());
+    for (GapicProvider<?> provider : providers) {
+      snippetNames.addAll(provider.getInputFileNames());
     }
 
     String baseline = idForFactory + "_" + apiName + ".baseline";
@@ -148,7 +147,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   }
 
   @Override
-  public Map<String, Doc> run() {
+  public Map<String, ?> run() throws IOException {
     model.establishStage(Merged.KEY);
     if (model.getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
@@ -167,7 +166,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test", "sample_app"));
+      enabledArtifacts.addAll(Arrays.asList("surface", "test"));
     }
 
     GapicGeneratorConfig generatorConfig =
@@ -175,43 +174,31 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(enabledArtifacts)
             .build();
-    List<GapicProvider<? extends Object>> providers =
+    List<GapicProvider<?>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig, "");
-
-    List<String> disabledGen = new ArrayList<>(snippetNames);
-    for (GapicProvider<? extends Object> provider : providers) {
-      disabledGen.removeAll(provider.getSnippetFileNames());
-    }
-    for (String gen : disabledGen) {
-      testOutput().printf("%s generation is not enabled for this test case.\n", gen);
-    }
+            model, productConfig, generatorConfig, packageConfig);
 
     // Don't run any providers we're not testing.
-    ArrayList<GapicProvider<? extends Object>> testedProviders = new ArrayList<>();
-    for (GapicProvider<? extends Object> provider : providers) {
-      if (!Collections.disjoint(provider.getSnippetFileNames(), snippetNames)) {
+    ArrayList<GapicProvider<?>> testedProviders = new ArrayList<>();
+    for (GapicProvider<?> provider : providers) {
+      if (!Collections.disjoint(provider.getInputFileNames(), snippetNames)) {
         testedProviders.add(provider);
       }
     }
 
-    boolean reportDiag = false;
-    Map<String, Doc> output = new TreeMap<>();
-    for (GapicProvider<? extends Object> provider : testedProviders) {
-      Map<String, Doc> out = provider.generate();
-      if (output == null) {
-        reportDiag = true;
-      } else {
-        if (!Collections.disjoint(out.keySet(), output.keySet())) {
-          throw new IllegalStateException("file conflict");
-        }
-        output.putAll(out);
-      }
-    }
+    Map<String, Object> output = new TreeMap<>();
+    for (GapicProvider<?> provider : testedProviders) {
+      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
 
-    if (reportDiag) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
-        testOutput().println(diag.toString());
+      if (!Collections.disjoint(out.keySet(), output.keySet())) {
+        throw new IllegalStateException("file conflict");
+      }
+      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
+        Object value =
+            (entry.getValue().getBody() instanceof byte[])
+                ? "Static or binary file content is not shown."
+                : entry.getValue().getBody();
+        output.put(entry.getKey(), value);
       }
     }
 

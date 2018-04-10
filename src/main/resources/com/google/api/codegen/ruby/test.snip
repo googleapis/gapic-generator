@@ -559,7 +559,7 @@
 @end
 
 @private expectedValue(assert)
-  @if assert.hasMessageTypeName
+  @if and(assert.hasMessageTypeName, not(assert.isMap))
     Google::Gax::to_proto({@assert.expectedValueIdentifier}, {@assert.messageTypeName})
   @else
     {@assert.expectedValueIdentifier}
@@ -571,12 +571,12 @@
   @case "0"
     response = client.{@test.clientMethodName}
   @case "1"
-    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
   @case "2"
-    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
   @default
     response = client.{@test.clientMethodName}(
-      {@multilineArgList(test.initCode.fieldSettings)}
+      {@multilineArgList(test.initCode)}
     )
   @end
 @end
@@ -586,12 +586,12 @@
   @case "0"
     client.{@test.clientMethodName}
   @case "1"
-    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
   @case "2"
-    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
   @default
     client.{@test.clientMethodName}(
-      {@multilineArgList(test.initCode.fieldSettings)}
+      {@multilineArgList(test.initCode)}
     )
   @end
 @end
@@ -604,14 +604,16 @@
   @end
 @end
 
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
+@private multilineArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ",".add(BREAK)
     {@fieldSetting.identifier}
   @end
-@end
-
-@private multilineArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ",".add(BREAK)
-    {@fieldSetting.identifier}
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@BREAK}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ",".add(BREAK)
+      {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+    @end
   @end
 @end

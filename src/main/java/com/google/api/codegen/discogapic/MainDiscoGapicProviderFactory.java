@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -21,11 +22,13 @@ import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestT
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,13 +40,13 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
   public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<DiscoGapicProvider> defaultCreate(
-      Document document,
+  public static List<GapicProvider<?>> defaultCreate(
+      DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<DiscoGapicProvider> providers = new ArrayList<>();
+    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
@@ -62,13 +65,33 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
         DiscoGapicProvider provider =
             DiscoGapicProvider.newBuilder()
-                .setDocument(document)
+                .setDiscoApiModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
                 .setDocumentToViewTransformers(transformers)
                 .build();
 
         providers.add(provider);
+      }
+
+      if (generatorConfig.enableTestGenerator()) {
+        GapicCodePathMapper javaTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/test/java")
+                .setShouldAppendPackage(true)
+                .build();
+        GapicProvider<?> testProvider =
+            ViewModelDiscoGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        "java/http_test.snip"))
+                .build();
+        providers.add(testProvider);
       }
       return providers;
 
@@ -79,11 +102,11 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   /** Create the DiscoGapicProvider based on the given id */
   @Override
-  public List<DiscoGapicProvider> create(
-      Document document,
+  public List<GapicProvider<?>> create(
+      DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
-    return defaultCreate(document, productConfig, generatorConfig, packageConfig);
+    return defaultCreate(model, productConfig, generatorConfig, packageConfig);
   }
 }

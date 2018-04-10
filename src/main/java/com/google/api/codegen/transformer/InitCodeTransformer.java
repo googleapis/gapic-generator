@@ -32,7 +32,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
-import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitValueView;
@@ -47,11 +46,13 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,14 +64,34 @@ import java.util.stream.StreamSupport;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
+  private static final String FORMAT_SPEC_PLACEHOLDER = "FORMAT_SPEC_PLACEHOLDER";
+
+  // Note: Markdown backticks for code reference should be converted to an idiomatic representation
+  // by the language-appropriate CommentReformatter when this String is formatted.
+  private static final String UNINITIALIZED_REQUIRED_FIELD_COMMENT = "TODO: Initialize `%s`:";
+
   private final ImportSectionTransformer importSectionTransformer;
 
+  // Whether the initialization code should include user-facing comments like TODOs. This should be
+  // false if the initialization code is being used to generate tests, rather than code samples.
+  private final boolean generateUserFacingComments;
+
   public InitCodeTransformer() {
-    this(new StandardImportSectionTransformer());
+    this(new StandardImportSectionTransformer(), true);
   }
 
   public InitCodeTransformer(ImportSectionTransformer importSectionTransformer) {
+    this(importSectionTransformer, true);
+  }
+
+  public InitCodeTransformer(boolean generateUserFacingComments) {
+    this(new StandardImportSectionTransformer(), generateUserFacingComments);
+  }
+
+  public InitCodeTransformer(
+      ImportSectionTransformer importSectionTransformer, boolean generateUserFacingComments) {
     this.importSectionTransformer = importSectionTransformer;
+    this.generateUserFacingComments = generateUserFacingComments;
   }
 
   /** Generates initialization code from the given MethodContext and InitCodeContext objects. */
@@ -82,29 +103,6 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
-  }
-
-  /** Generates initialization code from the given MethodContext and InitCodeContext objects. */
-  public InitCodeView generateInitCode(
-      DiscoGapicMethodContext methodContext, InitCodeContext initCodeContext) {
-    // TODO(andrealin): Implementation.
-    return InitCodeView.newBuilder()
-        .apiFileName("apiFileName")
-        .fieldSettings(new LinkedList<>())
-        .optionalFieldSettings(new ArrayList<>())
-        .requiredFieldSettings(new ArrayList<>())
-        .importSection(
-            ImportSectionView.newBuilder()
-                .appImports(new LinkedList<>())
-                .externalImports(new LinkedList<>())
-                .serviceImports(new LinkedList<>())
-                .standardImports(new LinkedList<>())
-                .build())
-        .lines(new LinkedList<>())
-        .topLevelLines(new LinkedList<>())
-        .versionIndexFileImportName("versionIndexFileImportName")
-        .topLevelIndexFileImportName("topLevelIndexFileImportName")
-        .build();
   }
 
   public InitCodeContext createRequestInitCodeContext(
@@ -156,12 +154,29 @@ public class InitCodeTransformer {
           expectedTransformFunction = namer.getToStringMethod();
           actualTransformFunction = namer.getToStringMethod();
         } else if (fieldConfig.requiresParamTransformation()) {
-          expectedTransformFunction =
-              namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+          if (methodContext.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+            expectedTransformFunction = namer.getToStringMethod();
+          } else {
+            expectedTransformFunction =
+                namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+          }
+        } else if (methodContext.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+          if (fieldConfig.getField().isRepeated()) {
+            actualTransformFunction =
+                namer.getResourceTypeParseListMethodName(methodContext.getTypeTable(), fieldConfig);
+          } else if (fieldConfig.getResourceNameConfig().getResourceNameType()
+              == ResourceNameType.ONEOF) {
+            actualTransformFunction =
+                namer.getResourceTypeParentParseMethod(methodContext.getTypeTable(), fieldConfig);
+          } else {
+            actualTransformFunction =
+                namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);
+          }
         }
       }
 
-      boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
+      boolean isMap = fieldConfig.getField().isMap();
+      boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
 
       String enumTypeName = null;
       TypeModel fieldType = fieldItemTree.getType();
@@ -179,6 +194,7 @@ public class InitCodeTransformer {
               expectedValueIdentifier,
               expectedTransformFunction,
               actualTransformFunction,
+              isMap,
               isArray,
               getterMethod,
               enumTypeName,
@@ -210,12 +226,14 @@ public class InitCodeTransformer {
       String expected,
       String expectedTransformFunction,
       String actualTransformFunction,
+      boolean isMap,
       boolean isArray,
       String actual,
       String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .isMap(isMap)
         .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)
@@ -271,20 +289,20 @@ public class InitCodeTransformer {
       MethodContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
-      surfaceLines.add(generateSurfaceInitCodeLine(context, item));
+      surfaceLines.add(generateSurfaceInitCodeLine(context, item, surfaceLines.isEmpty()));
     }
     return surfaceLines;
   }
 
   private InitCodeLineView generateSurfaceInitCodeLine(
-      MethodContext context, InitCodeNode specItemNode) {
+      MethodContext context, InitCodeNode specItemNode, boolean isFirstItem) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
         return generateStructureInitCodeLine(context, specItemNode);
       case ListInitLine:
         return generateListInitCodeLine(context, specItemNode);
       case SimpleInitLine:
-        return generateSimpleInitCodeLine(context, specItemNode);
+        return generateSimpleInitCodeLine(context, specItemNode, isFirstItem);
       case MapInitLine:
         return generateMapInitCodeLine(context, specItemNode);
       default:
@@ -292,7 +310,8 @@ public class InitCodeTransformer {
     }
   }
 
-  private InitCodeLineView generateSimpleInitCodeLine(MethodContext context, InitCodeNode item) {
+  private InitCodeLineView generateSimpleInitCodeLine(
+      MethodContext context, InitCodeNode item, boolean isFirstItem) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
     FieldConfig fieldConfig = item.getFieldConfig();
 
@@ -300,7 +319,7 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         // In a non-flattened context, we always use the resource name type set on the message
         // instead of set on the flattened method
@@ -316,7 +335,7 @@ public class InitCodeTransformer {
     }
 
     surfaceLine.identifier(getVariableName(context, item));
-    surfaceLine.initValue(getInitValue(context, item));
+    setInitValueAndComments(surfaceLine, context, item, isFirstItem);
 
     return surfaceLine.build();
   }
@@ -347,7 +366,7 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.ListInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       surfaceLine.elementTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
     } else {
       surfaceLine.elementTypeName(
@@ -358,7 +377,7 @@ public class InitCodeTransformer {
     List<InitCodeLineView> elements = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
       entries.add(namer.localVarName(child.getIdentifier()));
-      elements.add(generateSurfaceInitCodeLine(context, child));
+      elements.add(generateSurfaceInitCodeLine(context, child, elements.isEmpty()));
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
@@ -374,15 +393,15 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.MapInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField()));
-    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueField()));
+    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyType()));
+    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueType()));
 
     List<MapEntryView> entries = new ArrayList<>();
     for (Map.Entry<String, InitCodeNode> entry : item.getChildren().entrySet()) {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
-      mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyField(), entry.getKey()));
+      mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyType(), entry.getKey()));
       mapEntry.valueString(context.getNamer().localVarName(entry.getValue().getIdentifier()));
-      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue()));
+      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue(), entries.isEmpty()));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
@@ -390,13 +409,21 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitValueView getInitValue(MethodContext context, InitCodeNode item) {
+  private void setInitValueAndComments(
+      SimpleInitCodeLineView.Builder surfaceLine,
+      MethodContext context,
+      InitCodeNode item,
+      boolean isFirstItem) {
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
     InitValueConfig initValueConfig = item.getInitValueConfig();
     FieldConfig fieldConfig = item.getFieldConfig();
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    // Output variables
+    InitValueView initValue;
+    String comment = "";
+
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
         if (messageResNameConfig == null
@@ -408,69 +435,91 @@ public class InitCodeTransformer {
         }
       }
       if (item.getType().isRepeated()) {
-        return RepeatedResourceNameInitValueView.newBuilder()
-            .resourceTypeName(
-                namer.getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig))
-            .build();
-      }
-      SingleResourceNameConfig singleResourceNameConfig;
-      switch (fieldConfig.getResourceNameType()) {
-        case ANY:
-          // TODO(michaelbausor): handle case where there are no other resource names at all...
-          singleResourceNameConfig =
-              Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
-          FieldConfig anyResourceNameFieldConfig =
-              fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-          return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item).build();
-        case FIXED:
-          throw new UnsupportedOperationException("entity name invalid");
-        case ONEOF:
-          ResourceNameOneofConfig oneofConfig =
-              (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-          singleResourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
-          FieldConfig singleResourceNameFieldConfig =
-              fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-          ResourceNameInitValueView initView =
-              createResourceNameInitValueView(context, singleResourceNameFieldConfig, item).build();
-          return ResourceNameOneofInitValueView.newBuilder()
-              .resourceOneofTypeName(
-                  namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
-              .specificResourceNameView(initView)
-              .build();
-        case SINGLE:
-          return createResourceNameInitValueView(context, fieldConfig, item).build();
-        case NONE:
-        default:
-          throw new UnsupportedOperationException("unexpected entity name type");
+        initValue =
+            RepeatedResourceNameInitValueView.newBuilder()
+                .resourceTypeName(
+                    namer.getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig))
+                .build();
+      } else {
+        SingleResourceNameConfig singleResourceNameConfig;
+        switch (fieldConfig.getResourceNameType()) {
+          case ANY:
+            // TODO(michaelbausor): handle case where there are no other resource names at all...
+            singleResourceNameConfig =
+                Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
+            FieldConfig anyResourceNameFieldConfig =
+                fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+            initValue =
+                createResourceNameInitValueView(context, anyResourceNameFieldConfig, item).build();
+            break;
+          case FIXED:
+            throw new UnsupportedOperationException("entity name invalid");
+          case ONEOF:
+            ResourceNameOneofConfig oneofConfig =
+                (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
+            singleResourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
+            FieldConfig singleResourceNameFieldConfig =
+                fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+            ResourceNameInitValueView initView =
+                createResourceNameInitValueView(context, singleResourceNameFieldConfig, item)
+                    .build();
+            initValue =
+                ResourceNameOneofInitValueView.newBuilder()
+                    .resourceOneofTypeName(
+                        namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
+                    .specificResourceNameView(initView)
+                    .build();
+            break;
+          case SINGLE:
+            initValue = createResourceNameInitValueView(context, fieldConfig, item).build();
+            break;
+          case NONE:
+            // Fall-through
+          default:
+            throw new UnsupportedOperationException(
+                "unexpected entity name type '" + fieldConfig.getResourceNameType() + "'");
+        }
       }
     } else if (initValueConfig.hasFormattingConfig() && !item.getType().isRepeated()) {
       if (context.getFeatureConfig().enableStringFormatFunctions()
           || fieldConfig.getResourceNameConfig() == null) {
-        FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
+        FormattedInitValueView.Builder formattedInitValue = FormattedInitValueView.newBuilder();
 
-        initValue.apiWrapperName(
+        formattedInitValue.apiWrapperName(
             context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
-        initValue.fullyQualifiedApiWrapperName(
+        formattedInitValue.fullyQualifiedApiWrapperName(
             context.getNamer().getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
-        initValue.formatFunctionName(
+        formattedInitValue.formatFunctionName(
             context
                 .getNamer()
                 .getFormatFunctionName(
                     context.getInterfaceConfig(), initValueConfig.getSingleResourceNameConfig()));
 
+        PathTemplate template = initValueConfig.getSingleResourceNameConfig().getNameTemplate();
+        String[] encodeArgs = new String[template.vars().size()];
+        Arrays.fill(encodeArgs, FORMAT_SPEC_PLACEHOLDER);
+        // Format spec usually contains reserved character, escaped by path template.
+        // So we first encode using FORMAT_SPEC_PLACEHOLDER, then do straight string replace.
+        formattedInitValue.formatSpec(
+            template
+                .withoutVars()
+                .encode(encodeArgs)
+                .replace(FORMAT_SPEC_PLACEHOLDER, context.getNamer().formatSpec()));
+
         List<String> varList =
             Lists.newArrayList(
                 initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
-        initValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
+        formattedInitValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 
-        return initValue.build();
+        initValue = formattedInitValue.build();
       } else {
-        return createResourceNameInitValueView(context, fieldConfig, item)
-            .convertToString(true)
-            .build();
+        initValue =
+            createResourceNameInitValueView(context, fieldConfig, item)
+                .convertToString(true)
+                .build();
       }
     } else {
-      SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
+      SimpleInitValueView.Builder simpleInitValue = SimpleInitValueView.newBuilder();
 
       if (initValueConfig.hasSimpleInitialValue()) {
         String value = initValueConfig.getInitialValue().getValue();
@@ -486,19 +535,30 @@ public class InitCodeTransformer {
             value = context.getNamer().injectRandomStringGeneratorCode(value);
             break;
           case Variable:
-            value = context.getNamer().localVarName(Name.anyLower(value));
+            value = context.getNamer().localVarReference(Name.anyLower(value));
             break;
           default:
             throw new IllegalArgumentException("Unhandled init value type");
         }
-        initValue.initialValue(value);
+        simpleInitValue.initialValue(value);
       } else {
-        initValue.initialValue(
+        simpleInitValue.initialValue(
             context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(item.getType()));
-        initValue.isRepeated(item.getType().isRepeated());
+        simpleInitValue.isRepeated(item.getType().isRepeated());
+        if (isRequired(item.getFieldConfig(), context)) {
+          String name = getVariableName(context, item);
+          comment = String.format(UNINITIALIZED_REQUIRED_FIELD_COMMENT, name);
+        }
       }
 
-      return initValue.build();
+      initValue = simpleInitValue.build();
+    }
+    surfaceLine.initValue(initValue);
+    surfaceLine.needsLeadingNewline(!isFirstItem);
+    if (generateUserFacingComments) {
+      surfaceLine.doc(context.getNamer().getDocLines(comment));
+    } else {
+      surfaceLine.doc(ImmutableList.of());
     }
   }
 
@@ -549,15 +609,12 @@ public class InitCodeTransformer {
       MethodContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
-    Set<String> requiredFieldSimpleNames =
-        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
-            .map(FieldModel::getSimpleName)
-            .collect(Collectors.toSet());
+
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       FieldConfig fieldConfig = item.getFieldConfig();
 
-      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (context.getFeatureConfig().useResourceNameProtoAccessor(fieldConfig)) {
         fieldSetting.fieldSetFunction(
             namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
@@ -570,7 +627,7 @@ public class InitCodeTransformer {
           namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getVarName())));
 
       fieldSetting.identifier(getVariableName(context, item));
-      fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
+      fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item, allSettings.isEmpty()));
       fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getVarName())));
 
       fieldSetting.isMap(item.getType().isMap());
@@ -583,16 +640,53 @@ public class InitCodeTransformer {
                 .variantType(namer.getOneofVariantTypeName(item.getOneofConfig()))
                 .build());
       }
-      fieldSetting.required(
-          fieldConfig != null
-              && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName()));
+      fieldSetting.required(isRequired(fieldConfig, context));
+
+      String formatMethodName = "";
+      String transformParamFunctionName = "";
+
+      // If resource name converters should only be used in the sample, we need to convert the
+      // resource name to a string before passing it or setting it on the next thing
+      boolean needsConversion =
+          context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig);
+      // If resource name converters should be used and this is not a flattened method context
+      // (i.e. it is for setting fields on a proto object), we need to convert the resource name
+      // to a string.
+      // For flattened method contexts, if the resource names are used in more than just the sample
+      // (i.e. in the flattened method signature), then we don't convert (that will be done in the
+      // flattened method implementation when setting fields on the proto object).
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)
+          && !context.isFlattenedMethodContext()) {
+        needsConversion = true;
+      }
+      if (needsConversion) {
+        if (fieldConfig.getField().isRepeated()) {
+          // TODO (https://github.com/googleapis/toolkit/issues/1806) support repeated one-ofs
+          transformParamFunctionName =
+              namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
+        } else {
+          formatMethodName = namer.getResourceNameFormatMethodName();
+        }
+      }
+      fieldSetting.transformParamFunctionName(transformParamFunctionName);
+      fieldSetting.formatMethodName(formatMethodName);
       allSettings.add(fieldSetting.build());
     }
     return allSettings;
   }
 
+  /** Determines whether a field is required */
+  private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
+    Set<String> requiredFieldSimpleNames =
+        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
+            .map(FieldModel::getSimpleName)
+            .collect(Collectors.toSet());
+    return fieldConfig != null
+        && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName());
+  }
+
   private static String getVariableName(MethodContext context, InitCodeNode item) {
-    if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
+    if (!context.getFeatureConfig().useResourceNameFormatOptionInSample(item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

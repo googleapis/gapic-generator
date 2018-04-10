@@ -14,24 +14,14 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_MAX_RESULTS;
-import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_NEXT_PAGE_TOKEN;
-import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_PAGE_TOKEN;
-
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.LinkedList;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** PageStreamingConfig represents the page streaming configuration for a method. */
@@ -125,120 +115,6 @@ public abstract class PageStreamingConfig {
     }
     return new AutoValue_PageStreamingConfig(
         requestTokenField, pageSizeField, responseTokenField, resourcesFieldConfig);
-  }
-
-  /**
-   * Creates an instance of PageStreamingConfig based on Discovery Doc, linking it up with the
-   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
-   * collector.
-   *
-   * @param method Method descriptor for the method to create config for.
-   */
-  @Nullable
-  // TODO(andrealin): Merge this function into the createPageStreaming(... Method protoMethod) function.
-  static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector,
-      com.google.api.codegen.discovery.Method method,
-      DiscoGapicNamer discoGapicNamer) {
-    Schema requestTokenField = method.parameters().get(PARAMETER_PAGE_TOKEN);
-    if (requestTokenField == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Request field missing for page streaming: method = %s, message type = %s, field = %s",
-              method.id(),
-              method.id(),
-              PARAMETER_PAGE_TOKEN));
-    }
-
-    Schema pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
-    if (pageSizeField != null) {
-      pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
-      if (pageSizeField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Request field missing for page streaming: method = %s, message type = %s, field = %s",
-                method.id(),
-                method.id(),
-                PARAMETER_MAX_RESULTS));
-      }
-    }
-
-    Schema responseTokenField = null;
-    Schema responseSchema = method.response().dereference();
-    if (responseSchema.hasProperty(PARAMETER_NEXT_PAGE_TOKEN)) {
-      responseTokenField = responseSchema.properties().get(PARAMETER_NEXT_PAGE_TOKEN);
-    }
-
-    if (responseTokenField == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Response field missing for page streaming: method = %s, message type = %s, field = %s",
-              method.id(),
-              method.id(),
-              PARAMETER_NEXT_PAGE_TOKEN));
-    }
-
-    Schema responseField = method.response().dereference();
-    ImmutableList<FieldModel> resourcesFieldPath =
-        ImmutableList.copyOf(getResourcesGetterPath(responseField, discoGapicNamer));
-
-    FieldConfig resourcesFieldConfig;
-    if (resourcesFieldPath.isEmpty()) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Resources field missing for page streaming: method = %s, message type = %s, response field = %s",
-              method.id(),
-              method.id(),
-              method.response() == null ? "null" : method.response().toString()));
-      resourcesFieldConfig = null;
-    } else {
-      FieldModel resourcesField = resourcesFieldPath.get(resourcesFieldPath.size() - 1);
-      resourcesFieldConfig =
-          FieldConfig.createFieldConfig(resourcesField, ImmutableList.copyOf(resourcesFieldPath));
-    }
-
-    if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
-      return null;
-    }
-    return new AutoValue_PageStreamingConfig(
-        DiscoveryField.create(requestTokenField, discoGapicNamer),
-        DiscoveryField.create(pageSizeField, discoGapicNamer),
-        DiscoveryField.create(responseTokenField, discoGapicNamer),
-        resourcesFieldConfig);
-  }
-
-  private static List<FieldModel> getResourcesGetterPath(
-      Schema responseField, DiscoGapicNamer namer) {
-    List<FieldModel> resourcesFieldPath = new LinkedList<>();
-    for (Schema property : responseField.properties().values()) {
-      // Assume the List response has exactly one Array property.
-      if (property.type().equals(Type.ARRAY)) {
-        resourcesFieldPath.add(DiscoveryField.create(property, namer));
-        break;
-      } else if (property.additionalProperties() != null
-          && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
-        Schema additionalProperties = property.additionalProperties().dereference();
-        if (additionalProperties.type().equals(Type.ARRAY)) {
-          resourcesFieldPath.add(DiscoveryField.create(additionalProperties, namer));
-          break;
-        }
-        for (Schema subProperty : additionalProperties.properties().values()) {
-          if (subProperty.type().equals(Type.ARRAY)) {
-            resourcesFieldPath.add(DiscoveryField.create(property, namer));
-            resourcesFieldPath.add(DiscoveryField.create(subProperty, namer));
-            break;
-          }
-        }
-        if (!resourcesFieldPath.isEmpty()) {
-          break;
-        }
-      }
-    }
-    return resourcesFieldPath;
   }
 
   /** Returns whether there is a field for page size. */

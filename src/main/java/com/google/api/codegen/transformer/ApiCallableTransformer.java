@@ -14,14 +14,19 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -216,6 +221,24 @@ public class ApiCallableTransformer {
       httpMethodView.pathParams(pathParams);
       httpMethodView.queryParams(queryParams);
       httpMethodView.pathTemplate(method.path());
+
+      // TODO(andrealin): handle multiple resource names.
+      DiscoGapicInterfaceConfig interfaceConfig =
+          (DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig();
+      SingleResourceNameConfig nameConfig =
+          interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
+      httpMethodView.resourceNameTypeName(
+          context.getNamer().publicClassName(DiscoGapicParser.getResourceNameName(nameConfig)));
+      // Find the field with the resource name config.
+      for (FieldConfig fieldConfig : context.getMethodConfig().getRequiredFieldConfigs()) {
+        if (fieldConfig.getResourceNameConfig() != null
+            && fieldConfig.getResourceNameConfig().equals(nameConfig)) {
+          httpMethodView.resourceNameFieldName(
+              context
+                  .getNamer()
+                  .privateFieldName(Name.anyCamel(fieldConfig.getField().getNameAsParameter())));
+        }
+      }
       return httpMethodView.build();
     } else {
       return null;
@@ -282,6 +305,7 @@ public class ApiCallableTransformer {
     settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
     settings.retryParamsView(retryParamsByKey.get(methodConfig.getRetrySettingsConfigName()));
+    settings.visibility(namer.getVisiblityKeyword(methodConfig.getVisibility()));
 
     String notImplementedPrefix = "ApiCallableTransformer.generateApiCallableSettings - ";
     settings.resourceTypeName(
@@ -367,11 +391,9 @@ public class ApiCallableTransformer {
       methodDescriptorBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     }
 
-    methodDescriptorBuilder.requestTypeName(
-        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    methodDescriptorBuilder.responseTypeName(
-        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    methodDescriptorBuilder.hasResponse(method.hasReturnValue());
+    methodDescriptorBuilder.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    methodDescriptorBuilder.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
+    methodDescriptorBuilder.hasResponse(!method.isOutputTypeEmpty());
     methodDescriptorBuilder.name(namer.getMethodDescriptorName(method));
     methodDescriptorBuilder.protoMethodName(method.getSimpleName());
     methodDescriptorBuilder.fullServiceName(context.getTargetInterface().getFullName());

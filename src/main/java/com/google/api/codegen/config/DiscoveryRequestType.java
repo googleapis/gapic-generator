@@ -21,6 +21,7 @@ import java.util.List;
 @AutoValue
 public abstract class DiscoveryRequestType implements TypeModel {
 
+  // TODO(andrealin): store the created request types in the root ApiModel so they don't get duplicated.
   public static DiscoveryRequestType create(DiscoveryMethodModel method) {
     return newBuilder().typeName("message").parentMethod(method).build();
   }
@@ -36,13 +37,13 @@ public abstract class DiscoveryRequestType implements TypeModel {
 
   /* @return the resource type of the map key. */
   @Override
-  public FieldModel getMapKeyField() {
+  public TypeModel getMapKeyType() {
     return null;
   }
 
   /* @return the resource type of the map value. */
   @Override
-  public FieldModel getMapValueField() {
+  public TypeModel getMapValueType() {
     return null;
   }
 
@@ -78,8 +79,19 @@ public abstract class DiscoveryRequestType implements TypeModel {
   public void validateValue(String value) {}
 
   @Override
-  public List<? extends FieldModel> getFields() {
+  public List<DiscoveryField> getFields() {
     return parentMethod().getInputFields();
+  }
+
+  @Override
+  public DiscoveryField getField(String key) {
+    for (DiscoveryField field : getFields()) {
+      // Just check each field's name without recursively searching inside each field.
+      if (field.getNameAsParameter().equals(key)) {
+        return field;
+      }
+    }
+    return null;
   }
 
   @Override

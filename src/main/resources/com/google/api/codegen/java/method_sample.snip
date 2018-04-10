@@ -31,7 +31,7 @@
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
     for ({@apiMethod.listMethod.resourceTypeName} element : \
-        response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}()) {
+        {@resourceListGetCall(apiMethod)}) {
       // doThingsWith(element);
     }
     String nextPageToken = response.getNextPageToken();
@@ -41,6 +41,15 @@
       break;
     }
   }
+@end
+
+@snippet resourceListGetCall(apiMethod)
+  @if apiMethod.unpagedListCallableMethod.resourceListParseFunction
+    {@apiMethod.unpagedListCallableMethod.resourceListParseFunction}(\
+      response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}())
+  @else
+    response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}()
+  @end
 @end
 
 @snippet syncMethodSampleCode(apiMethod)
@@ -148,6 +157,6 @@
 
 @snippet sampleMethodCallArgList(fieldSettings)
   @join fieldSetting : fieldSettings on ", "
-    {@fieldSetting.identifier}
+    {@renderFieldSettingValue(fieldSetting)}
   @end
 @end

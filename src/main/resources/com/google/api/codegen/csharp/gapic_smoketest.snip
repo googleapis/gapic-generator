@@ -1,14 +1,15 @@
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
 
-
 # smoke: SmokeTestClassView
-# smoke.method: TestCaseView
+# smoke.apiMethod: StaticLangApiMethodView
 @snippet generate(smoke)
-    {@renderFileHeader(smoke.fileHeader)}
+    {@initialComments(smoke.fileHeader)}
 
     namespace {@smoke.fileHeader.packageName}.SmokeTests
     {
+        {@imports(smoke.fileHeader)}
+
         public class {@smoke.name}
         {
             public static int Main(string[] args)
@@ -28,7 +29,7 @@
                 {@smoke.apiClassName} client = {@smoke.apiClassName}.Create();
 
                 @if smoke.hasMethod
-                  {@methodCall(smoke.method)}
+                  {@methodCall(smoke.apiMethod)}
                 @else
                   // Add your method call here.
                 @end
@@ -42,27 +43,37 @@
 
 @end
 
-# method: TestCaseView
-@private methodCall(method)
+# method: StaticLangApiMethodView
+@private methodCall(apiMethod)
     // Initialize request argument(s)
-    {@topLevelInitCode(method.initCode)}
+    {@topLevelInitCode(apiMethod.initCode)}
 
     // Call API method
-    @switch method.clientMethodType
+    @switch apiMethod.type
     @case "PagedFlattenedMethod"
-        {@method.callerResponseTypeName} pagedResponse = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        {@apiMethod.responseTypeName} pagedResponse = client.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
         // Show the result
         foreach (var item in pagedResponse)
         {
             Console.WriteLine(item);
         }
+    @case "OperationFlattenedMethod"
+        {@apiMethod.operationMethod.clientReturnTypeName} operationResponse = client.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+        // Poll the operation until it's complete.
+        // This returns a new operation containing the result (or error).
+        operationResponse = operationResponse.PollUntilCompleted();
+        // Show the result
+        Console.WriteLine(operationResponse.Result);
     @case "FlattenedMethod"
-        @if method.hasReturnValue
-            {@method.callerResponseTypeName} response = client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+        @if apiMethod.hasReturnValue
+            {@apiMethod.responseTypeName} response = client.{@apiMethod.name}(\
+                {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
             // Show the result
             Console.WriteLine(response);
         @else
-            client.{@method.clientMethodName}({@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            client.{@apiMethod.name}({@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
         @end
     @end
 @end

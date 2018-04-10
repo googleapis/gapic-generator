@@ -14,18 +14,15 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGapicMethodConfig;
-
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -33,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -45,7 +43,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getRawName();
+    return getInterfaceNameOverride() != null ? getInterfaceNameOverride() : getRawName();
   }
 
   @Override
@@ -56,17 +54,12 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     return getInterfaceModel().getSimpleName();
   }
 
-  @Nullable
-  public abstract String getInterfaceNameOverride();
-
-  @Override
-  public boolean hasInterfaceNameOverride() {
-    return getInterfaceNameOverride() != null;
-  }
-
   @Override
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
+
+  // Mapping of a method to its main resource name.
+  public abstract Map<MethodConfig, SingleResourceNameConfig> methodToResourceNameMap();
 
   @Override
   public ImmutableList<FieldModel> getIamResources() {
@@ -74,35 +67,32 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   static DiscoGapicInterfaceConfig createInterfaceConfig(
-      Document document,
-      DiagCollector diagCollector,
+      DiscoApiModel model,
       String language,
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
-        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetryCodesDefinition(
+            model.getDiagCollector(), interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(
-            diagCollector, interfaceConfigProto);
+            model.getDiagCollector(), interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
     if (retryCodesDefinition != null && retrySettingsDefinition != null) {
       methodConfigMap =
           createMethodConfigMap(
-              document,
-              diagCollector,
+              model,
               language,
               interfaceConfigProto,
               messageConfigs,
               resourceNameConfigs,
               retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet(),
-              discoGapicNamer);
+              retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
@@ -116,8 +106,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
         ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
     for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
       if (!CONSTRUCTOR_PARAMS.contains(param)) {
-        diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
+        model
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
       }
     }
 
@@ -126,26 +118,42 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       String entityName = collectionConfigProto.getEntityName();
       ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
       if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Inconsistent configuration - single resource name %s specified for interface, "
-                    + " but was not found in GapicProductConfig configuration.",
-                entityName));
+        model
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "Inconsistent configuration - single resource name %s specified for interface, "
+                        + " but was not found in GapicProductConfig configuration.",
+                    entityName));
         return null;
       }
       resourcesBuilder.add((SingleResourceNameConfig) resourceName);
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
+    ImmutableMap.Builder<MethodConfig, SingleResourceNameConfig> methodToSingleResourceNameMap =
+        ImmutableMap.builder();
+    if (methodConfigs != null) {
+      for (MethodConfig methodConfig : methodConfigs) {
+        Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
+        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method);
+        for (SingleResourceNameConfig nameConfig : singleResourceNames) {
+          if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
+            methodToSingleResourceNameMap.put(methodConfig, nameConfig);
+          }
+        }
+      }
+    }
+
     String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
 
     String interfaceName =
         interfaceNameOverride != null
             ? interfaceNameOverride
-            : DiscoGapicNamer.getInterfaceName(interfaceConfigProto.getName()).toUpperCamel();
+            : DiscoGapicParser.getInterfaceName(interfaceConfigProto.getName()).toUpperCamel();
 
-    if (diagCollector.hasErrors()) {
+    if (model.getDiagCollector().hasErrors()) {
       return null;
     } else {
       return new AutoValue_DiscoGapicInterfaceConfig(
@@ -154,9 +162,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceName, document),
           interfaceNameOverride,
+          new DiscoInterfaceModel(interfaceName, model),
           smokeTestConfig,
+          methodToSingleResourceNameMap.build(),
           methodConfigMap,
           singleResourceNames);
     }
@@ -172,44 +181,43 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(
-      Document document,
-      DiagCollector diagCollector,
+      DiscoApiModel model,
       String language,
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      Method method = lookupMethod(document, methodConfigProto.getName());
+      Method method = lookupMethod(model.getDocument(), methodConfigProto.getName());
       if (method == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+        model
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
         continue;
       }
       DiscoGapicMethodConfig methodConfig =
-          createDiscoGapicMethodConfig(
-              diagCollector,
+          DiscoGapicMethodConfig.createDiscoGapicMethodConfig(
+              model,
               language,
               methodConfigProto,
               method,
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfigNames,
-              retryParamsConfigNames,
-              discoGapicNamer);
+              retryParamsConfigNames);
       if (methodConfig == null) {
         continue;
       }
       methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
     }
 
-    if (diagCollector.getErrorCount() > 0) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     } else {
       return methodConfigMapBuilder.build();

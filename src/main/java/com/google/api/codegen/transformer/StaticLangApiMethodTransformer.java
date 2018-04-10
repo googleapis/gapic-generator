@@ -174,9 +174,18 @@ public class StaticLangApiMethodTransformer {
             context.getFeatureConfig(),
             context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
+    String resourceListParseFunction = "";
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    if (context.getFeatureConfig().useResourceNameConverters(resourceFieldConfig)) {
+      resourceListParseFunction =
+          namer.getResourceTypeParseListMethodName(context.getTypeTable(), resourceFieldConfig);
+    }
+
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
             .resourceListGetFunction(getResourceListCallName)
+            .resourceListParseFunction(resourceListParseFunction)
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 
@@ -259,11 +268,14 @@ public class StaticLangApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generateRequestObjectAsyncMethod(MethodContext context) {
-    return generateRequestObjectAsyncMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+    return generateRequestObjectAsyncMethod(
+        context,
+        Collections.<ParamWithSimpleDoc>emptyList(),
+        ClientMethodType.AsyncRequestObjectCallSettingsMethod);
   }
 
   public StaticLangApiMethodView generateRequestObjectAsyncMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context, List<ParamWithSimpleDoc> additionalParams, ClientMethodType type) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -280,7 +292,7 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder);
     setStaticLangAsyncReturnTypeName(context, methodViewBuilder);
 
-    return methodViewBuilder.type(ClientMethodType.AsyncRequestObjectMethod).build();
+    return methodViewBuilder.type(type).build();
   }
 
   public StaticLangApiMethodView generateCallableMethod(MethodContext context) {
@@ -469,6 +481,8 @@ public class StaticLangApiMethodTransformer {
         method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
     methodViewBuilder.serviceRequestTypeName(requestTypeName);
     methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
+    methodViewBuilder.serviceConstructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
 
     setServiceResponseTypeName(context, methodViewBuilder);
 
@@ -489,7 +503,7 @@ public class StaticLangApiMethodTransformer {
       methodViewBuilder.hasReturnValue(
           !context.getMethodConfig().getLongRunningConfig().getReturnType().isEmptyType());
     } else {
-      methodViewBuilder.hasReturnValue(method.hasReturnValue());
+      methodViewBuilder.hasReturnValue(!method.isOutputTypeEmpty());
     }
     methodViewBuilder.headerRequestParams(
         headerRequestParamTransformer.generateHeaderRequestParams(context));
@@ -538,14 +552,11 @@ public class StaticLangApiMethodTransformer {
     }
 
     String iterateMethodName =
-        context
-            .getNamer()
-            .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+        namer.getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
 
-    String resourceFieldName = context.getNamer().getFieldName(resourceField);
-    List<String> resourceFieldGetFunctionNames =
-        resourceField.getPagedResponseResourceMethods(
-            context.getFeatureConfig(), resourceFieldConfig, context.getNamer());
+    String resourceFieldName = namer.getFieldName(resourceField);
+    String resourceFieldGetterName =
+        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceFieldConfig);
 
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
@@ -554,7 +565,7 @@ public class StaticLangApiMethodTransformer {
             .resourceTypeName(resourceTypeName)
             .iterateMethodName(iterateMethodName)
             .resourceFieldName(resourceFieldName)
-            .resourcesFieldGetFunctions(resourceFieldGetFunctionNames)
+            .resourcesFieldGetFunction(resourceFieldGetterName)
             .build());
 
     switch (synchronicity) {

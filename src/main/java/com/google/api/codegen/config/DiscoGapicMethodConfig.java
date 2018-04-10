@@ -23,7 +23,6 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
@@ -74,24 +73,25 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
    */
   @Nullable
   static DiscoGapicMethodConfig createDiscoGapicMethodConfig(
-      DiagCollector diagCollector,
+      DiscoApiModel apiModel,
       String language,
       MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
-    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, discoGapicNamer);
+    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, apiModel);
+    DiagCollector diagCollector = apiModel.getDiagCollector();
 
     PageStreamingConfig pageStreaming = null;
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(diagCollector, method, discoGapicNamer);
+          PageStreamingConfig.createPageStreaming(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (pageStreaming == null) {
         error = true;
       }
@@ -181,7 +181,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
-    sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;

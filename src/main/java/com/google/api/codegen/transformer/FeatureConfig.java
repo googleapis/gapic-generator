@@ -18,14 +18,54 @@ import com.google.api.codegen.config.FieldConfig;
 
 public interface FeatureConfig {
 
-  /** Returns true if generated types are supported for resource name fields. */
+  /** Returns true if generated types are supported for resource name fields for the given API. */
   boolean resourceNameTypesEnabled();
+
+  /** Returns true if the proto-generated types for the given API have resource name accessors. */
+  boolean resourceNameProtoAccessorsEnabled();
 
   /**
    * Returns true if resourceNameTypesEnabled() is true, and the field config provided has a
    * resource name format option, and is configured to use it.
    */
   boolean useResourceNameFormatOption(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if resourceNameTypesEnabled() is true, and the field config provided has a
+   * resource name format option, and is configured to use it in samples.
+   */
+  boolean useResourceNameFormatOptionInSample(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if useResourceNameFormatOption() and resourceNameProtoAccessorsEnabled() are true.
+   */
+  boolean useResourceNameProtoAccessor(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if useResourceNameFormatOption() is true but resourceNameProtoAccessorsEnabled()
+   * is false.
+   */
+  boolean useResourceNameConverters(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if useResourceNameFormatOptionInSample() is true but
+   * resourceNameProtoAccessorsEnabled() is false.
+   */
+  boolean useResourceNameConvertersInSample(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if useResourceNameFormatOptionInSampleOnly() is true but
+   * resourceNameProtoAccessorsEnabled() is false.
+   */
+  boolean useResourceNameConvertersInSampleOnly(FieldConfig fieldConfig);
+
+  /**
+   * Returns true if useResourceNameFormatOptionInSampleOnly() is true but
+   * resourceNameProtoAccessorsEnabled() is false.
+   */
+  boolean useResourceNameFormatOptionInSampleOnly(FieldConfig fieldConfig);
+
+  boolean useInheritanceForOneofs();
 
   /** Returns true if mixin APIs are supported. */
   boolean enableMixins();
