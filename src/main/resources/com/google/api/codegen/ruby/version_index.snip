@@ -98,12 +98,12 @@
 @private constants(index)
   @switch index.type.toString
   @case "TopLevelIndex"
-    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionFileBasePath}"))
+    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionDirBasePath}"))
 
     AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
       .select { |file| File.directory?(file) }
       .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-      .select { |dir| File.exist?(dir + ".rb") }
+      .select { |dir| File.exist?(dir + "{@index.postVersionDirPath}.rb") }
       .map { |dir| File.basename(dir) }
 
   @default
@@ -164,15 +164,27 @@
         "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
     end
 
-    require "#{FILE_DIR}/#{version.to_s.downcase}"
+    require "#{FILE_DIR}/#{version.to_s.downcase}{@postVersionDirPath(index)}"
     version_module = {@requireView.topLevelNamespace}
       .constants
       .select {|sym| sym.to_s.downcase == version.to_s.downcase}
       .first
     @if index.hasMultipleServices
-      {@requireView.topLevelNamespace}.const_get(version_module)::{@requireView.serviceName}.new(*args, **kwargs)
+      {@requireView.topLevelNamespace}.const_get(version_module){@postVersionNamespace(requireView)}::{@requireView.serviceName}.new(*args, **kwargs)
     @else
-      {@requireView.topLevelNamespace}.const_get(version_module).new(*args, **kwargs)
+      {@requireView.topLevelNamespace}.const_get(version_module){@postVersionNamespace(requireView)}.new(*args, **kwargs)
     @end
   end
+@end
+
+@private postVersionDirPath(index)
+  @if index.hasPostVersionDirPath
+    /{@index.postVersionDirPath}
+  @end
+@end
+
+@private postVersionNamespace(requireView)
+  @if requireView.hasPostVersionNamespace
+    ::{@requireView.postVersionNamespace}
+  @end
 @end

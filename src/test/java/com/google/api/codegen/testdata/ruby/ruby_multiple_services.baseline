@@ -524,7 +524,7 @@ module Google
     AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
       .select { |file| File.directory?(file) }
       .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-      .select { |dir| File.exist?(dir + ".rb") }
+      .select { |dir| File.exist?(dir + "foo.rb") }
       .map { |dir| File.basename(dir) }
 
     module Incrementer
@@ -568,7 +568,7 @@ module Google
           .constants
           .select {|sym| sym.to_s.downcase == version.to_s.downcase}
           .first
-        Google::Example.const_get(version_module)::Incrementer.new(*args, **kwargs)
+        Google::Example.const_get(version_module)::Foo::Incrementer.new(*args, **kwargs)
       end
     end
 
@@ -608,12 +608,12 @@ module Google
             "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
         end
 
-        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        require "#{FILE_DIR}/#{version.to_s.downcase}/foo"
         version_module = Google::Example
           .constants
           .select {|sym| sym.to_s.downcase == version.to_s.downcase}
           .first
-        Google::Example.const_get(version_module)::Decrementer.new(*args, **kwargs)
+        Google::Example.const_get(version_module)::Foo::Decrementer.new(*args, **kwargs)
       end
     end
   end

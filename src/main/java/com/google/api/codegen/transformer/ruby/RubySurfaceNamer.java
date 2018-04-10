@@ -345,7 +345,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getModuleVersionName() {
-    List<String> apiModules = getTopLevelApiModules();
+    List<String> apiModules = getApiModules();
     for (String m : apiModules) {
       if (VersionMatcher.isVersion(Name.upperCamel(m).toLowerUnderscore())) {
         return m;
