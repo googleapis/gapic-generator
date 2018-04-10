@@ -1,4 +1,65 @@
-java/sample.gradle.snip generation is not enabled for this test case.
+============== file: ../build.gradle ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.jar ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.properties ==============
+Static or binary file content is not shown.
+============== file: ../gradlew ==============
+Static or binary file content is not shown.
+============== file: ../gradlew.bat ==============
+Static or binary file content is not shown.
+============== file: ../settings.gradle ==============
+Static or binary file content is not shown.
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-library-v1'
+group = 'com.google.api'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  compile project(':proto-google-cloud-library-v1')
+  testCompile project(':grpc-google-cloud-library-v1')
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -201,7 +262,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     stub.close();
   }
 
@@ -380,6 +441,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings<NoTemplatesApi
       return ((NoTemplatesApiServiceStubSettings.Builder) getStubSettings());
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *
@@ -658,7 +720,7 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     shutdown();
   }
 
@@ -728,6 +790,8 @@ public abstract class NoTemplatesApiServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: incrementCallable()");
   }
 
+  @Override
+  public abstract void close();
 }
 ============== file: src/main/java/com/google/gcloud/example/stub/NoTemplatesApiServiceStubSettings.java ==============
 /*
@@ -929,6 +993,7 @@ public class NoTemplatesApiServiceStubSettings extends StubSettings<NoTemplatesA
       );
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *

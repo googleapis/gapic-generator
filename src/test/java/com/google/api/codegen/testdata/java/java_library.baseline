@@ -1,3 +1,15 @@
+============== file: ../build.gradle ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.jar ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.properties ==============
+Static or binary file content is not shown.
+============== file: ../gradlew ==============
+Static or binary file content is not shown.
+============== file: ../gradlew.bat ==============
+Static or binary file content is not shown.
+============== file: ../settings.gradle ==============
+Static or binary file content is not shown.
 ============== file: build.gradle ==============
 buildscript {
   repositories {
@@ -6,12 +18,9 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'signing'
-apply plugin: 'maven'
 
-description = 'Sample client library for google-cloud-library-v1'
-group = "com.google.api"
-version = "1.0.0"
+description = 'GAPIC library for google-cloud-library-v1'
+group = 'com.google.api'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -21,13 +30,25 @@ repositories {
 }
 
 dependencies {
-  compile project(":grpc-google-cloud-library-v1"),
-    'com.google.api:gax:1.0.0',
-    'com.google.api:gax-grpc:0.18.0',
-    'commons-cli:commons-cli:1.4',
-    'commons-lang:commons-lang:2.6',
-    // This dependency needs to be update-to-date with the version that gRPC expects.
-    'io.netty:netty-tcnative-boringssl-static:1.1.33.Fork26'
+  compile 'com.google.api:gax:1.0.0'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  compile project(':proto-google-cloud-library-v1')
+  testCompile project(':grpc-google-cloud-library-v1')
+  testCompile project(':grpc-google-some-test-package-v1')
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
 }
 
 sourceSets {
@@ -38,150 +59,8 @@ sourceSets {
   }
 }
 
-jar {
-  from {
-    (configurations.runtime).collect {
-        it.isDirectory() ? it : zipTree(it)
-    }
-  }
-  manifest {
-    attributes(
-      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-      'Main-Class': 'com.google.gcloud.pubsub.v1.SampleApp'
-    )
-  }
-}
-
-task javadocJar(type: Jar) {
-  classifier = 'javadoc'
-  from javadoc
-}
-
-task sourcesJar(type: Jar) {
-  classifier = 'sources'
-  from sourceSets.main.allSource
-}
-
-artifacts {
-  archives javadocJar, sourcesJar
-}
-
-signing {
-  required false
-  sign configurations.archives
-}
-
-compileJava.options.encoding = "UTF-8"
-
-if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        pom.project {
-          name "com.google.api.grpc:google-cloud-library-v1"
-          description project.description
-          url 'https://github.com/googleapis/googleapis'
-          scm {
-            url 'https://github.com/googleapis/googleapis'
-            connection 'scm:git:https://github.com/googleapis/googleapis'
-          }
-
-          licenses {
-            license {
-              name 'Apache-2.0'
-              url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-            }
-          }
-
-          developers {
-            developer {
-              id 'Google LLC'
-              name 'Google LLC'
-              email 'googleapis-packages@google.com'
-              url 'https://github.com/googleapis/googleapis'
-              organization 'Google LLC'
-              organizationUrl 'https://www.google.com'
-            }
-          }
-        }
-      }
-    }
-  }
-} else {
-  task failUploadArchives << {
-    throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
-      + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
-  }
-  tasks.uploadArchives.dependsOn(failUploadArchives)
-}
-
-task checkOutGhPages << {
-  if (!new File(javaDocRoot).exists()) {
-    exec {
-      workingDir projectDir
-      commandLine 'git', 'clone', '--branch', 'gh-pages',
-          '--single-branch', 'git@github.com:googleapis/googleapis.git', 'tmp_gh-pages'
-    }
-  }
-}
-
-task copyFilesToGhPages {
-  dependsOn 'checkOutGhPages'
-  dependsOn 'javadoc'
-  doLast {
-    def newSiteDirPath = javaDocRoot + "/java/${packageName}/${project.version}/apidocs/"
-    new File(newSiteDirPath).mkdirs()
-    copy {
-      from 'build/docs/javadoc'
-      into newSiteDirPath
-    }
-  }
-}
-
-// Regenerates the gh-pages branch under tmp_gh-pages
-task updateDocs {
-  dependsOn 'copyFilesToGhPages'
-  doLast {
-    def outputContent = new File(projectDir.getAbsolutePath() + '/templates/apidocs_index.html.template').text
-    outputContent = outputContent.replace('{{siteVersion}}', project.version)
-    outputContent = outputContent.replace('{{packageName}}', packageName)
-    new File(javaDocRoot + "/java/${packageName}/apidocs").mkdirs()
-    new File(javaDocRoot + "/java/${packageName}/apidocs/index.html").write(outputContent)
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'add', '.'
-    }
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'commit', '-m', "Regenerating docs for ${packageName} ${project.version}"
-    }
-    println 'New docs have been generated under tmp_gh-pages and have been committed;'
-    println 'Next they just need to be pushed with "git push".'
-  }
-}
-
-// Regenerates and push the gh-pages branch under tmp_gh-pages
-task updateAndPushDocs {
-  dependsOn 'updateDocs'
-  doLast {
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'push'
-      println "New docs have been pushed to Github for ${packageName} ${project.version}"
-    }
-  }
-}
-
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -3571,7 +3450,7 @@ public class LibraryClient implements BackgroundResource {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     stub.close();
   }
 
@@ -4478,6 +4357,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
       return ((LibraryServiceStubSettings.Builder) getStubSettings());
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *
@@ -4702,77 +4582,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     public LibrarySettings build() throws IOException {
       return new LibrarySettings(this);
     }
-  }
-}
-============== file: src/main/java/com/google/gcloud/pubsub/v1/SampleApp.java ==============
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.google.gcloud.pubsub.v1;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.Book.Rating;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.UpdateBookRequest;
-import com.google.protobuf.FieldMask;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-@javax.annotation.Generated("by GAPIC")
-public class SampleApp {
-  private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
-  private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
-
-  public static void main(String args[]) {
-    Logger.getLogger("").setLevel(Level.WARNING);
-    try {
-      executeNoCatch(getProjectId());
-      System.out.println("OK");
-    } catch (Exception e) {
-      System.err.println("Failed with exception:");
-      e.printStackTrace(System.err);
-      System.exit(1);
-    }
-  }
-
-  public static void executeNoCatch(String projectId) throws Exception {
-    try (LibraryClient client = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
-      String optionalFoo = "";
-      Book.Rating rating = Book.Rating.GOOD;
-      Book book = Book.newBuilder()
-        .setRating(rating)
-        .build();
-      FieldMask updateMask = FieldMask.newBuilder().build();
-      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
-
-      Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
-    }
-  }
-
-  private static String getProjectId() {
-    String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
-    if (projectId == null) {
-      projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));
-    }
-    Preconditions.checkArgument(projectId != null, "A project ID is required.");
-    return projectId;
   }
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/package-info.java ==============
@@ -5687,7 +5496,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   }
 
   @Override
-  public final void close() throws Exception {
+  public final void close() {
     shutdown();
   }
 
@@ -5958,6 +5767,8 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
+  @Override
+  public abstract void close();
 }
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStubSettings.java ==============
 /*
@@ -7192,6 +7003,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       );
     }
 
+    // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
      * Applies the given settings updater function to all of the unary API methods in this service.
      *
@@ -9322,11 +9134,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
 public class LibrarySmokeTest {
   private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
   private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
+  @Test
+  public void run() {
+    main(null);
+  }
 
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);

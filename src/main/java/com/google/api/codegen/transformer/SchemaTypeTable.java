@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
 /**
@@ -55,10 +56,6 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     this.typeNameConverter = typeNameConverter;
     this.languageNamer = languageNamer;
     this.discoGapicNamer = discoGapicNamer;
-  }
-
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
   }
 
   @Override
@@ -177,15 +174,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
-    // TODO(andrealin): Remove this hack when null response types are implemented.
-    if (type == null) {
-      return "nullFullName";
-    }
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
     }
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return typeFormatter.getFullNameFor(type);
   }
 
   @Override
@@ -224,12 +217,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Renders the primitive value of the given type. */
   @Override
   public String renderPrimitiveValue(FieldModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeNameConverter.renderPrimitiveValue(type, key);
   }
 
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeFormatter.renderPrimitiveValue(type, key);
   }
 
   @Override
@@ -289,9 +282,8 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
-    return typeNameConverter
-        .getSnippetZeroValue(((DiscoveryField) type).getDiscoveryField())
-        .getValueAndSaveTypeNicknameIn(typeTable);
+    TypedValue typedValue = typeNameConverter.getSnippetZeroValue(type);
+    return typedValue.getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override

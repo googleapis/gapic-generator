@@ -78,6 +78,7 @@ public class DiscoConfigTransformer {
       }
     }
 
+    // Map of base resource identifiers to all canonical name patterns that use that identifier.
     ImmutableMap<Method, Name> methodToResourceNames =
         ImmutableMap.<Method, Name>builder().putAll(methodToResourceName).build();
 

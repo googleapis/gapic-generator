@@ -14,9 +14,10 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -50,6 +51,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
+    if (schema == null) {
+      return "java.lang.Void";
+    }
     switch (schema.type()) {
       case INTEGER:
         return "int";
@@ -70,7 +74,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
   }
 
-  /** A map from primitive types in proto to zero values in Java. */
+  /**
+   * A map from primitive types in proto to zero values in Java. Returns 'Void' if input is null.
+   */
   private static String getPrimitiveZeroValue(Schema schema) {
     String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
@@ -87,6 +93,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
     if (primitiveType.equals("java.lang.String")) {
       return "\"\"";
+    }
+    if (primitiveType.equals("java.lang.Void")) {
+      return "null";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
@@ -116,6 +125,17 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     return TypedValue.create(getTypeName(schema), "%s." + value);
   }
 
+  @Override
+  public TypeName getTypeNameForElementType(TypeModel type) {
+    if (type.isStringType()) {
+      return typeNameConverter.getTypeName("java.lang.String");
+    } else if (type.isEmptyType()) {
+      return typeNameConverter.getTypeName("java.lang.Void");
+    }
+
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+  }
+
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
@@ -124,6 +144,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    *     <p>This method will be recursively called on the given schema's children.
    */
   private TypeName getTypeNameForElementType(Schema schema, BoxingBehavior boxingBehavior) {
+    if (schema == null) {
+      return new TypeName("java.lang.Void", "Void");
+    }
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -184,6 +207,21 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
     TypeName elementTypeName = getTypeNameForElementType(schema, BoxingBehavior.BOX_PRIMITIVES);
+    if (schema == null) {
+      return elementTypeName;
+    }
+    if (schema.isMap()) {
+      TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
+      TypeName keyTypeName = typeNameConverter.getTypeName("java.lang.String");
+      TypeName valueTypeName =
+          getTypeNameForElementType(schema.additionalProperties(), BoxingBehavior.BOX_PRIMITIVES);
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
+    }
     if (schema.repeated() || schema.type().equals(Type.ARRAY)) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       return new TypeName(
@@ -210,17 +248,26 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
     if (primitiveType.equals("boolean")) {
       return value.toLowerCase();
+    } else if (primitiveType.equals("long")) {
+      return value + "L";
+    } else if (primitiveType.equals("float")) {
+      return value + "F";
     }
-    if (primitiveType.equals("int")
-        || primitiveType.equals("long")
-        || primitiveType.equals("double")
-        || primitiveType.equals("float")) {
+    if (primitiveType.equals("int") || primitiveType.equals("double")) {
       return value;
     }
     if (primitiveType.equals("java.lang.String")) {
       return "\"" + value + "\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
+  }
+
+  @Override
+  public String renderPrimitiveValue(TypeModel type, String value) {
+    if (type.isStringType()) {
+      return "\"" + value + "\"";
+    }
+    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), value);
   }
 
   @Override
@@ -239,10 +286,32 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (getPrimitiveTypeName(schema) != null) {
       return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
+    if (schema.isMap()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
+    }
     if (schema.type() == Type.OBJECT || schema.type() == Type.ARRAY) {
       return TypedValue.create(getTypeNameForElementType(schema), "%s.newBuilder().build()");
     }
     return TypedValue.create(getTypeName(schema), "null");
+  }
+
+  /**
+   * Returns the Java representation of a zero value for that type, to be used in code sample doc.
+   *
+   * <p>Parametric types may use the diamond operator, since the return value will be used only in
+   * initialization.
+   */
+  @Override
+  public TypedValue getSnippetZeroValue(TypeModel typeModel) {
+    if (typeModel.isStringType()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.lang.String"), "\"\"");
+    }
+
+    Schema schema = null;
+    if (!typeModel.isEmptyType()) {
+      schema = ((DiscoveryField) typeModel).getDiscoveryField();
+    }
+    return getSnippetZeroValue(schema);
   }
 
   @Override
@@ -250,8 +319,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     return getSnippetZeroValue(type);
   }
 
-  private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, FieldModel type, String typedResourceShortName) {
+  private TypeName getTypeNameForTypedResourceName(FieldModel type, String typedResourceShortName) {
     String packageName = implicitPackageName;
     String longName = packageName + "." + typedResourceShortName;
 
@@ -271,14 +339,12 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+    return getTypeNameForTypedResourceName(fieldConfig.getField(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+    return getTypeNameForTypedResourceName(fieldConfig.getField(), typedResourceShortName);
   }
 }

@@ -225,14 +225,14 @@
       client._innerApiCalls.{@test.clientMethodName} = (actualRequest, options, callback) => {
         assert.deepStrictEqual(actualRequest, request);
         @join pagedResponse : test.pageStreamingResponseViews
-          callback(null, expectedResponse.{@pagedResponse.resourcesFieldGetterNames.get(0)});
+          callback(null, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
       };
 
       client.{@test.clientMethodName}(request, (err, response) => {
         assert.ifError(err);
         @join pagedResponse : test.pageStreamingResponseViews
-          assert.deepStrictEqual(response, expectedResponse.{@pagedResponse.resourcesFieldGetterNames.get(0)});
+          assert.deepStrictEqual(response, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
         done();
       });

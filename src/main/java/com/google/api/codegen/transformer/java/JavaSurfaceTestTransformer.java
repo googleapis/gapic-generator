@@ -397,6 +397,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addUnitTestImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("java.io.IOException");
@@ -412,7 +413,6 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     }
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
-        typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
@@ -429,17 +429,17 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
         typeTable.saveNicknameFor("org.junit.Before");
         break;
       case HTTP:
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpResponseParser");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.testing.MockHttpService");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiException");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
         typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
-        typeTable.saveNicknameFor("java.util.HashMap");
         typeTable.saveNicknameFor("java.util.Map");
+        typeTable.saveNicknameFor("java.util.HashMap");
 
         // Import stub settings class in unit test file.
         SurfaceNamer stubNamer =
@@ -463,6 +463,7 @@ public class JavaSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("com.google.common.base.Preconditions");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
+    typeTable.saveNicknameFor("org.junit.Test");
   }
 
   private void addMockServiceImplImports(InterfaceContext context) {

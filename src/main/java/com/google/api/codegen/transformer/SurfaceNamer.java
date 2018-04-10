@@ -477,6 +477,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The name of the paged resource variable name used in generated test cases. */
+  public String getPagedResourceName() {
+    return localVarName(Name.from("resources"));
+  }
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
@@ -748,12 +753,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(method.asName().join(Name.from("page", "streaming", "descriptor")));
   }
 
-  /** The page streaming factory name for the given method. */
-  public String getPagedListResponseFactoryName(MethodModel method) {
-    return privateFieldName(
-        method.asName().join(Name.from("paged", "list", "response", "factory")));
-  }
-
   /** The variable name of the gRPC request object. */
   public String getRequestVariableName(MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getRequestVariableName");
@@ -823,11 +822,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(
         getTransportProtocolName(transportProtocol)
             .join(Name.anyCamel(interfaceModel.getSimpleName(), "Stub")));
-  }
-
-  /** The sample application class name. */
-  public String getSampleAppClassName() {
-    return publicClassName(Name.upperCamel("SampleApp"));
   }
 
   /**
