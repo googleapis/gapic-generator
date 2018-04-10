@@ -40,7 +40,7 @@ well-documented.
 
 Each of these steps are described in more detail below.
 
-### Setup for building from source and running directly
+### Set up prerequisites for building from source and running directly
 
 First, you need to install protoc if you don't have it yet: see
 [protocol-compiler-installation](https://github.com/google/protobuf#protocol-compiler-installation).
@@ -72,7 +72,7 @@ The googleapis/googleapis directory will hereafter be referenced as `${GOOGLEAPI
 
 ### Generate a descriptor file from the proto
 
-You need to locate/decide on a few directories and filenames before you can call protoc.
+You need to locate/decide on the following before you can generate the descriptor file:
 
 1. The include directory with the proto files bundled with protoc (from the protoc setup step).
    Hereafter, this will be referenced as `${PROTOC_INCLUDE_DIR}`.
@@ -90,7 +90,51 @@ protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
   --include_imports --include_source_info -o ${YOUR_DESCRIPTOR_FILE} ${YOUR_PROTO_FILE}
 ```
 
-### Run client config generation
+### Generate proto message classes
+
+(Skip this section for Node.js - it loads proto files into memory at runtime.)
+
+You need to locate/decide on the following before you can generate the proto message classes:
+
+1. The output directory to contain the proto files. Hereafter, this will be referenced as `${GENERATED_PROTO_DIR}`.
+2. The language you are generating for. The values for protobuf are in
+`["java", "go", "php", "ruby", "python", "csharp"]`. (Node is special - see below.)
+Hereafter, this will be referenced as `${PROTO_OUTPUT_LANG}`.
+
+Run the following command to generate the proto message classes:
+
+```
+rm -rf ${GENERATED_PROTO_DIR}
+mkdir -p ${GENERATED_PROTO_DIR}
+protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
+  --${PROTO_OUTPUT_LANG}_out=${GENERATED_PROTO_DIR} ${YOUR_PROTO_FILE}
+```
+
+### Generate grpc stubs
+
+Generating grpc stubs is language-specific.
+
+#### Java
+
+Find the path to the grpc plugin (gradle will pull in the dependency if you don't have it already):
+
+```
+./gradlew showGrpcJavaPluginPath
+```
+
+The command will print out the path to the executable. Hereafter, this will be referenced as `${GRPC_JAVA_PLUGIN}`.
+
+```
+protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
+  --plugin=protoc-gen-grpc=${GRPC_JAVA_PLUGIN} \
+  --grpc_out=${GENERATED_PROTO_DIR} ${YOUR_PROTO_FILE}
+```
+
+#### Other languages
+
+TODO
+
+### Generate initial client config
 
 You need to locate/decide on the following before you call config generation:
 
@@ -117,7 +161,7 @@ the quality of the generated output.
 
 ### Create a package metadata config file
 
-You need to decide on the following before you perform the work in this section:
+You need to decide on the following before you create the package metadata config file:
 
 1. The output file to contain the package metadata for your client generation. Hereafter, this will be
    referenced as `${PKG_META_CONFIG}`.
@@ -172,4 +216,37 @@ java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGene
 
 The generated client library code will appear in `${GENERATED_CLIENT_DIR}`.
 
+Special note for java: several files will be dumped into the parent directory of `${GENERATED_CLIENT_DIR}`:
+
+- gradle/
+- gradlew
+- gradlew.bat
+
 You can safely ignore the warning about control-presence.
+
+### Perform fix-ups to get a working library
+
+The fix-ups here are language-specific.
+
+#### Java
+
+Copy the proto-generated classes into the client directory tree:
+
+```
+cp -r ${GENERATED_PROTO_DIR}/* ${GENERATED_CLIENT_DIR}/src/main/java
+```
+
+In ${GENERATED_CLIENT_DIR}/build.gradle, there are a couple dependencies that need to be removed if you
+are bundling our proto-generated classes and grpc stubs in the same package as the client. They have a
+comment starting with "// Remove this line if you are bundling". Warning: If you regenerate again, you will
+need to remove the lines from the build.gradle file again. (There is an option issue to fix this:
+https://github.com/googleapis/toolkit/issues/1917 ).
+
+#### Node
+
+Copy the proto files into the correct subdirectory of `${GENERATED_CLIENT_DIR}`.
+(Exact instructions to be added later.)
+
+#### Other languages
+
+TODO
