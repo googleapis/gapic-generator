@@ -140,10 +140,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   private CSharpAliasMode aliasMode;
 
   public CSharpSurfaceNamer(String packageName, CSharpAliasMode aliasMode) {
+    this(packageName, aliasMode, new CSharpTypeTable(packageName, aliasMode));
+  }
+
+  private CSharpSurfaceNamer(
+      String packageName, CSharpAliasMode aliasMode, CSharpTypeTable typeTable) {
     super(
         new CSharpNameFormatter(),
-        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName, aliasMode)),
-        new CSharpTypeTable(packageName, aliasMode),
+        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(typeTable)),
+        typeTable,
         new CSharpCommentReformatter(),
         packageName,
         packageName);
