@@ -1,8 +1,8 @@
 # GAPIC Generator
 
-GAPIC (Generated API Client) Generator is a client library code generator which auto-generates
-clients for both grpc-based APIs and Discovery-document-based APIs. Currently, the following
-programming languages are supported:
+The GAPIC (Generated API Client) Generator auto-generates client libraries in various programming languages for both
+grpc-based APIs and Discovery-document-based APIs. Currently, the following
+programming languages are supported for grpc-based APIs:
 
 - Java
 - Python
@@ -11,6 +11,24 @@ programming languages are supported:
 - Ruby
 - Node.js
 - PHP
+
+For discovery-based APIs, only Java is supported and its output is not stable yet.
+
+## Supported platforms
+
+Toolkit itself doesn't have a platform restriction (because it is purely Java). Since `protoc` needs to be used as
+part of the code generation process, the platforms are naturally restricted to what protoc supports.
+
+As of release 3.5.1, here are the known platforms that `protoc` releases pre-built binaries for:
+
+- linux-aarch_64
+- linux-x86_32
+- linux-x86_64
+- osx-x86_32
+- osx-x86_64
+- win32
+
+More platforms are likely supported when building protoc from C++ source.
 
 ## Usage
 
@@ -26,31 +44,35 @@ There are two main ways to generate clients:
 1. You need a proto file describing your API. Proto files of existing Google APIs are available at
 [googleapis](https://github.com/googleapis/googleapis).
   - Example: https://github.com/googleapis/googleapis/blob/master/google/cloud/language/v1/language_service.proto
-2. You need a yaml file describing certain service values. This is unfortunately not
-well-documented.
+2. You need a yaml file describing certain service values. This is not yet well-documented, but you can
+  figure out some of the settings by looking at existing files.
   - Example: https://github.com/googleapis/googleapis/blob/master/google/cloud/language/language_v1.yaml
-3. Java 8 JDK
+3. An active internet connection. The first time you build toolkit, it will download Java dependencies over
+  the network.
 
 ### Process overview for generating a client library
 
 1. Generate a descriptor file from the proto (once per API)
 2. Run client config generation (once per API)
 3. Manually tweak the generated client config
-4. Run code generation (once per API + language)
+4. Run code generation (once per API x language combination of interest)
 
 Each of these steps are described in more detail below.
 
 ### Set up prerequisites for building from source and running directly
 
-First, you need to install protoc if you don't have it yet: see
+Firstly, make sure you have the
+(Java 8 JDK)[http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html] installed.
+
+Next, you need to install `protoc` if you don't have it yet: see
 [protocol-compiler-installation](https://github.com/google/protobuf#protocol-compiler-installation).
-The pre-built binaries are the easiest, but there aren't really instructions for installation -
-you have to just download the correct binaries for your platform at put them on your path.
+The pre-built binaries are the easiest. There aren't instructions for installation;
+you just have to download the correct binaries for your platform and put them on your path.
 If you are using Linux x86_64:
 
 1. Download the latest zip from https://github.com/google/protobuf/releases ending in "-linux-x86_64.zip"
 2. Unzip the file, e.g. `unzip protoc-3.5.1-linux-x86_64.zip -d protoc-3.5.1`
-3. Copy protoc to a location on $PATH, e.g. `cp protoc-3.5.1/bin/protoc /usr/local/bin`
+3. Copy `protoc` to a location on `$PATH`, e.g. `cp protoc-3.5.1/bin/protoc /usr/local/bin`
 
 Clone the present repository and build API Client Generator:
 
@@ -60,7 +82,7 @@ cd toolkit
 ./gradlew fatJar
 ```
 
-The googleapis/toolkit directory will hereafter be referenced as `${TOOLKIT_DIR}`.
+The `googleapis/toolkit` directory will hereafter be referenced as `${TOOLKIT_DIR}`.
 
 Clone the googleapis/googleapis repository (it has some config that is needed):
 
@@ -68,18 +90,18 @@ Clone the googleapis/googleapis repository (it has some config that is needed):
 git clone https://github.com/googleapis/googleapis
 ```
 
-The googleapis/googleapis directory will hereafter be referenced as `${GOOGLEAPIS_DIR}`.
+The `googleapis/googleapis` directory will hereafter be referenced as `${GOOGLEAPIS_DIR}`.
 
 ### Generate a descriptor file from the proto
 
 You need to locate/decide on the following before you can generate the descriptor file:
 
-1. The include directory with the proto files bundled with protoc (from the protoc setup step).
+1. The include directory with the proto files bundled with `protoc` (from the `protoc` setup step).
    Hereafter, this will be referenced as `${PROTOC_INCLUDE_DIR}`.
 2. Any directories containing protos that your API depends on. For Google APIs defined in
    [googleapis](https://github.com/googleapis/googleapis), this will be `${GOOGLEAPIS_DIR}`.
 3. The directory containing your proto. Hereafter, this will be referenced as `${YOUR_PROTO_DIR}`.
-4. Your proto file. Hereafter, this will be referenced as `${YOUR_PROTO_FILE}`.
+4. Your proto file (or files). Hereafter, this will be referenced as `${YOUR_PROTO_FILE}`.
 4. The output file name to contain the descriptor file. Hereafter, this will be referenced as
    `${YOUR_DESCRIPTOR_FILE}`.
 
@@ -92,13 +114,13 @@ protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
 
 ### Generate proto message classes
 
-(Skip this section for Node.js - it loads proto files into memory at runtime.)
+*(Skip this section for Node.js - it loads proto files into memory at runtime.)*
 
 You need to locate/decide on the following before you can generate the proto message classes:
 
 1. The output directory to contain the proto files. Hereafter, this will be referenced as `${GENERATED_PROTO_DIR}`.
-2. The language you are generating for. The possible values for protoc
-`["java", "go", "php", "ruby", "python", "csharp"]`.
+2. The language you are generating for. The possible values for `protoc` are
+`java`, `go`, `php`, `ruby`, `python`, and `csharp`. Note: Node.js is not present for the reason listed above.
 Hereafter, this will be referenced as `${PROTO_OUTPUT_LANG}`.
 
 Run the following command to generate the proto message classes:
@@ -155,8 +177,8 @@ You can safely ignore the warning about control-presence.
 
 ### Manually tweak the generated client config
 
-The generated client config contains FIXME comments with instructions on how to choose values
-in the client config. The client config should work as-is though; tweaks are only necessary to improve
+The generated client config contains `FIXME` comments with instructions on how to choose values
+in the client config. The client config should work as is, though; tweaks are only necessary to improve
 the quality of the generated output.
 
 ### Create a package metadata config file
@@ -201,7 +223,7 @@ proto_path: ${PROTO_PATH}
 You need to locate/decide on the following before you call code generation:
 
 1. The language-specific generator config for your desired output language. Given a language where
-   `${language}` is in `["csharp", "go", "java", "nodejs", "php", "py", "ruby"]`, the file is located at
+   `${language}` is one of `java`, `go`, `php`, `ruby`, `nodejs`, `py`, or `csharp`, the file is located at
    `src/main/resources/com/google/api/codegen/${language}/${language}_gapic.yaml` (exception: the Python file is named
    `python_gapic.yaml`). Hereafter, this will be referenced as `${LANGUAGE_CONFIG}`.
 2. The output directory for your generated client classes. Hereafter, this will be
@@ -226,9 +248,9 @@ Special note for java: several files will be dumped into the parent directory of
 
 (There is an open issue to fix this: https://github.com/googleapis/toolkit/issues/1918 )
 
-### Perform fix-ups to get a working library
+### Perform fixes to get a working library
 
-The fix-ups here are language-specific.
+The fixes here are language-specific.
 
 #### Java
 
