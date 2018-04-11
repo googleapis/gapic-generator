@@ -49,6 +49,8 @@
     }
 
     // {@view.clientTypeName} is a client for interacting with {@view.serviceOriginalName}.
+    //
+    // Methods, except Close, may be called concurrently. However, fields must not be modified concurrently with method calls.
     type {@view.clientTypeName} struct {
         // The connection to the service.
         conn *grpc.ClientConn
