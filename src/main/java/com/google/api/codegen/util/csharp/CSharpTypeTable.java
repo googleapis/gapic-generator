@@ -34,6 +34,7 @@ public class CSharpTypeTable implements TypeTable {
       ImmutableMap.<String, String>builder()
           .put("Google.Api.Gax", "gax")
           .put("Google.Api.Gax.Grpc", "gaxgrpc")
+          .put("Google.Api.Gax.ResourceNames", "gaxres")
           .put("Google.Protobuf", "proto")
           .put("Google.Protobuf.WellKnownTypes", "protowkt")
           .put("Grpc.Core", "grpccore")

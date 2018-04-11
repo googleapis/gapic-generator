@@ -2167,6 +2167,8 @@ module Google
         #   @return [String]
         # @!attribute [rw] required_singular_resource_name_oneof
         #   @return [String]
+        # @!attribute [rw] required_singular_resource_name_common
+        #   @return [String]
         # @!attribute [rw] required_singular_fixed32
         #   @return [Integer]
         # @!attribute [rw] required_singular_fixed64
@@ -2192,6 +2194,8 @@ module Google
         # @!attribute [rw] required_repeated_resource_name
         #   @return [Array<String>]
         # @!attribute [rw] required_repeated_resource_name_oneof
+        #   @return [Array<String>]
+        # @!attribute [rw] required_repeated_resource_name_common
         #   @return [Array<String>]
         # @!attribute [rw] required_repeated_fixed32
         #   @return [Array<Integer>]
@@ -2221,6 +2225,8 @@ module Google
         #   @return [String]
         # @!attribute [rw] optional_singular_resource_name_oneof
         #   @return [String]
+        # @!attribute [rw] optional_singular_resource_name_common
+        #   @return [String]
         # @!attribute [rw] optional_singular_fixed32
         #   @return [Integer]
         # @!attribute [rw] optional_singular_fixed64
@@ -2246,6 +2252,8 @@ module Google
         # @!attribute [rw] optional_repeated_resource_name
         #   @return [Array<String>]
         # @!attribute [rw] optional_repeated_resource_name_oneof
+        #   @return [Array<String>]
+        # @!attribute [rw] optional_repeated_resource_name_common
         #   @return [Array<String>]
         # @!attribute [rw] optional_repeated_fixed32
         #   @return [Array<Integer>]
@@ -2501,6 +2509,12 @@ module Library
 
       private_constant :RETURN_PATH_TEMPLATE
 
+      PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}"
+      )
+
+      private_constant :PROJECT_PATH_TEMPLATE
+
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "archives/{archive_path}/books/{book_id=**}"
       )
@@ -2537,6 +2551,15 @@ module Library
           :"shelf" => shelf,
           :"book" => book,
           :"return" => return_
+        )
+      end
+
+      # Returns a fully-qualified project resource name string.
+      # @param project [String]
+      # @return [String]
+      def self.project_path project
+        PROJECT_PATH_TEMPLATE.render(
+          :"project" => project
         )
       end
 
@@ -3829,6 +3852,7 @@ module Library
       #   can also be provided.
       # @param required_singular_resource_name [String]
       # @param required_singular_resource_name_oneof [String]
+      # @param required_singular_resource_name_common [String]
       # @param required_singular_fixed32 [Integer]
       # @param required_singular_fixed64 [Integer]
       # @param required_repeated_int32 [Array<Integer>]
@@ -3844,6 +3868,7 @@ module Library
       #   can also be provided.
       # @param required_repeated_resource_name [Array<String>]
       # @param required_repeated_resource_name_oneof [Array<String>]
+      # @param required_repeated_resource_name_common [Array<String>]
       # @param required_repeated_fixed32 [Array<Integer>]
       # @param required_repeated_fixed64 [Array<Integer>]
       # @param required_map [Hash{Integer => String}]
@@ -3860,6 +3885,7 @@ module Library
       #   can also be provided.
       # @param optional_singular_resource_name [String]
       # @param optional_singular_resource_name_oneof [String]
+      # @param optional_singular_resource_name_common [String]
       # @param optional_singular_fixed32 [Integer]
       # @param optional_singular_fixed64 [Integer]
       # @param optional_repeated_int32 [Array<Integer>]
@@ -3875,6 +3901,7 @@ module Library
       #   can also be provided.
       # @param optional_repeated_resource_name [Array<String>]
       # @param optional_repeated_resource_name_oneof [Array<String>]
+      # @param optional_repeated_resource_name_common [Array<String>]
       # @param optional_repeated_fixed32 [Array<Integer>]
       # @param optional_repeated_fixed64 [Array<Integer>]
       # @param optional_map [Hash{Integer => String}]
@@ -3921,6 +3948,9 @@ module Library
       #   # TODO: Initialize +required_singular_resource_name_oneof+:
       #   required_singular_resource_name_oneof = ''
       #
+      #   # TODO: Initialize +required_singular_resource_name_common+:
+      #   required_singular_resource_name_common = ''
+      #
       #   # TODO: Initialize +required_singular_fixed32+:
       #   required_singular_fixed32 = 0
       #
@@ -3960,6 +3990,9 @@ module Library
       #   # TODO: Initialize +formatted_required_repeated_resource_name_oneof+:
       #   formatted_required_repeated_resource_name_oneof = []
       #
+      #   # TODO: Initialize +required_repeated_resource_name_common+:
+      #   required_repeated_resource_name_common = []
+      #
       #   # TODO: Initialize +required_repeated_fixed32+:
       #   required_repeated_fixed32 = []
       #
@@ -3968,7 +4001,7 @@ module Library
       #
       #   # TODO: Initialize +required_map+:
       #   required_map = {}
-      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -3982,6 +4015,7 @@ module Library
           required_singular_message,
           required_singular_resource_name,
           required_singular_resource_name_oneof,
+          required_singular_resource_name_common,
           required_singular_fixed32,
           required_singular_fixed64,
           required_repeated_int32,
@@ -3995,6 +4029,7 @@ module Library
           required_repeated_message,
           required_repeated_resource_name,
           required_repeated_resource_name_oneof,
+          required_repeated_resource_name_common,
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
@@ -4009,6 +4044,7 @@ module Library
           optional_singular_message: nil,
           optional_singular_resource_name: nil,
           optional_singular_resource_name_oneof: nil,
+          optional_singular_resource_name_common: nil,
           optional_singular_fixed32: nil,
           optional_singular_fixed64: nil,
           optional_repeated_int32: nil,
@@ -4022,6 +4058,7 @@ module Library
           optional_repeated_message: nil,
           optional_repeated_resource_name: nil,
           optional_repeated_resource_name_oneof: nil,
+          optional_repeated_resource_name_common: nil,
           optional_repeated_fixed32: nil,
           optional_repeated_fixed64: nil,
           optional_map: nil,
@@ -4038,6 +4075,7 @@ module Library
           required_singular_message: required_singular_message,
           required_singular_resource_name: required_singular_resource_name,
           required_singular_resource_name_oneof: required_singular_resource_name_oneof,
+          required_singular_resource_name_common: required_singular_resource_name_common,
           required_singular_fixed32: required_singular_fixed32,
           required_singular_fixed64: required_singular_fixed64,
           required_repeated_int32: required_repeated_int32,
@@ -4051,6 +4089,7 @@ module Library
           required_repeated_message: required_repeated_message,
           required_repeated_resource_name: required_repeated_resource_name,
           required_repeated_resource_name_oneof: required_repeated_resource_name_oneof,
+          required_repeated_resource_name_common: required_repeated_resource_name_common,
           required_repeated_fixed32: required_repeated_fixed32,
           required_repeated_fixed64: required_repeated_fixed64,
           required_map: required_map,
@@ -4065,6 +4104,7 @@ module Library
           optional_singular_message: optional_singular_message,
           optional_singular_resource_name: optional_singular_resource_name,
           optional_singular_resource_name_oneof: optional_singular_resource_name_oneof,
+          optional_singular_resource_name_common: optional_singular_resource_name_common,
           optional_singular_fixed32: optional_singular_fixed32,
           optional_singular_fixed64: optional_singular_fixed64,
           optional_repeated_int32: optional_repeated_int32,
@@ -4078,6 +4118,7 @@ module Library
           optional_repeated_message: optional_repeated_message,
           optional_repeated_resource_name: optional_repeated_resource_name,
           optional_repeated_resource_name_oneof: optional_repeated_resource_name_oneof,
+          optional_repeated_resource_name_common: optional_repeated_resource_name_common,
           optional_repeated_fixed32: optional_repeated_fixed32,
           optional_repeated_fixed64: optional_repeated_fixed64,
           optional_map: optional_map
@@ -6469,6 +6510,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -6482,6 +6524,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
+      required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -6504,6 +6547,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -6520,6 +6564,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -6547,6 +6592,7 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             required_singular_resource_name,
             required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -6560,6 +6606,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
+            required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -6584,6 +6631,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -6597,6 +6645,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
+      required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -6615,6 +6664,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -6631,6 +6681,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -6659,6 +6710,7 @@ describe Library::V1::LibraryServiceClient do
               required_singular_message,
               required_singular_resource_name,
               required_singular_resource_name_oneof,
+              required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
@@ -6672,6 +6724,7 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_message,
               formatted_required_repeated_resource_name,
               formatted_required_repeated_resource_name_oneof,
+              required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
               required_map

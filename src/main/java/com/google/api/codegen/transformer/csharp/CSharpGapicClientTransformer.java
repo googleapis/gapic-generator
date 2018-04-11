@@ -54,6 +54,8 @@ import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
+import com.google.api.codegen.viewmodel.ResourceNameSingleView;
+import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -80,6 +82,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
@@ -210,7 +213,16 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     view.outputPath(outputPath + File.separator + "ResourceNames.cs");
-    view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
+    List<ResourceNameView> resourceNames =
+        pathTemplateTransformer
+            .generateResourceNames(context)
+            .stream()
+            .filter(
+                x ->
+                    x.type() != com.google.api.codegen.viewmodel.ResourceNameType.SINGLE
+                        || ((ResourceNameSingleView) x).commonResourceName() == null)
+            .collect(Collectors.toList());
+    view.resourceNames(resourceNames);
     view.resourceProtos(generateResourceProtos(context));
     context.getImportTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
     context.getImportTypeTable().saveNicknameFor("System.Linq.Enumerable");
@@ -247,6 +259,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         if (field.isRepeated()) {
           fieldTypeName = fieldTypeName.replaceFirst("scg::IEnumerable", "gax::ResourceNameList");
         }
+
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
         String fieldElementTypeName =
             context
@@ -255,7 +268,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         ResourceProtoFieldView fieldView =
             ResourceProtoFieldView.newBuilder()
                 .typeName(fieldTypeName)
-                .parseMethodTypeName(namer.getPackageName() + "." + fieldTypeName)
+                .parseMethodTypeName(fieldTypeName)
                 .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
                 .isAny(fieldConfig.getResourceNameType() == ResourceNameType.ANY)

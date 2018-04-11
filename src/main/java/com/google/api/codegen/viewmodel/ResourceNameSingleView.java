@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ResourceNameSingleView implements ResourceNameView {
@@ -45,6 +46,9 @@ public abstract class ResourceNameSingleView implements ResourceNameView {
 
   public abstract String pattern();
 
+  @Nullable
+  public abstract String commonResourceName();
+
   public abstract List<ResourceNameParamView> params();
 
   public static Builder newBuilder() {
@@ -66,6 +70,8 @@ public abstract class ResourceNameSingleView implements ResourceNameView {
     public abstract Builder index(int val);
 
     public abstract Builder pattern(String val);
+
+    public abstract Builder commonResourceName(String val);
 
     public abstract Builder params(List<ResourceNameParamView> val);
 
