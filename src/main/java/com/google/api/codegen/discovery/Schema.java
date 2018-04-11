@@ -167,6 +167,9 @@ public abstract class Schema implements Node {
     boolean required = root.getBoolean("required");
     Type type = Type.getEnum(root.getString("type"));
 
+    // additionalProperties is a dynamically-keyed map in Discovery docs.
+    boolean isMap = additionalProperties != null;
+
     Schema thisSchema =
         new AutoValue_Schema(
             additionalProperties,
@@ -183,6 +186,7 @@ public abstract class Schema implements Node {
             reference,
             repeated,
             required,
+            isMap,
             type);
     thisSchema.parent = parent;
     if (items != null) {
@@ -200,7 +204,7 @@ public abstract class Schema implements Node {
 
   /** @return a non-null identifier for this schema. */
   public String getIdentifier() {
-    return id().isEmpty() ? key() : id();
+    return Strings.isNullOrEmpty(id()) ? key() : id();
   }
 
   public static Schema empty() {
@@ -217,6 +221,7 @@ public abstract class Schema implements Node {
         "",
         new HashMap<String, Schema>(),
         "",
+        false,
         false,
         false,
         Type.EMPTY);
@@ -279,6 +284,9 @@ public abstract class Schema implements Node {
 
   /** @return whether or not the schema is required. */
   public abstract boolean required();
+
+  /** @return whether or not the schema is a map. */
+  public abstract boolean isMap();
 
   /** @return the type. */
   public abstract Type type();

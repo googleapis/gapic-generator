@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.rendering;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /**
  * CommonSnippetSetRunner takes the view model as input and then uses the Snippet Set templating
@@ -26,20 +28,29 @@ import com.google.common.collect.ImmutableMap;
 public class CommonSnippetSetRunner {
 
   private Object utilObject;
+  private boolean allowEmptyDocs;
 
   public CommonSnippetSetRunner(Object utilObject) {
-    this.utilObject = utilObject;
+    this(utilObject, true);
   }
 
-  public Doc generate(ViewModel input) {
+  public CommonSnippetSetRunner(Object utilObject, boolean allowEmptyDocs) {
+    this.utilObject = utilObject;
+    this.allowEmptyDocs = allowEmptyDocs;
+  }
+
+  public Map<String, GeneratedResult<Doc>> generate(ViewModel input) {
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
             input.resourceRoot(),
             input.templateFileName(),
-            ImmutableMap.<String, Object>of("util", utilObject));
+            ImmutableMap.of("util", utilObject));
 
-    return snippets.generate(input);
+    Doc doc = snippets.generate(input);
+    return doc == null || doc.isWhitespace() && !allowEmptyDocs
+        ? ImmutableMap.of()
+        : ImmutableMap.of(input.outputPath(), GeneratedResult.create(doc, false));
   }
 
   private interface SurfaceSnippetSet {
