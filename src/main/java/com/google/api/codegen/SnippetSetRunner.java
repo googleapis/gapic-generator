@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.snippet.Doc;
+import java.util.Map;
+
 /**
  * A SnippetSetRunner takes the element, snippet file, and context as input and then uses the
  * Snippet Set templating engine to generate an output document.
@@ -26,6 +29,7 @@ public final class SnippetSetRunner {
 
   public interface Generator<Element> {
     /** Runs the code generation. */
-    GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
+    Map<String, GeneratedResult<Doc>> generate(
+        Element element, String snippetFileName, CodegenContext context);
   }
 }

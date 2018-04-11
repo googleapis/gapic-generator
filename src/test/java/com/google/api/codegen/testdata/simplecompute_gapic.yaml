@@ -129,7 +129,7 @@ interfaces:
         token_field: pageToken
       response:
         token_field: nextPageToken
-        resources_field: AddressAggregatedList
+        resources_field: items
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -194,7 +194,7 @@ interfaces:
         token_field: pageToken
       response:
         token_field: nextPageToken
-        resources_field: AddressList
+        resources_field: items
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -240,6 +240,8 @@ interfaces:
     timeout_millis: 60000
 - name: google.simplecompute.v1.DummyObjects
   collections:
+  - name_pattern: projects/{project}
+    entity_name: project
   - name_pattern: projects/{project}/dummyObjects/{dummyObject}
     entity_name: dummyObject
   retry_codes_def:
@@ -259,6 +261,28 @@ interfaces:
     max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
   methods:
+  - name: compute.dummyObjects.listResources
+    flattening:
+      groups:
+      - parameters:
+        - project
+    required_fields:
+    - project
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: maxResults
+        token_field: pageToken
+      response:
+        token_field: nextPageToken
+        # resources_field here is manually configured.
+        resources_field: resources
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    timeout_millis: 60000
   - name: compute.dummyObjects.delete
     flattening:
       groups:
@@ -295,6 +319,12 @@ resource_name_generation:
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
     address: projectAddress
+- message_name: GetResourceDummyObjectHttpRequest
+  field_entity_map:
+    resource: projectDummyObjectResource
+- message_name: ListResourcesDummyObjectsHttpRequest
+  field_entity_map:
+    project: project
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
     dummyObject: dummyObject

@@ -3,19 +3,23 @@
 
 # snippets: SnippetsFileView
 @snippet generate(snippets)
-    {@renderFileHeader(snippets.fileHeader)}
+    {@initialComments(snippets.fileHeader)}
 
     namespace {@snippets.fileHeader.examplePackageName}
     {
+        {@imports(snippets.fileHeader)}
+
         {@renderSnippets(snippets)}
     }
 
 @end
 
+# snippets: SnippetsFileView
 @private renderSnippets(snippets)
     /// <summary>Generated snippets</summary>
     public class {@snippets.name}
     {
+        # snpipetMethod: StaticLangApiMethodSnippetView
         @join snippetMethod : snippets.snippetMethods
             {@method(snippetMethod)}
 
@@ -23,6 +27,7 @@
     }
 @end
 
+# snippetMethod: StaticLangApiMethodSnippetView
 @private method(snippetMethod)
     /// <summary>Snippet for {@snippetMethod.method.name}</summary>
     @switch snippetMethod.method.type.toString
@@ -40,8 +45,8 @@
         @else
             {@requestObjectMethodSync(snippetMethod)}
         @end
-    @case "AsyncRequestObjectMethod"
-        {@requestObjectMethodAsync(snippetMethod)}
+    @case "AsyncRequestObjectCallSettingsMethod"
+        {@requestObjectMethodAsyncCallSettings(snippetMethod)}
     @case "PagedRequestObjectMethod"
         {@pagedRequestObjectMethodSync(snippetMethod)}
     @case "AsyncPagedRequestObjectMethod"
@@ -301,10 +306,11 @@
 @end
 
 # snippetMethod: StaticLangApiMethodSnippetView
-@private requestObjectMethodAsync(snippetMethod)
+@private requestObjectMethodAsyncCallSettings(snippetMethod)
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CancellationToken)
         {@preparations(snippetMethod, TRUE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};

@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
-import com.google.api.HttpRule.Builder;
 import com.google.api.Service;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.ApiModel;

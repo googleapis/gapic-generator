@@ -28,10 +28,9 @@ public interface DiscoGapicProviderFactory {
    *
    * <p>The outputPath is used for copying static files from resources into the output directory.
    */
-  List<GapicProvider<? extends Object>> create(
+  List<GapicProvider<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig,
-      String outputPath);
+      PackageMetadataConfig packageConfig);
 }

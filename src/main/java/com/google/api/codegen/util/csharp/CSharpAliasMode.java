@@ -12,13 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
 
-import java.io.IOException;
+package com.google.api.codegen.util.csharp;
 
-/** A runner interface that executes tasks of handling static files (e.g. copy) */
-public interface StaticFileRunner {
-
-  /** Executes the static file handling task */
-  public void run() throws IOException;
+public enum CSharpAliasMode {
+  Global,
+  MessagesOnly,
 }

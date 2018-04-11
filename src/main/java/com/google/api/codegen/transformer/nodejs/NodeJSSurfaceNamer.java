@@ -332,8 +332,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     String cardinalityComment = "";
     if (type.isRepeated()) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        String keyType = getParamTypeName(typeTable, type.getMapKeyType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueType());
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";

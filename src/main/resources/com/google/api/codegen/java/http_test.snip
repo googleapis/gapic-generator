@@ -9,10 +9,10 @@
 
      private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
           Lists.<ApiMethodDescriptor>newArrayList(
-            @join test : apiTest.testClass.testCases if test.hasReturnValue on ", ".add(BREAK)
+            @join test : apiTest.testClass.testCases on ", ".add(BREAK)
               {@test.methodDescriptor}
             @end
-        ));
+          ));
     private static final MockHttpService mockService
         = new MockHttpService(METHOD_DESCRIPTORS, {@apiTest.testClass.apiStubSettingsClassName}.getDefaultEndpoint());
 
@@ -25,7 +25,9 @@
           {@apiTest.testClass.apiSettingsClassName}.newBuilder()
              .setTransportChannelProvider(
                  {@apiTest.testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
-                     .setHttpTransport(mockService).build()).build();
+                     .setHttpTransport(mockService).build())
+             .setCredentialsProvider(NoCredentialsProvider.create())
+             .build();
       client =
          {@apiTest.testClass.apiClassName}.create(clientSettings);
     }
@@ -90,6 +92,8 @@
   @if test.hasReturnValue
     {@initCode(test.mockResponse.initCode)}
     mockService.addResponse(expectedResponse);
+  @else
+    mockService.addNullResponse();
   @end
   {@""}
 @end
@@ -108,7 +112,12 @@
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
       Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      Assert.assertEquals(expectedResponse.{@functionChain(pageStreamingResponseView.resourcesFieldGetterNames)}.get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+      @if pageStreamingResponseView.resourcesFieldIsMap
+        Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().values().iterator().next(),
+      @else
+        Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0),
+      @end
+          {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
   @case "FlattenedMethod"
     @if test.hasReturnValue
@@ -126,10 +135,14 @@
 @end
 
 # TODO(andrealin) comparison of request content.
-# TODO(andrealin) check for header being sent.
 @private unarySuccessAsserts(test)
   List<String> actualRequests = mockService.getRequestPaths();
   Assert.assertEquals(1, actualRequests.size());
+
+  String apiClientHeaderKey = mockService.getRequestHeaders()
+      .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+  Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+      .matcher(apiClientHeaderKey).matches());
 @end
 
 @private sampleMethodCallArgList(fieldSettings)

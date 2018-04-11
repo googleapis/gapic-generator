@@ -18,6 +18,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcMetadataProvider;
 import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
 import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataProvider;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 
@@ -25,26 +26,24 @@ import com.google.common.collect.ImmutableMap;
 public class GrpcMetadataProviderFactory {
 
   /** Create the GrpcMetadataProvider based on the given language */
-  public static GrpcMetadataProvider create(
+  public static GrpcMetadataProvider<Doc> create(
       TargetLanguage language, ArtifactType artifactType, ToolOptions options) {
     switch (language) {
       case PYTHON:
         return createForPython(options);
       case JAVA:
-        return createForJava(artifactType, options);
+        return createForJava(artifactType);
       default:
         throw new IllegalArgumentException(
             "The target language \"" + language + "\" is not supported");
     }
   }
 
-  private static GrpcMetadataProvider createForPython(ToolOptions options) {
+  private static GrpcMetadataProvider<Doc> createForPython(ToolOptions options) {
     return new PythonGrpcMetadataProvider(options);
   }
 
-  private static GrpcMetadataProvider createForJava(
-      ArtifactType artifactType, ToolOptions options) {
-
+  private static GrpcMetadataProvider<Doc> createForJava(ArtifactType artifactType) {
     switch (artifactType) {
       case GRPC:
         return new JavaGrpcMetadataProvider(
@@ -52,16 +51,14 @@ public class GrpcMetadataProviderFactory {
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle"),
-                artifactType),
-            options);
+                artifactType));
       case PROTOBUF:
         return new JavaGrpcMetadataProvider(
             new JavaPackageMetadataTransformer(
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle"),
-                artifactType),
-            options);
+                artifactType));
     }
 
     throw new IllegalArgumentException(

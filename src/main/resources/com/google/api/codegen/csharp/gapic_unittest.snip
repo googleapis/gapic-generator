@@ -3,10 +3,12 @@
 
 # snippets: ClientTestFileView
 @snippet generate(test)
-    {@renderFileHeader(test.fileHeader)}
+    {@initialComments(test.fileHeader)}
 
     namespace {@test.fileHeader.packageName}.Tests
     {
+        {@imports(test.fileHeader)}
+
         {@renderTests(test.testClass)}
     }
 
@@ -26,7 +28,7 @@
                 {@flattenedMethodAsync(testClass, testCase)}
             @case "RequestObjectMethod"
                 {@requestObjectMethodSync(testClass, testCase)}
-            @case "AsyncRequestObjectMethod"
+            @case "AsyncRequestObjectCallSettingsMethod"
                 {@requestObjectMethodAsync(testClass, testCase)}
             @default
                 $unhandledCase: {@testCase.clientMethodType.toString}$
