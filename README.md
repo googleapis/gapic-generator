@@ -14,6 +14,9 @@ programming languages are supported for grpc-based APIs:
 
 For discovery-based APIs, only Java is supported and its output is not stable yet.
 
+The GAPIC Generator also generates packaging files for proto-generated classes and grpc-generated stubs for Java
+and Python. This feature is not yet documented here in detail - the instructions below will work without it.
+
 ## Supported platforms
 
 Toolkit itself doesn't have a platform restriction (because it is purely Java). Since `protoc` needs to be used as
