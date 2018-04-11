@@ -131,7 +131,7 @@
         page_descriptors: PAGE_DESCRIPTORS,
       @end
       errors: Google::Gax::Grpc::API_ERRORS,
-      kwargs: headers
+      metadata: headers
     )
   end
 @end
@@ -143,6 +143,7 @@
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
+      metadata: nil,
       exception_transformer: nil,
       lib_name: nil,
       lib_version: ""
@@ -191,6 +192,7 @@
     google_api_client.freeze
 
     headers = { :"x-goog-api-client" => google_api_client }
+    headers.merge!(metadata) unless metadata.nil?
     {@constructDefaults(xapiClass)}
     
     @# Allow overriding the service path/port in subclasses.
@@ -303,7 +305,7 @@
 @end
 
 @private flattenedMethod(apiMethod)
-  {@methodComments(apiMethod.doc)}
+  {@methodComments(apiMethod)}
   @if apiMethod.hasRequestStreaming
     @#
     @# @@note
@@ -327,8 +329,7 @@
     end
   @else
     @if apiMethod.hasRequestParameters
-      def {@apiMethod.name} @\
-          {@paramList(apiMethod.methodParams)}
+      {@serviceDefStatement(apiMethod)}
         req = {
           @if apiMethod.requiredRequestObjectParams
             @if apiMethod.optionalRequestObjectParamsNoPageToken
@@ -345,7 +346,12 @@
         {@makeApiCall(apiMethod)}
       end
     @else
-      def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @else
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}, &block
+      @end
+
         req = {@apiMethod.requestTypeName}.new
         {@makeApiCall(apiMethod)}
       end
@@ -353,30 +359,36 @@
   @end
 @end
 
-@private methodComments(apiMethodDoc)
-  @if apiMethodDoc.mainDocLines
-    {@toComments(apiMethodDoc.mainDocLines)}
+@private methodComments(apiMethod)
+  @if apiMethod.doc.mainDocLines
+    {@toComments(apiMethod.doc.mainDocLines)}
     @#
 
   @end
-  @if apiMethodDoc.paramDocs
-    @join paramDoc : apiMethodDoc.paramDocs
+  @if apiMethod.doc.paramDocs
+    @join paramDoc : apiMethod.doc.paramDocs
       @# @@param {@paramDoc.paramName} [{@paramDoc.typeName}]
       @join line : paramDoc.lines
         @#   {@line}
       @end
     @end
 
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+  @else
+    @# @@yield [result, operation] Access the result along with the RPC operation
+    @# @@yieldparam result [{@apiMethod.doc.returnTypeName}]
+    @# @@yieldparam operation [GRPC::ActiveCall::Operation]
+  @end
 
   @end
-  @if apiMethodDoc.returnTypeName
-    @# @@return [{@apiMethodDoc.returnTypeName}]
-    @join line : apiMethodDoc.returnsDocLines
+  @if apiMethod.doc.returnTypeName
+    @# @@return [{@apiMethod.doc.returnTypeName}]
+    @join line : apiMethod.doc.returnsDocLines
       @#   {@line}
     @end
 
   @end
-  {@toComments(apiMethodDoc.throwsDocLines)}
+  {@toComments(apiMethod.doc.throwsDocLines)}
 @end
 
 @private makeApiCall(apiMethod)
@@ -391,11 +403,27 @@
     operation.on_done { |operation| yield(operation) } if block_given?
     operation
   @else
-    @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @else
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options, &block)
+    @end
+
     @if apiMethod.hasReturnValue
     @else
       nil
     @end
+  @end
+@end
+
+@private serviceDefStatement(apiMethod)
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)}
+  @else
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)},
+        &block
   @end
 @end
 

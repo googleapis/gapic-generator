@@ -557,6 +557,8 @@ module Google
       #     or the specified config is missing data points.
       #   @param timeout [Numeric]
       #     The default timeout, in seconds, for calls made through this client.
+      #   @param metadata [Hash]
+      #     Default metadata to be sent with each request. This can be overridden on a per call basis.
       #   @param exception_transformer [Proc]
       #     An optional proc that intercepts any exceptions raised during an API call to inject
       #     custom error handling.
@@ -605,6 +607,8 @@ module Google
       #     or the specified config is missing data points.
       #   @param timeout [Numeric]
       #     The default timeout, in seconds, for calls made through this client.
+      #   @param metadata [Hash]
+      #     Default metadata to be sent with each request. This can be overridden on a per call basis.
       #   @param exception_transformer [Proc]
       #     An optional proc that intercepts any exceptions raised during an API call to inject
       #     custom error handling.
@@ -731,6 +735,8 @@ module Google
         #   or the specified config is missing data points.
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
+        # @param metadata [Hash]
+        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
         # @param exception_transformer [Proc]
         #   An optional proc that intercepts any exceptions raised during an API call to inject
         #   custom error handling.
@@ -739,6 +745,7 @@ module Google
             scopes: nil,
             client_config: nil,
             timeout: nil,
+            metadata: nil,
             exception_transformer: nil,
             lib_name: nil,
             lib_version: nil
@@ -747,6 +754,7 @@ module Google
             scopes: scopes,
             client_config: client_config,
             timeout: timeout,
+            metadata: metadata,
             exception_transformer: exception_transformer,
             lib_name: lib_name,
             lib_version: lib_version
@@ -781,6 +789,8 @@ module Google
         #   or the specified config is missing data points.
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
+        # @param metadata [Hash]
+        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
         # @param exception_transformer [Proc]
         #   An optional proc that intercepts any exceptions raised during an API call to inject
         #   custom error handling.
@@ -789,6 +799,7 @@ module Google
             scopes: nil,
             client_config: nil,
             timeout: nil,
+            metadata: nil,
             exception_transformer: nil,
             lib_name: nil,
             lib_version: nil
@@ -797,6 +808,7 @@ module Google
             scopes: scopes,
             client_config: client_config,
             timeout: timeout,
+            metadata: metadata,
             exception_transformer: exception_transformer,
             lib_name: lib_name,
             lib_version: lib_version
@@ -884,6 +896,8 @@ module Google
         #   or the specified config is missing data points.
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
+        # @param metadata [Hash]
+        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
         # @param exception_transformer [Proc]
         #   An optional proc that intercepts any exceptions raised during an API call to inject
         #   custom error handling.
@@ -892,6 +906,7 @@ module Google
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
+            metadata: nil,
             exception_transformer: nil,
             lib_name: nil,
             lib_version: ""
@@ -928,6 +943,7 @@ module Google
           google_api_client.freeze
 
           headers = { :"x-goog-api-client" => google_api_client }
+          headers.merge!(metadata) unless metadata.nil?
           client_config_file = Pathname.new(__dir__).join(
             "decrementer_service_client_config.json"
           )
@@ -939,7 +955,7 @@ module Google
               Google::Gax::Grpc::STATUS_CODE_NAMES,
               timeout,
               errors: Google::Gax::Grpc::API_ERRORS,
-              kwargs: headers
+              metadata: headers
             )
           end
 
@@ -970,6 +986,9 @@ module Google
         # @param options [Google::Gax::CallOptions]
         #   Overrides the default settings for this call, e.g, timeout,
         #   retries, etc.
+        # @yield [result, operation] Access the result along with the RPC operation
+        # @yieldparam result []
+        # @yieldparam operation [GRPC::ActiveCall::Operation]
         # @raise [Google::Gax::GaxError] if the RPC is aborted.
         # @example
         #   require "google/example/v1"
@@ -977,9 +996,9 @@ module Google
         #   decrementer_service_client = Google::Example::V1::Decrementer.new
         #   decrementer_service_client.decrement
 
-        def decrement options: nil
+        def decrement options: nil, &block
           req = Google::Cloud::Example::V1::DecrementRequest.new
-          @decrement.call(req, options)
+          @decrement.call(req, options, &block)
           nil
         end
       end
@@ -1078,6 +1097,8 @@ module Google
         #   or the specified config is missing data points.
         # @param timeout [Numeric]
         #   The default timeout, in seconds, for calls made through this client.
+        # @param metadata [Hash]
+        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
         # @param exception_transformer [Proc]
         #   An optional proc that intercepts any exceptions raised during an API call to inject
         #   custom error handling.
@@ -1086,6 +1107,7 @@ module Google
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
+            metadata: nil,
             exception_transformer: nil,
             lib_name: nil,
             lib_version: ""
@@ -1122,6 +1144,7 @@ module Google
           google_api_client.freeze
 
           headers = { :"x-goog-api-client" => google_api_client }
+          headers.merge!(metadata) unless metadata.nil?
           client_config_file = Pathname.new(__dir__).join(
             "incrementer_service_client_config.json"
           )
@@ -1133,7 +1156,7 @@ module Google
               Google::Gax::Grpc::STATUS_CODE_NAMES,
               timeout,
               errors: Google::Gax::Grpc::API_ERRORS,
-              kwargs: headers
+              metadata: headers
             )
           end
 
@@ -1164,6 +1187,9 @@ module Google
         # @param options [Google::Gax::CallOptions]
         #   Overrides the default settings for this call, e.g, timeout,
         #   retries, etc.
+        # @yield [result, operation] Access the result along with the RPC operation
+        # @yieldparam result []
+        # @yieldparam operation [GRPC::ActiveCall::Operation]
         # @raise [Google::Gax::GaxError] if the RPC is aborted.
         # @example
         #   require "google/example/v1"
@@ -1171,9 +1197,9 @@ module Google
         #   incrementer_service_client = Google::Example::V1::Incrementer.new
         #   incrementer_service_client.increment
 
-        def increment options: nil
+        def increment options: nil, &block
           req = Google::Cloud::Example::V1::IncrementRequest.new
-          @increment.call(req, options)
+          @increment.call(req, options, &block)
           nil
         end
       end
@@ -1273,7 +1299,7 @@ describe Google::Example::V1::DecrementerServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        nil
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
@@ -1289,6 +1315,13 @@ describe Google::Example::V1::DecrementerServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.decrement do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -1396,7 +1429,7 @@ describe Google::Example::V1::IncrementerServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        nil
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
@@ -1412,6 +1445,13 @@ describe Google::Example::V1::IncrementerServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.increment do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
