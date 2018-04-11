@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.InitCodeView;
@@ -51,6 +52,8 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   private static final String SMOKETEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_smoketest_csproj.snip";
 
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
+
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
@@ -67,14 +70,14 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getPackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
