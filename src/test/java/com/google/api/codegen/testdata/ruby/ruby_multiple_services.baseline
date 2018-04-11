@@ -559,6 +559,9 @@ module Google
       #     The default timeout, in seconds, for calls made through this client.
       #   @param metadata [Hash]
       #     Default metadata to be sent with each request. This can be overridden on a per call basis.
+      #   @param exception_transformer [Proc]
+      #     An optional proc that intercepts any exceptions raised during an API call to inject
+      #     custom error handling.
       def self.new(*args, version: :v1, **kwargs)
         unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
           raise "The version: #{version} is not available. The available versions " \
@@ -606,6 +609,9 @@ module Google
       #     The default timeout, in seconds, for calls made through this client.
       #   @param metadata [Hash]
       #     Default metadata to be sent with each request. This can be overridden on a per call basis.
+      #   @param exception_transformer [Proc]
+      #     An optional proc that intercepts any exceptions raised during an API call to inject
+      #     custom error handling.
       def self.new(*args, version: :v1, **kwargs)
         unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
           raise "The version: #{version} is not available. The available versions " \
@@ -731,12 +737,16 @@ module Google
         #   The default timeout, in seconds, for calls made through this client.
         # @param metadata [Hash]
         #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+        # @param exception_transformer [Proc]
+        #   An optional proc that intercepts any exceptions raised during an API call to inject
+        #   custom error handling.
         def self.new \
             credentials: nil,
             scopes: nil,
             client_config: nil,
             timeout: nil,
             metadata: nil,
+            exception_transformer: nil,
             lib_name: nil,
             lib_version: nil
           kwargs = {
@@ -745,6 +755,7 @@ module Google
             client_config: client_config,
             timeout: timeout,
             metadata: metadata,
+            exception_transformer: exception_transformer,
             lib_name: lib_name,
             lib_version: lib_version
           }.select { |_, v| v != nil }
@@ -780,12 +791,16 @@ module Google
         #   The default timeout, in seconds, for calls made through this client.
         # @param metadata [Hash]
         #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+        # @param exception_transformer [Proc]
+        #   An optional proc that intercepts any exceptions raised during an API call to inject
+        #   custom error handling.
         def self.new \
             credentials: nil,
             scopes: nil,
             client_config: nil,
             timeout: nil,
             metadata: nil,
+            exception_transformer: nil,
             lib_name: nil,
             lib_version: nil
           kwargs = {
@@ -794,6 +809,7 @@ module Google
             client_config: client_config,
             timeout: timeout,
             metadata: metadata,
+            exception_transformer: exception_transformer,
             lib_name: lib_name,
             lib_version: lib_version
           }.select { |_, v| v != nil }
@@ -882,12 +898,16 @@ module Google
         #   The default timeout, in seconds, for calls made through this client.
         # @param metadata [Hash]
         #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+        # @param exception_transformer [Proc]
+        #   An optional proc that intercepts any exceptions raised during an API call to inject
+        #   custom error handling.
         def initialize \
             credentials: nil,
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
             metadata: nil,
+            exception_transformer: nil,
             lib_name: nil,
             lib_version: ""
           # These require statements are intentionally placed here to initialize
@@ -954,7 +974,8 @@ module Google
 
           @decrement = Google::Gax.create_api_call(
             @decrementer_service_stub.method(:decrement),
-            defaults["decrement"]
+            defaults["decrement"],
+            exception_transformer: exception_transformer
           )
         end
 
@@ -1078,12 +1099,16 @@ module Google
         #   The default timeout, in seconds, for calls made through this client.
         # @param metadata [Hash]
         #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+        # @param exception_transformer [Proc]
+        #   An optional proc that intercepts any exceptions raised during an API call to inject
+        #   custom error handling.
         def initialize \
             credentials: nil,
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
             metadata: nil,
+            exception_transformer: nil,
             lib_name: nil,
             lib_version: ""
           # These require statements are intentionally placed here to initialize
@@ -1150,7 +1175,8 @@ module Google
 
           @increment = Google::Gax.create_api_call(
             @incrementer_service_stub.method(:increment),
-            defaults["increment"]
+            defaults["increment"],
+            exception_transformer: exception_transformer
           )
         end
 
