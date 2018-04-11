@@ -19,7 +19,7 @@ For discovery-based APIs, only Java is supported and its output is not stable ye
 Toolkit itself doesn't have a platform restriction (because it is purely Java). Since `protoc` needs to be used as
 part of the code generation process, the platforms are naturally restricted to what protoc supports.
 
-As of release 3.5.1, here are the known platforms that `protoc` releases pre-built binaries for:
+As of release 3.5.1 of `protoc`, below are the known platforms that `protoc` has pre-built binaries for:
 
 - linux-aarch_64
 - linux-x86_32
@@ -57,12 +57,13 @@ There are two main ways to generate clients:
 3. Manually tweak the generated client config
 4. Run code generation (once per API x language combination of interest)
 
-Each of these steps are described in more detail below.
+Each of these steps are described in more detail below. Note: the instructions assume you are running on a
+Unix-y system; if you are using Windows, you will need to tweak the steps for yourself.
 
 ### Set up prerequisites for building from source and running directly
 
 Firstly, make sure you have the
-(Java 8 JDK)[http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html] installed.
+[Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) installed.
 
 Next, you need to install `protoc` if you don't have it yet: see
 [protocol-compiler-installation](https://github.com/google/protobuf#protocol-compiler-installation).
@@ -72,7 +73,7 @@ If you are using Linux x86_64:
 
 1. Download the latest zip from https://github.com/google/protobuf/releases ending in "-linux-x86_64.zip"
 2. Unzip the file, e.g. `unzip protoc-3.5.1-linux-x86_64.zip -d protoc-3.5.1`
-3. Copy `protoc` to a location on `$PATH`, e.g. `cp protoc-3.5.1/bin/protoc /usr/local/bin`
+3. Copy `protoc` to a location on your `$PATH`, e.g. `cp protoc-3.5.1/bin/protoc /usr/local/bin`
 
 Clone the present repository and build API Client Generator:
 
