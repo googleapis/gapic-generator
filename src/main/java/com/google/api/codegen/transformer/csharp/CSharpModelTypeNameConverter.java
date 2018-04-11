@@ -19,9 +19,7 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
-import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
@@ -73,14 +71,14 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString.CopyFromUtf8(\"\")")
+          .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString.Empty")
           .build();
 
-  private TypeNameConverter typeNameConverter;
+  private CSharpTypeTable typeNameConverter;
   private CSharpEnumNamer enumNamer;
 
-  public CSharpModelTypeNameConverter(String implicitPackageName, CSharpAliasMode aliasMode) {
-    this.typeNameConverter = new CSharpTypeTable(implicitPackageName, aliasMode);
+  public CSharpModelTypeNameConverter(CSharpTypeTable typeTable) {
+    this.typeNameConverter = typeTable;
     this.enumNamer = new CSharpEnumNamer();
   }
 
@@ -179,7 +177,12 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
     } else if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
-      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      if (type.getKind() == Type.TYPE_BYTES) {
+        String clsName = typeNameConverter.getAndSaveNicknameFor("Google.Protobuf.ByteString");
+        return TypedValue.create(getTypeName(type), clsName + ".Empty");
+      } else {
+        return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      }
     }
   }
 
@@ -213,7 +216,8 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       if (type.getKind() == Type.TYPE_BYTES) {
-        return TypedValue.create(getTypeName(type), "Google.Protobuf.ByteString.Empty");
+        String clsName = typeNameConverter.getAndSaveNicknameFor("Google.Protobuf.ByteString");
+        return TypedValue.create(getTypeName(type), clsName + ".Empty");
       } else {
         return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
       }
@@ -241,7 +245,8 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_STRING:
         return "\"" + value + "\"";
       case TYPE_BYTES:
-        return "ByteString.CopyFromUtf8(\"" + value + "\")";
+        String clsName = typeNameConverter.getAndSaveNicknameFor("Google.Protobuf.ByteString");
+        return clsName + ".CopyFromUtf8(\"" + value + "\")";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;

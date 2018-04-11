@@ -35,9 +35,8 @@ import java.util.Set;
 public class CSharpCommonTransformer {
 
   public ModelTypeTable createTypeTable(String implicitPackageName, CSharpAliasMode aliasMode) {
-    return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName, aliasMode),
-        new CSharpModelTypeNameConverter(implicitPackageName, aliasMode));
+    CSharpTypeTable typeTable = new CSharpTypeTable(implicitPackageName, aliasMode);
+    return new ModelTypeTable(typeTable, new CSharpModelTypeNameConverter(typeTable));
   }
 
   public void addCommonImports(GapicInterfaceContext context) {
