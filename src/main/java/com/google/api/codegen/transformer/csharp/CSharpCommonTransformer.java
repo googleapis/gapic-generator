@@ -94,7 +94,7 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> callSettingsParam() {
     return ImmutableList.of(
         makeParam(
-            "gaxgrpc::CallSettings",
+            CSharpTypeTable.ALIAS_GAX_GRPC + "::CallSettings",
             "callSettings",
             "null",
             "If not null, applies overrides to this RPC call."));
@@ -103,10 +103,12 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> cancellationTokenParam() {
     return ImmutableList.of(
         makeParam(
-            "st::CancellationToken",
+            CSharpTypeTable.ALIAS_SYSTEM_THREADING + "::CancellationToken",
             "cancellationToken",
             null,
-            "A <see cref=\"st::CancellationToken\"/> to use for this RPC."));
+            "A <see cref=\""
+                + CSharpTypeTable.ALIAS_SYSTEM_THREADING
+                + "::CancellationToken\"/> to use for this RPC."));
   }
 
   public List<ParamWithSimpleDoc> pagedMethodAdditionalParams() {

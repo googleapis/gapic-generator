@@ -48,6 +48,7 @@ import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
+import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -250,14 +251,17 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
         String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         if (fieldTypeSimpleName.equals("IResourceName")) {
-          fieldTypeSimpleName = "gax::IResourceName";
+          fieldTypeSimpleName = CSharpTypeTable.ALIAS_GAX + "::IResourceName";
         }
         String fieldTypeName =
             context
                 .getImportTypeTable()
                 .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
         if (field.isRepeated()) {
-          fieldTypeName = fieldTypeName.replaceFirst("scg::IEnumerable", "gax::ResourceNameList");
+          fieldTypeName =
+              fieldTypeName.replaceFirst(
+                  CSharpTypeTable.ALIAS_SYSTEM_COLLECTIONS_GENERIC + "::IEnumerable",
+                  CSharpTypeTable.ALIAS_GAX + "::ResourceNameList");
         }
 
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
