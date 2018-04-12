@@ -137,7 +137,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return keywords.contains(name) ? "@" + name : name;
   }
 
-  private CSharpAliasMode aliasMode;
+  private final CSharpAliasMode aliasMode;
 
   public CSharpSurfaceNamer(String packageName, CSharpAliasMode aliasMode) {
     this(packageName, aliasMode, new CSharpTypeTable(packageName, aliasMode));
@@ -634,10 +634,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     FieldModel type = fieldConfig.getField();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (type.isRepeated()) {
-        TypeName elementTypeName =
-            new TypeName(
-                getResourceTypeNameObject(fieldConfig.getResourceNameConfig()).toUpperCamel());
         TypeNameConverter typeNameConverter = getTypeNameConverter();
+        TypeName elementTypeName =
+            typeNameConverter.getTypeName(getResourceTypeName(fieldConfig.getResourceNameConfig()));
         TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
         TypeName emptyTypeName =
             new TypeName(

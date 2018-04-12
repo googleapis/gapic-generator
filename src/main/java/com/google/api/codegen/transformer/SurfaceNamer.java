@@ -883,7 +883,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
-    return publicClassName(getResourceTypeNameObject(resourceNameConfig));
+    String commonResourceName = resourceNameConfig.getCommonResourceName();
+    return commonResourceName != null
+        ? commonResourceName
+        : publicClassName(getResourceTypeNameObject(resourceNameConfig));
   }
 
   /**
@@ -1083,8 +1086,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveResourceTypeName(ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    String commonResourceName = fieldConfig.getResourceNameConfig().getCommonResourceName();
     String resourceClassName =
-        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+        commonResourceName != null
+            ? commonResourceName
+            : publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
     return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
   }
 
