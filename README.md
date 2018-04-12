@@ -72,11 +72,11 @@ Next, you need to install `protoc` if you don't have it yet: see
 [protocol-compiler-installation](https://github.com/google/protobuf#protocol-compiler-installation).
 The pre-built binaries are the easiest. There aren't instructions for installation;
 you just have to download the correct binaries for your platform and put them on your path.
-If you are using Linux x86_64:
+Given a platform ${PROTOC_PLATFORM} and a protoc version ${PROTOC_VERSION}:
 
-1. Download the latest zip from https://github.com/google/protobuf/releases ending in "-linux-x86_64.zip"
-2. Unzip the file, e.g. `unzip protoc-3.5.1-linux-x86_64.zip -d protoc-3.5.1`
-3. Copy `protoc` to a location on your `$PATH`, e.g. `cp protoc-3.5.1/bin/protoc /usr/local/bin`
+1. Download the latest zip from https://github.com/google/protobuf/releases ending in "-${PROTOC_PLATFORM}.zip"
+2. Unzip the file: `unzip protoc-${PROTOC_VERSION}-${PROTOC_PLATFORM}.zip -d protoc-${PROTOC_VERSION}`
+3. Copy `protoc` to a location on your `$PATH`: `cp protoc-${PROTOC_VERSION}/bin/protoc /usr/local/bin`
 
 Clone the present repository and build API Client Generator:
 
@@ -130,7 +130,6 @@ Hereafter, this will be referenced as `${PROTO_OUTPUT_LANG}`.
 Run the following command to generate the proto message classes:
 
 ```
-rm -rf ${GENERATED_PROTO_DIR}
 mkdir -p ${GENERATED_PROTO_DIR}
 protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
   --${PROTO_OUTPUT_LANG}_out=${GENERATED_PROTO_DIR} ${YOUR_PROTO_FILE}
