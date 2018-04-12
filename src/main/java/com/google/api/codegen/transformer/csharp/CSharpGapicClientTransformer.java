@@ -26,6 +26,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -249,9 +250,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
       for (FieldModel field : fields) {
         FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
-        String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
+        ResourceNameConfig resourceNameConfig = fieldConfig.getResourceNameConfig();
+        String fieldTypeSimpleName = namer.getResourceTypeName(resourceNameConfig);
+        boolean isAny = false;
         if (fieldTypeSimpleName.equals("IResourceName")) {
           fieldTypeSimpleName = CSharpTypeTable.ALIAS_GAX + "::IResourceName";
+          isAny = true;
         }
         String fieldTypeName =
             context
@@ -262,6 +266,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
               fieldTypeName.replaceFirst(
                   CSharpTypeTable.ALIAS_SYSTEM_COLLECTIONS_GENERIC + "::IEnumerable",
                   CSharpTypeTable.ALIAS_GAX + "::ResourceNameList");
+        } else if (resourceNameConfig.getCommonResourceName() == null && !isAny) {
+          // Needs to be fully qualifed because the 'fieldTypeName' class name will be
+          // the same as a property name on this proto message.
+          fieldTypeName = namer.getPackageName() + "." + fieldTypeName;
         }
 
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
