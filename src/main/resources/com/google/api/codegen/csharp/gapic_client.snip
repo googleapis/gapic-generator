@@ -81,7 +81,7 @@
                 /// There are no RPC <see cref="grpccore::StatusCode"/>s eligible for retry for "{@retry.name}" RPC methods.
             @end
             /// </remarks>
-            public static s::Predicate<grpccore::RpcException> {@retry.retryFilterMethodName} { get; } =
+            public static sys::Predicate<grpccore::RpcException> {@retry.retryFilterMethodName} { get; } =
                 gaxgrpc::RetrySettings.FilterForStatusCodes({@retryCodes(retry.codeNames)});
 
         @end
@@ -101,8 +101,8 @@
             /// </list>
             /// </remarks>
             public static gaxgrpc::BackoffSettings {@retry.retryBackoffMethodName}() => new gaxgrpc::BackoffSettings(
-                delay: s::TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
-                maxDelay: s::TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
+                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
                 delayMultiplier: {@retry.retryDelayMultiplier}
             );
             
@@ -121,8 +121,8 @@
             /// </list>
             /// </remarks>
             public static gaxgrpc::BackoffSettings {@retry.timeoutBackoffMethodName}() => new gaxgrpc::BackoffSettings(
-                delay: s::TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
-                maxDelay: s::TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
+                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
                 delayMultiplier: {@retry.rpcTimeoutMultiplier}
             );
 
@@ -162,7 +162,7 @@
                     gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                         retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
                         timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                        totalExpiration: gax::Expiration.FromTimeout(s::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
+                        totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
                         retryFilter: {@call.retryCodesView.retryFilterMethodName}
                     )));
             @case "ServerStreaming"
@@ -173,7 +173,7 @@
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
                 public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-                    gaxgrpc::CallTiming.FromTimeout(s::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
             @case "BidiStreaming"
                 /// <summary>
                 /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
@@ -182,7 +182,7 @@
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
                 public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-                    gaxgrpc::CallTiming.FromTimeout(s::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
 
                 /// <summary>
                 /// <see cref="gaxgrpc::BidirectionalStreamingSettings"/> for calls to
@@ -214,10 +214,10 @@
                 public lro::OperationsSettings {@call.methodName}OperationsSettings { get; set; } = new lro::OperationsSettings
                 {
                     DefaultPollSettings = new gax::PollSettings(
-                        gax::Expiration.FromTimeout(s::TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
-                        s::TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
+                        gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
+                        sys::TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
                         {@call.operationMethod.pollDelayMultiplier},
-                        s::TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
+                        sys::TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
                 };
 
             @end
@@ -325,7 +325,7 @@
         /// </summary>
         public virtual {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient
         {
-            get { throw new s::NotImplementedException(); }
+            get { throw new sys::NotImplementedException(); }
         }
 
         # method: StaticLangApiMethodView
@@ -417,18 +417,18 @@
         // Allows modification of all the underlying ApiCall objects.
         @if api.apiHasUnaryMethod
             partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiCall<TRequest, TResponse> call)
-                where TRequest : class, proto::IMessage<TRequest>
-                where TResponse : class, proto::IMessage<TResponse>;
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
         @if api.apiHasServerStreamingMethod
             partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiServerStreamingCall<TRequest, TResponse> call)
-                where TRequest : class, proto::IMessage<TRequest>
-                where TResponse : class, proto::IMessage<TResponse>;
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
         @if api.apiHasBidiStreamingMethod
             partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiBidirectionalStreamingCall<TRequest, TResponse> call)
-                where TRequest : class, proto::IMessage<TRequest>
-                where TResponse : class, proto::IMessage<TResponse>;
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
 
         // Partial methods called for each ApiCall on construction.
@@ -536,7 +536,7 @@
             /// </summary>
             public virtual lro::OperationsClient {@method.name}OperationsClient
             {
-                get { throw new s::NotImplementedException(); }
+                get { throw new sys::NotImplementedException(); }
             }
 
             {@operationRequestObjectPollOnceMethodSync(method)}
@@ -613,7 +613,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -663,7 +663,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
 
         /// <summary>
@@ -757,7 +757,7 @@
             gaxgrpc::CallSettings callSettings = null,
             gaxgrpc::BidirectionalStreamingSettings streamingSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
 
         /// <summary>
@@ -784,7 +784,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -837,7 +837,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -857,7 +857,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -878,7 +878,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -915,7 +915,7 @@
             {@method.serviceRequestTypeName} request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            throw new s::NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end

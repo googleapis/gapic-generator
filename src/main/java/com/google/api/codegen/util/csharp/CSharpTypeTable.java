@@ -30,19 +30,26 @@ import java.util.TreeMap;
 
 public class CSharpTypeTable implements TypeTable {
 
-  private static Map<String, String> wellKnownAliases =
+  // Constants for aliases that are used outside of this class.
+  public static final String ALIAS_SYSTEM = "sys";
+  public static final String ALIAS_SYSTEM_THREADING = "st";
+  public static final String ALIAS_SYSTEM_COLLECTIONS_GENERIC = "scg";
+  public static final String ALIAS_GAX = "gax";
+  public static final String ALIAS_GAX_GRPC = "gaxgrpc";
+
+  private static final Map<String, String> wellKnownAliases =
       ImmutableMap.<String, String>builder()
-          .put("Google.Api.Gax", "gax")
-          .put("Google.Api.Gax.Grpc", "gaxgrpc")
+          .put("Google.Api.Gax", ALIAS_GAX)
+          .put("Google.Api.Gax.Grpc", ALIAS_GAX_GRPC)
           .put("Google.Api.Gax.ResourceNames", "gaxres")
-          .put("Google.Protobuf", "proto")
-          .put("Google.Protobuf.WellKnownTypes", "protowkt")
+          .put("Google.Protobuf", "pb")
+          .put("Google.Protobuf.WellKnownTypes", "pbwkt")
           .put("Grpc.Core", "grpccore")
-          .put("System", "s")
+          .put("System", ALIAS_SYSTEM)
           .put("System.Collections", "sc")
-          .put("System.Collections.Generic", "scg")
+          .put("System.Collections.Generic", ALIAS_SYSTEM_COLLECTIONS_GENERIC)
           .put("System.Collections.ObjectModel", "sco")
-          .put("System.Threading", "st")
+          .put("System.Threading", ALIAS_SYSTEM_THREADING)
           .put("System.Threading.Tasks", "stt")
           .put("Google.LongRunning", "lro")
           .put("Google.Cloud.Iam.V1", "iam")
