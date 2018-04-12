@@ -134,9 +134,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleClassName(String methodName, String... variant) {
+  public String getApiSampleClassName(String methodName, String callingForm, String values) {
     return publicClassName(
-        Name.anyLower(methodName, "sample", Name.anyCamel(variant).toLowerUnderscore()));
+        Name.anyLower(
+            methodName,
+            "sample",
+            Name.anyCamel(callingForm).toLowerUnderscore(),
+            Name.anyLower(values).toLowerUnderscore()));
   }
 
   @Override

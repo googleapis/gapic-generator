@@ -1,15 +1,18 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-@snippet generate(sampleView)
-   @#### STUB standalone sample "{@sampleView.info.className}" #####
-   @##     calling form "{@sampleView.info.callingForm}"
-   @##     valueSet "{@sampleView.info.valueSet.id}"
-   @let apiMethod = sampleView.info.method
-     @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-     @## TODO: Replace with a real sample
-     sample = """
-        {@sampleCode(apiMethod)}
-     """
+@snippet generate(sampleFile)
+   @#### STUB standalone sample "{@sampleFile.className}" #####
+  @let apiMethod = sampleFile.sampledMethod
+    @let sample = apiMethod.samples.get(0)
+      @##     calling form "{@sample.callingFormId}"
+      @##     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+      @##       {@sample.valueSet.parameters}
+      @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+      @## TODO: Replace with a full sample
+      sample = """
+           {@sampleCode(apiMethod, sample.initCode)}
+      """
+     @end
   @end
 @end

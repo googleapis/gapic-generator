@@ -21,21 +21,16 @@ import java.util.List;
 /** Contains the view model for a single set of sample values for a single method. */
 @AutoValue
 public abstract class SampleValueSetView {
-  /** The id as specified in the config. */
+  /** The id as specified in the config */
   public abstract String id();
 
-  /** The title as specified in the config. */
+  /** The title as specified in the config */
   public abstract String title();
 
-  /** The description as specified in the config. */
+  /** The description as specified in the config */
   public abstract String description();
 
-  /**
-   * The parameters as specified in the config.
-   *
-   * <p>TODO(vchudnov-g): A parsed version of these will be included in this file, just as happens
-   * for sample_code_init_fields
-   */
+  /** The parameters as specified in the config */
   public abstract List<String> parameters();
 
   public static SampleValueSetView New(SampleValueSet config) {

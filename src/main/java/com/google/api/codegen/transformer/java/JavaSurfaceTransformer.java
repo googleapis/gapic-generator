@@ -19,13 +19,11 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
@@ -42,21 +40,15 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.viewmodel.ApiAndSamples;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
-import com.google.api.codegen.viewmodel.SampleInfo;
-import com.google.api.codegen.viewmodel.SampleValueSetView;
-import com.google.api.codegen.viewmodel.SampleView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -73,8 +65,6 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /** A transformer to transform an ApiModel into the standard GAPIC surface in Java. */
 public class JavaSurfaceTransformer {
@@ -91,8 +81,8 @@ public class JavaSurfaceTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final StaticLangApiMethodTransformer apiMethodTransformer =
-      new StaticLangApiMethodTransformer();
+  private final JavaMethodViewGenerator methodGenerator =
+      new JavaMethodViewGenerator(SampleType.IN_CODE);
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -103,7 +93,6 @@ public class JavaSurfaceTransformer {
       new RetryDefinitionsTransformer();
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
-  private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
@@ -135,15 +124,8 @@ public class JavaSurfaceTransformer {
       InterfaceContext context =
           surfaceTransformer.createInterfaceContext(
               apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
-
-      ApiAndSamples<StaticLangApiView, StaticLangApiMethodView> classViewWithSamples =
-          generateApiAndSampleClass(context, productConfig);
-      StaticLangFileView<StaticLangApiView> apiFile =
-          generateApiFile(context, classViewWithSamples);
+      StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
-
-      List<ViewModel> sampleFiles = generateSampleFiles(context, classViewWithSamples);
-      surfaceDocs.addAll(sampleFiles);
 
       serviceDocs.add(apiFile.classView().doc());
 
@@ -180,80 +162,44 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangFileView<StaticLangApiView> generateApiFile(
-      InterfaceContext context,
-      ApiAndSamples<StaticLangApiView, StaticLangApiMethodView> classView) {
-    List<StaticLangFileView<StaticLangApiView>> files = new ArrayList<>();
-
-    StaticLangFileView.Builder<StaticLangApiView> fileBuilder =
+      InterfaceContext context, GapicProductConfig productConfig) {
+    StaticLangFileView.Builder<StaticLangApiView> apiFile =
         StaticLangFileView.<StaticLangApiView>newBuilder();
 
-    fileBuilder.templateFileName(API_TEMPLATE_FILENAME);
-    fileBuilder.classView(classView.api());
+    apiFile.templateFileName(API_TEMPLATE_FILENAME);
+
+    apiFile.classView(generateApiClass(context, productConfig));
 
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    fileBuilder.outputPath(outputPath + File.separator + className + ".java");
+    apiFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    fileBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
+    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, className));
 
-    return fileBuilder.build();
+    return apiFile.build();
   }
 
-  /**
-   * Generates a SampleView for each method sample, as specified in classView.samples().
-   *
-   * @param context the interface context corresponding to the samples
-   * @param classView the bundle of API view and SampleInfo classes for each of the methods to get
-   *     samples
-   * @return a list of SampleView models, each corresponding to a distinct method sample.
-   */
-  private List<ViewModel> generateSampleFiles(
-      InterfaceContext context,
-      ApiAndSamples<StaticLangApiView, StaticLangApiMethodView> classView) {
-    List<ViewModel> files = new ArrayList<>();
-
-    SampleView.Builder<StaticLangApiView, StaticLangApiMethodView> sampleFileBuilder =
-        SampleView.<StaticLangApiView, StaticLangApiMethodView>newBuilder();
-
-    sampleFileBuilder.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-    SurfaceNamer namer = context.getNamer();
-    for (SampleInfo<StaticLangApiMethodView> sampleClass : classView.samples()) {
-
-      String outputPath =
-          pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(),
-              context.getProductConfig(),
-              sampleClass.method().name());
-      files.add(
-          sampleFileBuilder
-              .info(sampleClass)
-              .outputPath(
-                  outputPath + File.separator + namer.getApiSampleFileName(sampleClass.className()))
-              .api(classView.api())
-              .build());
-    }
-
-    return files;
-  }
-
-  private ApiAndSamples<StaticLangApiView, StaticLangApiMethodView> generateApiAndSampleClass(
+  private StaticLangApiView generateApiClass(
       InterfaceContext context, GapicProductConfig productConfig) {
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addApiImports(context);
 
-    List<ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView>> methodsAndSamples =
-        generateApiMethodsAndSamples(context);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(context);
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
+    ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
+    xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod, productConfig));
+
+    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseLevelAnnotation(
         namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-
+    xapiClass.name(name);
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
@@ -265,30 +211,13 @@ public class JavaSurfaceTransformer {
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-
+    xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
     xapiClass.pagedResponseViews(
         generatePagedResponseWrappers(
             context, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-
-    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    xapiClass.name(name);
-    List<StaticLangApiMethodView> methods = getApiMethodsFrom(methodsAndSamples);
-    xapiClass.apiMethods(methods);
-    ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod, productConfig));
-
-    List<SampleInfo<StaticLangApiMethodView>> allSamples = new ArrayList<>();
-    for (ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView> methodWithSamples :
-        methodsAndSamples) {
-      allSamples.addAll(methodWithSamples.samples());
-    }
-
-    return ApiAndSamples.<StaticLangApiView, StaticLangApiMethodView>newBuilder()
-        .api(xapiClass.build())
-        .samples(allSamples)
-        .build();
+    return xapiClass.build();
   }
 
   private List<StaticLangPagedResponseView> generatePagedResponseWrappers(
@@ -592,7 +521,7 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from methods classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
@@ -648,7 +577,7 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from method, request, and resource classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -1047,171 +976,5 @@ public class JavaSurfaceTransformer {
         namer.getApiSettingsBuilderVarName(context.getInterfaceConfig()));
     settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return settingsDoc.build();
-  }
-
-  private ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView> methodAndSamplesFor(
-      SurfaceNamer namer, StaticLangApiMethodView methodView) {
-
-    Set<SampleValueSetView> matchingValueSets =
-        methodView.sampleValueSetsCollection().forSampleType(SampleType.STANDALONE);
-
-    SampleInfo.Builder<StaticLangApiMethodView> sampleInfoBuilder =
-        SampleInfo.<StaticLangApiMethodView>newBuilder();
-
-    List<SampleInfo<StaticLangApiMethodView>> sampleInfos = new ArrayList<>();
-    for (SampleValueSetView values : matchingValueSets) {
-      sampleInfos.add(
-          sampleInfoBuilder
-              .valueSet(values)
-              .className(
-                  namer.getApiSampleClassName(
-                      methodView.name(),
-                      // TODO(vchudnov-g): Simplify so we don't need all these casing conversions
-                      Name.anyCamel(methodView.type().toString()).toLowerCamel(),
-                      Name.anyLower(values.id()).toLowerCamel()))
-              .method(methodView)
-              .callingForm(methodView.type().toString())
-              .build());
-    }
-
-    return ApiAndSamples.<StaticLangApiMethodView, StaticLangApiMethodView>newBuilder()
-        .api(methodView)
-        .samples(sampleInfos)
-        .build();
-  }
-
-  private List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {
-    return getApiMethodsFrom(generateApiMethodsAndSamples(context));
-  }
-
-  private List<StaticLangApiMethodView> getApiMethodsFrom(
-      List<ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView>> methodsAndSamples) {
-    return methodsAndSamples.stream().map(ApiAndSamples::api).collect(Collectors.toList());
-  }
-
-  private List<ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView>>
-      generateApiMethodsAndSamples(InterfaceContext context) {
-    List<ApiAndSamples<StaticLangApiMethodView, StaticLangApiMethodView>> apiMethods =
-        new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
-
-      if (methodConfig.isPageStreaming()) {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                methodAndSamplesFor(
-                    namer,
-                    apiMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext)));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  methodAndSamplesFor(
-                      namer,
-                      apiMethodTransformer.generatePagedFlattenedMethod(
-                          flattenedMethodContext.withResourceNamesInSamplesOnly())));
-            }
-          }
-        }
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer,
-                apiMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext)));
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generatePagedCallableMethod(requestMethodContext)));
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer,
-                apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext)));
-      } else if (methodConfig.isGrpcStreaming()) {
-        ImportTypeTable typeTable = context.getImportTypeTable();
-        switch (methodConfig.getGrpcStreamingType()) {
-          case BidiStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
-            break;
-          case ClientStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
-            break;
-          case ServerStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
-            break;
-          default:
-            throw new IllegalArgumentException(
-                "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
-        }
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generateCallableMethod(requestMethodContext)));
-      } else if (methodConfig.isLongRunningOperation()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                methodAndSamplesFor(
-                    namer,
-                    apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                        flattenedMethodContext)));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  methodAndSamplesFor(
-                      namer,
-                      apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                          flattenedMethodContext.withResourceNamesInSamplesOnly())));
-            }
-          }
-        }
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer,
-                apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                    requestMethodContext)));
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generateOperationCallableMethod(requestMethodContext)));
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generateCallableMethod(requestMethodContext)));
-      } else {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                methodAndSamplesFor(
-                    namer, apiMethodTransformer.generateFlattenedMethod(flattenedMethodContext)));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  methodAndSamplesFor(
-                      namer,
-                      apiMethodTransformer.generateFlattenedMethod(
-                          flattenedMethodContext.withResourceNamesInSamplesOnly())));
-            }
-          }
-        }
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generateRequestObjectMethod(requestMethodContext)));
-        apiMethods.add(
-            methodAndSamplesFor(
-                namer, apiMethodTransformer.generateCallableMethod(requestMethodContext)));
-      }
-    }
-
-    return apiMethods;
-  }
-
-  private boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
-    return flatteningGroup
-        .getFlattenedFieldConfigs()
-        .values()
-        .stream()
-        .anyMatch(FieldConfig::useResourceNameType);
   }
 }

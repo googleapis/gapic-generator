@@ -1,49 +1,61 @@
 @extends "java/common.snip"
 @extends "java/method_sample.snip"
 
-@snippet generate(sampleView)
-   //// STUB standalone sample "{@sampleView.info.className}" /////
-   //     calling form "{@sampleView.info.callingForm}"
-   //     valueSet "{@sampleView.info.valueSet.id}"
-   @let apiMethod = sampleView.info.method
-     //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-     // TODO: Replace with a real sample
-     /*
-     @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
-       {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+@snippet generate(sampleFile)
+   //// STUB standalone sample "{@sampleFile.classView.name}" /////
+   @let apiMethod = sampleFile.classView.sampledMethod
+     @let sample = apiMethod.samples.get(0)
+       //     calling form "{@sample.callingFormId}"
+       //     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+       //       {@sample.valueSet.parameters}
+       //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+       // TODO: Replace with a full sample
+       
+       /*
+       @let coreSampleCode = generateSample(apiMethod, sample.initCode)
+         {@methodDoc(coreSampleCode)}
+       @end
+       */
      @end
-     */
    @end
 @end
 
+# adapted from main.snip:apiMethods(xapiClass) and its dependencies
+# For real use, we'll want to switch on the calling form id.
+@private generateSample(apiMethod, initCode)
+    @switch apiMethod.type
+    @case "PagedFlattenedMethod"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectMethod(apiMethod, initCode)}
+    @case "PagedCallableMethod"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
+    @case "UnpagedListCallableMethod"
+      {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
+    @case "FlattenedMethod"
+      {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "RequestObjectMethod"
+      {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "CallableMethod"
+      @if apiMethod.isStreaming
+        {@streamingCallableMethodSampleCode(apiMethod, initCode)}
+      @else
+        {@callableMethodSampleCode(apiMethod, initCode)}
+      @end
+    @case "AsyncOperationFlattenedMethod"
+      {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+    @case "AsyncOperationRequestObjectMethod"
+      {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+    @case "OperationCallableMethod"
+      {@asyncOperationCallableMethodSampleCall(apiMethod, initCode)}
+    @default
+      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+    @end
+@end
+
 # copied & modified from main.snip
-@private methodDoc(apiMethodDoc, methodSampleCode)
-  /**
-  @if apiMethodDoc.mainDocLines
-    @join commentLine : apiMethodDoc.mainDocLines
-      {@""} * {@commentLine}
-    @end
-  @else
-    {@""} *
-  @end
-   *
-   * Sample code:
-   * <pre><code>
+@private methodDoc(methodSampleCode)
   @join sampleLine : util.getDocLines(methodSampleCode)
-    {@""} * {@sampleLine}
+    {@sampleLine}
   @end
-   * </code></pre>
-#  @if apiMethodDoc.paramDocs
-#    {@""} *
-#    @join doc : apiMethodDoc.paramDocs
-#      {@paramDoc(doc)}
-#    @end
-#  @end
-  @if apiMethodDoc.throwsDocLines
-    @join commentLine : apiMethodDoc.throwsDocLines
-      {@""} * {@commentLine}
-    @end
-  @end
-   */
-  {@EMPTY}
 @end

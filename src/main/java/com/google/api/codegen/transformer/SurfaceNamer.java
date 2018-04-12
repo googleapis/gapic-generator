@@ -781,12 +781,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The name of the class that holds a sample for an API method and variant. The variant is
-   * typically a calling form and/or a value set id.
+   * The name of the class that holds a sample for an API method, calling form, and value set id.
    */
-  public String getApiSampleClassName(String methodName, String... variant) {
+  public String getApiSampleClassName(String methodName, String callingForm, String values) {
     return publicClassName(
-        Name.anyCamel(methodName, "sample", Name.anyLower(variant).toUpperCamel()));
+        Name.anyCamel(
+            methodName,
+            "sample",
+            Name.anyCamel(callingForm).toUpperCamel(),
+            Name.anyLower(values).toUpperCamel()));
   }
 
   /**

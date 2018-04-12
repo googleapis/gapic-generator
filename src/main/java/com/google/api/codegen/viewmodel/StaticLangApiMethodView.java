@@ -32,7 +32,7 @@ public abstract class StaticLangApiMethodView
 
   public abstract String apiVariableName();
 
-  public abstract InitCodeView initCode();
+  public abstract InitCodeView initCode(); // to be deprecated
 
   public abstract ApiMethodDocView doc();
 
@@ -96,8 +96,8 @@ public abstract class StaticLangApiMethodView
 
   public abstract String serviceConstructorName();
 
-  /** All the configured value sets for all samples for this method. */
-  public abstract SampleValueSetCollection sampleValueSetsCollection();
+  @Nullable
+  public abstract List<MethodSampleView> samples();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
@@ -106,7 +106,7 @@ public abstract class StaticLangApiMethodView
   public abstract Builder toBuilder();
 
   @AutoValue.Builder
-  public abstract static class Builder {
+  public abstract static class Builder implements ApiMethodViewBuilder {
     public abstract Builder type(ClientMethodType type);
 
     public abstract Builder apiClassName(String apiClassName);
@@ -167,7 +167,7 @@ public abstract class StaticLangApiMethodView
 
     public abstract Builder serviceConstructorName(String val);
 
-    public abstract Builder sampleValueSetsCollection(SampleValueSetCollection collection);
+    public abstract Builder samples(List<MethodSampleView> samples);
 
     public abstract StaticLangApiMethodView build();
   }

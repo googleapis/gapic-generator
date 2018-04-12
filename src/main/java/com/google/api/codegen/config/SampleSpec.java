@@ -38,6 +38,8 @@ public class SampleSpec {
   /** All the SampleValueSets defined for this method, indexed by their IDs. */
   private Map<String, SampleValueSet> valueSets;
 
+  private boolean specified;
+
   /** The various types of supported samples. */
   public enum SampleType {
     IN_CODE,
@@ -46,19 +48,34 @@ public class SampleSpec {
   }
 
   public SampleSpec(MethodConfigProto methodConfigProto) {
+    specified = methodConfigProto.hasSamples();
     this.sampleConfiguration = methodConfigProto.getSamples();
     storeValueSets(methodConfigProto.getSampleValueSetsList(), methodConfigProto.getName());
+  }
+
+  public boolean isConfigured() {
+    return specified;
   }
 
   /**
    * Returns true if id is a regexp match for the given expression. This is the function used to
    * determine whether calling forms and value sets match expressions referencing them by ID.
+   *
+   * @param expression The regex to use for matching
+   * @param id The ID to be matched against the regex
+   * @return True iff id matches expression
    */
   public static boolean expressionMatchesId(String expression, String id) {
     return id.matches(expression);
   }
 
-  /** Returns the SampleValueSets that were specified for this methodForm and sampleType. */
+  /**
+   * Returns the SampleValueSets that were specified for this methodForm and sampleType.
+   *
+   * @param methodForm The calling form for which value sets are requestd
+   * @param sampleType The sample type for which value sets are requested
+   * @return A set of SampleValueSets for methodForm andSampleType
+   */
   public Set<SampleValueSet> getMatchingValueSets(
       ClientMethodType methodForm, SampleType sampleType) {
     Set<SampleValueSet> matchingValueSets = new LinkedHashSet<>();
@@ -102,8 +119,9 @@ public class SampleSpec {
         return sampleConfiguration.getInCodeList();
       case EXPLORER:
         return sampleConfiguration.getApiExplorerList();
+      default:
+        throw new IllegalArgumentException("unhandled SampleType: " + sampleType.toString());
     }
-    return null;
   }
 
   /** Populates the map valueSets so as to be able to access each SampleValueSet by its ID. */
