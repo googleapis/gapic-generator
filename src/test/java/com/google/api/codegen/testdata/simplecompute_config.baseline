@@ -373,17 +373,12 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
-<<<<<<< HEAD
   - name: compute.dummyObjects.listResources
-=======
-  - name: compute.dummyObjects.getResource
->>>>>>> fully qualify ResourceName import
     # TODO: Configure which groups of fields should be flattened into method
     # params.
     flattening:
       groups:
       - parameters:
-<<<<<<< HEAD
         - project
     # TODO: Configure which fields are required.
     required_fields:
@@ -397,32 +392,32 @@ interfaces:
       response:
         token_field: nextPageToken
         resources_field: _TODO_
-=======
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: compute.dummyObjects.getResource
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
         - resource
     # TODO: Configure which fields are required.
     required_fields:
     - resource
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
->>>>>>> fully qualify ResourceName import
     # TODO: Configure the retryable codes for this method.
     retry_codes_name: idempotent
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      project: project
-=======
-      resource: resource
->>>>>>> fully qualify ResourceName import
-=======
-      dummyObject: projectDummyObject
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
       resource: projectDummyObjectResource
->>>>>>> update DiscoGapicParser and test
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.dummyObjects.delete
@@ -466,28 +461,13 @@ resource_name_generation:
     region: projectRegion
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
-<<<<<<< HEAD
-    address: projectAddress
-<<<<<<< HEAD
+    address: projectGlobalAddress
 - message_name: ListResourcesDummyObjectsHttpRequest
   field_entity_map:
     project: project
-=======
-=======
-    address: projectGlobalAddress
->>>>>>> don't strip out series of literal segments in DiscoGapicParser.getCanonicalPath
 - message_name: GetResourceDummyObjectHttpRequest
   field_entity_map:
-<<<<<<< HEAD
-<<<<<<< HEAD
-    resource: resource
->>>>>>> fully qualify ResourceName import
-=======
-    resource: projectDummyObject
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
     resource: projectDummyObjectResource
->>>>>>> update DiscoGapicParser and test
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
     dummyObject: projectDummyObject

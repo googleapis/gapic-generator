@@ -13060,17 +13060,17 @@ import org.threeten.bp.Duration;
 @BetaApi
 public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
   /**
-<<<<<<< HEAD
    * Returns the object with the settings used for calls to listResourcesDummyObjects.
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).listResourcesDummyObjectsSettings();
-=======
+  }
+
+  /**
    * Returns the object with the settings used for calls to getResourceDummyObject.
    */
   public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).getResourceDummyObjectSettings();
->>>>>>> fully qualify ResourceName import
   }
 
   /**
@@ -13201,17 +13201,17 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
     }
 
     /**
-<<<<<<< HEAD
      * Returns the builder for the settings used for calls to listResourcesDummyObjects.
      */
     public PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
       return getStubSettingsBuilder().listResourcesDummyObjectsSettings();
-=======
+    }
+
+    /**
      * Returns the builder for the settings used for calls to getResourceDummyObject.
      */
     public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
       return getStubSettingsBuilder().getResourceDummyObjectSettings();
->>>>>>> fully qualify ResourceName import
     }
 
     /**
@@ -13274,13 +13274,10 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
-<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
-=======
-import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
->>>>>>> fully qualify ResourceName import
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -13334,8 +13331,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       .add("https://www.googleapis.com/auth/devstorage.read_write")
       .build();
 
-<<<<<<< HEAD
   private final PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
+  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
   private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
   /**
@@ -13343,16 +13340,13 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return listResourcesDummyObjectsSettings;
-=======
-  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
-  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
+  }
 
   /**
    * Returns the object with the settings used for calls to getResourceDummyObject.
    */
   public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
     return getResourceDummyObjectSettings;
->>>>>>> fully qualify ResourceName import
   }
 
   /**
@@ -13454,11 +13448,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   protected DummyObjectStubSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
 
-<<<<<<< HEAD
     listResourcesDummyObjectsSettings = settingsBuilder.listResourcesDummyObjectsSettings().build();
-=======
     getResourceDummyObjectSettings = settingsBuilder.getResourceDummyObjectSettings().build();
->>>>>>> fully qualify ResourceName import
     deleteDummyObjectSettings = settingsBuilder.deleteDummyObjectSettings().build();
   }
 
@@ -13517,11 +13508,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   public static class Builder extends StubSettings.Builder<DummyObjectStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
-<<<<<<< HEAD
     private final PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
-=======
     private final UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
->>>>>>> fully qualify ResourceName import
     private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -13562,21 +13550,16 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     protected Builder(ClientContext clientContext) {
       super(clientContext);
 
-<<<<<<< HEAD
       listResourcesDummyObjectsSettings = PagedCallSettings.newBuilder(
           LIST_RESOURCES_DUMMY_OBJECTS_PAGE_STR_FACT);
-=======
+
       getResourceDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
->>>>>>> fully qualify ResourceName import
 
       deleteDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
-<<<<<<< HEAD
           listResourcesDummyObjectsSettings,
-=======
           getResourceDummyObjectSettings,
->>>>>>> fully qualify ResourceName import
           deleteDummyObjectSettings
       );
 
@@ -13594,11 +13577,11 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
 
     private static Builder initDefaults(Builder builder) {
 
-<<<<<<< HEAD
       builder.listResourcesDummyObjectsSettings()
-=======
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
       builder.getResourceDummyObjectSettings()
->>>>>>> fully qualify ResourceName import
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -13612,19 +13595,13 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     protected Builder(DummyObjectStubSettings settings) {
       super(settings);
 
-<<<<<<< HEAD
       listResourcesDummyObjectsSettings = settings.listResourcesDummyObjectsSettings.toBuilder();
-      deleteDummyObjectSettings = settings.deleteDummyObjectSettings.toBuilder();
-
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
-          listResourcesDummyObjectsSettings,
-=======
       getResourceDummyObjectSettings = settings.getResourceDummyObjectSettings.toBuilder();
       deleteDummyObjectSettings = settings.deleteDummyObjectSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          listResourcesDummyObjectsSettings,
           getResourceDummyObjectSettings,
->>>>>>> fully qualify ResourceName import
           deleteDummyObjectSettings
       );
     }
@@ -13645,17 +13622,17 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     }
 
     /**
-<<<<<<< HEAD
      * Returns the builder for the settings used for calls to listResourcesDummyObjects.
      */
     public PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
       return listResourcesDummyObjectsSettings;
-=======
+    }
+
+    /**
      * Returns the builder for the settings used for calls to getResourceDummyObject.
      */
     public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
       return getResourceDummyObjectSettings;
->>>>>>> fully qualify ResourceName import
     }
 
     /**
@@ -13694,25 +13671,13 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
-<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
-<<<<<<< HEAD
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
-=======
-import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
-import com.google.cloud.simplecompute.v1.ResourceName;
->>>>>>> fully qualify ResourceName import
-=======
-import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
-<<<<<<< HEAD
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
->>>>>>> update DiscoGapicParser and test
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -13727,7 +13692,6 @@ public abstract class DummyObjectStub implements BackgroundResource {
 
 
   @BetaApi
-<<<<<<< HEAD
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable() {
     throw new UnsupportedOperationException("Not implemented: listResourcesDummyObjectsPagedCallable()");
   }
@@ -13735,10 +13699,11 @@ public abstract class DummyObjectStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     throw new UnsupportedOperationException("Not implemented: listResourcesDummyObjectsCallable()");
-=======
+  }
+
+  @BetaApi
   public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
     throw new UnsupportedOperationException("Not implemented: getResourceDummyObjectCallable()");
->>>>>>> fully qualify ResourceName import
   }
 
   @BetaApi
@@ -13783,28 +13748,14 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
-<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
-=======
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
-<<<<<<< HEAD
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
-=======
-import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
-<<<<<<< HEAD
-import com.google.cloud.simplecompute.v1.ResourceName;
->>>>>>> fully qualify ResourceName import
-=======
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
-<<<<<<< HEAD
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
->>>>>>> update DiscoGapicParser and test
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
@@ -13824,7 +13775,6 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @InternalApi
-<<<<<<< HEAD
   public static final ApiMethodDescriptor<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsMethodDescriptor =
       ApiMethodDescriptor.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
           .setFullMethodName("compute.dummyObjects.listResources")
@@ -13842,7 +13792,9 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .setResponseParser(
               ApiMessageHttpResponseParser.<ProjectsGetDummyObjectResources>newBuilder()
                   .setResponseInstance(ProjectsGetDummyObjectResources.getDefaultInstance())
-=======
+                  .build())
+          .build();
+  @InternalApi
   public static final ApiMethodDescriptor<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectMethodDescriptor =
       ApiMethodDescriptor.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
           .setFullMethodName("compute.dummyObjects.getResource")
@@ -13855,7 +13807,6 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                                      ))
                   .setResourceNameFactory(ProjectDummyObjectResourceName.newFactory())
                   .setResourceNameField("resource")
->>>>>>> fully qualify ResourceName import
                   .build())
           .build();
   @InternalApi
@@ -13875,12 +13826,9 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .build();
   private final BackgroundResource backgroundResources;
 
-<<<<<<< HEAD
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable;
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable;
-=======
   private final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable;
->>>>>>> fully qualify ResourceName import
   private final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
@@ -13913,34 +13861,28 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   protected HttpJsonDummyObjectStub(DummyObjectStubSettings settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
 
-<<<<<<< HEAD
     HttpJsonCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsTransportSettings =
         HttpJsonCallSettings.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
             .setMethodDescriptor(listResourcesDummyObjectsMethodDescriptor)
-=======
+            .build();
     HttpJsonCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectTransportSettings =
         HttpJsonCallSettings.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
             .setMethodDescriptor(getResourceDummyObjectMethodDescriptor)
->>>>>>> fully qualify ResourceName import
             .build();
     HttpJsonCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectTransportSettings =
         HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, Void>newBuilder()
             .setMethodDescriptor(deleteDummyObjectMethodDescriptor)
             .build();
 
-<<<<<<< HEAD
     this.listResourcesDummyObjectsCallable = callableFactory.createUnaryCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
     this.listResourcesDummyObjectsPagedCallable = callableFactory.createPagedCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
-=======
     this.getResourceDummyObjectCallable = callableFactory.createUnaryCallable(getResourceDummyObjectTransportSettings,settings.getResourceDummyObjectSettings(), clientContext);
->>>>>>> fully qualify ResourceName import
     this.deleteDummyObjectCallable = callableFactory.createUnaryCallable(deleteDummyObjectTransportSettings,settings.deleteDummyObjectSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
 
   @BetaApi
-<<<<<<< HEAD
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable() {
     return listResourcesDummyObjectsPagedCallable;
   }
@@ -13948,10 +13890,11 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     return listResourcesDummyObjectsCallable;
-=======
+  }
+
+  @BetaApi
   public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
     return getResourceDummyObjectCallable;
->>>>>>> fully qualify ResourceName import
   }
 
   @BetaApi
@@ -14035,28 +13978,14 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
-<<<<<<< HEAD
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
-=======
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
-<<<<<<< HEAD
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
-=======
-import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
-<<<<<<< HEAD
-import com.google.cloud.simplecompute.v1.ResourceName;
->>>>>>> fully qualify ResourceName import
-=======
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
-<<<<<<< HEAD
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
-import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
->>>>>>> update DiscoGapicParser and test
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.longrunning.Operation;
@@ -14776,11 +14705,8 @@ import com.google.api.gax.rpc.testing.FakeStatusCode;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.DummyObjectStubSettings;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.deleteDummyObjectMethodDescriptor;
-<<<<<<< HEAD
-import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.listResourcesDummyObjectsMethodDescriptor;
-=======
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.getResourceDummyObjectMethodDescriptor;
->>>>>>> fully qualify ResourceName import
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.listResourcesDummyObjectsMethodDescriptor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.IOException;
@@ -14799,11 +14725,8 @@ public class DummyObjectClientTest {
 
    private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
         Lists.<ApiMethodDescriptor>newArrayList(
-<<<<<<< HEAD
           listResourcesDummyObjectsMethodDescriptor,
-=======
           getResourceDummyObjectMethodDescriptor,
->>>>>>> fully qualify ResourceName import
           deleteDummyObjectMethodDescriptor
         ));
   private static final MockHttpService mockService
@@ -14837,7 +14760,6 @@ public class DummyObjectClientTest {
 
   @Test
   @SuppressWarnings("all")
-<<<<<<< HEAD
   public void listResourcesDummyObjectsTest() {
     String kind = "kind3292052";
     String nextPageToken = "";
@@ -14858,14 +14780,6 @@ public class DummyObjectClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getResourcesList().get(0),
         resources.get(0));
-=======
-  public void getResourceDummyObjectTest() {
-    mockService.addNullResponse();
-
-    ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
-
-    client.getResourceDummyObject(resource);
->>>>>>> fully qualify ResourceName import
 
     List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
@@ -14878,32 +14792,48 @@ public class DummyObjectClientTest {
 
   @Test
   @SuppressWarnings("all")
-<<<<<<< HEAD
   public void listResourcesDummyObjectsExceptionTest() throws Exception {
-=======
-  public void getResourceDummyObjectExceptionTest() throws Exception {
->>>>>>> fully qualify ResourceName import
     ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
     mockService.addException(exception);
 
     try {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       ProjectName project = ProjectName.of("[PROJECT]");
 
       client.listResourcesDummyObjects(project);
-=======
-      ResourceName resource = ResourceName.of("[PROJECT]", "[RESOURCE]");
-=======
-      ProjectDummyObjectName resource = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
->>>>>>> just using DiscoGapicParser.getCanonicalPath() to handle resourcename path conflicts
-=======
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getResourceDummyObjectTest() {
+    mockService.addNullResponse();
+
+    ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+
+    client.getResourceDummyObject(resource);
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getResourceDummyObjectExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
       ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
->>>>>>> update DiscoGapicParser and test
 
       client.getResourceDummyObject(resource);
->>>>>>> fully qualify ResourceName import
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
