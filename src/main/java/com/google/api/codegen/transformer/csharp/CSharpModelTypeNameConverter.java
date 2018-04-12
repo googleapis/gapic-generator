@@ -269,7 +269,8 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
   private TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, TypeModel type, String typedResourceShortName) {
-    TypeName simpleTypeName = new TypeName(typedResourceShortName);
+    String nickName = typeNameConverter.getAndSaveNicknameFor(typedResourceShortName);
+    TypeName simpleTypeName = new TypeName(typedResourceShortName, nickName);
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");
     } else if (type.isRepeated()) {

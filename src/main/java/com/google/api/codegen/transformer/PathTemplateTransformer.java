@@ -123,7 +123,8 @@ public class PathTemplateTransformer {
             .enumName(namer.getResourceEnumName(config))
             .docName(config.getEntityName())
             .index(index)
-            .pattern(config.getNamePattern());
+            .pattern(config.getNamePattern())
+            .commonResourceName(config.getCommonResourceName());
     List<ResourceNameParamView> params = new ArrayList<>();
     int varIndex = 0;
     for (String var : config.getNameTemplate().vars()) {
