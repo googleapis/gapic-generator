@@ -34,8 +34,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
@@ -155,8 +154,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String outputPath = options.get(OUTPUT_FILE);
       List<GapicProvider<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
-      Map<String, Object> outputFiles = Maps.newHashMap();
-      Set<String> executables = Sets.newHashSet();
+      ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
+      ImmutableSet.Builder<String> executables = ImmutableSet.builder();
       for (GapicProvider<?> provider : providers) {
         Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
         for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
@@ -166,8 +165,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
           }
         }
       }
-      writeCodeGenOutput(outputFiles, outputPath);
-      setOutputFilesPermissions(executables, outputPath);
+      writeCodeGenOutput(outputFiles.build(), outputPath);
+      setOutputFilesPermissions(executables.build(), outputPath);
     }
   }
 
