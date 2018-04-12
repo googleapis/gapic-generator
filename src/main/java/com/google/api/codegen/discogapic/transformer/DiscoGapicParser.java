@@ -20,7 +20,6 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -72,11 +71,10 @@ public class DiscoGapicParser {
   }
 
   /**
-   * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
-   * "{project}/regions/{region}/addresses", this returns "projects/{project}/regions/{region}".
+   * Get the canonical path for a path, in the form "(%s/\{%s\})+" e.g. for a method path
+   * "{project}/regions/{foo}/addresses", this returns "projects/{project}/regions/{region}".
    */
-  public static String getCanonicalPath(Method method) {
-    String namePattern = method.flatPath();
+  public static String getCanonicalPath(String namePattern) {
     // Ensure the first path segment is a string literal representing a resource type.
     if (namePattern.charAt(0) == '{') {
       String firstResource =
@@ -87,19 +85,7 @@ public class DiscoGapicParser {
     if (!namePattern.endsWith("}") && namePattern.contains("}")) {
       namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
     }
-    // For each sequence of consecutive non-bracketed path segments,
-    // replace those segments with the last one in the sequence.
-    Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
-    if (m.find()) {
-      StringBuffer sb = new StringBuffer();
-      for (int i = 1; i <= m.groupCount(); i++) {
-        String multipleSegment = m.group(i);
-        String[] segmentPieces = multipleSegment.split("/");
-        Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
-        m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
-      }
-      namePattern = m.appendTail(sb).toString();
-    }
+
     return namePattern;
   }
 
@@ -142,19 +128,24 @@ public class DiscoGapicParser {
 
   /**
    * Return the name of the fully qualified resource from a given canonicalized path. Use {@link
-   * #getCanonicalPath(Method)}} for canonicalization of the parameter.
+   * #getCanonicalPath(String)}} for canonicalization of the parameter. This method includes all
+   * segments from the input path in the resulting Name except for consecutive duplicate segments.
    */
   public static Name getQualifiedResourceIdentifier(String canonicalPath) {
     String[] pieces = canonicalPath.split(PATH_DELIMITER);
 
-    Name name = null;
-    for (String piece : pieces) {
-      if (!piece.contains("{")) {
-        if (name == null) {
-          name = Name.from(Inflector.singularize(piece));
-        } else {
-          name = name.join(stringToName(Inflector.singularize(piece)));
-        }
+    Name name = Name.from();
+    String previous = null;
+    for (String segment : pieces) {
+      String next = segment;
+      if (segment.contains("}")) {
+        next = segment.substring(1, segment.length() - 1);
+      }
+      next = Inflector.singularize(next);
+      if (!next.equals(previous)) {
+        // Only append to the name if this segment is not identical to the previous segment.
+        name = name.join(stringToName(next));
+        previous = next;
       }
     }
 

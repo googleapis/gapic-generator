@@ -110,7 +110,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
       for (MethodConfig methodConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getMethodConfigs()) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        namePatternsToMethod.put(DiscoGapicParser.getCanonicalPath(method), method);
+        namePatternsToMethod.put(DiscoGapicParser.getCanonicalPath(method.flatPath()), method);
       }
       for (SingleResourceNameConfig nameConfig :
           productConfig.getInterfaceConfigMap().get(interfaceName).getSingleResourceNameConfigs()) {
