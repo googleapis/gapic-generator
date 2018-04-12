@@ -65,7 +65,7 @@ Unix-y system; if you are using Windows, you will need to tweak the steps for yo
 
 ### Set up prerequisites for building from source and running directly
 
-Firstly, make sure you have the
+First, make sure you have the
 [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) installed.
 
 Next, you need to install `protoc` if you don't have it yet: see
@@ -74,7 +74,7 @@ The pre-built binaries are the easiest. There aren't instructions for installati
 you just have to download the correct binaries for your platform and put them on your path.
 Given a platform ${PROTOC_PLATFORM} and a protoc version ${PROTOC_VERSION}:
 
-1. Download the latest zip from https://github.com/google/protobuf/releases ending in "-${PROTOC_PLATFORM}.zip"
+1. Download the latest zip file ending in "-${PROTOC_PLATFORM}.zip" from https://github.com/google/protobuf/releases
 2. Unzip the file: `unzip protoc-${PROTOC_VERSION}-${PROTOC_PLATFORM}.zip -d protoc-${PROTOC_VERSION}`
 3. Copy `protoc` to a location on your `$PATH`: `cp protoc-${PROTOC_VERSION}/bin/protoc /usr/local/bin`
 
@@ -118,7 +118,7 @@ protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
 
 ### Generate proto message classes
 
-*(Skip this section for Node.js - it loads proto files into memory at runtime.)*
+*(Skip this section for Node.js — it loads proto files into memory at runtime.)*
 
 You need to locate/decide on the following before you can generate the proto message classes:
 
