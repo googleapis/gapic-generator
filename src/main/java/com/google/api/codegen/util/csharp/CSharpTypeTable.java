@@ -49,6 +49,7 @@ public class CSharpTypeTable implements TypeTable {
           .put("System.Collections", "sc")
           .put("System.Collections.Generic", ALIAS_SYSTEM_COLLECTIONS_GENERIC)
           .put("System.Collections.ObjectModel", "sco")
+          .put("System.Linq", "linq")
           .put("System.Threading", ALIAS_SYSTEM_THREADING)
           .put("System.Threading.Tasks", "stt")
           .put("Google.LongRunning", "lro")

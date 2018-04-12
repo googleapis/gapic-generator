@@ -1012,13 +1012,13 @@
     @if param.isCollection
         @if param.isOptional
             @if param.hasTransformParamFunction
-                {@param.nameAsMethodName} = { ({@param.name} ?? {@param.optionalDefault}).Select(x => {@param.transformParamFunctionName}(x)) }, // Optional
+                {@param.nameAsMethodName} = { linq::Enumerable.Select({@param.name} ?? {@param.optionalDefault}, x => {@param.transformParamFunctionName}(x)) }, // Optional
             @else
                 {@param.nameAsMethodName} = { {@param.name} ?? {@param.optionalDefault} }, // Optional
             @end
         @else
             @if param.hasTransformParamFunction
-                {@param.nameAsMethodName} = { gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})).Select(x => {@param.transformParamFunctionName}(x)) },
+                {@param.nameAsMethodName} = { linq::Enumerable.Select(gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})), x => {@param.transformParamFunctionName}(x)) },
             @else
                 {@param.nameAsMethodName} = { gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})) },
             @end
