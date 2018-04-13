@@ -439,52 +439,50 @@
                 $request
             @end
         );
+    @case "OperationOptionalArrayMethod"
+        return $this->startOperationsCall(
+            '{@apiMethod.grpcMethodName}',
+            $optionalArgs,
+            $request,
+            @if apiMethod.hasRerouteToGrpcInterface
+                $this->getOperationsClient(),
+                '{@apiMethod.rerouteToGrpcInterface}'
+            @else
+                $this->getOperationsClient()
+            @end
+        )->wait();
     @case "OptionalArrayMethod"
-        @if apiMethod.isLongRunningOperation
-            return $this->startOperationsCall(
-                '{@apiMethod.grpcMethodName}',
-                $optionalArgs,
-                $request,
+        return $this->startCall(
+            '{@apiMethod.grpcMethodName}',
+            {@apiMethod.responseTypeName}::class,
+            $optionalArgs,
+            @if apiMethod.isGrpcStreamingMethod
+                @if apiMethod.isSingularRequestMethod
+                    $request,
+
+                @else
+                    null,
+
+                @end
                 @if apiMethod.hasRerouteToGrpcInterface
-                    $this->getOperationsClient(),
+                    {@streamingCallType(apiMethod)},
                     '{@apiMethod.rerouteToGrpcInterface}'
                 @else
-                    $this->getOperationsClient()
+                    {@streamingCallType(apiMethod)}
+
+                @end
+            );
+            @else
+                @if apiMethod.hasRerouteToGrpcInterface
+                    $request,
+                    Call::UNARY_CALL,
+                    '{@apiMethod.rerouteToGrpcInterface}'
+
+                @else
+                    $request
+
                 @end
             )->wait();
-        @else
-            return $this->startCall(
-                '{@apiMethod.grpcMethodName}',
-                {@apiMethod.responseTypeName}::class,
-                $optionalArgs,
-                @if apiMethod.isGrpcStreamingMethod
-                    @if apiMethod.isSingularRequestMethod
-                        $request,
-
-                    @else
-                        null,
-
-                    @end
-                    @if apiMethod.hasRerouteToGrpcInterface
-                        {@streamingCallType(apiMethod)},
-                        '{@apiMethod.rerouteToGrpcInterface}'
-                    @else
-                        {@streamingCallType(apiMethod)}
-
-                    @end
-                );
-                @else
-                    @if apiMethod.hasRerouteToGrpcInterface
-                        $request,
-                        Call::UNARY_CALL,
-                        '{@apiMethod.rerouteToGrpcInterface}'
-
-                    @else
-                        $request
-
-                    @end
-                )->wait();
-                @end
         @end
     @end
 @end
