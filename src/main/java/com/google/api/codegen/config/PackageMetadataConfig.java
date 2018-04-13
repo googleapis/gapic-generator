@@ -20,7 +20,6 @@ import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.HashMap;
@@ -43,7 +42,11 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> gaxGrpcVersionBound();
+
+  @Nullable
+  protected abstract Map<TargetLanguage, VersionBound> gaxHttpVersionBound();
 
   @Nullable
   protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
@@ -80,6 +83,11 @@ public abstract class PackageMetadataConfig {
   /** The version of GAX Grpc that this package depends on. Configured per language. */
   public VersionBound gaxGrpcVersionBound(TargetLanguage language) {
     return gaxGrpcVersionBound().get(language);
+  }
+
+  /** The version of GAX Grpc that this package depends on. Configured per language. */
+  public VersionBound gaxHttpVersionBound(TargetLanguage language) {
+    return gaxHttpVersionBound().get(language);
   }
 
   /** The version of api-common that this package depends on. Only used by Java */
@@ -188,6 +196,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder gaxGrpcVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder gaxHttpVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder grpcVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
@@ -237,6 +247,7 @@ public abstract class PackageMetadataConfig {
     return newBuilder()
         .gaxVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .gaxGrpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .gaxHttpVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
@@ -270,6 +281,9 @@ public abstract class PackageMetadataConfig {
             .gaxGrpcVersionBound(
                 createVersionMap(
                     (Map<String, Map<String, String>>) configMap.get("gax_grpc_version")))
+            .gaxHttpVersionBound(
+                createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("gax_http_version")))
             .grpcVersionBound(
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
             .protoVersionBound(
@@ -313,7 +327,9 @@ public abstract class PackageMetadataConfig {
       Map<String, Object> configMap, String key) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
     List<String> packages = (List<String>) configMap.get(key);
-    Preconditions.checkArgument(packages != null, key + " is missing from package metadata config");
+    if (packages == null) {
+      return packageDependencies;
+    }
 
     for (String packageName : packages) {
       Map<String, Map<String, String>> config =
@@ -387,6 +403,8 @@ public abstract class PackageMetadataConfig {
    */
   private static <V> Map<TargetLanguage, V> buildMapWithDefault(Map<String, V> inputMap) {
     Map<TargetLanguage, V> outputMap = new HashMap<>();
+
+    // TODO(andrealin): should this just return null?
     if (inputMap == null) {
       return outputMap;
     }
