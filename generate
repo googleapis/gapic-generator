@@ -1,0 +1,168 @@
+#!/bin/bash
+# Runnable script to document the usage of gapic-generator.
+# - Run it with no arguments to see the list of steps.
+# - Run it with the argument "usage" to learn how to use it to invoke the generator
+#
+# The idea is that by making this documentation runnable, we can easily make sure it stays up to date.
+
+SCRIPT="${BASH_SOURCE[@]}"
+function usage() {
+  cat << eof
+Usage: $SCRIPT [MODE] [PART]
+
+This script can be run in several MODEs: "doc" (the default), "dryrun" (showing the commands with the actual substituted parameters), and "run" (actually running the commands). A value of "usage" prints this message.
+
+This script has two PARTs, labeled "one" and "two", with manual steps after each. You can also use "all" as a value of PART, though this is only recommended (and the default) when running in "doc" MODE.
+eof
+}
+
+MODE="${1:-doc}"
+PART="$2"
+
+[[ "$MODE" == "usage" ]] && { usage ; return 0 ; }
+[[ "$MODE" == "dryrun" ]] && { RUN="eval echo" ; echo "# Dry-run mode" ; }
+[[ "$MODE" == "run" ]] && { RUN= ; echo "# Real-run mode" ; }
+[[ "$MODE" == "doc" ]] && { RUN="echo" ; PART=${PART:-all} ; echo "# Documentation mode" ; }
+[[ -z "$PART" ]] && { usage ; return 2 ; }
+
+MISSINGVARS=
+function checkvar() {
+  local NAME="$1"
+  local DESCRIPTION="$2"
+  local VALUE="${!NAME}"
+  [[ -z "${VALUE}" ]] && { MISSINGVARS="${MISSINGVARS}${NAME} " ; }
+  printf "# %s: %s (you have \"%s\")\n" "${NAME}" "${DESCRIPTION}" "${VALUE}"
+}
+
+
+echo "### Relevant environment variables you need to set:"
+
+# For part one
+checkvar PROTOC_INCLUDE_DIR "The include directory with the proto files bundled with protoc (from the protoc setup step)"
+checkvar GOOGLEAPIS_DIR "Any directories containing protos that your API depends on"
+checkvar YOUR_PROTO_DIR "The directory containing your proto"
+checkvar YOUR_PROTO_FILE "Your proto file (or files)"
+checkvar YOUR_DESCRIPTOR_FILE "The output file name to contain the descriptor file"
+checkvar OUTPUT_LANGUAGE "The language you are generating for. The possible values for protoc are java, go, php, ruby, python, csharp, and nodejs. Note that for nodejs, the proto message class generation step is a no-op."
+checkvar GRPC_JAVA_PLUGIN "The path to the grpc plugin. You can generally obtain this by running './gradlew showGrpcJavaPluginPath'"
+checkvar YOUR_SERVICE_YAML "The service yaml file"
+checkvar YOUR_CLIENT_CONFIG "The file name of your output client config file"
+
+
+# For part two
+checkvar PKG_META_CONFIG "The output file to contain the package metadata for your client generation"
+checkvar SHORT_NAME "A short name, which typically does not include the major version. For example, Cloud Language v1's short name is 'language'"
+checkvar MAJOR_VERSION "The major version. The first major version will typically be 'v1'"
+checkvar PACKAGE_NAME "The package name, which typically includes the fully-qualified product name and major version. For example, Cloud Language v1's package name is 'google-cloud-language-v1'"
+checkvar PROTO_PATH "The proto path, which is the proto's package with dots converted to slashes. For example, Cloud Language v1's proto path is 'google/cloud/language/v1'"
+checkvar PKG_META_CONFIG "Name of single config file that will contain both 'api_defaults.yaml' and 'dependencies.yaml'"
+checkvar GENERATED_CLIENT_DIR "The output directory for your generated client classes"
+
+[[ "$MODE" != "doc" && -n "${MISSINGVARS}" ]] && {  echo -e "\nThe following environment variables are missing. Set them before using this script to run the generator:\n${MISSINGVARS}" ; return 1 ; }
+
+
+if [[ "$PART" == "one" || "$PART" == "all" ]] ;then
+
+echo
+echo '### Generate the proto descriptor file:  ###'
+$RUN 'protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
+  --include_imports --include_source_info -o ${YOUR_DESCRIPTOR_FILE} ${YOUR_PROTO_FILE}'
+
+echo
+echo '### Generate the proto message classes:  ###'
+$RUN '[[ $OUTPUT_LANGUAGE != "nodejs" ]] && \
+{ mkdir -p ${GENERATED_PROTO_DIR} && \
+  protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
+  --${OUTPUT_LANGUAGE}_out=${GENERATED_PROTO_DIR} ${YOUR_PROTO_FILE} ; }'
+
+echo
+echo '### Generate the gRPC stubs (language specific):  ###'
+$RUN '[[ $OUTPUT_LANGUAGE == "java" ]] && \
+{ protoc -I=${PROTOC_INCLUDE_DIR} -I=${GOOGLEAPIS_DIR} -I=${YOUR_PROTO_DIR} \
+    --plugin=protoc-gen-grpc=${GRPC_JAVA_PLUGIN} \
+    --grpc_out=${GENERATED_PROTO_DIR} ${YOUR_PROTO_FILE} ; } '
+$RUN '[[ $OUTPUT_LANGUAGE != "java" ]] && echo "TODO: Fill in" '
+
+echo
+echo '### Generate initial client config:  ###'
+$RUN 'pushd ${TOOLKIT_DIR}
+java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.configgen.ConfigGeneratorTool \
+  --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
+  -o=${YOUR_CLIENT_CONFIG}
+popd'
+
+echo
+cat << EOF
+# MANUALLY tweak the generated client config
+# The generated client config contains FIXME comments with instructions on how to choose values in the client config. The client config should work as is, though; tweaks are only necessary to improve the quality of the generated output.
+
+# After you have done this, run "${SCRIPT} two"
+EOF
+
+fi # part one
+
+
+if [[ "$PART" == "two" || "$PART" == "all" ]] ;then
+
+echo
+echo '### Create a package metadata config file:  ###'
+$RUN 'cp ${GOOGLEAPIS_DIR}/gapic/packaging/api_defaults.yaml ${PKG_META_CONFIG}
+cat < ${GOOGLEAPIS_DIR}/gapic/packaging/dependencies.yaml >> ${PKG_META_CONFIG}'
+$RUN 'cat >> ${PKG_META_CONFIG} <<EOF
+artifact_type: GAPIC
+proto_deps:
+- google-common-protos
+short_name: ${SHORT_NAME}
+major_version: ${MAJOR_VERSION}
+package_name:
+  default: ${PACKAGE_NAME}
+proto_path: ${PROTO_PATH}
+EOF'
+
+echo
+echo '### Run code generation  ###'
+$RUN  '[[ "$OUTPUT_LANGUAGE" != "python" ]] && { LANGUAGE_CONFIG=src/main/resources/com/google/api/codegen/${OUTPUT_LANGUAGE}/${OUTPUT_LANGUAGE}_gapic.yaml ; }'
+$RUN '[[ "$OUTPUT_LANGUAGE" == "python" ]] && { LANGUAGE_CONFIG=src/main/resources/com/google/api/codegen/py/python_gapic.yaml ; }'
+$RUN 'java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGeneratorTool \
+  --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
+  --gapic_yaml=${YOUR_CLIENT_CONFIG} --gapic_yaml=${LANGUAGE_CONFIG} \
+  --package_yaml=${PKG_META_CONFIG} --o=${GENERATED_CLIENT_DIR}'
+
+cat << EOF
+
+# The generated client library code will appear in \${GENERATED_CLIENT_DIR}.
+#
+# You can safely ignore the warning about control-presence.
+#
+# Special note for java: several files will be dumped into the parent directory of \${GENERATED_CLIENT_DIR}:
+#
+# gradle/
+# gradlew
+# gradlew.bat
+# (There is an open issue to fix this: https://github.com/googleapis/toolkit/issues/1918 
+
+EOF
+
+
+echo
+echo '### Perform fixes to get a working library  ###'
+$RUN  'if [[ "$OUTPUT_LANGUAGE" == "java" ]] ;then 
+ cp -r ${GENERATED_PROTO_DIR}/* ${GENERATED_CLIENT_DIR}/src/main/java 
+
+# In ${GENERATED_CLIENT_DIR}/build.gradle, there are a couple dependencies that need to be removed if you are bundling your proto-generated classes and grpc stubs in the same package as the client. They have a comment starting with "// Remove this line if you are bundling". Warning: If you regenerate again, you will need to remove the lines from the build.gradle file again. (There is an open issue to fix this: https://github.com/googleapis/toolkit/issues/1917 ).
+
+fi'
+
+echo
+
+$RUN  'if [[ "$OUTPUT_LANGUAGE" == "nodejs" ]] ;then 
+
+# Copy the proto files into the correct subdirectory of ${GENERATED_CLIENT_DIR}. (Exact instructions to be added later.)
+
+fi'
+
+echo
+echo "TODO: Add instructions for other languages"
+                                                                                                   
+
+fi # part two
