@@ -36,7 +36,6 @@ import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
@@ -101,7 +100,7 @@ public class DiscoGapicGeneratorApi {
 
   /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  static List<GapicProvider> getProviders(
+  static List<GapicProvider<?>> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfigFile,
@@ -167,12 +166,12 @@ public class DiscoGapicGeneratorApi {
     String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<GapicProvider> providers =
+    List<GapicProvider<?>> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
 
-    Map<String, Doc> outputFiles = Maps.newHashMap();
-    for (GapicProvider provider : providers) {
-      outputFiles.putAll(provider.generate());
+    Map<String, Object> outputFiles = Maps.newHashMap();
+    for (GapicProvider<?> provider : providers) {
+      outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
   }

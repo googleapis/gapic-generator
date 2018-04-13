@@ -21,6 +21,16 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class EmptyTypeModel implements TypeModel {
+  private static EmptyTypeModel instance = null;
+
+  private EmptyTypeModel() {}
+
+  public static EmptyTypeModel getInstance() {
+    if (instance == null) {
+      instance = new EmptyTypeModel();
+    }
+    return instance;
+  }
 
   private final List<FieldModel> fields = ImmutableList.of();
 
@@ -30,12 +40,12 @@ public class EmptyTypeModel implements TypeModel {
   }
 
   @Override
-  public FieldModel getMapKeyField() {
+  public TypeModel getMapKeyType() {
     return null;
   }
 
   @Override
-  public FieldModel getMapValueField() {
+  public TypeModel getMapValueType() {
     return null;
   }
 

@@ -20,6 +20,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 public class ClientConfigSnippetSetRunner<ElementT>
     implements SnippetSetRunner.Generator<ElementT> {
@@ -32,19 +33,20 @@ public class ClientConfigSnippetSetRunner<ElementT>
 
   @Override
   @SuppressWarnings("unchecked")
-  public GeneratedResult generate(
+  public Map<String, GeneratedResult<Doc>> generate(
       ElementT element, String snippetFileName, CodegenContext context) {
     ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             ClientConfigSnippetSet.class,
             resourceRoot,
             snippetFileName,
-            ImmutableMap.<String, Object>of("context", context));
+            ImmutableMap.of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-
     Doc body = snippets.generateBody(element);
 
-    return GeneratedResult.create(body, outputFilename);
+    return body == null || body.isWhitespace()
+        ? ImmutableMap.of()
+        : ImmutableMap.of(outputFilename, GeneratedResult.create(body, false));
   }
 }

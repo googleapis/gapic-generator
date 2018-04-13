@@ -137,7 +137,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     if (methodConfigs != null) {
       for (MethodConfig methodConfig : methodConfigs) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method);
+        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method.flatPath());
         for (SingleResourceNameConfig nameConfig : singleResourceNames) {
           if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
             methodToSingleResourceNameMap.put(methodConfig, nameConfig);

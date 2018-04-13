@@ -53,7 +53,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
     } else {
-      this.outputType = new EmptyTypeModel();
+      this.outputType = EmptyTypeModel.getInstance();
     }
   }
 
@@ -87,7 +87,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public DiscoveryField getOutputField(String fieldName) {
-    return null;
+    if (outputType.isEmptyType() || outputType.isPrimitive()) {
+      return null;
+    }
+    return ((DiscoveryField) outputType).getField(fieldName);
   }
 
   @Override
@@ -275,7 +278,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
     Map<String, String> resources = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
-      if (DiscoGapicParser.getCanonicalPath(method).equals(entry.getKey())) {
+      if (DiscoGapicParser.getCanonicalPath(method.flatPath()).equals(entry.getKey())) {
         String resourceNameString =
             DiscoGapicParser.getResourceIdentifier(entry.getKey()).toLowerCamel();
         resources.put(resourceNameString, entry.getValue());

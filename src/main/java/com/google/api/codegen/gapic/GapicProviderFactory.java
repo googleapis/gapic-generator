@@ -20,13 +20,13 @@ import com.google.api.tools.framework.model.Model;
 import java.util.List;
 
 /** A factory for GapicProviders which perform code generation. */
-public interface GapicProviderFactory<ProviderT> {
+public interface GapicProviderFactory {
   /**
    * Create the provider from the given model, configs and the output path.
    *
    * <p>The outputPath is used for copying static files from resources into the output directory.
    */
-  List<ProviderT> create(
+  List<GapicProvider<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,

@@ -477,6 +477,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The name of the paged resource variable name used in generated test cases. */
+  public String getPagedResourceName() {
+    return localVarName(Name.from("resources"));
+  }
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
@@ -748,12 +753,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(method.asName().join(Name.from("page", "streaming", "descriptor")));
   }
 
-  /** The page streaming factory name for the given method. */
-  public String getPagedListResponseFactoryName(MethodModel method) {
-    return privateFieldName(
-        method.asName().join(Name.from("paged", "list", "response", "factory")));
-  }
-
   /** The variable name of the gRPC request object. */
   public String getRequestVariableName(MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getRequestVariableName");
@@ -904,7 +903,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
-    return publicClassName(getResourceTypeNameObject(resourceNameConfig));
+    String commonResourceName = resourceNameConfig.getCommonResourceName();
+    return commonResourceName != null
+        ? commonResourceName
+        : publicClassName(getResourceTypeNameObject(resourceNameConfig));
   }
 
   /**
@@ -1104,8 +1106,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveResourceTypeName(ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    String commonResourceName = fieldConfig.getResourceNameConfig().getCommonResourceName();
     String resourceClassName =
-        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+        commonResourceName != null
+            ? commonResourceName
+            : publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
     return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
   }
 

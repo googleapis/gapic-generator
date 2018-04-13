@@ -122,9 +122,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
-      if (type.getMapValueField().isMessage()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyType());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueType());
+      if (type.getMapValueType().isMessage()) {
         valueTypeName += " | Hash";
       }
       return new TypeName(
@@ -156,9 +156,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldModel fieldModel) {
     if (fieldModel.isMap()) {
-      String keyTypeName = importTypeTable.getFullNameForElementType(fieldModel.getMapKeyField());
+      String keyTypeName =
+          importTypeTable.getFullNameForElementType(fieldModel.getType().getMapKeyType());
       String valueTypeName =
-          importTypeTable.getFullNameForElementType(fieldModel.getMapValueField());
+          importTypeTable.getFullNameForElementType(fieldModel.getType().getMapValueType());
       return new TypeName(
               importTypeTable.getFullNameFor(fieldModel),
               importTypeTable.getNicknameFor(fieldModel),

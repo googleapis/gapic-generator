@@ -23,7 +23,7 @@
     /// <summary>
     /// Settings for a <see cref="{@api.name}"/>.
     /// </summary>
-    public sealed partial class {@settings.name} : ServiceSettingsBase
+    public sealed partial class {@settings.name} : gaxgrpc::ServiceSettingsBase
     {
         /// <summary>
         /// Get a new instance of the default <see cref="{@settings.name}"/>.
@@ -40,7 +40,7 @@
         
         private {@settings.name}({@settings.name} existing) : base(existing)
         {
-            GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            gax::GaxPreconditions.CheckNotNull(existing, nameof(existing));
             # call: ApiCallSettingsView
             @join call : settings.callSettings
                 @switch call.grpcStreamingType.toString
@@ -66,23 +66,23 @@
 
         @join retry : settings.retryCodesDefinitions
             /// <summary>
-            /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
+            /// The filter specifying which RPC <see cref="grpccore::StatusCode"/>s are eligible for retry
             /// for "{@retry.name}" <see cref="{@api.name}"/> RPC methods.
             /// </summary>
             /// <remarks>
             @if retry.codes
-               /// The eligible RPC <see cref="StatusCode"/>s for retry for "{@retry.name}" RPC methods are:
+               /// The eligible RPC <see cref="grpccore::StatusCode"/>s for retry for "{@retry.name}" RPC methods are:
                /// <list type="bullet">
                @join code : retry.codeNames
-                   /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+                   /// <item><description><see cref="grpccore::StatusCode.{@code}"/></description></item>
                @end
                /// </list>
             @else
-                /// There are no RPC <see cref="StatusCode"/>s eligible for retry for "{@retry.name}" RPC methods.
+                /// There are no RPC <see cref="grpccore::StatusCode"/>s eligible for retry for "{@retry.name}" RPC methods.
             @end
             /// </remarks>
-            public static Predicate<RpcException> {@retry.retryFilterMethodName} { get; } =
-                RetrySettings.FilterForStatusCodes({@retryCodes(retry.codeNames)});
+            public static sys::Predicate<grpccore::RpcException> {@retry.retryFilterMethodName} { get; } =
+                gaxgrpc::RetrySettings.FilterForStatusCodes({@retryCodes(retry.codeNames)});
 
         @end
         @join retry : settings.retryParamsDefinitions
@@ -100,9 +100,9 @@
             /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings {@retry.retryBackoffMethodName}() => new BackoffSettings(
-                delay: TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
-                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
+            public static gaxgrpc::BackoffSettings {@retry.retryBackoffMethodName}() => new gaxgrpc::BackoffSettings(
+                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
                 delayMultiplier: {@retry.retryDelayMultiplier}
             );
             
@@ -120,9 +120,9 @@
             /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.toMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings {@retry.timeoutBackoffMethodName}() => new BackoffSettings(
-                delay: TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
-                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
+            public static gaxgrpc::BackoffSettings {@retry.timeoutBackoffMethodName}() => new gaxgrpc::BackoffSettings(
+                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
                 delayMultiplier: {@retry.rpcTimeoutMultiplier}
             );
 
@@ -132,12 +132,12 @@
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
                 /// <summary>
-                /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+                /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
                 /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// The default <c>{@api.name}.{@call.methodName}</c> and
-                /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
+                /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="gaxgrpc::RetrySettings"/> are:
                 /// <list type="bullet">
                 /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.toMillis} milliseconds</description></item>
                 /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
@@ -150,7 +150,7 @@
                 /// <list>
                 @if call.retryCodesView.codeNames
                     @join code : call.retryCodesView.codeNames
-                        /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+                        /// <item><description><see cref="grpccore::StatusCode.{@code}"/></description></item>
                     @end
                 @else
                     /// <item><description>No status codes</description></item>
@@ -158,41 +158,41 @@
                 /// </list>
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
-                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                    CallTiming.FromRetry(new RetrySettings(
+                public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+                    gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                         retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
                         timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                        totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
+                        totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
                         retryFilter: {@call.retryCodesView.retryFilterMethodName}
                     )));
             @case "ServerStreaming"
                 /// <summary>
-                /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
-                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
             @case "BidiStreaming"
                 /// <summary>
-                /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
-                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
 
                 /// <summary>
-                /// <see cref="BidirectionalStreamingSettings"/> for calls to
+                /// <see cref="gaxgrpc::BidirectionalStreamingSettings"/> for calls to
                 /// <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// The default local send queue size is 100.
                 /// </remarks>
-                public BidirectionalStreamingSettings {@call.methodName}StreamingSettings { get; set; } =
-                    new BidirectionalStreamingSettings(100);
+                public gaxgrpc::BidirectionalStreamingSettings {@call.methodName}StreamingSettings { get; set; } =
+                    new gaxgrpc::BidirectionalStreamingSettings(100);
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
@@ -203,7 +203,7 @@
                 /// Long Running Operation settings for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// Uses default <see cref="PollSettings"/> of:
+                /// Uses default <see cref="gax::PollSettings"/> of:
                 /// <list type="bullet">
                 /// <item><description>Initial delay: {@call.operationMethod.initialPollDelay} milliseconds</description></item>
                 /// <item><description>Delay multiplier: {@call.operationMethod.pollDelayMultiplier}</description></item>
@@ -211,13 +211,13 @@
                 /// <item><description>Total timeout: {@call.operationMethod.totalPollTimeout} milliseconds</description></item>
                 /// </list>
                 /// </remarks>
-                public OperationsSettings {@call.methodName}OperationsSettings { get; set; } = new OperationsSettings
+                public lro::OperationsSettings {@call.methodName}OperationsSettings { get; set; } = new lro::OperationsSettings
                 {
-                    DefaultPollSettings = new PollSettings(
-                        Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
-                        TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
+                    DefaultPollSettings = new gax::PollSettings(
+                        gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
+                        sys::TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
                         {@call.operationMethod.pollDelayMultiplier},
-                        TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
+                        sys::TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
                 };
 
             @end
@@ -240,7 +240,7 @@
         /// <summary>
         /// The default endpoint for the {@api.grpcServiceName} service, which is a host of "{@settings.serviceAddress}" and a port of {@settings.servicePort}.
         /// </summary>
-        public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndpoint("{@settings.serviceAddress}", {@settings.servicePort});
+        public static gaxgrpc::ServiceEndpoint DefaultEndpoint { get; } = new gaxgrpc::ServiceEndpoint("{@settings.serviceAddress}", {@settings.servicePort});
 
         /// <summary>
         /// The default {@api.grpcServiceName} scopes.
@@ -253,13 +253,13 @@
         @end
         /// </list>
         /// </remarks>
-        public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new string[] {
+        public static scg::IReadOnlyList<string> DefaultScopes { get; } = new sco::ReadOnlyCollection<string>(new string[] {
         @join scope : settings.authScopes
             {@""}    "{@scope}",
         @end
         });
 
-        private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
+        private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
 
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
@@ -273,12 +273,12 @@
         /// and creating a channel connecting to the given endpoint with application default credentials where
         /// necessary.
         /// </summary>
-        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
+        /// <param name="endpoint">Optional <see cref="gaxgrpc::ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
         /// <returns>The task representing the created <see cref="{@api.name}"/>.</returns>
-        public static async Task<{@api.name}> CreateAsync(ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        public static async stt::Task<{@api.name}> CreateAsync(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
         {
-            Channel channel = await s_channelPool.GetChannelAsync(endpoint ?? DefaultEndpoint).ConfigureAwait(false);
+            grpccore::Channel channel = await s_channelPool.GetChannelAsync(endpoint ?? DefaultEndpoint).ConfigureAwait(false);
             return Create(channel, settings);
         }
 
@@ -287,45 +287,45 @@
         /// and creating a channel connecting to the given endpoint with application default credentials where
         /// necessary.
         /// </summary>
-        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
+        /// <param name="endpoint">Optional <see cref="gaxgrpc::ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
         /// <returns>The created <see cref="{@api.name}"/>.</returns>
-        public static {@api.name} Create(ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        public static {@api.name} Create(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
         {
-            Channel channel = s_channelPool.GetChannel(endpoint ?? DefaultEndpoint);
+            grpccore::Channel channel = s_channelPool.GetChannel(endpoint ?? DefaultEndpoint);
             return Create(channel, settings);
         }
 
         /// <summary>
         /// Creates a <see cref="{@api.name}"/> which uses the specified channel for remote operations.
         /// </summary>
-        /// <param name="channel">The <see cref="Channel"/> for remote operations. Must not be null.</param>
+        /// <param name="channel">The <see cref="grpccore::Channel"/> for remote operations. Must not be null.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
         /// <returns>The created <see cref="{@api.name}"/>.</returns>
-        public static {@api.name} Create(Channel channel, {@settings.name} settings = null)
+        public static {@api.name} Create(grpccore::Channel channel, {@settings.name} settings = null)
         {
-            GaxPreconditions.CheckNotNull(channel, nameof(channel));
+            gax::GaxPreconditions.CheckNotNull(channel, nameof(channel));
             {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(channel);
             return new {@api.implName}(grpcClient, settings);
         }
 
         /// <summary>
-        /// Shuts down any channels automatically created by <see cref="Create(ServiceEndpoint, {@settings.name})"/>
-        /// and <see cref="CreateAsync(ServiceEndpoint, {@settings.name})"/>. Channels which weren't automatically
+        /// Shuts down any channels automatically created by <see cref="Create(gaxgrpc::ServiceEndpoint, {@settings.name})"/>
+        /// and <see cref="CreateAsync(gaxgrpc::ServiceEndpoint, {@settings.name})"/>. Channels which weren't automatically
         /// created are not affected.
         /// </summary>
-        /// <remarks>After calling this method, further calls to <see cref="Create(ServiceEndpoint, {@settings.name})"/>
-        /// and <see cref="CreateAsync(ServiceEndpoint, {@settings.name})"/> will create new channels, which could
+        /// <remarks>After calling this method, further calls to <see cref="Create(gaxgrpc::ServiceEndpoint, {@settings.name})"/>
+        /// and <see cref="CreateAsync(gaxgrpc::ServiceEndpoint, {@settings.name})"/> will create new channels, which could
         /// in turn be shut down by another call to this method.</remarks>
         /// <returns>A task representing the asynchronous shutdown operation.</returns>
-        public static Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
+        public static stt::Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
         public virtual {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient
         {
-            get { throw new NotImplementedException(); }
+            get { throw new sys::NotImplementedException(); }
         }
 
         # method: StaticLangApiMethodView
@@ -348,11 +348,11 @@
             # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
-                private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+                private readonly gaxgrpc::ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
             @case "ServerStreaming"
-                private readonly ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+                private readonly gaxgrpc::ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
             @case "BidiStreaming"
-                private readonly ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+                private readonly gaxgrpc::ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
@@ -367,14 +367,14 @@
         {
             GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
-            ClientHelper clientHelper = new ClientHelper(effectiveSettings);
+            gaxgrpc::ClientHelper clientHelper = new gaxgrpc::ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 # rerouted: ReroutedGrpcView
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
             @join call : settings.callSettings if call.type.toString == "OperationApiCallable"
                 # call: ApiCallSettingsView
-                {@call.methodName}OperationsClient = new OperationsClientImpl(
+                {@call.methodName}OperationsClient = new lro::OperationsClientImpl(
                     grpcClient.CreateOperationsClient(), effectiveSettings.{@call.methodName}OperationsSettings);
             @end
             @join call : api.apiCallableMembers
@@ -384,7 +384,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -392,7 +392,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -416,19 +416,19 @@
         // Partial methods called for every ApiCall on construction.
         // Allows modification of all the underlying ApiCall objects.
         @if api.apiHasUnaryMethod
-            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiCall<TRequest, TResponse> call)
-                where TRequest : class, IMessage<TRequest>
-                where TResponse : class, IMessage<TResponse>;
+            partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiCall<TRequest, TResponse> call)
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
         @if api.apiHasServerStreamingMethod
-            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiServerStreamingCall<TRequest, TResponse> call)
-                where TRequest : class, IMessage<TRequest>
-                where TResponse : class, IMessage<TResponse>;
+            partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiServerStreamingCall<TRequest, TResponse> call)
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
         @if api.apiHasBidiStreamingMethod
-            partial void Modify_ApiCall<TRequest, TResponse>(ref ApiBidirectionalStreamingCall<TRequest, TResponse> call)
-                where TRequest : class, IMessage<TRequest>
-                where TResponse : class, IMessage<TResponse>;
+            partial void Modify_ApiCall<TRequest, TResponse>(ref gaxgrpc::ApiBidirectionalStreamingCall<TRequest, TResponse> call)
+                where TRequest : class, pb::IMessage<TRequest>
+                where TResponse : class, pb::IMessage<TResponse>;
         @end
 
         // Partial methods called for each ApiCall on construction.
@@ -437,16 +437,16 @@
             # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
-                partial void Modify_{@call.methodName}ApiCall(ref ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref gaxgrpc::ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "ServerStreaming"
-                partial void Modify_{@call.methodName}ApiCall(ref ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref gaxgrpc::ApiServerStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @case "BidiStreaming"
-                partial void Modify_{@call.methodName}ApiCall(ref ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
+                partial void Modify_{@call.methodName}ApiCall(ref gaxgrpc::ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> call);
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
         @end
-        partial void OnConstruction({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
+        partial void OnConstruction({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
@@ -460,11 +460,11 @@
         @join method : api.modifyMethods
             @switch method.grpcStreamingType.toString
             @case "NonStreaming"
-                partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+                partial void {@method.name}(ref {@method.requestTypeName} request, ref gaxgrpc::CallSettings settings);
             @case "ServerStreaming"
-                partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+                partial void {@method.name}(ref {@method.requestTypeName} request, ref gaxgrpc::CallSettings settings);
             @case "BidiStreaming"
-                partial void {@method.name}CallSettings(ref CallSettings settings);
+                partial void {@method.name}CallSettings(ref gaxgrpc::CallSettings settings);
                 partial void {@method.name}Request(ref {@method.requestTypeName} request);
             @default
                 *** ERROR: Cannot handle grpc streaming type '{@method.grpcStreamingType.toString}' ***
@@ -528,15 +528,15 @@
             /// <summary>
             /// The long-running operations client for <c>{@method.name}</c>.
             /// </summary>
-            public override OperationsClient {@method.name}OperationsClient { get; }
+            public override lro::OperationsClient {@method.name}OperationsClient { get; }
         @else
 
             /// <summary>
             /// The long-running operations client for <c>{@method.name}</c>.
             /// </summary>
-            public virtual OperationsClient {@method.name}OperationsClient
+            public virtual lro::OperationsClient {@method.name}OperationsClient
             {
-                get { throw new NotImplementedException(); }
+                get { throw new sys::NotImplementedException(); }
             }
 
             {@operationRequestObjectPollOnceMethodSync(method)}
@@ -590,7 +590,7 @@
                 @if method.forwardingMethodParams.size
                     {@objectArgs(method.forwardingMethodParams)},
                 @end
-                CallSettings.FromCancellationToken(cancellationToken));
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
 
@@ -599,7 +599,7 @@
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             @if method.hasReturnValue
@@ -611,9 +611,9 @@
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -635,7 +635,7 @@
     @if isImpl
         public override {@method.name}Stream {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.name}StreamImpl({@method.callableName}.Call(request, callSettings));
@@ -656,20 +656,20 @@
             public override {@method.responseTypeName} GrpcCall { get; }
 
             /// <inheritdoc/>
-            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream => GrpcCall.ResponseStream;
+            public override scg::IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream => GrpcCall.ResponseStream;
         }
     @else
         public virtual {@method.name}Stream {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
 
         /// <summary>
         /// Server streaming methods for <c>{@method.name}</c>.
         /// </summary>
-        public abstract partial class {@method.name}Stream : ServerStreamingBase<{@method.serviceResponseTypeName}>
+        public abstract partial class {@method.name}Stream : gaxgrpc::ServerStreamingBase<{@method.serviceResponseTypeName}>
         {
         }
     @end
@@ -679,16 +679,16 @@
 @private streamingRequestObjectMethodBidirectional(api, method, isImpl)
     @if isImpl
         public override {@method.name}Stream {@method.name}(
-            CallSettings callSettings = null,
-            BidirectionalStreamingSettings streamingSettings = null)
+            gaxgrpc::CallSettings callSettings = null,
+            gaxgrpc::BidirectionalStreamingSettings streamingSettings = null)
         {
             {@method.modifyMethodName}CallSettings(ref callSettings);
-            BidirectionalStreamingSettings effectiveStreamingSettings =
+            gaxgrpc::BidirectionalStreamingSettings effectiveStreamingSettings =
                 streamingSettings ?? {@method.callableName}.StreamingSettings;
             {@method.responseTypeName} call =
                 {@method.callableName}.Call(callSettings);
-            BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer =
-                new BufferedClientStreamWriter<{@method.serviceRequestTypeName}>(
+            gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer =
+                new gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}>(
                     call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
             return new {@method.name}StreamImpl(this, call, writeBuffer);
         }
@@ -700,12 +700,12 @@
             /// </summary>
             /// <param name="service">The service containing this streaming method.</param>
             /// <param name="call">The underlying gRPC duplex streaming call.</param>
-            /// <param name="writeBuffer">The <see cref="BufferedClientStreamWriter{{@method.serviceRequestTypeName}}"/>
+            /// <param name="writeBuffer">The <see cref="gaxgrpc::BufferedClientStreamWriter{{@method.serviceRequestTypeName}}"/>
             /// instance associated with this streaming call.</param>
             public {@method.name}StreamImpl(
                 {@api.implName} service,
                 {@method.responseTypeName} call,
-                BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer)
+                gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer)
             {
                 _service = service;
                 GrpcCall = call;
@@ -713,7 +713,7 @@
             }
 
             private {@api.implName} _service;
-            private BufferedClientStreamWriter<{@method.serviceRequestTypeName}> _writeBuffer;
+            private gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}> _writeBuffer;
 
             private {@method.serviceRequestTypeName} ModifyRequest({@method.serviceRequestTypeName} request)
             {
@@ -725,45 +725,45 @@
             public override {@method.responseTypeName} GrpcCall { get; }
 
             /// <inheritdoc/>
-            public override Task TryWriteAsync({@method.serviceRequestTypeName} message) =>
+            public override stt::Task TryWriteAsync({@method.serviceRequestTypeName} message) =>
                 _writeBuffer.TryWriteAsync(ModifyRequest(message));
 
             /// <inheritdoc/>
-            public override Task WriteAsync({@method.serviceRequestTypeName} message) =>
+            public override stt::Task WriteAsync({@method.serviceRequestTypeName} message) =>
                 _writeBuffer.WriteAsync(ModifyRequest(message));
 
             /// <inheritdoc/>
-            public override Task TryWriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+            public override stt::Task TryWriteAsync({@method.serviceRequestTypeName} message, grpccore::WriteOptions options) =>
                 _writeBuffer.TryWriteAsync(ModifyRequest(message), options);
 
             /// <inheritdoc/>
-            public override Task WriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+            public override stt::Task WriteAsync({@method.serviceRequestTypeName} message, grpccore::WriteOptions options) =>
                 _writeBuffer.WriteAsync(ModifyRequest(message), options);
 
             /// <inheritdoc/>
-            public override Task TryWriteCompleteAsync() =>
+            public override stt::Task TryWriteCompleteAsync() =>
                 _writeBuffer.TryWriteCompleteAsync();
 
             /// <inheritdoc/>
-            public override Task WriteCompleteAsync() =>
+            public override stt::Task WriteCompleteAsync() =>
                 _writeBuffer.WriteCompleteAsync();
 
             /// <inheritdoc/>
-            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream =>
+            public override scg::IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream =>
                 GrpcCall.ResponseStream;
         }
     @else
         public virtual {@method.name}Stream {@method.name}(
-            CallSettings callSettings = null,
-            BidirectionalStreamingSettings streamingSettings = null)
+            gaxgrpc::CallSettings callSettings = null,
+            gaxgrpc::BidirectionalStreamingSettings streamingSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
 
         /// <summary>
         /// Bidirectional streaming methods for <c>{@method.name}</c>.
         /// </summary>
-        public abstract partial class {@method.name}Stream : BidirectionalStreamingBase<{@method.serviceRequestTypeName}, {@method.serviceResponseTypeName}>
+        public abstract partial class {@method.name}Stream : gaxgrpc::BidirectionalStreamingBase<{@method.serviceRequestTypeName}, {@method.serviceResponseTypeName}>
         {
         }
     @end
@@ -774,7 +774,7 @@
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return {@method.callableName}.Async(request, callSettings);
@@ -782,9 +782,9 @@
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -796,9 +796,9 @@
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CancellationToken cancellationToken) => {@method.name}(
+            st::CancellationToken cancellationToken) => {@method.name}(
                 request,
-                CallSettings.FromCancellationToken(cancellationToken));
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
 
@@ -807,7 +807,7 @@
     @if isImpl
         *** ERROR: unexpected pagedFlattenedMethodSync implementation ***
     @else
-        public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual gax::PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
         {@flattenedBody(method, TRUE)}
     @end
 @end
@@ -817,7 +817,7 @@
     @if isImpl
         *** ERROR: unexpected pagedFlattenedMethodAsync implementation ***
     @else
-        public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual gax::PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
         {@flattenedBody(method, TRUE)}
     @end
 @end
@@ -825,19 +825,19 @@
 # method: StaticLangApiMethodView, isImpl: boolean
 @private pagedRequestObjectMethodSync(method, isImpl)
     @if isImpl
-        public override PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public override gax::PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
-            return new GrpcPagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+            return new gaxgrpc::GrpcPagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
         }
     @else
-        public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual gax::PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -845,19 +845,19 @@
 # method: StaticLangApiMethodView, isImpl: boolean
 @private pagedRequestObjectMethodAsync(method, isImpl)
     @if isImpl
-        public override PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public override gax::PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
-            return new GrpcPagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+            return new gaxgrpc::GrpcPagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
         }
     @else
-        public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual gax::PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -867,7 +867,7 @@
     @if isImpl
         public override {@method.operationMethod.clientReturnTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
@@ -876,9 +876,9 @@
     @else
         public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -893,8 +893,8 @@
     /// <returns>The result of polling the operation.</returns>
     public virtual {@method.operationMethod.clientReturnTypeName} PollOnce{@method.name}(
         string operationName,
-        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
-            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+        gaxgrpc::CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
+            gax::GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
             {@method.name}OperationsClient,
             callSettings);
 @end
@@ -902,20 +902,20 @@
 # method: StaticLangApiMethodView, isImpl: boolean
 @private operationRequestObjectMethodAsync(method, isImpl)
     @if isImpl
-        public override async Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+        public override async stt::Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
                 await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), {@syncName(method)}OperationsClient);
         }
     @else
-        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+        public virtual stt::Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
             {@method.serviceRequestTypeName} request,
-            CallSettings callSettings = null)
+            gaxgrpc::CallSettings callSettings = null)
         {
-            throw new NotImplementedException();
+            throw new sys::NotImplementedException();
         }
     @end
 @end
@@ -928,10 +928,10 @@
     /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
     /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
     /// <returns>A task representing the result of polling the operation.</returns>
-    public virtual Task<{@method.operationMethod.clientReturnTypeName}> PollOnce{@method.name}(
+    public virtual stt::Task<{@method.operationMethod.clientReturnTypeName}> PollOnce{@method.name}(
         string operationName,
-        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
-            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+        gaxgrpc::CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
+            gax::GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
             {@syncName(method)}OperationsClient,
             callSettings);
 @end
@@ -946,7 +946,7 @@
     @if isImpl
         *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
     @else
-        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+        public virtual stt::Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
         {@flattenedBody(method, FALSE)}
     @end
 @end
@@ -956,12 +956,12 @@
     @if isImpl
         *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
     @else
-        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+        public virtual stt::Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
                 @if method.forwardingMethodParams.size
                     {@objectArgs(method.forwardingMethodParams)},
                 @end
-                CallSettings.FromCancellationToken(cancellationToken));
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
 
@@ -1012,15 +1012,15 @@
     @if param.isCollection
         @if param.isOptional
             @if param.hasTransformParamFunction
-                {@param.nameAsMethodName} = { ({@param.name} ?? {@param.optionalDefault}).Select(x => {@param.transformParamFunctionName}(x)) }, // Optional
+                {@param.nameAsMethodName} = { linq::Enumerable.Select({@param.name} ?? {@param.optionalDefault}, x => {@param.transformParamFunctionName}(x)) }, // Optional
             @else
                 {@param.nameAsMethodName} = { {@param.name} ?? {@param.optionalDefault} }, // Optional
             @end
         @else
             @if param.hasTransformParamFunction
-                {@param.nameAsMethodName} = { GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})).Select(x => {@param.transformParamFunctionName}(x)) },
+                {@param.nameAsMethodName} = { linq::Enumerable.Select(gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})), x => {@param.transformParamFunctionName}(x)) },
             @else
-                {@param.nameAsMethodName} = { GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})) },
+                {@param.nameAsMethodName} = { gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})) },
             @end
         @end
     @else
@@ -1039,12 +1039,12 @@
                 {@param.nameAsMethodName} = {@param.name},
             @else
                 @if param.hasTransformParamFunction
-                    {@param.nameAsMethodName} = {@param.transformParamFunctionName}(GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name}))),
+                    {@param.nameAsMethodName} = {@param.transformParamFunctionName}(gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name}))),
                 @else
                     @if param.typeName == "string"
-                        {@param.nameAsMethodName} = GaxPreconditions.CheckNotNullOrEmpty({@param.name}, nameof({@param.name})),
+                        {@param.nameAsMethodName} = gax::GaxPreconditions.CheckNotNullOrEmpty({@param.name}, nameof({@param.name})),
                     @else
-                        {@param.nameAsMethodName} = GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})),
+                        {@param.nameAsMethodName} = gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})),
                     @end
                 @end
             @end
@@ -1057,16 +1057,16 @@
     // Partial classes to enable page-streaming
 
     @join method : api.apiMethods if method.type.toString == "PagedRequestObjectMethod"
-        public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
-        public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
+        public partial class {@method.listMethod.requestTypeName} : gaxgrpc::IPageRequest { }
+        public partial class {@method.listMethod.responseTypeName} : gaxgrpc::IPageResponse<{@method.listMethod.resourceTypeName}>
         {
             /// <summary>
             /// Returns an enumerator that iterates through the resources in this response.
             /// </summary>
-            public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunctions.get(0)}.GetEnumerator();
+            public scg::IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
 
             /// <inheritdoc/>
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
     @end
@@ -1081,10 +1081,10 @@
             public partial class {@api.grpcTypeNameInner}
             {
                 /// <summary>
-                /// Creates a new instance of <see cref="Operations.OperationsClient"/> using the same call invoker as this client.
+                /// Creates a new instance of <see cref="lro::Operations.OperationsClient"/> using the same call invoker as this client.
                 /// </summary>
                 /// <returns>A new Operations client for the same target as this client.</returns>
-                public virtual Operations.OperationsClient CreateOperationsClient() => new Operations.OperationsClient(CallInvoker);
+                public virtual lro::Operations.OperationsClient CreateOperationsClient() => new lro::Operations.OperationsClient(CallInvoker);
             }
         }
 

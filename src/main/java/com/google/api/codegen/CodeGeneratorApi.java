@@ -26,7 +26,6 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
@@ -35,7 +34,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
@@ -47,6 +46,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Main class for the code generator. */
 public class CodeGeneratorApi extends ToolDriverBase {
@@ -144,7 +144,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String factory = generator.getFactory();
       String id = generator.getId();
 
-      GapicProviderFactory<GapicProvider> providerFactory = createProviderFactory(model, factory);
+      GapicProviderFactory providerFactory = createProviderFactory(model, factory);
       GapicGeneratorConfig generatorConfig =
           GapicGeneratorConfig.newBuilder()
               .id(id)
@@ -152,31 +152,53 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       String outputPath = options.get(OUTPUT_FILE);
-      List<GapicProvider> providers =
+      List<GapicProvider<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
-      Map<String, Doc> outputFiles = Maps.newHashMap();
-      for (GapicProvider provider : providers) {
-        outputFiles.putAll(provider.generate());
+      ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
+      ImmutableSet.Builder<String> executables = ImmutableSet.builder();
+      for (GapicProvider<?> provider : providers) {
+        Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
+        for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
+          outputFiles.put(entry.getKey(), entry.getValue().getBody());
+          if (entry.getValue().isExecutable()) {
+            executables.add(entry.getKey());
+          }
+        }
       }
-      writeCodeGenOutput(outputFiles, outputPath);
+      writeCodeGenOutput(outputFiles.build(), outputPath);
+      setOutputFilesPermissions(executables.build(), outputPath);
     }
   }
 
   @VisibleForTesting
-  public static void writeCodeGenOutput(Map<String, Doc> outputFiles, String outputFile)
-      throws IOException {
+  void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath) throws IOException {
     // TODO: Support zip output.
-    if (outputFile.endsWith(".jar")) {
-      ToolUtil.writeJar(outputFiles, outputFile);
+    if (outputPath.endsWith(".jar")) {
+      ToolUtil.writeJar(outputFiles, outputPath);
     } else {
-      ToolUtil.writeFiles(outputFiles, outputFile);
+      ToolUtil.writeFiles(outputFiles, outputPath);
     }
   }
 
-  private static GapicProviderFactory<GapicProvider> createProviderFactory(
-      final Model model, String factory) {
+  @VisibleForTesting
+  void setOutputFilesPermissions(Set<String> executables, String outputPath) {
+    if (outputPath.endsWith(".jar")) {
+      return;
+    }
+    for (String executable : executables) {
+      File file =
+          Strings.isNullOrEmpty(outputPath)
+              ? new File(executable)
+              : new File(outputPath, executable);
+      if (!file.setExecutable(true, false)) {
+        warning("Failed to set output file as executable. Probably running on a non-POSIX system.");
+      }
+    }
+  }
+
+  private static GapicProviderFactory createProviderFactory(final Model model, String factory) {
     @SuppressWarnings("unchecked")
-    GapicProviderFactory<GapicProvider> provider =
+    GapicProviderFactory provider =
         ClassInstantiator.createClass(
             factory,
             GapicProviderFactory.class,
@@ -218,5 +240,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
 
   private void error(String message, Object... args) {
     model.getDiagCollector().addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+  }
+
+  private void warning(String message, Object... args) {
+    model.getDiagCollector().addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }

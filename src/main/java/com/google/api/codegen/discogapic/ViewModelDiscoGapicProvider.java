@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.gapic.GapicProvider;
@@ -21,11 +22,12 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ViewModelDiscoGapicProvider implements GapicProvider {
+public class ViewModelDiscoGapicProvider implements GapicProvider<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
@@ -43,36 +45,23 @@ public class ViewModelDiscoGapicProvider implements GapicProvider {
   }
 
   @Override
-  public List<String> getSnippetFileNames() {
+  public Collection<String> getInputFileNames() {
     return modelToViewTransformer.getTemplateFileNames();
   }
 
   @Override
-  public Map<String, Doc> generate() {
-    return generate(null);
-  }
-
-  @Override
-  public Map<String, Doc> generate(String snippetFileName) {
+  public Map<String, GeneratedResult<Doc>> generate() {
     List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, productConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
-    Map<String, Doc> docs = new TreeMap<>();
+    Map<String, GeneratedResult<Doc>> results = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-        continue;
-      }
-      Doc doc = snippetSetRunner.generate(surfaceDoc);
-      if (doc == null) {
-        // generation failed; failures are captured in the model.
-        continue;
-      }
-      docs.put(surfaceDoc.outputPath(), doc);
+      results.putAll(snippetSetRunner.generate(surfaceDoc));
     }
 
-    return docs;
+    return results;
   }
 
   public static Builder newBuilder() {

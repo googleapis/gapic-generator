@@ -106,14 +106,12 @@ public class DiscoGapicGeneratorTool {
 
   private static void generate(
       String discoveryDoc,
-      //      String[] configs,
       String[] generatorConfigs,
       String packageConfig,
       String outputDirectory,
       String[] enabledArtifacts)
       throws Exception {
     ToolOptions options = ToolOptions.create();
-    //    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     options.set(DiscoGapicGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
