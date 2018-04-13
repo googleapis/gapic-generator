@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 public class StaticResourcesHandler {
@@ -36,7 +37,16 @@ public class StaticResourcesHandler {
     ImmutableMap.Builder<String, byte[]> resources = ImmutableMap.builder();
     for (Map.Entry<String, String> entry : resourceFilesMap.entrySet()) {
       String resourcePath = SnippetSetRunner.SNIPPET_RESOURCE_ROOT + '/' + entry.getKey();
-      byte[] resource = ByteStreams.toByteArray(cl.getResourceAsStream(resourcePath));
+      InputStream resourceStream = cl.getResourceAsStream(resourcePath);
+      // Hack necessary to allow jar files to be included in the fat jar
+      if (resourceStream == null && resourcePath.endsWith(".jar")) {
+        resourcePath = resourcePath.replace(".jar", ".zjar");
+        resourceStream = cl.getResourceAsStream(resourcePath);
+      }
+      if (resourceStream == null) {
+        throw new IllegalArgumentException("Static resource not found: '" + resourcePath + "'");
+      }
+      byte[] resource = ByteStreams.toByteArray(resourceStream);
       resources.put(entry.getValue(), resource);
     }
 
