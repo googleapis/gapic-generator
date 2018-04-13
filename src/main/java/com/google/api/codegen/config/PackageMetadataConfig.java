@@ -45,20 +45,26 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> gaxGrpcVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> apiCommonVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> generatedNonGAPackageVersionBound();
 
+  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> generatedGAPackageVersionBound();
 
   protected abstract Map<TargetLanguage, String> packageName();
 
+  @Nullable
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
   @Nullable
@@ -381,6 +387,9 @@ public abstract class PackageMetadataConfig {
    */
   private static <V> Map<TargetLanguage, V> buildMapWithDefault(Map<String, V> inputMap) {
     Map<TargetLanguage, V> outputMap = new HashMap<>();
+    if (inputMap == null) {
+      return outputMap;
+    }
     Set<TargetLanguage> configuredLanguages = new HashSet<>();
     V defaultValue = null;
     for (Map.Entry<String, V> entry : inputMap.entrySet()) {
