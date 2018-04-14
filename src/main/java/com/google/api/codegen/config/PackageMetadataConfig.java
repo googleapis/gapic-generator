@@ -396,11 +396,10 @@ public abstract class PackageMetadataConfig {
    */
   private static <V> Map<TargetLanguage, V> buildMapWithDefault(Map<String, V> inputMap) {
     Map<TargetLanguage, V> outputMap = new HashMap<>();
-
-    // TODO(andrealin): should this just return null?
     if (inputMap == null) {
       return outputMap;
     }
+
     Set<TargetLanguage> configuredLanguages = new HashSet<>();
     V defaultValue = null;
     for (Map.Entry<String, V> entry : inputMap.entrySet()) {
