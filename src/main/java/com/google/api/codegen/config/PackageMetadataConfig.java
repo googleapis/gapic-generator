@@ -42,24 +42,18 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> gaxGrpcVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> gaxHttpVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> apiCommonVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
-  @Nullable
   protected abstract Map<TargetLanguage, VersionBound> generatedNonGAPackageVersionBound();
 
   @Nullable
@@ -67,7 +61,6 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, String> packageName();
 
-  @Nullable
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
   @Nullable
