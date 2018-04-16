@@ -73,7 +73,7 @@ public class DynamicLangApiMethodTransformer {
               context.getSurfaceInterfaceContext(), method));
     } else if (context.getMethodConfig().isLongRunningOperation()) {
       apiMethod.longRunningView(lroTransformer.generateDetailView(context));
-      apiMethod.type(ClientMethodType.OperationOptionalArrayMethod);
+      apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }

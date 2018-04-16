@@ -32,7 +32,7 @@ public enum ClientMethodType {
   // PHP
   OptionalArrayMethod,
   PagedOptionalArrayMethod,
-  OperationOptionalArrayMethod,
+  LongRunningOptionalArrayMethod,
   // C#
   FlattenedAsyncCallSettingsMethod,
   FlattenedAsyncCancellationTokenMethod,
