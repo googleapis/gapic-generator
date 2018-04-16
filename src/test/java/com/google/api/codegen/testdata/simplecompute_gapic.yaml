@@ -39,12 +39,12 @@ interfaces:
   collections:
   - name_pattern: projects/{project}
     entity_name: project
-  - name_pattern: projects/{project}/addresses/{address}
-    entity_name: projectAddress
+  - name_pattern: projects/{project}/global/addresses/{address}
+    entity_name: projectGlobalAddress
   - name_pattern: projects/{project}/regions/{region}
-    entity_name: region
+    entity_name: projectRegion
   - name_pattern: projects/{project}/regions/{region}/addresses/{address}
-    entity_name: address
+    entity_name: projectRegionAddress
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -147,7 +147,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      address: address
+      address: projectRegionAddress
     timeout_millis: 60000
   - name: compute.addresses.get
     flattening:
@@ -161,7 +161,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      address: address
+      address: projectRegionAddress
     timeout_millis: 60000
   - name: compute.addresses.insert
     flattening:
@@ -177,7 +177,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     timeout_millis: 60000
   - name: compute.addresses.list
     flattening:
@@ -198,7 +198,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     timeout_millis: 60000
   - name: compute.addresses.patch
     flattening:
@@ -218,7 +218,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     timeout_millis: 60000
   - name: compute.addresses.update
     flattening:
@@ -236,12 +236,16 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      address: projectAddress
+      address: projectGlobalAddress
     timeout_millis: 60000
 - name: google.simplecompute.v1.DummyObjects
   collections:
+  - name_pattern: projects/{project}
+    entity_name: project
   - name_pattern: projects/{project}/dummyObjects/{dummyObject}
-    entity_name: dummyObject
+    entity_name: projectDummyObject
+  - name_pattern: projects/{project}/dummyObjects/{resource}
+    entity_name: projectDummyObjectResource
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -259,6 +263,42 @@ interfaces:
     max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
   methods:
+  - name: compute.dummyObjects.listResources
+    flattening:
+      groups:
+      - parameters:
+        - project
+    required_fields:
+    - project
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: maxResults
+        token_field: pageToken
+      response:
+        token_field: nextPageToken
+        # resources_field here is manually configured.
+        resources_field: resources
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    timeout_millis: 60000
+  - name: compute.dummyObjects.getResource
+    flattening:
+      groups:
+      - parameters:
+        - resource
+    required_fields:
+    - resource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: projectDummyObjectResource
+    timeout_millis: 60000
   - name: compute.dummyObjects.delete
     flattening:
       groups:
@@ -271,7 +311,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      dummyObject: dummyObject
+      dummyObject: projectDummyObject
     timeout_millis: 60000
 resource_name_generation:
 - message_name: AggregatedListAddressesHttpRequest
@@ -279,22 +319,28 @@ resource_name_generation:
     project: project
 - message_name: DeleteAddressHttpRequest
   field_entity_map:
-    address: address
+    address: projectRegionAddress
 - message_name: GetAddressHttpRequest
   field_entity_map:
-    address: address
+    address: projectRegionAddress
 - message_name: InsertAddressHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: ListAddressesHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: PatchAddressHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
-    address: projectAddress
+    address: projectGlobalAddress
+- message_name: ListResourcesDummyObjectsHttpRequest
+  field_entity_map:
+    project: project
+- message_name: GetResourceDummyObjectHttpRequest
+  field_entity_map:
+    resource: projectDummyObjectResource
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
-    dummyObject: dummyObject
+    dummyObject: projectDummyObject

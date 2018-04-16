@@ -15,11 +15,9 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.util.CommonRenderingUtil;
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  * FieldStructureParser parses a dotted path specification and into a "tree" of InitCodeNode
@@ -27,25 +25,6 @@ import java.util.regex.Pattern;
  * will actually be a list.
  */
 public class FieldStructureParser {
-
-  private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.\\{\\[]+)");
-  private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
-  private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
-
-  @VisibleForTesting
-  static Pattern getFieldStructurePattern() {
-    return fieldStructurePattern;
-  }
-
-  @VisibleForTesting
-  static Pattern getFieldListPattern() {
-    return fieldListPattern;
-  }
-
-  @VisibleForTesting
-  static Pattern getFieldMapPattern() {
-    return fieldMapPattern;
-  }
 
   public static InitCodeNode parse(String initFieldConfigString) {
     return parse(initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
@@ -86,33 +65,36 @@ public class FieldStructureParser {
   }
 
   private static InitCodeNode parsePartialDottedPathToInitCodeNode(
-      String partialDottedPath,
+      String path,
       InitCodeLineType prevType,
       InitValueConfig initValueConfig,
       InitCodeNode prevNode) {
 
     InitCodeLineType nextType;
     String key;
-    Matcher structureMatcher = fieldStructurePattern.matcher(partialDottedPath);
-    Matcher listMatcher = fieldListPattern.matcher(partialDottedPath);
-    Matcher mapMatcher = fieldMapPattern.matcher(partialDottedPath);
-    if (structureMatcher.matches()) {
-      key = structureMatcher.group(2);
-      nextType = InitCodeLineType.StructureInitLine;
-      partialDottedPath = structureMatcher.group(1);
-    } else if (listMatcher.matches()) {
-      key = listMatcher.group(2);
+    if (path.endsWith("]")) {
       nextType = InitCodeLineType.ListInitLine;
-      partialDottedPath = listMatcher.group(1);
-    } else if (mapMatcher.matches()) {
-      key = CommonRenderingUtil.stripQuotes(mapMatcher.group(2));
+      int p = path.lastIndexOf("[");
+      Preconditions.checkArgument(p >= 0, "invalid list expression: %s", path);
+      key = path.substring(p + 1, path.length() - 1);
+      path = path.substring(0, p);
+    } else if (path.endsWith("}")) {
       nextType = InitCodeLineType.MapInitLine;
-      partialDottedPath = mapMatcher.group(1);
+      int p = path.lastIndexOf("{");
+      Preconditions.checkArgument(p >= 0, "invalid map expression: %s", path);
+      key = CommonRenderingUtil.stripQuotes(path.substring(p + 1, path.length() - 1));
+      path = path.substring(0, p);
     } else {
-      // No pattern match implies toMatch contains simple field (with no "." separators)
-      key = partialDottedPath;
-      nextType = InitCodeLineType.Unknown;
-      partialDottedPath = null;
+      int p = path.lastIndexOf('.');
+      if (p >= 0) {
+        nextType = InitCodeLineType.StructureInitLine;
+        key = path.substring(p + 1);
+        path = path.substring(0, p);
+      } else {
+        key = path;
+        path = null;
+        nextType = InitCodeLineType.Unknown;
+      }
     }
 
     // Create new InitCodeNode with prevItem as a child node. If prevItem is null, then this is the
@@ -127,9 +109,9 @@ public class FieldStructureParser {
       item = InitCodeNode.create(key);
     }
 
-    if (partialDottedPath == null) {
+    if (path == null) {
       return item;
     }
-    return parsePartialDottedPathToInitCodeNode(partialDottedPath, nextType, null, item);
+    return parsePartialDottedPathToInitCodeNode(path, nextType, null, item);
   }
 }

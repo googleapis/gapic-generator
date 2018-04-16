@@ -44,12 +44,12 @@ interfaces:
   collections:
   - name_pattern: projects/{project}
     entity_name: project
-  - name_pattern: projects/{project}/addresses/{address}
-    entity_name: projectAddress
+  - name_pattern: projects/{project}/global/addresses/{address}
+    entity_name: projectGlobalAddress
   - name_pattern: projects/{project}/regions/{region}
-    entity_name: region
+    entity_name: projectRegion
   - name_pattern: projects/{project}/regions/{region}/addresses/{address}
-    entity_name: address
+    entity_name: projectRegionAddress
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -163,7 +163,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      address: address
+      address: projectRegionAddress
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.get
@@ -183,7 +183,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      address: address
+      address: projectRegionAddress
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.insert
@@ -205,7 +205,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.list
@@ -232,7 +232,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.patch
@@ -258,7 +258,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      region: region
+      region: projectRegion
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.update
@@ -282,7 +282,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      address: projectAddress
+      address: projectGlobalAddress
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   # The fully qualified name of the API interface.
@@ -298,8 +298,12 @@ interfaces:
   # The entity_name is the name to be used as a basis for generated methods and
   # classes.
   collections:
+  - name_pattern: projects/{project}
+    entity_name: project
   - name_pattern: projects/{project}/dummyObjects/{dummyObject}
-    entity_name: dummyObject
+    entity_name: projectDummyObject
+  - name_pattern: projects/{project}/dummyObjects/{resource}
+    entity_name: projectDummyObjectResource
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -369,6 +373,53 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
+  - name: compute.dummyObjects.listResources
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - project
+    # TODO: Configure which fields are required.
+    required_fields:
+    - project
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: maxResults
+        token_field: pageToken
+      response:
+        token_field: nextPageToken
+        resources_field: _TODO_
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      project: project
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: compute.dummyObjects.getResource
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - resource
+    # TODO: Configure which fields are required.
+    required_fields:
+    - resource
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      resource: projectDummyObjectResource
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
   - name: compute.dummyObjects.delete
     # TODO: Configure which groups of fields should be flattened into method
     # params.
@@ -386,7 +437,7 @@ interfaces:
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
     field_name_patterns:
-      dummyObject: dummyObject
+      dummyObject: projectDummyObject
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
 resource_name_generation:
@@ -395,22 +446,28 @@ resource_name_generation:
     project: project
 - message_name: DeleteAddressHttpRequest
   field_entity_map:
-    address: address
+    address: projectRegionAddress
 - message_name: GetAddressHttpRequest
   field_entity_map:
-    address: address
+    address: projectRegionAddress
 - message_name: InsertAddressHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: ListAddressesHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: PatchAddressHttpRequest
   field_entity_map:
-    region: region
+    region: projectRegion
 - message_name: UpdateAddressHttpRequest
   field_entity_map:
-    address: projectAddress
+    address: projectGlobalAddress
+- message_name: ListResourcesDummyObjectsHttpRequest
+  field_entity_map:
+    project: project
+- message_name: GetResourceDummyObjectHttpRequest
+  field_entity_map:
+    resource: projectDummyObjectResource
 - message_name: DeleteDummyObjectHttpRequest
   field_entity_map:
-    dummyObject: dummyObject
+    dummyObject: projectDummyObject

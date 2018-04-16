@@ -27,11 +27,11 @@ import javax.annotation.Nullable;
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
-  /* @return find a nested field in the method's input type by the nested field's name. */
+  /* @return find a nested field in the method's input type by the nested field's name. Returns null if not found. */
   @Nullable
   FieldModel getInputField(String fieldName);
 
-  /* @return find a nested field in the method's output type by the nested field's name. */
+  /* @return find a nested field in the method's output type by the nested field's name. Returns null if not found. */
   @Nullable
   FieldModel getOutputField(String fieldName);
 

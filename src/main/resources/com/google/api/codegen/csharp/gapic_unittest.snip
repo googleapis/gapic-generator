@@ -3,10 +3,12 @@
 
 # snippets: ClientTestFileView
 @snippet generate(test)
-    {@renderFileHeader(test.fileHeader)}
+    {@initialComments(test.fileHeader)}
 
     namespace {@test.fileHeader.packageName}.Tests
     {
+        {@imports(test.fileHeader)}
+
         {@renderTests(test.testClass)}
     }
 

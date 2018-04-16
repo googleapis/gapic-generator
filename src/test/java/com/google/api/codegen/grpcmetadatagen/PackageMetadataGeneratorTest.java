@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -34,7 +35,7 @@ import org.junit.Test;
 
 public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   private class OutputCollector extends SimpleFileVisitor<Path> {
-    Map<String, Doc> collectedFiles = new TreeMap<>();
+    Map<String, GeneratedResult<Doc>> collectedFiles = new TreeMap<>();
     Path testDir;
 
     OutputCollector(Path testDir) {
@@ -43,12 +44,13 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
-      collectedFiles.put(
-          testDir.relativize(file).toString(), Doc.text(new String(Files.readAllBytes(file))));
+      String filename = testDir.relativize(file).toString();
+      Doc doc = Doc.text(new String(Files.readAllBytes(file)));
+      collectedFiles.put(filename, GeneratedResult.create(doc, false));
       return FileVisitResult.CONTINUE;
     }
 
-    public Map<String, Doc> getResults() {
+    public Map<String, GeneratedResult<Doc>> getResults() {
       return collectedFiles;
     }
   }
@@ -73,7 +75,7 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
 
   @Override
   @Nullable
-  protected Object run() throws Exception {
+  protected Map<String, Doc> run() throws Exception {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
     String metadataConfigPath = getTestDataLocator().findTestData(packageConfig).getPath();
 
@@ -85,17 +87,20 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfigPath);
     options.set(GrpcMetadataGenerator.LANGUAGE, language);
     options.set(GrpcMetadataGenerator.ARTIFACT_TYPE, artifactType);
-    Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generate(model);
+    Map<String, GeneratedResult<Doc>> generatedDocs =
+        new GrpcMetadataGenerator(options).generate(model);
 
     if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
       OutputCollector collector = new OutputCollector(Paths.get(outFile));
       Files.walkFileTree(Paths.get(outFile), collector);
       return new ImmutableMap.Builder<String, Doc>()
-          .putAll(generatedDocs)
-          .putAll(collector.getResults())
+          .putAll(GeneratedResult.extractBodies(generatedDocs))
+          .putAll(GeneratedResult.extractBodies(collector.getResults()))
           .build();
     } else {
-      return new ImmutableMap.Builder<String, Doc>().putAll(generatedDocs).build();
+      return new ImmutableMap.Builder<String, Doc>()
+          .putAll(GeneratedResult.extractBodies(generatedDocs))
+          .build();
     }
   }
 

@@ -34,6 +34,9 @@ import java.util.Map;
 public class MethodTransformer {
   private final InputSpecificMethodTransformer helperTransformer;
 
+  // Used for empty config field values that require a non-null value in the yaml.
+  public static String TODO_STRING = "_TODO_";
+
   public MethodTransformer(InputSpecificMethodTransformer helperTransformer) {
     this.helperTransformer = helperTransformer;
   }
