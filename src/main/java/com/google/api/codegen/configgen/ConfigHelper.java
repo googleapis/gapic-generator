@@ -67,7 +67,7 @@ public class ConfigHelper {
   }
 
   public Location getLocation(int line) {
-    return getLocation(line);
+    return getLocation((Object) line);
   }
 
   private Location getLocation(Object line) {
