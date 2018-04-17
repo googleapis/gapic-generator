@@ -32,22 +32,22 @@
 @private classDoc(doc)
   @switch doc.exampleApiMethod.type
   @case "FlattenedMethod"
-    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "PagedFlattenedMethod"
-    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "RequestObjectMethod"
-    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "AsyncOperationFlattenedMethod"
-    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
@@ -431,7 +431,7 @@
 @end
 
 @private pagedFlattenedMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -451,7 +451,7 @@
 @end
 
 @private pagedRequestObjectMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -466,21 +466,21 @@
 @end
 
 @private pagedCallableMethod(apiMethod)
-  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
 @end
 
 @private unpagedListCallableMethod(apiMethod)
-  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
 @end
 
 @private flattenedMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -499,7 +499,7 @@
 @end
 
 @private requestObjectMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -517,7 +517,7 @@
 @end
 
 @private callableMethod(apiMethod)
-  @let coreSampleCode = callableMethodSampleCode(apiMethod)
+  @let coreSampleCode = callableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
@@ -535,7 +535,7 @@
 @end
 
 @private streamingCallableMethod(apiMethod)
-  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -550,7 +550,7 @@
 @end
 
 @private asyncOperationFlattenedMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -566,7 +566,7 @@
 @end
 
 @private asyncOperationRequestObjectMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -581,7 +581,7 @@
 @end
 
 @private operationCallableMethod(apiMethod)
-  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation

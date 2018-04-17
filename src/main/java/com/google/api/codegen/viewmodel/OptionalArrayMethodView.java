@@ -129,7 +129,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   }
 
   @AutoValue.Builder
-  public abstract static class Builder implements ApiMethodViewBuilder {
+  public abstract static class Builder implements ApiMethodView.Builder {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);

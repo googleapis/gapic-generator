@@ -33,7 +33,7 @@ public abstract class SampleValueSetView {
   /** The parameters as specified in the config */
   public abstract List<String> parameters();
 
-  public static SampleValueSetView New(SampleValueSet config) {
+  public static SampleValueSetView of(SampleValueSet config) {
     SampleValueSetView.Builder builder = new AutoValue_SampleValueSetView.Builder();
     return builder
         .id(config.getId())

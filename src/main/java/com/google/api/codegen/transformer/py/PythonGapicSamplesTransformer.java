@@ -33,7 +33,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.DynamicLangXSampleView;
+import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -139,7 +139,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
 
     List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
 
-    DynamicLangXSampleView.Builder sampleClassBuilder = DynamicLangXSampleView.newBuilder();
+    DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
     for (OptionalArrayMethodView method : allmethods) {
       String subPath =
           pathMapper.getSamplesOutputPath(

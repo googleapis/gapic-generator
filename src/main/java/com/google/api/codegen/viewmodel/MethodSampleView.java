@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.AutoValue_MethodSampleView.Builder;
 import com.google.auto.value.AutoValue;
 
 /** A view model for methods samples. */

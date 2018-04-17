@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 
 /** A ViewModel for standalone samples for dynamic languages. */
 @AutoValue
-public abstract class DynamicLangXSampleView implements ViewModel {
+public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String templateFileName();
 
@@ -32,10 +32,11 @@ public abstract class DynamicLangXSampleView implements ViewModel {
 
   public abstract String className();
 
+  /** The client library method illustrated in this sample. */
   public abstract OptionalArrayMethodView sampledMethod();
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicLangXSampleView.Builder();
+    return new AutoValue_DynamicLangSampleView.Builder();
   }
 
   public abstract Builder toBuilder();
@@ -51,6 +52,6 @@ public abstract class DynamicLangXSampleView implements ViewModel {
 
     public abstract Builder sampledMethod(OptionalArrayMethodView val);
 
-    public abstract DynamicLangXSampleView build();
+    public abstract DynamicLangSampleView build();
   }
 }

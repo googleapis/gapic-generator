@@ -47,7 +47,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcDocView;
@@ -246,18 +245,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
 
     return xapiClass.build();
-  }
-
-  private List<ApiMethodView> generateApiMethodsAndSamples(GapicInterfaceContext context) {
-    ImmutableList.Builder<ApiMethodView> apiMethodsAndSamples = ImmutableList.builder();
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      OptionalArrayMethodView methodView =
-          apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method));
-      apiMethodsAndSamples.add(methodView);
-    }
-
-    return apiMethodsAndSamples.build();
   }
 
   private GrpcDocView generateEnumView(

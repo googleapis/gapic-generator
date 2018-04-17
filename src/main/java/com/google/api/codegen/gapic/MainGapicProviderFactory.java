@@ -374,7 +374,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
-        GapicProvider samplesProvider =
+        GapicProvider sampleProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -392,7 +392,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setCodePathMapper(pythonPathMapper)
                 .build();
         providers.add(mainProvider);
-        providers.add(samplesProvider);
+        providers.add(sampleProvider);
         providers.add(clientConfigProvider);
 
         GapicProvider metadataProvider =

@@ -43,9 +43,9 @@ public class JavaMethodViewGenerator {
   }
 
   /**
-   * Generates the StaticLangApiMethodView for each of the methods in the InterfaceContext
+   * Generates the StaticLangApiMethodView for each of the methods in the InterfaceContext.
    *
-   * @param context The context contianing the methods for which to generate StaticLangApiMethodView
+   * @param context The context containing the methods for which to generate StaticLangApiMethodView
    * @return The list of StaticLangApiMethodView, one per method
    */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {

@@ -21,7 +21,7 @@ import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.viewmodel.ApiMethodViewBuilder;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
@@ -44,15 +44,15 @@ class SampleTransformer {
    * InitCodeContext.
    */
   @FunctionalInterface
-  public interface generator {
-    public InitCodeView generate(InitCodeContext initCodeContext);
+  public interface Generator {
+    InitCodeView generate(InitCodeContext initCodeContext);
   }
 
   /**
    * Constructs the SampleTransfomer
    *
    * @param sampleType The SampleType this transformer should concern itself with. Other SampleTypes
-   *     configured configured on the methods are ignored.
+   *     configured on the methods are ignored.
    */
   public SampleTransformer(SampleType sampleType) {
     this.sampleType = sampleType;
@@ -74,11 +74,11 @@ class SampleTransformer {
    *     generate samples if so configured via context.getMethodConfig()
    */
   public void generateSamples(
-      ApiMethodViewBuilder methodViewBuilder,
+      ApiMethodView.Builder methodViewBuilder,
       MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      SampleTransformer.generator generator,
+      Generator generator,
       List<ClientMethodType> callingForms) {
 
     List<MethodSampleView> methodSampleViews =
@@ -116,7 +116,7 @@ class SampleTransformer {
       MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      generator sampleGenerator,
+      Generator sampleGenerator,
       List<ClientMethodType> callingForms) {
 
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
@@ -155,7 +155,7 @@ class SampleTransformer {
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingFormId(form.toString())
-                .valueSet(SampleValueSetView.New(valueSet))
+                .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
                 .build());
       }

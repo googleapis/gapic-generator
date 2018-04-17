@@ -49,7 +49,7 @@ public class SampleSpec {
 
   public SampleSpec(MethodConfigProto methodConfigProto) {
     specified = methodConfigProto.hasSamples();
-    this.sampleConfiguration = methodConfigProto.getSamples();
+    sampleConfiguration = methodConfigProto.getSamples();
     storeValueSets(methodConfigProto.getSampleValueSetsList(), methodConfigProto.getName());
   }
 
