@@ -1015,7 +1015,9 @@ from google.cloud.example.library_v1.gapic import library_service_client_config
 from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
+from google.cloud.example.library_v1.proto import library_pb2_grpc
 from google.cloud.example.library_v1.proto import tagger_pb2
+from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
@@ -1144,9 +1146,9 @@ class LibraryServiceClient(object):
 
         # Create the gRPC stubs.
         self.library_service_stub = (
-            library_pb2.LibraryServiceStub(channel))
+            library_pb2_grpc.LibraryServiceStub(channel))
         self.labeler_stub = (
-            tagger_pb2.LabelerStub(channel))
+            tagger_pb2_grpc.LabelerStub(channel))
 
         # Operations client for methods that return long-running operations
         # futures.
