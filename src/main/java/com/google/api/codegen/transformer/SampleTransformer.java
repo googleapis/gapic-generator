@@ -105,8 +105,8 @@ class SampleTransformer {
    * @param context
    * @param fieldConfigs
    * @param initCodeOutputType
-   * @param generator The function (typically a lambda) to generate the InitCode for a sample given
-   *     an InitCodeContext
+   * @param sampleGenerator The function (typically a lambda) to generate the InitCode for a sample
+   *     given an InitCodeContext
    * @param callingForms The list of calling forms applicable to this method, for which we will
    *     generate samples if so configured via context.getMethodConfig()
    * @return A list of of the MethodSampleView, each of which corresponds to a specific sample
@@ -125,6 +125,7 @@ class SampleTransformer {
       MethodConfig methodConfig = context.getMethodConfig();
 
       Set<SampleValueSet> matchingValueSets;
+      matchingValueSets = methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
       // For backwards compatibility, use the sample_code_init_fields instead. Once all the configs
       // have been migrated to use the SampleSpec, we can delete the code below as well as
       // sample_code_init_fields.
@@ -133,7 +134,9 @@ class SampleTransformer {
               .isConfigured() // if not configured, make the sample_code_init_fields available to all sample types
           || sampleType
               == SampleType
-                  .IN_CODE) { // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
+                  .IN_CODE // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
+          || matchingValueSets.size()
+              == 0) { // ApiMethodView.initCode still needs to be set for now
         matchingValueSets = new LinkedHashSet<>();
         matchingValueSets.add(
             SampleValueSet.newBuilder()
@@ -142,8 +145,6 @@ class SampleTransformer {
                 .setDescription("value set imported from sample_code_init_fields")
                 .setTitle("Sample Values")
                 .build());
-      } else {
-        matchingValueSets = methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
       }
 
       for (SampleValueSet valueSet : matchingValueSets) {
