@@ -19,15 +19,14 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -41,7 +40,6 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.util.TypeAlias;
@@ -73,6 +71,8 @@ import java.util.List;
 public class JavaSurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
+
+  // TODO: Figure out a way to simplify the transformers in a way that reduces duplication and makes it easy to follow the code.
   private final SurfaceTransformer surfaceTransformer;
   private final String rpcStubTemplateFilename;
   private final String callableFactoryTemplateFilename;
@@ -80,8 +80,8 @@ public class JavaSurfaceTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final StaticLangApiMethodTransformer apiMethodTransformer =
-      new StaticLangApiMethodTransformer();
+  private final JavaMethodViewGenerator methodGenerator =
+      new JavaMethodViewGenerator(SampleType.IN_CODE);
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -189,7 +189,7 @@ public class JavaSurfaceTransformer {
 
     addApiImports(context);
 
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(context);
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
@@ -521,7 +521,7 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from methods classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
@@ -577,7 +577,7 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from method, request, and resource classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -976,95 +976,5 @@ public class JavaSurfaceTransformer {
         namer.getApiSettingsBuilderVarName(context.getInterfaceConfig()));
     settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return settingsDoc.build();
-  }
-
-  private List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {
-    List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
-
-      if (methodConfig.isPageStreaming()) {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  apiMethodTransformer.generatePagedFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
-          }
-        }
-        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
-        apiMethods.add(apiMethodTransformer.generatePagedCallableMethod(requestMethodContext));
-        apiMethods.add(
-            apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
-      } else if (methodConfig.isGrpcStreaming()) {
-        ImportTypeTable typeTable = context.getImportTypeTable();
-        switch (methodConfig.getGrpcStreamingType()) {
-          case BidiStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
-            break;
-          case ClientStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
-            break;
-          case ServerStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
-            break;
-          default:
-            throw new IllegalArgumentException(
-                "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
-        }
-        apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generateAsyncOperationFlattenedMethod(flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
-          }
-        }
-        apiMethods.add(
-            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(requestMethodContext));
-        apiMethods.add(apiMethodTransformer.generateOperationCallableMethod(requestMethodContext));
-        apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
-      } else {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(apiMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  apiMethodTransformer.generateFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
-          }
-        }
-        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(requestMethodContext));
-        apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
-      }
-    }
-
-    return apiMethods;
-  }
-
-  private boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
-    return flatteningGroup
-        .getFlattenedFieldConfigs()
-        .values()
-        .stream()
-        .anyMatch(FieldConfig::useResourceNameType);
   }
 }

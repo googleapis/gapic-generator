@@ -3520,6 +3520,68 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
+============== file: samples/google/cloud/example/library_v1/gapic/get_book/get_book_sample_optional_array_method_sample_code_init_fields.py ==============
+#### STUB standalone sample "GetBookSampleOptionalArrayMethodSampleCodeInitFields" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "sample_code_init_fields" ("Sample Values")
+##       []
+##     apiMethod "get_book" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+response = client.get_book(name)
+"""
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_optional_array_method_pi_version.py ==============
+#### STUB standalone sample "PublishSeriesSampleOptionalArrayMethodPiVersion" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "pi_version" ("Pi version")
+##       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+##     apiMethod "publish_series" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+name = 'Math'
+shelf = {'name': name}
+
+# TODO: Initialize ``books``:
+books = []
+series_string = 'xyz3141592654'
+series_uuid = {'series_string': series_string}
+
+response = client.publish_series(shelf, books, series_uuid)
+"""
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_optional_array_method_second_edition.py ==============
+#### STUB standalone sample "PublishSeriesSampleOptionalArrayMethodSecondEdition" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "second_edition" ("Second edition")
+##       [edition=2]
+##     apiMethod "publish_series" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+# TODO: Initialize ``shelf``:
+shelf = {}
+
+# TODO: Initialize ``books``:
+books = []
+
+# TODO: Initialize ``series_uuid``:
+series_uuid = {}
+edition = 2
+
+response = client.publish_series(shelf, books, series_uuid, edition=edition)
+"""
 ============== file: setup.cfg ==============
 [bdist_wheel]
 universal = 1
