@@ -29,7 +29,7 @@ public enum ClientMethodType {
   AsyncOperationFlattenedMethod,
   AsyncOperationRequestObjectMethod,
   OperationCallableMethod,
-  // PHP
+  // Dynamic langs
   OptionalArrayMethod,
   PagedOptionalArrayMethod,
   LongRunningOptionalArrayMethod,
