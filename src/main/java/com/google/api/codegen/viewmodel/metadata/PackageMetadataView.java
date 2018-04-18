@@ -57,8 +57,23 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract VersionBound gaxGrpcVersionBound();
 
+  public boolean hasGaxGrpcVersionBound() {
+    return gaxGrpcVersionBound() != null;
+  }
+
+  @Nullable
+  public abstract VersionBound gaxHttpVersionBound();
+
+  public boolean hasGaxHttpVersionBound() {
+    return gaxHttpVersionBound() != null;
+  }
+
   @Nullable
   public abstract VersionBound grpcVersionBound();
+
+  public boolean hasGrpcVersionBound() {
+    return grpcVersionBound() != null;
+  }
 
   @Nullable
   public abstract VersionBound protoVersionBound();
@@ -193,6 +208,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder gaxVersionBound(VersionBound val);
 
     public abstract Builder gaxGrpcVersionBound(VersionBound val);
+
+    public abstract Builder gaxHttpVersionBound(VersionBound val);
 
     public abstract Builder grpcVersionBound(VersionBound val);
 

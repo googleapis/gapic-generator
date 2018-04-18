@@ -77,6 +77,7 @@ public class PackageMetadataTransformer {
         .artifactType(packageConfig.artifactType())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .gaxGrpcVersionBound(packageConfig.gaxGrpcVersionBound(language))
+        .gaxHttpVersionBound(packageConfig.gaxHttpVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .protoPackageDependencies(

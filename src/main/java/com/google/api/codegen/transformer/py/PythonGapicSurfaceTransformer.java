@@ -25,6 +25,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -46,7 +47,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcDocView;
@@ -55,6 +55,7 @@ import com.google.api.codegen.viewmodel.GrpcMessageDocView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -69,22 +70,28 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "py/main.snip";
   private static final String ENUM_TEMPLATE_FILENAME = "py/enum.snip";
-  private static final String TYPES_TEMPLEATE_FILENAME = "py/types.snip";
+  private static final String TYPES_TEMPLATE_FILENAME = "py/types.snip";
   private static final String VERSIONED_INIT_TEMPLATE_FILENAME =
       "py/versioned_directory__init__.py.snip";
   private static final String TOP_LEVEL_ENTRY_POINT_FILENAME = "py/top_level_entry_point.snip";
 
+  private static final SampleType sampleType = SampleType.IN_CODE;
   private final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new PythonApiMethodParamTransformer(), new InitCodeTransformer(importSectionTransformer));
+          new PythonApiMethodParamTransformer(),
+          new InitCodeTransformer(importSectionTransformer),
+          sampleType);
+  private final PythonMethodViewGenerator methodGenerator =
+      new PythonMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
@@ -104,7 +111,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     return ImmutableList.of(
         XAPI_TEMPLATE_FILENAME,
         ENUM_TEMPLATE_FILENAME,
-        TYPES_TEMPLEATE_FILENAME,
+        TYPES_TEMPLATE_FILENAME,
         VERSIONED_INIT_TEMPLATE_FILENAME,
         TOP_LEVEL_ENTRY_POINT_FILENAME);
   }
@@ -130,6 +137,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     FeatureConfig featureConfig = new DefaultFeatureConfig();
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
+
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -137,6 +145,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
       addApiImports(context);
       serviceSurfaces.add(generateApiClass(context));
     }
+
     GrpcDocView enumFile = generateEnumView(productConfig, modelTypeTable, namer, model.getFiles());
     if (!enumFile.elementDocs().isEmpty()) {
       serviceSurfaces.add(enumFile);
@@ -182,16 +191,13 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
-    List<ApiMethodView> methods = generateApiMethods(context);
+    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
 
-    xapiClass.name(name);
     xapiClass.doc(
         serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
@@ -227,24 +233,18 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.apiMethods(methods);
-
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.gapicPackageName(
         namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
+    // Generate the view for the API class.
+    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
+    xapiClass.name(name);
+    xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
+
     return xapiClass.build();
-  }
-
-  private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
-    ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
-    }
-
-    return apiMethods.build();
   }
 
   private GrpcDocView generateEnumView(
@@ -306,7 +306,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     ImportSectionView imports =
         importSectionTransformer.generateTypesImportSection(model, productConfig);
     return VersionIndexView.newBuilder()
-        .templateFileName(TYPES_TEMPLEATE_FILENAME)
+        .templateFileName(TYPES_TEMPLATE_FILENAME)
         .outputPath(typesOutputFile(namer))
         .requireViews(ImmutableList.<VersionIndexRequireView>of())
         .apiVersion(namer.getApiWrapperModuleVersion())

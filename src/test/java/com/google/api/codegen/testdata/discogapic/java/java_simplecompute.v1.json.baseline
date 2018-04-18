@@ -14087,6 +14087,54 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  */
 
 package com.google.cloud.simplecompute.v1;
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-simplecompute-v1'
+group = 'com.google.api'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  testCompile 'com.google.api:gax:1.0.0:testlib'
+  compile 'com.google.api:gax-httpjson:0.18.0'
+  testCompile 'com.google.api:gax-httpjson:0.18.0:testlib'
+  testCompile 'junit:junit:4.12'
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
 /*
  * Copyright 2018 Google LLC

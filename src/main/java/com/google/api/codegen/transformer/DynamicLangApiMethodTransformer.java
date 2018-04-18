@@ -20,17 +20,16 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,6 +43,7 @@ public class DynamicLangApiMethodTransformer {
   private final HeaderRequestParamTransformer headerRequestParamTransformer =
       new HeaderRequestParamTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final SampleTransformer sampleTransformer;
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
     this(apiMethodParamTransformer, new InitCodeTransformer());
@@ -52,8 +52,16 @@ public class DynamicLangApiMethodTransformer {
   public DynamicLangApiMethodTransformer(
       ApiMethodParamTransformer apiMethodParamTransformer,
       InitCodeTransformer initCodeTransformer) {
+    this(apiMethodParamTransformer, initCodeTransformer, SampleType.IN_CODE);
+  }
+
+  public DynamicLangApiMethodTransformer(
+      ApiMethodParamTransformer apiMethodParamTransformer,
+      InitCodeTransformer initCodeTransformer,
+      SampleType sampleType) {
     this.apiMethodParamTransformer = apiMethodParamTransformer;
     this.initCodeTransformer = initCodeTransformer;
+    this.sampleTransformer = new SampleTransformer(sampleType);
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
@@ -89,16 +97,22 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     apiMethod.localPackageName(namer.getLocalPackageName());
+
+    // TODO(vchudnov-g): Here we need to import the logic from the snippet file for
+    // selecting the proper calling form.
     InitCodeOutputType initCodeOutputType =
         context.getMethodModel().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
-    InitCodeView initCode =
-        initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            createInitCodeContext(
-                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType));
-    apiMethod.initCode(initCode);
+    sampleTransformer.generateSamples(
+        apiMethod,
+        context,
+        context.getMethodConfig().getRequiredFieldConfigs(),
+        initCodeOutputType,
+        initCodeContext ->
+            initCodeTransformer.generateInitCode(
+                context.cloneWithEmptyTypeTable(), initCodeContext),
+        Arrays.asList(ClientMethodType.OptionalArrayMethod));
 
     apiMethod.doc(generateMethodDoc(context));
 
@@ -230,20 +244,5 @@ public class DynamicLangApiMethodTransformer {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
     }
     return param.build();
-  }
-
-  private InitCodeContext createInitCodeContext(
-      MethodContext context,
-      Iterable<FieldConfig> fieldConfigs,
-      InitCodeOutputType initCodeOutputType) {
-    return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethodModel().getInputType())
-        .suggestedName(Name.from("request"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
-        .outputType(initCodeOutputType)
-        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
-        .build();
   }
 }
