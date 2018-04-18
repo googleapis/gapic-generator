@@ -209,7 +209,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
         if (methodContext.getMethodConfig().isLongRunningOperation()) {
-          clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
+          clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
         } else if (methodContext.getMethodConfig().isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
         }
