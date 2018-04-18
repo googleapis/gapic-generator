@@ -59,6 +59,13 @@ class SampleTransformer {
   }
 
   /**
+   * A placeholder id for the ValueSet we synthesize in generateSamples() to accommodate legacy
+   * configurations that still rely on sample_code_init_fields. The format of this string is
+   * purposefully set to something that will cause errors if it makes it to an artifact.
+   */
+  private static String LEGACY_SAMPLE_CODE_INIT_VALUES = "[ sample_code_init_fields ]";
+
+  /**
    * Populates methodViewBuilder.samples with the appropriate MethodSampleViews. This method is
    * provided to provide backward compatibility for configuring in-code samples via
    * MethodView.initCode. Once that configuration is removed, this function becomes a one-liner that
@@ -89,13 +96,14 @@ class SampleTransformer {
     // use is the first one on the list, since we set it in the overload of generateSamples.
     if (methodSampleViews.size() > 0) {
       methodViewBuilder.initCode(methodSampleViews.get(0).initCode());
+
+      // Don't emit samples that were specifically generated for backward-compatibility. We only
+      // wanted them for initCode above.
+      if (methodSampleViews.get(0).valueSet().id() == LEGACY_SAMPLE_CODE_INIT_VALUES) {
+        methodSampleViews = new ArrayList<>();
+      }
     }
 
-    // Make sure not to add the samples if they were not configured, since methodSampleViews may be
-    // non-empty solely because of the backward-compatibility accommodation.
-    if (!context.getMethodConfig().getSampleSpec().isConfigured()) {
-      methodSampleViews = new ArrayList<>();
-    }
     methodViewBuilder.samples(methodSampleViews);
   }
 
@@ -126,9 +134,10 @@ class SampleTransformer {
 
       Set<SampleValueSet> matchingValueSets;
       matchingValueSets = methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
-      // For backwards compatibility, use the sample_code_init_fields instead. Once all the configs
-      // have been migrated to use the SampleSpec, we can delete the code below as well as
-      // sample_code_init_fields.
+
+      // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
+      // to generate the samples in various scenarios. Once all the configs have been migrated to
+      // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
       if (!methodConfig
               .getSampleSpec()
               .isConfigured() // if not configured, make the sample_code_init_fields available to all sample types
@@ -141,7 +150,7 @@ class SampleTransformer {
         matchingValueSets.add(
             SampleValueSet.newBuilder()
                 .addAllParameters(methodConfig.getSampleCodeInitFields())
-                .setId("sample_code_init_fields")
+                .setId(LEGACY_SAMPLE_CODE_INIT_VALUES) // only use these samples for initCode
                 .setDescription("value set imported from sample_code_init_fields")
                 .setTitle("Sample Values")
                 .build());
