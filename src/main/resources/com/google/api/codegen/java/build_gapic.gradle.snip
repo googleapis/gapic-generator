@@ -19,11 +19,22 @@
 
   dependencies {
     compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
-    compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
+    testCompile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}:testlib'
+    @if metadata.hasGaxGrpcVersionBound
+      compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
+      testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
+    @end
+    @if metadata.hasGaxHttpVersionBound
+      compile 'com.google.api:gax-httpjson:{@metadata.gaxHttpVersionBound.lower}'
+      testCompile 'com.google.api:gax-httpjson:{@metadata.gaxHttpVersionBound.lower}:testlib'
+    @end
     testCompile 'junit:junit:4.12'
-    testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
-    testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    @if metadata.hasGrpcVersionBound
+      testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    @end
     @switch metadata.artifactType.toString
+    @case "DISCOGAPIC"
+    @case "DISCOGAPIC_CONFIG"
     @case "GAPIC_ONLY"
       @join dependency : metadata.protoPackageDependencies
         compile project(':proto-{@dependency.name}')
