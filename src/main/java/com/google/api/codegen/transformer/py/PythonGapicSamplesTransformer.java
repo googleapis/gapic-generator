@@ -154,7 +154,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .outputPath(sampleOutputPath)
                 .className(className)
-                .sampledMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
+                .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
                 .build());
       }
     }

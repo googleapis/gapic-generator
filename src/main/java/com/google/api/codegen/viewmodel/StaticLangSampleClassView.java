@@ -22,7 +22,8 @@ public abstract class StaticLangSampleClassView {
 
   public abstract String name();
 
-  public abstract StaticLangApiMethodView sampledMethod();
+  /** The client library method illustrated in this sample. */
+  public abstract StaticLangApiMethodView libraryMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangSampleClassView.Builder();
@@ -35,7 +36,7 @@ public abstract class StaticLangSampleClassView {
 
     public abstract Builder name(String val);
 
-    public abstract Builder sampledMethod(StaticLangApiMethodView val);
+    public abstract Builder libraryMethod(StaticLangApiMethodView val);
 
     public abstract StaticLangSampleClassView build();
   }

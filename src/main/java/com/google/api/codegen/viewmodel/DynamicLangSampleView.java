@@ -33,7 +33,7 @@ public abstract class DynamicLangSampleView implements ViewModel {
   public abstract String className();
 
   /** The client library method illustrated in this sample. */
-  public abstract OptionalArrayMethodView sampledMethod();
+  public abstract OptionalArrayMethodView libraryMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangSampleView.Builder();
@@ -50,7 +50,7 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
     public abstract Builder className(String val);
 
-    public abstract Builder sampledMethod(OptionalArrayMethodView val);
+    public abstract Builder libraryMethod(OptionalArrayMethodView val);
 
     public abstract DynamicLangSampleView build();
   }

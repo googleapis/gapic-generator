@@ -71,9 +71,7 @@ public class JavaSurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
 
-  // TODO: Simplify by making JavaSurfaceTransformer abstract and making
-  // JavaDiscoGapicSurfaceTransformer and JavaGapicSurfaceTransformer derive from it and override
-  // the methods that are used below.
+  // TODO: Figure out a way to simplify the transformers in a way that reduces duplication and makes it easy to follow the code.
   private final SurfaceTransformer surfaceTransformer;
   private final String rpcStubTemplateFilename;
   private final String callableFactoryTemplateFilename;
