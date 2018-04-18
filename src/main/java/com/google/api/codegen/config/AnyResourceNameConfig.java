@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.ProtoFile;
+import javax.annotation.Nullable;
 
 /**
  * AnyResourceNameConfig is a singleton configuration indicating acceptance of any resource name
@@ -47,6 +48,12 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
   @Override
   public String getEntityName() {
     return ENTITY_NAME;
+  }
+
+  @Override
+  @Nullable
+  public String getCommonResourceName() {
+    return null;
   }
 
   @Override

@@ -1015,7 +1015,9 @@ from google.cloud.example.library_v1.gapic import library_service_client_config
 from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
+from google.cloud.example.library_v1.proto import library_pb2_grpc
 from google.cloud.example.library_v1.proto import tagger_pb2
+from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
@@ -1088,6 +1090,14 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
+    def project_path(cls, project):
+        """Return a fully-qualified project string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}',
+            project=project,
+        )
+
+    @classmethod
     def archived_book_path(cls, archive_path, book_id):
         """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(
@@ -1136,9 +1146,9 @@ class LibraryServiceClient(object):
 
         # Create the gRPC stubs.
         self.library_service_stub = (
-            library_pb2.LibraryServiceStub(channel))
+            library_pb2_grpc.LibraryServiceStub(channel))
         self.labeler_stub = (
-            tagger_pb2.LabelerStub(channel))
+            tagger_pb2_grpc.LabelerStub(channel))
 
         # Operations client for methods that return long-running operations
         # futures.
@@ -2886,6 +2896,7 @@ class LibraryServiceClient(object):
             required_singular_message,
             required_singular_resource_name,
             required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -2899,6 +2910,7 @@ class LibraryServiceClient(object):
             required_repeated_message,
             required_repeated_resource_name,
             required_repeated_resource_name_oneof,
+            required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map,
@@ -2913,6 +2925,7 @@ class LibraryServiceClient(object):
             optional_singular_message=None,
             optional_singular_resource_name=None,
             optional_singular_resource_name_oneof=None,
+            optional_singular_resource_name_common=None,
             optional_singular_fixed32=None,
             optional_singular_fixed64=None,
             optional_repeated_int32=None,
@@ -2926,6 +2939,7 @@ class LibraryServiceClient(object):
             optional_repeated_message=None,
             optional_repeated_resource_name=None,
             optional_repeated_resource_name_oneof=None,
+            optional_repeated_resource_name_common=None,
             optional_repeated_fixed32=None,
             optional_repeated_fixed64=None,
             optional_map=None,
@@ -2974,6 +2988,9 @@ class LibraryServiceClient(object):
             >>> # TODO: Initialize ``required_singular_resource_name_oneof``:
             >>> required_singular_resource_name_oneof = ''
             >>>
+            >>> # TODO: Initialize ``required_singular_resource_name_common``:
+            >>> required_singular_resource_name_common = ''
+            >>>
             >>> # TODO: Initialize ``required_singular_fixed32``:
             >>> required_singular_fixed32 = 0
             >>>
@@ -3013,6 +3030,9 @@ class LibraryServiceClient(object):
             >>> # TODO: Initialize ``required_repeated_resource_name_oneof``:
             >>> required_repeated_resource_name_oneof = []
             >>>
+            >>> # TODO: Initialize ``required_repeated_resource_name_common``:
+            >>> required_repeated_resource_name_common = []
+            >>>
             >>> # TODO: Initialize ``required_repeated_fixed32``:
             >>> required_repeated_fixed32 = []
             >>>
@@ -3022,7 +3042,7 @@ class LibraryServiceClient(object):
             >>> # TODO: Initialize ``required_map``:
             >>> required_map = {}
             >>>
-            >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+            >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
         Args:
             required_singular_int32 (int)
@@ -3037,6 +3057,7 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.InnerMessage`
             required_singular_resource_name (str)
             required_singular_resource_name_oneof (str)
+            required_singular_resource_name_common (str)
             required_singular_fixed32 (int)
             required_singular_fixed64 (long)
             required_repeated_int32 (list[int])
@@ -3051,6 +3072,7 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.InnerMessage`
             required_repeated_resource_name (list[str])
             required_repeated_resource_name_oneof (list[str])
+            required_repeated_resource_name_common (list[str])
             required_repeated_fixed32 (list[int])
             required_repeated_fixed64 (list[long])
             required_map (dict[int -> str])
@@ -3066,6 +3088,7 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.InnerMessage`
             optional_singular_resource_name (str)
             optional_singular_resource_name_oneof (str)
+            optional_singular_resource_name_common (str)
             optional_singular_fixed32 (int)
             optional_singular_fixed64 (long)
             optional_repeated_int32 (list[int])
@@ -3080,6 +3103,7 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.InnerMessage`
             optional_repeated_resource_name (list[str])
             optional_repeated_resource_name_oneof (list[str])
+            optional_repeated_resource_name_common (list[str])
             optional_repeated_fixed32 (list[int])
             optional_repeated_fixed64 (list[long])
             optional_map (dict[int -> str])
@@ -3117,6 +3141,7 @@ class LibraryServiceClient(object):
             required_singular_message=required_singular_message,
             required_singular_resource_name=required_singular_resource_name,
             required_singular_resource_name_oneof=required_singular_resource_name_oneof,
+            required_singular_resource_name_common=required_singular_resource_name_common,
             required_singular_fixed32=required_singular_fixed32,
             required_singular_fixed64=required_singular_fixed64,
             required_repeated_int32=required_repeated_int32,
@@ -3130,6 +3155,7 @@ class LibraryServiceClient(object):
             required_repeated_message=required_repeated_message,
             required_repeated_resource_name=required_repeated_resource_name,
             required_repeated_resource_name_oneof=required_repeated_resource_name_oneof,
+            required_repeated_resource_name_common=required_repeated_resource_name_common,
             required_repeated_fixed32=required_repeated_fixed32,
             required_repeated_fixed64=required_repeated_fixed64,
             required_map=required_map,
@@ -3144,6 +3170,7 @@ class LibraryServiceClient(object):
             optional_singular_message=optional_singular_message,
             optional_singular_resource_name=optional_singular_resource_name,
             optional_singular_resource_name_oneof=optional_singular_resource_name_oneof,
+            optional_singular_resource_name_common=optional_singular_resource_name_common,
             optional_singular_fixed32=optional_singular_fixed32,
             optional_singular_fixed64=optional_singular_fixed64,
             optional_repeated_int32=optional_repeated_int32,
@@ -3157,6 +3184,7 @@ class LibraryServiceClient(object):
             optional_repeated_message=optional_repeated_message,
             optional_repeated_resource_name=optional_repeated_resource_name,
             optional_repeated_resource_name_oneof=optional_repeated_resource_name_oneof,
+            optional_repeated_resource_name_common=optional_repeated_resource_name_common,
             optional_repeated_fixed32=optional_repeated_fixed32,
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
@@ -3492,6 +3520,68 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
+============== file: samples/google/cloud/example/library_v1/gapic/get_book/get_book_sample_optional_array_method_sample_code_init_fields.py ==============
+#### STUB standalone sample "GetBookSampleOptionalArrayMethodSampleCodeInitFields" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "sample_code_init_fields" ("Sample Values")
+##       []
+##     apiMethod "get_book" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+response = client.get_book(name)
+"""
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_optional_array_method_pi_version.py ==============
+#### STUB standalone sample "PublishSeriesSampleOptionalArrayMethodPiVersion" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "pi_version" ("Pi version")
+##       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+##     apiMethod "publish_series" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+name = 'Math'
+shelf = {'name': name}
+
+# TODO: Initialize ``books``:
+books = []
+series_string = 'xyz3141592654'
+series_uuid = {'series_string': series_string}
+
+response = client.publish_series(shelf, books, series_uuid)
+"""
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_optional_array_method_second_edition.py ==============
+#### STUB standalone sample "PublishSeriesSampleOptionalArrayMethodSecondEdition" #####
+##     calling form "OptionalArrayMethod"
+##     valueSet "second_edition" ("Second edition")
+##       [edition=2]
+##     apiMethod "publish_series" of type "OptionalArrayMethod"
+## TODO: Replace with a full sample
+sample = """
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+# TODO: Initialize ``shelf``:
+shelf = {}
+
+# TODO: Initialize ``books``:
+books = []
+
+# TODO: Initialize ``series_uuid``:
+series_uuid = {}
+edition = 2
+
+response = client.publish_series(shelf, books, series_uuid, edition=edition)
+"""
 ============== file: setup.cfg ==============
 [bdist_wheel]
 universal = 1
@@ -4714,6 +4804,7 @@ class TestLibraryServiceClient(object):
         required_singular_message = {}
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []
@@ -4727,15 +4818,16 @@ class TestLibraryServiceClient(object):
         required_repeated_message = []
         required_repeated_resource_name = []
         required_repeated_resource_name_oneof = []
+        required_repeated_resource_name_common = []
         required_repeated_fixed32 = []
         required_repeated_fixed64 = []
         required_map = {}
 
-        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
+        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_resource_name_common=required_singular_resource_name_common, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_resource_name_common=required_repeated_resource_name_common, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -4757,6 +4849,7 @@ class TestLibraryServiceClient(object):
         required_singular_message = {}
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []
@@ -4770,10 +4863,11 @@ class TestLibraryServiceClient(object):
         required_repeated_message = []
         required_repeated_resource_name = []
         required_repeated_resource_name_oneof = []
+        required_repeated_resource_name_common = []
         required_repeated_fixed32 = []
         required_repeated_fixed64 = []
         required_map = {}
 
         with pytest.raises(CustomException):
-            client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+            client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 

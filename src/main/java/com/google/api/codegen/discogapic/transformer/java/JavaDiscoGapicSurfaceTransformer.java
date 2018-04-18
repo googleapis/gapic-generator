@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.java.JavaSurfaceTransformer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,8 +57,11 @@ public class JavaDiscoGapicSurfaceTransformer
 
   public JavaDiscoGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
-    this.pathMapper = pathMapper;
-    this.packageMetadataConfig = packageMetadataConfig;
+    this.pathMapper = Preconditions.checkNotNull(pathMapper);
+    this.packageMetadataConfig =
+        Preconditions.checkNotNull(
+            packageMetadataConfig,
+            "packageMetadataConfig is missing, but is required for JavaDiscoGapicSurfaceTransformer");
   }
 
   @Override
@@ -75,14 +79,14 @@ public class JavaDiscoGapicSurfaceTransformer
 
   @Override
   public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
-    JavaSurfaceTransformer surfaceTransformer =
+    JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
             pathMapper,
             packageMetadataConfig,
             this,
             RPC_STUB_TEMPLATE_FILENAME,
             CALLABLE_FACTORY_TEMPLATE_FILENAME);
-    return surfaceTransformer.transform(model, productConfig);
+    return commonSurfaceTransformer.transform(model, productConfig);
   }
 
   @Override

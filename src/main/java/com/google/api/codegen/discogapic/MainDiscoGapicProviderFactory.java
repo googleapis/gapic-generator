@@ -27,6 +27,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
@@ -72,6 +73,15 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .build();
 
         providers.add(provider);
+
+        GapicProvider metadataProvider =
+            ViewModelDiscoGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
+                .build();
+        providers.add(metadataProvider);
       }
 
       if (generatorConfig.enableTestGenerator()) {
