@@ -25,9 +25,9 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
     classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
-    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
     classpath 'net.ltgt.gradle:gradle-apt-plugin:0.10'
   }
 }
@@ -61,7 +61,8 @@ ext {
 
     guava: 'com.google.guava:guava:23.0',
     jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    autovalue: 'com.google.auto.value:auto-value:1.4',
+    autovalue: 'com.google.auto.value:auto-value:1.6',
+    autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
     snakeyaml: 'org.yaml:snakeyaml:1.18',
@@ -97,7 +98,7 @@ repositories {
 
 dependencies {
   compile libraries.guava,
-    libraries.autovalue,
+    libraries.autovalueAnnotation,
     libraries.commonsCli,
     libraries.commonsLang,
     libraries.gax,
@@ -115,6 +116,8 @@ dependencies {
     libraries.toolsFxTesting,
     libraries.mockito,
     libraries.commonProtos
+
+  annotationProcessor libraries.autovalue
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
@@ -244,7 +247,6 @@ configurations {
 
 dependencies {
   codeGeneration libraries.autovalue, libraries.jsr305
-  compile libraries.autovalue, libraries.jsr305
 }
 
 compileJava.classpath += configurations.codeGeneration
