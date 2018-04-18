@@ -8,15 +8,15 @@
   }
 @end
 
-@snippet pagedIterableMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet pagedIterableMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
     // doThingsWith(element);
   }
 @end
 
-@snippet pagedCallableMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet pagedCallableMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   ApiFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   for ({@apiMethod.listMethod.resourceTypeName} element : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
@@ -24,12 +24,12 @@
   }
 @end
 
-@snippet unpagedListCallableMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet unpagedListCallableMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   while (true) {
     {@apiMethod.responseTypeName} response = \
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+        {@sampleMethodCallArgList(initCode.fieldSettings)});
     for ({@apiMethod.listMethod.resourceTypeName} element : \
         {@resourceListGetCall(apiMethod)}) {
       // doThingsWith(element);
@@ -52,8 +52,8 @@
   @end
 @end
 
-@snippet syncMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet syncMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   @if apiMethod.hasReturnValue
     {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
   @else
@@ -61,14 +61,14 @@
   @end
 @end
 
-@snippet asyncOperationMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet asyncOperationMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}).get();
+      {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
 @end
 
-@snippet callableMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet callableMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   ApiFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   @if apiMethod.hasReturnValue
@@ -78,50 +78,50 @@
   @end
 @end
 
-@snippet asyncOperationCallableMethodSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
+@snippet asyncOperationCallableMethodSampleCode(apiMethod, initCode)
+  {@initCode(initCode)}
   OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   {@apiMethod.responseTypeName} response = future.get();
 @end
 
-@snippet streamingCallableMethodSampleCode(apiMethod)
+@snippet streamingCallableMethodSampleCode(apiMethod, initCode)
   @switch apiMethod.grpcStreamingType
   @case "BidiStreaming"
-    {@bidiStreamingCallableSampleCode(apiMethod)}
+    {@bidiStreamingCallableSampleCode(apiMethod, initCode)}
   @case "ServerStreaming"
-    {@serverStreamingCallableSampleCode(apiMethod)}
+    {@serverStreamingCallableSampleCode(apiMethod, initCode)}
   @case "ClientStreaming"
-    {@clientStreamingCallableSampleCode(apiMethod)}
+    {@clientStreamingCallableSampleCode(apiMethod, initCode)}
   @default
     $unhandledCase: {@apiMethod.grpcStreamingType}$
   @end
 @end
 
-@private bidiStreamingCallableSampleCode(apiMethod)
+@private bidiStreamingCallableSampleCode(apiMethod, initCode)
   {@responseObserver(apiMethod)}
   ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().bidiStreamingCall(responseObserver));
 
-  {@initCode(apiMethod.initCode)}
+  {@initCode(initCode)}
   requestObserver.onNext(request);
 @end
 
-@private serverStreamingCallableSampleCode(apiMethod)
+@private serverStreamingCallableSampleCode(apiMethod, initCode)
   {@responseObserver(apiMethod)}
 
-  {@initCode(apiMethod.initCode)}
+  {@initCode(initCode)}
 
   {@apiMethod.apiVariableName}.{@apiMethod.name}().serverStreamingCall(\
-      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, responseObserver));
+      {@sampleMethodCallArgList(initCode.fieldSettings)}, responseObserver));
 @end
 
-@private clientStreamingCallableSampleCode(apiMethod)
+@private clientStreamingCallableSampleCode(apiMethod, initCode)
   {@responseObserver(apiMethod)}
   ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver));
 
-  {@initCode(apiMethod.initCode)}
+  {@initCode(initCode)}
   requestObserver.onNext(request);
 @end
 

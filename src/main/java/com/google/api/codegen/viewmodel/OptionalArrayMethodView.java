@@ -115,6 +115,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
+  @Nullable
+  public abstract List<MethodSampleView> samples();
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -126,7 +129,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
+  public abstract static class Builder implements ApiMethodView.Builder {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
@@ -198,6 +201,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder localPackageName(String val);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
+    public abstract Builder samples(List<MethodSampleView> samples);
 
     public abstract OptionalArrayMethodView build();
   }

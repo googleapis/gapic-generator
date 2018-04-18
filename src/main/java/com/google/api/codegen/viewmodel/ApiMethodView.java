@@ -14,4 +14,14 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public interface ApiMethodView {}
+import java.util.List;
+
+public interface ApiMethodView {
+  String name();
+
+  interface Builder {
+    ApiMethodView.Builder initCode(InitCodeView val);
+
+    ApiMethodView.Builder samples(List<MethodSampleView> samples);
+  }
+}
