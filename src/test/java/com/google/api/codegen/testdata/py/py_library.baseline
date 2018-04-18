@@ -2792,7 +2792,13 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        return self._inner_api_calls['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        operation = self._inner_api_calls['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return google.api_core.operation.from_gapic(
+            operation,
+            self._operations_client,
+            library_pb2.Book,
+            metadata_type=library_pb2.GetBigBookMetadata,
+        )
 
     def get_big_nothing(
             self,
@@ -2853,7 +2859,13 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        return self._inner_api_calls['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
+        operation = self._inner_api_calls['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return google.api_core.operation.from_gapic(
+            operation,
+            self._operations_client,
+            empty_pb2.Empty,
+            metadata_type=library_pb2.GetBigBookMetadata,
+        )
 
     def test_optional_required_flattening_params(
             self,
