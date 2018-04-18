@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,8 +50,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
 
   public JavaGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
-    this.pathMapper = pathMapper;
-    this.packageMetadataConfig = packageMetadataConfig;
+    this.pathMapper = Preconditions.checkNotNull(pathMapper);
+    this.packageMetadataConfig =
+        Preconditions.checkNotNull(
+            packageMetadataConfig,
+            "packageMetadataConfig is missing, but is required for JavaGapicSurfaceTransformer");
   }
 
   @Override

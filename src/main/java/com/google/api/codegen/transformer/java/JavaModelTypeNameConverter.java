@@ -223,8 +223,18 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
 
   private TypeName getTypeNameForTypedResourceName(
       ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
-    String packageName = getResourceNamePackage(resourceNameConfig);
-    String longName = packageName + "." + typedResourceShortName;
+
+    String longName;
+    if (resourceNameConfig.getCommonResourceName() == null) {
+      String packageName = getResourceNamePackage(resourceNameConfig);
+      longName = packageName + "." + typedResourceShortName;
+    } else {
+      longName = typedResourceShortName;
+      int p = typedResourceShortName.lastIndexOf(".");
+      if (p > 0) {
+        typedResourceShortName = typedResourceShortName.substring(p + 1);
+      }
+    }
 
     TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 

@@ -61,6 +61,7 @@ import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.StaticLangStubSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
@@ -103,11 +104,12 @@ public class JavaSurfaceTransformer {
       SurfaceTransformer surfaceTransformer,
       String rpcStubSnippetFileName,
       String callableFactoryTemplateFilename) {
-    this.pathMapper = pathMapper;
-    this.packageMetadataConfig = packageMetadataConfig;
-    this.surfaceTransformer = surfaceTransformer;
-    this.rpcStubTemplateFilename = rpcStubSnippetFileName;
-    this.callableFactoryTemplateFilename = callableFactoryTemplateFilename;
+    this.pathMapper = Preconditions.checkNotNull(pathMapper);
+    this.packageMetadataConfig = Preconditions.checkNotNull(packageMetadataConfig);
+    this.surfaceTransformer = Preconditions.checkNotNull(surfaceTransformer);
+    this.rpcStubTemplateFilename = Preconditions.checkNotNull(rpcStubSnippetFileName);
+    this.callableFactoryTemplateFilename =
+        Preconditions.checkNotNull(callableFactoryTemplateFilename);
   }
 
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
