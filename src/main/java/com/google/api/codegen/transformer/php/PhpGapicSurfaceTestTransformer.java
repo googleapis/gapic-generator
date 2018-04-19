@@ -109,7 +109,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     String outputPath =
         PhpGapicCodePathMapper.newBuilder()
-            .setPrefix("tests/unit")
+            .setPrefix("tests/Unit")
             .build()
             .getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
@@ -210,7 +210,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
     String outputPath =
         PhpGapicCodePathMapper.newBuilder()
-            .setPrefix("tests/system")
+            .setPrefix("tests/System")
             .build()
             .getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
