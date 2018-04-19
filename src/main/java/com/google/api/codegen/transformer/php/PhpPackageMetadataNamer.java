@@ -62,10 +62,6 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
     return serviceName.toUpperCamel();
   }
 
-  public Name getServiceName() {
-    return serviceName;
-  }
-
   @Override
   public String getMetadataIdentifier() {
     return metadataIdenfifier;
