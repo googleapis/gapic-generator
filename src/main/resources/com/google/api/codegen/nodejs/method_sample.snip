@@ -25,14 +25,7 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod, empty())}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod, empty())}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
-    @end
+    {@sampleCode(apiMethod, empty())}
 @end
 
 @private empty()
@@ -42,6 +35,8 @@
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod, additionalCallback)}
+    @case "LongRunningOptionalArrayMethod"
+        {@lroSampleCode(apiMethod, additionalCallback)}
     @case "PagedOptionalArrayMethod"
         {@pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)}
     @default
@@ -216,24 +211,24 @@
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
-  @if apiMethod.isLongRunningOperation
-    # TODO(landrito) figure out how to remove initcode repetition for method samples.
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
+  {@initCode(apiMethod)}
+  {@methodCallSampleCodePrefix(apiMethod)}
+    .then(responses => {
+      var response = responses[0];
+      @if additionalCallback
+        console.log(response);
+      @else
+        // doThingsWith(response)
+      @end
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
 
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
-  @else
-    {@initCode(apiMethod)}
-    {@methodCallSampleCodePrefix(apiMethod)}
-      .then(responses => {
-        var response = responses[0];
-        @if additionalCallback
-          console.log(response);
-        @else
-          // doThingsWith(response)
-        @end
-      })
-      {@promiseCallbacks(additionalCallback)}
-  @end
+@private lroSampleCode(apiMethod, additionalCallback)
+  # TODO(landrito) figure out how to remove initcode repetition for method samples.
+  {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
+
+  {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
 @end
 
 @snippet methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
