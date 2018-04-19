@@ -28,7 +28,11 @@ public class PhpPackageUtil {
   private static String PACKAGE_VERSION_REGEX = "V\\d+.*";
 
   public static String[] splitPackageName(String packageName) {
-    return packageName.split(PACKAGE_SPLIT_REGEX);
+    if (packageName.startsWith(PACKAGE_SEPARATOR)) {
+      // Remove leading "\" before splitting
+      packageName = packageName.substring(PACKAGE_SEPARATOR.length());
+    }
+    return packageName.trim().split(PACKAGE_SPLIT_REGEX);
   }
 
   public static String buildPackageName(Iterable<String> components) {

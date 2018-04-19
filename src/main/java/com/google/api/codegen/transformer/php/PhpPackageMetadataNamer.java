@@ -41,7 +41,7 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
     // domainLayerLocation is provided, set that as the vendor. Otherwise, take the first piece of
     // packagePieces to use as the vendor.
     if (domainLayerLocation != null && !domainLayerLocation.equals("")) {
-      composerVendor = Name.upperCamel(domainLayerLocation);
+      composerVendor = Name.anyCamel(domainLayerLocation);
       composerPackage = Name.anyLower(packagePieces);
     } else if (packagePieces.length == 1) {
       composerVendor = Name.anyLower(packagePieces[0]);
