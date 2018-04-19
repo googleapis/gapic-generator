@@ -31,6 +31,8 @@
   @switch apiMethod.type.toString
   @case "OptionalArrayMethod"
     {@optionalArrayMethodSampleCode(apiMethod, initCode)}
+  @case "LongRunningOptionalArrayMethod"
+    {@lroSampleCode(apiMethod, initCode)}
   @case "PagedOptionalArrayMethod"
     {@pagedOptionalArrayMethodSampleCode(apiMethod, initCode)}
   @default
@@ -165,20 +167,22 @@
 @private singularResponseSampleCode(apiMethod, initCode)
   @if apiMethod.hasReturnValue
     response = {@methodCallSampleCode(apiMethod, initCode)}
-    @if apiMethod.isLongRunningOperation
-
-      def callback(operation_future):
-          @# Handle result.
-          result = operation_future.result()
-
-      response.add_done_callback(callback)
-
-      @# Handle metadata.
-      metadata = response.metadata()
-    @end
   @else
     {@methodCallSampleCode(apiMethod, initCode)}
   @end
+@end
+
+@private lroSampleCode(apiMethod, initCode)
+  response = {@methodCallSampleCode(apiMethod, initCode)}
+
+  def callback(operation_future):
+      @# Handle result.
+      result = operation_future.result()
+
+  response.add_done_callback(callback)
+
+  @# Handle metadata.
+  metadata = response.metadata()
 @end
 
 # Render the API method call itself

@@ -79,6 +79,9 @@ public class DynamicLangApiMethodTransformer {
       apiMethod.pageStreamingView(
           pageStreamingTransformer.generateDescriptor(
               context.getSurfaceInterfaceContext(), method));
+    } else if (context.getMethodConfig().isLongRunningOperation()) {
+      apiMethod.longRunningView(lroTransformer.generateDetailView(context));
+      apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }
@@ -152,10 +155,6 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.packageHasMultipleServices(packageHasMultipleServices);
     apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()));
     apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
-    apiMethod.longRunningView(
-        context.getMethodConfig().isLongRunningOperation()
-            ? lroTransformer.generateDetailView(context)
-            : null);
 
     apiMethod.oneofParams(context.getMethodConfig().getOneofNames(namer));
     apiMethod.headerRequestParams(
