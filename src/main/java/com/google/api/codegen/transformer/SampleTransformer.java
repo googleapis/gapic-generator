@@ -27,6 +27,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +64,7 @@ class SampleTransformer {
    * configurations that still rely on sample_code_init_fields. The format of this string is
    * purposefully set to something that will cause errors if it makes it to an artifact.
    */
-  private static String LEGACY_SAMPLE_CODE_INIT_VALUES = "[ sample_code_init_fields ]";
+  private static final String LEGACY_SAMPLE_CODE_INIT_VALUES = "[ sample_code_init_fields ]";
 
   /**
    * Populates methodViewBuilder.samples with the appropriate MethodSampleViews. This method is
@@ -99,8 +100,8 @@ class SampleTransformer {
 
       // Don't emit samples that were specifically generated for backward-compatibility. We only
       // wanted them for initCode above.
-      if (methodSampleViews.get(0).valueSet().id() == LEGACY_SAMPLE_CODE_INIT_VALUES) {
-        methodSampleViews = new ArrayList<>();
+      if (methodSampleViews.get(0).valueSet().id().equals(LEGACY_SAMPLE_CODE_INIT_VALUES)) {
+        methodSampleViews = Collections.emptyList();
       }
     }
 
