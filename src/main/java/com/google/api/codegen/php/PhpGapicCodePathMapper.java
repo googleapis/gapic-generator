@@ -21,6 +21,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 
 /**
@@ -55,9 +56,10 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
       dirs.add(prefix);
     }
 
-    for (String packageElement :
-        PhpPackageUtil.splitPackageNameWithoutStandardPrefix(config.getPackageName())) {
-      dirs.add(packageElement);
+    String truncatedPackageName =
+        PhpPackageUtil.getPackageNameFromVersionOnwards(config.getPackageName());
+    if (truncatedPackageName != null) {
+      dirs.addAll(Arrays.asList(PhpPackageUtil.splitPackageName(truncatedPackageName)));
     }
 
     if (haveSample) {
