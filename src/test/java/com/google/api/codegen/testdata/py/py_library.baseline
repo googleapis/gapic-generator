@@ -3528,21 +3528,22 @@ def lint_setup_py(session):
 ##       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 ##     apiMethod "publish_series" of type "OptionalArrayMethod"
 ## TODO: Replace with a full sample
-sample = """
-     from google.cloud.example import library_v1
 
-     client = library_v1.LibraryServiceClient()
+# pip install google-cloud-library
+from google.cloud.example import library_v1
 
-     name = 'Math'
-     shelf = {'name': name}
+client = library_v1.LibraryServiceClient()
 
-     # TODO: Initialize ``books``:
-     books = []
-     series_string = 'xyz3141592654'
-     series_uuid = {'series_string': series_string}
+name = 'Math'
+shelf = {'name': name}
 
-     response = client.publish_series(shelf, books, series_uuid)
-"""
+# TODO: Initialize ``books``:
+books = []
+series_string = 'xyz3141592654'
+series_uuid = {'series_string': series_string}
+
+response = client.publish_series(shelf, books, series_uuid)
+print(response)
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_optional_array_method_second_edition.py ==============
 #### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleOptionalArrayMethodSecondEdition" ]
 #### STUB standalone sample "PublishSeriesSampleOptionalArrayMethodSecondEdition" #####
@@ -3551,23 +3552,24 @@ sample = """
 ##       [edition=2]
 ##     apiMethod "publish_series" of type "OptionalArrayMethod"
 ## TODO: Replace with a full sample
-sample = """
-     from google.cloud.example import library_v1
 
-     client = library_v1.LibraryServiceClient()
+# pip install google-cloud-library
+from google.cloud.example import library_v1
 
-     # TODO: Initialize ``shelf``:
-     shelf = {}
+client = library_v1.LibraryServiceClient()
 
-     # TODO: Initialize ``books``:
-     books = []
+# TODO: Initialize ``shelf``:
+shelf = {}
 
-     # TODO: Initialize ``series_uuid``:
-     series_uuid = {}
-     edition = 2
+# TODO: Initialize ``books``:
+books = []
 
-     response = client.publish_series(shelf, books, series_uuid, edition=edition)
-"""
+# TODO: Initialize ``series_uuid``:
+series_uuid = {}
+edition = 2
+
+response = client.publish_series(shelf, books, series_uuid, edition=edition)
+print(response)
 ============== file: setup.cfg ==============
 [bdist_wheel]
 universal = 1
