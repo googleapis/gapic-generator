@@ -20,13 +20,13 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class MethodSampleView {
 
-  /** The value set used in this sample */
+  /** The value set used in this sample. */
   public abstract SampleValueSetView valueSet();
 
-  /** The id of the calling form used in this sample */
-  public abstract String callingFormId();
+  /** The calling form used in this sample. */
+  public abstract CallingForm callingForm();
 
-  /** The initialization code constructed from this samples value set and calling form */
+  /** The initialization code constructed from this samples value set and calling form. */
   public abstract InitCodeView initCode();
 
   public static Builder newBuilder() {
@@ -37,7 +37,7 @@ public abstract class MethodSampleView {
   public abstract static class Builder {
     public abstract Builder valueSet(SampleValueSetView val);
 
-    public abstract Builder callingFormId(String val);
+    public abstract Builder callingForm(CallingForm val);
 
     public abstract Builder initCode(InitCodeView val);
 

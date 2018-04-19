@@ -122,7 +122,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer {
     sampleClass
         .name(
             namer.getApiSampleClassName(
-                method.name(), methodSample.callingFormId(), methodSample.valueSet().id()))
+                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id()))
         .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build());
 
     return sampleClass.build();
