@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -70,6 +71,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private final PhpFeatureConfig featureConfig = new PhpFeatureConfig();
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+
+  private final PackageMetadataConfig packageConfig;
+
+  public PhpGapicSurfaceTestTransformer(PackageMetadataConfig packageConfig) {
+    this.packageConfig = packageConfig;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -121,9 +128,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
             "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
-    testClass.apiName(
-        PhpPackageMetadataNamer.getApiNameFromPackageName(namer.getPackageName())
-            .toLowerUnderscore());
+    testClass.apiName(packageConfig.shortName());
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     // Add gRPC client imports.
@@ -240,9 +245,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiSettingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
-    testClass.apiName(
-        PhpPackageMetadataNamer.getApiNameFromPackageName(context.getNamer().getPackageName())
-            .toLowerUnderscore());
+    testClass.apiName(packageConfig.shortName());
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethod);
     testClass.requireProjectId(
