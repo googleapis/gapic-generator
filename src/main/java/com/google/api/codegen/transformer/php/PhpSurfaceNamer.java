@@ -47,7 +47,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         new PhpCommentReformatter(),
-        PhpPackageUtil.getPackageNameBeforeVersion(packageName),
+        PhpPackageUtil.getBasePackageName(packageName),
         packageName);
   }
 
@@ -216,7 +216,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   /** Insert "Tests/<TestType>" into the package name before the version. */
   private static String getTestPackageName(String packageName, TestKind testKind) {
     ArrayList<String> packageComponents = new ArrayList<>();
-    packageComponents.add(PhpPackageUtil.getPackageNameBeforeVersion(packageName));
+    packageComponents.add(PhpPackageUtil.getBasePackageName(packageName));
     packageComponents.add("Tests");
     switch (testKind) {
       case UNIT:
@@ -226,9 +226,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         packageComponents.add("System");
         break;
     }
-    String packageNameFromVersion = PhpPackageUtil.getPackageNameFromVersionOnwards(packageName);
-    if (packageNameFromVersion != null) {
-      packageComponents.add(packageNameFromVersion);
+    String shortenedPackageName = PhpPackageUtil.removeBasePackageName(packageName);
+    if (shortenedPackageName != null) {
+      packageComponents.add(shortenedPackageName);
     }
     return PhpPackageUtil.buildPackageName(packageComponents);
   }

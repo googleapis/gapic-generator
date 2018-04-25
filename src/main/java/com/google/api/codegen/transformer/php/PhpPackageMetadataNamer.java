@@ -24,8 +24,8 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
   private String metadataIdenfifier;
 
   public PhpPackageMetadataNamer(String packageName, String domainLayerLocation) {
-    String packageNameWithoutVersion = PhpPackageUtil.getPackageNameBeforeVersion(packageName);
-    String[] packagePieces = PhpPackageUtil.splitPackageName(packageNameWithoutVersion);
+    String basePackageName = PhpPackageUtil.getBasePackageName(packageName);
+    String[] packagePieces = PhpPackageUtil.splitPackageName(basePackageName);
 
     this.serviceName = Name.upperCamel(packagePieces);
 

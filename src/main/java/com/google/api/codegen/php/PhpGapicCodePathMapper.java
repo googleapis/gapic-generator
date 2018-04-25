@@ -56,10 +56,9 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
       dirs.add(prefix);
     }
 
-    String truncatedPackageName =
-        PhpPackageUtil.getPackageNameFromVersionOnwards(config.getPackageName());
-    if (truncatedPackageName != null) {
-      dirs.addAll(Arrays.asList(PhpPackageUtil.splitPackageName(truncatedPackageName)));
+    String shortenedPackageName = PhpPackageUtil.removeBasePackageName(config.getPackageName());
+    if (shortenedPackageName != null) {
+      dirs.addAll(Arrays.asList(PhpPackageUtil.splitPackageName(shortenedPackageName)));
     }
 
     if (haveSample) {

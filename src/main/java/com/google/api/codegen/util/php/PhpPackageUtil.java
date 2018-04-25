@@ -51,7 +51,11 @@ public class PhpPackageUtil {
     return versionString.matches(PACKAGE_VERSION_REGEX);
   }
 
-  public static String getPackageNameFromVersionOnwards(String packageName) {
+  /**
+   * Remove the base package name, returning a package name which begins with the version. If no
+   * version is present in the input packageName, returns null.
+   */
+  public static String removeBasePackageName(String packageName) {
     ArrayList<String> packageComponents = new ArrayList<>();
     List<String> pieces = Arrays.asList(PhpPackageUtil.splitPackageName(packageName));
     boolean foundVersion = false;
@@ -65,12 +69,14 @@ public class PhpPackageUtil {
     if (foundVersion) {
       return buildPackageName(Lists.reverse(packageComponents));
     } else {
-      // If we did not find a version, then "FromVersionOnwards" is null
+      // If we did not find a version, then the whole package name is considered
+      // the base package name, and we return null.
       return null;
     }
   }
 
-  public static String getPackageNameBeforeVersion(String packageName) {
+  /** Get the base package name, which includes everything before the version. */
+  public static String getBasePackageName(String packageName) {
     ArrayList<String> packageComponents = new ArrayList<>();
     for (String packageElement : PhpPackageUtil.splitPackageName(packageName)) {
       if (isPackageVersion(packageElement)) {
