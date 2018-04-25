@@ -203,6 +203,7 @@ class LibraryServiceGapicClient
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $returnNameTemplate;
+    private static $projectNameTemplate;
     private static $archivedBookNameTemplate;
     private static $pathTemplateMap;
 
@@ -247,6 +248,15 @@ class LibraryServiceGapicClient
         return self::$returnNameTemplate;
     }
 
+    private static function getProjectNameTemplate()
+    {
+        if (self::$projectNameTemplate == null) {
+            self::$projectNameTemplate = new PathTemplate('projects/{project}');
+        }
+
+        return self::$projectNameTemplate;
+    }
+
     private static function getArchivedBookNameTemplate()
     {
         if (self::$archivedBookNameTemplate == null) {
@@ -264,6 +274,7 @@ class LibraryServiceGapicClient
                 'shelf' => self::getShelfNameTemplate(),
                 'book' => self::getBookNameTemplate(),
                 'return' => self::getReturnNameTemplate(),
+                'project' => self::getProjectNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
             ];
         }
@@ -322,6 +333,21 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a project resource.
+     *
+     * @param string $project
+     * @return string The formatted project resource.
+     * @experimental
+     */
+    public static function projectName($project)
+    {
+        return self::getProjectNameTemplate()->render([
+            'project' => $project,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a archived_book resource.
      *
      * @param string $archivePath
@@ -344,6 +370,7 @@ class LibraryServiceGapicClient
      * - shelf: shelves/{shelf_id}
      * - book: shelves/{shelf_id}/books/{book_id}
      * - return: shelves/{shelf}/books/{book}/returns/{return}
+     * - project: projects/{project}
      * - archivedBook: archives/{archive_path}/books/{book_id=**}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
@@ -1897,6 +1924,7 @@ class LibraryServiceGapicClient
      *     $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
      *     $requiredSingularResourceName = '';
      *     $requiredSingularResourceNameOneof = '';
+     *     $requiredSingularResourceNameCommon = '';
      *     $requiredSingularFixed32 = 0;
      *     $requiredSingularFixed64 = 0;
      *     $requiredRepeatedInt32 = [];
@@ -1910,10 +1938,11 @@ class LibraryServiceGapicClient
      *     $requiredRepeatedMessage = [];
      *     $formattedRequiredRepeatedResourceName = [];
      *     $formattedRequiredRepeatedResourceNameOneof = [];
+     *     $requiredRepeatedResourceNameCommon = [];
      *     $requiredRepeatedFixed32 = [];
      *     $requiredRepeatedFixed64 = [];
      *     $requiredMap = [];
-     *     $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+     *     $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -1930,6 +1959,7 @@ class LibraryServiceGapicClient
      * @param TestOptionalRequiredFlatteningParamsRequest_InnerMessage $requiredSingularMessage
      * @param string $requiredSingularResourceName
      * @param string $requiredSingularResourceNameOneof
+     * @param string $requiredSingularResourceNameCommon
      * @param int $requiredSingularFixed32
      * @param int $requiredSingularFixed64
      * @param int[] $requiredRepeatedInt32
@@ -1943,6 +1973,7 @@ class LibraryServiceGapicClient
      * @param TestOptionalRequiredFlatteningParamsRequest_InnerMessage[] $requiredRepeatedMessage
      * @param string[] $requiredRepeatedResourceName
      * @param string[] $requiredRepeatedResourceNameOneof
+     * @param string[] $requiredRepeatedResourceNameCommon
      * @param int[] $requiredRepeatedFixed32
      * @param int[] $requiredRepeatedFixed64
      * @param array $requiredMap
@@ -1960,6 +1991,7 @@ class LibraryServiceGapicClient
      *     @type TestOptionalRequiredFlatteningParamsRequest_InnerMessage $optionalSingularMessage
      *     @type string $optionalSingularResourceName
      *     @type string $optionalSingularResourceNameOneof
+     *     @type string $optionalSingularResourceNameCommon
      *     @type int $optionalSingularFixed32
      *     @type int $optionalSingularFixed64
      *     @type int[] $optionalRepeatedInt32
@@ -1974,6 +2006,7 @@ class LibraryServiceGapicClient
      *     @type TestOptionalRequiredFlatteningParamsRequest_InnerMessage[] $optionalRepeatedMessage
      *     @type string[] $optionalRepeatedResourceName
      *     @type string[] $optionalRepeatedResourceNameOneof
+     *     @type string[] $optionalRepeatedResourceNameCommon
      *     @type int[] $optionalRepeatedFixed32
      *     @type int[] $optionalRepeatedFixed64
      *     @type array $optionalMap
@@ -1989,7 +2022,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
+    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
     {
         $request = new TestOptionalRequiredFlatteningParamsRequest();
         $request->setRequiredSingularInt32($requiredSingularInt32);
@@ -2003,6 +2036,7 @@ class LibraryServiceGapicClient
         $request->setRequiredSingularMessage($requiredSingularMessage);
         $request->setRequiredSingularResourceName($requiredSingularResourceName);
         $request->setRequiredSingularResourceNameOneof($requiredSingularResourceNameOneof);
+        $request->setRequiredSingularResourceNameCommon($requiredSingularResourceNameCommon);
         $request->setRequiredSingularFixed32($requiredSingularFixed32);
         $request->setRequiredSingularFixed64($requiredSingularFixed64);
         $request->setRequiredRepeatedInt32($requiredRepeatedInt32);
@@ -2016,6 +2050,7 @@ class LibraryServiceGapicClient
         $request->setRequiredRepeatedMessage($requiredRepeatedMessage);
         $request->setRequiredRepeatedResourceName($requiredRepeatedResourceName);
         $request->setRequiredRepeatedResourceNameOneof($requiredRepeatedResourceNameOneof);
+        $request->setRequiredRepeatedResourceNameCommon($requiredRepeatedResourceNameCommon);
         $request->setRequiredRepeatedFixed32($requiredRepeatedFixed32);
         $request->setRequiredRepeatedFixed64($requiredRepeatedFixed64);
         $request->setRequiredMap($requiredMap);
@@ -2051,6 +2086,9 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['optionalSingularResourceNameOneof'])) {
             $request->setOptionalSingularResourceNameOneof($optionalArgs['optionalSingularResourceNameOneof']);
+        }
+        if (isset($optionalArgs['optionalSingularResourceNameCommon'])) {
+            $request->setOptionalSingularResourceNameCommon($optionalArgs['optionalSingularResourceNameCommon']);
         }
         if (isset($optionalArgs['optionalSingularFixed32'])) {
             $request->setOptionalSingularFixed32($optionalArgs['optionalSingularFixed32']);
@@ -2090,6 +2128,9 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['optionalRepeatedResourceNameOneof'])) {
             $request->setOptionalRepeatedResourceNameOneof($optionalArgs['optionalRepeatedResourceNameOneof']);
+        }
+        if (isset($optionalArgs['optionalRepeatedResourceNameCommon'])) {
+            $request->setOptionalRepeatedResourceNameCommon($optionalArgs['optionalRepeatedResourceNameCommon']);
         }
         if (isset($optionalArgs['optionalRepeatedFixed32'])) {
             $request->setOptionalRepeatedFixed32($optionalArgs['optionalRepeatedFixed32']);
@@ -5135,6 +5176,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
         $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
         $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+        $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -5148,11 +5190,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredRepeatedMessage = [];
         $formattedRequiredRepeatedResourceName = [];
         $formattedRequiredRepeatedResourceNameOneof = [];
+        $requiredRepeatedResourceNameCommon = [];
         $requiredRepeatedFixed32 = [];
         $requiredRepeatedFixed64 = [];
         $requiredMap = [];
 
-        $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+        $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -5193,6 +5236,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getRequiredSingularResourceNameOneof();
 
         $this->assertProtobufEquals($requiredSingularResourceNameOneof, $actualValue);
+        $actualValue = $actualRequestObject->getRequiredSingularResourceNameCommon();
+
+        $this->assertProtobufEquals($requiredSingularResourceNameCommon, $actualValue);
         $actualValue = $actualRequestObject->getRequiredSingularFixed32();
 
         $this->assertProtobufEquals($requiredSingularFixed32, $actualValue);
@@ -5232,6 +5278,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getRequiredRepeatedResourceNameOneof();
 
         $this->assertProtobufEquals($formattedRequiredRepeatedResourceNameOneof, $actualValue);
+        $actualValue = $actualRequestObject->getRequiredRepeatedResourceNameCommon();
+
+        $this->assertProtobufEquals($requiredRepeatedResourceNameCommon, $actualValue);
         $actualValue = $actualRequestObject->getRequiredRepeatedFixed32();
 
         $this->assertProtobufEquals($requiredRepeatedFixed32, $actualValue);
@@ -5279,6 +5328,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
         $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
         $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+        $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -5292,12 +5342,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredRepeatedMessage = [];
         $formattedRequiredRepeatedResourceName = [];
         $formattedRequiredRepeatedResourceNameOneof = [];
+        $requiredRepeatedResourceNameCommon = [];
         $requiredRepeatedFixed32 = [];
         $requiredRepeatedFixed64 = [];
         $requiredMap = [];
 
         try {
-            $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+            $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

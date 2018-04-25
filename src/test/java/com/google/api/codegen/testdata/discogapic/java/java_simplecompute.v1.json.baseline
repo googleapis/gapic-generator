@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressName.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectDummyObjectName.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -33,220 +33,7 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressName implements ResourceName {
-  private final String address;
-  private final String project;
-  private final String region;
-  private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
-
-  private volatile Map<String, String> fieldValuesMap;
-
-  public static Builder newBuilder() {
-    return new Builder();
-  }
-
-  public Builder toBuilder() {
-    return new Builder(this);
-  }
-
-  private AddressName(Builder builder) {
-    address = Preconditions.checkNotNull(builder.getAddress());
-    project = Preconditions.checkNotNull(builder.getProject());
-    region = Preconditions.checkNotNull(builder.getRegion());
-  }
-
-  public static AddressName of(
-      String address,
-      String project,
-      String region
-      ) {
-    return newBuilder()
-    .setAddress(address)
-    .setProject(project)
-    .setRegion(region)
-      .build();
-  }
-
-  public static String format(
-      String address,
-      String project,
-      String region
-      ) {
-    return of(
-        address,
-        project,
-        region
-        )
-        .toString();
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public String getProject() {
-    return project;
-  }
-
-  public String getRegion() {
-    return region;
-  }
-
-
-  @Override
-  public Map<String, String> getFieldValuesMap() {
-    if (fieldValuesMap == null) {
-      synchronized (this) {
-        if (fieldValuesMap == null) {
-          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
-          fieldMapBuilder.put("address", address);
-          fieldMapBuilder.put("project", project);
-          fieldMapBuilder.put("region", region);
-          fieldValuesMap = fieldMapBuilder.build();
-        }
-      }
-    }
-    return fieldValuesMap;
-  }
-
-  public String getFieldValue(String fieldName) {
-    return getFieldValuesMap().get(fieldName);
-  }
-
-
-  public static ResourceNameFactory<AddressName> newFactory() {
-    return new ResourceNameFactory<AddressName>() {
-      public AddressName parse(String formattedString) {return AddressName.parse(formattedString);}
-    };
-  }
-
-  public static AddressName parse(String formattedString) {
-    Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "AddressName.parse: formattedString not in valid format");
-    return of(
-      matchMap.get("address"),
-      matchMap.get("project"),
-      matchMap.get("region")
-    );
-  }
-
-  public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
-  }
-
-  public static class Builder {
-    private String address;
-    private String project;
-    private String region;
-
-    public String getAddress() {
-      return address;
-    }
-    public String getProject() {
-      return project;
-    }
-    public String getRegion() {
-      return region;
-    }
-
-    public Builder setAddress(String address) {
-      this.address = address;
-      return this;
-    }
-    public Builder setProject(String project) {
-      this.project = project;
-      return this;
-    }
-    public Builder setRegion(String region) {
-      this.region = region;
-      return this;
-    }
-
-    private Builder() {}
-
-    public Builder (AddressName addressName) {
-      address = addressName.address;
-      project = addressName.project;
-      region = addressName.region;
-    }
-
-    public AddressName build() {
-      return new AddressName(this);
-    }
-  }
-
-  @Override
-  public String toString() {
-    return PATH_TEMPLATE.instantiate(
-        "address", address,
-        "project", project,
-        "region", region
-        );
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof AddressName) {
-      AddressName that = (AddressName) o;
-      return
-          Objects.equals(this.address, that.getAddress()) &&
-          Objects.equals(this.project, that.getProject()) &&
-          Objects.equals(this.region, that.getRegion())
-          ;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-      address,
-      project,
-      region
-    );
-  }
-}
-
-============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObjectName.java ==============
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.google.cloud.simplecompute.v1;
-
-import com.google.api.core.BetaApi;
-import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
-import com.google.api.resourcenames.ResourceNameFactory;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.annotation.Generated;
-
-@Generated("by GAPIC")
-@BetaApi
-public final class DummyObjectName implements ResourceName {
+public final class ProjectDummyObjectName implements ResourceName {
   private final String dummyObject;
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
@@ -262,12 +49,12 @@ public final class DummyObjectName implements ResourceName {
     return new Builder(this);
   }
 
-  private DummyObjectName(Builder builder) {
+  private ProjectDummyObjectName(Builder builder) {
     dummyObject = Preconditions.checkNotNull(builder.getDummyObject());
     project = Preconditions.checkNotNull(builder.getProject());
   }
 
-  public static DummyObjectName of(
+  public static ProjectDummyObjectName of(
       String dummyObject,
       String project
       ) {
@@ -317,15 +104,15 @@ public final class DummyObjectName implements ResourceName {
   }
 
 
-  public static ResourceNameFactory<DummyObjectName> newFactory() {
-    return new ResourceNameFactory<DummyObjectName>() {
-      public DummyObjectName parse(String formattedString) {return DummyObjectName.parse(formattedString);}
+  public static ResourceNameFactory<ProjectDummyObjectName> newFactory() {
+    return new ResourceNameFactory<ProjectDummyObjectName>() {
+      public ProjectDummyObjectName parse(String formattedString) {return ProjectDummyObjectName.parse(formattedString);}
     };
   }
 
-  public static DummyObjectName parse(String formattedString) {
+  public static ProjectDummyObjectName parse(String formattedString) {
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "DummyObjectName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectDummyObjectName.parse: formattedString not in valid format");
     return of(
       matchMap.get("dummyObject"),
       matchMap.get("project")
@@ -358,13 +145,13 @@ public final class DummyObjectName implements ResourceName {
 
     private Builder() {}
 
-    public Builder (DummyObjectName dummyObjectName) {
-      dummyObject = dummyObjectName.dummyObject;
-      project = dummyObjectName.project;
+    public Builder (ProjectDummyObjectName projectDummyObjectName) {
+      dummyObject = projectDummyObjectName.dummyObject;
+      project = projectDummyObjectName.project;
     }
 
-    public DummyObjectName build() {
-      return new DummyObjectName(this);
+    public ProjectDummyObjectName build() {
+      return new ProjectDummyObjectName(this);
     }
   }
 
@@ -381,8 +168,8 @@ public final class DummyObjectName implements ResourceName {
     if (o == this) {
       return true;
     }
-    if (o instanceof DummyObjectName) {
-      DummyObjectName that = (DummyObjectName) o;
+    if (o instanceof ProjectDummyObjectName) {
+      ProjectDummyObjectName that = (ProjectDummyObjectName) o;
       return
           Objects.equals(this.dummyObject, that.getDummyObject()) &&
           Objects.equals(this.project, that.getProject())
@@ -400,7 +187,7 @@ public final class DummyObjectName implements ResourceName {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectAddressName.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectDummyObjectResourceName.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -435,11 +222,11 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectAddressName implements ResourceName {
-  private final String address;
+public final class ProjectDummyObjectResourceName implements ResourceName {
   private final String project;
+  private final String resource;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/addresses/{address}");
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/dummyObjects/{resource}");
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -451,12 +238,201 @@ public final class ProjectAddressName implements ResourceName {
     return new Builder(this);
   }
 
-  private ProjectAddressName(Builder builder) {
+  private ProjectDummyObjectResourceName(Builder builder) {
+    project = Preconditions.checkNotNull(builder.getProject());
+    resource = Preconditions.checkNotNull(builder.getResource());
+  }
+
+  public static ProjectDummyObjectResourceName of(
+      String project,
+      String resource
+      ) {
+    return newBuilder()
+    .setProject(project)
+    .setResource(resource)
+      .build();
+  }
+
+  public static String format(
+      String project,
+      String resource
+      ) {
+    return of(
+        project,
+        resource
+        )
+        .toString();
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("project", project);
+          fieldMapBuilder.put("resource", resource);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ProjectDummyObjectResourceName> newFactory() {
+    return new ResourceNameFactory<ProjectDummyObjectResourceName>() {
+      public ProjectDummyObjectResourceName parse(String formattedString) {return ProjectDummyObjectResourceName.parse(formattedString);}
+    };
+  }
+
+  public static ProjectDummyObjectResourceName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectDummyObjectResourceName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("project"),
+      matchMap.get("resource")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String project;
+    private String resource;
+
+    public String getProject() {
+      return project;
+    }
+    public String getResource() {
+      return resource;
+    }
+
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setResource(String resource) {
+      this.resource = resource;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectDummyObjectResourceName projectDummyObjectResourceName) {
+      project = projectDummyObjectResourceName.project;
+      resource = projectDummyObjectResourceName.resource;
+    }
+
+    public ProjectDummyObjectResourceName build() {
+      return new ProjectDummyObjectResourceName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "project", project,
+        "resource", resource
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectDummyObjectResourceName) {
+      ProjectDummyObjectResourceName that = (ProjectDummyObjectResourceName) o;
+      return
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.resource, that.getResource())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      project,
+      resource
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectGlobalAddressName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectGlobalAddressName implements ResourceName {
+  private final String address;
+  private final String project;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/global/addresses/{address}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectGlobalAddressName(Builder builder) {
     address = Preconditions.checkNotNull(builder.getAddress());
     project = Preconditions.checkNotNull(builder.getProject());
   }
 
-  public static ProjectAddressName of(
+  public static ProjectGlobalAddressName of(
       String address,
       String project
       ) {
@@ -506,15 +482,15 @@ public final class ProjectAddressName implements ResourceName {
   }
 
 
-  public static ResourceNameFactory<ProjectAddressName> newFactory() {
-    return new ResourceNameFactory<ProjectAddressName>() {
-      public ProjectAddressName parse(String formattedString) {return ProjectAddressName.parse(formattedString);}
+  public static ResourceNameFactory<ProjectGlobalAddressName> newFactory() {
+    return new ResourceNameFactory<ProjectGlobalAddressName>() {
+      public ProjectGlobalAddressName parse(String formattedString) {return ProjectGlobalAddressName.parse(formattedString);}
     };
   }
 
-  public static ProjectAddressName parse(String formattedString) {
+  public static ProjectGlobalAddressName parse(String formattedString) {
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectAddressName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectGlobalAddressName.parse: formattedString not in valid format");
     return of(
       matchMap.get("address"),
       matchMap.get("project")
@@ -547,13 +523,13 @@ public final class ProjectAddressName implements ResourceName {
 
     private Builder() {}
 
-    public Builder (ProjectAddressName projectAddressName) {
-      address = projectAddressName.address;
-      project = projectAddressName.project;
+    public Builder (ProjectGlobalAddressName projectGlobalAddressName) {
+      address = projectGlobalAddressName.address;
+      project = projectGlobalAddressName.project;
     }
 
-    public ProjectAddressName build() {
-      return new ProjectAddressName(this);
+    public ProjectGlobalAddressName build() {
+      return new ProjectGlobalAddressName(this);
     }
   }
 
@@ -570,8 +546,8 @@ public final class ProjectAddressName implements ResourceName {
     if (o == this) {
       return true;
     }
-    if (o instanceof ProjectAddressName) {
-      ProjectAddressName that = (ProjectAddressName) o;
+    if (o instanceof ProjectGlobalAddressName) {
+      ProjectGlobalAddressName that = (ProjectGlobalAddressName) o;
       return
           Objects.equals(this.address, that.getAddress()) &&
           Objects.equals(this.project, that.getProject())
@@ -754,7 +730,7 @@ public final class ProjectName implements ResourceName {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectRegionAddressName.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -789,7 +765,220 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class RegionName implements ResourceName {
+public final class ProjectRegionAddressName implements ResourceName {
+  private final String address;
+  private final String project;
+  private final String region;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
+
+  private volatile Map<String, String> fieldValuesMap;
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectRegionAddressName(Builder builder) {
+    address = Preconditions.checkNotNull(builder.getAddress());
+    project = Preconditions.checkNotNull(builder.getProject());
+    region = Preconditions.checkNotNull(builder.getRegion());
+  }
+
+  public static ProjectRegionAddressName of(
+      String address,
+      String project,
+      String region
+      ) {
+    return newBuilder()
+    .setAddress(address)
+    .setProject(project)
+    .setRegion(region)
+      .build();
+  }
+
+  public static String format(
+      String address,
+      String project,
+      String region
+      ) {
+    return of(
+        address,
+        project,
+        region
+        )
+        .toString();
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+
+  @Override
+  public Map<String, String> getFieldValuesMap() {
+    if (fieldValuesMap == null) {
+      synchronized (this) {
+        if (fieldValuesMap == null) {
+          ImmutableMap.Builder<String, String> fieldMapBuilder = ImmutableMap.builder();
+          fieldMapBuilder.put("address", address);
+          fieldMapBuilder.put("project", project);
+          fieldMapBuilder.put("region", region);
+          fieldValuesMap = fieldMapBuilder.build();
+        }
+      }
+    }
+    return fieldValuesMap;
+  }
+
+  public String getFieldValue(String fieldName) {
+    return getFieldValuesMap().get(fieldName);
+  }
+
+
+  public static ResourceNameFactory<ProjectRegionAddressName> newFactory() {
+    return new ResourceNameFactory<ProjectRegionAddressName>() {
+      public ProjectRegionAddressName parse(String formattedString) {return ProjectRegionAddressName.parse(formattedString);}
+    };
+  }
+
+  public static ProjectRegionAddressName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectRegionAddressName.parse: formattedString not in valid format");
+    return of(
+      matchMap.get("address"),
+      matchMap.get("project"),
+      matchMap.get("region")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  public static class Builder {
+    private String address;
+    private String project;
+    private String region;
+
+    public String getAddress() {
+      return address;
+    }
+    public String getProject() {
+      return project;
+    }
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectRegionAddressName projectRegionAddressName) {
+      address = projectRegionAddressName.address;
+      project = projectRegionAddressName.project;
+      region = projectRegionAddressName.region;
+    }
+
+    public ProjectRegionAddressName build() {
+      return new ProjectRegionAddressName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "address", address,
+        "project", project,
+        "region", region
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectRegionAddressName) {
+      ProjectRegionAddressName that = (ProjectRegionAddressName) o;
+      return
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.region, that.getRegion())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      address,
+      project,
+      region
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectRegionName.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectRegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -805,12 +994,12 @@ public final class RegionName implements ResourceName {
     return new Builder(this);
   }
 
-  private RegionName(Builder builder) {
+  private ProjectRegionName(Builder builder) {
     project = Preconditions.checkNotNull(builder.getProject());
     region = Preconditions.checkNotNull(builder.getRegion());
   }
 
-  public static RegionName of(
+  public static ProjectRegionName of(
       String project,
       String region
       ) {
@@ -860,15 +1049,15 @@ public final class RegionName implements ResourceName {
   }
 
 
-  public static ResourceNameFactory<RegionName> newFactory() {
-    return new ResourceNameFactory<RegionName>() {
-      public RegionName parse(String formattedString) {return RegionName.parse(formattedString);}
+  public static ResourceNameFactory<ProjectRegionName> newFactory() {
+    return new ResourceNameFactory<ProjectRegionName>() {
+      public ProjectRegionName parse(String formattedString) {return ProjectRegionName.parse(formattedString);}
     };
   }
 
-  public static RegionName parse(String formattedString) {
+  public static ProjectRegionName parse(String formattedString) {
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "RegionName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectRegionName.parse: formattedString not in valid format");
     return of(
       matchMap.get("project"),
       matchMap.get("region")
@@ -901,13 +1090,13 @@ public final class RegionName implements ResourceName {
 
     private Builder() {}
 
-    public Builder (RegionName regionName) {
-      project = regionName.project;
-      region = regionName.region;
+    public Builder (ProjectRegionName projectRegionName) {
+      project = projectRegionName.project;
+      region = projectRegionName.region;
     }
 
-    public RegionName build() {
-      return new RegionName(this);
+    public ProjectRegionName build() {
+      return new ProjectRegionName(this);
     }
   }
 
@@ -924,8 +1113,8 @@ public final class RegionName implements ResourceName {
     if (o == this) {
       return true;
     }
-    if (o instanceof RegionName) {
-      RegionName that = (RegionName) o;
+    if (o instanceof ProjectRegionName) {
+      ProjectRegionName that = (ProjectRegionName) o;
       return
           Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.region, that.getRegion())
@@ -6615,6 +6804,415 @@ public final class GetAddressHttpRequest implements ApiMessage {
   }
 }
 
+============== file: src/main/java/com/google/cloud/simplecompute/v1/GetResourceDummyObjectHttpRequest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class GetResourceDummyObjectHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String resource;
+  private final String userIp;
+
+  private GetResourceDummyObjectHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.resource = null;
+    this.userIp = null;
+  }
+
+
+  private GetResourceDummyObjectHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String resource,
+      String userIp
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.resource = resource;
+    this.userIp = userIp;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token") && access_token != null) {
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("callback") && callback != null) {
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
+    }
+    if (fieldNames.contains("fields") && fields != null) {
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
+    }
+    if (fieldNames.contains("key") && key != null) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
+    }
+    if (fieldNames.contains("quotaUser") && quotaUser != null) {
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
+    }
+    if (fieldNames.contains("resource") && resource != null) {
+      fieldMap.put("resource", Collections.singletonList(String.valueOf(resource)));
+    }
+    if (fieldNames.contains("userIp") && userIp != null) {
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("access_token")) {
+      return String.valueOf(access_token);
+    }
+    if (fieldName.equals("callback")) {
+      return String.valueOf(callback);
+    }
+    if (fieldName.equals("fields")) {
+      return String.valueOf(fields);
+    }
+    if (fieldName.equals("key")) {
+      return String.valueOf(key);
+    }
+    if (fieldName.equals("prettyPrint")) {
+      return String.valueOf(prettyPrint);
+    }
+    if (fieldName.equals("quotaUser")) {
+      return String.valueOf(quotaUser);
+    }
+    if (fieldName.equals("resource")) {
+      return String.valueOf(resource);
+    }
+    if (fieldName.equals("userIp")) {
+      return String.valueOf(userIp);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(GetResourceDummyObjectHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static GetResourceDummyObjectHttpRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final GetResourceDummyObjectHttpRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new GetResourceDummyObjectHttpRequest();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String resource;
+    private String userIp;
+
+    Builder() {}
+
+    public Builder mergeFrom(GetResourceDummyObjectHttpRequest other) {
+      if (other == GetResourceDummyObjectHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getResource() != null) {
+        this.resource = other.resource;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
+
+    Builder(GetResourceDummyObjectHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.resource = source.resource;
+      this.userIp = source.userIp;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getResource() {
+      return resource;
+    }
+
+    public Builder setResource(String resource) {
+      this.resource = resource;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+
+    public GetResourceDummyObjectHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+      if (resource == null) {
+        missing += " resource";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new GetResourceDummyObjectHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        resource,
+        userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setResource(this.resource);
+      newBuilder.setUserIp(this.userIp);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "GetResourceDummyObjectHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "resource=" + resource + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof GetResourceDummyObjectHttpRequest) {
+      GetResourceDummyObjectHttpRequest that = (GetResourceDummyObjectHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.resource, that.getResource()) &&
+          Objects.equals(this.userIp, that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      resource,
+      userIp
+    );
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/InsertAddressHttpRequest.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -9157,7 +9755,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
- *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
  *   Operation response = addressClient.deleteAddress(address);
  * }
  * </code>
@@ -9413,7 +10011,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   Operation response = addressClient.deleteAddress(address);
    * }
    * </code></pre>
@@ -9422,7 +10020,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation deleteAddress(AddressName address) {
+  public final Operation deleteAddress(ProjectRegionAddressName address) {
 
     DeleteAddressHttpRequest request =
         DeleteAddressHttpRequest.newBuilder()
@@ -9438,7 +10036,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   Operation response = addressClient.deleteAddress(address.toString());
    * }
    * </code></pre>
@@ -9463,7 +10061,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .build();
@@ -9486,7 +10084,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .build();
@@ -9508,7 +10106,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   Address response = addressClient.getAddress(address);
    * }
    * </code></pre>
@@ -9517,7 +10115,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Address getAddress(AddressName address) {
+  public final Address getAddress(ProjectRegionAddressName address) {
 
     GetAddressHttpRequest request =
         GetAddressHttpRequest.newBuilder()
@@ -9533,7 +10131,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   Address response = addressClient.getAddress(address.toString());
    * }
    * </code></pre>
@@ -9558,7 +10156,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .build();
@@ -9581,7 +10179,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
    *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .build();
@@ -9603,7 +10201,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.insertAddress(region, addressResource);
    * }
@@ -9614,7 +10212,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation insertAddress(RegionName region, Address addressResource) {
+  public final Operation insertAddress(ProjectRegionName region, Address addressResource) {
 
     InsertAddressHttpRequest request =
         InsertAddressHttpRequest.newBuilder()
@@ -9631,7 +10229,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.insertAddress(region.toString(), addressResource);
    * }
@@ -9659,7 +10257,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
@@ -9684,7 +10282,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
    *     .setRegion(region.toString())
@@ -9708,7 +10306,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   for (Address element : addressClient.listAddresses(region).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -9719,7 +10317,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final ListAddressesPagedResponse listAddresses(RegionName region) {
+  public final ListAddressesPagedResponse listAddresses(ProjectRegionName region) {
     ListAddressesHttpRequest request =
         ListAddressesHttpRequest.newBuilder()
         .setRegion(region == null ? null : region.toString())
@@ -9734,7 +10332,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   for (Address element : addressClient.listAddresses(region.toString()).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -9760,7 +10358,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
    *     .setRegion(region.toString())
    *     .build();
@@ -9786,7 +10384,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
    *     .setRegion(region.toString())
    *     .build();
@@ -9810,7 +10408,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
    *     .setRegion(region.toString())
    *     .build();
@@ -9843,7 +10441,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
    *   String requestId = "";
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.patchAddress(address, requestId, region, addressResource);
    * }
@@ -9860,7 +10458,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(String address, String requestId, RegionName region, Address addressResource) {
+  public final Operation patchAddress(String address, String requestId, ProjectRegionName region, Address addressResource) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
@@ -9881,7 +10479,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
    *   String requestId = "";
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.patchAddress(address, requestId, region.toString(), addressResource);
    * }
@@ -9919,7 +10517,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
    *   String requestId = "";
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
@@ -9948,7 +10546,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
    *   String requestId = "";
-   *   RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
@@ -9974,7 +10572,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.updateAddress(address, requestId, addressResource);
@@ -9991,7 +10589,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation updateAddress(ProjectAddressName address, String requestId, Address addressResource) {
+  public final Operation updateAddress(ProjectGlobalAddressName address, String requestId, Address addressResource) {
 
     UpdateAddressHttpRequest request =
         UpdateAddressHttpRequest.newBuilder()
@@ -10009,7 +10607,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   Operation response = addressClient.updateAddress(address.toString(), requestId, addressResource);
@@ -10044,7 +10642,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
@@ -10071,7 +10669,7 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *   ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
@@ -11216,7 +11814,6 @@ import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
-import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
@@ -11225,9 +11822,10 @@ import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
-import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectGlobalAddressName;
 import com.google.cloud.simplecompute.v1.ProjectName;
-import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.ProjectRegionAddressName;
+import com.google.cloud.simplecompute.v1.ProjectRegionName;
 import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import javax.annotation.Generated;
 
@@ -11327,7 +11925,6 @@ import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
-import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
 import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
@@ -11337,9 +11934,10 @@ import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
-import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectGlobalAddressName;
 import com.google.cloud.simplecompute.v1.ProjectName;
-import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.ProjectRegionAddressName;
+import com.google.cloud.simplecompute.v1.ProjectRegionName;
 import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -11390,7 +11988,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
-                  .setResourceNameFactory(AddressName.newFactory())
+                  .setResourceNameFactory(ProjectRegionAddressName.newFactory())
                   .setResourceNameField("address")
                   .build())
           .setResponseParser(
@@ -11409,7 +12007,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
-                  .setResourceNameFactory(AddressName.newFactory())
+                  .setResourceNameFactory(ProjectRegionAddressName.newFactory())
                   .setResourceNameField("address")
                   .build())
           .setResponseParser(
@@ -11428,7 +12026,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
-                  .setResourceNameFactory(RegionName.newFactory())
+                  .setResourceNameFactory(ProjectRegionName.newFactory())
                   .setResourceNameField("region")
                   .build())
           .setResponseParser(
@@ -11448,7 +12046,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setQueryParams(Sets.<String>newHashSet(
                                      "filter",    "maxResults",    "orderBy",    "pageToken"
                                      ))
-                  .setResourceNameFactory(RegionName.newFactory())
+                  .setResourceNameFactory(ProjectRegionName.newFactory())
                   .setResourceNameField("region")
                   .build())
           .setResponseParser(
@@ -11468,7 +12066,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setQueryParams(Sets.<String>newHashSet(
                                      "address",    "requestId"
                                      ))
-                  .setResourceNameFactory(RegionName.newFactory())
+                  .setResourceNameFactory(ProjectRegionName.newFactory())
                   .setResourceNameField("region")
                   .build())
           .setResponseParser(
@@ -11488,7 +12086,7 @@ public class HttpJsonAddressStub extends AddressStub {
                   .setQueryParams(Sets.<String>newHashSet(
                                      "requestId"
                                      ))
-                  .setResourceNameFactory(ProjectAddressName.newFactory())
+                  .setResourceNameFactory(ProjectGlobalAddressName.newFactory())
                   .setResourceNameField("address")
                   .build())
           .setResponseParser(
@@ -11704,7 +12302,6 @@ import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
 import static com.google.cloud.simplecompute.v1.AddressClient.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.AddressList;
-import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressSettings;
 import com.google.cloud.simplecompute.v1.AddressesScopedList;
 import com.google.cloud.simplecompute.v1.AggregatedListAddressesHttpRequest;
@@ -11714,9 +12311,10 @@ import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.ListAddressesHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import com.google.cloud.simplecompute.v1.PatchAddressHttpRequest;
-import com.google.cloud.simplecompute.v1.ProjectAddressName;
+import com.google.cloud.simplecompute.v1.ProjectGlobalAddressName;
 import com.google.cloud.simplecompute.v1.ProjectName;
-import com.google.cloud.simplecompute.v1.RegionName;
+import com.google.cloud.simplecompute.v1.ProjectRegionAddressName;
+import com.google.cloud.simplecompute.v1.ProjectRegionName;
 import com.google.cloud.simplecompute.v1.UpdateAddressHttpRequest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -11816,8 +12414,8 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
- *   dummyObjectClient.deleteDummyObject(dummyObject);
+ *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+ *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
  * </pre>
@@ -12067,12 +12665,107 @@ public class DummyObjectClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   dummyObjectClient.getResourceDummyObject(resource);
+   * }
+   * </code></pre>
+   *
+   * @param resource Name of the dummyObject resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(ProjectDummyObjectResourceName resource) {
+
+    GetResourceDummyObjectHttpRequest request =
+        GetResourceDummyObjectHttpRequest.newBuilder()
+        .setResource(resource == null ? null : resource.toString())
+        .build();
+    getResourceDummyObject(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   dummyObjectClient.getResourceDummyObject(resource.toString());
+   * }
+   * </code></pre>
+   *
+   * @param resource Name of the dummyObject resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(String resource) {
+
+    GetResourceDummyObjectHttpRequest request =
+        GetResourceDummyObjectHttpRequest.newBuilder()
+        .setResource(resource)
+        .build();
+    getResourceDummyObject(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
+   *     .setResource(resource.toString())
+   *     .build();
+   *   dummyObjectClient.getResourceDummyObject(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final void getResourceDummyObject(GetResourceDummyObjectHttpRequest request) {
+    getResourceDummyObjectCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Method on resource with ResourceName as ResourceName name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
+   *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+   *   GetResourceDummyObjectHttpRequest request = GetResourceDummyObjectHttpRequest.newBuilder()
+   *     .setResource(resource.toString())
+   *     .build();
+   *   ApiFuture&lt;Void&gt; future = dummyObjectClient.getResourceDummyObjectCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    return stub.getResourceDummyObjectCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * Method with no response object.
    *
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
    *   dummyObjectClient.deleteDummyObject(dummyObject);
    * }
    * </code></pre>
@@ -12081,7 +12774,7 @@ public class DummyObjectClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final void deleteDummyObject(DummyObjectName dummyObject) {
+  public final void deleteDummyObject(ProjectDummyObjectName dummyObject) {
 
     DeleteDummyObjectHttpRequest request =
         DeleteDummyObjectHttpRequest.newBuilder()
@@ -12097,7 +12790,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
    *   dummyObjectClient.deleteDummyObject(dummyObject.toString());
    * }
    * </code></pre>
@@ -12122,7 +12815,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
    *   DeleteDummyObjectHttpRequest request = DeleteDummyObjectHttpRequest.newBuilder()
    *     .setDummyObject(dummyObject.toString())
    *     .build();
@@ -12145,7 +12838,7 @@ public class DummyObjectClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
-   *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+   *   ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
    *   DeleteDummyObjectHttpRequest request = DeleteDummyObjectHttpRequest.newBuilder()
    *     .setDummyObject(dummyObject.toString())
    *     .build();
@@ -12351,13 +13044,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteDummyObject to 30 seconds:
+ * object. For example, to set the total timeout of getResourceDummyObject to 30 seconds:
  *
  * <pre>
  * <code>
  * DummyObjectSettings.Builder dummyObjectSettingsBuilder =
  *     DummyObjectSettings.newBuilder();
- * dummyObjectSettingsBuilder.deleteDummyObjectSettings().getRetrySettings().toBuilder()
+ * dummyObjectSettingsBuilder.getResourceDummyObjectSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * DummyObjectSettings dummyObjectSettings = dummyObjectSettingsBuilder.build();
  * </code>
@@ -12371,6 +13064,13 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).listResourcesDummyObjectsSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getResourceDummyObject.
+   */
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    return ((DummyObjectStubSettings) getStubSettings()).getResourceDummyObjectSettings();
   }
 
   /**
@@ -12508,6 +13208,13 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to getResourceDummyObject.
+     */
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+      return getStubSettingsBuilder().getResourceDummyObjectSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to deleteDummyObject.
      */
     public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
@@ -12568,6 +13275,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
 import com.google.common.collect.ImmutableList;
@@ -12596,13 +13304,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteDummyObject to 30 seconds:
+ * object. For example, to set the total timeout of getResourceDummyObject to 30 seconds:
  *
  * <pre>
  * <code>
  * DummyObjectStubSettings.Builder dummyObjectSettingsBuilder =
  *     DummyObjectStubSettings.newBuilder();
- * dummyObjectSettingsBuilder.deleteDummyObjectSettings().getRetrySettings().toBuilder()
+ * dummyObjectSettingsBuilder.getResourceDummyObjectSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * DummyObjectStubSettings dummyObjectSettings = dummyObjectSettingsBuilder.build();
  * </code>
@@ -12624,6 +13332,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       .build();
 
   private final PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
+  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
   private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
   /**
@@ -12631,6 +13340,13 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
    */
   public PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
     return listResourcesDummyObjectsSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getResourceDummyObject.
+   */
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    return getResourceDummyObjectSettings;
   }
 
   /**
@@ -12733,6 +13449,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     super(settingsBuilder);
 
     listResourcesDummyObjectsSettings = settingsBuilder.listResourcesDummyObjectsSettings().build();
+    getResourceDummyObjectSettings = settingsBuilder.getResourceDummyObjectSettings().build();
     deleteDummyObjectSettings = settingsBuilder.deleteDummyObjectSettings().build();
   }
 
@@ -12792,6 +13509,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
+    private final UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
     private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -12835,10 +13553,13 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       listResourcesDummyObjectsSettings = PagedCallSettings.newBuilder(
           LIST_RESOURCES_DUMMY_OBJECTS_PAGE_STR_FACT);
 
+      getResourceDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       deleteDummyObjectSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           listResourcesDummyObjectsSettings,
+          getResourceDummyObjectSettings,
           deleteDummyObjectSettings
       );
 
@@ -12860,6 +13581,10 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.getResourceDummyObjectSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
       builder.deleteDummyObjectSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -12871,10 +13596,12 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       super(settings);
 
       listResourcesDummyObjectsSettings = settings.listResourcesDummyObjectsSettings.toBuilder();
+      getResourceDummyObjectSettings = settings.getResourceDummyObjectSettings.toBuilder();
       deleteDummyObjectSettings = settings.deleteDummyObjectSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           listResourcesDummyObjectsSettings,
+          getResourceDummyObjectSettings,
           deleteDummyObjectSettings
       );
     }
@@ -12899,6 +13626,13 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
      */
     public PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings() {
       return listResourcesDummyObjectsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getResourceDummyObject.
+     */
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+      return getResourceDummyObjectSettings;
     }
 
     /**
@@ -12938,8 +13672,10 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
 import javax.annotation.Generated;
@@ -12963,6 +13699,11 @@ public abstract class DummyObjectStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     throw new UnsupportedOperationException("Not implemented: listResourcesDummyObjectsCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    throw new UnsupportedOperationException("Not implemented: getResourceDummyObjectCallable()");
   }
 
   @BetaApi
@@ -13008,9 +13749,11 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
 import com.google.common.collect.ImmutableMap;
@@ -13052,6 +13795,21 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .build())
           .build();
   @InternalApi
+  public static final ApiMethodDescriptor<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectMethodDescriptor =
+      ApiMethodDescriptor.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+          .setFullMethodName("compute.dummyObjects.getResource")
+          .setHttpMethod(HttpMethods.GET)
+          .setRequestFormatter(
+              ApiMessageHttpRequestFormatter.<GetResourceDummyObjectHttpRequest>newBuilder()
+                  .setRequestInstance(GetResourceDummyObjectHttpRequest.getDefaultInstance())
+                  .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{resource}"))
+                  .setQueryParams(Sets.<String>newHashSet(
+                                     ))
+                  .setResourceNameFactory(ProjectDummyObjectResourceName.newFactory())
+                  .setResourceNameField("resource")
+                  .build())
+          .build();
+  @InternalApi
   public static final ApiMethodDescriptor<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectMethodDescriptor =
       ApiMethodDescriptor.<DeleteDummyObjectHttpRequest, Void>newBuilder()
           .setFullMethodName("compute.dummyObjects.delete")
@@ -13062,7 +13820,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{dummyObject}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
-                  .setResourceNameFactory(DummyObjectName.newFactory())
+                  .setResourceNameFactory(ProjectDummyObjectName.newFactory())
                   .setResourceNameField("dummyObject")
                   .build())
           .build();
@@ -13070,6 +13828,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
 
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable;
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable;
+  private final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable;
   private final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
@@ -13106,6 +13865,10 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
         HttpJsonCallSettings.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
             .setMethodDescriptor(listResourcesDummyObjectsMethodDescriptor)
             .build();
+    HttpJsonCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectTransportSettings =
+        HttpJsonCallSettings.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+            .setMethodDescriptor(getResourceDummyObjectMethodDescriptor)
+            .build();
     HttpJsonCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectTransportSettings =
         HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, Void>newBuilder()
             .setMethodDescriptor(deleteDummyObjectMethodDescriptor)
@@ -13113,6 +13876,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
 
     this.listResourcesDummyObjectsCallable = callableFactory.createUnaryCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
     this.listResourcesDummyObjectsPagedCallable = callableFactory.createPagedCallable(listResourcesDummyObjectsTransportSettings,settings.listResourcesDummyObjectsSettings(), clientContext);
+    this.getResourceDummyObjectCallable = callableFactory.createUnaryCallable(getResourceDummyObjectTransportSettings,settings.getResourceDummyObjectSettings(), clientContext);
     this.deleteDummyObjectCallable = callableFactory.createUnaryCallable(deleteDummyObjectTransportSettings,settings.deleteDummyObjectSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
@@ -13126,6 +13890,11 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable() {
     return listResourcesDummyObjectsCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+    return getResourceDummyObjectCallable;
   }
 
   @BetaApi
@@ -13210,9 +13979,11 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
-import com.google.cloud.simplecompute.v1.DummyObjectName;
 import com.google.cloud.simplecompute.v1.DummyObjectSettings;
+import com.google.cloud.simplecompute.v1.GetResourceDummyObjectHttpRequest;
 import com.google.cloud.simplecompute.v1.ListResourcesDummyObjectsHttpRequest;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectName;
+import com.google.cloud.simplecompute.v1.ProjectDummyObjectResourceName;
 import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
 import com.google.common.collect.ImmutableMap;
@@ -13291,7 +14062,7 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  * <pre>
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
- *   AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
  *   Operation response = addressClient.deleteAddress(address);
  * }
  * </code>
@@ -13307,8 +14078,8 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  * <pre>
  * <code>
  * try (DummyObjectClient dummyObjectClient = DummyObjectClient.create()) {
- *   DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
- *   dummyObjectClient.deleteDummyObject(dummyObject);
+ *   ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+ *   dummyObjectClient.getResourceDummyObject(resource);
  * }
  * </code>
  * </pre>
@@ -13316,6 +14087,54 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  */
 
 package com.google.cloud.simplecompute.v1;
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-simplecompute-v1'
+group = 'com.google.api'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  testCompile 'com.google.api:gax:1.0.0:testlib'
+  compile 'com.google.api:gax-httpjson:0.18.0'
+  testCompile 'com.google.api:gax-httpjson:0.18.0:testlib'
+  testCompile 'junit:junit:4.12'
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -13482,7 +14301,7 @@ public class AddressClientTest {
     String startTime = "startTime-1573145462";
     String endTime = "endTime1725551537";
     String id = "id3355";
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
     String user = "user3599307";
     String status = "status-892481550";
@@ -13511,7 +14330,7 @@ public class AddressClientTest {
       .build();
     mockService.addResponse(expectedResponse);
 
-    AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+    ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
     Operation actualResponse =
         client.deleteAddress(address);
@@ -13533,7 +14352,7 @@ public class AddressClientTest {
     mockService.addException(exception);
 
     try {
-      AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+      ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
       client.deleteAddress(address);
       Assert.fail("No exception raised");
@@ -13545,13 +14364,13 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void getAddressTest() {
-    AddressName address2 = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+    ProjectRegionAddressName address2 = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
     String kind = "kind3292052";
     String creationTimestamp = "creationTimestamp567396278";
     String name = "name3373707";
     String description = "description-1724546052";
     String id = "id3355";
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String selfLink = "selfLink-1691268851";
     String status = "status-892481550";
     Address expectedResponse = Address.newBuilder()
@@ -13567,7 +14386,7 @@ public class AddressClientTest {
       .build();
     mockService.addResponse(expectedResponse);
 
-    AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+    ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
     Address actualResponse =
         client.getAddress(address);
@@ -13589,7 +14408,7 @@ public class AddressClientTest {
     mockService.addException(exception);
 
     try {
-      AddressName address = AddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+      ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
       client.getAddress(address);
       Assert.fail("No exception raised");
@@ -13618,7 +14437,7 @@ public class AddressClientTest {
     String startTime = "startTime-1573145462";
     String endTime = "endTime1725551537";
     String id = "id3355";
-    RegionName region2 = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
     String user = "user3599307";
     String status = "status-892481550";
@@ -13647,7 +14466,7 @@ public class AddressClientTest {
       .build();
     mockService.addResponse(expectedResponse);
 
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
@@ -13670,7 +14489,7 @@ public class AddressClientTest {
     mockService.addException(exception);
 
     try {
-      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+      ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
       Address addressResource = Address.newBuilder().build();
 
       client.insertAddress(region, addressResource);
@@ -13698,7 +14517,7 @@ public class AddressClientTest {
       .build();
     mockService.addResponse(expectedResponse);
 
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
 
     ListAddressesPagedResponse pagedListResponse = client.listAddresses(region);
 
@@ -13723,7 +14542,7 @@ public class AddressClientTest {
     mockService.addException(exception);
 
     try {
-      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+      ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
 
       client.listAddresses(region);
       Assert.fail("No exception raised");
@@ -13752,7 +14571,7 @@ public class AddressClientTest {
     String startTime = "startTime-1573145462";
     String endTime = "endTime1725551537";
     String id = "id3355";
-    RegionName region2 = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
     String user = "user3599307";
     String status = "status-892481550";
@@ -13783,7 +14602,7 @@ public class AddressClientTest {
 
     String address = "address-1147692044";
     String requestId = "requestId37109963";
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
@@ -13808,7 +14627,7 @@ public class AddressClientTest {
     try {
       String address = "address-1147692044";
       String requestId = "requestId37109963";
-      RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+      ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
       Address addressResource = Address.newBuilder().build();
 
       client.patchAddress(address, requestId, region, addressResource);
@@ -13838,7 +14657,7 @@ public class AddressClientTest {
     String startTime = "startTime-1573145462";
     String endTime = "endTime1725551537";
     String id = "id3355";
-    RegionName region = RegionName.of("[PROJECT]", "[REGION]");
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
     String user = "user3599307";
     String status = "status-892481550";
@@ -13867,7 +14686,7 @@ public class AddressClientTest {
       .build();
     mockService.addResponse(expectedResponse);
 
-    ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+    ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
     String requestId = "requestId37109963";
     Address addressResource = Address.newBuilder().build();
 
@@ -13891,7 +14710,7 @@ public class AddressClientTest {
     mockService.addException(exception);
 
     try {
-      ProjectAddressName address = ProjectAddressName.of("[PROJECT]", "[ADDRESS]");
+      ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
       String requestId = "requestId37109963";
       Address addressResource = Address.newBuilder().build();
 
@@ -13934,6 +14753,7 @@ import com.google.api.gax.rpc.testing.FakeStatusCode;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.DummyObjectStubSettings;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.deleteDummyObjectMethodDescriptor;
+import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.getResourceDummyObjectMethodDescriptor;
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonDummyObjectStub.listResourcesDummyObjectsMethodDescriptor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -13954,6 +14774,7 @@ public class DummyObjectClientTest {
    private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
         Lists.<ApiMethodDescriptor>newArrayList(
           listResourcesDummyObjectsMethodDescriptor,
+          getResourceDummyObjectMethodDescriptor,
           deleteDummyObjectMethodDescriptor
         ));
   private static final MockHttpService mockService
@@ -14035,10 +14856,44 @@ public class DummyObjectClientTest {
 
   @Test
   @SuppressWarnings("all")
+  public void getResourceDummyObjectTest() {
+    mockService.addNullResponse();
+
+    ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+
+    client.getResourceDummyObject(resource);
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getResourceDummyObjectExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
+      ProjectDummyObjectResourceName resource = ProjectDummyObjectResourceName.of("[PROJECT]", "[RESOURCE]");
+
+      client.getResourceDummyObject(resource);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void deleteDummyObjectTest() {
     mockService.addNullResponse();
 
-    DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+    ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
 
     client.deleteDummyObject(dummyObject);
 
@@ -14058,7 +14913,7 @@ public class DummyObjectClientTest {
     mockService.addException(exception);
 
     try {
-      DummyObjectName dummyObject = DummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
+      ProjectDummyObjectName dummyObject = ProjectDummyObjectName.of("[PROJECT]", "[DUMMY_OBJECT]");
 
       client.deleteDummyObject(dummyObject);
       Assert.fail("No exception raised");

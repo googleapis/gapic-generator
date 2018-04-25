@@ -144,6 +144,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
+  public abstract Builder toBuilder();
+
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangXApiView.Builder()
         .isGcloud(false)

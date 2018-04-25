@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
@@ -47,6 +48,10 @@ import java.util.List;
 public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
   private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
+  private static final String SNIPPETS_CSPROJ_TEMPLATE_FILENAME =
+      "csharp/gapic_snippets_csproj.snip";
+
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -62,21 +67,22 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
       context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
       context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
       SnippetsFileView snippets = generateSnippets(context);
-      surfaceDocs.add(snippets);
+      surfaceDocs.add(generateSnippets(context));
+      surfaceDocs.add(generateSnippetsCsProj(context));
     }
 
     return surfaceDocs;
@@ -84,7 +90,27 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
+    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME, SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
+  }
+
+  private SnippetsFileView generateSnippetsCsProj(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    String name = namer.getApiSnippetsClassName(context.getInterfaceConfig());
+    SnippetsFileView.Builder snippetsBuilder = SnippetsFileView.newBuilder();
+    GapicProductConfig productConfig = context.getProductConfig();
+
+    snippetsBuilder.templateFileName(SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+    snippetsBuilder.outputPath(
+        outputPath + File.separator + productConfig.getPackageName() + ".Snippets.csproj");
+    snippetsBuilder.name(name);
+    snippetsBuilder.snippetMethods(new ArrayList<StaticLangApiMethodSnippetView>());
+
+    // must be done as the last step to catch all imports
+    snippetsBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+
+    return snippetsBuilder.build();
   }
 
   private SnippetsFileView generateSnippets(GapicInterfaceContext context) {

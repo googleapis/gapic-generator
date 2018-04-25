@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.common.collect.ImmutableList;
@@ -33,10 +34,9 @@ import java.util.Set;
 
 public class CSharpCommonTransformer {
 
-  public ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName),
-        new CSharpModelTypeNameConverter(implicitPackageName));
+  public ModelTypeTable createTypeTable(String implicitPackageName, CSharpAliasMode aliasMode) {
+    CSharpTypeTable typeTable = new CSharpTypeTable(implicitPackageName, aliasMode);
+    return new ModelTypeTable(typeTable, new CSharpModelTypeNameConverter(typeTable));
   }
 
   public void addCommonImports(GapicInterfaceContext context) {
@@ -94,7 +94,7 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> callSettingsParam() {
     return ImmutableList.of(
         makeParam(
-            "CallSettings",
+            CSharpTypeTable.ALIAS_GAX_GRPC + "::CallSettings",
             "callSettings",
             "null",
             "If not null, applies overrides to this RPC call."));
@@ -103,10 +103,12 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> cancellationTokenParam() {
     return ImmutableList.of(
         makeParam(
-            "CancellationToken",
+            CSharpTypeTable.ALIAS_SYSTEM_THREADING + "::CancellationToken",
             "cancellationToken",
             null,
-            "A <see cref=\"CancellationToken\"/> to use for this RPC."));
+            "A <see cref=\""
+                + CSharpTypeTable.ALIAS_SYSTEM_THREADING
+                + "::CancellationToken\"/> to use for this RPC."));
   }
 
   public List<ParamWithSimpleDoc> pagedMethodAdditionalParams() {

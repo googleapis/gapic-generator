@@ -33,9 +33,9 @@
     /// <summary>
     /// Resource name for the '{@resource.docName}' resource.
     /// </summary>
-    public sealed partial class {@resource.typeName} : IResourceName, IEquatable<{@resource.typeName}>
+    public sealed partial class {@resource.typeName} : gax::IResourceName, sys::IEquatable<{@resource.typeName}>
     {
-        private static readonly PathTemplate s_template = new PathTemplate("{@resource.pattern}");
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("{@resource.pattern}");
 
         /// <summary>
         /// Parses the given {@resource.docName} resource name in string form into a new
@@ -45,8 +45,8 @@
         /// <returns>The parsed <see cref="{@resource.typeName}"/> if successful.</returns>
         public static {@resource.typeName} Parse(string {@resource.paramName})
         {
-            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
-            TemplatedResourceName resourceName = s_template.ParseName({@resource.paramName});
+            gax::GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            gax::TemplatedResourceName resourceName = s_template.ParseName({@resource.paramName});
             return new {@resource.typeName}({@formatResourceNameArgs(resource.params)});
         }
         
@@ -55,7 +55,7 @@
         /// <see cref="{@resource.typeName}"/> instance.
         /// </summary>
         /// <remarks>
-        /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="{@resource.paramName}"/> is null,
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="{@resource.paramName}"/> is null,
         /// as this would usually indicate a programming error rather than a data error.
         /// </remarks>
         /// <param name="{@resource.paramName}">The {@resource.docName} resource name in string form. Must not be <c>null</c>.</param>
@@ -64,8 +64,8 @@
         /// <returns><c>true</c> if the name was parsed succssfully; <c>false</c> otherwise.</returns>
         public static bool TryParse(string {@resource.paramName}, out {@resource.typeName} result)
         {
-            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
-            TemplatedResourceName resourceName;
+            gax::GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            gax::TemplatedResourceName resourceName;
             if (s_template.TryParseName({@resource.paramName}, out resourceName))
             {
                 result = new {@resource.typeName}({@formatResourceNameArgs(resource.params)});
@@ -90,7 +90,7 @@
         {
             # param: ResourceNameParamView
             @join param : resource.params
-                {@param.nameAsProperty} = GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}));
+                {@param.nameAsProperty} = gax::GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}));
             @end
         }
 
@@ -102,7 +102,7 @@
 
         @end
         /// <inheritdoc />
-        public ResourceNameKind Kind => ResourceNameKind.Simple;
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
 
         /// <inheritdoc />
         public override string ToString() => s_template.Expand({@formatArgs(resource.params)});
@@ -137,7 +137,7 @@
     @end
     /// </list>
     /// </remarks>
-    public sealed partial class {@resource.typeName} : IResourceName, IEquatable<{@resource.typeName}>
+    public sealed partial class {@resource.typeName} : gax::IResourceName, sys::IEquatable<{@resource.typeName}>
     {
         /// <summary>
         /// The possible contents of <see cref="{@resource.typeName}"/>.
@@ -167,12 +167,12 @@
             /// <item><description>{@child.enumName}: A resource of type '{@child.docName}'.</description></item>
         @end
         /// </list>
-        /// Or an <see cref="UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
+        /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
         /// </remarks>
         /// <param name="name">The resource name in string form. Must not be <c>null</c>.</param>
         /// <param name="allowUnknown">If true, will successfully parse an unknown resource name
-        /// into an <see cref="UnknownResourceName"/>; otherwise will throw an
-        /// <see cref="ArgumentException"/> if an unknown resource name is given.</param>
+        /// into an <see cref="gax::UnknownResourceName"/>; otherwise will throw an
+        /// <see cref="sys::ArgumentException"/> if an unknown resource name is given.</param>
         /// <returns>The parsed <see cref="{@resource.typeName}"/> if successful.</returns>
         public static {@resource.typeName} Parse(string name, bool allowUnknown)
         {
@@ -181,7 +181,7 @@
             {
                 return result;
             }
-            throw new ArgumentException("Invalid name", nameof(name));
+            throw new sys::ArgumentException("Invalid name", nameof(name));
         }
 
         /// <summary>
@@ -194,17 +194,17 @@
             /// <item><description>{@child.enumName}: A resource of type '{@child.docName}'.</description></item>
         @end
         /// </list>
-        /// Or an <see cref="UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
+        /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
         /// </remarks>
         /// <param name="name">The resource name in string form. Must not be <c>null</c>.</param>
         /// <param name="allowUnknown">If true, will successfully parse an unknown resource name
-        /// into an <see cref="UnknownResourceName"/>.</param>
+        /// into an <see cref="gax::UnknownResourceName"/>.</param>
         /// <param name="result">When this method returns, the parsed <see cref="{@resource.typeName}"/>,
         /// or <c>null</c> if parsing fails.</param>
         /// <returns><c>true</c> if the name was parsed succssfully; <c>false</c> otherwise.</returns>
         public static bool TryParse(string name, bool allowUnknown, out {@resource.typeName} result)
         {
-            GaxPreconditions.CheckNotNull(name, nameof(name));
+            gax::GaxPreconditions.CheckNotNull(name, nameof(name));
             @join child : resource.children
                 {@child.typeName} {@child.paramName};
                 if ({@child.typeName}.TryParse(name, out {@child.paramName}))
@@ -215,8 +215,8 @@
             @end
             if (allowUnknown)
             {
-                UnknownResourceName unknownResourceName;
-                if (UnknownResourceName.TryParse(name, out unknownResourceName))
+                gax::UnknownResourceName unknownResourceName;
+                if (gax::UnknownResourceName.TryParse(name, out unknownResourceName))
                 {
                     result = new {@resource.typeName}(OneofType.Unknown, unknownResourceName);
                     return true;
@@ -236,7 +236,7 @@
             public static {@resource.typeName} From({@child.typeName} {@child.paramName}) => new {@resource.typeName}(OneofType.{@child.enumName}, {@child.paramName});
 
         @end
-        private static bool IsValid(OneofType type, IResourceName name)
+        private static bool IsValid(OneofType type, gax::IResourceName name)
         {
             switch (type)
             {
@@ -250,15 +250,15 @@
 
         /// <summary>
         /// Constructs a new instance of the <see cref="{@resource.typeName}"/> resource name class
-        /// from a suitable <see cref="IResourceName"/> instance.
+        /// from a suitable <see cref="gax::IResourceName"/> instance.
         /// </summary>
-        public {@resource.typeName}(OneofType type, IResourceName name)
+        public {@resource.typeName}(OneofType type, gax::IResourceName name)
         {
-            Type = GaxPreconditions.CheckEnumValue<OneofType>(type, nameof(type));
-            Name = GaxPreconditions.CheckNotNull(name, nameof(name));
+            Type = gax::GaxPreconditions.CheckEnumValue<OneofType>(type, nameof(type));
+            Name = gax::GaxPreconditions.CheckNotNull(name, nameof(name));
             if (!IsValid(type, name))
             {
-                throw new ArgumentException($"Mismatched OneofType '{type}' and resource name '{name}'");
+                throw new sys::ArgumentException($"Mismatched OneofType '{type}' and resource name '{name}'");
             }
         }
 
@@ -268,32 +268,32 @@
         public OneofType Type { get; }
 
         /// <summary>
-        /// The <see cref="IResourceName"/> contained in this instance.
+        /// The <see cref="gax::IResourceName"/> contained in this instance.
         /// </summary>
-        public IResourceName Name { get; }
+        public gax::IResourceName Name { get; }
 
         private T CheckAndReturn<T>(OneofType type)
         {
             if (Type != type)
             {
-                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {Type}");
+                throw new sys::InvalidOperationException($"Requested type {type}, but this one-of contains type {Type}");
             }
             return (T)Name;
         }
 
         @join child : resource.children
             /// <summary>
-            /// Get the contained <see cref="IResourceName"/> as <see cref="{@child.typeName}"/>.
+            /// Get the contained <see cref="gax::IResourceName"/> as <see cref="{@child.typeName}"/>.
             /// </summary>
             /// <remarks>
-            /// An <see cref="InvalidOperationException"/> will be thrown if this does not
+            /// An <see cref="sys::InvalidOperationException"/> will be thrown if this does not
             /// contain an instance of <see cref="{@child.typeName}"/>.
             /// </remarks>
             public {@child.typeName} {@child.propertyName} => CheckAndReturn<{@child.typeName}>(OneofType.{@child.enumName});
 
         @end
         /// <inheritdoc />
-        public ResourceNameKind Kind => ResourceNameKind.Oneof;
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Oneof;
 
         /// <inheritdoc />
         public override string ToString() => Name.ToString();
@@ -320,7 +320,7 @@
     /// <summary>
     /// Resource name to represent the fixed string "{@resource.value}".
     /// </summary>
-    public sealed partial class {@resource.typeName} : IResourceName, IEquatable<{@resource.typeName}>
+    public sealed partial class {@resource.typeName} : gax::IResourceName, sys::IEquatable<{@resource.typeName}>
     {
         /// <summary>
         /// The fixed string value: "{@resource.value}".
@@ -341,7 +341,7 @@
             {@resource.typeName} result;
             if (!TryParse({@resource.paramName}, out result))
             {
-                throw new ArgumentException($"Invalid resource name, must be \"{FixedValue}\"", nameof({@resource.paramName}));
+                throw new sys::ArgumentException($"Invalid resource name, must be \"{FixedValue}\"", nameof({@resource.paramName}));
             }
             return result;
         }
@@ -352,7 +352,7 @@
         /// </summary>
         public static bool TryParse(string {@resource.paramName}, out {@resource.typeName} result)
         {
-            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            gax::GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
             if ({@resource.paramName} == FixedValue)
             {
                 result = Instance;
@@ -368,7 +368,7 @@
         private {@resource.typeName}() { }
 
         /// <inheritdoc />
-        public ResourceNameKind Kind => ResourceNameKind.Fixed;
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Fixed;
 
         /// <inheritdoc />
         public override string ToString() => FixedValue;
@@ -410,18 +410,20 @@
 
 # protos: List[ResourceProtoView]
 @private partialProtoClasses(protos)
+    # proto: ResourceProtoView
     @join proto : protos
         public partial class {@proto.protoClassName}
         {
+            # field: ResourceProtoFieldView
             @join field : proto.fields
                 /// <summary>
                 /// <see cref="{@field.docTypeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
                 /// </summary>
                 @if field.isRepeated
                     public {@field.typeName} {@field.propertyName} =>
-                        new ResourceNameList<{@field.elementTypeName}>({@field.underlyingPropertyName},
+                        new gax::ResourceNameList<{@field.elementTypeName}>({@field.underlyingPropertyName},
                             @if field.isAny
-                                str => UnknownResourceName.Parse(str));
+                                str => gax::UnknownResourceName.Parse(str));
                             @else
                                 @if field.isOneof
                                     str => {@field.elementTypeName}.Parse(str, true));
@@ -433,7 +435,7 @@
                     public {@field.typeName} {@field.propertyName}
                     {
                         @if field.isAny
-                            get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : UnknownResourceName.Parse({@field.underlyingPropertyName}); }
+                            get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : gax::UnknownResourceName.Parse({@field.underlyingPropertyName}); }
                         @else
                             @if field.isOneof
                                 get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : {@field.parseMethodTypeName}.Parse({@field.underlyingPropertyName}, true); }

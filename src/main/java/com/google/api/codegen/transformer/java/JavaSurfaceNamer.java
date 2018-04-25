@@ -100,6 +100,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiSampleFileName(String className) {
+    return className + ".java";
+  }
+
+  @Override
   public String getSourceFilePath(String path, String publicClassName) {
     return path + File.separator + publicClassName + ".java";
   }

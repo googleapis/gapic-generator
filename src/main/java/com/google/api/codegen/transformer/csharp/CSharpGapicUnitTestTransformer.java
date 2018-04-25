@@ -38,6 +38,7 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
@@ -58,6 +59,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
   private static final String UNITTEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_unittest_csproj.snip";
 
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
+
   private final GapicCodePathMapper pathMapper;
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
@@ -75,14 +78,14 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getPackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getTestPackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
@@ -231,7 +234,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
       MethodConfig methodConfig,
       SymbolTable testNameTable,
       Synchronicity synchronicity) {
-    InitCodeContext initCodeContextSync =
+    InitCodeContext initCodeContext =
         initCodeTransformer.createRequestInitCodeContext(
             requestContext,
             new SymbolTable(),
@@ -241,7 +244,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer {
     return testCaseTransformer.createTestCaseView(
         requestContext,
         testNameTable,
-        initCodeContextSync,
+        initCodeContext,
         synchronicity == Synchronicity.Sync
             ? ClientMethodType.RequestObjectMethod
             : ClientMethodType.AsyncRequestObjectCallSettingsMethod,

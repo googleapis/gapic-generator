@@ -31,11 +31,11 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
@@ -136,6 +136,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
+    if (GeneratorProto.getDefaultInstance().equals(generator)) {
+      throw new IllegalArgumentException("Language-specific generator config not provided");
+    }
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
     if (productConfig == null) {
@@ -144,6 +147,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
     if (generator != null) {
       String factory = generator.getFactory();
       String id = generator.getId();
+      Preconditions.checkArgument(!Strings.isNullOrEmpty(factory), "generator.factory is not set");
+      Preconditions.checkArgument(!Strings.isNullOrEmpty(id), "generator.id is not set");
 
       GapicProviderFactory providerFactory = createProviderFactory(model, factory);
       GapicGeneratorConfig generatorConfig =
@@ -155,8 +160,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String outputPath = options.get(OUTPUT_FILE);
       List<GapicProvider<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
-      Map<String, Object> outputFiles = Maps.newHashMap();
-      Set<String> executables = Sets.newHashSet();
+      ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
+      ImmutableSet.Builder<String> executables = ImmutableSet.builder();
       for (GapicProvider<?> provider : providers) {
         Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
         for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
@@ -166,8 +171,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
           }
         }
       }
-      writeCodeGenOutput(outputFiles, outputPath);
-      setOutputFilesPermissions(executables, outputPath);
+      writeCodeGenOutput(outputFiles.build(), outputPath);
+      setOutputFilesPermissions(executables.build(), outputPath);
     }
   }
 

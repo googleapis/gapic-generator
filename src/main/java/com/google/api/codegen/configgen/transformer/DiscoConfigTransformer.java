@@ -54,28 +54,17 @@ public class DiscoConfigTransformer {
       new MethodTransformer(new DiscoveryMethodTransformer());
 
   public ViewModel generateConfig(DiscoApiModel model, String outputPath) {
-    // Map of methods to unique resource names.
+    // Map of methods to unique, fully qualified resource names.
     Map<Method, Name> methodToResourceName = new HashMap<>();
 
     // Map of Methods to resource name patterns.
     ImmutableMap.Builder<Method, String> methodToNamePattern = ImmutableMap.builder();
 
-    // Maps visited simple resource names to canonical name patterns. Used to check for collisions in simple resource names.
-    Map<Name, String> simpleResourceToFirstPatternMap = new HashMap<>();
     for (Method method : model.getDocument().methods()) {
-      String namePattern = DiscoGapicParser.getCanonicalPath(method);
+      String namePattern = DiscoGapicParser.getCanonicalPath(method.flatPath());
       methodToNamePattern.put(method, namePattern);
-
-      Name simpleResourceName = DiscoGapicParser.getResourceIdentifier(method.flatPath());
-      String collisionPattern = simpleResourceToFirstPatternMap.get(simpleResourceName);
-      if (collisionPattern != null && !collisionPattern.equals(namePattern)) {
-        // Collision with another path template with the same simple resource name; qualify this resource name.
-        Name qualifiedResourceName = DiscoGapicParser.getQualifiedResourceIdentifier(namePattern);
-        methodToResourceName.put(method, qualifiedResourceName);
-      } else {
-        simpleResourceToFirstPatternMap.put(simpleResourceName, namePattern);
-        methodToResourceName.put(method, simpleResourceName);
-      }
+      Name qualifiedResourceName = DiscoGapicParser.getQualifiedResourceIdentifier(namePattern);
+      methodToResourceName.put(method, qualifiedResourceName);
     }
 
     // Map of base resource identifiers to all canonical name patterns that use that identifier.

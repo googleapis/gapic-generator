@@ -1,4 +1,11 @@
+#fileHeader: FileHeaderView
 @snippet renderFileHeader(fileHeader)
+    {@initialComments(fileHeader)}
+
+    {@imports(fileHeader)}
+@end
+
+@snippet initialComments(fileHeader)
     @join line : fileHeader.copyrightLines
       // {@line}
     @end
@@ -9,10 +16,19 @@
     @end
 
     // Generated code. DO NOT EDIT!
+@end
 
+#fileHeader: FileHeaderView
+@snippet imports(fileHeader)
+    # fileImport: ImportFileView
     @join fileImport : fileHeader.importSection.appImports
+        # import: ImportTypeView
         @join import : fileImport.types
-            using {@import.fullName};
+            @if import.nickname
+                using {@import.nickname} = {@import.fullName};
+            @else
+                using {@import.fullName};
+            @end
         @end
     @end
 @end
@@ -72,7 +88,7 @@
 
 @snippet retryCodes(codes)
     @join code : codes on ", "
-        StatusCode.{@code}
+        grpccore::StatusCode.{@code}
     @end
 @end
 

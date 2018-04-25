@@ -94,6 +94,8 @@ public abstract class StaticLangApiView {
         .apiHasBidiStreamingMethod(false);
   }
 
+  public abstract Builder toBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
 

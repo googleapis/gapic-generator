@@ -1169,6 +1169,8 @@ var GetBigBookMetadata = {
  *
  * @property {string} requiredSingularResourceNameOneof
  *
+ * @property {string} requiredSingularResourceNameCommon
+ *
  * @property {number} requiredSingularFixed32
  *
  * @property {number} requiredSingularFixed64
@@ -1196,6 +1198,8 @@ var GetBigBookMetadata = {
  * @property {string[]} requiredRepeatedResourceName
  *
  * @property {string[]} requiredRepeatedResourceNameOneof
+ *
+ * @property {string[]} requiredRepeatedResourceNameCommon
  *
  * @property {number[]} requiredRepeatedFixed32
  *
@@ -1227,6 +1231,8 @@ var GetBigBookMetadata = {
  *
  * @property {string} optionalSingularResourceNameOneof
  *
+ * @property {string} optionalSingularResourceNameCommon
+ *
  * @property {number} optionalSingularFixed32
  *
  * @property {number} optionalSingularFixed64
@@ -1254,6 +1260,8 @@ var GetBigBookMetadata = {
  * @property {string[]} optionalRepeatedResourceName
  *
  * @property {string[]} optionalRepeatedResourceNameOneof
+ *
+ * @property {string[]} optionalRepeatedResourceNameCommon
  *
  * @property {number[]} optionalRepeatedFixed32
  *
@@ -2435,6 +2443,9 @@ class LibraryServiceClient {
       ),
       returnPathTemplate: new gax.PathTemplate(
         'shelves/{shelf}/books/{book}/returns/{return}'
+      ),
+      projectPathTemplate: new gax.PathTemplate(
+        'projects/{project}'
       ),
       archivedBookPathTemplate: new gax.PathTemplate(
         'archives/{archive_path}/books/{book_id=**}'
@@ -4519,6 +4530,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string} request.requiredSingularResourceName
    * @param {string} request.requiredSingularResourceNameOneof
+   * @param {string} request.requiredSingularResourceNameCommon
    * @param {number} request.requiredSingularFixed32
    * @param {number} request.requiredSingularFixed64
    * @param {number[]} request.requiredRepeatedInt32
@@ -4534,6 +4546,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string[]} request.requiredRepeatedResourceName
    * @param {string[]} request.requiredRepeatedResourceNameOneof
+   * @param {string[]} request.requiredRepeatedResourceNameCommon
    * @param {number[]} request.requiredRepeatedFixed32
    * @param {number[]} request.requiredRepeatedFixed64
    * @param {Object.<number, string>} request.requiredMap
@@ -4550,6 +4563,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string} [request.optionalSingularResourceName]
    * @param {string} [request.optionalSingularResourceNameOneof]
+   * @param {string} [request.optionalSingularResourceNameCommon]
    * @param {number} [request.optionalSingularFixed32]
    * @param {number} [request.optionalSingularFixed64]
    * @param {number[]} [request.optionalRepeatedInt32]
@@ -4565,6 +4579,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string[]} [request.optionalRepeatedResourceName]
    * @param {string[]} [request.optionalRepeatedResourceNameOneof]
+   * @param {string[]} [request.optionalRepeatedResourceNameCommon]
    * @param {number[]} [request.optionalRepeatedFixed32]
    * @param {number[]} [request.optionalRepeatedFixed64]
    * @param {Object.<number, string>} [request.optionalMap]
@@ -4598,6 +4613,7 @@ class LibraryServiceClient {
    * var requiredSingularMessage = {};
    * var requiredSingularResourceName = '';
    * var requiredSingularResourceNameOneof = '';
+   * var requiredSingularResourceNameCommon = '';
    * var requiredSingularFixed32 = 0;
    * var requiredSingularFixed64 = 0;
    * var requiredRepeatedInt32 = [];
@@ -4611,6 +4627,7 @@ class LibraryServiceClient {
    * var requiredRepeatedMessage = [];
    * var formattedRequiredRepeatedResourceName = [];
    * var formattedRequiredRepeatedResourceNameOneof = [];
+   * var requiredRepeatedResourceNameCommon = [];
    * var requiredRepeatedFixed32 = [];
    * var requiredRepeatedFixed64 = [];
    * var requiredMap = {};
@@ -4626,6 +4643,7 @@ class LibraryServiceClient {
    *   requiredSingularMessage: requiredSingularMessage,
    *   requiredSingularResourceName: requiredSingularResourceName,
    *   requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+   *   requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
    *   requiredSingularFixed32: requiredSingularFixed32,
    *   requiredSingularFixed64: requiredSingularFixed64,
    *   requiredRepeatedInt32: requiredRepeatedInt32,
@@ -4639,6 +4657,7 @@ class LibraryServiceClient {
    *   requiredRepeatedMessage: requiredRepeatedMessage,
    *   requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
    *   requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+   *   requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
    *   requiredRepeatedFixed32: requiredRepeatedFixed32,
    *   requiredRepeatedFixed64: requiredRepeatedFixed64,
    *   requiredMap: requiredMap,
@@ -4705,6 +4724,18 @@ class LibraryServiceClient {
       shelf: shelf,
       book: book,
       return: return_,
+    });
+  }
+
+  /**
+   * Return a fully-qualified project resource name string.
+   *
+   * @param {String} project
+   * @returns {String}
+   */
+  projectPath(project) {
+    return this._pathTemplates.projectPathTemplate.render({
+      project: project,
     });
   }
 
@@ -4798,6 +4829,19 @@ class LibraryServiceClient {
     return this._pathTemplates.returnPathTemplate
       .match(returnName)
       .return;
+  }
+
+  /**
+   * Parse the projectName from a project resource.
+   *
+   * @param {String} projectName
+   *   A fully-qualified path representing a project resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromProjectName(projectName) {
+    return this._pathTemplates.projectPathTemplate
+      .match(projectName)
+      .project;
   }
 
   /**
@@ -6738,6 +6782,7 @@ describe('LibraryServiceClient', () => {
       var requiredSingularMessage = {};
       var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
       var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      var requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
       var requiredSingularFixed32 = 720656715;
       var requiredSingularFixed64 = 720656810;
       var requiredRepeatedInt32 = [];
@@ -6751,6 +6796,7 @@ describe('LibraryServiceClient', () => {
       var requiredRepeatedMessage = [];
       var formattedRequiredRepeatedResourceName = [];
       var formattedRequiredRepeatedResourceNameOneof = [];
+      var requiredRepeatedResourceNameCommon = [];
       var requiredRepeatedFixed32 = [];
       var requiredRepeatedFixed64 = [];
       var requiredMap = {};
@@ -6766,6 +6812,7 @@ describe('LibraryServiceClient', () => {
         requiredSingularMessage: requiredSingularMessage,
         requiredSingularResourceName: requiredSingularResourceName,
         requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -6779,6 +6826,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,
@@ -6818,6 +6866,7 @@ describe('LibraryServiceClient', () => {
       var requiredSingularMessage = {};
       var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
       var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      var requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
       var requiredSingularFixed32 = 720656715;
       var requiredSingularFixed64 = 720656810;
       var requiredRepeatedInt32 = [];
@@ -6831,6 +6880,7 @@ describe('LibraryServiceClient', () => {
       var requiredRepeatedMessage = [];
       var formattedRequiredRepeatedResourceName = [];
       var formattedRequiredRepeatedResourceNameOneof = [];
+      var requiredRepeatedResourceNameCommon = [];
       var requiredRepeatedFixed32 = [];
       var requiredRepeatedFixed64 = [];
       var requiredMap = {};
@@ -6846,6 +6896,7 @@ describe('LibraryServiceClient', () => {
         requiredSingularMessage: requiredSingularMessage,
         requiredSingularResourceName: requiredSingularResourceName,
         requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -6859,6 +6910,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,

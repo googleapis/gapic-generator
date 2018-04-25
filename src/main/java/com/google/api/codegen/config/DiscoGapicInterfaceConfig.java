@@ -137,7 +137,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     if (methodConfigs != null) {
       for (MethodConfig methodConfig : methodConfigs) {
         Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
-        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method);
+        String canonicalMethodPath = DiscoGapicParser.getCanonicalPath(method.flatPath());
         for (SingleResourceNameConfig nameConfig : singleResourceNames) {
           if (nameConfig.getNamePattern().equals(canonicalMethodPath)) {
             methodToSingleResourceNameMap.put(methodConfig, nameConfig);
@@ -287,11 +287,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   /** Returns the DiscoGapicMethodConfig for the given method. */
   @Override
   public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
+    final String methodName = method.getFullName();
     DiscoGapicMethodConfig methodConfig =
-        (DiscoGapicMethodConfig) getMethodConfigMap().get(method.getFullName());
+        (DiscoGapicMethodConfig) getMethodConfigMap().get(methodName);
     if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
+      throw new IllegalArgumentException("no method config for method '" + methodName + "'");
     }
     return methodConfig;
   }
