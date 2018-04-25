@@ -182,6 +182,10 @@ class LibraryServiceGapicClient
      */
     const SERVICE_ADDRESS = 'library-example.googleapis.com';
 
+    /**
+     * The default port of the service.
+     */
+    const DEFAULT_SERVICE_PORT = 443;
 
     /**
      * The name of the code generator, to be included in the agent header.
@@ -212,7 +216,7 @@ class LibraryServiceGapicClient
     {
         return [
             'serviceName' => self::SERVICE_NAME,
-            'serviceAddress' => self::SERVICE_ADDRESS,
+            'serviceAddress' => self::SERVICE_ADDRESS . ':' . self::DEFAULT_SERVICE_PORT,
             'scopes' => self::$serviceScopes,
             'clientConfigPath' => __DIR__ . '/../resources/library_service_client_config.json',
             'restClientConfigPath' => __DIR__ . '/../resources/library_service_rest_client_config.php',
@@ -444,30 +448,44 @@ class LibraryServiceGapicClient
      *
      * @param array $options {
      *     Optional. Options for configuring the service API wrapper.
-     *     @type string $serviceAddress The address of the API remote host. Must be formatted as "<uri>:<port>".
-     *           Default 'library-example.googleapis.com'.
-     *     @type array $keyFile The contents of the service account credentials
-     *           .json file retrieved from the Google Developer's Console.
-     *           Ex: `json_decode(file_get_contents($path), true)`.
-     *     @type string $keyFilePath The full path to your service account
-     *           credentials .json file retrieved from the Google Developers
-     *           Console.
-     *     @type string $clientConfig Array containing client method configuration,
-     *           including retry settings. If this argument is specified, the value
-     *           of the $clientConfigPath option will be ignored.
-     *     @type string $clientConfigPath Path to a JSON file containing client method
-     *           configuration, including retry settings. Specify this setting to
-     *           specify the retry behavior of all methods on the client.
-     *           If the $clientConfig option is specified, this will be ignored.
+     *     @type string $serviceAddress
+     *           The address of the API remote host. May optionally include the port, formatted
+     *           as "<uri>:<port>". Default 'library-example.googleapis.com:443'.
+     *     @type string|array $auth
+     *           The credentials to be used by the client to authorize API calls. This option
+     *           accepts either a path to a credentials file, or a decoded credentials file as a
+     *           PHP array.
+     *           *Advanced usage*: In addition, this option can also accept a pre-constructed
+     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
+     *           object. Note that when one of these objects are provided, any settings in
+     *           $authConfig will be ignored.
+     *     @type array $authConfig
+     *           Options used to configure auth, including auth token caching, for the client. For
+     *           a full list of supporting configuration options, see
+     *           \Google\ApiCore\AuthWrapper::build.
      *     @type bool $disableRetries Determines whether or not retries defined
      *           by the client configuration should be disabled. Defaults to `false`.
-     *     @type string|TransportInterface $transport The transport used for executing network
-     *           requests. May be either the string `rest` or `grpc`. Additionally, it is possible
-     *           to pass in an already instantiated transport. Defaults to `grpc` if gRPC support is
-     *           detected on the system.
-     *     @type array $transportConstructionOptions An array of options to be passed to
-     *           TransportFactory::build. If the $transport option specifies an existing
-     *           TransportInterface object, then this argument will be ignored.
+     *     @type string|array $clientConfig
+     *           Client method configuration, including retry settings. This option can be either a
+     *           path to a JSON file, or a PHP array containing the decoded JSON data.
+     *           By default this settings points to the default client config file, which is provided
+     *           in the resources folder.
+     *     @type string $transport
+     *           The transport used for executing network requests. May be either the string `rest`
+     *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
+     *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
+     *           TransportInterface object. Note that when this objects is provided, any settings in
+     *           $transportConfig, and any $serviceAddress setting, will be ignored.
+     *     @type array $transportConfig
+     *           Configuration options that will be used to construct the transport. Options for
+     *           each supported transport type should be passed in a key for that transport. For
+     *           example:
+     *           $transportConfig = [
+     *               'grpc' => [...],
+     *               'rest' => [...]
+     *           ];
+     *           See the GrpcTransport::build and RestTransport::build methods for the supported
+     *           options.
      * }
      * @experimental
      */
