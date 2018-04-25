@@ -58,21 +58,15 @@ public class PhpPackageUtil {
   public static String removeBasePackageName(String packageName) {
     ArrayList<String> packageComponents = new ArrayList<>();
     List<String> pieces = Arrays.asList(PhpPackageUtil.splitPackageName(packageName));
-    boolean foundVersion = false;
     for (String packageElement : Lists.reverse(pieces)) {
       packageComponents.add(packageElement);
       if (isPackageVersion(packageElement)) {
-        foundVersion = true;
-        break;
+        return buildPackageName(Lists.reverse(packageComponents));
       }
     }
-    if (foundVersion) {
-      return buildPackageName(Lists.reverse(packageComponents));
-    } else {
-      // If we did not find a version, then the whole package name is considered
-      // the base package name, and we return null.
-      return null;
-    }
+    // If we did not find a version, then the whole package name is considered
+    // the base package name, and we return null.
+    return null;
   }
 
   /** Get the base package name, which includes everything before the version. */
