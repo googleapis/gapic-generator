@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -187,7 +186,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.apiMethods(methods);
 
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.gapicPackageName(
         RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
             ? "google-gax"
@@ -256,7 +254,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath("lib" + File.separator + versionPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, true))
         .type(VersionIndexType.VersionIndex)
-        .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
         .build();
   }
 
@@ -356,9 +353,9 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath("lib" + File.separator + topLevelPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, false))
         .type(VersionIndexType.TopLevelIndex)
-        .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
         .versionDirBasePath(versionDirBasePath)
         .postVersionDirPath(postVersionDirPath(namer))
+        .versionFileBasePath(versionFileBasePath)
         .build();
   }
 
