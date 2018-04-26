@@ -23,12 +23,16 @@ import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -36,12 +40,18 @@ import javax.annotation.Nullable;
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
+  private final DiscoApiModel apiModel;
   // Dereferenced schema to use for rendering type names and determining properties, type, and format.
   private final Schema schema;
-
   // Not dereferenced schema; used in rendering this FieldModel's parameter name.
   private final Schema originalSchema;
-  private final DiscoApiModel apiModel;
+
+  private final String simpleName;
+
+  private static Map<Schema, DiscoveryField> globalObjects = new HashMap<>();
+  private static Comparator<String> caseInsensitiveComparator =
+      (String s1, String s2) -> s1.compareToIgnoreCase(s2);
+  private static SymbolTable idSymbolTable = new SymbolTable(caseInsensitiveComparator);
 
   /**
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
@@ -52,6 +62,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.originalSchema = schema;
     this.schema = schema.dereference();
     this.apiModel = apiModel;
+    String simpleName = DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
+    this.simpleName =
+        isTopLevelSchema(schema) ? idSymbolTable.getNewSymbol(simpleName) : simpleName;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
     for (Schema child : this.schema.properties().values()) {
@@ -61,9 +74,12 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   /** Create a FieldModel object from a non-null Schema object. */
-  public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
+  public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
+    if (globalObjects.containsKey(schema)) {
+      return globalObjects.get(schema);
+    }
     return new DiscoveryField(schema, rootApiModel);
   }
 
@@ -74,7 +90,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getSimpleName() {
-    return DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
+    //    return DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
+    return simpleName;
   }
 
   @Override
@@ -182,9 +199,21 @@ public class DiscoveryField implements FieldModel, TypeModel {
     return false;
   }
 
+  public static boolean isPrimitiveSchema(Schema schema) {
+    return schema.items() == null && schema.type() != Type.OBJECT;
+  }
+
+  public static boolean isTopLevelSchema(Schema schema) {
+    if (schema.type().equals(Type.ARRAY)) {
+      return false;
+    }
+    return !schema.properties().isEmpty()
+        || (schema.items() != null && !schema.items().properties().isEmpty());
+  }
+
   @Override
   public boolean isPrimitive() {
-    return schema.items() == null && schema.type() != Type.OBJECT;
+    return isPrimitiveSchema(schema);
   }
 
   @Override
@@ -387,9 +416,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEmptyType() {
-    return schema.getIdentifier().equals("Empty")
-        && schema.type().equals(Type.OBJECT)
-        && (schema.properties() == null || schema.properties().size() == 0);
+    return false;
   }
 
   @Override

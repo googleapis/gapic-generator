@@ -29,7 +29,7 @@ public class DiscoveryNode {
 
   private static JsonNode EMPTY_ARRAY_JSON_NODE = JsonNodeFactory.instance.arrayNode();
   private static JsonNode EMPTY_OBJECT_JSON_NODE = JsonNodeFactory.instance.objectNode();
-  private final JsonNode jsonNode;
+  private JsonNode jsonNode;
 
   /**
    * Constructs a DiscoveryNode that wraps jsonNode.
@@ -165,16 +165,5 @@ public class DiscoveryNode {
   /** @return the number of child nodes this node contains. */
   public int size() {
     return jsonNode.size();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    // TODO(andrealin): This might fail if whitespace can differ or child order isn't ordered.
-    return (other instanceof DiscoveryNode && jsonNode.equals(((DiscoveryNode) other).jsonNode));
-  }
-
-  @Override
-  public int hashCode() {
-    return jsonNode.hashCode();
   }
 }

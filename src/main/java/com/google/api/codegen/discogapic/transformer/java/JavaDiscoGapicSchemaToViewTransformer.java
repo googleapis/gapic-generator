@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
 public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
@@ -64,7 +65,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
   private static Set<String> reservedKeywords = new HashSet<>();
-  private static SymbolTable classNameSymbolTable;
 
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
@@ -97,8 +97,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    Map<Schema, StaticLangApiMessageView> messageViewMap =
-        new TreeMap<>(
+    Set<Schema> messageViewMap =
+        new TreeSet<>(
             new Comparator<Schema>() {
               @Override
               public int compare(Schema o1, Schema o2) {
@@ -158,7 +158,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema,
       SymbolTable classNameSymbolTable,
-      Map<Schema, StaticLangApiMessageView> messageViewMap) {
+      Set<Schema> messageViewMap) {
 
     FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
@@ -168,7 +168,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             schema.getIdentifier(), schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
-    boolean hasRequiredProperties = false;
 
     // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
     // the same symbols.
@@ -196,16 +195,19 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
       // This is a top-level, non-primitive Schema that will be rendered as a class.
 
-      if (messageViewMap.containsKey(schema)) {
-        return messageViewMap.get(schema);
-      }
-
-      schemaView.typeName(schemaTypeName);
       if (schema.repeated() || schema.type() == Type.ARRAY) {
-        schemaView.innerTypeName(
-            classNameSymbolTable.getNewSymbol(schemaTypeTable.getInnerTypeNameFor(schema)));
+        String innerTypeName = schemaTypeTable.getInnerTypeNameFor(schema);
+        if (!messageViewMap.contains(schema)) {
+          innerTypeName = classNameSymbolTable.getNewSymbol(innerTypeName);
+        }
+        schemaView.typeName(schemaTypeName);
+        schemaView.innerTypeName(innerTypeName);
       } else {
+        if (!messageViewMap.contains(schema)) {
+          schemaTypeName = classNameSymbolTable.getNewSymbol(schemaTypeName);
+        }
         schemaView.innerTypeName(schemaTypeName);
+        schemaView.typeName(schemaTypeName);
       }
 
       // Generate a Schema view from each property.
@@ -215,6 +217,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       if (schema.items() != null) {
         schemaProperties.addAll(schema.items().properties().values());
       }
+      boolean hasRequiredProperties = false;
       for (Schema property : schemaProperties) {
         viewProperties.add(
             generateSchemaClasses(
@@ -237,7 +240,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
       // Add it to list of file ViewModels for rendering.
       messageView = schemaView.build();
-      messageViewAccumulator.put(context, messageView);
+      if (!messageViewMap.contains(schema)) {
+        messageViewAccumulator.put(context, messageView);
+        messageViewMap.add(schema);
+      }
     } else {
       // This is a primitive type.
       schemaView.typeName(schemaTypeName);
@@ -246,11 +252,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       } else {
         schemaView.innerTypeName(schemaTypeName);
       }
-      schemaView.hasRequiredProperties(hasRequiredProperties);
+      schemaView.hasRequiredProperties(false);
       messageView = schemaView.build();
     }
 
-    messageViewMap.put(schema, messageView);
     return messageView;
   }
 

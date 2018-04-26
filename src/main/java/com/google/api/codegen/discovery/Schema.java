@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
@@ -155,7 +156,6 @@ public abstract class Schema implements Node {
       items = null;
     }
     String location = root.getString("location");
-    String pattern = root.getString("pattern");
 
     Map<String, Schema> properties = new TreeMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
@@ -176,14 +176,12 @@ public abstract class Schema implements Node {
             additionalProperties,
             defaultValue,
             description,
-            root,
             format,
             id,
             isEnum,
             items,
             key,
             location,
-            pattern,
             properties,
             reference,
             repeated,
@@ -214,12 +212,10 @@ public abstract class Schema implements Node {
         null,
         "",
         "",
-        null,
         Format.EMPTY,
         "",
         false,
         null,
-        "",
         "",
         "",
         new HashMap<String, Schema>(),
@@ -252,10 +248,6 @@ public abstract class Schema implements Node {
   /** @return the description. */
   public abstract String description();
 
-  /** @return the underlying DiscoveryNode. */
-  @Nullable
-  abstract DiscoveryNode discoveryNode();
-
   /** @return the format. */
   public abstract Format format();
 
@@ -276,9 +268,6 @@ public abstract class Schema implements Node {
 
   /** @return the location. */
   public abstract String location();
-
-  /** @return the pattern. */
-  public abstract String pattern();
 
   /** @return the map of property names to schemas. */
   public abstract Map<String, Schema> properties();
@@ -381,15 +370,51 @@ public abstract class Schema implements Node {
    */
   @Override
   public boolean equals(Object other) {
-    return (other instanceof Schema) && discoveryNode().equals(((Schema) other).discoveryNode());
+    //    return (other instanceof Schema) && discoveryNode().equals(((Schema) other).discoveryNode());
+    if (!(other instanceof Schema)) {
+      return false;
+    }
+
+    Schema otherSchema = (Schema) other;
+    if (additionalProperties() != null) {
+      if (otherSchema.additionalProperties() == null) {
+        return false;
+      }
+      return Objects.equals(
+          additionalProperties().getIdentifier(),
+          otherSchema.additionalProperties().getIdentifier());
+    }
+    return Objects.equals(defaultValue(), otherSchema.defaultValue())
+        // Exclude description.
+        && Objects.equals(format(), otherSchema.format())
+        // Check getIdentifier() in favor of id, key.
+        && Objects.equals(getIdentifier(), otherSchema.getIdentifier())
+        && Objects.equals(isEnum(), otherSchema.isEnum())
+        && Objects.equals(items(), otherSchema.items())
+        // Skip location.
+        && Objects.equals(properties().keySet(), otherSchema.properties().keySet())
+        // Skip reference
+        && Objects.equals(repeated(), otherSchema.repeated())
+        && Objects.equals(required(), otherSchema.required())
+        // Skip isMap.
+        && Objects.equals(type(), otherSchema.type());
   }
 
   @Override
   public int hashCode() {
-    if (discoveryNode() == null) {
-      return 0;
-    } else {
-      return discoveryNode().hashCode();
-    }
+    // Hash the same properties as are evaluated in .equals().
+    String additionalProperties =
+        additionalProperties() == null ? "" : additionalProperties().getIdentifier();
+    return Objects.hash(
+        additionalProperties,
+        defaultValue(),
+        format(),
+        getIdentifier(),
+        isEnum(),
+        items(),
+        properties().keySet(),
+        repeated(),
+        required(),
+        type());
   }
 }
