@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
 import com.google.api.Service;
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -191,8 +190,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     apiImplClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     apiImplClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
-
-    apiImplClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
     apiImplClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
