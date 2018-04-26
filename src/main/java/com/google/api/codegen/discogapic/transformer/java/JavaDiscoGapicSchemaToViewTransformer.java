@@ -64,6 +64,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
   private static Set<String> reservedKeywords = new HashSet<>();
+  private static SymbolTable classNameSymbolTable;
 
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
@@ -96,12 +97,22 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    // Escape any schema's field names that are Java keywords.
-
+    Map<Schema, StaticLangApiMessageView> messageViewMap =
+        new TreeMap<>(
+            new Comparator<Schema>() {
+              @Override
+              public int compare(Schema o1, Schema o2) {
+                return o1.getIdentifier().compareTo(o2.getIdentifier());
+              }
+            });
+    Comparator<String> caseInsensitiveComparator =
+        (String s1, String s2) -> s1.compareToIgnoreCase(s2);
+    SymbolTable classNameSymbolTable =
+        SymbolTable.fromSeed(reservedKeywords, caseInsensitiveComparator);
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaTransformationContext.comparator);
-      generateSchemaClasses(contextViews, context, schema);
+      generateSchemaClasses(contextViews, context, schema, classNameSymbolTable, messageViewMap);
       for (Map.Entry<SchemaTransformationContext, StaticLangApiMessageView> contextView :
           contextViews.entrySet()) {
         surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
@@ -145,7 +156,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private StaticLangApiMessageView generateSchemaClasses(
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
-      Schema schema) {
+      Schema schema,
+      SymbolTable classNameSymbolTable,
+      Map<Schema, StaticLangApiMessageView> messageViewMap) {
 
     FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
@@ -174,45 +187,71 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
-    schemaView.typeName(schemaTypeName);
-    if (schema.repeated() || schema.type() == Type.ARRAY) {
-      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
-    } else {
-      schemaView.innerTypeName(schemaTypeName);
-    }
-
-    // Generate a Schema view from each property.
-    List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
-    List<Schema> schemaProperties = new LinkedList<>();
-    schemaProperties.addAll(schema.properties().values());
-    if (schema.items() != null) {
-      schemaProperties.addAll(schema.items().properties().values());
-    }
-    for (Schema property : schemaProperties) {
-      viewProperties.add(generateSchemaClasses(messageViewAccumulator, documentContext, property));
-      if (!property.properties().isEmpty() || (property.items() != null)) {
-        // Add non-primitive-type property to imports.
-        schemaTypeTable.getAndSaveNicknameFor(property);
-      }
-      if (property.required()) {
-        hasRequiredProperties = true;
-      }
-    }
-    Collections.sort(viewProperties);
-    schemaView.properties(viewProperties);
-
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
-    schemaView.hasRequiredProperties(hasRequiredProperties);
 
+    StaticLangApiMessageView messageView;
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
-      // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+      // This is a top-level, non-primitive Schema that will be rendered as a class.
 
-      messageViewAccumulator.put(context, schemaView.build());
+      if (messageViewMap.containsKey(schema)) {
+        return messageViewMap.get(schema);
+      }
+
+      schemaView.typeName(schemaTypeName);
+      if (schema.repeated() || schema.type() == Type.ARRAY) {
+        schemaView.innerTypeName(
+            classNameSymbolTable.getNewSymbol(schemaTypeTable.getInnerTypeNameFor(schema)));
+      } else {
+        schemaView.innerTypeName(schemaTypeName);
+      }
+
+      // Generate a Schema view from each property.
+      List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
+      List<Schema> schemaProperties = new LinkedList<>();
+      schemaProperties.addAll(schema.properties().values());
+      if (schema.items() != null) {
+        schemaProperties.addAll(schema.items().properties().values());
+      }
+      for (Schema property : schemaProperties) {
+        viewProperties.add(
+            generateSchemaClasses(
+                messageViewAccumulator,
+                documentContext,
+                property,
+                classNameSymbolTable,
+                messageViewMap));
+        if (!property.properties().isEmpty() || (property.items() != null)) {
+          // Add non-primitive-type property to imports.
+          schemaTypeTable.getAndSaveNicknameFor(property);
+        }
+        if (property.required()) {
+          hasRequiredProperties = true;
+        }
+      }
+      Collections.sort(viewProperties);
+      schemaView.properties(viewProperties);
+      schemaView.hasRequiredProperties(hasRequiredProperties);
+
+      // Add it to list of file ViewModels for rendering.
+      messageView = schemaView.build();
+      messageViewAccumulator.put(context, messageView);
+    } else {
+      // This is a primitive type.
+      schemaView.typeName(schemaTypeName);
+      if (schema.repeated() || schema.type() == Type.ARRAY) {
+        schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
+      } else {
+        schemaView.innerTypeName(schemaTypeName);
+      }
+      schemaView.hasRequiredProperties(hasRequiredProperties);
+      messageView = schemaView.build();
     }
-    return schemaView.build();
+
+    messageViewMap.put(schema, messageView);
+    return messageView;
   }
 
   private void addApiImports(ImportTypeTable typeTable) {

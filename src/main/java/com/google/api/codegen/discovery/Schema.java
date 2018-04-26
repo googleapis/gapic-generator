@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /**
@@ -156,7 +157,7 @@ public abstract class Schema implements Node {
     String location = root.getString("location");
     String pattern = root.getString("pattern");
 
-    Map<String, Schema> properties = new HashMap<>();
+    Map<String, Schema> properties = new TreeMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
       properties.put(name, Schema.from(propertiesNode.getObject(name), name, null));
@@ -175,6 +176,7 @@ public abstract class Schema implements Node {
             additionalProperties,
             defaultValue,
             description,
+            root,
             format,
             id,
             isEnum,
@@ -212,6 +214,7 @@ public abstract class Schema implements Node {
         null,
         "",
         "",
+        null,
         Format.EMPTY,
         "",
         false,
@@ -248,6 +251,10 @@ public abstract class Schema implements Node {
 
   /** @return the description. */
   public abstract String description();
+
+  /** @return the underlying DiscoveryNode. */
+  @Nullable
+  abstract DiscoveryNode discoveryNode();
 
   /** @return the format. */
   public abstract Format format();
@@ -366,5 +373,23 @@ public abstract class Schema implements Node {
   @Override
   public String toString() {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
+  }
+
+  /**
+   * One Schema equals another non-null Schema if they both contain the same exact properties
+   * (different parents are ok).
+   */
+  @Override
+  public boolean equals(Object other) {
+    return (other instanceof Schema) && discoveryNode().equals(((Schema) other).discoveryNode());
+  }
+
+  @Override
+  public int hashCode() {
+    if (discoveryNode() == null) {
+      return 0;
+    } else {
+      return discoveryNode().hashCode();
+    }
   }
 }

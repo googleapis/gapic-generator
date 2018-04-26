@@ -15,8 +15,10 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Strings;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A utility class used to get and store unique symbols.
@@ -26,7 +28,22 @@ import java.util.Set;
  */
 public class SymbolTable {
 
-  private final Set<String> symbolTable = new HashSet<>();
+  private final Set<String> symbolTable;
+
+  public SymbolTable() {
+    symbolTable = new HashSet<>();
+  }
+
+  /**
+   * Create a SymbolTable with a custom comparison function. This can be used, for example, to make
+   * a case-insensitive symbol table by using a comparison function that orders two strings the same
+   * if they are the same in lowercase.
+   *
+   * @param comparator function to order Strings
+   */
+  public SymbolTable(Comparator<String> comparator) {
+    symbolTable = new TreeSet<>(comparator);
+  }
 
   /**
    * Returns a new SymbolTable seeded with all the words in seed.
@@ -39,6 +56,23 @@ public class SymbolTable {
    */
   public static SymbolTable fromSeed(Set<String> seed) {
     SymbolTable symbolTable = new SymbolTable();
+    for (String s : seed) {
+      symbolTable.getNewSymbol(s);
+    }
+    return symbolTable;
+  }
+
+  /**
+   * Returns a new SymbolTable seeded with all the words in seed.
+   *
+   * <p>For example, if seed is {"int"}, a subsequent call to {@link #getNewSymbol(String)} for
+   * "int" will return "int2".
+   *
+   * <p>The behavior of the returned SymbolTable is guaranteed if used with {@link
+   * #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
+   */
+  public static SymbolTable fromSeed(Set<String> seed, Comparator<String> comparator) {
+    SymbolTable symbolTable = new SymbolTable(comparator);
     for (String s : seed) {
       symbolTable.getNewSymbol(s);
     }
