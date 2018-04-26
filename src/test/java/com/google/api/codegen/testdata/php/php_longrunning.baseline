@@ -1,35 +1,83 @@
 ============== file: composer.json ==============
 {
-  "name": "longrunning/longrunning",
-  "version": "0.1.0",
-  "author": "Google LLC",
-  "url": "https://github.com/googleapis/googleapis",
+  "name": "google/longrunning",
   "description": "Google Long Running Operations API client for PHP",
+  "license": "Apache-2.0",
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Google\\LongRunning\\": "src",
+      "Google\\LongRunning\\Tests\\": "tests",
+      "": "proto/src"
+    }
+  },
   "require": {
     "google/gax": "^0.6.*",
     "google/protobuf": "^0.7.*",
     "php" : "^5.5 || ^7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.7"
-  },
-  "license": "Apache-2.0",
-  "autoload": {
-    "psr-4": {
-      "Google\\Cloud\\": "src",
-      "Google\\Cloud\\Tests\\": "tests",
-      "Google\\Cloud\\Tests\\System\\": "tests/system",
-      "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
-      "": "proto/src"
-    }
-  },
-  "scripts": {
-    "test": [
-      "phpunit tests"
-    ]
+    "phpunit/phpunit": "^4.8|^5.0"
   }
 }
-============== file: src/LongRunning/Gapic/OperationsGapicClient.php ==============
+============== file: src/OperationsClient.php ==============
+<?php
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google LLC nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was generated from the file
+ * https://github.com/google/googleapis/blob/master/longrunning.proto
+ * and updates to that file get reflected here through a refresh process.
+ *
+ * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+ * even though we intend the surface to be stable, we may make backwards incompatible changes
+ * if necessary.
+ *
+ * @experimental
+ */
+
+namespace Google\LongRunning;
+
+use Google\LongRunning\Gapic\OperationsGapicClient;
+
+/**
+ * {@inheritdoc}
+ */
+class OperationsClient extends OperationsGapicClient
+{
+    // This class is intentionally empty, and is intended to hold manual
+    // additions to the generated {@see OperationsClientImpl} class.
+}
+============== file: src/OperationsGapicClient.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -463,64 +511,7 @@ class OperationsGapicClient
     }
 
 }
-============== file: src/LongRunning/OperationsClient.php ==============
-<?php
-/*
- * Copyright 2018 Google LLC
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google LLC nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
- * GENERATED CODE WARNING
- * This file was generated from the file
- * https://github.com/google/googleapis/blob/master/longrunning.proto
- * and updates to that file get reflected here through a refresh process.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
- *
- * @experimental
- */
-
-namespace Google\LongRunning;
-
-use Google\LongRunning\Gapic\OperationsGapicClient;
-
-/**
- * {@inheritdoc}
- */
-class OperationsClient extends OperationsGapicClient
-{
-    // This class is intentionally empty, and is intended to hold manual
-    // additions to the generated {@see OperationsClientImpl} class.
-}
-============== file: src/LongRunning/resources/operations_client_config.json ==============
+============== file: src/resources/operations_client_config.json ==============
 {
   "interfaces": {
     "google.longrunning.Operations": {
@@ -568,7 +559,7 @@ class OperationsClient extends OperationsGapicClient
   }
 }
 
-============== file: src/LongRunning/resources/operations_descriptor_config.php ==============
+============== file: src/resources/operations_descriptor_config.php ==============
 <?php
 
 return [
@@ -588,7 +579,7 @@ return [
     ]
 ];
 
-============== file: src/LongRunning/resources/operations_rest_client_config.php ==============
+============== file: src/resources/operations_rest_client_config.php ==============
 <?php
 
 return [
@@ -643,7 +634,7 @@ return [
     ]
 ];
 
-============== file: tests/system/LongRunning/OperationsSmokeTest.php ==============
+============== file: tests/System/OperationsSmokeTest.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -680,7 +671,7 @@ return [
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\System\LongRunning;
+namespace Google\LongRunning\Tests\System;
 
 use Google\LongRunning\OperationsClient;
 use Google\ApiCore\Testing\GeneratedTest;
@@ -688,7 +679,7 @@ use Google\LongRunning\ListOperationsRequest;
 use Google\LongRunning\ListOperationsResponse;
 
 /**
- * @group long_running
+ * @group longrunning
  * @group grpc
  */
 class OperationsSmokeTest extends GeneratedTest
@@ -709,7 +700,7 @@ class OperationsSmokeTest extends GeneratedTest
         $operationsClient->listOperations($name, $filter);
     }
 }
-============== file: tests/unit/LongRunning/OperationsClientTest.php ==============
+============== file: tests/Unit/OperationsClientTest.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -746,7 +737,7 @@ class OperationsSmokeTest extends GeneratedTest
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\Unit\LongRunning;
+namespace Google\LongRunning\Tests\Unit;
 
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
@@ -768,7 +759,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @group long_running
+ * @group longrunning
  * @group grpc
  */
 class OperationsClientTest extends GeneratedTest

@@ -1,35 +1,26 @@
 ============== file: composer.json ==============
 {
-  "name": "example/example",
-  "version": "0.1.0",
-  "author": "Google LLC",
-  "url": "https://github.com/googleapis/googleapis",
+  "name": "google/example",
   "description": "Google Fake API client for PHP",
+  "license": "Apache-2.0",
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Google\\Example\\": "src",
+      "Google\\Example\\Tests\\": "tests",
+      "": "proto/src"
+    }
+  },
   "require": {
     "google/gax": "^0.6.*",
     "google/protobuf": "^0.7.*",
     "php" : "^5.5 || ^7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.7"
-  },
-  "license": "Apache-2.0",
-  "autoload": {
-    "psr-4": {
-      "Google\\Cloud\\": "src",
-      "Google\\Cloud\\Tests\\": "tests",
-      "Google\\Cloud\\Tests\\System\\": "tests/system",
-      "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
-      "": "proto/src"
-    }
-  },
-  "scripts": {
-    "test": [
-      "phpunit tests"
-    ]
+    "phpunit/phpunit": "^4.8|^5.0"
   }
 }
-============== file: src/Example/V1/Gapic/NoTemplatesApiServiceGapicClient.php ==============
+============== file: src/V1/Gapic/NoTemplatesApiServiceGapicClient.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -249,7 +240,7 @@ class NoTemplatesApiServiceGapicClient
     }
 
 }
-============== file: src/Example/V1/NoTemplatesApiServiceClient.php ==============
+============== file: src/V1/NoTemplatesApiServiceClient.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -292,7 +283,7 @@ class NoTemplatesApiServiceClient extends NoTemplatesApiServiceGapicClient
     // This class is intentionally empty, and is intended to hold manual
     // additions to the generated {@see NoTemplatesApiServiceClientImpl} class.
 }
-============== file: src/Example/V1/resources/no_templates_api_service_client_config.json ==============
+============== file: src/V1/resources/no_templates_api_service_client_config.json ==============
 {
   "interfaces": {
     "google.cloud.example.v1.NoTemplatesAPIService": {
@@ -307,7 +298,7 @@ class NoTemplatesApiServiceClient extends NoTemplatesApiServiceGapicClient
   }
 }
 
-============== file: src/Example/V1/resources/no_templates_api_service_descriptor_config.php ==============
+============== file: src/V1/resources/no_templates_api_service_descriptor_config.php ==============
 <?php
 
 return [
@@ -317,7 +308,7 @@ return [
     ]
 ];
 
-============== file: src/Example/V1/resources/no_templates_api_service_rest_client_config.php ==============
+============== file: src/V1/resources/no_templates_api_service_rest_client_config.php ==============
 <?php
 
 return [
@@ -332,7 +323,7 @@ return [
     ]
 ];
 
-============== file: tests/unit/Example/V1/NoTemplatesApiServiceClientTest.php ==============
+============== file: tests/Unit/V1/NoTemplatesApiServiceClientTest.php ==============
 <?php
 /*
  * Copyright 2018 Google LLC
@@ -355,7 +346,7 @@ return [
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Tests\Unit\Example\V1;
+namespace Google\Example\Tests\Unit\V1;
 
 use Google\Example\V1\NoTemplatesApiServiceClient;
 use Google\ApiCore\ApiException;
@@ -374,7 +365,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @group example
+ * @group library
  * @group grpc
  */
 class NoTemplatesApiServiceClientTest extends GeneratedTest

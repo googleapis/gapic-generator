@@ -47,7 +47,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         new PhpCommentReformatter(),
-        packageName,
+        PhpPackageUtil.getBasePackageName(packageName),
         packageName);
   }
 
@@ -213,23 +213,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return getTestPackageName(getPackageName(), testKind);
   }
 
-  /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
+  /** Insert "Tests/<TestType>" into the package name before the version. */
   private static String getTestPackageName(String packageName, TestKind testKind) {
-    final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
-
     ArrayList<String> packageComponents = new ArrayList<>();
-    String[] packageSplit = PhpPackageUtil.splitPackageName(packageName);
-    int packageStartIndex = 0;
-    for (int i = 0; i < PACKAGE_PREFIX.length && i < packageSplit.length; i++) {
-      if (packageSplit[i].equals(PACKAGE_PREFIX[i])) {
-        packageStartIndex++;
-      } else {
-        break;
-      }
-    }
-    for (int i = 0; i < packageStartIndex; i++) {
-      packageComponents.add(packageSplit[i]);
-    }
+    packageComponents.add(PhpPackageUtil.getBasePackageName(packageName));
     packageComponents.add("Tests");
     switch (testKind) {
       case UNIT:
@@ -239,8 +226,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         packageComponents.add("System");
         break;
     }
-    for (int i = packageStartIndex; i < packageSplit.length; i++) {
-      packageComponents.add(packageSplit[i]);
+    String shortenedPackageName = PhpPackageUtil.removeBasePackageName(packageName);
+    if (shortenedPackageName != null) {
+      packageComponents.add(shortenedPackageName);
     }
     return PhpPackageUtil.buildPackageName(packageComponents);
   }

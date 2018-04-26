@@ -15,36 +15,24 @@
 package com.google.api.codegen.util.php;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /** Utility class for PHP to manipulate package strings. */
 public class PhpPackageUtil {
 
   private static String PACKAGE_SEPARATOR = "\\";
   private static String PACKAGE_SPLIT_REGEX = "[\\\\]";
-  private static String[] PACKAGE_PREFIX = {"Google", "Cloud"};
   private static String PACKAGE_VERSION_REGEX = "V\\d+.*";
 
-  public static String[] getStandardPackagePrefix() {
-    return PACKAGE_PREFIX;
-  }
-
   public static String[] splitPackageName(String packageName) {
-    return packageName.split(PACKAGE_SPLIT_REGEX);
-  }
-
-  public static String[] splitPackageNameWithoutStandardPrefix(String packageName) {
-    String[] result = splitPackageName(packageName);
-    int packageStartIndex = 0;
-    // Skip common package prefix only when it is an exact match in sequence.
-    for (int i = 0; i < PACKAGE_PREFIX.length && i < result.length; i++) {
-      if (result[i].equals(PACKAGE_PREFIX[i])) {
-        packageStartIndex++;
-      } else {
-        break;
-      }
+    if (packageName.startsWith(PACKAGE_SEPARATOR)) {
+      // Remove leading "\" before splitting
+      packageName = packageName.substring(PACKAGE_SEPARATOR.length());
     }
-    return Arrays.copyOfRange(result, packageStartIndex, result.length);
+    return packageName.trim().split(PACKAGE_SPLIT_REGEX);
   }
 
   public static String buildPackageName(Iterable<String> components) {
@@ -61,5 +49,35 @@ public class PhpPackageUtil {
 
   public static boolean isPackageVersion(String versionString) {
     return versionString.matches(PACKAGE_VERSION_REGEX);
+  }
+
+  /**
+   * Remove the base package name, returning a package name which begins with the version. If no
+   * version is present in the input packageName, returns null.
+   */
+  public static String removeBasePackageName(String packageName) {
+    ArrayList<String> packageComponents = new ArrayList<>();
+    List<String> pieces = Arrays.asList(PhpPackageUtil.splitPackageName(packageName));
+    for (String packageElement : Lists.reverse(pieces)) {
+      packageComponents.add(packageElement);
+      if (isPackageVersion(packageElement)) {
+        return buildPackageName(Lists.reverse(packageComponents));
+      }
+    }
+    // If we did not find a version, then the whole package name is considered
+    // the base package name, and we return null.
+    return null;
+  }
+
+  /** Get the base package name, which includes everything before the version. */
+  public static String getBasePackageName(String packageName) {
+    ArrayList<String> packageComponents = new ArrayList<>();
+    for (String packageElement : PhpPackageUtil.splitPackageName(packageName)) {
+      if (isPackageVersion(packageElement)) {
+        break;
+      }
+      packageComponents.add(packageElement);
+    }
+    return buildPackageName(packageComponents);
   }
 }

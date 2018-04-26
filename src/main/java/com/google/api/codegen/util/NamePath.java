@@ -112,6 +112,13 @@ public class NamePath {
     return Joiner.on("\\").join(pathPieces);
   }
 
+  /**
+   * Returns the namePath in double backslashed form, suitable for when backslashes must be escaped.
+   */
+  public String toDoubleBackslashed() {
+    return Joiner.on("\\\\").join(pathPieces);
+  }
+
   public String toDoubleColoned() {
     return Joiner.on("::").join(pathPieces);
   }

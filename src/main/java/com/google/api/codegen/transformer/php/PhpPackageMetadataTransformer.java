@@ -21,6 +21,8 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.common.collect.ImmutableList;
@@ -47,26 +49,31 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<>();
-    PhpPackageMetadataNamer namer =
+    PhpPackageMetadataNamer metadataNamer =
         new PhpPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(model, namer));
+    SurfaceNamer surfaceNamer = new PhpSurfaceNamer(productConfig.getPackageName());
+    models.add(generateMetadataView(model, metadataNamer, surfaceNamer));
     return models;
   }
 
-  private ViewModel generateMetadataView(ApiModel model, PackageMetadataNamer namer) {
+  private ViewModel generateMetadataView(
+      ApiModel model, PackageMetadataNamer metadataNamer, SurfaceNamer surfaceNamer) {
     List<PackageDependencyView> dependencies =
         ImmutableList.of(
             PackageDependencyView.create(
                 "google/gax", packageConfig.gaxVersionBound(TargetLanguage.PHP)),
             PackageDependencyView.create(
                 "google/protobuf", packageConfig.protoVersionBound(TargetLanguage.PHP)));
+    String rootNamespace =
+        NamePath.backslashed(surfaceNamer.getRootPackageName()).toDoubleBackslashed();
     return metadataTransformer
         .generateMetadataView(
-            namer, packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
+            metadataNamer, packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
         .additionalDependencies(dependencies)
         .hasMultipleServices(model.hasMultipleServices())
-        .identifier(namer.getMetadataIdentifier())
+        .identifier(metadataNamer.getMetadataIdentifier())
+        .rootNamespace(rootNamespace)
         .build();
   }
 }
