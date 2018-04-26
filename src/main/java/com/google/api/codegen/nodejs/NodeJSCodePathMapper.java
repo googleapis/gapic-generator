@@ -23,14 +23,12 @@ import java.util.List;
 public class NodeJSCodePathMapper implements GapicCodePathMapper {
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    String apiVersion = "";
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
-    if (packages.size() > 2) {
-      String parentName = packages.get(packages.size() - 2);
-      if (VersionMatcher.isVersion(parentName)) {
-        apiVersion = parentName;
+    for (String p : packages) {
+      if (VersionMatcher.isVersion(p)) {
+        return String.format("src/%s", p);
       }
     }
-    return apiVersion.isEmpty() ? "src" : ("src/" + apiVersion);
+    return "src";
   }
 }

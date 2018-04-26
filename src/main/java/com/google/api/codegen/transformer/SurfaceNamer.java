@@ -276,11 +276,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "gapic-" + configPackageName;
   }
 
-  /** The name of the module for the version of an API. */
-  public String getModuleVersionName() {
-    return getNotImplementedString("SurfaceNamer.getModuleVersionName");
-  }
-
   /** The name of the module for the service of an API. */
   public String getModuleServiceName() {
     return getNotImplementedString("SurfaceNamer.getModuleServiceName");
