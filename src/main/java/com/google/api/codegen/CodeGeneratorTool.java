@@ -22,6 +22,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import java.io.File;
+
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
 //
@@ -106,6 +108,11 @@ public class CodeGeneratorTool {
       String packageConfig,
       String outputDirectory,
       String[] enabledArtifacts) {
+    checkFile(descriptorSet);
+    checkFiles(configs);
+    checkFiles(generatorConfigs);
+    checkFile(packageConfig);
+
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
@@ -117,6 +124,19 @@ public class CodeGeneratorTool {
       options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
     }
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
+
     return codeGen.run();
+  }
+
+  private static void checkFiles(String[] files) {
+    for (String filePath : files) {
+      checkFile(filePath);
+    }
+  }
+
+  private static void checkFile(String filePath) {
+    if (!new File(filePath).exists()) {
+      throw new IllegalArgumentException("File not found: " + filePath);
+    }
   }
 }

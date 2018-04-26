@@ -59,33 +59,36 @@ ext {
   libraries = [
     // General
 
-    guava: 'com.google.guava:guava:23.0',
-    jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
+    apiCommon: 'com.google.api:api-common:1.1.0',
+    apiCompiler: 'com.google.api:api-compiler:0.0.7',
     autovalue: 'com.google.auto.value:auto-value:1.6',
     autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
+    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
+    commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
-    snakeyaml: 'org.yaml:snakeyaml:1.18',
-    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
     gax: 'com.google.api:gax:1.5.1',
-
-    // Gapi
-    toolsFx: 'com.google.api:api-compiler:0.0.7',
+    grpcCore: 'io.grpc:grpc-core:1.0.1',
+    gson: 'com.google.code.gson:gson:2.3',
+    guava: 'com.google.guava:guava:23.0',
+    guice: 'com.google.inject:guice:4.0',
+    jacksonAnnotations: 'com.fasterxml.jackson.core:jackson-annotations:2.9.0',
+    jacksonCore: 'com.fasterxml.jackson.core:jackson-core:2.9.0',
+    jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
+    jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
+    snakeyaml: 'org.yaml:snakeyaml:1.18',
+    threetenbp: 'org.threeten:threetenbp:1.3.3',
 
     // Testing
     junit: 'junit:junit:4.12',
     mockito: 'org.mockito:mockito-core:2.+',
     truth: 'com.google.truth:truth:0.34',
     toolsFxTesting: 'com.google.api:api-compiler:0.0.6:testing',
-    commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
     junitParams: 'pl.pragmatists:JUnitParams:1.1.1',
 
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
     protoc:  'com.google.protobuf:protoc:' + protoVersion,
-
-    // JSON
-    jackson: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
 
     // Formatter
     javaFomatter: 'com.google.googlejavaformat:google-java-format:1.1'
@@ -98,19 +101,25 @@ repositories {
 }
 
 dependencies {
-  compile libraries.guava,
+  compile libraries.apiCommon,
+    libraries.apiCompiler,
     libraries.autovalueAnnotation,
+    libraries.commonmark,
     libraries.commonsCli,
     libraries.commonsLang,
     libraries.gax,
-    libraries.jackson,
+    libraries.grpcCore,
+    libraries.gson,
+    libraries.guava,
+    libraries.jacksonAnnotations,
+    libraries.jacksonCore,
+    libraries.jacksonDatabind,
     libraries.javaFomatter,
     libraries.jsr305,
     libraries.protobuf,
     libraries.snakeyaml,
-    libraries.toolsFx,
-    libraries.toolsFxTesting,
-    libraries.commonmark
+    libraries.threetenbp,
+    libraries.toolsFxTesting
 
   testCompile libraries.junit,
     libraries.truth,
@@ -512,6 +521,7 @@ tasks.googleJavaFormat {
   exclude 'build/**'
   exclude 'benchmark/**'
   exclude 'modules/googleapis/third_party'
+  exclude 'bazel-*'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
@@ -519,5 +529,6 @@ tasks.verifyGoogleJavaFormat {
   exclude 'build/**'
   exclude 'benchmark/**'
   exclude 'modules/googleapis/third_party'
+  exclude 'bazel-*'
 }
 test.dependsOn verifyGoogleJavaFormat
