@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -159,8 +158,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.apiMethods(methods);
 
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
-
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
 
@@ -299,7 +296,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .primaryService(requireViews.get(0))
             .packageVersion(
                 packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-            .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     productConfig, ImportSectionView.newBuilder().build(), namer))
@@ -322,7 +318,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .isGcloud(NodeJSUtils.isGcloud(productConfig))
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-              .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))

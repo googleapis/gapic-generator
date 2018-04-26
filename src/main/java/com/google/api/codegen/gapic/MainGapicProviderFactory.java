@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.csharp.CSharpGapicUnitTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicSamplesTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
@@ -40,6 +41,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransforme
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
+import com.google.api.codegen.transformer.py.PythonGapicSamplesTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
@@ -224,8 +226,16 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                         "../gradle/wrapper/gradle-wrapper.properties")
                     .build(),
                 ImmutableSet.of("../gradlew"));
-
         providers.add(staticResourcesProvider);
+
+        GapicProvider sampleProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformer(new JavaGapicSamplesTransformer(javaPathMapper))
+                .build();
+        providers.add(sampleProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper javaTestPathMapper =
@@ -347,7 +357,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer())
+                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer(packageConfig))
                 .build();
         providers.add(testProvider);
       }
@@ -364,6 +374,13 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
+        GapicProvider sampleProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
+                .setModelToViewTransformer(new PythonGapicSamplesTransformer(pythonPathMapper))
+                .build();
         GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
@@ -375,6 +392,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setCodePathMapper(pythonPathMapper)
                 .build();
         providers.add(mainProvider);
+        providers.add(sampleProvider);
         providers.add(clientConfigProvider);
 
         GapicProvider metadataProvider =

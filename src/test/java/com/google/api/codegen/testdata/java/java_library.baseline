@@ -31,11 +31,14 @@ repositories {
 
 dependencies {
   compile 'com.google.api:gax:1.0.0'
+  testCompile 'com.google.api:gax:1.0.0:testlib'
   compile 'com.google.api:gax-grpc:0.18.0'
-  testCompile 'junit:junit:4.12'
   testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'junit:junit:4.12'
   testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
   compile project(':proto-google-cloud-library-v1')
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
   testCompile project(':grpc-google-cloud-library-v1')
   testCompile project(':grpc-google-some-test-package-v1')
 }
@@ -99,6 +102,7 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
+import com.google.cloud.ProjectName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.AddCommentsRequest;
@@ -246,7 +250,7 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryClient implements BackgroundResource {
   private final LibrarySettings settings;
   private final LibraryServiceStub stub;
@@ -2954,6 +2958,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2967,6 +2972,7 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -2981,6 +2987,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
    *   List&lt;Integer&gt; optionalRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -2994,10 +3001,11 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; optionalRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; optionalRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; optionalRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; optionalRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
    * }
    * </code></pre>
    *
@@ -3012,6 +3020,7 @@ public class LibraryClient implements BackgroundResource {
    * @param requiredSingularMessage
    * @param requiredSingularResourceName
    * @param requiredSingularResourceNameOneof
+   * @param requiredSingularResourceNameCommon
    * @param requiredSingularFixed32
    * @param requiredSingularFixed64
    * @param requiredRepeatedInt32
@@ -3025,6 +3034,7 @@ public class LibraryClient implements BackgroundResource {
    * @param requiredRepeatedMessage
    * @param requiredRepeatedResourceName
    * @param requiredRepeatedResourceNameOneof
+   * @param requiredRepeatedResourceNameCommon
    * @param requiredRepeatedFixed32
    * @param requiredRepeatedFixed64
    * @param requiredMap
@@ -3039,6 +3049,7 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalSingularMessage
    * @param optionalSingularResourceName
    * @param optionalSingularResourceNameOneof
+   * @param optionalSingularResourceNameCommon
    * @param optionalSingularFixed32
    * @param optionalSingularFixed64
    * @param optionalRepeatedInt32
@@ -3052,12 +3063,13 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalRepeatedMessage
    * @param optionalRepeatedResourceName
    * @param optionalRepeatedResourceNameOneof
+   * @param optionalRepeatedResourceNameCommon
    * @param optionalRepeatedFixed32
    * @param optionalRepeatedFixed64
    * @param optionalMap
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, ShelfBookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<ShelfBookName> requiredRepeatedResourceName, List<BookName> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, ShelfBookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<ShelfBookName> optionalRepeatedResourceName, List<BookName> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, ShelfBookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, ProjectName requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<ShelfBookName> requiredRepeatedResourceName, List<BookName> requiredRepeatedResourceNameOneof, List<ProjectName> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, ShelfBookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, ProjectName optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<ShelfBookName> optionalRepeatedResourceName, List<BookName> optionalRepeatedResourceNameOneof, List<ProjectName> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -3072,6 +3084,7 @@ public class LibraryClient implements BackgroundResource {
         .setRequiredSingularMessage(requiredSingularMessage)
         .setRequiredSingularResourceName(requiredSingularResourceName == null ? null : requiredSingularResourceName.toString())
         .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof == null ? null : requiredSingularResourceNameOneof.toString())
+        .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon == null ? null : requiredSingularResourceNameCommon.toString())
         .setRequiredSingularFixed32(requiredSingularFixed32)
         .setRequiredSingularFixed64(requiredSingularFixed64)
         .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
@@ -3085,6 +3098,7 @@ public class LibraryClient implements BackgroundResource {
         .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
         .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName == null ? null : ShelfBookName.toStringList(requiredRepeatedResourceName))
         .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof == null ? null : BookName.toStringList(requiredRepeatedResourceNameOneof))
+        .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon == null ? null : ProjectName.toStringList(requiredRepeatedResourceNameCommon))
         .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
         .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
         .putAllRequiredMap(requiredMap)
@@ -3099,6 +3113,7 @@ public class LibraryClient implements BackgroundResource {
         .setOptionalSingularMessage(optionalSingularMessage)
         .setOptionalSingularResourceName(optionalSingularResourceName == null ? null : optionalSingularResourceName.toString())
         .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof == null ? null : optionalSingularResourceNameOneof.toString())
+        .setOptionalSingularResourceNameCommon(optionalSingularResourceNameCommon == null ? null : optionalSingularResourceNameCommon.toString())
         .setOptionalSingularFixed32(optionalSingularFixed32)
         .setOptionalSingularFixed64(optionalSingularFixed64)
         .addAllOptionalRepeatedInt32(optionalRepeatedInt32)
@@ -3112,6 +3127,7 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
         .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName == null ? null : ShelfBookName.toStringList(optionalRepeatedResourceName))
         .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof == null ? null : BookName.toStringList(optionalRepeatedResourceNameOneof))
+        .addAllOptionalRepeatedResourceNameCommon(optionalRepeatedResourceNameCommon == null ? null : ProjectName.toStringList(optionalRepeatedResourceNameCommon))
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
@@ -3137,6 +3153,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -3150,6 +3167,7 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -3164,6 +3182,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
    *   List&lt;Integer&gt; optionalRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -3177,10 +3196,11 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; optionalRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; optionalRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; optionalRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; optionalRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, ShelfBookName.toStringList(requiredRepeatedResourceName), BookName.toStringList(requiredRepeatedResourceNameOneof), requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, ShelfBookName.toStringList(optionalRepeatedResourceName), BookName.toStringList(optionalRepeatedResourceNameOneof), optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularResourceNameCommon.toString(), requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, ShelfBookName.toStringList(requiredRepeatedResourceName), BookName.toStringList(requiredRepeatedResourceNameOneof), ProjectName.toStringList(requiredRepeatedResourceNameCommon), requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularResourceNameCommon.toString(), optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, ShelfBookName.toStringList(optionalRepeatedResourceName), BookName.toStringList(optionalRepeatedResourceNameOneof), ProjectName.toStringList(optionalRepeatedResourceNameCommon), optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
    * }
    * </code></pre>
    *
@@ -3195,6 +3215,7 @@ public class LibraryClient implements BackgroundResource {
    * @param requiredSingularMessage
    * @param requiredSingularResourceName
    * @param requiredSingularResourceNameOneof
+   * @param requiredSingularResourceNameCommon
    * @param requiredSingularFixed32
    * @param requiredSingularFixed64
    * @param requiredRepeatedInt32
@@ -3208,6 +3229,7 @@ public class LibraryClient implements BackgroundResource {
    * @param requiredRepeatedMessage
    * @param requiredRepeatedResourceName
    * @param requiredRepeatedResourceNameOneof
+   * @param requiredRepeatedResourceNameCommon
    * @param requiredRepeatedFixed32
    * @param requiredRepeatedFixed64
    * @param requiredMap
@@ -3222,6 +3244,7 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalSingularMessage
    * @param optionalSingularResourceName
    * @param optionalSingularResourceNameOneof
+   * @param optionalSingularResourceNameCommon
    * @param optionalSingularFixed32
    * @param optionalSingularFixed64
    * @param optionalRepeatedInt32
@@ -3235,12 +3258,13 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalRepeatedMessage
    * @param optionalRepeatedResourceName
    * @param optionalRepeatedResourceNameOneof
+   * @param optionalRepeatedResourceNameCommon
    * @param optionalRepeatedFixed32
    * @param optionalRepeatedFixed64
    * @param optionalMap
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -3255,6 +3279,7 @@ public class LibraryClient implements BackgroundResource {
         .setRequiredSingularMessage(requiredSingularMessage)
         .setRequiredSingularResourceName(requiredSingularResourceName)
         .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof)
+        .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon)
         .setRequiredSingularFixed32(requiredSingularFixed32)
         .setRequiredSingularFixed64(requiredSingularFixed64)
         .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
@@ -3268,6 +3293,7 @@ public class LibraryClient implements BackgroundResource {
         .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
         .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
         .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
+        .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
         .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
         .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
         .putAllRequiredMap(requiredMap)
@@ -3282,6 +3308,7 @@ public class LibraryClient implements BackgroundResource {
         .setOptionalSingularMessage(optionalSingularMessage)
         .setOptionalSingularResourceName(optionalSingularResourceName)
         .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof)
+        .setOptionalSingularResourceNameCommon(optionalSingularResourceNameCommon)
         .setOptionalSingularFixed32(optionalSingularFixed32)
         .setOptionalSingularFixed64(optionalSingularFixed64)
         .addAllOptionalRepeatedInt32(optionalRepeatedInt32)
@@ -3295,6 +3322,7 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
         .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName)
         .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof)
+        .addAllOptionalRepeatedResourceNameCommon(optionalRepeatedResourceNameCommon)
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
@@ -3320,6 +3348,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -3333,6 +3362,7 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -3348,6 +3378,7 @@ public class LibraryClient implements BackgroundResource {
    *     .setRequiredSingularMessage(requiredSingularMessage)
    *     .setRequiredSingularResourceName(requiredSingularResourceName.toString())
    *     .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof.toString())
+   *     .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon.toString())
    *     .setRequiredSingularFixed32(requiredSingularFixed32)
    *     .setRequiredSingularFixed64(requiredSingularFixed64)
    *     .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
@@ -3361,6 +3392,7 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
    *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
    *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3394,6 +3426,7 @@ public class LibraryClient implements BackgroundResource {
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
    *   List&lt;Integer&gt; requiredRepeatedInt32 = new ArrayList&lt;&gt;();
@@ -3407,6 +3440,7 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
    *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
    *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -3422,6 +3456,7 @@ public class LibraryClient implements BackgroundResource {
    *     .setRequiredSingularMessage(requiredSingularMessage)
    *     .setRequiredSingularResourceName(requiredSingularResourceName.toString())
    *     .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof.toString())
+   *     .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon.toString())
    *     .setRequiredSingularFixed32(requiredSingularFixed32)
    *     .setRequiredSingularFixed64(requiredSingularFixed64)
    *     .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
@@ -3435,6 +3470,7 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
    *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
    *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -4042,7 +4078,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -4680,6 +4716,7 @@ import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.cloud.ProjectName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
@@ -4755,7 +4792,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactory {
   @Override
@@ -4846,6 +4883,7 @@ import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.cloud.ProjectName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
@@ -4920,7 +4958,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
@@ -5553,6 +5591,7 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.cloud.ProjectName;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -5620,7 +5659,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class LibraryServiceStub implements BackgroundResource {
 
@@ -5919,7 +5958,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubSettings> {
   /**
    * The default scopes of the service.
@@ -7234,6 +7273,144 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedMethodPiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedMethodPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleFlattenedMethodPiVersion" /////
+//     calling form "FlattenedMethod"
+//     valueSet "pi_version" ("Pi version")
+//       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//     apiMethod "publishSeries" of type "FlattenedMethod"
+// TODO: Replace with a full sample
+
+/*
+String name = "Math";
+Shelf shelf = Shelf.newBuilder()
+  .setName(name)
+  .build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+int edition = 0;
+String seriesString = "xyz3141592654";
+SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+  .setSeriesString(seriesString)
+  .build();
+PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+*/
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedMethodSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedMethodSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleFlattenedMethodSecondEdition" /////
+//     calling form "FlattenedMethod"
+//     valueSet "second_edition" ("Second edition")
+//       [edition=2]
+//     apiMethod "publishSeries" of type "FlattenedMethod"
+// TODO: Replace with a full sample
+
+/*
+Shelf shelf = Shelf.newBuilder().build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+int edition = 2;
+SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+*/
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestObjectMethodPiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestObjectMethodPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleRequestObjectMethodPiVersion" /////
+//     calling form "RequestObjectMethod"
+//     valueSet "pi_version" ("Pi version")
+//       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//     apiMethod "publishSeries" of type "RequestObjectMethod"
+// TODO: Replace with a full sample
+
+/*
+String name = "Math";
+Shelf shelf = Shelf.newBuilder()
+  .setName(name)
+  .build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+String seriesString = "xyz3141592654";
+SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+  .setSeriesString(seriesString)
+  .build();
+PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+  .setShelf(shelf)
+  .addAllBooks(books)
+  .setSeriesUuid(seriesUuid)
+  .build();
+PublishSeriesResponse response = libraryClient.publishSeries(request);
+*/
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestObjectMethodSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestObjectMethodSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleRequestObjectMethodSecondEdition" /////
+//     calling form "RequestObjectMethod"
+//     valueSet "second_edition" ("Second edition")
+//       [edition=2]
+//     apiMethod "publishSeries" of type "RequestObjectMethod"
+// TODO: Replace with a full sample
+
+/*
+Shelf shelf = Shelf.newBuilder().build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+int edition = 2;
+PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+  .setShelf(shelf)
+  .addAllBooks(books)
+  .setSeriesUuid(seriesUuid)
+  .setEdition(edition)
+  .build();
+PublishSeriesResponse response = libraryClient.publishSeries(request);
+*/
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallableMethodPiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallableMethodPiVersion" ]
+//// STUB standalone sample "PublishSeriesCallableSampleCallableMethodPiVersion" /////
+//     calling form "CallableMethod"
+//     valueSet "pi_version" ("Pi version")
+//       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//     apiMethod "publishSeriesCallable" of type "CallableMethod"
+// TODO: Replace with a full sample
+
+/*
+String name = "Math";
+Shelf shelf = Shelf.newBuilder()
+  .setName(name)
+  .build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+String seriesString = "xyz3141592654";
+SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+  .setSeriesString(seriesString)
+  .build();
+PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+  .setShelf(shelf)
+  .addAllBooks(books)
+  .setSeriesUuid(seriesUuid)
+  .build();
+ApiFuture&lt;PublishSeriesResponse&gt; future = libraryClient.publishSeriesCallable().futureCall(request);
+// Do something
+PublishSeriesResponse response = future.get();
+*/
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallableMethodSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallableMethodSecondEdition" ]
+//// STUB standalone sample "PublishSeriesCallableSampleCallableMethodSecondEdition" /////
+//     calling form "CallableMethod"
+//     valueSet "second_edition" ("Second edition")
+//       [edition=2]
+//     apiMethod "publishSeriesCallable" of type "CallableMethod"
+// TODO: Replace with a full sample
+
+/*
+Shelf shelf = Shelf.newBuilder().build();
+List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+int edition = 2;
+PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+  .setShelf(shelf)
+  .addAllBooks(books)
+  .setSeriesUuid(seriesUuid)
+  .setEdition(edition)
+  .build();
+ApiFuture&lt;PublishSeriesResponse&gt; future = libraryClient.publishSeriesCallable().futureCall(request);
+// Do something
+PublishSeriesResponse response = future.get();
+*/
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -7266,6 +7443,7 @@ import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
+import com.google.cloud.ProjectName;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
@@ -8923,6 +9101,7 @@ public class LibraryClientTest {
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
     ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
     int requiredSingularFixed32 = 720656715;
     long requiredSingularFixed64 = 720656810;
     List<Integer> requiredRepeatedInt32 = new ArrayList<>();
@@ -8936,6 +9115,7 @@ public class LibraryClientTest {
     List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
     List<ShelfBookName> requiredRepeatedResourceName = new ArrayList<>();
     List<BookName> requiredRepeatedResourceNameOneof = new ArrayList<>();
+    List<ProjectName> requiredRepeatedResourceNameCommon = new ArrayList<>();
     List<Integer> requiredRepeatedFixed32 = new ArrayList<>();
     List<Long> requiredRepeatedFixed64 = new ArrayList<>();
     Map<Integer, String> requiredMap = new HashMap<>();
@@ -8950,6 +9130,7 @@ public class LibraryClientTest {
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
     ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
     int optionalSingularFixed32 = 1648847958;
     long optionalSingularFixed64 = 1648847863;
     List<Integer> optionalRepeatedInt32 = new ArrayList<>();
@@ -8963,12 +9144,13 @@ public class LibraryClientTest {
     List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
     List<ShelfBookName> optionalRepeatedResourceName = new ArrayList<>();
     List<BookName> optionalRepeatedResourceNameOneof = new ArrayList<>();
+    List<ProjectName> optionalRepeatedResourceNameCommon = new ArrayList<>();
     List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
     List<Long> optionalRepeatedFixed64 = new ArrayList<>();
     Map<Integer, String> optionalMap = new HashMap<>();
 
     TestOptionalRequiredFlatteningParamsResponse actualResponse =
-        client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+        client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -8986,6 +9168,7 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredSingularMessage, actualRequest.getRequiredSingularMessage());
     Assert.assertEquals(requiredSingularResourceName, ShelfBookName.parse(actualRequest.getRequiredSingularResourceName()));
     Assert.assertEquals(requiredSingularResourceNameOneof, BookNames.parse(actualRequest.getRequiredSingularResourceNameOneof()));
+    Assert.assertEquals(requiredSingularResourceNameCommon, ProjectName.parse(actualRequest.getRequiredSingularResourceNameCommon()));
     Assert.assertEquals(requiredSingularFixed32, actualRequest.getRequiredSingularFixed32());
     Assert.assertEquals(requiredSingularFixed64, actualRequest.getRequiredSingularFixed64());
     Assert.assertEquals(requiredRepeatedInt32, actualRequest.getRequiredRepeatedInt32List());
@@ -8999,6 +9182,7 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
     Assert.assertEquals(requiredRepeatedResourceName, ShelfBookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
     Assert.assertEquals(requiredRepeatedResourceNameOneof, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
+    Assert.assertEquals(requiredRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getRequiredRepeatedResourceNameCommonList()));
     Assert.assertEquals(requiredRepeatedFixed32, actualRequest.getRequiredRepeatedFixed32List());
     Assert.assertEquals(requiredRepeatedFixed64, actualRequest.getRequiredRepeatedFixed64List());
     Assert.assertEquals(requiredMap, actualRequest.getRequiredMapMap());
@@ -9013,6 +9197,7 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalSingularMessage, actualRequest.getOptionalSingularMessage());
     Assert.assertEquals(optionalSingularResourceName, ShelfBookName.parse(actualRequest.getOptionalSingularResourceName()));
     Assert.assertEquals(optionalSingularResourceNameOneof, BookNames.parse(actualRequest.getOptionalSingularResourceNameOneof()));
+    Assert.assertEquals(optionalSingularResourceNameCommon, ProjectName.parse(actualRequest.getOptionalSingularResourceNameCommon()));
     Assert.assertEquals(optionalSingularFixed32, actualRequest.getOptionalSingularFixed32());
     Assert.assertEquals(optionalSingularFixed64, actualRequest.getOptionalSingularFixed64());
     Assert.assertEquals(optionalRepeatedInt32, actualRequest.getOptionalRepeatedInt32List());
@@ -9026,6 +9211,7 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
     Assert.assertEquals(optionalRepeatedResourceName, ShelfBookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
     Assert.assertEquals(optionalRepeatedResourceNameOneof, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
+    Assert.assertEquals(optionalRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getOptionalRepeatedResourceNameCommonList()));
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());
@@ -9053,6 +9239,7 @@ public class LibraryClientTest {
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
       ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
       int requiredSingularFixed32 = 720656715;
       long requiredSingularFixed64 = 720656810;
       List<Integer> requiredRepeatedInt32 = new ArrayList<>();
@@ -9066,6 +9253,7 @@ public class LibraryClientTest {
       List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
       List<ShelfBookName> requiredRepeatedResourceName = new ArrayList<>();
       List<BookName> requiredRepeatedResourceNameOneof = new ArrayList<>();
+      List<ProjectName> requiredRepeatedResourceNameCommon = new ArrayList<>();
       List<Integer> requiredRepeatedFixed32 = new ArrayList<>();
       List<Long> requiredRepeatedFixed64 = new ArrayList<>();
       Map<Integer, String> requiredMap = new HashMap<>();
@@ -9080,6 +9268,7 @@ public class LibraryClientTest {
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
       ShelfBookName optionalSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       BookName optionalSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
       int optionalSingularFixed32 = 1648847958;
       long optionalSingularFixed64 = 1648847863;
       List<Integer> optionalRepeatedInt32 = new ArrayList<>();
@@ -9093,11 +9282,12 @@ public class LibraryClientTest {
       List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
       List<ShelfBookName> optionalRepeatedResourceName = new ArrayList<>();
       List<BookName> optionalRepeatedResourceNameOneof = new ArrayList<>();
+      List<ProjectName> optionalRepeatedResourceNameCommon = new ArrayList<>();
       List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
       List<Long> optionalRepeatedFixed64 = new ArrayList<>();
       Map<Integer, String> optionalMap = new HashMap<>();
 
-      client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+      client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

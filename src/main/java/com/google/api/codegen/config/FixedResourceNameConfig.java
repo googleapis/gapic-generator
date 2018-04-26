@@ -35,6 +35,12 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
   public abstract ProtoFile getAssignedProtoFile();
 
   @Override
+  @Nullable
+  public String getCommonResourceName() {
+    return null;
+  }
+
+  @Override
   public ResourceNameType getResourceNameType() {
     return ResourceNameType.FIXED;
   }

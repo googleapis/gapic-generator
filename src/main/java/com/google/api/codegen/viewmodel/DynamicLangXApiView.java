@@ -102,8 +102,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return missingDefaultServiceAddress() || missingDefaultServiceScopes();
   }
 
-  public abstract String toolkitVersion();
-
   @Nullable
   public abstract String packageVersion();
 
@@ -143,6 +141,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
+
+  public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangXApiView.Builder()
@@ -211,8 +211,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder hasDefaultServiceAddress(boolean val);
 
     public abstract Builder hasDefaultServiceScopes(boolean val);
-
-    public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
 
