@@ -39,6 +39,7 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CredentialsClassFileView;
@@ -324,19 +325,21 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         clientName += "::" + serviceName;
       }
       String topLevelNamespace = namer.getTopLevelNamespace();
+      String postVersionNamespace = postVersionNamespace(namer);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(clientName)
               .serviceName(serviceName)
               .fileName(versionPackagePath(namer))
               .topLevelNamespace(topLevelNamespace)
+              .postVersionNamespace(postVersionNamespace)
               .doc(
                   serviceTransformer.generateServiceDoc(
                       context, generateApiMethods(context).get(0), productConfig))
               .build());
     }
 
-    String versionFileBasePath =
+    String versionDirBasePath =
         namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 1)));
 
     return VersionIndexView.newBuilder()
@@ -350,7 +353,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath("lib" + File.separator + topLevelPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, false))
         .type(VersionIndexType.TopLevelIndex)
-        .versionFileBasePath(versionFileBasePath)
+        .versionDirBasePath(versionDirBasePath)
+        .postVersionDirPath(postVersionDirPath(namer))
         .build();
   }
 
@@ -365,14 +369,20 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
 
     for (String moduleName : namer.getApiModules()) {
+      boolean isVersion = moduleName.equals(namer.getApiWrapperModuleVersion());
+
       if (moduleName.equals(namer.getModuleServiceName())) {
         moduleViews.add(
             metadataTransformer
                 .generateReadmeMetadataView(model, productConfig, packageNamer)
                 .moduleName(moduleName)
                 .build());
-      } else if (includeVersionModule || !moduleName.equals(namer.getModuleVersionName())) {
+      } else if (includeVersionModule || !isVersion) {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
+      }
+
+      if (!includeVersionModule && isVersion) {
+        break;
       }
     }
     return moduleViews.build();
@@ -393,6 +403,36 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
     }
     return Joiner.on(File.separator).join(paths);
+  }
+
+  private String postVersionDirPath(SurfaceNamer namer) {
+    List<String> parts = namer.getApiModules();
+    List<String> paths = new ArrayList<>();
+    boolean versionFound = false;
+    for (String part : parts) {
+      if (versionFound) {
+        paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
+      }
+      if (VersionMatcher.isVersion(part)) {
+        versionFound = true;
+      }
+    }
+    return Joiner.on(File.separator).join(paths);
+  }
+
+  private String postVersionNamespace(SurfaceNamer namer) {
+    List<String> parts = namer.getApiModules();
+    List<String> paths = new ArrayList<>();
+    boolean versionFound = false;
+    for (String part : parts) {
+      if (versionFound) {
+        paths.add(part);
+      }
+      if (VersionMatcher.isVersion(part)) {
+        versionFound = true;
+      }
+    }
+    return Joiner.on("::").join(paths);
   }
 
   private GapicInterfaceContext createContext(
