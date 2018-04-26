@@ -126,6 +126,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String versionPath();
 
   @Nullable
+  public abstract String rootNamespace();
+
+  @Nullable
   public abstract String versionNamespace();
 
   public abstract String author();
@@ -253,6 +256,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
+
+    /** The root namespace of the services found within this package, without major version. */
+    public abstract Builder rootNamespace(String val);
 
     /** The namespace of the services found within this package. */
     public abstract Builder versionNamespace(String val);
