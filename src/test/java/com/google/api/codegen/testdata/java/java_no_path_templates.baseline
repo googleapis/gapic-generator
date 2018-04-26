@@ -20,7 +20,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-library-v1'
-group = 'com.google.api'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -28,6 +29,9 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 
 dependencies {
   compile 'com.google.api:gax:1.0.0'
@@ -61,8 +65,16 @@ sourceSets {
   }
 }
 
-compileJava.options.encoding = 'UTF-8'
-javadoc.options.encoding = 'UTF-8'
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
  * Copyright 2018 Google LLC

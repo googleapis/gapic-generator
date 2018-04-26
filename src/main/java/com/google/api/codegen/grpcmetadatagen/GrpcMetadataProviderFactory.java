@@ -50,14 +50,16 @@ public class GrpcMetadataProviderFactory {
             new JavaPackageMetadataTransformer(
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
-                    "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle"),
+                    "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle",
+                    "metadatagen/java/grpc/pom_grpc.xml.snip", "pom.xml"),
                 artifactType));
       case PROTOBUF:
         return new JavaGrpcMetadataProvider(
             new JavaPackageMetadataTransformer(
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
-                    "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle"),
+                    "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle",
+                    "metadatagen/java/grpc/pom_protobuf.xml.snip", "pom.xml"),
                 artifactType));
     }
 
