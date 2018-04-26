@@ -368,7 +368,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer())
+                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer(packageConfig))
                 .build();
         providers.add(testProvider);
       }
