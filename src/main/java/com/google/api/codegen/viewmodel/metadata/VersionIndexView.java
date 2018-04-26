@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -63,8 +64,17 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract VersionIndexType type();
 
+  /* The path leading up to the version directory. */
   @Nullable
-  public abstract String versionFileBasePath();
+  public abstract String versionDirBasePath();
+
+  /* The path following the version directory. */
+  @Nullable
+  public abstract String postVersionDirPath();
+
+  public boolean hasPostVersionDirPath() {
+    return !Strings.isNullOrEmpty(postVersionDirPath());
+  }
 
   @Nullable
   public abstract String namespace();
@@ -115,7 +125,9 @@ public abstract class VersionIndexView implements ViewModel {
 
     public abstract Builder type(VersionIndexType val);
 
-    public abstract Builder versionFileBasePath(String val);
+    public abstract Builder versionDirBasePath(String val);
+
+    public abstract Builder postVersionDirPath(String val);
 
     public abstract Builder namespace(String val);
 

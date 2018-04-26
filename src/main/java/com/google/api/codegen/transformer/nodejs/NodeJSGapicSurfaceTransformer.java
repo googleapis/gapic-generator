@@ -51,6 +51,7 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -269,7 +270,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     String version = namer.getApiWrapperModuleVersion();
-    boolean hasVersion = version != null && !version.isEmpty();
+    boolean hasVersion = !Strings.isNullOrEmpty(version);
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (InterfaceModel apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
