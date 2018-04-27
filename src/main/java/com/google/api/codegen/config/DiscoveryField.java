@@ -121,7 +121,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getSimpleName() {
-    //    return DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
     return simpleName;
   }
 
@@ -230,30 +229,14 @@ public class DiscoveryField implements FieldModel, TypeModel {
     return false;
   }
 
-  public static boolean isPrimitiveSchema(Schema schema) {
-    return schema.items() == null && schema.type() != Type.OBJECT;
-  }
-
   public static boolean isTopLevelSchema(Schema schema) {
-    if (schema.type().equals(Type.ARRAY)) {
-      return false;
-    }
-    return !schema.properties().isEmpty()
-        || (schema.items() != null && !schema.items().properties().isEmpty());
-  }
-
-  /** Returns if */
-  public static boolean isSchemaBodyEqual(Schema schema) {
-    if (schema.type().equals(Type.ARRAY)) {
-      return false;
-    }
     return !schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty());
   }
 
   @Override
   public boolean isPrimitive() {
-    return isPrimitiveSchema(schema);
+    return schema.items() == null && schema.type() != Type.OBJECT;
   }
 
   @Override

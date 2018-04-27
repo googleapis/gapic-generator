@@ -163,7 +163,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
     String fieldName = null;
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
-    if (isTopLevelSchema(schema)) {
+    if (DiscoveryField.isTopLevelSchema(schema)) {
       if (schema.repeated() || schema.type() == Type.ARRAY) {
         fieldName = Name.anyCamel(schemaTypeTable.getInnerTypeNameFor(schema)).toLowerCamel();
       } else {
@@ -179,6 +179,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             schema.getIdentifier(), schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
+    boolean hasRequiredProperties = false;
 
     // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
     // the same symbols.
@@ -198,50 +199,41 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
 
+    // Generate a Schema view from each property.
+    List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
+    List<Schema> schemaProperties = new LinkedList<>();
+    schemaProperties.addAll(schema.properties().values());
+    if (schema.items() != null) {
+      schemaProperties.addAll(schema.items().properties().values());
+    }
+    for (Schema property : schemaProperties) {
+      viewProperties.add(
+          generateSchemaClasses(
+              messageViewAccumulator,
+              documentContext,
+              property,
+              classNameSymbolTable,
+              messageViewMap));
+      if (!property.properties().isEmpty() || (property.items() != null)) {
+        // Add non-primitive-type property to imports.
+        schemaTypeTable.getAndSaveNicknameFor(property);
+      }
+      if (property.required()) {
+        hasRequiredProperties = true;
+      }
+    }
+    Collections.sort(viewProperties);
+    schemaView.properties(viewProperties);
+
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
 
-    StaticLangApiMessageView messageView;
-
-    if (isTopLevelSchema(schema)) {
+    if (DiscoveryField.isTopLevelSchema(schema)) {
       schemaView.typeName(schemaTypeName);
-      schemaView.innerTypeName(Name.anyCamel(fieldName).toUpperCamel());
+      schemaView.innerTypeName(Name.anyCamel(schemaModel.getSimpleName()).toUpperCamel());
 
-      // Generate a Schema view from each property.
-      List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
-      List<Schema> schemaProperties = new LinkedList<>();
-      schemaProperties.addAll(schema.properties().values());
-      if (schema.items() != null) {
-        schemaProperties.addAll(schema.items().properties().values());
-      }
-      boolean hasRequiredProperties = false;
-      for (Schema property : schemaProperties) {
-        viewProperties.add(
-            generateSchemaClasses(
-                messageViewAccumulator,
-                documentContext,
-                property,
-                classNameSymbolTable,
-                messageViewMap));
-        if (!property.properties().isEmpty() || (property.items() != null)) {
-          // Add non-primitive-type property to imports.
-          schemaTypeTable.getAndSaveNicknameFor(property);
-        }
-        if (property.required()) {
-          hasRequiredProperties = true;
-        }
-      }
-      Collections.sort(viewProperties);
-      schemaView.properties(viewProperties);
-      schemaView.hasRequiredProperties(hasRequiredProperties);
-
-      // Add it to list of file ViewModels for rendering.
-      messageView = schemaView.build();
-      if (!messageViewMap.containsKey(schema)) {
-        messageViewAccumulator.put(context, messageView);
-        messageViewMap.put(schema, schemaModel.getSimpleName());
-      }
+      messageViewMap.put(schema, schemaModel.getSimpleName());
     } else {
       // This is a primitive type.
       schemaView.typeName(schemaTypeName);
@@ -250,10 +242,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       } else {
         schemaView.innerTypeName(schemaTypeName);
       }
-      schemaView.hasRequiredProperties(false);
-      messageView = schemaView.build();
     }
 
+    schemaView.hasRequiredProperties(hasRequiredProperties);
+    StaticLangApiMessageView messageView = schemaView.build();
+
+    // Add it to list of file ViewModels for rendering.
+    if (DiscoveryField.isTopLevelSchema(schema)) {
+      messageViewAccumulator.put(context, messageView);
+    }
     return messageView;
   }
 
@@ -299,16 +296,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         schema.key(),
         schema.location(),
         schema.pattern(),
-        // Skip parent
+        // Skip parent.
         schema.properties().keySet(),
         schema.reference(),
         schema.repeated(),
         schema.required(),
         schema.type());
-  }
-
-  private static boolean isTopLevelSchema(Schema schema) {
-    return !schema.properties().isEmpty()
-        || (schema.items() != null && !schema.items().properties().isEmpty());
   }
 }

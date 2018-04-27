@@ -72,7 +72,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     return requestBodyType() != null;
   }
 
-  @Nullable
   // There can be arbitrarily nested fields inside of this field.
   public abstract List<StaticLangApiMessageView> properties();
 
