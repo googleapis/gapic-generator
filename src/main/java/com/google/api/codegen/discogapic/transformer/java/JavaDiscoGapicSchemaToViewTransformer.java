@@ -230,8 +230,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.isRequestMessage(false);
 
     if (DiscoveryField.isTopLevelSchema(schema)) {
-      schemaView.typeName(schemaTypeName);
-      schemaView.innerTypeName(Name.anyCamel(schemaModel.getSimpleName()).toUpperCamel());
+      String innerTypeName = Name.anyCamel(schemaModel.getSimpleName()).toUpperCamel();
+      if (schema.repeated() || schema.type() == Type.ARRAY) {
+        schemaView.typeName(schemaTypeName);
+      } else {
+        schemaView.typeName(innerTypeName);
+      }
+      schemaView.innerTypeName(innerTypeName);
 
       messageViewMap.put(schema, schemaModel.getSimpleName());
     } else {
