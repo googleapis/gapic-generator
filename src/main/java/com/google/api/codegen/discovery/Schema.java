@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /**
@@ -156,8 +155,9 @@ public abstract class Schema implements Node {
       items = null;
     }
     String location = root.getString("location");
+    String pattern = root.getString("pattern");
 
-    Map<String, Schema> properties = new TreeMap<>();
+    Map<String, Schema> properties = new HashMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
       properties.put(name, Schema.from(propertiesNode.getObject(name), name, null));
@@ -182,6 +182,7 @@ public abstract class Schema implements Node {
             items,
             key,
             location,
+            pattern,
             properties,
             reference,
             repeated,
@@ -216,6 +217,7 @@ public abstract class Schema implements Node {
         "",
         false,
         null,
+        "",
         "",
         "",
         new HashMap<String, Schema>(),
@@ -268,6 +270,9 @@ public abstract class Schema implements Node {
 
   /** @return the location. */
   public abstract String location();
+
+  /** @return the pattern. */
+  public abstract String pattern();
 
   /** @return the map of property names to schemas. */
   public abstract Map<String, Schema> properties();
@@ -364,55 +369,23 @@ public abstract class Schema implements Node {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
   }
 
-  /**
-   * One Schema equals another non-null Schema if they both contain the same exact properties
-   * (different parents are ok).
-   */
-  @Override
-  public boolean equals(Object other) {
-    //    return (other instanceof Schema) && discoveryNode().equals(((Schema) other).discoveryNode());
-    if (!(other instanceof Schema)) {
-      return false;
-    }
-
-    Schema otherSchema = (Schema) other;
-    if (additionalProperties() != null) {
-      if (otherSchema.additionalProperties() == null) {
-        return false;
-      }
-      return Objects.equals(
-          additionalProperties().getIdentifier(),
-          otherSchema.additionalProperties().getIdentifier());
-    }
-    return Objects.equals(defaultValue(), otherSchema.defaultValue())
-        // Exclude description.
-        && Objects.equals(format(), otherSchema.format())
-        // Check getIdentifier() in favor of id, key.
-        && Objects.equals(getIdentifier(), otherSchema.getIdentifier())
-        && Objects.equals(isEnum(), otherSchema.isEnum())
-        && Objects.equals(items(), otherSchema.items())
-        // Skip location.
-        && Objects.equals(properties().keySet(), otherSchema.properties().keySet())
-        // Skip reference
-        && Objects.equals(repeated(), otherSchema.repeated())
-        && Objects.equals(required(), otherSchema.required())
-        // Skip isMap.
-        && Objects.equals(type(), otherSchema.type());
-  }
-
+  /** @return hashCode that should be unique for each underlying JsonNode in the Document. */
   @Override
   public int hashCode() {
-    // Hash the same properties as are evaluated in .equals().
-    String additionalProperties =
-        additionalProperties() == null ? "" : additionalProperties().getIdentifier();
     return Objects.hash(
-        additionalProperties,
+        additionalProperties() == null ? null : additionalProperties().getIdentifier(),
         defaultValue(),
+        description(),
         format(),
-        getIdentifier(),
+        id(),
         isEnum(),
-        items(),
+        items() == null ? null : items().getIdentifier(),
+        key(),
+        location(),
+        pattern(),
+        parent != null ? parent.id() : "",
         properties().keySet(),
+        reference(),
         repeated(),
         required(),
         type());

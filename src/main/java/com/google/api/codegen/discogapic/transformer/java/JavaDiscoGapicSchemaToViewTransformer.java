@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
 public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
@@ -97,12 +96,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    Set<Schema> messageViewMap =
-        new TreeSet<>(
+    Map<Schema, String> messageViewMap =
+        new TreeMap<>(
             new Comparator<Schema>() {
               @Override
               public int compare(Schema o1, Schema o2) {
-                return o1.getIdentifier().compareTo(o2.getIdentifier());
+                return schemaToStringNoDescriptionParent(o1)
+                    .compareTo(schemaToStringNoDescriptionParent(o2));
               }
             });
     Comparator<String> caseInsensitiveComparator =
@@ -158,10 +158,21 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema,
       SymbolTable classNameSymbolTable,
-      Set<Schema> messageViewMap) {
+      Map<Schema, String> messageViewMap) {
 
-    FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
+    String fieldName = null;
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
+    if (isTopLevelSchema(schema)) {
+      if (schema.repeated() || schema.type() == Type.ARRAY) {
+        fieldName = Name.anyCamel(schemaTypeTable.getInnerTypeNameFor(schema)).toLowerCamel();
+      } else {
+        if (!messageViewMap.containsKey(schema)) {
+          fieldName =
+              Name.anyCamel(classNameSymbolTable.getNewSymbol(schemaTypeName)).toLowerCamel();
+        }
+      }
+    }
 
     SchemaTransformationContext context =
         SchemaTransformationContext.create(
@@ -181,34 +192,21 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
 
+    FieldModel schemaModel =
+        DiscoveryField.create(schema, fieldName, documentContext.getApiModel());
     schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
 
     StaticLangApiMessageView messageView;
-    if (!schema.properties().isEmpty()
-        || (schema.items() != null && !schema.items().properties().isEmpty())) {
-      // This is a top-level, non-primitive Schema that will be rendered as a class.
 
-      if (schema.repeated() || schema.type() == Type.ARRAY) {
-        String innerTypeName = schemaTypeTable.getInnerTypeNameFor(schema);
-        if (!messageViewMap.contains(schema)) {
-          innerTypeName = classNameSymbolTable.getNewSymbol(innerTypeName);
-        }
-        schemaView.typeName(schemaTypeName);
-        schemaView.innerTypeName(innerTypeName);
-      } else {
-        if (!messageViewMap.contains(schema)) {
-          schemaTypeName = classNameSymbolTable.getNewSymbol(schemaTypeName);
-        }
-        schemaView.innerTypeName(schemaTypeName);
-        schemaView.typeName(schemaTypeName);
-      }
+    if (isTopLevelSchema(schema)) {
+      schemaView.typeName(schemaTypeName);
+      schemaView.innerTypeName(Name.anyCamel(fieldName).toUpperCamel());
 
       // Generate a Schema view from each property.
       List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
@@ -240,9 +238,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
       // Add it to list of file ViewModels for rendering.
       messageView = schemaView.build();
-      if (!messageViewMap.contains(schema)) {
+      if (!messageViewMap.containsKey(schema)) {
         messageViewAccumulator.put(context, messageView);
-        messageViewMap.add(schema);
+        messageViewMap.put(schema, schemaModel.getSimpleName());
       }
     } else {
       // This is a primitive type.
@@ -273,5 +271,44 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     typeTable.getAndSaveNicknameFor("java.util.Set");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
     typeTable.getAndSaveNicknameFor("javax.annotation.Nullable");
+  }
+
+  private static String schemaToStringNoDescriptionParent(Schema schema) {
+    return String.format(
+        "additionalProperties: %s,\n"
+            + " defaultValue: %s,\n"
+            + " format: %s,\n"
+            + " id: %s,\n"
+            + " isEnum: %s,\n"
+            + " items: %s,\n"
+            + " key: %s,\n"
+            + " location: %s,\n"
+            + " pattern: %s,\n"
+            + " properties keys: %s,\n"
+            + " reference: %s,\n"
+            + " repeated: %s,\n"
+            + " required: %s,\n"
+            + " type: %s",
+        schema.additionalProperties() == null ? "" : schema.additionalProperties().getIdentifier(),
+        schema.defaultValue(),
+        // Skip description.
+        schema.format(),
+        schema.id(),
+        schema.isEnum(),
+        schema.items() == null ? "" : schema.items().getIdentifier(),
+        schema.key(),
+        schema.location(),
+        schema.pattern(),
+        // Skip parent
+        schema.properties().keySet(),
+        schema.reference(),
+        schema.repeated(),
+        schema.required(),
+        schema.type());
+  }
+
+  private static boolean isTopLevelSchema(Schema schema) {
+    return !schema.properties().isEmpty()
+        || (schema.items() != null && !schema.items().properties().isEmpty());
   }
 }
