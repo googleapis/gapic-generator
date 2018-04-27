@@ -68,8 +68,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file :
-        new ProtoFileView().getElementIterable(((ProtoApiModel) model).getProtoModel())) {
+    for (ProtoFile file : new ProtoFileView().getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
     surfaceDocs.add(generateOverview(model, productConfig));
