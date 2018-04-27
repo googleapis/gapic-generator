@@ -96,7 +96,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    Map<Schema, String> messageViewMap =
+    Map<Schema, String> schemaNames =
         new TreeMap<>(
             new Comparator<Schema>() {
               @Override
@@ -112,7 +112,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaTransformationContext.comparator);
-      generateSchemaClasses(contextViews, context, schema, classNameSymbolTable, messageViewMap);
+      generateSchemaClasses(contextViews, context, schema, classNameSymbolTable, schemaNames);
       for (Map.Entry<SchemaTransformationContext, StaticLangApiMessageView> contextView :
           contextViews.entrySet()) {
         surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
@@ -158,7 +158,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema,
       SymbolTable classNameSymbolTable,
-      Map<Schema, String> messageViewMap) {
+      Map<Schema, String> schemaNames) {
 
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
     String fieldName = null;
@@ -167,7 +167,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       if (schema.repeated() || schema.type() == Type.ARRAY) {
         fieldName = Name.anyCamel(schemaTypeTable.getInnerTypeNameFor(schema)).toLowerCamel();
       } else {
-        if (!messageViewMap.containsKey(schema)) {
+        if (!schemaNames.containsKey(schema)) {
           fieldName =
               Name.anyCamel(classNameSymbolTable.getNewSymbol(schemaTypeName)).toLowerCamel();
         }
@@ -213,7 +213,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
               documentContext,
               property,
               classNameSymbolTable,
-              messageViewMap));
+              schemaNames));
       if (!property.properties().isEmpty() || (property.items() != null)) {
         // Add non-primitive-type property to imports.
         schemaTypeTable.getAndSaveNicknameFor(property);
@@ -238,7 +238,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       }
       schemaView.innerTypeName(innerTypeName);
 
-      messageViewMap.put(schema, schemaModel.getSimpleName());
+      schemaNames.put(schema, schemaModel.getSimpleName());
     } else {
       // This is a primitive type.
       schemaView.typeName(schemaTypeName);
