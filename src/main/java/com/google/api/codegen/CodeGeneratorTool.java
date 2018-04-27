@@ -16,13 +16,12 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
+import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import java.io.File;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
