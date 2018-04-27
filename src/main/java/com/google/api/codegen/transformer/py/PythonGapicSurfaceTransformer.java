@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
@@ -233,7 +232,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.gapicPackageName(
         namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));

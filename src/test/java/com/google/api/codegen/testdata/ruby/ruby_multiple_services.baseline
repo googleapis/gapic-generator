@@ -369,11 +369,11 @@ task :jsondoc => :yard do
     documents: [
       {
         type: "toc",
-        title: "Google::Cloud::Example::V1::DataTypes",
+        title: "Google::Cloud::Example::V1::Foo::DataTypes",
         modules: [
           {
-            title: "Google::Cloud::Example::V1",
-            include: ["google/example/v1"]
+            title: "Google::Cloud::Example::V1::Foo",
+            include: ["google/example/v1/foo"]
           },
           {
             title: "Google::Protobuf",
@@ -524,7 +524,7 @@ module Google
     AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
       .select { |file| File.directory?(file) }
       .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-      .select { |dir| File.exist?(dir + ".rb") }
+      .select { |dir| File.exist?(dir + "foo.rb") }
       .map { |dir| File.basename(dir) }
 
     module Incrementer
@@ -568,12 +568,12 @@ module Google
             "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
         end
 
-        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        require "#{FILE_DIR}/#{version.to_s.downcase}/foo"
         version_module = Google::Example
           .constants
           .select {|sym| sym.to_s.downcase == version.to_s.downcase}
           .first
-        Google::Example.const_get(version_module)::Incrementer.new(*args, **kwargs)
+        Google::Example.const_get(version_module)::Foo::Incrementer.new(*args, **kwargs)
       end
     end
 
@@ -618,12 +618,12 @@ module Google
             "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
         end
 
-        require "#{FILE_DIR}/#{version.to_s.downcase}"
+        require "#{FILE_DIR}/#{version.to_s.downcase}/foo"
         version_module = Google::Example
           .constants
           .select {|sym| sym.to_s.downcase == version.to_s.downcase}
           .first
-        Google::Example.const_get(version_module)::Decrementer.new(*args, **kwargs)
+        Google::Example.const_get(version_module)::Foo::Decrementer.new(*args, **kwargs)
       end
     end
   end
@@ -658,7 +658,7 @@ module Google
   end
 end
 
-============== file: lib/google/example/v1.rb ==============
+============== file: lib/google/example/v1/foo.rb ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -673,8 +673,8 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "google/example/v1/incrementer_service_client"
-require "google/example/v1/decrementer_service_client"
+require "google/example/v1/foo/incrementer_service_client"
+require "google/example/v1/foo/decrementer_service_client"
 
 module Google
   # rubocop:disable LineLength
@@ -707,120 +707,122 @@ module Google
   #
   module Example
     module V1
-      # rubocop:enable LineLength
+      module Foo
+        # rubocop:enable LineLength
 
-      module Incrementer
-        ##
-        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-        #   Provides the means for authenticating requests made by the client. This parameter can
-        #   be many types.
-        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-        #   authenticating requests made by this client.
-        #   A `String` will be treated as the path to the keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `GRPC::Core::Channel` will be used to make calls through.
-        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-        #   should already be composed with a `GRPC::Core::CallCredentials` object.
-        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-        #   metadata for requests, generally, to give OAuth credentials.
-        # @param scopes [Array<String>]
-        #   The OAuth scopes for this service. This parameter is ignored if
-        #   an updater_proc is supplied.
-        # @param client_config [Hash]
-        #   A Hash for call options for each method. See
-        #   Google::Gax#construct_settings for the structure of
-        #   this data. Falls back to the default config if not specified
-        #   or the specified config is missing data points.
-        # @param timeout [Numeric]
-        #   The default timeout, in seconds, for calls made through this client.
-        # @param metadata [Hash]
-        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
-        # @param exception_transformer [Proc]
-        #   An optional proc that intercepts any exceptions raised during an API call to inject
-        #   custom error handling.
-        def self.new \
-            credentials: nil,
-            scopes: nil,
-            client_config: nil,
-            timeout: nil,
-            metadata: nil,
-            exception_transformer: nil,
-            lib_name: nil,
-            lib_version: nil
-          kwargs = {
-            credentials: credentials,
-            scopes: scopes,
-            client_config: client_config,
-            timeout: timeout,
-            metadata: metadata,
-            exception_transformer: exception_transformer,
-            lib_name: lib_name,
-            lib_version: lib_version
-          }.select { |_, v| v != nil }
-          Google::Example::V1::IncrementerServiceClient.new(**kwargs)
+        module Incrementer
+          ##
+          # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+          #   Provides the means for authenticating requests made by the client. This parameter can
+          #   be many types.
+          #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+          #   authenticating requests made by this client.
+          #   A `String` will be treated as the path to the keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `GRPC::Core::Channel` will be used to make calls through.
+          #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+          #   should already be composed with a `GRPC::Core::CallCredentials` object.
+          #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+          #   metadata for requests, generally, to give OAuth credentials.
+          # @param scopes [Array<String>]
+          #   The OAuth scopes for this service. This parameter is ignored if
+          #   an updater_proc is supplied.
+          # @param client_config [Hash]
+          #   A Hash for call options for each method. See
+          #   Google::Gax#construct_settings for the structure of
+          #   this data. Falls back to the default config if not specified
+          #   or the specified config is missing data points.
+          # @param timeout [Numeric]
+          #   The default timeout, in seconds, for calls made through this client.
+          # @param metadata [Hash]
+          #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+          # @param exception_transformer [Proc]
+          #   An optional proc that intercepts any exceptions raised during an API call to inject
+          #   custom error handling.
+          def self.new \
+              credentials: nil,
+              scopes: nil,
+              client_config: nil,
+              timeout: nil,
+              metadata: nil,
+              exception_transformer: nil,
+              lib_name: nil,
+              lib_version: nil
+            kwargs = {
+              credentials: credentials,
+              scopes: scopes,
+              client_config: client_config,
+              timeout: timeout,
+              metadata: metadata,
+              exception_transformer: exception_transformer,
+              lib_name: lib_name,
+              lib_version: lib_version
+            }.select { |_, v| v != nil }
+            Google::Example::V1::Foo::IncrementerServiceClient.new(**kwargs)
+          end
         end
-      end
 
-      module Decrementer
-        ##
-        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-        #   Provides the means for authenticating requests made by the client. This parameter can
-        #   be many types.
-        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-        #   authenticating requests made by this client.
-        #   A `String` will be treated as the path to the keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `GRPC::Core::Channel` will be used to make calls through.
-        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-        #   should already be composed with a `GRPC::Core::CallCredentials` object.
-        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-        #   metadata for requests, generally, to give OAuth credentials.
-        # @param scopes [Array<String>]
-        #   The OAuth scopes for this service. This parameter is ignored if
-        #   an updater_proc is supplied.
-        # @param client_config [Hash]
-        #   A Hash for call options for each method. See
-        #   Google::Gax#construct_settings for the structure of
-        #   this data. Falls back to the default config if not specified
-        #   or the specified config is missing data points.
-        # @param timeout [Numeric]
-        #   The default timeout, in seconds, for calls made through this client.
-        # @param metadata [Hash]
-        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
-        # @param exception_transformer [Proc]
-        #   An optional proc that intercepts any exceptions raised during an API call to inject
-        #   custom error handling.
-        def self.new \
-            credentials: nil,
-            scopes: nil,
-            client_config: nil,
-            timeout: nil,
-            metadata: nil,
-            exception_transformer: nil,
-            lib_name: nil,
-            lib_version: nil
-          kwargs = {
-            credentials: credentials,
-            scopes: scopes,
-            client_config: client_config,
-            timeout: timeout,
-            metadata: metadata,
-            exception_transformer: exception_transformer,
-            lib_name: lib_name,
-            lib_version: lib_version
-          }.select { |_, v| v != nil }
-          Google::Example::V1::DecrementerServiceClient.new(**kwargs)
+        module Decrementer
+          ##
+          # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+          #   Provides the means for authenticating requests made by the client. This parameter can
+          #   be many types.
+          #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+          #   authenticating requests made by this client.
+          #   A `String` will be treated as the path to the keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `GRPC::Core::Channel` will be used to make calls through.
+          #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+          #   should already be composed with a `GRPC::Core::CallCredentials` object.
+          #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+          #   metadata for requests, generally, to give OAuth credentials.
+          # @param scopes [Array<String>]
+          #   The OAuth scopes for this service. This parameter is ignored if
+          #   an updater_proc is supplied.
+          # @param client_config [Hash]
+          #   A Hash for call options for each method. See
+          #   Google::Gax#construct_settings for the structure of
+          #   this data. Falls back to the default config if not specified
+          #   or the specified config is missing data points.
+          # @param timeout [Numeric]
+          #   The default timeout, in seconds, for calls made through this client.
+          # @param metadata [Hash]
+          #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+          # @param exception_transformer [Proc]
+          #   An optional proc that intercepts any exceptions raised during an API call to inject
+          #   custom error handling.
+          def self.new \
+              credentials: nil,
+              scopes: nil,
+              client_config: nil,
+              timeout: nil,
+              metadata: nil,
+              exception_transformer: nil,
+              lib_name: nil,
+              lib_version: nil
+            kwargs = {
+              credentials: credentials,
+              scopes: scopes,
+              client_config: client_config,
+              timeout: timeout,
+              metadata: metadata,
+              exception_transformer: exception_transformer,
+              lib_name: lib_name,
+              lib_version: lib_version
+            }.select { |_, v| v != nil }
+            Google::Example::V1::Foo::DecrementerServiceClient.new(**kwargs)
+          end
         end
       end
     end
   end
 end
 
-============== file: lib/google/example/v1/decrementer_service_client.rb ==============
+============== file: lib/google/example/v1/foo/decrementer_service_client.rb ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -853,163 +855,165 @@ require "google/example/credentials"
 module Google
   module Example
     module V1
-      # @!attribute [r] decrementer_service_stub
-      #   @return [Google::Cloud::Example::V1::DecrementerService::Stub]
-      class DecrementerServiceClient
-        attr_reader :decrementer_service_stub
+      module Foo
+        # @!attribute [r] decrementer_service_stub
+        #   @return [Google::Cloud::Example::V1::Foo::DecrementerService::Stub]
+        class DecrementerServiceClient
+          attr_reader :decrementer_service_stub
 
-        # The default address of the service.
-        SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
+          # The default address of the service.
+          SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
 
-        # The default port of the service.
-        DEFAULT_SERVICE_PORT = 443
+          # The default port of the service.
+          DEFAULT_SERVICE_PORT = 443
 
-        DEFAULT_TIMEOUT = 30
+          DEFAULT_TIMEOUT = 30
 
-        # The scopes needed to make gRPC calls to all of the methods defined in
-        # this service.
-        ALL_SCOPES = [
-        ].freeze
+          # The scopes needed to make gRPC calls to all of the methods defined in
+          # this service.
+          ALL_SCOPES = [
+          ].freeze
 
 
-        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-        #   Provides the means for authenticating requests made by the client. This parameter can
-        #   be many types.
-        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-        #   authenticating requests made by this client.
-        #   A `String` will be treated as the path to the keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `GRPC::Core::Channel` will be used to make calls through.
-        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-        #   should already be composed with a `GRPC::Core::CallCredentials` object.
-        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-        #   metadata for requests, generally, to give OAuth credentials.
-        # @param scopes [Array<String>]
-        #   The OAuth scopes for this service. This parameter is ignored if
-        #   an updater_proc is supplied.
-        # @param client_config [Hash]
-        #   A Hash for call options for each method. See
-        #   Google::Gax#construct_settings for the structure of
-        #   this data. Falls back to the default config if not specified
-        #   or the specified config is missing data points.
-        # @param timeout [Numeric]
-        #   The default timeout, in seconds, for calls made through this client.
-        # @param metadata [Hash]
-        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
-        # @param exception_transformer [Proc]
-        #   An optional proc that intercepts any exceptions raised during an API call to inject
-        #   custom error handling.
-        def initialize \
-            credentials: nil,
-            scopes: ALL_SCOPES,
-            client_config: {},
-            timeout: DEFAULT_TIMEOUT,
-            metadata: nil,
-            exception_transformer: nil,
-            lib_name: nil,
-            lib_version: ""
-          # These require statements are intentionally placed here to initialize
-          # the gRPC module only when it's required.
-          # See https://github.com/googleapis/toolkit/issues/446
-          require "google/gax/grpc"
-          require "multiple_services_services_pb"
+          # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+          #   Provides the means for authenticating requests made by the client. This parameter can
+          #   be many types.
+          #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+          #   authenticating requests made by this client.
+          #   A `String` will be treated as the path to the keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `GRPC::Core::Channel` will be used to make calls through.
+          #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+          #   should already be composed with a `GRPC::Core::CallCredentials` object.
+          #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+          #   metadata for requests, generally, to give OAuth credentials.
+          # @param scopes [Array<String>]
+          #   The OAuth scopes for this service. This parameter is ignored if
+          #   an updater_proc is supplied.
+          # @param client_config [Hash]
+          #   A Hash for call options for each method. See
+          #   Google::Gax#construct_settings for the structure of
+          #   this data. Falls back to the default config if not specified
+          #   or the specified config is missing data points.
+          # @param timeout [Numeric]
+          #   The default timeout, in seconds, for calls made through this client.
+          # @param metadata [Hash]
+          #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+          # @param exception_transformer [Proc]
+          #   An optional proc that intercepts any exceptions raised during an API call to inject
+          #   custom error handling.
+          def initialize \
+              credentials: nil,
+              scopes: ALL_SCOPES,
+              client_config: {},
+              timeout: DEFAULT_TIMEOUT,
+              metadata: nil,
+              exception_transformer: nil,
+              lib_name: nil,
+              lib_version: ""
+            # These require statements are intentionally placed here to initialize
+            # the gRPC module only when it's required.
+            # See https://github.com/googleapis/toolkit/issues/446
+            require "google/gax/grpc"
+            require "multiple_services_services_pb"
 
-          credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::Credentials.default
 
-          if credentials.is_a?(String) || credentials.is_a?(Hash)
-            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
-          end
-          if credentials.is_a?(GRPC::Core::Channel)
-            channel = credentials
-          end
-          if credentials.is_a?(GRPC::Core::ChannelCredentials)
-            chan_creds = credentials
-          end
-          if credentials.is_a?(Proc)
-            updater_proc = credentials
-          end
-          if credentials.is_a?(Google::Auth::Credentials)
-            updater_proc = credentials.updater_proc
-          end
+            if credentials.is_a?(String) || credentials.is_a?(Hash)
+              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+            end
+            if credentials.is_a?(GRPC::Core::Channel)
+              channel = credentials
+            end
+            if credentials.is_a?(GRPC::Core::ChannelCredentials)
+              chan_creds = credentials
+            end
+            if credentials.is_a?(Proc)
+              updater_proc = credentials
+            end
+            if credentials.is_a?(Google::Auth::Credentials)
+              updater_proc = credentials.updater_proc
+            end
 
-          package_version = Gem.loaded_specs['google-example'].version.version
+            package_version = Gem.loaded_specs['google-example'].version.version
 
-          google_api_client = "gl-ruby/#{RUBY_VERSION}"
-          google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
-          google_api_client << " grpc/#{GRPC::VERSION}"
-          google_api_client.freeze
+            google_api_client = "gl-ruby/#{RUBY_VERSION}"
+            google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+            google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
+            google_api_client << " grpc/#{GRPC::VERSION}"
+            google_api_client.freeze
 
-          headers = { :"x-goog-api-client" => google_api_client }
-          headers.merge!(metadata) unless metadata.nil?
-          client_config_file = Pathname.new(__dir__).join(
-            "decrementer_service_client_config.json"
-          )
-          defaults = client_config_file.open do |f|
-            Google::Gax.construct_settings(
-              "google.cloud.example.v1.DecrementerService",
-              JSON.parse(f.read),
-              client_config,
-              Google::Gax::Grpc::STATUS_CODE_NAMES,
-              timeout,
-              errors: Google::Gax::Grpc::API_ERRORS,
-              metadata: headers
+            headers = { :"x-goog-api-client" => google_api_client }
+            headers.merge!(metadata) unless metadata.nil?
+            client_config_file = Pathname.new(__dir__).join(
+              "decrementer_service_client_config.json"
+            )
+            defaults = client_config_file.open do |f|
+              Google::Gax.construct_settings(
+                "google.cloud.example.v1.foo.DecrementerService",
+                JSON.parse(f.read),
+                client_config,
+                Google::Gax::Grpc::STATUS_CODE_NAMES,
+                timeout,
+                errors: Google::Gax::Grpc::API_ERRORS,
+                metadata: headers
+              )
+            end
+
+            # Allow overriding the service path/port in subclasses.
+            service_path = self.class::SERVICE_ADDRESS
+            port = self.class::DEFAULT_SERVICE_PORT
+            @decrementer_service_stub = Google::Gax::Grpc.create_stub(
+              service_path,
+              port,
+              chan_creds: chan_creds,
+              channel: channel,
+              updater_proc: updater_proc,
+              scopes: scopes,
+              &Google::Cloud::Example::V1::Foo::DecrementerService::Stub.method(:new)
+            )
+
+            @decrement = Google::Gax.create_api_call(
+              @decrementer_service_stub.method(:decrement),
+              defaults["decrement"],
+              exception_transformer: exception_transformer
             )
           end
 
-          # Allow overriding the service path/port in subclasses.
-          service_path = self.class::SERVICE_ADDRESS
-          port = self.class::DEFAULT_SERVICE_PORT
-          @decrementer_service_stub = Google::Gax::Grpc.create_stub(
-            service_path,
-            port,
-            chan_creds: chan_creds,
-            channel: channel,
-            updater_proc: updater_proc,
-            scopes: scopes,
-            &Google::Cloud::Example::V1::DecrementerService::Stub.method(:new)
-          )
+          # Service calls
 
-          @decrement = Google::Gax.create_api_call(
-            @decrementer_service_stub.method(:decrement),
-            defaults["decrement"],
-            exception_transformer: exception_transformer
-          )
-        end
+          # Decrement.
+          #
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @yield [result, operation] Access the result along with the RPC operation
+          # @yieldparam result []
+          # @yieldparam operation [GRPC::ActiveCall::Operation]
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          # @example
+          #   require "google/example/v1/foo"
+          #
+          #   decrementer_service_client = Google::Example::V1::Foo::Decrementer.new
+          #   decrementer_service_client.decrement
 
-        # Service calls
-
-        # Decrement.
-        #
-        # @param options [Google::Gax::CallOptions]
-        #   Overrides the default settings for this call, e.g, timeout,
-        #   retries, etc.
-        # @yield [result, operation] Access the result along with the RPC operation
-        # @yieldparam result []
-        # @yieldparam operation [GRPC::ActiveCall::Operation]
-        # @raise [Google::Gax::GaxError] if the RPC is aborted.
-        # @example
-        #   require "google/example/v1"
-        #
-        #   decrementer_service_client = Google::Example::V1::Decrementer.new
-        #   decrementer_service_client.decrement
-
-        def decrement options: nil, &block
-          req = Google::Cloud::Example::V1::DecrementRequest.new
-          @decrement.call(req, options, &block)
-          nil
+          def decrement options: nil, &block
+            req = Google::Cloud::Example::V1::Foo::DecrementRequest.new
+            @decrement.call(req, options, &block)
+            nil
+          end
         end
       end
     end
   end
 end
 
-============== file: lib/google/example/v1/decrementer_service_client_config.json ==============
+============== file: lib/google/example/v1/foo/decrementer_service_client_config.json ==============
 {
   "interfaces": {
-    "google.cloud.example.v1.DecrementerService": {
+    "google.cloud.example.v1.foo.DecrementerService": {
       "retry_codes": {},
       "retry_params": {},
       "methods": {
@@ -1021,7 +1025,7 @@ end
   }
 }
 
-============== file: lib/google/example/v1/incrementer_service_client.rb ==============
+============== file: lib/google/example/v1/foo/incrementer_service_client.rb ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1054,163 +1058,165 @@ require "google/example/credentials"
 module Google
   module Example
     module V1
-      # @!attribute [r] incrementer_service_stub
-      #   @return [Google::Cloud::Example::V1::IncrementerService::Stub]
-      class IncrementerServiceClient
-        attr_reader :incrementer_service_stub
+      module Foo
+        # @!attribute [r] incrementer_service_stub
+        #   @return [Google::Cloud::Example::V1::Foo::IncrementerService::Stub]
+        class IncrementerServiceClient
+          attr_reader :incrementer_service_stub
 
-        # The default address of the service.
-        SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
+          # The default address of the service.
+          SERVICE_ADDRESS = "no-path-templates.googleapis.com".freeze
 
-        # The default port of the service.
-        DEFAULT_SERVICE_PORT = 443
+          # The default port of the service.
+          DEFAULT_SERVICE_PORT = 443
 
-        DEFAULT_TIMEOUT = 30
+          DEFAULT_TIMEOUT = 30
 
-        # The scopes needed to make gRPC calls to all of the methods defined in
-        # this service.
-        ALL_SCOPES = [
-        ].freeze
+          # The scopes needed to make gRPC calls to all of the methods defined in
+          # this service.
+          ALL_SCOPES = [
+          ].freeze
 
 
-        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-        #   Provides the means for authenticating requests made by the client. This parameter can
-        #   be many types.
-        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-        #   authenticating requests made by this client.
-        #   A `String` will be treated as the path to the keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-        #   credentials for this client.
-        #   A `GRPC::Core::Channel` will be used to make calls through.
-        #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-        #   should already be composed with a `GRPC::Core::CallCredentials` object.
-        #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-        #   metadata for requests, generally, to give OAuth credentials.
-        # @param scopes [Array<String>]
-        #   The OAuth scopes for this service. This parameter is ignored if
-        #   an updater_proc is supplied.
-        # @param client_config [Hash]
-        #   A Hash for call options for each method. See
-        #   Google::Gax#construct_settings for the structure of
-        #   this data. Falls back to the default config if not specified
-        #   or the specified config is missing data points.
-        # @param timeout [Numeric]
-        #   The default timeout, in seconds, for calls made through this client.
-        # @param metadata [Hash]
-        #   Default metadata to be sent with each request. This can be overridden on a per call basis.
-        # @param exception_transformer [Proc]
-        #   An optional proc that intercepts any exceptions raised during an API call to inject
-        #   custom error handling.
-        def initialize \
-            credentials: nil,
-            scopes: ALL_SCOPES,
-            client_config: {},
-            timeout: DEFAULT_TIMEOUT,
-            metadata: nil,
-            exception_transformer: nil,
-            lib_name: nil,
-            lib_version: ""
-          # These require statements are intentionally placed here to initialize
-          # the gRPC module only when it's required.
-          # See https://github.com/googleapis/toolkit/issues/446
-          require "google/gax/grpc"
-          require "multiple_services_services_pb"
+          # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+          #   Provides the means for authenticating requests made by the client. This parameter can
+          #   be many types.
+          #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+          #   authenticating requests made by this client.
+          #   A `String` will be treated as the path to the keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+          #   credentials for this client.
+          #   A `GRPC::Core::Channel` will be used to make calls through.
+          #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+          #   should already be composed with a `GRPC::Core::CallCredentials` object.
+          #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+          #   metadata for requests, generally, to give OAuth credentials.
+          # @param scopes [Array<String>]
+          #   The OAuth scopes for this service. This parameter is ignored if
+          #   an updater_proc is supplied.
+          # @param client_config [Hash]
+          #   A Hash for call options for each method. See
+          #   Google::Gax#construct_settings for the structure of
+          #   this data. Falls back to the default config if not specified
+          #   or the specified config is missing data points.
+          # @param timeout [Numeric]
+          #   The default timeout, in seconds, for calls made through this client.
+          # @param metadata [Hash]
+          #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+          # @param exception_transformer [Proc]
+          #   An optional proc that intercepts any exceptions raised during an API call to inject
+          #   custom error handling.
+          def initialize \
+              credentials: nil,
+              scopes: ALL_SCOPES,
+              client_config: {},
+              timeout: DEFAULT_TIMEOUT,
+              metadata: nil,
+              exception_transformer: nil,
+              lib_name: nil,
+              lib_version: ""
+            # These require statements are intentionally placed here to initialize
+            # the gRPC module only when it's required.
+            # See https://github.com/googleapis/toolkit/issues/446
+            require "google/gax/grpc"
+            require "multiple_services_services_pb"
 
-          credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::Credentials.default
 
-          if credentials.is_a?(String) || credentials.is_a?(Hash)
-            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
-          end
-          if credentials.is_a?(GRPC::Core::Channel)
-            channel = credentials
-          end
-          if credentials.is_a?(GRPC::Core::ChannelCredentials)
-            chan_creds = credentials
-          end
-          if credentials.is_a?(Proc)
-            updater_proc = credentials
-          end
-          if credentials.is_a?(Google::Auth::Credentials)
-            updater_proc = credentials.updater_proc
-          end
+            if credentials.is_a?(String) || credentials.is_a?(Hash)
+              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+            end
+            if credentials.is_a?(GRPC::Core::Channel)
+              channel = credentials
+            end
+            if credentials.is_a?(GRPC::Core::ChannelCredentials)
+              chan_creds = credentials
+            end
+            if credentials.is_a?(Proc)
+              updater_proc = credentials
+            end
+            if credentials.is_a?(Google::Auth::Credentials)
+              updater_proc = credentials.updater_proc
+            end
 
-          package_version = Gem.loaded_specs['google-example'].version.version
+            package_version = Gem.loaded_specs['google-example'].version.version
 
-          google_api_client = "gl-ruby/#{RUBY_VERSION}"
-          google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-          google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
-          google_api_client << " grpc/#{GRPC::VERSION}"
-          google_api_client.freeze
+            google_api_client = "gl-ruby/#{RUBY_VERSION}"
+            google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+            google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
+            google_api_client << " grpc/#{GRPC::VERSION}"
+            google_api_client.freeze
 
-          headers = { :"x-goog-api-client" => google_api_client }
-          headers.merge!(metadata) unless metadata.nil?
-          client_config_file = Pathname.new(__dir__).join(
-            "incrementer_service_client_config.json"
-          )
-          defaults = client_config_file.open do |f|
-            Google::Gax.construct_settings(
-              "google.cloud.example.v1.IncrementerService",
-              JSON.parse(f.read),
-              client_config,
-              Google::Gax::Grpc::STATUS_CODE_NAMES,
-              timeout,
-              errors: Google::Gax::Grpc::API_ERRORS,
-              metadata: headers
+            headers = { :"x-goog-api-client" => google_api_client }
+            headers.merge!(metadata) unless metadata.nil?
+            client_config_file = Pathname.new(__dir__).join(
+              "incrementer_service_client_config.json"
+            )
+            defaults = client_config_file.open do |f|
+              Google::Gax.construct_settings(
+                "google.cloud.example.v1.foo.IncrementerService",
+                JSON.parse(f.read),
+                client_config,
+                Google::Gax::Grpc::STATUS_CODE_NAMES,
+                timeout,
+                errors: Google::Gax::Grpc::API_ERRORS,
+                metadata: headers
+              )
+            end
+
+            # Allow overriding the service path/port in subclasses.
+            service_path = self.class::SERVICE_ADDRESS
+            port = self.class::DEFAULT_SERVICE_PORT
+            @incrementer_service_stub = Google::Gax::Grpc.create_stub(
+              service_path,
+              port,
+              chan_creds: chan_creds,
+              channel: channel,
+              updater_proc: updater_proc,
+              scopes: scopes,
+              &Google::Cloud::Example::V1::Foo::IncrementerService::Stub.method(:new)
+            )
+
+            @increment = Google::Gax.create_api_call(
+              @incrementer_service_stub.method(:increment),
+              defaults["increment"],
+              exception_transformer: exception_transformer
             )
           end
 
-          # Allow overriding the service path/port in subclasses.
-          service_path = self.class::SERVICE_ADDRESS
-          port = self.class::DEFAULT_SERVICE_PORT
-          @incrementer_service_stub = Google::Gax::Grpc.create_stub(
-            service_path,
-            port,
-            chan_creds: chan_creds,
-            channel: channel,
-            updater_proc: updater_proc,
-            scopes: scopes,
-            &Google::Cloud::Example::V1::IncrementerService::Stub.method(:new)
-          )
+          # Service calls
 
-          @increment = Google::Gax.create_api_call(
-            @incrementer_service_stub.method(:increment),
-            defaults["increment"],
-            exception_transformer: exception_transformer
-          )
-        end
+          # Increment.
+          #
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @yield [result, operation] Access the result along with the RPC operation
+          # @yieldparam result []
+          # @yieldparam operation [GRPC::ActiveCall::Operation]
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          # @example
+          #   require "google/example/v1/foo"
+          #
+          #   incrementer_service_client = Google::Example::V1::Foo::Incrementer.new
+          #   incrementer_service_client.increment
 
-        # Service calls
-
-        # Increment.
-        #
-        # @param options [Google::Gax::CallOptions]
-        #   Overrides the default settings for this call, e.g, timeout,
-        #   retries, etc.
-        # @yield [result, operation] Access the result along with the RPC operation
-        # @yieldparam result []
-        # @yieldparam operation [GRPC::ActiveCall::Operation]
-        # @raise [Google::Gax::GaxError] if the RPC is aborted.
-        # @example
-        #   require "google/example/v1"
-        #
-        #   incrementer_service_client = Google::Example::V1::Incrementer.new
-        #   incrementer_service_client.increment
-
-        def increment options: nil, &block
-          req = Google::Cloud::Example::V1::IncrementRequest.new
-          @increment.call(req, options, &block)
-          nil
+          def increment options: nil, &block
+            req = Google::Cloud::Example::V1::Foo::IncrementRequest.new
+            @increment.call(req, options, &block)
+            nil
+          end
         end
       end
     end
   end
 end
 
-============== file: lib/google/example/v1/incrementer_service_client_config.json ==============
+============== file: lib/google/example/v1/foo/incrementer_service_client_config.json ==============
 {
   "interfaces": {
-    "google.cloud.example.v1.IncrementerService": {
+    "google.cloud.example.v1.foo.IncrementerService": {
       "retry_codes": {},
       "retry_params": {},
       "methods": {
@@ -1222,7 +1228,7 @@ end
   }
 }
 
-============== file: test/google/example/v1/decrementer_service_client_test.rb ==============
+============== file: test/google/example/v1/foo/decrementer_service_client_test.rb ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1243,7 +1249,7 @@ require "minitest/spec"
 require "google/gax"
 
 require "google/example"
-require "google/example/v1/decrementer_service_client"
+require "google/example/v1/foo/decrementer_service_client"
 require "multiple_services_services_pb"
 
 class CustomTestError < StandardError; end
@@ -1290,10 +1296,10 @@ class MockDecrementerServiceCredentials < Google::Example::Credentials
   end
 end
 
-describe Google::Example::V1::DecrementerServiceClient do
+describe Google::Example::V1::Foo::DecrementerServiceClient do
 
   describe 'decrement' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::DecrementerServiceClient#decrement."
+    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
 
     it 'invokes decrement without error' do
 
@@ -1306,7 +1312,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
-      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
@@ -1336,7 +1342,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
-      Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
@@ -1352,7 +1358,7 @@ describe Google::Example::V1::DecrementerServiceClient do
     end
   end
 end
-============== file: test/google/example/v1/incrementer_service_client_test.rb ==============
+============== file: test/google/example/v1/foo/incrementer_service_client_test.rb ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1373,7 +1379,7 @@ require "minitest/spec"
 require "google/gax"
 
 require "google/example"
-require "google/example/v1/incrementer_service_client"
+require "google/example/v1/foo/incrementer_service_client"
 require "multiple_services_services_pb"
 
 class CustomTestError < StandardError; end
@@ -1420,10 +1426,10 @@ class MockIncrementerServiceCredentials < Google::Example::Credentials
   end
 end
 
-describe Google::Example::V1::IncrementerServiceClient do
+describe Google::Example::V1::Foo::IncrementerServiceClient do
 
   describe 'increment' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::IncrementerServiceClient#increment."
+    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::IncrementerServiceClient#increment."
 
     it 'invokes increment without error' do
 
@@ -1436,7 +1442,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
-      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
@@ -1466,7 +1472,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       # Mock auth layer
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
-      Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
+      Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 

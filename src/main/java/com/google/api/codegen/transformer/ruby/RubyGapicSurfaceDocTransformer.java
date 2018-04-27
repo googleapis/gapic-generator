@@ -135,7 +135,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
       boolean hasOverview) {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
     for (String moduleName : namer.getApiModules()) {
-      if (moduleName.equals(namer.getModuleVersionName()) && file != null) {
+      if (moduleName.equals(namer.getApiWrapperModuleVersion()) && file != null) {
         moduleViews.add(generateTocModuleView(model, file, productConfig, namer, moduleName));
       } else if (moduleName.equals(namer.getModuleServiceName()) && hasOverview) {
         moduleViews.add(generateOverviewView(model, productConfig));
