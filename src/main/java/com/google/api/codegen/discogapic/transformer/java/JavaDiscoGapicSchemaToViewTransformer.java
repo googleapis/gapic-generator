@@ -161,18 +161,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Map<Schema, String> schemaNames) {
 
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
-    String fieldName = null;
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
-    if (DiscoveryField.isTopLevelSchema(schema)) {
-      if (schema.repeated() || schema.type() == Type.ARRAY) {
-        fieldName = Name.anyCamel(schemaTypeTable.getInnerTypeNameFor(schema)).toLowerCamel();
-      } else {
-        if (!schemaNames.containsKey(schema)) {
-          fieldName =
-              Name.anyCamel(classNameSymbolTable.getNewSymbol(schemaTypeName)).toLowerCamel();
-        }
-      }
-    }
 
     SchemaTransformationContext context =
         SchemaTransformationContext.create(
@@ -193,8 +182,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
 
-    FieldModel schemaModel =
-        DiscoveryField.create(schema, fieldName, documentContext.getApiModel());
+    FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));

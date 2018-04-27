@@ -62,29 +62,24 @@ public class DiscoveryField implements FieldModel, TypeModel {
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
    */
-  private DiscoveryField(Schema schema, String name, DiscoApiModel apiModel) {
+  private DiscoveryField(Schema schema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(schema);
     this.originalSchema = schema;
     this.schema = schema.dereference();
     this.apiModel = apiModel;
-    if (name != null) {
-      this.simpleName = name;
-      schemaNames.put(schema, name);
+    if (schemaNames.containsKey(schema)) {
+      this.simpleName = schemaNames.get(schema);
     } else {
-      if (schemaNames.containsKey(schema)) {
-        this.simpleName = schemaNames.get(schema);
-      } else {
-        String simpleName = DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
-        if (isTopLevelSchema(schema)) {
-          if (schemaNames.containsKey(schema)) {
-            simpleName = schemaNames.get(schema);
-          } else {
-            simpleName = idSymbolTable.getNewSymbol(simpleName);
-            schemaNames.put(schema, simpleName);
-          }
+      String simpleName = DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
+      if (isTopLevelSchema(schema)) {
+        if (schemaNames.containsKey(schema)) {
+          simpleName = schemaNames.get(schema);
+        } else {
+          simpleName = idSymbolTable.getNewSymbol(simpleName);
+          schemaNames.put(schema, simpleName);
         }
-        this.simpleName = simpleName;
       }
+      this.simpleName = simpleName;
     }
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
     for (Schema child : this.schema.properties().values()) {
@@ -93,25 +88,11 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.properties = propertiesBuilder.build();
   }
 
-  /**
-   * Create a FieldModel object from a non-null Schema object. If a DiscoveryField has already been
-   * created using the given schema, then that DiscoveryField is returned.
-   */
-  public static synchronized DiscoveryField create(
-      Schema schema, String customName, DiscoApiModel rootApiModel) {
+  /** Create a FieldModel object from a non-null Schema object. */
+  public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
-    if (globalObjects.containsKey(schema)) {
-      return globalObjects.get(schema);
-    }
-    DiscoveryField field = new DiscoveryField(schema, customName, rootApiModel);
-    globalObjects.put(schema, field);
-    return field;
-  }
-
-  /** Create a FieldModel object from a non-null Schema object. */
-  public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
-    return create(schema, null, rootApiModel);
+    return new DiscoveryField(schema, rootApiModel);
   }
 
   /** @return the underlying Discovery Schema. */
