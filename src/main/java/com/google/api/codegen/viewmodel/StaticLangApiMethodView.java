@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,7 +32,7 @@ public abstract class StaticLangApiMethodView
 
   public abstract String apiVariableName();
 
-  public abstract InitCodeView initCode();
+  public abstract InitCodeView initCode(); // to be deprecated
 
   public abstract ApiMethodDocView doc();
 
@@ -94,12 +94,19 @@ public abstract class StaticLangApiMethodView
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
+  public abstract String serviceConstructorName();
+
+  @Nullable
+  public abstract List<MethodSampleView> samples();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
   }
 
+  public abstract Builder toBuilder();
+
   @AutoValue.Builder
-  public abstract static class Builder {
+  public abstract static class Builder implements ApiMethodView.Builder {
     public abstract Builder type(ClientMethodType type);
 
     public abstract Builder apiClassName(String apiClassName);
@@ -157,6 +164,10 @@ public abstract class StaticLangApiMethodView
     public abstract Builder releaseLevelAnnotation(String value);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
+    public abstract Builder serviceConstructorName(String val);
+
+    public abstract Builder samples(List<MethodSampleView> samples);
 
     public abstract StaticLangApiMethodView build();
   }

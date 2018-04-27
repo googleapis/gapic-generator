@@ -12,6 +12,8 @@ language_settings:
     # See: https://github.com/googleapis/toolkit/issues/320
     package_name: cloud.google.com/go/library/apiv1
     domain_layer_location: cloud.google.com/go/library
+    interface_names:
+      google.example.library.v1.LibraryService: LibClient
   ruby:
     # Note that package_name for ruby is intentionally changed
     # from the gRPC package name of the API to test the generated
@@ -73,10 +75,20 @@ interfaces:
     entity_name: shelf
   - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
+    language_overrides:
+    - language: java
+      entity_name: shelf_book
   # To test the case that entity name / variable which happens to be
   # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
   - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
     entity_name: return
+  - name_pattern: projects/{project}
+    entity_name: project
+    language_overrides:
+    - language: csharp
+      common_resource_name: Google.Api.Gax.ResourceNames.ProjectName
+    - language: java
+      common_resource_name: com.google.cloud.ProjectName
   smoke_test:
     method: UpdateBook
     init_fields:
@@ -225,6 +237,32 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
+    sample_value_sets:
+    - id: pi_version
+      title: "Pi version"
+      description: "Calling PublishSeries for the Pi series on the Math shelf"
+      parameters:
+      - shelf.name=Math
+      - series_uuid.series_string=xyz3141592654
+    - id: second_edition
+      title: "Second edition"
+      description: "Calling PublishSeries for a specified edition"
+      parameters:
+      - edition=2
+    samples:
+      in_code: 
+      - calling_forms: [callable]
+        value_sets: [pi_version]
+      api_explorer:
+      - calling_forms: [request_based, callable]
+        value_sets: [second_edition, pi_version]
+      - calling_forms: callable
+        value_sets: [pi_version]
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [second_edition, pi_version]
+      - calling_forms: callable
+        value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
   - name: GetBook
     flattening:
       groups:
@@ -240,6 +278,16 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
+    sample_value_sets:
+    - id: not_here
+      title: "Non-existent book"
+      description: "This value set should never be used"
+      parameters:
+      - name="Unreal book"
+    samples:
+      in_code:
+      - calling_forms: "foo"
+        value_sets: not_here
   - name: ListBooks
     flattening:
       groups:
@@ -262,6 +310,9 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
+    sample_code_init_fields:
+    # Set the sample_code_init_field for an optional field
+    - filter="book-filter-string"
   - name: DeleteBook
     flattening:
       groups:
@@ -600,6 +651,7 @@ interfaces:
         - required_singular_message
         - required_singular_resource_name
         - required_singular_resource_name_oneof
+        - required_singular_resource_name_common
         - required_singular_fixed32
         - required_singular_fixed64
         - required_repeated_int32
@@ -613,6 +665,7 @@ interfaces:
         - required_repeated_message
         - required_repeated_resource_name
         - required_repeated_resource_name_oneof
+        - required_repeated_resource_name_common
         - required_repeated_fixed32
         - required_repeated_fixed64
         - required_map
@@ -627,6 +680,7 @@ interfaces:
         - optional_singular_message
         - optional_singular_resource_name
         - optional_singular_resource_name_oneof
+        - optional_singular_resource_name_common
         - optional_singular_fixed32
         - optional_singular_fixed64
         - optional_repeated_int32
@@ -640,6 +694,7 @@ interfaces:
         - optional_repeated_message
         - optional_repeated_resource_name
         - optional_repeated_resource_name_oneof
+        - optional_repeated_resource_name_common
         - optional_repeated_fixed32
         - optional_repeated_fixed64
         - optional_map
@@ -655,6 +710,7 @@ interfaces:
     - required_singular_message
     - required_singular_resource_name
     - required_singular_resource_name_oneof
+    - required_singular_resource_name_common
     - required_singular_fixed32
     - required_singular_fixed64
     - required_repeated_int32
@@ -668,6 +724,7 @@ interfaces:
     - required_repeated_message
     - required_repeated_resource_name
     - required_repeated_resource_name_oneof
+    - required_repeated_resource_name_common
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
@@ -754,9 +811,13 @@ resource_name_generation:
   field_entity_map:
     required_singular_resource_name: book
     required_singular_resource_name_oneof: book_oneof
+    required_singular_resource_name_common: project
     required_repeated_resource_name: book
     required_repeated_resource_name_oneof: book_oneof
+    required_repeated_resource_name_common: project
     optional_singular_resource_name: book
     optional_singular_resource_name_oneof: book_oneof
+    optional_singular_resource_name_common: project
     optional_repeated_resource_name: book
     optional_repeated_resource_name_oneof: book_oneof
+    optional_repeated_resource_name_common: project

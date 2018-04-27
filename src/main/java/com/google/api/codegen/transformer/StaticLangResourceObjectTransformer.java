@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
+import com.google.api.codegen.viewmodel.StaticLangMemberView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,10 +72,21 @@ public class StaticLangResourceObjectTransformer {
     String addCallName = namer.getFieldAddFunctionName(field);
     String getCallName = namer.getFieldGetFunctionName(field);
     String transformParamFunctionName = null;
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-        && fieldConfig.requiresParamTransformation()) {
-      if (!fieldConfig.requiresParamTransformationFromAny()) {
+    String formatMethodName = null;
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (fieldConfig.requiresParamTransformation()
+          && !fieldConfig.requiresParamTransformationFromAny()
+          && !featureConfig.useInheritanceForOneofs()) {
         transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+      }
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+        if (field.isRepeated()) {
+          // TODO support repeated one-ofs (in Java: Any* classes)
+          transformParamFunctionName =
+              namer.getResourceTypeFormatListMethodName(context.getTypeTable(), fieldConfig);
+        } else {
+          formatMethodName = namer.getResourceNameFormatMethodName();
+        }
       }
     }
 
@@ -89,6 +100,7 @@ public class StaticLangResourceObjectTransformer {
     param.addCallName(addCallName);
     param.getCallName(getCallName);
     param.transformParamFunctionName(transformParamFunctionName);
+    param.formatMethodName(formatMethodName);
     param.isMap(field.isMap());
     param.isArray(!field.isMap() && field.isRepeated());
     param.isPrimitive(namer.isPrimitive(field));
@@ -96,15 +108,17 @@ public class StaticLangResourceObjectTransformer {
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
     }
-    List<FieldCopyView> fieldCopyViews = new ArrayList<>();
+    List<StaticLangMemberView> fieldViews = new ArrayList<>();
     for (FieldModel child : context.getMethodModel().getResourceNameInputFields()) {
-      FieldCopyView.Builder fieldCopy = FieldCopyView.newBuilder();
-      fieldCopy.fieldGetFunction(namer.getFieldGetFunctionName(child));
-      fieldCopy.fieldSetFunction(namer.getFieldSetFunctionName(child));
-      fieldCopyViews.add(fieldCopy.build());
+      StaticLangMemberView.Builder staticMember = StaticLangMemberView.newBuilder();
+      staticMember.fieldGetFunction(namer.getFieldGetFunctionName(child));
+      staticMember.fieldSetFunction(namer.getFieldSetFunctionName(child));
+      staticMember.name(child.getNameAsParameter());
+      staticMember.typeName(child.getTypeFullName());
+      fieldViews.add(staticMember.build());
     }
-    Collections.sort(fieldCopyViews);
-    param.fieldCopyMethods(fieldCopyViews);
+    Collections.sort(fieldViews);
+    param.fieldCopyMethods(fieldViews);
 
     return param.build();
   }

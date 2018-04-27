@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -23,10 +24,10 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class PythonPackageCopierResult {
   public static PythonPackageCopierResult createPython(
-      List<String> namespacePackages, Map<String, Doc> docs) {
+      List<String> namespacePackages, Map<String, GeneratedResult<Doc>> docs) {
     return new AutoValue_PythonPackageCopierResult.Builder()
         .namespacePackages(namespacePackages)
-        .docs(docs)
+        .results(docs)
         .build();
   }
 
@@ -36,14 +37,14 @@ public abstract class PythonPackageCopierResult {
   @Nullable
   public abstract List<String> namespacePackages();
 
-  /** Docs to be added to the output doc map in the template rendering phase. */
-  public abstract Map<String, Doc> docs();
+  /** Docs to be added to the output results map in the template rendering phase. */
+  public abstract Map<String, GeneratedResult<Doc>> results();
 
   @AutoValue.Builder
   protected abstract static class Builder {
     public abstract Builder namespacePackages(List<String> val);
 
-    public abstract Builder docs(Map<String, Doc> val);
+    public abstract Builder results(Map<String, GeneratedResult<Doc>> val);
 
     public abstract PythonPackageCopierResult build();
   }

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -28,11 +29,15 @@ public abstract class ClientTestClassView {
   public abstract String apiSettingsClassName();
 
   @Nullable
+  public abstract String apiStubSettingsClassName();
+
+  @Nullable
   public abstract String apiVariableName();
 
   @Nullable
   public abstract String apiName();
 
+  @Nullable
   public abstract List<MockServiceUsageView> mockServices();
 
   public abstract List<TestCaseView> testCases();
@@ -81,12 +86,22 @@ public abstract class ClientTestClassView {
   @Nullable
   public abstract List<ClientInitParamView> clientInitOptionalParams();
 
+  @Nullable // Used in C#
+  public abstract List<ReroutedGrpcView> reroutedGrpcClients();
+
+  // Used in C#
+  public abstract boolean hasLongRunningOperations();
+
+  @Nullable // Used in C#
+  public abstract String grpcServiceClassName();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder()
         .apiHasUnaryUnaryMethod(false)
         .apiHasUnaryStreamingMethod(false)
         .apiHasStreamingUnaryMethod(false)
-        .apiHasStreamingStreamingMethod(false);
+        .apiHasStreamingStreamingMethod(false)
+        .hasLongRunningOperations(false);
   }
 
   @AutoValue.Builder
@@ -97,6 +112,8 @@ public abstract class ClientTestClassView {
     public abstract Builder apiClassName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
+
+    public abstract Builder apiStubSettingsClassName(String val);
 
     public abstract Builder apiVariableName(String val);
 
@@ -130,6 +147,12 @@ public abstract class ClientTestClassView {
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
 
     public abstract Builder clientInitOptionalParams(List<ClientInitParamView> val);
+
+    public abstract Builder grpcServiceClassName(String val);
+
+    public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
+
+    public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract ClientTestClassView build();
   }

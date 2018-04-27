@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -68,6 +68,8 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             .name("timeout")
             .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
             .build());
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("metadata").defaultValue("None").build());
     return methodParams.build();
   }
 
@@ -113,7 +115,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(namer.getVariableName(field));
-      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field));
+      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field.getType()));
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(
@@ -125,12 +127,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
       } else {
         docLines.addAll(namer.getDocLines(field));
         boolean isMessageField = field.isMessage() && !field.isMap();
-        boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
+        boolean isMapContainingMessage =
+            field.isMap() && field.getType().getMapValueType().isMessage();
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {
             messageType =
-                context.getTypeTable().getFullNameForElementType(field.getMapValueField());
+                context.getTypeTable().getFullNameForElementType(field.getType().getMapValueType());
           } else {
             messageType = context.getTypeTable().getFullNameForElementType(field);
           }
@@ -177,6 +180,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             "The amount of time, in seconds, to wait",
             "for the request to complete. Note that if ``retry`` is",
             "specified, the timeout applies to each individual attempt."));
-    return ImmutableList.<ParamDocView>of(retryParamDoc.build(), timeoutParamDoc.build());
+
+    SimpleParamDocView.Builder metadataParamDoc = SimpleParamDocView.newBuilder();
+    metadataParamDoc.paramName("metadata");
+    metadataParamDoc.typeName("Optional[Sequence[Tuple[str, str]]]");
+    metadataParamDoc.lines(
+        ImmutableList.of("Additional metadata", "that is provided to the method."));
+    return ImmutableList.<ParamDocView>of(
+        retryParamDoc.build(), timeoutParamDoc.build(), metadataParamDoc.build());
   }
 }

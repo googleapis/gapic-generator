@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -35,7 +34,6 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         new PhpCommentReformatter(),
-        packageName,
+        PhpPackageUtil.getBasePackageName(packageName),
         packageName);
   }
 
@@ -107,7 +105,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
-    return "../resources/"
+    return "/../resources/"
         + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
             .join("client_config")
             .toLowerUnderscore()
@@ -115,13 +113,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldModel field) {
-    return field.isMap();
+  public String getConfigPath(InterfaceConfig interfaceConfig, String name) {
+    return "/resources/"
+        + Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join(name)
+            .toLowerUnderscore()
+        + ".php";
   }
 
   @Override
-  public String getRetrySettingsTypeName() {
-    return "\\Google\\ApiCore\\RetrySettings";
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
+    return field.isMap();
   }
 
   @Override
@@ -169,6 +171,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getClientConfigName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).toLowerUnderscore();
+  }
+
+  @Override
   public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
@@ -183,12 +190,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
@@ -206,23 +213,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return getTestPackageName(getPackageName(), testKind);
   }
 
-  /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
+  /** Insert "Tests/<TestType>" into the package name before the version. */
   private static String getTestPackageName(String packageName, TestKind testKind) {
-    final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
-
     ArrayList<String> packageComponents = new ArrayList<>();
-    String[] packageSplit = PhpPackageUtil.splitPackageName(packageName);
-    int packageStartIndex = 0;
-    for (int i = 0; i < PACKAGE_PREFIX.length && i < packageSplit.length; i++) {
-      if (packageSplit[i].equals(PACKAGE_PREFIX[i])) {
-        packageStartIndex++;
-      } else {
-        break;
-      }
-    }
-    for (int i = 0; i < packageStartIndex; i++) {
-      packageComponents.add(packageSplit[i]);
-    }
+    packageComponents.add(PhpPackageUtil.getBasePackageName(packageName));
     packageComponents.add("Tests");
     switch (testKind) {
       case UNIT:
@@ -232,8 +226,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         packageComponents.add("System");
         break;
     }
-    for (int i = packageStartIndex; i < packageSplit.length; i++) {
-      packageComponents.add(packageSplit[i]);
+    String shortenedPackageName = PhpPackageUtil.removeBasePackageName(packageName);
+    if (shortenedPackageName != null) {
+      packageComponents.add(shortenedPackageName);
     }
     return PhpPackageUtil.buildPackageName(packageComponents);
   }

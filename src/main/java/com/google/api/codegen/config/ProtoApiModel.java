@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,9 +18,12 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +42,8 @@ public class ProtoApiModel implements ApiModel {
     this.protoModel = protoModel;
   }
 
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
+  public Model getProtoModel() {
+    return protoModel;
   }
 
   @Override
@@ -110,6 +112,29 @@ public class ProtoApiModel implements ApiModel {
     }
     interfaceModels = intfModels.build();
     return interfaceModels;
+  }
+
+  @Override
+  public Iterable<ProtoTypeRef> getAdditionalTypes() {
+    ImmutableList.Builder<ProtoTypeRef> models = ImmutableList.builder();
+    for (TypeRef t : getTypes(protoModel)) {
+      models.add(new ProtoTypeRef(t));
+    }
+    return models.build();
+  }
+
+  @Override
+  public DiagCollector getDiagCollector() {
+    return protoModel.getDiagCollector();
+  }
+
+  /** Helper to extract the types from the underlying model. */
+  private Iterable<TypeRef> getTypes(Model model) {
+    List<TypeRef> types = new ArrayList<>();
+    for (Type type : model.getServiceConfig().getTypesList()) {
+      types.add(model.getSymbolTable().lookupType(type.getName()));
+    }
+    return types;
   }
 
   @Override

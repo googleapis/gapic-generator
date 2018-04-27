@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -29,8 +28,6 @@ public interface MethodContext {
   InterfaceContext getSurfaceInterfaceContext();
 
   MethodModel getMethodModel();
-
-  ApiSource getApiSource();
 
   InterfaceModel getTargetInterface();
 
@@ -59,4 +56,6 @@ public interface MethodContext {
 
   // TODO(andrealin): Move this out when HTTP is implemented in gax.
   String getGrpcContainerTypeName();
+
+  MethodContext withResourceNamesInSamplesOnly();
 }

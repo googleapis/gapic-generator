@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,14 +23,15 @@ import java.util.List;
  * definition.
  */
 public interface TypeModel {
+
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 
   /* @return the resource type of the map key. */
-  FieldModel getMapKeyField();
+  TypeModel getMapKeyType();
 
   /* @return the resource type of the map value. */
-  FieldModel getMapValueField();
+  TypeModel getMapValueType();
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();
@@ -50,6 +51,9 @@ public interface TypeModel {
   void validateValue(String value);
 
   List<? extends FieldModel> getFields();
+
+  /* @return the field with the given targetName, or null if targetName not found. */
+  FieldModel getField(String targetName);
 
   TypeModel makeOptional();
 

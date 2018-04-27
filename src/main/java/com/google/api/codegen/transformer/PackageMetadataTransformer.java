@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -72,10 +74,10 @@ public class PackageMetadataTransformer {
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
         .gapicConfigName(packageConfig.gapicConfigName())
-        .packageType(packageConfig.packageType())
-        .dependencyType(packageConfig.dependencyType())
+        .artifactType(packageConfig.artifactType())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .gaxGrpcVersionBound(packageConfig.gaxGrpcVersionBound(language))
+        .gaxHttpVersionBound(packageConfig.gaxHttpVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .protoPackageDependencies(
@@ -96,7 +98,25 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
-        .hasMultipleServices(false);
+        .hasMultipleServices(false)
+        .publishProtos(false);
+  }
+
+  /**
+   * Merges release levels from a PackageMetadataConfig and a GapicProductConfig. The
+   * GapicProductConfig always overrides the PackageMetadataConfig if its release level is set.
+   */
+  public ReleaseLevel getMergedReleaseLevel(
+      PackageMetadataConfig packageConfig,
+      GapicProductConfig productConfig,
+      TargetLanguage language) {
+    ReleaseLevel releaseLevel = productConfig.getReleaseLevel();
+    if (releaseLevel == ReleaseLevel.UNSET_RELEASE_LEVEL) {
+      releaseLevel = packageConfig.releaseLevel(TargetLanguage.RUBY);
+    }
+    return productConfig.getReleaseLevel() == ReleaseLevel.UNSET_RELEASE_LEVEL
+        ? packageConfig.releaseLevel(language)
+        : productConfig.getReleaseLevel();
   }
 
   private List<PackageDependencyView> getDependencies(

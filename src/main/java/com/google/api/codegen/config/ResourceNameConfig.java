@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,18 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.ProtoFile;
+import javax.annotation.Nullable;
 
 public interface ResourceNameConfig {
 
+  /** Returns the name used for uniquely identifying the entity in config. */
+  String getEntityId();
+
   /** Returns the name used as a basis for generating methods. */
   String getEntityName();
+
+  @Nullable
+  String getCommonResourceName();
 
   /** Returns the resource name type. */
   ResourceNameType getResourceNameType();

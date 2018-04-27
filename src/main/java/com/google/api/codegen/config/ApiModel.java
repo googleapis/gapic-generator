@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.tools.framework.model.DiagCollector;
 import java.util.List;
 
 /**
@@ -23,10 +24,10 @@ import java.util.List;
  * definition.
  */
 public interface ApiModel {
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
 
   String getServiceName();
+
+  DiagCollector getDiagCollector();
 
   /** Return the service address. */
   String getServiceAddress();
@@ -40,6 +41,8 @@ public interface ApiModel {
   List<String> getAuthScopes();
 
   Iterable<? extends InterfaceModel> getInterfaces();
+
+  Iterable<? extends TypeModel> getAdditionalTypes();
 
   boolean hasMultipleServices();
 

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,8 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.EnumValue;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -142,8 +144,11 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
       String shortName = Joiner.on(".").join(path);
       return getTypeNameInImplicitPackage(shortName);
     }
-
-    path.add(0, getPbFileName(elem.getFile().getSimpleName()));
+    if (elem instanceof Interface || elem instanceof Method) {
+      path.add(0, getGrpcPbFileName(elem.getFile().getSimpleName()));
+    } else {
+      path.add(0, getPbFileName(elem.getFile().getSimpleName()));
+    }
     path.add(0, protoPackageToPythonPackage(elem.getFile().getProto().getPackage()));
     String fullName = Joiner.on(".").join(path);
     return typeNameConverter.getTypeName(fullName);
@@ -243,5 +248,10 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
   private String getPbFileName(String filename) {
     return filename.substring(filename.lastIndexOf("/") + 1, filename.length() - ".proto".length())
         + "_pb2";
+  }
+
+  private String getGrpcPbFileName(String filename) {
+    return filename.substring(filename.lastIndexOf("/") + 1, filename.length() - ".proto".length())
+        + "_pb2_grpc";
   }
 }

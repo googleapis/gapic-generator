@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +22,9 @@ import javax.annotation.Nullable;
 public abstract class GrpcStreamingDetailView {
 
   public abstract String methodName();
+
+  @Nullable
+  public abstract String transportMethodName();
 
   public abstract GrpcStreamingType grpcStreamingType();
 
@@ -43,6 +46,8 @@ public abstract class GrpcStreamingDetailView {
   public abstract static class Builder {
 
     public abstract Builder methodName(String val);
+
+    public abstract Builder transportMethodName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 

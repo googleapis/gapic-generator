@@ -25,9 +25,9 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
     classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
-    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
     classpath 'net.ltgt.gradle:gradle-apt-plugin:0.10'
   }
 }
@@ -58,31 +58,36 @@ ext {
   // Shortcuts for libraries we are using
   libraries = [
     // General
-
-    // Guava 23.0 is for Java 8, Java 7 needs to use 23.0-android.
-    guava: 'com.google.guava:guava:23.0-android',
-    jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    autovalue: 'com.google.auto.value:auto-value:1.4',
+    apiCommon: 'com.google.api:api-common:1.1.0',
+    apiCompiler: 'com.google.api:api-compiler:0.0.7',
+    autovalue: 'com.google.auto.value:auto-value:1.6',
+    autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
+    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
+    commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
-    snakeyaml: 'org.yaml:snakeyaml:1.18',
-    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
     gax: 'com.google.api:gax:1.5.1',
-
-    // Gapi
-    toolsFx: 'com.google.api:api-compiler:0.0.7',
+    grpcCore: 'io.grpc:grpc-core:1.0.1',
+    gson: 'com.google.code.gson:gson:2.3',
+    guava: 'com.google.guava:guava:23.0',
+    guice: 'com.google.inject:guice:4.0',
+    jacksonAnnotations: 'com.fasterxml.jackson.core:jackson-annotations:2.9.0',
+    jacksonCore: 'com.fasterxml.jackson.core:jackson-core:2.9.0',
+    jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
+    jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
+    snakeyaml: 'org.yaml:snakeyaml:1.18',
+    threetenbp: 'org.threeten:threetenbp:1.3.3',
 
     // Testing
     junit: 'junit:junit:4.12',
+    mockito: 'org.mockito:mockito-core:2.+',
     truth: 'com.google.truth:truth:0.34',
     toolsFxTesting: 'com.google.api:api-compiler:0.0.6:testing',
+    junitParams: 'pl.pragmatists:JUnitParams:1.1.1',
 
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
     protoc:  'com.google.protobuf:protoc:' + protoVersion,
-
-    // JSON
-    jackson: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
 
     // Formatter
     javaFomatter: 'com.google.googlejavaformat:google-java-format:1.1'
@@ -95,28 +100,44 @@ repositories {
 }
 
 dependencies {
-  compile libraries.guava,
-    libraries.autovalue,
+  compile libraries.apiCommon,
+    libraries.apiCompiler,
+    libraries.autovalueAnnotation,
+    libraries.commonmark,
     libraries.commonsCli,
     libraries.commonsLang,
     libraries.gax,
-    libraries.jackson,
+    libraries.grpcCore,
+    libraries.gson,
+    libraries.guava,
+    libraries.jacksonAnnotations,
+    libraries.jacksonCore,
+    libraries.jacksonDatabind,
     libraries.javaFomatter,
     libraries.jsr305,
     libraries.protobuf,
     libraries.snakeyaml,
-    libraries.toolsFx,
-    libraries.toolsFxTesting,
-    libraries.commonmark
+    libraries.threetenbp,
+    libraries.toolsFxTesting
 
   testCompile libraries.junit,
     libraries.truth,
-    libraries.toolsFxTesting
+    libraries.toolsFxTesting,
+    libraries.mockito,
+    libraries.commonProtos,
+    libraries.junitParams
+
+  annotationProcessor libraries.autovalue
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-  archiveName = "gapic.jar"
-  from sourceSets.main.output
+  classifier = 'fatjar'
+  from sourceSets.main.output.filter {
+    // This jar file needs to be excluded or else the shadow plugin will actually explode the classes into
+    // the fat jar. We want to retain the file as a unit because we want to put it into the output directory.
+    // StaticResourcesHandler performs the rename back to `gradle-wrapper.jar`.
+    rename 'gradle-wrapper.jar', 'gradle-wrapper.zjar'
+  }
   configurations = [ project.configurations.runtime ]
   exclude 'META-INF/*.SF'
   exclude 'META-INF/*.DSA'
@@ -185,7 +206,7 @@ sourceSets {
       include '**/testsrc/**'
     }
     resources {
-      // Include protos of core platform and toolkit,
+      // Include protos of core platform and gapic-generator,
       // as some tests depend on this.
       srcDir "${projectDir}/modules/googleapis"
       include '**/*.proto'
@@ -236,7 +257,6 @@ configurations {
 
 dependencies {
   codeGeneration libraries.autovalue, libraries.jsr305
-  compile libraries.autovalue, libraries.jsr305
 }
 
 compileJava.classpath += configurations.codeGeneration
@@ -305,21 +325,21 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
         }
 
         pom.project {
-          name 'Google API Codegen Toolkit'
+          name 'GAPIC Generator'
           packaging 'jar'
-          artifactId 'toolkit'
-          description 'Google API Codegen Toolkit'
-          url 'https://github.com/googleapis/toolkit'
+          artifactId 'gapic-generator'
+          description 'GAPIC Generator'
+          url 'https://github.com/googleapis/gapic-generator'
 
           scm {
-            url 'https://github.com/googleapis/toolkit'
-            connection 'scm:git:https://github.com/googleapis/toolkit.git'
+            url 'https://github.com/googleapis/gapic-generator'
+            connection 'scm:git:https://github.com/googleapis/gapic-generator.git'
           }
 
           licenses {
             license {
               name 'The Apache License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
             }
           }
 
@@ -382,6 +402,19 @@ task runCodeGen(type: JavaExec) {
   }
 }
 
+// Task to run DiscoGapicGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runDiscoCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runDiscoCodeGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.DiscoGapicGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 // Task to run SynchronizerTool
 // =============================
 //
@@ -400,7 +433,7 @@ task showGrpcJavaPluginPath {
   doLast {
     DependencyResolver resolver = new DependencyResolver(project)
     println 'output: ' + resolver.resolveExecutable(
-      'io.grpc:protoc-gen-grpc-java:1.2.0')
+      'io.grpc:protoc-gen-grpc-java:1.10.0')
   }
 }
 
@@ -430,6 +463,19 @@ task showJavaFormatterPath {
 task runConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.configgen.ConfigGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
+// Task to run DiscoveryConfigGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runDiscoConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runDiscoConfigGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.configgen.DiscoConfigGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
@@ -473,11 +519,15 @@ tasks.googleJavaFormat {
   exclude 'bin/**'
   exclude 'build/**'
   exclude 'benchmark/**'
+  exclude 'modules/googleapis/third_party'
+  exclude 'bazel-*'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
   exclude 'benchmark/**'
+  exclude 'modules/googleapis/third_party'
+  exclude 'bazel-*'
 }
 test.dependsOn verifyGoogleJavaFormat

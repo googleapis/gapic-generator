@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.SymbolTable;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Mixin;
 import java.util.List;
 
 /** Protobuf-based InterfaceModel. */
@@ -42,11 +44,6 @@ public class ProtoInterfaceModel implements InterfaceModel {
 
   public Interface getInterface() {
     return protoInterface;
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
   }
 
   @Override
@@ -79,6 +76,13 @@ public class ProtoInterfaceModel implements InterfaceModel {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
     for (Method method : protoInterface.getMethods()) {
       methods.add(new ProtoMethodModel(method));
+    }
+    SymbolTable symbolTable = protoInterface.getModel().getSymbolTable();
+    for (Mixin mixin : protoInterface.getConfig().getMixinsList()) {
+      Interface mixinInterface = symbolTable.lookupInterface(mixin.getName());
+      for (Method method : mixinInterface.getMethods()) {
+        methods.add(new ProtoMethodModel(method));
+      }
     }
     return methods.build();
   }

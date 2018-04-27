@@ -1,5 +1,17 @@
 @extends "csharp/common.snip"
 
+# fieldSettings: List[FieldSettingView], requiresNamedArguments: Boolean
+@snippet rpcMethodCallArgList(fieldSettings, requiresNamedArguments)
+    @join fieldSetting : fieldSettings on ", "
+        @if requiresNamedArguments
+            {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+        @else
+            {@fieldSetting.identifier}
+        @end
+    @end
+@end
+
+# initCodeSpec: InitCodeView
 @snippet topLevelInitCode(initCodeSpec)
     @join line : initCodeSpec.topLevelLines
         {@initCode(TRUE, line)};

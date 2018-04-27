@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -157,7 +157,7 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the list of path parameters. */
   public abstract Map<String, Schema> queryParams();
 
-  /** @return the request schema, or null if none. */
+  /** @return the request's resource object schema, or null if none. */
   @Nullable
   public abstract Schema request();
 
@@ -180,5 +180,13 @@ public abstract class Method implements Comparable<Method>, Node {
    */
   public boolean isPluralMethod() {
     return parameters().containsKey("maxResults");
+  }
+
+  public Document getDocument() {
+    Node parent = this;
+    while (!(parent instanceof Document) && parent != null) {
+      parent = this.parent();
+    }
+    return (Document) parent;
   }
 }

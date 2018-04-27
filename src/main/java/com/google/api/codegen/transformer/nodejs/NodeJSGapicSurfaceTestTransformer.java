@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -55,7 +54,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -85,13 +83,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    ApiModel apiModel = new ProtoApiModel(model);
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
-    models.add(generateTestView(apiModel, productConfig, namer));
-    models.addAll(createSmokeTestViews(apiModel, productConfig));
+    models.add(generateTestView(model, productConfig, namer));
+    models.addAll(createSmokeTestViews(model, productConfig));
     return models;
   }
 
@@ -114,7 +111,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
+              .mockGrpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
@@ -144,7 +141,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     }
 
     ImportSectionView importSection =
-        importSectionTransformer.generateImportSection(typeTable.getImports());
+        importSectionTransformer.generateImportSection(typeTable.getImports(), null);
     return MockCombinedView.newBuilder()
         .outputPath(testCaseOutputFile(namer))
         .serviceImpls(impls)
@@ -237,7 +234,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -247,7 +243,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     testClass.outputPath(namer.getSourceFilePath(SMOKE_TEST_OUTPUT_BASE_PATH, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));

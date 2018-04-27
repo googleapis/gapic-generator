@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,10 +17,9 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -80,34 +79,33 @@ public abstract class ResourceNameMessageConfigs {
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }
 
-  @Nullable
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      Document document,
-      DiagCollector diagCollector,
+      DiscoApiModel model,
       ConfigProto configProto,
       String defaultPackage,
-      DiscoGapicNamer discoGapicNamer) {
+      SurfaceNamer languageNamer) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
           ResourceNameMessageConfig.createResourceNameMessageConfig(
-              diagCollector, messageResourceTypesProto, defaultPackage);
+              model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
-    for (Method method : document.methods()) {
-      String fullName = discoGapicNamer.getRequestTypeName(method).getFullName();
+    for (Method method : model.getDocument().methods()) {
+      String fullName = discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
       if (messageConfig == null) {
         continue;
       }
       for (Schema property : method.parameters().values()) {
         if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
-          fieldsByMessage.put(fullName, DiscoveryField.create(property, discoGapicNamer));
+          fieldsByMessage.put(fullName, DiscoveryField.create(property, model));
         }
       }
     }

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -223,8 +223,18 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
 
   private TypeName getTypeNameForTypedResourceName(
       ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
-    String packageName = getResourceNamePackage(resourceNameConfig);
-    String longName = packageName + "." + typedResourceShortName;
+
+    String longName;
+    if (resourceNameConfig.getCommonResourceName() == null) {
+      String packageName = getResourceNamePackage(resourceNameConfig);
+      longName = packageName + "." + typedResourceShortName;
+    } else {
+      longName = typedResourceShortName;
+      int p = typedResourceShortName.lastIndexOf(".");
+      if (p > 0) {
+        typedResourceShortName = typedResourceShortName.substring(p + 1);
+      }
+    }
 
     TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 

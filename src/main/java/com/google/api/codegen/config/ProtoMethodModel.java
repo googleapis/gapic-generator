@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,11 +50,6 @@ public final class ProtoMethodModel implements MethodModel {
     this.method = method;
     this.inputType = new ProtoTypeRef(method.getInputType());
     this.outputType = new ProtoTypeRef(method.getOutputType());
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return ApiSource.PROTO;
   }
 
   @Override
@@ -216,11 +211,6 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public Iterable<ProtoField> getResourceNameInputFields() {
     return new ArrayList<>();
-  }
-
-  @Override
-  public boolean hasReturnValue() {
-    return !(new ServiceMessages()).isEmptyType(method.getOutputType());
   }
 
   @Override

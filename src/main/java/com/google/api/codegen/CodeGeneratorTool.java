@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
+import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -106,6 +107,11 @@ public class CodeGeneratorTool {
       String packageConfig,
       String outputDirectory,
       String[] enabledArtifacts) {
+    checkFile(descriptorSet);
+    checkFiles(configs);
+    checkFiles(generatorConfigs);
+    checkFile(packageConfig);
+
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
@@ -117,6 +123,19 @@ public class CodeGeneratorTool {
       options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
     }
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
+
     return codeGen.run();
+  }
+
+  private static void checkFiles(String[] files) {
+    for (String filePath : files) {
+      checkFile(filePath);
+    }
+  }
+
+  private static void checkFile(String filePath) {
+    if (!new File(filePath).exists()) {
+      throw new IllegalArgumentException("File not found: " + filePath);
+    }
   }
 }

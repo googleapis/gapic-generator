@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,8 @@ import com.google.api.tools.framework.model.EnumValue;
 public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
+  public abstract SurfaceNamer getNamer();
+
   public enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
     BOX_PRIMITIVES,
@@ -54,10 +56,19 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
+  public abstract TypedValue getSnippetZeroValue(TypeModel type);
+
+  /**
+   * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
+   * type; suitable for use within code snippets.
+   */
   public abstract TypedValue getEnumValue(Schema schema, String value);
 
-  /** Provides a TypeName for the element type of the given FieldType. */
+  /** Provides a TypeName for the element type of the given schema. */
   public abstract TypeName getTypeNameForElementType(Schema type);
+
+  /** Provides a TypeName for the element type of the given TypeModel. */
+  public abstract TypeName getTypeNameForElementType(TypeModel type);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
@@ -68,6 +79,9 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(Schema schema, String value);
+
+  /** Renders the given value if it is a primitive type. */
+  public abstract String renderPrimitiveValue(TypeModel type, String value);
 
   /** Renders the value as a string. */
   public abstract String renderValueAsString(String value);
@@ -86,9 +100,9 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   public TypeName getTypeName(TypeModel type) {
     if (type instanceof DiscoveryRequestType) {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
-      return getDiscoGapicNamer().getRequestTypeName(method);
+      return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
     }
-    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getTypeNameForElementType(type);
   }
 
   @Override
@@ -98,12 +112,12 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(FieldModel type) {
-    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getTypeNameForElementType(type.getType());
   }
 
   @Override
   public TypedValue getSnippetZeroValue(FieldModel type) {
-    return getSnippetZeroValue((((DiscoveryField) type).getDiscoveryField()));
+    return getSnippetZeroValue(type.getType());
   }
 
   @Override

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -154,8 +154,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
       SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
       retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
-      String retryDocType =
-          Joiner.on("|").join(context.getNamer().getRetrySettingsTypeName(), "array");
+      String retryDocType = Joiner.on("|").join("RetrySettings", "array");
       retrySettingsDoc.typeName(retryDocType);
       // TODO figure out a reliable way to line-wrap comments across all languages
       // instead of encoding it in the transformer

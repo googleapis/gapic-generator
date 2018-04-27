@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,23 +14,23 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
+import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 
 /** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
 public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   private final String packageName;
-  private final GenerationLayer generationLayer;
+  private final ArtifactType artifactType;
 
-  public JavaPackageMetadataNamer(String packageName, GenerationLayer generationLayer) {
+  public JavaPackageMetadataNamer(String packageName, ArtifactType artifactType) {
     this.packageName = packageName;
-    this.generationLayer = generationLayer;
+    this.artifactType = artifactType;
   }
 
-  private static String getMetadataIdentifier(String packageName, GenerationLayer generationLayer) {
-    if (generationLayer != null) {
-      switch (generationLayer) {
-        case PROTO:
+  private static String getMetadataIdentifier(String packageName, ArtifactType artifactType) {
+    if (artifactType != null) {
+      switch (artifactType) {
+        case PROTOBUF:
           return "proto-" + packageName;
         case GRPC:
           return "grpc-" + packageName;
@@ -41,17 +41,17 @@ public class JavaPackageMetadataNamer extends PackageMetadataNamer {
 
   @Override
   public String getProtoPackageName() {
-    return getMetadataIdentifier(packageName, GenerationLayer.PROTO);
+    return getMetadataIdentifier(packageName, ArtifactType.PROTOBUF);
   }
 
   @Override
   public String getGrpcPackageName() {
-    return getMetadataIdentifier(packageName, GenerationLayer.GRPC);
+    return getMetadataIdentifier(packageName, ArtifactType.GRPC);
   }
 
   @Override
   public String getMetadataIdentifier() {
-    return getMetadataIdentifier(packageName, generationLayer);
+    return getMetadataIdentifier(packageName, artifactType);
   }
 
   public String getProtoPackageGroup() {

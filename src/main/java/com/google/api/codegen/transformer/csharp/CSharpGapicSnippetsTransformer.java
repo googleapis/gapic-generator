@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -21,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -32,12 +32,12 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +48,10 @@ import java.util.List;
 public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
   private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
+  private static final String SNIPPETS_CSPROJ_TEMPLATE_FILENAME =
+      "csharp/gapic_snippets_csproj.snip";
+
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -61,24 +65,24 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
       context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
       context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
       SnippetsFileView snippets = generateSnippets(context);
-      surfaceDocs.add(snippets);
+      surfaceDocs.add(generateSnippets(context));
+      surfaceDocs.add(generateSnippetsCsProj(context));
     }
 
     return surfaceDocs;
@@ -86,7 +90,27 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
+    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME, SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
+  }
+
+  private SnippetsFileView generateSnippetsCsProj(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    String name = namer.getApiSnippetsClassName(context.getInterfaceConfig());
+    SnippetsFileView.Builder snippetsBuilder = SnippetsFileView.newBuilder();
+    GapicProductConfig productConfig = context.getProductConfig();
+
+    snippetsBuilder.templateFileName(SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+    snippetsBuilder.outputPath(
+        outputPath + File.separator + productConfig.getPackageName() + ".Snippets.csproj");
+    snippetsBuilder.name(name);
+    snippetsBuilder.snippetMethods(new ArrayList<StaticLangApiMethodSnippetView>());
+
+    // must be done as the last step to catch all imports
+    snippetsBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+
+    return snippetsBuilder.build();
   }
 
   private SnippetsFileView generateSnippets(GapicInterfaceContext context) {
@@ -134,14 +158,55 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          // Find flattenings that have ambiguous parameters, and mark them to use named arguments.
+          // Ambiguity occurs in a page-stream flattening that has one or two extra string
+          // parameters (that are not resource-names) compared to any other flattening of this same
+          // method.
+          // Create a string for each flattening, encoding which parameters are strings and
+          // not-strings. Each character in the string refers to a parameter. Each string refers
+          // to a flattening.
+          String[] stringParams =
+              flatteningGroups
+                  .stream()
+                  .map(
+                      flat ->
+                          flat.getFlattenedFieldConfigs()
+                              .values()
+                              .stream()
+                              .map(
+                                  field ->
+                                      field.getField().getType().isStringType()
+                                              && field.getResourceNameConfig() == null
+                                          ? 's'
+                                          : '.')
+                              .collect(
+                                  StringBuilder::new,
+                                  StringBuilder::appendCodePoint,
+                                  StringBuilder::append)
+                              .toString())
+                  .toArray(String[]::new);
+          // Array of which flattenings need to use named arguments.
+          // Each array entry refers to the correspondingly indexed flattening.
+          Boolean[] requiresNamedParameters =
+              Arrays.stream(stringParams)
+                  .map(
+                      a ->
+                          Arrays.stream(stringParams)
+                              .anyMatch(b -> a.startsWith(b + "s") || a.startsWith(b + "ss")))
+                  .toArray(Boolean[]::new);
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
+          // Build method list.
           for (int i = 0; i < flatteningGroups.size(); i++) {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            methods.add(generatePagedFlattenedAsyncMethod(methodContextFlat, nameSuffix));
-            methods.add(generatePagedFlattenedMethod(methodContextFlat, nameSuffix));
+            methods.add(
+                generatePagedFlattenedAsyncMethod(
+                    methodContextFlat, nameSuffix, requiresNamedParameters[i]));
+            methods.add(
+                generatePagedFlattenedMethod(
+                    methodContextFlat, nameSuffix, requiresNamedParameters[i]));
           }
         }
         methods.add(generatePagedRequestAsyncMethod(methodContext));
@@ -249,7 +314,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodSnippetView generatePagedFlattenedAsyncMethod(
-      MethodContext methodContext, String suffix) {
+      MethodContext methodContext, String suffix, boolean requiresNamedArguments) {
     StaticLangApiMethodView method =
         apiMethodTransformer.generatePagedFlattenedAsyncMethod(
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
@@ -264,11 +329,12 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
         .callerResponseTypeName(callerResponseTypeName)
         .apiClassName(namer.getApiWrapperClassName(methodContext.getInterfaceConfig()))
         .apiVariableName(method.apiVariableName())
+        .requiresNamedArguments(requiresNamedArguments)
         .build();
   }
 
   private StaticLangApiMethodSnippetView generatePagedFlattenedMethod(
-      MethodContext methodContext, String suffix) {
+      MethodContext methodContext, String suffix, boolean requiresNamedArguments) {
     StaticLangApiMethodView method =
         apiMethodTransformer.generatePagedFlattenedMethod(
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
@@ -283,6 +349,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
         .callerResponseTypeName(callerResponseTypeName)
         .apiClassName(namer.getApiWrapperClassName(methodContext.getInterfaceConfig()))
         .apiVariableName(method.apiVariableName())
+        .requiresNamedArguments(requiresNamedArguments)
         .build();
   }
 

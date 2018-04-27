@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,9 @@ import java.util.Map;
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
   private final InputSpecificMethodTransformer helperTransformer;
+
+  // Used for empty config field values that require a non-null value in the yaml.
+  public static String TODO_STRING = "_TODO_";
 
   public MethodTransformer(InputSpecificMethodTransformer helperTransformer) {
     this.helperTransformer = helperTransformer;

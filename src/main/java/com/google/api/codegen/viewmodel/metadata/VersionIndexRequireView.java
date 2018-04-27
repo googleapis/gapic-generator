@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -37,6 +38,13 @@ public abstract class VersionIndexRequireView {
   @Nullable
   public abstract String topLevelNamespace();
 
+  @Nullable
+  public abstract String postVersionNamespace();
+
+  public boolean hasPostVersionNamespace() {
+    return !Strings.isNullOrEmpty(postVersionNamespace());
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_VersionIndexRequireView.Builder();
   }
@@ -54,6 +62,8 @@ public abstract class VersionIndexRequireView {
     public abstract Builder fileName(String val);
 
     public abstract Builder topLevelNamespace(String val);
+
+    public abstract Builder postVersionNamespace(String val);
 
     public abstract VersionIndexRequireView build();
   }

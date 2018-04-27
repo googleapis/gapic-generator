@@ -7,6 +7,7 @@
     {@serviceDoc(xapiClass)}
     class {@xapiClass.name}
     {
+        {@traits()}
         {@constants(xapiClass)}
         {@statics(xapiClass)}
         {@members(xapiClass)}
@@ -14,7 +15,6 @@
         {@functions(xapiClass)}
         {@constructor(xapiClass)}
         {@apiMethods(xapiClass)}
-        {@cleanupSection(xapiClass)}
     }
 @end
 
@@ -25,9 +25,9 @@
      * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
      * and updates to that file get reflected here through a refresh process.
      *
-     * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
-     * more frequently than those which have been declared beta or 1.0, including changes which break
-     * backwards compatibility.
+     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+     * even though we intend the surface to be stable, we may make backwards incompatible changes
+     * if necessary.
      *
      * @@experimental
      */
@@ -49,9 +49,9 @@
         @end
     @end
      *
-     * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
-     * more frequently than those which have been declared beta or 1.0, including changes which break
-     * backwards compatibility.
+     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
+     * even though we intend the surface to be stable, we may make backwards incompatible changes
+     * if necessary.
      *
      * This class provides the ability to make remote calls to the backing service through method
      * calls that map to API methods. Sample code to get started:
@@ -72,7 +72,17 @@
      */
 @end
 
+@private traits()
+    use GapicClientTrait;
+
+@end
+
 @private constants(xapiClass)
+    /**
+     * The name of the service.
+     */
+    const SERVICE_NAME = '{@xapiClass.interfaceKey}';
+
     @if xapiClass.hasDefaultServiceAddress
         /**
          * The default address of the service.
@@ -80,7 +90,6 @@
         const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
 
     @end
-
     /**
      * The default port of the service.
      */
@@ -91,11 +100,16 @@
      */
     const CODEGEN_NAME = 'gapic';
 
-    /**
-     * The code generator version, to be included in the agent header.
-     */
-    const CODEGEN_VERSION = '{@xapiClass.toolkitVersion}';
-    {@""}
+    @if xapiClass.hasDefaultServiceScopes
+        /**
+         * The default scopes required by the service.
+         */
+        public static $serviceScopes = [
+            @join scope : {@xapiClass.authScopes}
+                '{@scope}',
+            @end
+        ];
+    @end
 @end
 
 @private statics(xapiClass)
@@ -106,19 +120,10 @@
     @if xapiClass.hasFormatOrParseResourceFunctions
         private static $pathTemplateMap;
     @end
-    private static $gapicVersion;
-    private static $gapicVersionLoaded = false;
     {@""}
 @end
 
 @private members(xapiClass)
-    protected $grpcCredentialsHelper;
-    @join stub : xapiClass.stubs
-        protected ${@stub.name};
-    @end
-    private $scopes;
-    private $defaultCallSettings;
-    private $descriptors;
     @if xapiClass.hasLongRunningOperations
         private $operationsClient;
     @end
@@ -126,14 +131,29 @@
 @end
 
 @private staticFunctions(xapiClass)
+    private static function getClientDefaults()
+    {
+        return [
+            'serviceName' => self::SERVICE_NAME,
+            @if xapiClass.hasDefaultServiceAddress
+                'serviceAddress' => self::SERVICE_ADDRESS . ':' . self::DEFAULT_SERVICE_PORT,
+            @end
+            @if xapiClass.hasDefaultServiceScopes
+                'scopes' => self::$serviceScopes,
+            @end
+            'clientConfigPath' => __DIR__ . '{@xapiClass.clientConfigPath}',
+            'restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',
+            'descriptorsConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_descriptor_config.php',
+            @if xapiClass.hasDefaultServiceAddress
+                'versionFile' => __DIR__ . '/../../VERSION'
+            @end
+        ];
+    }
+
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
     {@pathTemplateMapFunction(xapiClass)}
-    {@pageStreamingDescriptorFunction(xapiClass)}
-    {@longRunningDescriptorFunction(xapiClass)}
-    {@grpcStreamingDescriptorFunction(xapiClass)}
-    {@gapicVersionFunction()}
     @join function : xapiClass.formatResourceFunctions
         {@formatResourceFunction(function)}
     @end
@@ -248,94 +268,12 @@
     @end
 @end
 
-@private pageStreamingDescriptorFunction(xapiClass)
-    @if xapiClass.hasPageStreamingMethods
-        private static function getPageStreamingDescriptors()
-        {
-            @join descriptor : xapiClass.pageStreamingDescriptors
-                ${@descriptor.varName} =
-                        new PageStreamingDescriptor([
-                            'requestPageTokenGetMethod' => '{@descriptor.requestTokenGetMethodName}',
-                            'requestPageTokenSetMethod' => '{@descriptor.requestTokenSetMethodName}',
-                            @if descriptor.requestHasPageSizeField
-                                'requestPageSizeGetMethod' => '{@descriptor.requestPageSizeGetMethodName}',
-                                'requestPageSizeSetMethod' => '{@descriptor.requestPageSizeSetMethodName}',
-                            @end
-                            'responsePageTokenGetMethod' => '{@descriptor.responseTokenGetMethodName}',
-                            'resourcesGetMethod' => '{@descriptor.resourcesGetMethodName}',
-                        ]);
-            @end
-
-            $pageStreamingDescriptors = [
-                @join descriptor : xapiClass.pageStreamingDescriptors
-                    '{@descriptor.methodName}' => ${@descriptor.varName},
-                @end
-            ];
-
-            return $pageStreamingDescriptors;
-        }
-        {@""}
-    @end
-@end
-
-@private longRunningDescriptorFunction(xapiClass)
-    @if xapiClass.hasLongRunningOperations
-        private static function getLongRunningDescriptors()
-        {
-            return [
-                @join descriptor : xapiClass.longRunningDescriptors
-                    '{@descriptor.methodName}' => [
-                        'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
-                        'metadataReturnType' => '{@descriptor.metadataTypeName}',
-                    ],
-                @end
-            ];
-        }
-        {@""}
-    @end
-@end
-
-@private grpcStreamingDescriptorFunction(xapiClass)
-    @if xapiClass.hasGrpcStreamingMethods
-        private static function getGrpcStreamingDescriptors()
-        {
-            return [
-                @join descriptor : xapiClass.grpcStreamingDescriptors
-                    '{@descriptor.methodName}' => [
-                        'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
-                        @if descriptor.hasGrpcResourcesField
-                            'resourcesGetMethod' => '{@descriptor.grpcResourcesField}',
-                        @end
-                    ],
-                @end
-            ];
-        }
-        {@""}
-    @end
-@end
-
-@private gapicVersionFunction()
-    private static function getGapicVersion()
-    {
-        if (!self::$gapicVersionLoaded) {
-            if (file_exists(__DIR__ . '/../VERSION')) {
-              self::$gapicVersion = trim(file_get_contents(__DIR__ . '/../VERSION'));
-            } elseif (class_exists(Version::class)) {
-              self::$gapicVersion = Version::VERSION;
-            }
-            self::$gapicVersionLoaded = true;
-        }
-        return self::$gapicVersion;
-    }
-    {@""}
-@end
-
 @private functions(xapiClass)
     @if xapiClass.hasLongRunningOperations
         /**
          * Return an OperationsClient object with the same endpoint as $this.
          *
-         * @@return \Google\ApiCore\LongRunning\OperationsClient
+         * @@return OperationsClient
          * @@experimental
          */
         public function getOperationsClient()
@@ -352,17 +290,14 @@
          *
          * @@param string $operationName The name of the long running operation
          * @@param string $methodName The name of the method used to start the operation
-         * @@return \Google\ApiCore\OperationResponse
+         * @@return OperationResponse
          * @@experimental
          */
         public function resumeOperation($operationName, $methodName = null)
         {
-            $lroDescriptors = {@xapiClass.name}::getLongRunningDescriptors();
-            if (!is_null($methodName) && array_key_exists($methodName, $lroDescriptors)) {
-                $options = $lroDescriptors[$methodName];
-            } else {
-                $options = [];
-            }
+            $options = isset($this->descriptors[$methodName]['longRunning'])
+                ? $this->descriptors[$methodName]['longRunning']
+                : [];
             $operation = new OperationResponse($operationName, $this->getOperationsClient(), $options);
             $operation->reload();
             return $operation;
@@ -383,152 +318,68 @@
      @else
          *     Optional. Options for configuring the service API wrapper.
      @end
-     *
      @if xapiClass.hasDefaultServiceAddress
-         *     @@type string $serviceAddress The domain name of the API remote host.
-         *                                  Default '{@xapiClass.serviceAddress}'.
+         *     @@type string $serviceAddress
+         *           The address of the API remote host. May optionally include the port, formatted
+         *           as "<uri>:<port>". Default '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'.
      @else
-         *     @@type string $serviceAddress Required. The domain name of the API remote host.
+         *     @@type string $serviceAddress
+         *           Required. The address of the API remote host. May optionally include the port,
+         *           formatted as "<uri>:<port>".
      @end
-     *     @@type mixed $port The port on which to connect to the remote host. Default {@xapiClass.servicePort}.
-     *     @@type \Grpc\Channel $channel
-     *           A `Channel` object to be used by gRPC. If not specified, a channel will be constructed.
-     *     @@type \Grpc\ChannelCredentials $sslCreds
-     *           A `ChannelCredentials` object for use with an SSL-enabled channel.
-     *           Default: a credentials object returned from
-     *           \Grpc\ChannelCredentials::createSsl()
-     *           NOTE: if the $channel optional argument is specified, then this argument is unused.
-     *     @@type bool $forceNewChannel
-     *           If true, this forces gRPC to create a new channel instead of using a persistent channel.
-     *           Defaults to false.
-     *           NOTE: if the $channel optional argument is specified, then this option is unused.
-     *     @@type \Google\Auth\CredentialsLoader $credentialsLoader
-     *           A CredentialsLoader object created using the Google\Auth library.
-     @if xapiClass.hasDefaultServiceScopes
-         *     @@type array $scopes A string array of scopes to use when acquiring credentials.
-         *                          Defaults to the scopes for the {@xapiClass.serviceTitle}.
-     @else
-         *     @@type array $scopes Required. A string array of scopes to use when acquiring credentials.
-     @end
-     *     @@type string $clientConfigPath
-     *           Path to a JSON file containing client method configuration, including retry settings.
-     *           Specify this setting to specify the retry behavior of all methods on the client.
+     *     @@type string|array $auth
+     *           The credentials to be used by the client to authorize API calls. This option
+     *           accepts either a path to a credentials file, or a decoded credentials file as a
+     *           PHP array.
+     *           *Advanced usage*: In addition, this option can also accept a pre-constructed
+     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
+     *           object. Note that when one of these objects are provided, any settings in
+     *           $authConfig will be ignored.
+     *     @@type array $authConfig
+     *           Options used to configure auth, including auth token caching, for the client. For
+     *           a full list of supporting configuration options, see
+     *           \Google\ApiCore\AuthWrapper::build.
+     *     @@type bool $disableRetries
+     *           Determines whether or not retries defined by the client configuration should be
+     *           disabled. Defaults to `false`.
+     *     @@type string|array $clientConfig
+     *           Client method configuration, including retry settings. This option can be either a
+     *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
-     *           in the resources folder. The retry settings provided in this option can be overridden
-     *           by settings in $retryingOverride
-     *     @@type array $retryingOverride
-     *           An associative array in which the keys are method names (e.g. 'createFoo'), and
-     *           the values are retry settings to use for that method. The retry settings for each
-     *           method can be a {@@see Google\ApiCore\RetrySettings} object, or an associative array
-     *           of retry settings parameters. See the documentation on {@@see Google\ApiCore\RetrySettings}
-     *           for example usage. Passing a value of null is equivalent to a value of
-     *           ['retriesEnabled' => false]. Retry settings provided in this setting override the
-     *           settings in $clientConfigPath.
+     *           in the resources folder.
+     *     @@type string $transport
+     *           The transport used for executing network requests. May be either the string `rest`
+     *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
+     *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
+     *           TransportInterface object. Note that when this objects is provided, any settings in
+     *           $transportConfig, and any $serviceAddress setting, will be ignored.
+     *     @@type array $transportConfig
+     *           Configuration options that will be used to construct the transport. Options for
+     *           each supported transport type should be passed in a key for that transport. For
+     *           example:
+     *           $transportConfig = [
+     *               'grpc' => [...],
+     *               'rest' => [...]
+     *           ];
+     *           See the GrpcTransport::build and RestTransport::build methods for the supported
+     *           options.
      * }
-     @if xapiClass.hasMissingDefaultOptions
-         * @@throws ValidationException Throws a ValidationException if required arguments are missing
-         *                             from the $options array.
-     @end
      * @@experimental
      */
     public function __construct($options = [])
     {
-        @if xapiClass.missingDefaultServiceAddress
-            if (!array_key_exists('serviceAddress', $options)) {
-                throw new ValidationException("The 'serviceAddress' option must be provided.");
-            }
-        @end
-        @if xapiClass.missingDefaultServiceScopes
-            if (!array_key_exists('scopes', $options)) {
-                throw new ValidationException("The 'scopes' option must be provided.");
-            }
-        @end
-        $defaultOptions = [
-            @if xapiClass.hasDefaultServiceAddress
-                'serviceAddress' => self::SERVICE_ADDRESS,
-            @end
-            'port' => self::DEFAULT_SERVICE_PORT,
-            @if xapiClass.hasDefaultServiceScopes
-                'scopes' => [
-                    @join scope : {@xapiClass.authScopes}
-                        '{@scope}',
-                    @end
-                ],
-            @end
-            'retryingOverride' => null,
-            'libName' => null,
-            'libVersion' => null,
-            'clientConfigPath' => __DIR__ . '/{@xapiClass.clientConfigPath}',
-        ];
-        $options = array_merge($defaultOptions, $options);
-
         @if xapiClass.hasLongRunningOperations
-            if (array_key_exists('operationsClient', $options)) {
-                $this->operationsClient = $options['operationsClient'];
-            } else {
-                $operationsClientOptions = $options;
-                unset($operationsClientOptions['retryingOverride']);
-                unset($operationsClientOptions['clientConfigPath']);
-                $this->operationsClient = new OperationsClient($operationsClientOptions);
-            }
-        @end
-
-        $gapicVersion = $options['libVersion'] ?: self::getGapicVersion();
-
-        $headerDescriptor = new AgentHeaderDescriptor([
-            'libName' => $options['libName'],
-            'libVersion' => $options['libVersion'],
-            'gapicVersion' => $gapicVersion,
-        ]);
-
-        $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
-        $this->descriptors = [
-            @join methodKey : xapiClass.methodKeys
-                '{@methodKey}' => $defaultDescriptors,
-            @end
-        ];
-        @if xapiClass.hasPageStreamingMethods
-            $pageStreamingDescriptors = self::getPageStreamingDescriptors();
-            foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
-                $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
-            }
-        @end
-        @if xapiClass.hasLongRunningOperations
-            $longRunningDescriptors = self::getLongRunningDescriptors();
-            foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
-                $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
-            }
-        @end
-        @if xapiClass.hasGrpcStreamingMethods
-            $grpcStreamingDescriptors = self::getGrpcStreamingDescriptors();
-            foreach ($grpcStreamingDescriptors as $method => $grpcStreamingDescriptor) {
-                $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
-            }
-        @end
-
-        $clientConfigJsonString = file_get_contents($options['clientConfigPath']);
-        $clientConfig = json_decode($clientConfigJsonString, true);
-        $this->defaultCallSettings =
-                CallSettings::load('{@xapiClass.interfaceKey}',
-                                   $clientConfig,
-                                   $options['retryingOverride']);
-
-        $this->scopes = $options['scopes'];
-
-        $createStubOptions = [];
-        if (array_key_exists('sslCreds', $options)) {
-            $createStubOptions['sslCreds'] = $options['sslCreds'];
-        }
-        $this->grpcCredentialsHelper = new GrpcCredentialsHelper($options);
-
-        @join stub : xapiClass.stubs
-            ${@stub.createStubFunctionName} = function ($hostname, $opts, $channel) {
-                return new {@stub.grpcClientTypeName}($hostname, $opts, $channel);
-            };
-            if (array_key_exists('{@stub.createStubFunctionName}', $options)) {
-                ${@stub.createStubFunctionName} = $options['{@stub.createStubFunctionName}'];
-            }
-            $this->{@stub.name} = $this->grpcCredentialsHelper->createStub(${@stub.createStubFunctionName});
+            $options += self::getClientDefaults();
+            $this->setClientOptions($options);
+            $this->pluckArray([
+                'serviceName',
+                'clientConfigPath',
+                'descriptorsConfigPath'
+            ], $options);
+            $this->operationsClient = $this->pluck('operationsClient', $options, false)
+                ?: new OperationsClient($options);
+        @else
+            $this->setClientOptions($options + self::getClientDefaults());
         @end
     }
     {@""}
@@ -551,36 +402,104 @@
                 @end
 
             @end
-            @if apiMethod.isGrpcStreamingMethod
-                if (array_key_exists('timeoutMillis', $optionalArgs)) {
-                    $optionalArgs['retrySettings'] = [
-                        'retriesEnabled' => false,
-                        'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
-                    ];
-                }
+            @if @apiMethod.headerRequestParams
+              {@requestParams(apiMethod.headerRequestParams)}
 
             @end
-            $defaultCallSettings = $this->defaultCallSettings['{@apiMethod.key}'];
-            if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
-                $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
-                    $optionalArgs['retrySettings']
-                );
-            }
-            $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
-            $callable = ApiCallable::createApiCall(
-                $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
-
-            return $callable(
-                @if apiMethod.isSingularRequestMethod
-                    $request,
-                @else
-                    null,
-                @end
-                [],
-                ['call_credentials_callback' => $this->createCredentialsCallback()]);
+            {@setCall(apiMethod)}
         }
         {@""}
     @end
+@end
+
+@private setCall(apiMethod)
+    @switch apiMethod.type.toString
+    @case "PagedOptionalArrayMethod"
+        return $this->getPagedListResponse(
+            '{@apiMethod.grpcMethodName}',
+            $optionalArgs,
+            {@apiMethod.responseTypeName}::class,
+            @if apiMethod.hasRerouteToGrpcInterface
+                $request,
+                '{@apiMethod.rerouteToGrpcInterface}'
+            @else
+                $request
+            @end
+        );
+    @case "LongRunningOptionalArrayMethod"
+        return $this->startOperationsCall(
+            '{@apiMethod.grpcMethodName}',
+            $optionalArgs,
+            $request,
+            @if apiMethod.hasRerouteToGrpcInterface
+                $this->getOperationsClient(),
+                '{@apiMethod.rerouteToGrpcInterface}'
+            @else
+                $this->getOperationsClient()
+            @end
+        )->wait();
+    @case "OptionalArrayMethod"
+        return $this->startCall(
+            '{@apiMethod.grpcMethodName}',
+            {@apiMethod.responseTypeName}::class,
+            $optionalArgs,
+            @if apiMethod.isGrpcStreamingMethod
+                @if apiMethod.isSingularRequestMethod
+                    $request,
+
+                @else
+                    null,
+
+                @end
+                @if apiMethod.hasRerouteToGrpcInterface
+                    {@streamingCallType(apiMethod)},
+                    '{@apiMethod.rerouteToGrpcInterface}'
+                @else
+                    {@streamingCallType(apiMethod)}
+
+                @end
+            );
+            @else
+                @if apiMethod.hasRerouteToGrpcInterface
+                    $request,
+                    Call::UNARY_CALL,
+                    '{@apiMethod.rerouteToGrpcInterface}'
+
+                @else
+                    $request
+
+                @end
+            )->wait();
+        @end
+    @end
+@end
+
+@private streamingCallType(apiMethod)
+    @switch apiMethod.grpcStreamingType.toString
+    @case "BidiStreaming"
+        Call::BIDI_STREAMING_CALL
+    @case "ClientStreaming"
+        Call::CLIENT_STREAMING_CALL
+    @case "ServerStreaming"
+        Call::SERVER_STREAMING_CALL
+    @end
+@end
+
+@private requestParams(headerRequestParams)
+  $requestParams = new RequestParamsHeaderDescriptor([
+    @join headerRequestParam : @headerRequestParams
+      '{@headerRequestParam.fullyQualifiedName}' => $request->{@requestParamGetter(headerRequestParam.gettersChain)},
+    @end
+  ]);
+  $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
+      ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+      : $requestParams->getHeader();
+@end
+
+@private requestParamGetter(gettersChain)
+  @join getter : gettersChain on "->"
+    {@getter}()
+  @end
 @end
 
 @private paramList(params)
@@ -630,7 +549,7 @@
          * @@return {@apiMethodDoc.returnTypeName}
     @end
      *
-     * @@throws \Google\ApiCore\ApiException if the remote call fails
+     * @@throws ApiException if the remote call fails
      * @@experimental
      */
     {@""}
@@ -682,23 +601,4 @@
         @end
     @end
      * }
-@end
-
-@private cleanupSection(xapiClass)
-    /**
-     * Initiates an orderly shutdown in which preexisting calls continue but new
-     * calls are immediately cancelled.
-     * @@experimental
-     */
-    public function close()
-    {
-        @join stub : xapiClass.stubs
-            $this->{@stub.name}->close();
-        @end
-    }
-
-    private function createCredentialsCallback()
-    {
-        return $this->grpcCredentialsHelper->createCallCredentialsCallback();
-    }
 @end

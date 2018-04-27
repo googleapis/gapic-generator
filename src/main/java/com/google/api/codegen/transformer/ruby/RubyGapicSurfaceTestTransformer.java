@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -54,7 +53,6 @@ import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -87,11 +85,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    ProtoApiModel apiModel = new ProtoApiModel(model);
-    views.addAll(createUnitTestViews(apiModel, productConfig));
-    views.addAll(createSmokeTestViews(apiModel, productConfig));
+    views.addAll(createUnitTestViews(model, productConfig));
+    views.addAll(createSmokeTestViews(model, productConfig));
     return views.build();
   }
 
@@ -228,6 +225,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         smokeTestPathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
+    RubyPackageMetadataNamer metadataNamer =
+        new RubyPackageMetadataNamer(context.getNamer().getPackageName());
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
@@ -240,9 +239,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
-    // testCaseView not in use by Ruby for smoke test.
-    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
@@ -252,10 +248,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
-    testClass.method(testCaseView);
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
+    testClass.projectIdVariableName(metadataNamer.getProjectVariable(true));
     testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =
@@ -278,7 +274,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
 
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             context, testCaseTransformer.createSmokeTestInitContext(context));

@@ -17,9 +17,6 @@
   @# and updates to that file get reflected here through a refresh process.
   @# For the short term, the refresh process will only be runnable by Google
   @# engineers.
-  @#
-  @# The only allowed edits are to method and file documentation. A 3-way
-  @# merge preserves those additions if the generated source changes.
 
   {@importList(fileHeader.importSection.standardImports)}
 
@@ -108,6 +105,12 @@
       "{@authScopes}"
     @end
   ].freeze
+  
+  @if xapiClass.hasLongRunningOperations
+    class OperationsClient < Google::Longrunning::OperationsClient
+      self::SERVICE_ADDRESS = {@xapiClass.name}::SERVICE_ADDRESS
+    end
+  @end
 @end
 
 @private constructDefaults(xapiClass)
@@ -128,7 +131,7 @@
         page_descriptors: PAGE_DESCRIPTORS,
       @end
       errors: Google::Gax::Grpc::API_ERRORS,
-      kwargs: headers
+      metadata: headers
     )
   end
 @end
@@ -136,15 +139,12 @@
 @private initMethodSection(xapiClass)
   {@toComments(util.getDocLines(initMethodComments()))}
   def initialize @\
-      service_path: SERVICE_ADDRESS,
-      port: DEFAULT_SERVICE_PORT,
-      channel: nil,
-      chan_creds: nil,
-      updater_proc: nil,
       credentials: nil,
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
+      metadata: nil,
+      exception_transformer: nil,
       lib_name: nil,
       lib_version: ""
     @# These require statements are intentionally placed here to initialize
@@ -154,22 +154,10 @@
       require "{@import.moduleName}"
     @end
 
-    if channel || chan_creds || updater_proc
-      warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " @\
-        "on 2017/09/08"
-      credentials ||= channel
-      credentials ||= chan_creds
-      credentials ||= updater_proc
-    end
-    if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-      warn "`service_path` and `port` parameters are deprecated and will be removed"
-    end
-
     credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.{@xapiClass.defaultCredentialsInitializerCall}
 
     @if xapiClass.hasLongRunningOperations
-      @@operations_client = Google::Longrunning::OperationsClient.new(
-        service_path: service_path,
+      @@operations_client = OperationsClient.new(
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
@@ -195,14 +183,21 @@
       updater_proc = credentials.updater_proc
     end
 
+    package_version = Gem.loaded_specs['{@xapiClass.gapicPackageName}'].version.version
+
     google_api_client = "gl-ruby/#{RUBY_VERSION}"
     google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-    google_api_client << " gapic/{@xapiClass.packageVersion} gax/#{Google::Gax::VERSION}"
+    google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
     google_api_client << " grpc/#{GRPC::VERSION}"
     google_api_client.freeze
 
     headers = { :"x-goog-api-client" => google_api_client }
+    headers.merge!(metadata) unless metadata.nil?
     {@constructDefaults(xapiClass)}
+    
+    @# Allow overriding the service path/port in subclasses.
+    service_path = self.class::SERVICE_ADDRESS
+    port = self.class::DEFAULT_SERVICE_PORT
     @join stub : xapiClass.stubs
       @@{@stub.name} = Google::Gax::Grpc.create_stub(
         service_path,
@@ -220,11 +215,13 @@
         @@{@apiMethod.stubName}.method(:{@apiMethod.name}),
         @if apiMethod.headerRequestParams
           defaults["{@apiMethod.name}"],
+          exception_transformer: exception_transformer,
           params_extractor: proc do |request|
             {{@extractedRequestParams(apiMethod.headerRequestParams)}}
           end
         @else
-          defaults["{@apiMethod.name}"]
+          defaults["{@apiMethod.name}"],
+          exception_transformer: exception_transformer
         @end
       )
     @end
@@ -308,7 +305,7 @@
 @end
 
 @private flattenedMethod(apiMethod)
-  {@methodComments(apiMethod.doc)}
+  {@methodComments(apiMethod)}
   @if apiMethod.hasRequestStreaming
     @#
     @# @@note
@@ -332,8 +329,7 @@
     end
   @else
     @if apiMethod.hasRequestParameters
-      def {@apiMethod.name} @\
-          {@paramList(apiMethod.methodParams)}
+      {@serviceDefStatement(apiMethod)}
         req = {
           @if apiMethod.requiredRequestObjectParams
             @if apiMethod.optionalRequestObjectParamsNoPageToken
@@ -350,7 +346,12 @@
         {@makeApiCall(apiMethod)}
       end
     @else
-      def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
+      @else
+        def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}, &block
+      @end
+
         req = {@apiMethod.requestTypeName}.new
         {@makeApiCall(apiMethod)}
       end
@@ -358,30 +359,36 @@
   @end
 @end
 
-@private methodComments(apiMethodDoc)
-  @if apiMethodDoc.mainDocLines
-    {@toComments(apiMethodDoc.mainDocLines)}
+@private methodComments(apiMethod)
+  @if apiMethod.doc.mainDocLines
+    {@toComments(apiMethod.doc.mainDocLines)}
     @#
 
   @end
-  @if apiMethodDoc.paramDocs
-    @join paramDoc : apiMethodDoc.paramDocs
+  @if apiMethod.doc.paramDocs
+    @join paramDoc : apiMethod.doc.paramDocs
       @# @@param {@paramDoc.paramName} [{@paramDoc.typeName}]
       @join line : paramDoc.lines
         @#   {@line}
       @end
     @end
 
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+  @else
+    @# @@yield [result, operation] Access the result along with the RPC operation
+    @# @@yieldparam result [{@apiMethod.doc.returnTypeName}]
+    @# @@yieldparam operation [GRPC::ActiveCall::Operation]
+  @end
 
   @end
-  @if apiMethodDoc.returnTypeName
-    @# @@return [{@apiMethodDoc.returnTypeName}]
-    @join line : apiMethodDoc.returnsDocLines
+  @if apiMethod.doc.returnTypeName
+    @# @@return [{@apiMethod.doc.returnTypeName}]
+    @join line : apiMethod.doc.returnsDocLines
       @#   {@line}
     @end
 
   @end
-  {@toComments(apiMethodDoc.throwsDocLines)}
+  {@toComments(apiMethod.doc.throwsDocLines)}
 @end
 
 @private makeApiCall(apiMethod)
@@ -396,11 +403,27 @@
     operation.on_done { |operation| yield(operation) } if block_given?
     operation
   @else
-    @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
+    @else
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options, &block)
+    @end
+
     @if apiMethod.hasReturnValue
     @else
       nil
     @end
+  @end
+@end
+
+@private serviceDefStatement(apiMethod)
+  @if or(apiMethod.isGrpcStreamingMethod, apiMethod.isLongRunningOperation)
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)}
+  @else
+    def {@apiMethod.name} @\
+        {@paramList(apiMethod.methodParams)},
+        &block
   @end
 @end
 

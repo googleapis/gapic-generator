@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +25,8 @@ public abstract class FormattedInitValueView implements InitValueView {
 
   public abstract String formatFunctionName();
 
+  public abstract String formatSpec();
+
   public abstract List<String> formatArgs();
 
   public String type() {
@@ -42,6 +44,8 @@ public abstract class FormattedInitValueView implements InitValueView {
     public abstract Builder fullyQualifiedApiWrapperName(String val);
 
     public abstract Builder formatFunctionName(String val);
+
+    public abstract Builder formatSpec(String val);
 
     public abstract Builder formatArgs(List<String> val);
 

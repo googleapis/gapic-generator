@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -55,6 +54,10 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @Nullable
   public abstract String fieldSetFunction();
 
+  // For static languages, function name for adding an element to this repeated message type.
+  @Nullable
+  public abstract String fieldAddFunction();
+
   public abstract boolean isRequired();
 
   public abstract boolean canRepeat();
@@ -75,11 +78,15 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   public abstract boolean hasRequiredProperties();
 
   // List of ResourceNames that this message contains.
-  public abstract List<RequestObjectParamView> resourceNames();
+  @Nullable
+  public abstract RequestObjectParamView pathAsResourceName();
+
+  public boolean hasResourceName() {
+    return pathAsResourceName() != null;
+  }
 
   public static StaticLangApiMessageView.Builder newBuilder() {
-    return new AutoValue_StaticLangApiMessageView.Builder()
-        .resourceNames(new LinkedList<RequestObjectParamView>());
+    return new AutoValue_StaticLangApiMessageView.Builder();
   }
 
   @AutoValue.Builder
@@ -98,9 +105,11 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
     public abstract Builder fieldSetFunction(String val);
 
+    public abstract Builder fieldAddFunction(String val);
+
     public abstract Builder properties(List<StaticLangApiMessageView> val);
 
-    public abstract Builder resourceNames(List<RequestObjectParamView> val);
+    public abstract Builder pathAsResourceName(RequestObjectParamView val);
 
     public abstract Builder hasRequiredProperties(boolean val);
 

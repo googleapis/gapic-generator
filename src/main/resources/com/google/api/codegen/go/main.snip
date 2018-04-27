@@ -49,6 +49,8 @@
     }
 
     // {@view.clientTypeName} is a client for interacting with {@view.serviceOriginalName}.
+    //
+    // Methods, except Close, may be called concurrently. However, fields must not be modified concurrently with method calls.
     type {@view.clientTypeName} struct {
         // The connection to the service.
         conn *grpc.ClientConn
@@ -126,23 +128,6 @@
         kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
         c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
     }
-
-    @join getter : view.pathTemplateGetters
-        // {@getter.name} returns the path for the {@getter.resourceName} resource.
-        func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
-            return "" +
-                @join piece : getter.render.pieces
-                    @switch piece.kind
-                    @case "LITERAL"
-                        "{@piece.value}" +
-                    @case "VARIABLE"
-                        {@piece.value} +
-                    @end
-                @end
-                ""
-        }
-
-    @end
 
     @join resource : view.iamResources
         func (c *{@view.clientTypeName}) {@resource.resourceGetterFunctionName}({@resource.paramName} {@resource.resourceTypeName}) *iam.Handle {
