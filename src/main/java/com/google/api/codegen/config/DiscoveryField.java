@@ -28,6 +28,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -62,15 +63,15 @@ public class DiscoveryField implements FieldModel, TypeModel {
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
    */
-  private DiscoveryField(Schema schema, DiscoApiModel apiModel) {
-    Preconditions.checkNotNull(schema);
-    this.originalSchema = schema;
-    this.schema = schema.dereference();
+  private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
+    Preconditions.checkNotNull(refSchema);
+    this.originalSchema = refSchema;
+    this.schema = refSchema.dereference();
     this.apiModel = apiModel;
     if (schemaNames.containsKey(schema)) {
       this.simpleName = schemaNames.get(schema);
     } else {
-      String simpleName = DiscoGapicParser.stringToName(schema.getIdentifier()).toLowerCamel();
+      String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
       if (isTopLevelSchema(schema)) {
         if (schemaNames.containsKey(schema)) {
           simpleName = schemaNames.get(schema);
@@ -92,7 +93,16 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
-    return new DiscoveryField(schema, rootApiModel);
+    if (globalObjects.containsKey(schema)) {
+      return globalObjects.get(schema);
+    }
+    if (!Strings.isNullOrEmpty(schema.reference())) {
+      // First create a DiscoveryField for the underlying referenced Schema.
+      create(schema.dereference(), rootApiModel);
+    }
+    DiscoveryField field = new DiscoveryField(schema, rootApiModel);
+    globalObjects.put(schema, field);
+    return field;
   }
 
   /** @return the underlying Discovery Schema. */

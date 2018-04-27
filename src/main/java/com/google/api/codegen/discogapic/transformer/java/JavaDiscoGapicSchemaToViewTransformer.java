@@ -96,23 +96,19 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    Map<Schema, String> schemaNames =
-        new TreeMap<>(
-            new Comparator<Schema>() {
-              @Override
-              public int compare(Schema o1, Schema o2) {
-                return schemaToStringNoDescriptionParent(o1)
-                    .compareTo(schemaToStringNoDescriptionParent(o2));
-              }
-            });
-    Comparator<String> caseInsensitiveComparator =
-        (String s1, String s2) -> s1.compareToIgnoreCase(s2);
-    SymbolTable classNameSymbolTable =
-        SymbolTable.fromSeed(reservedKeywords, caseInsensitiveComparator);
+//    Map<Schema, String> schemaNames =
+//        new TreeMap<>(
+//            new Comparator<Schema>() {
+//              @Override
+//              public int compare(Schema o1, Schema o2) {
+//                return schemaToStringNoDescriptionParent(o1)
+//                    .compareTo(schemaToStringNoDescriptionParent(o2));
+//              }
+//            });
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaTransformationContext.comparator);
-      generateSchemaClasses(contextViews, context, schema, classNameSymbolTable, schemaNames);
+      generateSchemaClasses(contextViews, context, schema);
       for (Map.Entry<SchemaTransformationContext, StaticLangApiMessageView> contextView :
           contextViews.entrySet()) {
         surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
@@ -156,9 +152,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private StaticLangApiMessageView generateSchemaClasses(
       Map<SchemaTransformationContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
-      Schema schema,
-      SymbolTable classNameSymbolTable,
-      Map<Schema, String> schemaNames) {
+      Schema schema) {
 
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
     String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
@@ -170,8 +164,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
     boolean hasRequiredProperties = false;
 
-    // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
-    // the same symbols.
     SymbolTable symbolTableCopy = SymbolTable.fromSeed(reservedKeywords);
 
     String schemaId = Name.anyCamel(schema.getIdentifier()).toLowerCamel();
@@ -199,9 +191,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           generateSchemaClasses(
               messageViewAccumulator,
               documentContext,
-              property,
-              classNameSymbolTable,
-              schemaNames));
+              property));
       if (!property.properties().isEmpty() || (property.items() != null)) {
         // Add non-primitive-type property to imports.
         schemaTypeTable.getAndSaveNicknameFor(property);
@@ -225,8 +215,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         schemaView.typeName(innerTypeName);
       }
       schemaView.innerTypeName(innerTypeName);
-
-      schemaNames.put(schema, schemaModel.getSimpleName());
     } else {
       // This is a primitive type.
       schemaView.typeName(schemaTypeName);
