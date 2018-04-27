@@ -96,15 +96,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-//    Map<Schema, String> schemaNames =
-//        new TreeMap<>(
-//            new Comparator<Schema>() {
-//              @Override
-//              public int compare(Schema o1, Schema o2) {
-//                return schemaToStringNoDescriptionParent(o1)
-//                    .compareTo(schemaToStringNoDescriptionParent(o2));
-//              }
-//            });
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaTransformationContext.comparator);
