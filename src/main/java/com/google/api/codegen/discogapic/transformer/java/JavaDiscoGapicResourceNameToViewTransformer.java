@@ -66,9 +66,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
-  private DiscoApiModel apiModel;
   private static Set<String> reservedKeywords = new HashSet<>();
-
 
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);

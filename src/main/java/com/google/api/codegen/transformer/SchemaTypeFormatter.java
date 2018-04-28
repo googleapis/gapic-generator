@@ -24,15 +24,13 @@ import com.google.api.codegen.discovery.Schema;
  * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */
 public interface SchemaTypeFormatter extends TypeFormatter {
-  /** Returns the full name for the given type (without adding the full name to the import set).
-   * @param type*/
+  /** Returns the full name for the given type (without adding the full name to the import set). */
   String getFullNameFor(DiscoveryField type);
 
   /**
    * Returns the inner type name for the given type (without adding the full name to the import
    * set). If there is no enclosing type, e.g. List or Map, then the inner type is the same as the
    * nickname.
-   * @param type
    */
   String getInnerTypeNameFor(DiscoveryField type);
 

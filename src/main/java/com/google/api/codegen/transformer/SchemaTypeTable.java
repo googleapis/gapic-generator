@@ -151,7 +151,6 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /**
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
-   * @param schema
    */
   public String getAndSaveNicknameFor(DiscoveryField schema) {
     return typeTable.getAndSaveNicknameFor(
@@ -237,8 +236,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    */
   @Override
   public String getAndSaveNicknameFor(FieldModel type) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeName((DiscoveryField) type));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName((DiscoveryField) type));
   }
 
   /*

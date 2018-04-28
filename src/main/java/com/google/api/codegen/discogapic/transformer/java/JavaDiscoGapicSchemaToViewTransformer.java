@@ -18,7 +18,6 @@ import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.
 
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoveryField;
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
@@ -185,14 +184,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       schemaProperties.addAll(schema.items().properties().values());
     }
     for (Schema property : schemaProperties) {
-      viewProperties.add(
-          generateSchemaClasses(
-              messageViewAccumulator,
-              documentContext,
-              property));
+      viewProperties.add(generateSchemaClasses(messageViewAccumulator, documentContext, property));
       if (DiscoveryField.isTopLevelSchema(property)) {
         // Add non-primitive-type property to imports.
-        schemaTypeTable.getAndSaveNicknameFor(DiscoveryField.create(property, schemaModel.getDiscoApiModel()));
+        schemaTypeTable.getAndSaveNicknameFor(
+            DiscoveryField.create(property, schemaModel.getDiscoApiModel()));
       }
       if (property.required()) {
         hasRequiredProperties = true;
@@ -229,39 +225,5 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     typeTable.getAndSaveNicknameFor("java.util.Set");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
     typeTable.getAndSaveNicknameFor("javax.annotation.Nullable");
-  }
-
-  private static String schemaToStringNoDescriptionParent(Schema schema) {
-    return String.format(
-        "additionalProperties: %s,\n"
-            + " defaultValue: %s,\n"
-            + " format: %s,\n"
-            + " id: %s,\n"
-            + " isEnum: %s,\n"
-            + " items: %s,\n"
-            + " key: %s,\n"
-            + " location: %s,\n"
-            + " pattern: %s,\n"
-            + " properties keys: %s,\n"
-            + " reference: %s,\n"
-            + " repeated: %s,\n"
-            + " required: %s,\n"
-            + " type: %s",
-        schema.additionalProperties() == null ? "" : schema.additionalProperties().getIdentifier(),
-        schema.defaultValue(),
-        // Skip description.
-        schema.format(),
-        schema.id(),
-        schema.isEnum(),
-        schema.items() == null ? "" : schema.items().getIdentifier(),
-        schema.key(),
-        schema.location(),
-        schema.pattern(),
-        // Skip parent.
-        schema.properties().keySet(),
-        schema.reference(),
-        schema.repeated(),
-        schema.required(),
-        schema.type());
   }
 }

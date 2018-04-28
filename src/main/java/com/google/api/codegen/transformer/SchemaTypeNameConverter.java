@@ -40,8 +40,11 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
     NO_BOX_PRIMITIVES
   }
 
-  /** Provides a TypeName for the given Schema.
-   * @param field*/
+  /**
+   * Provides a TypeName for the given Schema.
+   *
+   * @param field
+   */
   public abstract TypeName getTypeName(DiscoveryField field);
 
   /** Provides a TypeName for the given Schema. */
@@ -50,7 +53,6 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   /**
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
-   * @param field
    */
   public abstract TypedValue getSnippetZeroValue(DiscoveryField field);
 
@@ -66,8 +68,7 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
    */
   public abstract TypedValue getEnumValue(DiscoveryField field, String value);
 
-  /** Provides a TypeName for the element type of the given schema.
-   * @param type*/
+  /** Provides a TypeName for the element type of the given schema. */
   public abstract TypeName getTypeNameForElementType(DiscoveryField type);
 
   /** Provides a TypeName for the element type of the given TypeModel. */
@@ -77,7 +78,6 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
    * #getSnippetZeroValue(DiscoveryField)}.
-   * @param discoveryField
    */
   public abstract TypedValue getImplZeroValue(DiscoveryField discoveryField);
 

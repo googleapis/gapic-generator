@@ -143,7 +143,8 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    * @param fieldModel The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  private TypeName getTypeNameForElementType(DiscoveryField fieldModel, BoxingBehavior boxingBehavior) {
+  private TypeName getTypeNameForElementType(
+      DiscoveryField fieldModel, BoxingBehavior boxingBehavior) {
     if (fieldModel == null) {
       return new TypeName("java.lang.Void", "Void");
     }
@@ -167,7 +168,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
       }
     }
     if (schema.type().equals(Type.ARRAY)) {
-      return getTypeName(DiscoveryField.create(schema.dereference().items(), fieldModel.getDiscoApiModel()), BoxingBehavior.BOX_PRIMITIVES);
+      return getTypeName(
+          DiscoveryField.create(schema.dereference().items(), fieldModel.getDiscoApiModel()),
+          BoxingBehavior.BOX_PRIMITIVES);
     } else {
       String packageName =
           !implicitPackageName.isEmpty() ? implicitPackageName : DEFAULT_JAVA_PACKAGE_PREFIX;
@@ -204,8 +207,8 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
       TypeName keyTypeName = typeNameConverter.getTypeName("java.lang.String");
       TypeName valueTypeName =
           getTypeNameForElementType(
-              DiscoveryField.create(
-                  schema.additionalProperties(), field.getDiscoApiModel()), BoxingBehavior.BOX_PRIMITIVES);
+              DiscoveryField.create(schema.additionalProperties(), field.getDiscoApiModel()),
+              BoxingBehavior.BOX_PRIMITIVES);
       return new TypeName(
           mapTypeName.getFullName(),
           mapTypeName.getNickname(),
@@ -271,7 +274,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    *
    * <p>Parametric types may use the diamond operator, since the return value will be used only in
    * initialization.
-   * @param field
    */
   @Override
   public TypedValue getSnippetZeroValue(DiscoveryField field) {
