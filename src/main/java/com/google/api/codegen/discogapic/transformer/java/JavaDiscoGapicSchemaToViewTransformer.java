@@ -146,7 +146,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Schema schema) {
 
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     SchemaTransformationContext context =
         SchemaTransformationContext.create(
@@ -165,10 +164,18 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
 
-    FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
+    DiscoveryField schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schemaModel);
+
+    schemaView.typeName(schemaTypeName);
+    if (schema.repeated() || schema.type() == Type.ARRAY) {
+      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schemaModel));
+    } else {
+      schemaView.innerTypeName(schemaTypeName);
+    }
 
     // Generate a Schema view from each property.
     List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
@@ -183,9 +190,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
               messageViewAccumulator,
               documentContext,
               property));
-      if (!property.properties().isEmpty() || (property.items() != null)) {
+      if (DiscoveryField.isTopLevelSchema(property)) {
         // Add non-primitive-type property to imports.
-        schemaTypeTable.getAndSaveNicknameFor(property);
+        schemaTypeTable.getAndSaveNicknameFor(DiscoveryField.create(property, schemaModel.getDiscoApiModel()));
       }
       if (property.required()) {
         hasRequiredProperties = true;
@@ -197,26 +204,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
-
-    if (DiscoveryField.isTopLevelSchema(schema)) {
-      String innerTypeName = Name.anyCamel(schemaModel.getSimpleName()).toUpperCamel();
-      if (schema.repeated() || schema.type() == Type.ARRAY) {
-        schemaView.typeName(schemaTypeName);
-      } else {
-        schemaView.typeName(innerTypeName);
-      }
-      schemaView.innerTypeName(innerTypeName);
-    } else {
-      // This is a primitive type.
-      schemaView.typeName(schemaTypeName);
-      if (schema.repeated() || schema.type() == Type.ARRAY) {
-        schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
-      } else {
-        schemaView.innerTypeName(schemaTypeName);
-      }
-    }
-
     schemaView.hasRequiredProperties(hasRequiredProperties);
+
     StaticLangApiMessageView messageView = schemaView.build();
 
     // Add it to list of file ViewModels for rendering.

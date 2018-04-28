@@ -69,12 +69,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
-  public String getNicknameFor(Schema type) {
+  public String getNicknameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getNickname();
   }
 
   @Override
-  public String getFullNameFor(Schema type) {
+  public String getFullNameFor(DiscoveryField type) {
     return typeFormatter.getFullNameFor(type);
   }
 
@@ -84,7 +84,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
-  public String getInnerTypeNameFor(Schema schema) {
+  public String getInnerTypeNameFor(DiscoveryField schema) {
     return typeFormatter.getInnerTypeNameFor(schema);
   }
 
@@ -151,20 +151,21 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /**
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
+   * @param schema
    */
-  public String getAndSaveNicknameFor(Schema schema) {
+  public String getAndSaveNicknameFor(DiscoveryField schema) {
     return typeTable.getAndSaveNicknameFor(
         typeNameConverter.getTypeName(schema, BoxingBehavior.BOX_PRIMITIVES));
   }
 
-  public String getFullNameForElementType(Schema type) {
+  public String getFullNameForElementType(DiscoveryField type) {
     return typeFormatter.getFullNameFor(type);
   }
 
   /** Get the full name for the given type. */
   @Override
   public String getFullNameFor(FieldModel type) {
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameFor((DiscoveryField) type);
   }
 
   @Override
@@ -189,13 +190,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Get the full name for the element type of the given type. */
   @Override
   public String getFullNameForElementType(FieldModel type) {
-    return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameForElementType((DiscoveryField) type);
   }
 
   /** Get the full name for the element type of the given type. */
   @Override
   public String getFullNameForElementType(TypeModel type) {
-    return getFullNameForElementType(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameForElementType((DiscoveryField) type);
   }
 
   @Override
@@ -237,7 +238,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getAndSaveNicknameFor(FieldModel type) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeName(((DiscoveryField) type).getDiscoveryField()));
+        typeNameConverter.getTypeName((DiscoveryField) type));
   }
 
   /*

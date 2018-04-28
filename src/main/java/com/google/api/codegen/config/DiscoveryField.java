@@ -105,9 +105,19 @@ public class DiscoveryField implements FieldModel, TypeModel {
     return field;
   }
 
-  /** @return the underlying Discovery Schema. */
+  /** @return the underlying dereferenced Discovery Schema. */
   public Schema getDiscoveryField() {
     return schema;
+  }
+
+  /** @return the original underlying Discovery Schema. */
+  public Schema getOriginalDiscoveryField() {
+    return originalSchema;
+  }
+
+  /** @return the underlying DiscoApiModel. */
+  public DiscoApiModel getDiscoApiModel() {
+    return apiModel;
   }
 
   @Override

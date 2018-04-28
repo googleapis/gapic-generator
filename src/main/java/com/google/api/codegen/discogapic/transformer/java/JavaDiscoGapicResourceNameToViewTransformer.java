@@ -17,6 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -65,7 +66,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
+  private DiscoApiModel apiModel;
   private static Set<String> reservedKeywords = new HashSet<>();
+
 
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
@@ -185,7 +188,8 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private StaticLangMemberView schemaToParamView(
       SchemaTransformationContext context, Schema schema, SymbolTable symbolTable) {
     StaticLangMemberView.Builder paramView = StaticLangMemberView.newBuilder();
-    String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
+    DiscoveryField field = DiscoveryField.create(schema, context.getDocContext().getApiModel());
+    String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(field);
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
     paramView.typeName(typeName);
     paramView.fieldGetFunction(
