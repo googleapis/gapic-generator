@@ -253,7 +253,9 @@ public abstract class FieldConfig {
           throw new IllegalArgumentException(
               "Field must have a resource type specified to support "
                   + "STATIC_TYPES resource name treatment. Field: "
-                  + field.getFullName());
+                  + field.getFullName()
+                  + "; parent: "
+                  + field.getParentFullName());
         }
         break;
       case VALIDATE:
