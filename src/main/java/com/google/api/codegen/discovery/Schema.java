@@ -369,7 +369,11 @@ public abstract class Schema implements Node {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
   }
 
-  /** @return hashCode that should be unique for each underlying JsonNode in the Document. */
+  /**
+   * @return hashCode that should be unique for each underlying Node in the Document. This function
+   *     includes the location of the node in its calculation, so two different nodes with the same
+   *     content but different parents will still have different hashCodes.
+   */
   @Override
   public int hashCode() {
     return Objects.hash(

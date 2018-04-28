@@ -50,6 +50,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   private final String simpleName;
 
+  // Comparator for Schemas that have children schemas.
   private static Comparator<Schema> toplevelSchemaComparator =
       (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
 
