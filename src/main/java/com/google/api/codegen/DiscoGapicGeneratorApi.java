@@ -40,7 +40,6 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -145,9 +144,6 @@ public class DiscoGapicGeneratorApi {
           "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
     }
 
-    Preconditions.checkArgument(
-        !Strings.isNullOrEmpty(defaultPackageName),
-        "defaultPackageName is empty for language: " + language);
     DiscoApiModel model =
         new DiscoApiModel(Document.from(new DiscoveryNode(root)), defaultPackageName);
 
