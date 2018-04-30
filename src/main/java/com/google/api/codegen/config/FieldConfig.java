@@ -15,8 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
-import com.google.api.codegen.discovery.Method;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -255,25 +253,7 @@ public abstract class FieldConfig {
           throw new IllegalArgumentException(
               "Field must have a resource type specified to support "
                   + "STATIC_TYPES resource name treatment. Field: "
-                  + field.getFullName()
-                  + "; method id: "
-                  + ((DiscoveryField) field).getDiscoveryField().parent().id()
-                  + "; method request name: "
-                  + DiscoGapicParser.getRequestName(
-                          (Method) ((DiscoveryField) field).getDiscoveryField().parent())
-                      .toUpperCamel()
-                  + "; method full package request name: "
-                  + ResourceNameMessageConfig.getFullyQualifiedMessageName(
-                      ((DiscoveryField) field).getDiscoApiModel().getDefaultPackageName(),
-                      DiscoGapicParser.getRequestName(
-                              (Method) ((DiscoveryField) field).getDiscoveryField().parent())
-                          .toUpperCamel())
-                  + "; parent: "
-                  + field.getParentFullName()
-                  + "; apiModel.getDefaultPackageName() is"
-                  + ((DiscoveryField) field).getDiscoApiModel().getDefaultPackageName()
-                  + "; messageConfigs: "
-                  + (messageConfigs == null ? "null" : messageConfigs.toString()));
+                  + field.getFullName());
         }
         break;
       case VALIDATE:

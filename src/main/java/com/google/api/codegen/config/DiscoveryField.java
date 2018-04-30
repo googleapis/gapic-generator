@@ -48,14 +48,17 @@ public class DiscoveryField implements FieldModel, TypeModel {
   // Not dereferenced schema; used in rendering this FieldModel's parameter name.
   private final Schema originalSchema;
 
-  private final String simpleName;
+  // Unformatted type name for this Field. For message-type Fields, this will be globally unique.
+  private final String typeName;
 
   // Comparator for Schemas that have children schemas.
-  private static Comparator<Schema> toplevelSchemaComparator =
+  private static Comparator<Schema> messageSchemaComparator =
       (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
 
   private static Map<Schema, DiscoveryField> globalObjects = new HashMap<>();
-  private static Map<Schema, String> schemaNames = new TreeMap<>(toplevelSchemaComparator);
+
+  // Stores the escaped name for each message-type schema.
+  private static Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
   private static Comparator<String> caseInsensitiveComparator =
       (String s1, String s2) -> s1.compareToIgnoreCase(s2);
   private static SymbolTable idSymbolTable = new SymbolTable(caseInsensitiveComparator);
@@ -68,25 +71,24 @@ public class DiscoveryField implements FieldModel, TypeModel {
     Preconditions.checkNotNull(refSchema);
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
-    Preconditions.checkNotNull(apiModel);
-    Preconditions.checkArgument(
-        !Strings.isNullOrEmpty(apiModel.getDefaultPackageName()),
-        "apiModel defaultPackageName is null for schema " + schema.getIdentifier());
     this.apiModel = apiModel;
-    if (schemaNames.containsKey(schema)) {
-      this.simpleName = schemaNames.get(schema);
-    } else {
-      String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
-      if (isTopLevelSchema(schema)) {
-        if (schemaNames.containsKey(schema)) {
-          simpleName = schemaNames.get(schema);
-        } else {
-          simpleName = idSymbolTable.getNewSymbol(simpleName);
-          schemaNames.put(schema, simpleName);
-        }
+
+    String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
+    if (isTopLevelSchema(schema)) {
+      if (messageNames.containsKey(schema)) {
+        // Use the previously computed escaped name for this message-type field.
+        this.typeName = messageNames.get(schema);
+      } else {
+        // Get a case-insensitively-unique name for this message-type field.
+        simpleName = idSymbolTable.getNewSymbol(simpleName);
+        messageNames.put(schema, simpleName);
+        this.typeName = simpleName;
       }
-      this.simpleName = simpleName;
+    } else {
+      // Primitive schemas do not need name escaping.
+      this.typeName = simpleName;
     }
+
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
     for (Schema child : this.schema.properties().values()) {
       propertiesBuilder.add(DiscoveryField.create(child, apiModel));
@@ -95,13 +97,11 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   /** Create a FieldModel object from a non-null Schema object. */
-  public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
+  public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
-    Preconditions.checkArgument(
-        rootApiModel.getDefaultPackageName().trim().equals("com.google.cloud.simplecompute.v1"),
-        "rootApiModel packagedefaultname is empty");
     if (globalObjects.containsKey(schema)) {
+      // DiscoveryField has already been created for this schema.
       return globalObjects.get(schema);
     }
     if (!Strings.isNullOrEmpty(schema.reference())) {
@@ -130,7 +130,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getSimpleName() {
-    return simpleName;
+    return typeName;
   }
 
   @Override
