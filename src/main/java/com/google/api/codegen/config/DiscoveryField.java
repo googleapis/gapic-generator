@@ -69,6 +69,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
    */
   private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(refSchema);
+    Preconditions.checkNotNull(apiModel);
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(apiModel.getDefaultPackageName()));
+    Preconditions.checkArgument(
+        apiModel.getDefaultPackageName().equals("com.google.cloud.simplecompute.v1"));
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
     this.apiModel = apiModel;
