@@ -255,7 +255,9 @@ public abstract class FieldConfig {
                   + "STATIC_TYPES resource name treatment. Field: "
                   + field.getFullName()
                   + "; parent: "
-                  + field.getParentFullName());
+                  + field.getParentFullName()
+                  + "messageConfigs: "
+                  + (messageConfigs == null ? "null" : messageConfigs.toString()));
         }
         break;
       case VALIDATE:
