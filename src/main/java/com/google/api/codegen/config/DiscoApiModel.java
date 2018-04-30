@@ -20,6 +20,8 @@ import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utility class that provides data from a Discovery document.
@@ -86,6 +88,7 @@ public class DiscoApiModel implements ApiModel {
     this.document = document;
     this.diagCollector = new BoundedDiagCollector();
     this.defaultPackageName = defaultPackageName;
+    Logger.getLogger("").log(Level.WARNING, "defaultPackcageName is " + defaultPackageName);
   }
 
   public Document getDocument() {
