@@ -253,7 +253,16 @@ public abstract class FieldConfig {
           throw new IllegalArgumentException(
               "Field must have a resource type specified to support "
                   + "STATIC_TYPES resource name treatment. Field: "
-                  + field.getFullName());
+                  + field.getFullName()
+                  + "; parent: "
+                  + field.getParentFullName()
+                  + "; method id: "
+                  + ((DiscoveryField) field).getOriginalDiscoveryField().parent().id());
+          //                  + "; method request name: "
+          //                  + DiscoGapicParser.getMethodInputName(
+          //                      (Method) ((DiscoveryField) field).getOriginalDiscoveryField().parent()));
+          //                  + "; messageConfigs: "
+          //                  + (messageConfigs == null ? "null" : messageConfigs.toString()));
         }
         break;
       case VALIDATE:
