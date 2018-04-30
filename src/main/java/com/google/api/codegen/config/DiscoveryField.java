@@ -177,7 +177,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isMessage() {
-    return !isPrimitiveType();
+    return isTopLevelSchema(schema);
   }
 
   @Override
