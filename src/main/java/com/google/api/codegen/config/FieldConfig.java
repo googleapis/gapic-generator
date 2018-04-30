@@ -261,8 +261,9 @@ public abstract class FieldConfig {
                   + "; method id: "
                   + ((DiscoveryField) field).getDiscoveryField().parent().id()
                   + "; method request name: "
-                  + DiscoGapicParser.getMethodInputName(
-                      (Method) ((DiscoveryField) field).getDiscoveryField().parent())
+                  + DiscoGapicParser.getRequestName(
+                          (Method) ((DiscoveryField) field).getDiscoveryField().parent())
+                      .toUpperCamel()
                   + "; messageConfigs: "
                   + (messageConfigs == null ? "null" : messageConfigs.toString()));
         }
