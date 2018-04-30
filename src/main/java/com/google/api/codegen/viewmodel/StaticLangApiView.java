@@ -14,22 +14,35 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangApiView {
+  protected abstract InterfaceContext context();
+
+  private InterfaceConfig interfaceConfig() {
+    return context().getInterfaceConfig();
+  }
+
   @Nullable
   public abstract ServiceDocView doc();
 
   @Nullable
   public abstract String releaseLevelAnnotation();
 
-  public abstract String name();
+  public Name name() {
+    return Name.anyCamel(interfaceConfig().getName(), "Client");
+  }
 
-  @Nullable // Used in C#
-  public abstract String implName();
+  // include in subclass: CSharpApiView
+  public Name implName() {
+    return Name.upperCamel(interfaceConfig().getName(), "ClientImpl");
+  }
 
   @Nullable // Used in C#
   public abstract String grpcServiceName();
@@ -99,13 +112,15 @@ public abstract class StaticLangApiView {
   @AutoValue.Builder
   public abstract static class Builder {
 
+    public abstract Builder context(InterfaceContext context);
+
     public abstract Builder doc(ServiceDocView val);
 
     public abstract Builder releaseLevelAnnotation(String val);
 
-    public abstract Builder name(String val);
+    // public abstract Builder name(String val);
 
-    public abstract Builder implName(String val);
+    // public abstract Builder implName(String val);
 
     public abstract Builder grpcServiceName(String val);
 

@@ -13,7 +13,7 @@
 @end
 
 @private renderClass(classView)
-  public class {@classView.name} implements BackgroundResource {
+  public class {@classView.name.toUpperCamel} implements BackgroundResource {
     {@members(classView)}
     {@statics(classView)}
     {@staticFunctions(classView)}
@@ -287,38 +287,38 @@
 @private constructors(xapiClass)
   @if xapiClass.hasDefaultInstance
     /**
-     * Constructs an instance of {@xapiClass.name} with default settings.
+     * Constructs an instance of {@xapiClass.name.toUpperCamel} with default settings.
      */
-    public static final {@xapiClass.name} create() throws IOException {
+    public static final {@xapiClass.name.toUpperCamel} create() throws IOException {
       return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
   @end
 
   /**
-   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * Constructs an instance of {@xapiClass.name.toUpperCamel}, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
-    return new {@xapiClass.name}(settings);
+  public static final {@xapiClass.name.toUpperCamel} create({@xapiClass.settingsClassName} settings) throws IOException {
+    return new {@xapiClass.name.toUpperCamel}(settings);
   }
 
   /**
-   * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
+   * Constructs an instance of {@xapiClass.name.toUpperCamel}, using the given stub for making calls. This is for
    * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
    */
   @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
-    return new {@xapiClass.name}(stub);
+  public static final {@xapiClass.name.toUpperCamel} create({@xapiClass.stubInterfaceName} stub) {
+    return new {@xapiClass.name.toUpperCamel}(stub);
   }
 
   /**
-   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * Constructs an instance of {@xapiClass.name.toUpperCamel}, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
+  protected {@xapiClass.name.toUpperCamel}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
     this.stub = (({@xapiClass.stubSettingsClassName}) settings.getStubSettings()).createStub();
     @if xapiClass.hasLongRunningOperations
@@ -327,7 +327,7 @@
   }
 
   @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  protected {@xapiClass.name}({@xapiClass.stubInterfaceName} stub) {
+  protected {@xapiClass.name.toUpperCamel}({@xapiClass.stubInterfaceName} stub) {
     this.settings = null;
     this.stub = stub;
     @if xapiClass.hasLongRunningOperations

@@ -21,7 +21,7 @@
 # api: StaticLangApiView, settings: StaticLangSettingsView
 @private settings(api, settings)
     /// <summary>
-    /// Settings for a <see cref="{@api.name}"/>.
+    /// Settings for a <see cref="{@api.name.toUpperCamel}"/>.
     /// </summary>
     public sealed partial class {@settings.name} : gaxgrpc::ServiceSettingsBase
     {
@@ -67,7 +67,7 @@
         @join retry : settings.retryCodesDefinitions
             /// <summary>
             /// The filter specifying which RPC <see cref="grpccore::StatusCode"/>s are eligible for retry
-            /// for "{@retry.name}" <see cref="{@api.name}"/> RPC methods.
+            /// for "{@retry.name}" <see cref="{@api.name.toUpperCamel}"/> RPC methods.
             /// </summary>
             /// <remarks>
             @if retry.codes
@@ -87,13 +87,13 @@
         @end
         @join retry : settings.retryParamsDefinitions
             /// <summary>
-            /// "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods.
+            /// "{@retry.name}" retry backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods.
             /// </summary>
             /// <returns>
-            /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods.
+            /// The "{@retry.name}" retry backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods.
             /// </returns>
             /// <remarks>
-            /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods is defined as:
+            /// The "{@retry.name}" retry backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods is defined as:
             /// <list type="bullet">
             /// <item><description>Initial delay: {@retry.initialRetryDelay.toMillis} milliseconds</description></item>
             /// <item><description>Maximum delay: {@retry.maxRetryDelay.toMillis} milliseconds</description></item>
@@ -107,13 +107,13 @@
             );
             
             /// <summary>
-            /// "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
+            /// "{@retry.name}" timeout backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods.
             /// </summary>
             /// <returns>
-            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
+            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods.
             /// </returns>
             /// <remarks>
-            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods is defined as:
+            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name.toUpperCamel}"/> RPC methods is defined as:
             /// <list type="bullet">
             /// <item><description>Initial timeout: {@retry.initialRpcTimeout.toMillis} milliseconds</description></item>
             /// <item><description>Timeout multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
@@ -133,11 +133,11 @@
             @case "NonStreaming"
                 /// <summary>
                 /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
-                /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
+                /// <c>{@api.name.toUpperCamel}.{@call.methodName}</c> and <c>{@api.name.toUpperCamel}.{@call.asyncMethodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// The default <c>{@api.name}.{@call.methodName}</c> and
-                /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="gaxgrpc::RetrySettings"/> are:
+                /// The default <c>{@api.name.toUpperCamel}.{@call.methodName}</c> and
+                /// <c>{@api.name.toUpperCamel}.{@call.asyncMethodName}</c> <see cref="gaxgrpc::RetrySettings"/> are:
                 /// <list type="bullet">
                 /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.toMillis} milliseconds</description></item>
                 /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
@@ -167,7 +167,7 @@
                     )));
             @case "ServerStreaming"
                 /// <summary>
-                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name.toUpperCamel}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
@@ -176,7 +176,7 @@
                     gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
             @case "BidiStreaming"
                 /// <summary>
-                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name.toUpperCamel}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
@@ -186,7 +186,7 @@
 
                 /// <summary>
                 /// <see cref="gaxgrpc::BidirectionalStreamingSettings"/> for calls to
-                /// <c>{@api.name}.{@call.methodName}</c>.
+                /// <c>{@api.name.toUpperCamel}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// The default local send queue size is 100.
@@ -200,7 +200,7 @@
 
             @if call.type.toString == "OperationApiCallable"
                 /// <summary>
-                /// Long Running Operation settings for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// Long Running Operation settings for calls to <c>{@api.name.toUpperCamel}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
                 /// Uses default <see cref="gax::PollSettings"/> of:
@@ -235,7 +235,7 @@
     /// <summary>
     /// {@api.grpcServiceName} client wrapper, for convenient use.
     /// </summary>
-    public abstract partial class {@api.name}
+    public abstract partial class {@api.name.toUpperCamel}
     {
         /// <summary>
         /// The default endpoint for the {@api.grpcServiceName} service, which is a host of "{@settings.serviceAddress}" and a port of {@settings.servicePort}.
@@ -269,44 +269,44 @@
         // Con: overloads!
         
         /// <summary>
-        /// Asynchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
+        /// Asynchronously creates a <see cref="{@api.name.toUpperCamel}"/>, applying defaults for all unspecified settings,
         /// and creating a channel connecting to the given endpoint with application default credentials where
         /// necessary.
         /// </summary>
         /// <param name="endpoint">Optional <see cref="gaxgrpc::ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
-        /// <returns>The task representing the created <see cref="{@api.name}"/>.</returns>
-        public static async stt::Task<{@api.name}> CreateAsync(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        /// <returns>The task representing the created <see cref="{@api.name.toUpperCamel}"/>.</returns>
+        public static async stt::Task<{@api.name.toUpperCamel}> CreateAsync(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
         {
             grpccore::Channel channel = await s_channelPool.GetChannelAsync(endpoint ?? DefaultEndpoint).ConfigureAwait(false);
             return Create(channel, settings);
         }
 
         /// <summary>
-        /// Synchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
+        /// Synchronously creates a <see cref="{@api.name.toUpperCamel}"/>, applying defaults for all unspecified settings,
         /// and creating a channel connecting to the given endpoint with application default credentials where
         /// necessary.
         /// </summary>
         /// <param name="endpoint">Optional <see cref="gaxgrpc::ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
-        /// <returns>The created <see cref="{@api.name}"/>.</returns>
-        public static {@api.name} Create(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        /// <returns>The created <see cref="{@api.name.toUpperCamel}"/>.</returns>
+        public static {@api.name.toUpperCamel} Create(gaxgrpc::ServiceEndpoint endpoint = null, {@settings.name} settings = null)
         {
             grpccore::Channel channel = s_channelPool.GetChannel(endpoint ?? DefaultEndpoint);
             return Create(channel, settings);
         }
 
         /// <summary>
-        /// Creates a <see cref="{@api.name}"/> which uses the specified channel for remote operations.
+        /// Creates a <see cref="{@api.name.toUpperCamel}"/> which uses the specified channel for remote operations.
         /// </summary>
         /// <param name="channel">The <see cref="grpccore::Channel"/> for remote operations. Must not be null.</param>
         /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
-        /// <returns>The created <see cref="{@api.name}"/>.</returns>
-        public static {@api.name} Create(grpccore::Channel channel, {@settings.name} settings = null)
+        /// <returns>The created <see cref="{@api.name.toUpperCamel}"/>.</returns>
+        public static {@api.name.toUpperCamel} Create(grpccore::Channel channel, {@settings.name} settings = null)
         {
             gax::GaxPreconditions.CheckNotNull(channel, nameof(channel));
             {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(channel);
-            return new {@api.implName}(grpcClient, settings);
+            return new {@api.implName.toUpperCamel}(grpcClient, settings);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@
     /// <summary>
     /// {@api.grpcServiceName} client wrapper implementation, for convenient use.
     /// </summary>
-    public sealed partial class {@api.implName} : {@api.name}
+    public sealed partial class {@api.implName.toUpperCamel} : {@api.name.toUpperCamel}
     {
         @join call : api.apiCallableMembers
             # call: ApiCallableView
@@ -363,7 +363,7 @@
         /// </summary>
         /// <param name="grpcClient">The underlying gRPC client.</param>
         /// <param name="settings">The base <see cref="{@settings.name}"/> used within this client </param>
-        public {@api.implName}({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} settings)
+        public {@api.implName.toUpperCamel}({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} settings)
         {
             GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
@@ -703,7 +703,7 @@
             /// <param name="writeBuffer">The <see cref="gaxgrpc::BufferedClientStreamWriter{{@method.serviceRequestTypeName}}"/>
             /// instance associated with this streaming call.</param>
             public {@method.name}StreamImpl(
-                {@api.implName} service,
+                {@api.implName.toUpperCamel} service,
                 {@method.responseTypeName} call,
                 gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer)
             {
@@ -712,7 +712,7 @@
                 _writeBuffer = writeBuffer;
             }
 
-            private {@api.implName} _service;
+            private {@api.implName.toUpperCamel} _service;
             private gaxgrpc::BufferedClientStreamWriter<{@method.serviceRequestTypeName}> _writeBuffer;
 
             private {@method.serviceRequestTypeName} ModifyRequest({@method.serviceRequestTypeName} request)
