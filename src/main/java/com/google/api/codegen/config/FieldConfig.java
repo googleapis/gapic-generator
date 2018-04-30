@@ -15,6 +15,8 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -257,12 +259,12 @@ public abstract class FieldConfig {
                   + "; parent: "
                   + field.getParentFullName()
                   + "; method id: "
-                  + ((DiscoveryField) field).getOriginalDiscoveryField().parent().id());
-          //                  + "; method request name: "
-          //                  + DiscoGapicParser.getMethodInputName(
-          //                      (Method) ((DiscoveryField) field).getOriginalDiscoveryField().parent()));
-          //                  + "; messageConfigs: "
-          //                  + (messageConfigs == null ? "null" : messageConfigs.toString()));
+                  + ((DiscoveryField) field).getDiscoveryField().parent().id()
+                  + "; method request name: "
+                  + DiscoGapicParser.getMethodInputName(
+                      (Method) ((DiscoveryField) field).getDiscoveryField().parent())
+                  + "; messageConfigs: "
+                  + (messageConfigs == null ? "null" : messageConfigs.toString()));
         }
         break;
       case VALIDATE:
