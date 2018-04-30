@@ -39,7 +39,7 @@ public class SymbolTable {
    * a case-insensitive symbol table by using a comparison function that orders two strings the same
    * if they are the same in lowercase.
    *
-   * @param comparator function to order Strings
+   * @param comparator function to determine equality on Strings
    */
   public SymbolTable(Comparator<String> comparator) {
     symbolTable = new ConcurrentSkipListSet<>(comparator);
