@@ -98,6 +98,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public static DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
+    Preconditions.checkArgument(
+        rootApiModel.getDefaultPackageName().trim().equals("com.google.cloud.simplecompute.v1"),
+        "rootApiModel packagedefaultname is empty");
     if (globalObjects.containsKey(schema)) {
       return globalObjects.get(schema);
     }
