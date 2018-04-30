@@ -204,8 +204,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     StaticLangApiMessageView messageView = schemaView.build();
 
-    // Add it to list of file ViewModels for rendering.
     if (DiscoveryField.isTopLevelSchema(schema)) {
+      // Add message type schema to list of file ViewModels for rendering.
       messageViewAccumulator.put(context, messageView);
     }
     return messageView;

@@ -46,8 +46,6 @@ public class DiscoGapicParser {
    * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the
    * request object, then returns "resource" appended to the schema's id().
-   *
-   * @param field
    */
   public static Name getFieldNameAsParameter(DiscoveryField field) {
     Schema deref = field.getDiscoveryField().dereference();
