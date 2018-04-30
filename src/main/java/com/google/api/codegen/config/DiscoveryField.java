@@ -30,8 +30,8 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.AbstractMap;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,7 +55,23 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private static Comparator<Schema> messageSchemaComparator =
       (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
 
-  private static Map<Schema, DiscoveryField> globalObjects = new HashMap<>();
+  // Comparator for DiscoveryFields.
+  private static Comparator<Map.Entry<Schema, DiscoApiModel>> discoveryFieldComparator =
+      new Comparator<Map.Entry<Schema, DiscoApiModel>>() {
+        @Override
+        public int compare(
+            Map.Entry<Schema, DiscoApiModel> o1, Map.Entry<Schema, DiscoApiModel> o2) {
+          if (o1.getKey().hashCode() == o2.getKey().hashCode()) {
+            // if the schemas are the same, use the DiscoApiModel package name to differentiate.
+            return o1.getValue()
+                .getDefaultPackageName()
+                .compareTo(o2.getValue().getDefaultPackageName());
+          }
+          return o1.hashCode() - o2.hashCode();
+        }
+      };
+  private static Map<Map.Entry<Schema, DiscoApiModel>, DiscoveryField> globalObjects =
+      new TreeMap<>(discoveryFieldComparator);
 
   // Stores the escaped name for each message-type schema.
   private static Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
@@ -70,9 +86,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(refSchema);
     Preconditions.checkNotNull(apiModel);
-    //    Preconditions.checkArgument(!Strings.isNullOrEmpty(apiModel.getDefaultPackageName()));
-    //    Preconditions.checkArgument(
-    //        apiModel.getDefaultPackageName().equals("com.google.cloud.simplecompute.v1"));
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
     this.apiModel = apiModel;
@@ -104,16 +117,18 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
-    if (globalObjects.containsKey(schema)) {
+    Map.Entry<Schema, DiscoApiModel> fieldPrimaryKey =
+        new AbstractMap.SimpleEntry<>(schema, rootApiModel);
+    if (globalObjects.containsKey(fieldPrimaryKey)) {
       // DiscoveryField has already been created for this schema.
-      return globalObjects.get(schema);
+      return globalObjects.get(fieldPrimaryKey);
     }
     if (!Strings.isNullOrEmpty(schema.reference())) {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
     DiscoveryField field = new DiscoveryField(schema, rootApiModel);
-    globalObjects.put(schema, field);
+    globalObjects.put(fieldPrimaryKey, field);
     return field;
   }
 
@@ -213,7 +228,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
       parentName = "";
     }
 
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(apiModel.getDefaultPackageName()));
     return ResourceNameMessageConfig.getFullyQualifiedMessageName(
         apiModel.getDefaultPackageName(), parentName);
   }
