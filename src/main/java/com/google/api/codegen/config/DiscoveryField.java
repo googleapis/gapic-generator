@@ -68,6 +68,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
     Preconditions.checkNotNull(refSchema);
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
+    Preconditions.checkNotNull(apiModel);
+    Preconditions.checkArgument(
+        !Strings.isNullOrEmpty(apiModel.getDefaultPackageName()),
+        "apiModel defaultPackageName is null for schema " + schema.getIdentifier());
     this.apiModel = apiModel;
     if (schemaNames.containsKey(schema)) {
       this.simpleName = schemaNames.get(schema);
