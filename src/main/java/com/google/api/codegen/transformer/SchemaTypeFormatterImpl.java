@@ -34,12 +34,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type) {
+  public String getFullNameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getFullName();
   }
 
   @Override
-  public String getInnerTypeNameFor(Schema type) {
+  public String getInnerTypeNameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getInnerTypeNames().get(0).getNickname();
   }
 
@@ -49,13 +49,13 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getNicknameFor(Schema type) {
+  public String getNicknameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getNickname();
   }
 
   @Override
   public String getNicknameFor(TypeModel type) {
-    return getNicknameFor(((DiscoveryField) type).getDiscoveryField());
+    return getNicknameFor((DiscoveryField) type);
   }
 
   @Override
@@ -70,7 +70,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldModel type) {
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameFor((DiscoveryField) type);
   }
 
   @Override
@@ -80,7 +80,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameForMessageType(TypeModel type) {
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameFor((DiscoveryField) type);
   }
 
   @Override
@@ -107,6 +107,6 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
   public String getNicknameFor(FieldModel type) {
-    return getNicknameFor(((DiscoveryField) type).getDiscoveryField());
+    return getNicknameFor((DiscoveryField) type);
   }
 }

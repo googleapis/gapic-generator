@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -366,5 +367,31 @@ public abstract class Schema implements Node {
   @Override
   public String toString() {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
+  }
+
+  /**
+   * @return hashCode that should be unique for each underlying Node in the Document. This function
+   *     includes the location of the node in its calculation, so two different nodes with the same
+   *     content but different parents will still have different hashCodes.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+        defaultValue(),
+        description(),
+        format(),
+        id(),
+        isEnum(),
+        items() == null ? null : items().getIdentifier(),
+        key(),
+        location(),
+        pattern(),
+        parent != null ? parent.id() : "",
+        properties().keySet(),
+        reference(),
+        repeated(),
+        required(),
+        type());
   }
 }
