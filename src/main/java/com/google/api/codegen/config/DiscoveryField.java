@@ -128,7 +128,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getFullName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema).toUpperCamel();
+    return DiscoGapicParser.getFieldNameAsParameter(this).toUpperCamel();
   }
 
   @Override
@@ -138,7 +138,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return DiscoGapicParser.getSchemaNameAsParameter(originalSchema);
+    return DiscoGapicParser.getFieldNameAsParameter(this);
   }
 
   @Override
