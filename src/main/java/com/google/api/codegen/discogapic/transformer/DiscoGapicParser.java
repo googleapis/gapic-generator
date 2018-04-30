@@ -68,13 +68,9 @@ public class DiscoGapicParser {
    */
   public static Name getMethodInputName(Method method) {
     Schema deref = method.request().dereference();
-    if (Strings.isNullOrEmpty(deref.location()) && deref.type().equals(Schema.Type.OBJECT)) {
-      // This is the resource object for an API request message type.
-      Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
-      return param.join("resource");
-    } else {
-      return DiscoGapicParser.stringToName(deref.getIdentifier());
-    }
+    // This is the resource object for an API request message type.
+    Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
+    return param.join("resource");
   }
 
   /** Get the request type name from a method. */
