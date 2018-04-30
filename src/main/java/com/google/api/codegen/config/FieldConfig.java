@@ -270,6 +270,8 @@ public abstract class FieldConfig {
                           .toUpperCamel())
                   + "; parent: "
                   + field.getParentFullName()
+                  + "; apiModel.getDefaultPackageName() is"
+                  + ((DiscoveryField) field).getDiscoApiModel().getDefaultPackageName()
                   + "; messageConfigs: "
                   + (messageConfigs == null ? "null" : messageConfigs.toString()));
         }
