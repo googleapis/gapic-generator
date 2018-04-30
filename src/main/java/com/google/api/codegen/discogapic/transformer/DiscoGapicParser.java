@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -45,17 +46,35 @@ public class DiscoGapicParser {
    * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the
    * request object, then returns "resource" appended to the schema's id().
+   *
+   * @param field
    */
-  public static Name getSchemaNameAsParameter(Schema schema) {
-    Schema deref = schema.dereference();
+  public static Name getFieldNameAsParameter(DiscoveryField field) {
+    Schema deref = field.getDiscoveryField().dereference();
     if (Strings.isNullOrEmpty(deref.location())
         && deref.type().equals(Schema.Type.OBJECT)
-        && schema.parent() instanceof Method) {
+        && field.getOriginalDiscoveryField().parent() instanceof Method) {
       // This is the resource object for an API request message type.
       Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
       return param.join("resource");
     } else {
-      return DiscoGapicParser.stringToName(schema.getIdentifier());
+      return DiscoGapicParser.stringToName(field.getOriginalDiscoveryField().getIdentifier());
+    }
+  }
+
+  /**
+   * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
+   * schema is a path or query parameter, then returns the schema's id(). If the schema is the
+   * request object, then returns "resource" appended to the schema's id().
+   */
+  public static Name getMethodInputName(Method method) {
+    Schema deref = method.request().dereference();
+    if (Strings.isNullOrEmpty(deref.location()) && deref.type().equals(Schema.Type.OBJECT)) {
+      // This is the resource object for an API request message type.
+      Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
+      return param.join("resource");
+    } else {
+      return DiscoGapicParser.stringToName(deref.getIdentifier());
     }
   }
 
