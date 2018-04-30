@@ -213,6 +213,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
       parentName = "";
     }
 
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(apiModel.getDefaultPackageName()));
     return ResourceNameMessageConfig.getFullyQualifiedMessageName(
         apiModel.getDefaultPackageName(), parentName);
   }
