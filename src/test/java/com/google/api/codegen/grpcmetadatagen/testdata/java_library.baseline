@@ -212,7 +212,7 @@ apply plugin: 'java'
 
 description = 'PROTO library for proto-google-cloud-library-v1'
 group = 'com.google.api.grpc'
-version = "0.1.7"
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -224,8 +224,8 @@ repositories {
 dependencies {
   compile 'com.google.protobuf:protobuf-java:3.0.0'
   compile 'com.google.api:api-common:0.0.2'
-  compile project(':proto-google-common-protos')
-  compile project(':proto-google-some-other-package-v1')
+  compile 'com.google.api.grpc:proto-google-common-protos:0.1.6'
+  compile 'com.google.api.grpc:proto-google-some-other-package-v1:0.0.0'
 }
 
 sourceSets {
@@ -255,3 +255,40 @@ artifacts {
 
 compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
+============== file: pom.xml ==============
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>proto-google-cloud-library-v1</artifactId>
+  <version>0.0.0-SNAPSHOT</version><!-- {x-version-update:proto-google-cloud-library-v1:current} -->
+  <name>proto-google-cloud-library-v1</name>
+  <description>PROTO library for proto-google-cloud-library-v1</description>
+  <parent>
+    <groupId>com.google.api.grpc</groupId>
+    <artifactId>google-api-pom</artifactId>
+    <version>0.0.0-SNAPSHOT</version><!-- {x-version-update:google-api-pom:current} -->
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-some-other-package-v1</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

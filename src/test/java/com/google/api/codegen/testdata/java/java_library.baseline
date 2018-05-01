@@ -20,7 +20,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-library-v1'
-group = 'com.google.api'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -28,6 +29,9 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 
 dependencies {
   compile 'com.google.api:gax:1.0.0'
@@ -40,7 +44,7 @@ dependencies {
   compile project(':proto-google-cloud-library-v1')
   // Remove this line if you are bundling your proto-generated classes together with your client classes
   testCompile project(':grpc-google-cloud-library-v1')
-  testCompile project(':grpc-google-some-test-package-v1')
+  testCompile 'com.google.api.grpc:grpc-google-some-test-package-v1:0.0.0'
 }
 
 task smokeTest(type: Test) {
@@ -62,8 +66,16 @@ sourceSets {
   }
 }
 
-compileJava.options.encoding = 'UTF-8'
-javadoc.options.encoding = 'UTF-8'
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -250,7 +262,7 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryClient implements BackgroundResource {
   private final LibrarySettings settings;
   private final LibraryServiceStub stub;
@@ -4078,7 +4090,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -4792,7 +4804,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactory {
   @Override
@@ -4958,7 +4970,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
@@ -5659,7 +5671,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class LibraryServiceStub implements BackgroundResource {
 
@@ -5958,7 +5970,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubSettings> {
   /**
    * The default scopes of the service.

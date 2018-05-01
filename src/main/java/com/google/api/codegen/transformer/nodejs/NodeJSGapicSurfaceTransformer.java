@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -51,6 +50,7 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -157,8 +157,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
-
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
@@ -269,7 +267,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     String version = namer.getApiWrapperModuleVersion();
-    boolean hasVersion = version != null && !version.isEmpty();
+    boolean hasVersion = !Strings.isNullOrEmpty(version);
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (InterfaceModel apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
@@ -298,7 +296,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .primaryService(requireViews.get(0))
             .packageVersion(
                 packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-            .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     productConfig, ImportSectionView.newBuilder().build(), namer))
@@ -321,7 +318,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .isGcloud(NodeJSUtils.isGcloud(productConfig))
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-              .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))
