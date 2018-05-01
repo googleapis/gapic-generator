@@ -138,7 +138,7 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the HTTP method. */
   public abstract String httpMethod();
 
-  /** @return the ID. This is unique. */
+  /** @return the ID. This should be unique, within the context of the parent Document. */
   @Override
   public abstract String id();
 
