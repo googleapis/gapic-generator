@@ -15,11 +15,18 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.ProtoFile;
+import javax.annotation.Nullable;
 
 public interface ResourceNameConfig {
 
+  /** Returns the name used for uniquely identifying the entity in config. */
+  String getEntityId();
+
   /** Returns the name used as a basis for generating methods. */
   String getEntityName();
+
+  @Nullable
+  String getCommonResourceName();
 
   /** Returns the resource name type. */
   ResourceNameType getResourceNameType();

@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -43,7 +42,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.codegen.viewmodel.metadata.TocContentView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -104,14 +102,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
-        .add(generateGemspecView(apiModel, namer))
-        .add(generateReadmeView(apiModel, productConfig, namer))
-        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_FILES))
-        .addAll(generateMetadataViews(apiModel, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
+        .add(generateGemspecView(model, namer))
+        .add(generateReadmeView(model, productConfig, namer))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
   }
 

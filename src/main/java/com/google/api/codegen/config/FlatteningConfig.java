@@ -24,6 +24,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -95,10 +96,10 @@ public abstract class FlatteningConfig {
           FieldConfig.createFieldConfig(
               diagCollector,
               messageConfigs,
-              methodConfigProto.getFieldNamePatterns(),
+              methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              flatteningGroup.getParameterResourceNameTreatment().get(parameter),
+              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;
@@ -116,5 +117,16 @@ public abstract class FlatteningConfig {
 
   public Iterable<FieldModel> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
+  }
+
+  public FlatteningConfig withResourceNamesInSamplesOnly() {
+    ImmutableMap<String, FieldConfig> newFlattenedFieldConfigs =
+        getFlattenedFieldConfigs()
+            .entrySet()
+            .stream()
+            .collect(
+                ImmutableMap.toImmutableMap(
+                    Map.Entry::getKey, e -> e.getValue().withResourceNameInSampleOnly()));
+    return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs, getFlatteningName());
   }
 }

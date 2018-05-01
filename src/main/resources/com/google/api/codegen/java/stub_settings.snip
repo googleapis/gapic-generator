@@ -5,11 +5,7 @@
   {@renderFileHeader(classFile.fileHeader)}
 
   {@classDoc(classFile.classView.doc)}
-  @if classFile.fileHeader.hasGeneratorVersion
-    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
-  @else
-    @@Generated("by GAPIC")
-  @end
+  @@Generated("by gapic-generator")
   @if classFile.classView.releaseLevelAnnotation
     {@classFile.classView.releaseLevelAnnotation}
   @end
@@ -271,7 +267,11 @@
           }
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
-            return payload.{@functionChain(desc.resourcesFieldGetFunctions)};
+            @if desc.resourcesFieldIsMap
+              return payload.{@desc.resourcesFieldGetFunction}().values();
+            @else
+              return payload.{@desc.resourcesFieldGetFunction}();
+            @end
           }
         };
     {@""}
@@ -576,6 +576,7 @@
 @end
 
 @private builderMethods(xsettingsClass)
+  // NEXT_MAJOR_VER: remove 'throws Exception'
   /**
    * Applies the given settings updater function to all of the unary API methods in this service.
    *

@@ -16,9 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
-import com.google.api.codegen.grpcmetadatagen.DependencyType;
-import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
-import com.google.api.codegen.grpcmetadatagen.PackageType;
+import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
@@ -42,16 +40,13 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String outputPath();
 
   @Nullable
-  public abstract PackageType packageType();
-
-  @Nullable
-  public abstract DependencyType dependencyType();
-
-  @Nullable
-  public abstract GenerationLayer generationLayer();
+  public abstract ArtifactType artifactType();
 
   @Nullable
   public abstract String gapicConfigName();
+
+  @Nullable
+  public abstract String packageName();
 
   @Nullable
   public abstract String identifier();
@@ -65,8 +60,23 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract VersionBound gaxGrpcVersionBound();
 
+  public boolean hasGaxGrpcVersionBound() {
+    return gaxGrpcVersionBound() != null;
+  }
+
+  @Nullable
+  public abstract VersionBound gaxHttpVersionBound();
+
+  public boolean hasGaxHttpVersionBound() {
+    return gaxHttpVersionBound() != null;
+  }
+
   @Nullable
   public abstract VersionBound grpcVersionBound();
+
+  public boolean hasGrpcVersionBound() {
+    return grpcVersionBound() != null;
+  }
 
   @Nullable
   public abstract VersionBound protoVersionBound();
@@ -119,6 +129,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String versionPath();
 
   @Nullable
+  public abstract String rootNamespace();
+
+  @Nullable
   public abstract String versionNamespace();
 
   public abstract String author();
@@ -161,12 +174,6 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract ReadmeMetadataView readmeMetadata();
 
   @Nullable
-  public abstract String sampleAppName();
-
-  @Nullable
-  public abstract String sampleAppPackage();
-
-  @Nullable
   public abstract String smokeTestProjectVariable();
 
   @Nullable
@@ -196,21 +203,21 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder templateFileName(String val);
 
+    public abstract Builder packageName(String packageName);
+
     public abstract Builder identifier(String val);
 
     public abstract Builder gapicConfigName(String val);
 
-    public abstract Builder packageType(PackageType val);
-
-    public abstract Builder dependencyType(DependencyType val);
-
-    public abstract Builder generationLayer(GenerationLayer val);
+    public abstract Builder artifactType(ArtifactType val);
 
     public abstract Builder packageVersionBound(VersionBound val);
 
     public abstract Builder gaxVersionBound(VersionBound val);
 
     public abstract Builder gaxGrpcVersionBound(VersionBound val);
+
+    public abstract Builder gaxHttpVersionBound(VersionBound val);
 
     public abstract Builder grpcVersionBound(VersionBound val);
 
@@ -255,6 +262,9 @@ public abstract class PackageMetadataView implements ViewModel {
     /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
 
+    /** The root namespace of the services found within this package, without major version. */
+    public abstract Builder rootNamespace(String val);
+
     /** The namespace of the services found within this package. */
     public abstract Builder versionNamespace(String val);
 
@@ -298,12 +308,6 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder credentialsClassName(String val);
 
     public abstract Builder readmeMetadata(ReadmeMetadataView val);
-
-    /** Class name of the sample application. */
-    public abstract Builder sampleAppName(String s);
-
-    /** Package name of the sample application. */
-    public abstract Builder sampleAppPackage(String s);
 
     /** Environment variable to determine the Google Cloud project used to run smoke tests. */
     public abstract Builder smokeTestProjectVariable(String s);

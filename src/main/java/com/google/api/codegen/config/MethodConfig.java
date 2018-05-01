@@ -36,7 +36,7 @@ import org.threeten.bp.Duration;
  * <p>Subclasses should have a field to contain the method for which this a config.
  */
 public abstract class MethodConfig {
-  // TODO(andrealin): Consider combining this with MethodModel.
+
   public abstract MethodModel getMethodModel();
 
   @Nullable
@@ -68,6 +68,8 @@ public abstract class MethodConfig {
   public abstract ImmutableMap<String, String> getFieldNamePatterns();
 
   public abstract List<String> getSampleCodeInitFields();
+
+  public abstract SampleSpec getSampleSpec();
 
   @Nullable
   public abstract String getRerouteToGrpcInterface();

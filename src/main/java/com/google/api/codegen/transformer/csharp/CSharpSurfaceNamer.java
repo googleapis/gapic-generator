@@ -34,9 +34,11 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -135,19 +137,27 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return keywords.contains(name) ? "@" + name : name;
   }
 
-  public CSharpSurfaceNamer(String packageName) {
+  private final CSharpAliasMode aliasMode;
+
+  public CSharpSurfaceNamer(String packageName, CSharpAliasMode aliasMode) {
+    this(packageName, aliasMode, new CSharpTypeTable(packageName, aliasMode));
+  }
+
+  private CSharpSurfaceNamer(
+      String packageName, CSharpAliasMode aliasMode, CSharpTypeTable typeTable) {
     super(
         new CSharpNameFormatter(),
-        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
-        new CSharpTypeTable(packageName),
+        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(typeTable)),
+        typeTable,
         new CSharpCommentReformatter(),
         packageName,
         packageName);
+    this.aliasMode = aliasMode;
   }
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
-    return new CSharpSurfaceNamer(packageName);
+    return new CSharpSurfaceNamer(packageName, aliasMode);
   }
 
   @Override
@@ -224,13 +234,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getModifyMethodName(MethodContext methodContext) {
-    return "Modify_"
-        + privateMethodName(
-            Name.upperCamel(
-                methodContext
-                    .getMethodModel()
-                    .getInputTypeName(methodContext.getTypeTable())
-                    .getNickname()));
+    String[] nameParts =
+        methodContext
+            .getMethodModel()
+            .getInputTypeName(methodContext.getTypeTable())
+            .getNickname()
+            .split("::");
+    String name = nameParts[nameParts.length - 1];
+    return "Modify_" + privateMethodName(Name.upperCamel(name));
   }
 
   @Override
@@ -296,6 +307,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getExamplePackageName() {
     return getPackageName() + ".Snippets";
+  }
+
+  @Override
+  public String getTestPackageName() {
+    return getPackageName() + ".Tests";
   }
 
   @Override
@@ -493,6 +509,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAsyncGrpcMethodName(MethodModel method) {
+    return getGrpcMethodName(method) + "Async";
+  }
+
+  @Override
   public String getGrpcStreamingApiReturnTypeName(
       MethodContext methodContext, ImportTypeTable typeTable) {
     MethodModel method = methodContext.getMethodModel();
@@ -547,11 +568,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
               "Invalid streaming: " + methodConfig.getGrpcStreamingType());
       }
     } else {
+      boolean hasReturn = !methodConfig.getMethodModel().isOutputTypeEmpty();
       switch (synchronicity) {
         case Sync:
-          return ImmutableList.of("The RPC response.");
+          return hasReturn ? ImmutableList.of("The RPC response.") : ImmutableList.of();
         case Async:
-          return ImmutableList.of("A Task containing the RPC response.");
+          return ImmutableList.of(
+              hasReturn
+                  ? "A Task containing the RPC response."
+                  : "A Task that completes when the RPC has completed.");
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
@@ -609,10 +634,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     FieldModel type = fieldConfig.getField();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (type.isRepeated()) {
-        TypeName elementTypeName =
-            new TypeName(
-                getResourceTypeNameObject(fieldConfig.getResourceNameConfig()).toUpperCamel());
         TypeNameConverter typeNameConverter = getTypeNameConverter();
+        TypeName elementTypeName =
+            typeNameConverter.getTypeName(getResourceTypeName(fieldConfig.getResourceNameConfig()));
         TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
         TypeName emptyTypeName =
             new TypeName(
@@ -632,5 +656,18 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         return null;
       }
     }
+  }
+
+  /** The test case name for the given method. */
+  @Override
+  public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
+    Name testCaseName = symbolTable.getNewSymbol(method.asName());
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getAsyncTestCaseName(SymbolTable symbolTable, MethodModel method) {
+    Name testCaseName = symbolTable.getNewSymbol(method.asName().join("async"));
+    return publicMethodName(testCaseName);
   }
 }

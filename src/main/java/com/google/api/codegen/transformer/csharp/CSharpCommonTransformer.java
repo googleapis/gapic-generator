@@ -21,18 +21,22 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CSharpCommonTransformer {
 
-  public ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName),
-        new CSharpModelTypeNameConverter(implicitPackageName));
+  public ModelTypeTable createTypeTable(String implicitPackageName, CSharpAliasMode aliasMode) {
+    CSharpTypeTable typeTable = new CSharpTypeTable(implicitPackageName, aliasMode);
+    return new ModelTypeTable(typeTable, new CSharpModelTypeNameConverter(typeTable));
   }
 
   public void addCommonImports(GapicInterfaceContext context) {
@@ -68,10 +72,29 @@ public class CSharpCommonTransformer {
     return result;
   }
 
+  public List<ReroutedGrpcView> generateReroutedGrpcView(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
+    for (MethodModel method : getSupportedMethods(context)) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      String reroute = methodConfig.getRerouteToGrpcInterface();
+      if (reroute != null) {
+        ReroutedGrpcView rerouted =
+            ReroutedGrpcView.newBuilder()
+                .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
+                .typeName(namer.getReroutedGrpcTypeName(context.getImportTypeTable(), methodConfig))
+                .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
+                .build();
+        reroutedViews.add(rerouted);
+      }
+    }
+    return new ArrayList<ReroutedGrpcView>(reroutedViews);
+  }
+
   public List<ParamWithSimpleDoc> callSettingsParam() {
     return ImmutableList.of(
         makeParam(
-            "CallSettings",
+            CSharpTypeTable.ALIAS_GAX_GRPC + "::CallSettings",
             "callSettings",
             "null",
             "If not null, applies overrides to this RPC call."));
@@ -80,10 +103,12 @@ public class CSharpCommonTransformer {
   public List<ParamWithSimpleDoc> cancellationTokenParam() {
     return ImmutableList.of(
         makeParam(
-            "CancellationToken",
+            CSharpTypeTable.ALIAS_SYSTEM_THREADING + "::CancellationToken",
             "cancellationToken",
             null,
-            "A <see cref=\"CancellationToken\"/> to use for this RPC."));
+            "A <see cref=\""
+                + CSharpTypeTable.ALIAS_SYSTEM_THREADING
+                + "::CancellationToken\"/> to use for this RPC."));
   }
 
   public List<ParamWithSimpleDoc> pagedMethodAdditionalParams() {

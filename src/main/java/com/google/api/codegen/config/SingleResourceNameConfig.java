@@ -15,6 +15,8 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
+import com.google.api.codegen.CollectionLanguageOverridesProto;
+import com.google.api.codegen.ConfigProto;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -22,6 +24,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import javax.annotation.Nullable;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
@@ -34,7 +37,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    */
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto, ProtoFile file) {
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      CollectionConfigProto collectionConfigProto,
+      ProtoFile file) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
@@ -43,8 +49,25 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityName = collectionConfigProto.getEntityName();
-    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName, file);
+    String entityId = collectionConfigProto.getEntityName();
+    String entityName = entityId;
+    String language = configProto.getLanguage();
+    String commonResourceName = null;
+    if (language != null) {
+      for (CollectionLanguageOverridesProto override :
+          collectionConfigProto.getLanguageOverridesList()) {
+        if (language.equals(override.getLanguage())) {
+          if (!Strings.isNullOrEmpty(override.getEntityName())) {
+            entityName = override.getEntityName();
+          }
+          if (!Strings.isNullOrEmpty(override.getCommonResourceName())) {
+            commonResourceName = override.getCommonResourceName();
+          }
+        }
+      }
+    }
+    return new AutoValue_SingleResourceNameConfig(
+        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
   }
 
   /** Returns the name pattern for the resource name config. */
@@ -53,9 +76,17 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   /** Returns the name template for the resource name config. */
   public abstract PathTemplate getNameTemplate();
 
+  /** Returns the name used for uniquely identifying the entity in config. */
+  @Override
+  public abstract String getEntityId();
+
   /** Returns the name used as a basis for generating methods. */
   @Override
   public abstract String getEntityName();
+
+  @Override
+  @Nullable
+  public abstract String getCommonResourceName();
 
   @Override
   @Nullable

@@ -8,6 +8,14 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@smokeTest.name} {
+    private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
+    private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
+    @@Test
+    public void run() {
+      main(null);
+    }
+
     public static void main(String args[]) {
       Logger.getLogger("").setLevel(Level.WARNING);
       try {
@@ -19,35 +27,34 @@
         System.exit(1);
       }
     }
+
     @if smokeTest.requireProjectId
       {@executeWithProjectID(smokeTest)}
     @else
       {@executeWithNoProjectID(smokeTest)}
     @end
+
+    {@getProjectIdForTest()}
   }
 @end
 
 @private testBody(smokeTest)
   @if smokeTest.requireProjectId
-    Options options = new Options();
-    options.addOption("h", "help", false, "show usage");
-    options.addOption(
-        Option.builder()
-            .longOpt("project_id")
-            .desc("Project id")
-            .hasArg()
-            .argName("PROJECT-ID")
-            .required(true)
-            .build());
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    if (cl.hasOption("help")) {
-      HelpFormatter formater = new HelpFormatter();
-      formater.printHelp("{@smokeTest.name}", options);
-    }
-    executeNoCatch(cl.getOptionValue("project_id"));
+    executeNoCatch(getProjectId());
   @else
     executeNoCatch();
   @end
+@end
+
+@private getProjectIdForTest()
+  private static String getProjectId() {
+    String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
+    if (projectId == null) {
+      projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));
+    }
+    Preconditions.checkArgument(projectId != null, "A project ID is required.");
+    return projectId;
+  }
 @end
 
 @private executeWithProjectID(smokeTest)
@@ -78,16 +85,13 @@
     {@apiMethod.responseTypeName} pagedResponse =
         client.{@apiMethod.name}(\
           {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
-    System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
   @case "AsyncOperationFlattenedMethod"
       {@apiMethod.responseTypeName} response = \
         client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)}).get();
-      System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
   @case "FlattenedMethod"
     @if apiMethod.hasReturnValue
       {@apiMethod.responseTypeName} response = \
         client.{@apiMethod.name}({@args(apiMethod.initCode.fieldSettings)});
-      System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     @else
       client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
@@ -100,3 +104,4 @@
     {@fieldSetting.identifier}
   @end
 @end
+

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.common.base.MoreObjects;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -111,5 +112,14 @@ public class TypeName {
    */
   public List<TypeName> getInnerTypeNames() {
     return innerTypeNames;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("topLevelAlias", topLevelAlias)
+        .add("pattern", pattern)
+        .add("innerTypeNames", innerTypeNames)
+        .toString();
   }
 }

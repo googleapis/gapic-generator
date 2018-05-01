@@ -49,13 +49,13 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
-  public FieldModel getMapKeyField() {
-    return new ProtoField(typeRef.getMapKeyField());
+  public TypeModel getMapKeyType() {
+    return new ProtoTypeRef(typeRef.getMapKeyField().getType());
   }
 
   @Override
-  public FieldModel getMapValueField() {
-    return new ProtoField(typeRef.getMapValueField());
+  public TypeModel getMapValueType() {
+    return new ProtoTypeRef(typeRef.getMapValueField().getType());
   }
 
   @Override
@@ -153,6 +153,16 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
+  public FieldModel getField(String key) {
+    for (FieldModel field : getFields()) {
+      if (field.getSimpleName().equals(key)) {
+        return field;
+      }
+    }
+    return null;
+  }
+
+  @Override
   public TypeModel makeOptional() {
     return new ProtoTypeRef(typeRef.makeOptional());
   }
@@ -216,7 +226,7 @@ public class ProtoTypeRef implements TypeModel {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", typeRef.toString());
+    return String.format("Protobuf FieldModel (%s): {%s}", typeRef, fields);
   }
 
   @Override

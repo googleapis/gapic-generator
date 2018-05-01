@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,35 +64,6 @@ public class SampleInitCodeTest {
         .symbolTable(new SymbolTable())
         .initObjectType(new ProtoTypeRef(method.getInputType()))
         .suggestedName(Name.from("request"));
-  }
-
-  @Test
-  public void testRegex() throws Exception {
-    Pattern fieldPattern = FieldStructureParser.getFieldStructurePattern();
-    Pattern listPattern = FieldStructureParser.getFieldListPattern();
-    Pattern mapPattern = FieldStructureParser.getFieldMapPattern();
-
-    Matcher matcher = listPattern.matcher("mylist[0][0]");
-    Truth.assertThat(matcher.matches()).isTrue();
-    Truth.assertThat(matcher.group(1)).isEqualTo("mylist[0]");
-    Truth.assertThat(matcher.group(2)).isEqualTo("0");
-
-    String dualMatch = "mymap[0]{key}";
-    matcher = listPattern.matcher(dualMatch);
-    Truth.assertThat(matcher.matches()).isFalse();
-    matcher = mapPattern.matcher(dualMatch);
-    Truth.assertThat(matcher.matches()).isTrue();
-    Truth.assertThat(matcher.group(1)).isEqualTo("mymap[0]");
-    Truth.assertThat(matcher.group(2)).isEqualTo("key");
-
-    Matcher fieldMatcher = fieldPattern.matcher("myfield.mynextfield");
-    Truth.assertThat(fieldMatcher.matches()).isTrue();
-    Truth.assertThat(fieldMatcher.group(1)).isEqualTo("myfield");
-    Truth.assertThat(fieldMatcher.group(2)).isEqualTo("mynextfield");
-
-    Truth.assertThat(fieldPattern.matcher("singlefield").matches()).isFalse();
-    Truth.assertThat(fieldPattern.matcher("myfield.mylist[0]").matches()).isFalse();
-    Truth.assertThat(fieldPattern.matcher("myfield.mymap{key}").matches()).isFalse();
   }
 
   @Test

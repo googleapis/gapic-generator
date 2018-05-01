@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -50,7 +51,6 @@ import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,16 +72,21 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final PhpFeatureConfig featureConfig = new PhpFeatureConfig();
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
 
+  private final PackageMetadataConfig packageConfig;
+
+  public PhpGapicSurfaceTestTransformer(PackageMetadataConfig packageConfig) {
+    this.packageConfig = packageConfig;
+  }
+
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(SMOKE_TEST_TEMPLATE_FILE, UNIT_TEST_TEMPLATE_FILE);
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> views = new ArrayList<>();
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
           createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
       views.add(createUnitTestFileView(context));
@@ -111,7 +116,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     String outputPath =
         PhpGapicCodePathMapper.newBuilder()
-            .setPrefix("tests/unit")
+            .setPrefix("tests/Unit")
             .build()
             .getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
@@ -123,9 +128,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
             "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
-    testClass.apiName(
-        PhpPackageMetadataNamer.getApiNameFromPackageName(namer.getPackageName())
-            .toLowerUnderscore());
+    testClass.apiName(packageConfig.shortName());
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     // Add gRPC client imports.
@@ -183,7 +186,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
+        clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
       } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
       }
@@ -212,7 +215,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
     String outputPath =
         PhpGapicCodePathMapper.newBuilder()
-            .setPrefix("tests/system")
+            .setPrefix("tests/System")
             .build()
             .getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
@@ -242,9 +245,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiSettingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
-    testClass.apiName(
-        PhpPackageMetadataNamer.getApiNameFromPackageName(context.getNamer().getPackageName())
-            .toLowerUnderscore());
+    testClass.apiName(packageConfig.shortName());
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethod);
     testClass.requireProjectId(

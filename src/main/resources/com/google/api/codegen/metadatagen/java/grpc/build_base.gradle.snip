@@ -1,0 +1,58 @@
+@snippet generate(metadata)
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  apply plugin: 'java'
+
+  description = {@description(metadata)}
+  group = 'com.google.api.grpc'
+  version = '0.0.0-SNAPSHOT'
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+
+  dependencies {
+    {@dependencies(metadata)}
+  }
+
+  sourceSets {
+    main {
+      @if metadata.publishProtos
+        resources {
+          srcDir 'src/main/proto'
+        }
+      @end
+      java {
+        srcDir 'src/main/java'
+      }
+    }
+  }
+
+  task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+  }
+
+  task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+
+  artifacts {
+    archives javadocJar, sourcesJar
+  }
+
+  compileJava.options.encoding = 'UTF-8'
+  javadoc.options.encoding = 'UTF-8'
+@end
+
+@abstract dependencies(metadata)
+
+@abstract description(metadata)

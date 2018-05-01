@@ -1,0 +1,27 @@
+@extends "metadatagen/java/grpc/pom_base.xml.snip"
+
+@override description(metadata)
+  PROTO library for {@metadata.identifier}
+@end
+
+@override dependencies(metadata)
+  <dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <scope>compile</scope>
+  </dependency>
+  @join dependency : metadata.additionalDependencies
+    <dependency>
+      <groupId>{@dependency.group}</groupId>
+      <artifactId>{@dependency.name}</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  @end
+  @join dependency : metadata.protoPackageDependencies
+    <dependency>
+      <groupId>{@dependency.group}</groupId>
+      <artifactId>proto-{@dependency.name}</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    @end
+@end

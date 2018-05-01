@@ -115,7 +115,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(namer.getVariableName(field));
-      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field));
+      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field.getType()));
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(
@@ -127,12 +127,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
       } else {
         docLines.addAll(namer.getDocLines(field));
         boolean isMessageField = field.isMessage() && !field.isMap();
-        boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
+        boolean isMapContainingMessage =
+            field.isMap() && field.getType().getMapValueType().isMessage();
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {
             messageType =
-                context.getTypeTable().getFullNameForElementType(field.getMapValueField());
+                context.getTypeTable().getFullNameForElementType(field.getType().getMapValueType());
           } else {
             messageType = context.getTypeTable().getFullNameForElementType(field);
           }

@@ -1,27 +1,40 @@
 @extends "py/common.snip"
 
-# Generate code samples for method-level documentation.
-@snippet sampleCode(apiMethod)
+# Generate brief code examples for method-level documentation.
+@snippet exampleCode(apiMethod, initCode)
   Example:
-      @join line : util.getDocLines(sampleCode_(apiMethod))
+      @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
           {@util.exampleLine(line)}
       @end
 @end
 
+# Generate code samples for standalone samples.
+@snippet sampleCode(apiMethod, initCode)
+      @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
+          {@line}
+      @end
+@end
+
 @snippet sampleCode_(apiMethod)
-  {@importList(apiMethod.initCode.importSection.appImports)}
+  {@sampleCode_(apiMethod, apiMethod.initCode)}
+@end
+
+@snippet sampleCode_(apiMethod, initCode)
+  {@importList(initCode.importSection.appImports)}
 
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
-  @if apiMethod.initCode.lines
-    {@initCode(apiMethod.initCode)}
+  @if initCode.lines
+    {@initCode(initCode)}
 
   @end
   @switch apiMethod.type.toString
   @case "OptionalArrayMethod"
-    {@optionalArrayMethodSampleCode(apiMethod)}
+    {@optionalArrayMethodSampleCode(apiMethod, initCode)}
+  @case "LongRunningOptionalArrayMethod"
+    {@lroSampleCode(apiMethod, initCode)}
   @case "PagedOptionalArrayMethod"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    {@pagedOptionalArrayMethodSampleCode(apiMethod, initCode)}
   @default
     {@unhandledCase()}
   @end
@@ -100,91 +113,93 @@
   @end
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private optionalArrayMethodSampleCode(apiMethod, initCode)
   @switch apiMethod.grpcStreamingType.toString
   @case "NonStreaming"
-    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod)}
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)}
   @case "ServerStreaming"
-    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod)}
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)}
   @case "ClientStreaming"
-    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod)}
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)}
   @case "BidiStreaming"
-    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod)}
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)}
   @default
     {@unhandledCase()}
   @end
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod)
-  {@singularResponseSampleCode(apiMethod)}
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
+  {@singularResponseSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod)
-  {@responseStreamingSampleCode(apiMethod)}
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod)
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
   requests = [request]
-  {@singularResponseSampleCode(apiMethod)}
+  {@singularResponseSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod)
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod)}
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedOptionalArrayMethodSampleCode(apiMethod, initCode)
 
   @# Iterate over all results
-  {@responseStreamingSampleCode(apiMethod)}
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 
   @# Or iterate over results one page at a time
-  for page in {@pagedMethodCallSampleCode(apiMethod)}:
+  for page in {@pagedMethodCallSampleCode(apiMethod, initCode)}:
       for element in page:
           @# process element
           pass
 @end
 
-@private responseStreamingSampleCode(apiMethod)
-  for element in {@methodCallSampleCode(apiMethod)}:
+@private responseStreamingSampleCode(apiMethod, initCode)
+  for element in {@methodCallSampleCode(apiMethod, initCode)}:
       @# process element
       pass
 @end
 
-@private singularResponseSampleCode(apiMethod)
+@private singularResponseSampleCode(apiMethod, initCode)
   @if apiMethod.hasReturnValue
-    response = {@methodCallSampleCode(apiMethod)}
-    @if apiMethod.isLongRunningOperation
-
-      def callback(operation_future):
-          @# Handle result.
-          result = operation_future.result()
-
-      response.add_done_callback(callback)
-
-      @# Handle metadata.
-      metadata = response.metadata()
-    @end
+    response = {@methodCallSampleCode(apiMethod, initCode)}
   @else
-    {@methodCallSampleCode(apiMethod)}
+    {@methodCallSampleCode(apiMethod, initCode)}
   @end
 @end
 
+@private lroSampleCode(apiMethod, initCode)
+  response = {@methodCallSampleCode(apiMethod, initCode)}
+
+  def callback(operation_future):
+      @# Handle result.
+      result = operation_future.result()
+
+  response.add_done_callback(callback)
+
+  @# Handle metadata.
+  metadata = response.metadata()
+@end
+
 # Render the API method call itself
-@private methodCallSampleCode(apiMethod)
+@private methodCallSampleCode(apiMethod, initCode)
   @if apiMethod.hasRequestStreaming
     client.{@apiMethod.name}(requests)
   @else
     client.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod.initCode)}\
+      {@sampleMethodCallArgList(initCode)}\
     )
   @end
 @end
 
 # Render the API method call for page streaming
-@private pagedMethodCallSampleCode(apiMethod)
+@private pagedMethodCallSampleCode(apiMethod, initCode)
   client.{@apiMethod.name}(\
-    {@sampleMethodCallArgListAndComma(apiMethod.initCode)}\
+    {@sampleMethodCallArgListAndComma(initCode)}\
     options=CallOptions(page_token=INITIAL_PAGE))
 @end
 

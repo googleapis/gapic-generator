@@ -4,11 +4,7 @@
   {@renderFileHeader(classFile.fileHeader)}
 
   {@classDoc(classFile.classView.doc)}
-  @if classFile.fileHeader.hasGeneratorVersion
-    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
-  @else
-    @@Generated("by GAPIC")
-  @end
+  @@Generated("by gapic-generator")
   @if classFile.classView.releaseLevelAnnotation
     {@classFile.classView.releaseLevelAnnotation}
   @end
@@ -46,7 +42,7 @@
      * <code>
      * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
      *     {@doc.settingsClassName}.newBuilder();
-     * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
+     * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettings().toBuilder()
      *     .setTotalTimeout(Duration.ofSeconds(30));
      * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
      * </code>
@@ -260,6 +256,7 @@
     return (({@xsettingsClass.stubSettingsName}.Builder) getStubSettings());
   }
 
+  // NEXT_MAJOR_VER: remove 'throws Exception'
   /**
    * Applies the given settings updater function to all of the unary API methods in this service.
    *

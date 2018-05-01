@@ -77,7 +77,7 @@ public class Pubsub {
   private static final Metadata.Key<String> X_GOOG_HEADER_KEY =
       Metadata.Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER);
   private static final String X_GOOG_HEADER_VALUE =
-      "gl-java/1.8.0_112-google-v7 gapic/ gax/1.1.1-SNAPSHOT grpc/1.2.0";
+      "gl-java/1.8.0_112-google-v7 gapic/ gax/1.1.1-SNAPSHOT grpc/1.10.0";
 
   public static void main(String[] args) throws Exception {
     Options options =

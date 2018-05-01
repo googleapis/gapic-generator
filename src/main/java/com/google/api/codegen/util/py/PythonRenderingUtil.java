@@ -51,6 +51,7 @@ public class PythonRenderingUtil {
     return headerLine(title, '^');
   }
 
+  @SuppressWarnings("InvalidPatternSyntax")
   private String headerLine(String title, char c) {
     return title.replaceAll(".", String.valueOf(c));
   }

@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -48,7 +47,6 @@ import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.codegen.viewmodel.metadata.SimpleInitFileView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -107,16 +105,15 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
+  public List<ViewModel> transform(final ApiModel model, final GapicProductConfig productConfig) {
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
-    ProtoApiModel apiModel = new ProtoApiModel(model);
     return ImmutableList.<ViewModel>builder()
         .addAll(
             computeInitFiles(
                 computePackages(productConfig.getPackageName()), surfaceNamer, productConfig))
-        .addAll(generateTopLevelFiles(apiModel, productConfig))
-        .addAll(generateDocFiles(apiModel, productConfig))
-        .add(generateNoxFile(apiModel, productConfig))
+        .addAll(generateTopLevelFiles(model, productConfig))
+        .addAll(generateDocFiles(model, productConfig))
+        .add(generateNoxFile(model, productConfig))
         .build();
   }
 

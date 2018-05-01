@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -29,9 +28,13 @@ public class FileHeaderTransformer {
   }
 
   public FileHeaderView generateFileHeader(TransformationContext context) {
+    return generateFileHeader(context, null);
+  }
+
+  public FileHeaderView generateFileHeader(TransformationContext context, String className) {
     return generateFileHeader(
         context.getProductConfig(),
-        importSectionTransformer.generateImportSection(context),
+        importSectionTransformer.generateImportSection(context, className),
         context.getNamer());
   }
 
@@ -55,7 +58,6 @@ public class FileHeaderTransformer {
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
     fileHeader.importSection(importSection);
     fileHeader.version(namer.getApiWrapperModuleVersion());
-    fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
     fileHeader.modules(apiModules);
 
     return fileHeader.build();

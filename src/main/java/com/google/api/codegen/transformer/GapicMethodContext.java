@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
-
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -24,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.config.TypeModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -32,8 +28,6 @@ import com.google.auto.value.AutoValue;
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class GapicMethodContext implements MethodContext {
-
-  private TypeModel typeModel;
 
   public static GapicMethodContext create(
       GapicInterfaceContext surfaceTransformerContext,
@@ -64,11 +58,6 @@ public abstract class GapicMethodContext implements MethodContext {
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
-  }
-
-  @Override
-  public ApiSource getApiSource() {
-    return PROTO;
   }
 
   @Override
@@ -125,5 +114,21 @@ public abstract class GapicMethodContext implements MethodContext {
   @Override
   public String getGrpcContainerTypeName() {
     return getNamer().getGrpcContainerTypeName(getTargetInterface());
+  }
+
+  @Override
+  public MethodContext withResourceNamesInSamplesOnly() {
+    return create(
+        getSurfaceInterfaceContext(),
+        getInterfaceModel().getInterface(),
+        getProductConfig(),
+        getTypeTable(),
+        getNamer(),
+        getMethodModel(),
+        getMethodConfig(),
+        getFlatteningConfig() == null
+            ? null
+            : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getFeatureConfig());
   }
 }

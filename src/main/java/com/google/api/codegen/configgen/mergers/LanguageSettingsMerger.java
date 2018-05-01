@@ -135,11 +135,12 @@ public class LanguageSettingsMerger {
       if (!isApiGoogleCloud(nameComponents)) {
         return "google.golang.org/" + Joiner.on("/").join(nameComponents);
       }
-      int size = nameComponents.size();
+      int startIndex = nameComponents.get(1).equals("cloud") ? 2 : 1;
+      int lastIndex = nameComponents.size() - 1;
       return "cloud.google.com/go/"
-          + Joiner.on("/").join(nameComponents.subList(1, size - 1))
+          + Joiner.on("/").join(nameComponents.subList(startIndex, lastIndex))
           + "/api"
-          + nameComponents.get(size - 1);
+          + nameComponents.get(lastIndex);
     }
 
     /** Returns true if it is a Google Cloud API. */

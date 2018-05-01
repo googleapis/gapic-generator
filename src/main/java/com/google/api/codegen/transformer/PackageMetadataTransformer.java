@@ -74,10 +74,10 @@ public class PackageMetadataTransformer {
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
         .gapicConfigName(packageConfig.gapicConfigName())
-        .packageType(packageConfig.packageType())
-        .dependencyType(packageConfig.dependencyType())
+        .artifactType(packageConfig.artifactType())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .gaxGrpcVersionBound(packageConfig.gaxGrpcVersionBound(language))
+        .gaxHttpVersionBound(packageConfig.gaxHttpVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .protoPackageDependencies(

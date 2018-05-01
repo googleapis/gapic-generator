@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
@@ -38,13 +37,13 @@ import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -94,10 +93,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperModuleVersion() {
     List<String> names = Splitter.on(".").splitToList(packageName);
-    if (names.size() < 2) {
-      return null;
+    for (String n : names) {
+      if (VersionMatcher.isVersion(n)) {
+        return n;
+      }
     }
-    return names.get(names.size() - 1);
+    return null;
   }
 
   @Override
@@ -246,7 +247,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTypeNameDoc(ImportTypeTable typeTable, TypeRef typeRef) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, TypeModel typeModel) {
+    TypeRef typeRef = ((ProtoTypeRef) typeModel).getProtoType();
     if (typeRef.isMessage()) {
       return "an object representing "
           + commentReformatter.getLinkedElementName(typeRef.getMessageType());
@@ -254,14 +256,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       return "a number of " + commentReformatter.getLinkedElementName(typeRef.getEnumType());
     }
     // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
-    return "a " + getParamTypeNoCardinality(typeTable, typeRef).toLowerCase();
+    return "a " + getParamTypeNoCardinality(typeTable, typeModel).toLowerCase();
   }
 
   private List<String> returnCallbackDocLines(
       ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
-    String classInfo = getParamTypeName(typeTable, method.getOutputType());
+    MethodModel methodModel = methodConfig.getMethodModel();
+    String classInfo = getParamTypeName(typeTable, methodModel.getOutputType());
     String callbackType;
     if (isProtobufEmpty(method.getOutputMessage())) {
       callbackType = "function(?Error)";
@@ -283,7 +286,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "  in a single response. If the response indicates the next page exists, the third",
             "  parameter is set to be used for the next request object. The fourth parameter keeps",
             "  the raw response object of "
-                + getTypeNameDoc(typeTable, method.getOutputType())
+                + getTypeNameDoc(typeTable, methodModel.getOutputType())
                 + ".");
       }
     }
@@ -317,7 +320,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
               "  The first element is " + returnTypeDoc + " in a single response.",
               "  The second element is the next request object if the response",
               "  indicates the next page exists, or null. The third element is ",
-              "  " + getTypeNameDoc(typeTable, method.getOutputType()) + ".",
+              "  " + getTypeNameDoc(typeTable, methodConfig.getMethodModel().getOutputType()) + ".",
               "");
         }
       }
@@ -328,12 +331,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     String cardinalityComment = "";
-    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
+    if (type.isRepeated()) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, new ProtoField(type.getMapKeyField()));
-        String valueType = getParamTypeName(typeTable, new ProtoField(type.getMapValueField()));
+        String keyType = getParamTypeName(typeTable, type.getMapKeyType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueType());
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";
@@ -362,32 +365,31 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc +=
-            getParamTypeNoCardinality(
-                    typeTable, ((ProtoTypeRef) resourcesType.getType()).getProtoType())
-                .toLowerCase();
+            getParamTypeNoCardinality(typeTable, resourcesType.getType()).toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
           "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object";
     } else {
-      returnTypeDoc = getTypeNameDoc(typeTable, methodConfig.getMethod().getOutputType());
+      returnTypeDoc =
+          getTypeNameDoc(typeTable, new ProtoTypeRef(methodConfig.getMethod().getOutputType()));
     }
     return returnTypeDoc;
   }
 
-  private String getParamTypeNoCardinality(ImportTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNoCardinality(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMessage()) {
       return "Object";
     } else if (type.isEnum()) {
       return "number";
     } else {
-      return ((ModelTypeTable) typeTable).getFullNameForElementType(type);
+      return typeTable.getFullNameForElementType(type);
     }
   }
 
   @Override
-  public String getProtoFileName(ProtoFile file) {
-    String filePath = file.getSimpleName().replace(".proto", ".js");
+  public String getProtoFileName(String fileSimpleName) {
+    String filePath = fileSimpleName.replace(".proto", ".js");
     int lastSlash = filePath.lastIndexOf('/');
     if (lastSlash >= 0) {
       filePath = filePath.substring(lastSlash + 1);

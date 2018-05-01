@@ -1,0 +1,15 @@
+@extends "metadatagen/java/grpc/build_base.gradle.snip"
+
+@override description(metadata)
+  'PROTO library for {@metadata.identifier}'
+@end
+
+@override dependencies(metadata)
+  compile 'com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}'
+  @join dependency : metadata.additionalDependencies
+    compile '{@dependency.group}:{@dependency.name}:{@dependency.versionBound.lower}'
+  @end
+  @join dependency : metadata.protoPackageDependencies
+    compile '{@dependency.group}:proto-{@dependency.name}:{@dependency.versionBound.lower}'
+  @end
+@end

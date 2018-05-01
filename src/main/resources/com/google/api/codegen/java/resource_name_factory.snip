@@ -1,0 +1,24 @@
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
+
+  @@Generated("by GAPIC")
+  @@BetaApi
+  {@nameClassDef(apiFile)}
+@end
+
+@private nameClassDef(factory)
+  public final class {@factory.name} implements ResourceNameFactory {
+    {@interfaceMethods(factory)}
+  }
+
+@end
+
+@private interfaceMethods(factory)
+  @@Override
+  public {@factory.resourceNameTypeName} parse(String formattedString) {
+    return {@factory.resourceNameTypeName}.parse(formattedString);
+  }
+@end

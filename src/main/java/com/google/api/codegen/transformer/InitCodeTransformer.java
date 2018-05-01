@@ -32,7 +32,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
-import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitValueView;
@@ -54,7 +53,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,29 +103,6 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
-  }
-
-  /** Generates initialization code from the given MethodContext and InitCodeContext objects. */
-  public InitCodeView generateInitCode(
-      DiscoGapicMethodContext methodContext, InitCodeContext initCodeContext) {
-    // TODO(andrealin): Implementation.
-    return InitCodeView.newBuilder()
-        .apiFileName("apiFileName")
-        .fieldSettings(new LinkedList<>())
-        .optionalFieldSettings(new ArrayList<>())
-        .requiredFieldSettings(new ArrayList<>())
-        .importSection(
-            ImportSectionView.newBuilder()
-                .appImports(new LinkedList<>())
-                .externalImports(new LinkedList<>())
-                .serviceImports(new LinkedList<>())
-                .standardImports(new LinkedList<>())
-                .build())
-        .lines(new LinkedList<>())
-        .topLevelLines(new LinkedList<>())
-        .versionIndexFileImportName("versionIndexFileImportName")
-        .topLevelIndexFileImportName("topLevelIndexFileImportName")
-        .build();
   }
 
   public InitCodeContext createRequestInitCodeContext(
@@ -189,6 +164,10 @@ public class InitCodeTransformer {
           if (fieldConfig.getField().isRepeated()) {
             actualTransformFunction =
                 namer.getResourceTypeParseListMethodName(methodContext.getTypeTable(), fieldConfig);
+          } else if (fieldConfig.getResourceNameConfig().getResourceNameType()
+              == ResourceNameType.ONEOF) {
+            actualTransformFunction =
+                namer.getResourceTypeParentParseMethod(methodContext.getTypeTable(), fieldConfig);
           } else {
             actualTransformFunction =
                 namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);
@@ -340,7 +319,7 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         // In a non-flattened context, we always use the resource name type set on the message
         // instead of set on the flattened method
@@ -387,7 +366,7 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.ListInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       surfaceLine.elementTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
     } else {
       surfaceLine.elementTypeName(
@@ -414,13 +393,13 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.MapInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField()));
-    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueField()));
+    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyType()));
+    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueType()));
 
     List<MapEntryView> entries = new ArrayList<>();
     for (Map.Entry<String, InitCodeNode> entry : item.getChildren().entrySet()) {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
-      mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyField(), entry.getKey()));
+      mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyType(), entry.getKey()));
       mapEntry.valueString(context.getNamer().localVarName(entry.getValue().getIdentifier()));
       mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue(), entries.isEmpty()));
       entries.add(mapEntry.build());
@@ -444,7 +423,7 @@ public class InitCodeTransformer {
     InitValueView initValue;
     String comment = "";
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
         if (messageResNameConfig == null
@@ -665,7 +644,22 @@ public class InitCodeTransformer {
 
       String formatMethodName = "";
       String transformParamFunctionName = "";
-      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+
+      // If resource name converters should only be used in the sample, we need to convert the
+      // resource name to a string before passing it or setting it on the next thing
+      boolean needsConversion =
+          context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig);
+      // If resource name converters should be used and this is not a flattened method context
+      // (i.e. it is for setting fields on a proto object), we need to convert the resource name
+      // to a string.
+      // For flattened method contexts, if the resource names are used in more than just the sample
+      // (i.e. in the flattened method signature), then we don't convert (that will be done in the
+      // flattened method implementation when setting fields on the proto object).
+      if (context.getFeatureConfig().useResourceNameConverters(fieldConfig)
+          && !context.isFlattenedMethodContext()) {
+        needsConversion = true;
+      }
+      if (needsConversion) {
         if (fieldConfig.getField().isRepeated()) {
           // TODO (https://github.com/googleapis/toolkit/issues/1806) support repeated one-ofs
           transformParamFunctionName =
@@ -692,7 +686,7 @@ public class InitCodeTransformer {
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {
-    if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
+    if (!context.getFeatureConfig().useResourceNameFormatOptionInSample(item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

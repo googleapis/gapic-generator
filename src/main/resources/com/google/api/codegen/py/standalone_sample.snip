@@ -1,0 +1,19 @@
+@extends "py/common.snip"
+@extends "py/method_sample.snip"
+
+@snippet generate(sampleFile)
+  @#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
+  @#### STUB standalone sample "{@sampleFile.className}" #####
+  @let apiMethod = sampleFile.libraryMethod
+    @let sample = apiMethod.samples.get(0)
+      @##     calling form "{@sample.callingForm.toString}"
+      @##     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+      @##       {@sample.valueSet.parameters}
+      @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+      @## TODO: Replace with a full sample
+      sample = """
+           {@sampleCode(apiMethod, sample.initCode)}
+      """
+     @end
+  @end
+@end

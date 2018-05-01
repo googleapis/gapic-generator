@@ -130,7 +130,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       }
       paramDoc.paramName(paramName);
 
-      String typeName = namer.getParamTypeName(context.getTypeTable(), field);
+      String typeName = namer.getParamTypeName(context.getTypeTable(), field.getType());
       paramDoc.typeName(typeName);
       List<String> fieldDocLines = namer.getDocLines(field);
       ImmutableList.Builder<String> docLines = ImmutableList.builder();

@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ProtoFileView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -46,9 +48,10 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel apiModel, GapicProductConfig productConfig) {
+    Model model = ((ProtoApiModel) apiModel).getProtoModel();
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
+    for (ProtoFile file : new ProtoFileView().getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
     return surfaceDocs.build();
@@ -84,6 +87,6 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
     } else {
       packageDirPath = "";
     }
-    return path + packageDirPath + "doc_" + namer.getProtoFileName(file);
+    return path + packageDirPath + "doc_" + namer.getProtoFileName(file.getSimpleName());
   }
 }

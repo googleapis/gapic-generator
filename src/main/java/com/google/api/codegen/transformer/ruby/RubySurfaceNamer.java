@@ -29,7 +29,6 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
@@ -42,8 +41,6 @@ import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -123,11 +120,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeModel type) {
     if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
-      if (type.getMapValueField().isMessage()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyType());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueType());
+      if (type.getMapValueType().isMessage()) {
         valueTypeName += " | Hash";
       }
       return new TypeName(
@@ -159,9 +156,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldModel fieldModel) {
     if (fieldModel.isMap()) {
-      String keyTypeName = importTypeTable.getFullNameForElementType(fieldModel.getMapKeyField());
+      String keyTypeName =
+          importTypeTable.getFullNameForElementType(fieldModel.getType().getMapKeyType());
       String valueTypeName =
-          importTypeTable.getFullNameForElementType(fieldModel.getMapValueField());
+          importTypeTable.getFullNameForElementType(fieldModel.getType().getMapValueType());
       return new TypeName(
               importTypeTable.getFullNameFor(fieldModel),
               importTypeTable.getNicknameFor(fieldModel),
@@ -220,12 +218,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(type);
+    return typeTable.getFullNameFor(type);
   }
 
   @Override
-  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeRef type) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(type);
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getFullNameFor(type);
   }
 
   @Override
@@ -284,9 +282,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getProtoFileName(ProtoFile file) {
-    String protoFilename = file.getSimpleName();
-    return protoFilename.substring(0, protoFilename.length() - "proto".length()) + "rb";
+  public String getProtoFileName(String fileSimpleName) {
+    return fileSimpleName.substring(0, fileSimpleName.length() - "proto".length()) + "rb";
   }
 
   @Override
@@ -325,14 +322,14 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getTopLevelApiModules() {
-    List<String> apiModules = getApiModules();
-    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
-  }
-
-  private static boolean hasVersionModule(List<String> apiModules) {
-    String versionModule = apiModules.get(apiModules.size() - 1);
-    String version = Name.upperCamel(versionModule).toLowerUnderscore();
-    return VersionMatcher.isVersion(version);
+    List<String> ret = new ArrayList<>();
+    for (String m : getApiModules()) {
+      if (VersionMatcher.isVersion(Name.upperCamel(m).toLowerUnderscore())) {
+        break;
+      }
+      ret.add(m);
+    }
+    return ImmutableList.copyOf(ret);
   }
 
   @Override
@@ -347,8 +344,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getModuleVersionName() {
+  public String getApiWrapperModuleVersion() {
     List<String> apiModules = getApiModules();
+    for (String m : apiModules) {
+      if (VersionMatcher.isVersion(Name.upperCamel(m).toLowerUnderscore())) {
+        return m;
+      }
+    }
     return apiModules.get(apiModules.size() - 1);
   }
 

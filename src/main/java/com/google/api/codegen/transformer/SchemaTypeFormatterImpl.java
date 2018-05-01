@@ -60,7 +60,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeNameConverter.renderPrimitiveValue(type, key);
   }
 
   @Override
@@ -85,6 +85,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameForElementType(FieldModel type) {
+    return getFullNameFor(type);
+  }
+
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(TypeModel type) {
     return getFullNameFor(type);
   }
 
