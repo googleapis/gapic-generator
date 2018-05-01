@@ -32,6 +32,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.AbstractMap;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -48,7 +49,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
   // Not dereferenced schema; used in rendering this FieldModel's parameter name.
   private final Schema originalSchema;
 
-  // Unformatted type name for this Field. For message-type Fields, this will be globally unique.
+  // Unformatted type name for this Field.
+  // For message-type Fields, this will be unique per namespace, as defined by apiModel.
   private final String typeName;
 
   // Comparator for Schemas that have children schemas.
@@ -61,29 +63,32 @@ public class DiscoveryField implements FieldModel, TypeModel {
         @Override
         public int compare(
             Map.Entry<Schema, DiscoApiModel> o1, Map.Entry<Schema, DiscoApiModel> o2) {
-          if (o1.getKey().hashCode() == o2.getKey().hashCode()) {
-            // if the schemas are the same, use the DiscoApiModel package name to differentiate.
-            return o1.getValue()
-                .getDefaultPackageName()
-                .compareTo(o2.getValue().getDefaultPackageName());
+          if (o1.getValue().getDefaultPackageName().equals(o2.getValue().getDefaultPackageName())) {
+            // if the namespaces are the same, use the schema's hashcode to differentiate.
+            return o1.getKey().hashCode() - o2.getKey().hashCode();
           }
-          return o1.hashCode() - o2.hashCode();
+          return o1.getValue()
+              .getDefaultPackageName()
+              .compareTo(o2.getValue().getDefaultPackageName());
         }
       };
   private static Map<Map.Entry<Schema, DiscoApiModel>, DiscoveryField> globalObjects =
       new TreeMap<>(discoveryFieldComparator);
 
-  // Stores the escaped name for each message-type schema.
-  private static Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
   private static Comparator<String> caseInsensitiveComparator =
       (String s1, String s2) -> s1.compareToIgnoreCase(s2);
-  private static SymbolTable idSymbolTable = new SymbolTable(caseInsensitiveComparator);
+
+  // For each namespace, stores the symbol table and table of schemas and their names to
+  // ensure unique message type names for each namespace.
+  private static Map<String, SchemaNamer> namespaceToSchemaNamer = new HashMap<>();
 
   /**
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
    */
-  private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
+  private DiscoveryField(Map.Entry<Schema, DiscoApiModel> schemaAndModel) {
+    Schema refSchema = schemaAndModel.getKey();
+    DiscoApiModel apiModel = schemaAndModel.getValue();
     Preconditions.checkNotNull(refSchema);
     Preconditions.checkNotNull(apiModel);
     this.originalSchema = refSchema;
@@ -91,20 +96,19 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.apiModel = apiModel;
 
     String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
+    String namespace = apiModel.getDefaultPackageName();
     if (isTopLevelSchema(schema)) {
-      if (messageNames.containsKey(schema)) {
-        // Use the previously computed escaped name for this message-type field.
-        this.typeName = messageNames.get(schema);
+      // Within this namespace, get a unique name for this message-type schema.
+      SchemaNamer messageNamer;
+      if (namespaceToSchemaNamer.containsKey(namespace)) {
+        messageNamer = namespaceToSchemaNamer.get(namespace);
       } else {
-        // Get a case-insensitively-unique name for this message-type field.
-        simpleName = idSymbolTable.getNewSymbol(simpleName);
-        messageNames.put(schema, simpleName);
-        this.typeName = simpleName;
+        messageNamer = new SchemaNamer();
+        namespaceToSchemaNamer.put(namespace, messageNamer);
       }
-    } else {
-      // Primitive schemas do not need name escaping.
-      this.typeName = simpleName;
+      simpleName = messageNamer.getSchemaName(schema, simpleName);
     }
+    this.typeName = simpleName;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
     for (Schema child : this.schema.properties().values()) {
@@ -127,7 +131,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
-    DiscoveryField field = new DiscoveryField(schema, rootApiModel);
+    DiscoveryField field = new DiscoveryField(fieldPrimaryKey);
     globalObjects.put(fieldPrimaryKey, field);
     return field;
   }
@@ -491,5 +495,26 @@ public class DiscoveryField implements FieldModel, TypeModel {
         && o instanceof DiscoveryField
         && ((DiscoveryField) o).schema.equals(this.schema)
         && getParentFullName().equals(((DiscoveryField) o).getParentFullName());
+  }
+
+  // Util class for getting unique names within namespaces for message type schemas.
+  private class SchemaNamer {
+    private SymbolTable idSymbolTable = new SymbolTable(caseInsensitiveComparator);
+
+    // Stores the escaped name for each message-type schema.
+    private Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
+
+    String getSchemaName(Schema schema, String basename) {
+      if (messageNames.containsKey(schema)) {
+        // Use the previously computed escaped name for this message-type field.
+        return messageNames.get(schema);
+      }
+
+      // Get a case-insensitively-unique name for this message-type field.
+      String name;
+      name = idSymbolTable.getNewSymbol(basename);
+      messageNames.put(schema, name);
+      return name;
+    }
   }
 }
