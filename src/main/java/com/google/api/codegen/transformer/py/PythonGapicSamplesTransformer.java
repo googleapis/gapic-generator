@@ -147,7 +147,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
       for (MethodSampleView methodSample : method.samples()) {
         String className =
             namer.getApiSampleClassName(
-                method.name(), methodSample.callingFormId(), methodSample.valueSet().id());
+                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id());
         String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
         viewModels.add(
             sampleClassBuilder

@@ -18,6 +18,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.SampleConfiguration;
 import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.common.collect.Iterables;
 import java.util.HashMap;
@@ -69,6 +70,10 @@ public class SampleSpec {
     return id.matches(expression);
   }
 
+  public Set<SampleValueSet> getMatchingValueSets(
+      ClientMethodType methodForm, SampleType sampleType) {
+    return getMatchingValueSets(CallingForm.Generic, sampleType);
+  }
   /**
    * Returns the SampleValueSets that were specified for this methodForm and sampleType.
    *
@@ -76,8 +81,7 @@ public class SampleSpec {
    * @param sampleType The sample type for which value sets are requested
    * @return A set of SampleValueSets for methodForm andSampleType
    */
-  public Set<SampleValueSet> getMatchingValueSets(
-      ClientMethodType methodForm, SampleType sampleType) {
+  public Set<SampleValueSet> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
     Set<SampleValueSet> matchingValueSets = new LinkedHashSet<>();
     List<SampleTypeConfiguration> sampleConfigList = getConfigFor(sampleType);
     String methodFormString = methodForm.toString();
