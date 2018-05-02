@@ -101,4 +101,6 @@ public interface MethodModel {
   boolean isIdempotent();
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
+
+  boolean isUpdateMethod();
 }

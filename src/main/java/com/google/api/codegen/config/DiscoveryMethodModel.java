@@ -295,4 +295,11 @@ public final class DiscoveryMethodModel implements MethodModel {
   public TypeModel getOutputType() {
     return outputType;
   }
+
+  /** Update methods require fieldmasks to differentiate between  */
+  @Override
+  public boolean isUpdateMethod() {
+    String httpMethod = method.httpMethod().toUpperCase().trim();
+    return httpMethod.equals("PATCH") || httpMethod.equals("PUT");
+  }
 }
