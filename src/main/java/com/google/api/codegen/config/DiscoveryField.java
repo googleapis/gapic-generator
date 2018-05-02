@@ -30,11 +30,11 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,23 +57,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private static Comparator<Schema> messageSchemaComparator =
       (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
 
-  // Comparator for DiscoveryFields.
-  private static Comparator<Map.Entry<Schema, DiscoApiModel>> discoveryFieldComparator =
-      new Comparator<Map.Entry<Schema, DiscoApiModel>>() {
-        @Override
-        public int compare(
-            Map.Entry<Schema, DiscoApiModel> o1, Map.Entry<Schema, DiscoApiModel> o2) {
-          if (o1.getValue().getDefaultPackageName().equals(o2.getValue().getDefaultPackageName())) {
-            // if the namespaces are the same, use the schema's hashcode to differentiate.
-            return o1.getKey().hashCode() - o2.getKey().hashCode();
-          }
-          return o1.getValue()
-              .getDefaultPackageName()
-              .compareTo(o2.getValue().getDefaultPackageName());
-        }
-      };
-  private static Map<Map.Entry<Schema, DiscoApiModel>, DiscoveryField> globalObjects =
-      new TreeMap<>(discoveryFieldComparator);
+  private static Map<ModelData, DiscoveryField> globalObjects = new HashMap<>();
 
   private static Comparator<String> caseInsensitiveComparator =
       (String s1, String s2) -> s1.compareToIgnoreCase(s2);
@@ -86,11 +70,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
    */
-  private DiscoveryField(Map.Entry<Schema, DiscoApiModel> schemaAndModel) {
-    Schema refSchema = schemaAndModel.getKey();
-    DiscoApiModel apiModel = schemaAndModel.getValue();
-    Preconditions.checkNotNull(refSchema);
-    Preconditions.checkNotNull(apiModel);
+  private DiscoveryField(ModelData schemaAndModel) {
+    Schema refSchema = schemaAndModel.getSchema();
+    DiscoApiModel apiModel = schemaAndModel.getApiModel();
+
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
     this.apiModel = apiModel;
@@ -121,8 +104,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
     Preconditions.checkNotNull(schema);
     Preconditions.checkNotNull(rootApiModel);
-    Map.Entry<Schema, DiscoApiModel> fieldPrimaryKey =
-        new AbstractMap.SimpleEntry<>(schema, rootApiModel);
+    ModelData fieldPrimaryKey = new ModelData(schema, rootApiModel);
     if (globalObjects.containsKey(fieldPrimaryKey)) {
       // DiscoveryField has already been created for this schema.
       return globalObjects.get(fieldPrimaryKey);
@@ -515,6 +497,43 @@ public class DiscoveryField implements FieldModel, TypeModel {
       name = idSymbolTable.getNewSymbol(basename);
       messageNames.put(schema, name);
       return name;
+    }
+  }
+
+  private static class ModelData {
+    private final DiscoApiModel apiModel;
+    private final Schema schema;
+
+    public ModelData(Schema schema, DiscoApiModel apiModel) {
+      this.apiModel = apiModel;
+      this.schema = schema;
+      Preconditions.checkNotNull(schema);
+      Preconditions.checkNotNull(apiModel);
+    }
+
+    public Schema getSchema() {
+      return schema;
+    }
+
+    public DiscoApiModel getApiModel() {
+      return apiModel;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getApiModel().getDefaultPackageName(), getSchema());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      if (!(other instanceof ModelData)) {
+        return false;
+      }
+      ModelData otherModelData = (ModelData) other;
+      return Objects.equals(
+              getApiModel().getDefaultPackageName(),
+              (otherModelData.getApiModel().getDefaultPackageName()))
+          && getSchema().hashCode() == otherModelData.getSchema().hashCode();
     }
   }
 }
