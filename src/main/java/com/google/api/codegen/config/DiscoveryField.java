@@ -480,16 +480,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
     private Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
 
     String getSchemaName(Schema schema, String basename) {
-      if (messageNames.containsKey(schema)) {
-        // Use the previously computed escaped name for this message-type field.
-        return messageNames.get(schema);
-      }
-
-      // Get a case-insensitively-unique name for this message-type field.
-      String name;
-      name = idSymbolTable.getNewSymbol(basename);
-      messageNames.put(schema, name);
-      return name;
+      return messageNames.computeIfAbsent(schema, k -> idSymbolTable.getNewSymbol(basename));
     }
   }
 
