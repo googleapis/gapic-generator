@@ -102,8 +102,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   /** Create a FieldModel object from a non-null Schema object. */
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
-    Preconditions.checkNotNull(schema);
-    Preconditions.checkNotNull(rootApiModel);
     ModelData fieldPrimaryKey = new ModelData(schema, rootApiModel);
     if (globalObjects.containsKey(fieldPrimaryKey)) {
       // DiscoveryField has already been created for this schema.
