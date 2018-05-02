@@ -517,7 +517,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
       return Objects.equals(
               getApiModel().getDefaultPackageName(),
               (otherModelData.getApiModel().getDefaultPackageName()))
-          && getSchema().hashCode() == otherModelData.getSchema().hashCode();
+          && Objects.equals(getSchema(), otherModelData.getSchema());
     }
   }
 }
