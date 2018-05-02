@@ -18,7 +18,7 @@ import com.google.common.base.Strings;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.TreeSet;
 
 /**
  * A utility class used to get and store unique symbols.
@@ -42,7 +42,7 @@ public class SymbolTable {
    * @param comparator function to determine equality on Strings
    */
   public SymbolTable(Comparator<String> comparator) {
-    symbolTable = new ConcurrentSkipListSet<>(comparator);
+    symbolTable = new TreeSet<>(comparator);
   }
 
   /**
