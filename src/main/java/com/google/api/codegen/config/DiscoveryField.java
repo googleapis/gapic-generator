@@ -83,12 +83,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
     if (isTopLevelSchema(schema)) {
       // Within this namespace, get a unique name for this message-type schema.
       SchemaNamer messageNamer;
-      if (namespaceToSchemaNamer.containsKey(namespace)) {
-        messageNamer = namespaceToSchemaNamer.get(namespace);
-      } else {
-        messageNamer = new SchemaNamer();
-        namespaceToSchemaNamer.put(namespace, messageNamer);
-      }
+      messageNamer = namespaceToSchemaNamer.computeIfAbsent(namespace, k -> new SchemaNamer());
       simpleName = messageNamer.getSchemaName(schema, simpleName);
     }
     this.typeName = simpleName;
