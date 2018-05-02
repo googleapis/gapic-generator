@@ -394,4 +394,36 @@ public abstract class Schema implements Node {
         required(),
         type());
   }
+
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof Schema)) {
+      return false;
+    }
+    Schema schema2 = (Schema) other;
+
+    return Objects.equals(
+            additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+            schema2.additionalProperties() == null
+                ? null
+                : schema2.additionalProperties().getIdentifier())
+        && Objects.equals(defaultValue(), schema2.defaultValue())
+        && Objects.equals(description(), schema2.description())
+        && Objects.equals(format(), schema2.format())
+        && Objects.equals(id(), schema2.id())
+        && Objects.equals(isEnum(), schema2.isEnum())
+        && Objects.equals(
+            items() == null ? null : items().getIdentifier(),
+            schema2.items() == null ? null : schema2.items().getIdentifier())
+        && Objects.equals(key(), schema2.key())
+        && Objects.equals(location(), schema2.location())
+        && Objects.equals(pattern(), schema2.pattern())
+        && Objects.equals(
+            parent != null ? parent.id() : "", schema2.parent != null ? schema2.parent.id() : "")
+        && Objects.equals(properties().keySet(), schema2.properties().keySet())
+        && Objects.equals(reference(), schema2.reference())
+        && Objects.equals(repeated(), schema2.repeated())
+        && Objects.equals(required(), schema2.required())
+        && Objects.equals(type(), schema2.type());
+  }
 }
