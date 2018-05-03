@@ -42,7 +42,7 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
-        .isEqualTo("prefix/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithGoogleNonCloud =
         GapicProductConfig.createDummyInstance(
@@ -51,7 +51,7 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
-        .isEqualTo("prefix/NonCloud/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithAlphabet =
         GapicProductConfig.createDummyInstance(
@@ -60,6 +60,6 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithAlphabet))
-        .isEqualTo("prefix/Alphabet/Google/Cloud/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
   }
 }

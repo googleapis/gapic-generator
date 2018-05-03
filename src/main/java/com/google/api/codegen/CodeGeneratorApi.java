@@ -179,7 +179,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
   @VisibleForTesting
   void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath) throws IOException {
     // TODO: Support zip output.
-    if (outputPath.endsWith(".jar")) {
+    if (outputPath.endsWith(".jar") || outputPath.endsWith(".srcjar")) {
       ToolUtil.writeJar(outputFiles, outputPath);
     } else {
       ToolUtil.writeFiles(outputFiles, outputPath);

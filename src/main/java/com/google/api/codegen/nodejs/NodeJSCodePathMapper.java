@@ -39,10 +39,9 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
 
     String apiVersion = "";
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
-    if (packages.size() > 2) {
-      String parentName = packages.get(packages.size() - 2);
-      if (VersionMatcher.isVersion(parentName)) {
-        apiVersion = parentName;
+    for (String p : packages) {
+      if (VersionMatcher.isVersion(p)) {
+        apiVersion = p;
       }
     }
 

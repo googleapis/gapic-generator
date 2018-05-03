@@ -20,7 +20,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-library-v1'
-group = 'com.google.api'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -28,6 +29,9 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 
 dependencies {
   compile 'com.google.api:gax:1.0.0'
@@ -40,7 +44,7 @@ dependencies {
   compile project(':proto-google-cloud-library-v1')
   // Remove this line if you are bundling your proto-generated classes together with your client classes
   testCompile project(':grpc-google-cloud-library-v1')
-  testCompile project(':grpc-google-some-test-package-v1')
+  testCompile 'com.google.api.grpc:grpc-google-some-test-package-v1:0.0.0'
 }
 
 task smokeTest(type: Test) {
@@ -62,8 +66,16 @@ sourceSets {
   }
 }
 
-compileJava.options.encoding = 'UTF-8'
-javadoc.options.encoding = 'UTF-8'
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -250,7 +262,7 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryClient implements BackgroundResource {
   private final LibrarySettings settings;
   private final LibraryServiceStub stub;
@@ -4078,7 +4090,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -4792,7 +4804,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactory {
   @Override
@@ -4958,7 +4970,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
@@ -5659,7 +5671,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class LibraryServiceStub implements BackgroundResource {
 
@@ -5958,7 +5970,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubSettings> {
   /**
    * The default scopes of the service.
@@ -7273,10 +7285,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedMethodPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedMethodPiVersion" ]
-//// STUB standalone sample "PublishSeriesSampleFlattenedMethodPiVersion" /////
-//     calling form "FlattenedMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedPiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleFlattenedPiVersion" /////
+//     calling form "Flattened"
 //     valueSet "pi_version" ("Pi version")
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeries" of type "FlattenedMethod"
@@ -7295,10 +7307,10 @@ SeriesUuid seriesUuid = SeriesUuid.newBuilder()
   .build();
 PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
 */
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedMethodSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedMethodSecondEdition" ]
-//// STUB standalone sample "PublishSeriesSampleFlattenedMethodSecondEdition" /////
-//     calling form "FlattenedMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleFlattenedSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleFlattenedSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleFlattenedSecondEdition" /////
+//     calling form "Flattened"
 //     valueSet "second_edition" ("Second edition")
 //       [edition=2]
 //     apiMethod "publishSeries" of type "FlattenedMethod"
@@ -7311,10 +7323,10 @@ int edition = 2;
 SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
 PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
 */
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestObjectMethodPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestObjectMethodPiVersion" ]
-//// STUB standalone sample "PublishSeriesSampleRequestObjectMethodPiVersion" /////
-//     calling form "RequestObjectMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestPiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleRequestPiVersion" /////
+//     calling form "Request"
 //     valueSet "pi_version" ("Pi version")
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeries" of type "RequestObjectMethod"
@@ -7337,10 +7349,10 @@ PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
   .build();
 PublishSeriesResponse response = libraryClient.publishSeries(request);
 */
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestObjectMethodSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestObjectMethodSecondEdition" ]
-//// STUB standalone sample "PublishSeriesSampleRequestObjectMethodSecondEdition" /////
-//     calling form "RequestObjectMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesSampleRequestSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleRequestSecondEdition" /////
+//     calling form "Request"
 //     valueSet "second_edition" ("Second edition")
 //       [edition=2]
 //     apiMethod "publishSeries" of type "RequestObjectMethod"
@@ -7359,10 +7371,10 @@ PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
   .build();
 PublishSeriesResponse response = libraryClient.publishSeries(request);
 */
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallableMethodPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallableMethodPiVersion" ]
-//// STUB standalone sample "PublishSeriesCallableSampleCallableMethodPiVersion" /////
-//     calling form "CallableMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallablePiVersion.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallablePiVersion" ]
+//// STUB standalone sample "PublishSeriesCallableSampleCallablePiVersion" /////
+//     calling form "Callable"
 //     valueSet "pi_version" ("Pi version")
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeriesCallable" of type "CallableMethod"
@@ -7387,10 +7399,10 @@ ApiFuture&lt;PublishSeriesResponse&gt; future = libraryClient.publishSeriesCalla
 // Do something
 PublishSeriesResponse response = future.get();
 */
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallableMethodSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallableMethodSecondEdition" ]
-//// STUB standalone sample "PublishSeriesCallableSampleCallableMethodSecondEdition" /////
-//     calling form "CallableMethod"
+============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableSampleCallableSecondEdition.java ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableSampleCallableSecondEdition" ]
+//// STUB standalone sample "PublishSeriesCallableSampleCallableSecondEdition" /////
+//     calling form "Callable"
 //     valueSet "second_edition" ("Second edition")
 //       [edition=2]
 //     apiMethod "publishSeriesCallable" of type "CallableMethod"

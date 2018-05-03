@@ -403,6 +403,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
                   ImportContext.CLIENT,
                   ImportKind.LRO,
                   ImmutableList.<String>of(
+                      "time;;;",
                       "cloud.google.com/go/longrunning;;;",
                       "cloud.google.com/go/longrunning/autogen;lroauto;;"))
               .put(

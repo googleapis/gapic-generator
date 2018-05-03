@@ -14,19 +14,37 @@
  */
 package com.google.api.codegen.ruby;
 
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
+
+  private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("(.+?)::([vV][0-9]+)(::.*)?");
 
   public static boolean isLongrunning(String packageName) {
     return packageName.equals(LONGRUNNING_PACKAGE_NAME);
   }
 
   public static boolean hasMajorVersion(String packageName) {
-    return VersionMatcher.isVersion(NamePath.doubleColoned(packageName).getHead());
+    Matcher m = getVersionMatcher(packageName);
+    if (m.matches()) {
+      return VersionMatcher.isVersion(m.group(2));
+    }
+    return false;
+  }
+
+  /**
+   * Get a matches to check for the presence of a version number. If a match is found, the gem name
+   * is in group 1 and the version is in group 2.
+   *
+   * @param packageName
+   * @return
+   */
+  public static Matcher getVersionMatcher(String packageName) {
+    return IDENTIFIER_PATTERN.matcher(packageName);
   }
 
   public static String getSentence(List<String> lines) {
