@@ -379,7 +379,8 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
-                .setModelToViewTransformer(new PythonGapicSamplesTransformer(pythonPathMapper))
+                .setModelToViewTransformer(
+                    new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
                 .build();
         GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
