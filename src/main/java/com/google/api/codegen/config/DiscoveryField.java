@@ -34,7 +34,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,8 +56,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private static Comparator<Schema> messageSchemaComparator =
       (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
 
-  private static Map<ModelData, DiscoveryField> globalObjects = new HashMap<>();
-
   private static Comparator<String> caseInsensitiveComparator =
       (String s1, String s2) -> s1.compareToIgnoreCase(s2);
 
@@ -70,10 +67,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
    */
-  private DiscoveryField(ModelData schemaAndModel) {
-    Schema refSchema = schemaAndModel.getSchema();
-    DiscoApiModel apiModel = schemaAndModel.getApiModel();
-
+  private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
+    Preconditions.checkNotNull(refSchema);
     this.originalSchema = refSchema;
     this.schema = refSchema.dereference();
     this.apiModel = apiModel;
@@ -97,17 +92,11 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   /** Create a FieldModel object from a non-null Schema object. */
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
-    ModelData fieldPrimaryKey = new ModelData(schema, rootApiModel);
-    if (globalObjects.containsKey(fieldPrimaryKey)) {
-      // DiscoveryField has already been created for this schema.
-      return globalObjects.get(fieldPrimaryKey);
-    }
     if (!Strings.isNullOrEmpty(schema.reference())) {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
-    DiscoveryField field = new DiscoveryField(fieldPrimaryKey);
-    globalObjects.put(fieldPrimaryKey, field);
+    DiscoveryField field = new DiscoveryField(schema, rootApiModel);
     return field;
   }
 
@@ -481,43 +470,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
     String getSchemaName(Schema schema, String basename) {
       return messageNames.computeIfAbsent(schema, k -> idSymbolTable.getNewSymbol(basename));
-    }
-  }
-
-  private static class ModelData {
-    private final DiscoApiModel apiModel;
-    private final Schema schema;
-
-    public ModelData(Schema schema, DiscoApiModel apiModel) {
-      this.apiModel = apiModel;
-      this.schema = schema;
-      Preconditions.checkNotNull(schema);
-      Preconditions.checkNotNull(apiModel);
-    }
-
-    public Schema getSchema() {
-      return schema;
-    }
-
-    public DiscoApiModel getApiModel() {
-      return apiModel;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(getApiModel().getDefaultPackageName(), getSchema());
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      if (!(other instanceof ModelData)) {
-        return false;
-      }
-      ModelData otherModelData = (ModelData) other;
-      return Objects.equals(
-              getApiModel().getDefaultPackageName(),
-              (otherModelData.getApiModel().getDefaultPackageName()))
-          && Objects.equals(getSchema(), otherModelData.getSchema());
     }
   }
 }
