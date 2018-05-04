@@ -23,7 +23,7 @@
        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
        
        /*
-       @let coreSampleCode = generateSample(apiMethod, sample.initCode)
+       @let coreSampleCode = generateSample(apiMethod, sample.callingForm, sample.initCode)
          {@methodDoc(coreSampleCode)}
        @end
        */
@@ -38,31 +38,31 @@
 
 # adapted from main.snip:apiMethods(xapiClass) and its dependencies
 # For real use, we'll want to switch on the calling form id.
-@private generateSample(apiMethod, initCode)
-    @switch apiMethod.type
-    @case "PagedFlattenedMethod"
+@private generateSample(apiMethod, callingForm, initCode)
+    @switch callingForm
+    @case "FlattenedPaging"
       {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "PagedRequestObjectMethod"
+    @case "RequestPaged"
       {@pagedRequestObjectMethod(apiMethod, initCode)}
-    @case "PagedCallableMethod"
+    @case "CallablePaging"
       {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "UnpagedListCallableMethod"
+    @case "CallableList"
       {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
-    @case "FlattenedMethod"
+    @case "Flattened"
       {@syncMethodSampleCode(apiMethod, initCode)}
-    @case "RequestObjectMethod"
+    @case "Request"
       {@syncMethodSampleCode(apiMethod, initCode)}
-    @case "CallableMethod"
+    @case "Callable"
       @if apiMethod.isStreaming
         {@streamingCallableMethodSampleCode(apiMethod, initCode)}
       @else
         {@callableMethodSampleCode(apiMethod, initCode)}
       @end
-    @case "AsyncOperationFlattenedMethod"
+    @case "LongRunningFlattenedAsync"
       {@asyncOperationMethodSampleCode(apiMethod, initCode)}
-    @case "AsyncOperationRequestObjectMethod"
+    @case "LongRunningRequestAsync"
       {@asyncOperationMethodSampleCode(apiMethod, initCode)}
-    @case "OperationCallableMethod"
+    @case "LongRunningCallable"
       {@asyncOperationCallableMethodSampleCall(apiMethod, initCode)}
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$
