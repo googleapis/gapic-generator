@@ -48,7 +48,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public Iterable<DiscoInterfaceModel> getInterfaces() {
+  public List<DiscoInterfaceModel> getInterfaces() {
     if (interfaceModels != null) {
       return interfaceModels;
     }
@@ -67,7 +67,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public Iterable<? extends TypeModel> getAdditionalTypes() {
+  public List<? extends TypeModel> getAdditionalTypes() {
     throw new UnsupportedOperationException("Discovery does not support additional types");
   }
 

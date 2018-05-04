@@ -19,7 +19,6 @@ import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
@@ -101,26 +100,24 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public Iterable<ProtoInterfaceModel> getInterfaces() {
-    if (interfaceModels != null) {
-      return interfaceModels;
+  public List<ProtoInterfaceModel> getInterfaces() {
+    if (interfaceModels == null) {
+      interfaceModels =
+          new InterfaceView()
+              .getElements(protoModel)
+              .stream()
+              .map(ProtoInterfaceModel::new)
+              .collect(ImmutableList.toImmutableList());
     }
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(protoModel);
-    ImmutableList.Builder<ProtoInterfaceModel> intfModels = ImmutableList.builder();
-    for (Interface intf : interfaces) {
-      intfModels.add(new ProtoInterfaceModel(intf));
-    }
-    interfaceModels = intfModels.build();
     return interfaceModels;
   }
 
   @Override
-  public Iterable<ProtoTypeRef> getAdditionalTypes() {
-    ImmutableList.Builder<ProtoTypeRef> models = ImmutableList.builder();
-    for (TypeRef t : getTypes(protoModel)) {
-      models.add(new ProtoTypeRef(t));
-    }
-    return models.build();
+  public List<ProtoTypeRef> getAdditionalTypes() {
+    return getTypes(protoModel)
+        .stream()
+        .map(ProtoTypeRef::new)
+        .collect(ImmutableList.toImmutableList());
   }
 
   @Override
@@ -129,7 +126,7 @@ public class ProtoApiModel implements ApiModel {
   }
 
   /** Helper to extract the types from the underlying model. */
-  private Iterable<TypeRef> getTypes(Model model) {
+  private List<TypeRef> getTypes(Model model) {
     List<TypeRef> types = new ArrayList<>();
     for (Type type : model.getServiceConfig().getTypesList()) {
       types.add(model.getSymbolTable().lookupType(type.getName()));

@@ -392,12 +392,13 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateVersionedInitAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElements(model)) {
       imports.add(
           createImport(
               productConfig.getPackageName(),
               namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface))));
     }
+
     if (packageHasEnums) {
       imports.add(createImport(productConfig.getPackageName(), "enums"));
     }
@@ -417,7 +418,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateTopLevelEntryPointAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElements(model)) {
       imports.add(
           createImport(
               namer.getVersionedDirectoryNamespace(),
