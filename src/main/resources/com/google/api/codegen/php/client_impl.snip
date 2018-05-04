@@ -138,15 +138,19 @@
             @if xapiClass.hasDefaultServiceAddress
                 'serviceAddress' => self::SERVICE_ADDRESS . ':' . self::DEFAULT_SERVICE_PORT,
             @end
-            @if xapiClass.hasDefaultServiceScopes
-                'scopes' => self::$serviceScopes,
-            @end
-            'clientConfigPath' => __DIR__ . '{@xapiClass.clientConfigPath}',
-            'restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',
+            'clientConfig' => __DIR__ . '{@xapiClass.clientConfigPath}',
             'descriptorsConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_descriptor_config.php',
             @if xapiClass.hasDefaultServiceAddress
-                'versionFile' => __DIR__ . '/../../VERSION'
+                'versionFile' => __DIR__ . '/../../VERSION',
             @end
+            'authConfig' => [
+                @if xapiClass.hasDefaultServiceScopes
+                    'scopes' => self::$serviceScopes,
+                @end
+            ],
+            'transportConfig' => [
+                'rest' => ['restConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',]
+            ],
         ];
     }
 
@@ -368,18 +372,12 @@
      */
     public function __construct($options = [])
     {
+        $clientOptions = $this->buildClientOptions($options);
+        $this->setClientOptions($clientOptions);
         @if xapiClass.hasLongRunningOperations
-            $options += self::getClientDefaults();
-            $this->setClientOptions($options);
-            $this->pluckArray([
-                'serviceName',
-                'clientConfigPath',
-                'descriptorsConfigPath'
-            ], $options);
-            $this->operationsClient = $this->pluck('operationsClient', $options, false)
-                ?: new OperationsClient($options);
-        @else
-            $this->setClientOptions($options + self::getClientDefaults());
+            $operationsClientOptions = $this->buildOperationsClientOptions($options);
+            $this->operationsClient = $this->pluck('operationsClient', $operationsClientOptions, false)
+                ?: new OperationsClient($operationsClientOptions);
         @end
     }
     {@""}
