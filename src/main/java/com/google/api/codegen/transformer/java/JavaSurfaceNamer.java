@@ -100,6 +100,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiSampleFileName(String className) {
+    return className + ".java";
+  }
+
+  @Override
   public String getSourceFilePath(String path, String publicClassName) {
     return path + File.separator + publicClassName + ".java";
   }
@@ -351,6 +356,21 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   /** The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
+  }
+
+  @Override
+  public String getAndSaveResourceTypeName(ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    String commonResourceName = fieldConfig.getResourceNameConfig().getCommonResourceName();
+
+    String resourceClassName;
+    if (commonResourceName == null) {
+      resourceClassName =
+          publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    } else {
+      // Common resource name is fully-qualified.
+      resourceClassName = commonResourceName.substring(commonResourceName.lastIndexOf(".") + 1);
+    }
+    return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
   }
 
   @Override

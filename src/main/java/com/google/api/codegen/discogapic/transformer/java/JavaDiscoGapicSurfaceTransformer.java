@@ -79,14 +79,14 @@ public class JavaDiscoGapicSurfaceTransformer
 
   @Override
   public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
-    JavaSurfaceTransformer surfaceTransformer =
+    JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
             pathMapper,
             packageMetadataConfig,
             this,
             RPC_STUB_TEMPLATE_FILENAME,
             CALLABLE_FACTORY_TEMPLATE_FILENAME);
-    return surfaceTransformer.transform(model, productConfig);
+    return commonSurfaceTransformer.transform(model, productConfig);
   }
 
   @Override

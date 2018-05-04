@@ -8,7 +8,8 @@
   apply plugin: 'java'
 
   description = 'GAPIC library for {@metadata.identifier}'
-  group = 'com.google.api'
+  group = 'com.google.cloud'
+  version = '0.0.0-SNAPSHOT'
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
@@ -17,13 +18,27 @@
     mavenLocal()
   }
 
+  compileJava.options.encoding = 'UTF-8'
+  javadoc.options.encoding = 'UTF-8'
+
   dependencies {
     compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
-    compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
+    testCompile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}:testlib'
+    @if metadata.hasGaxGrpcVersionBound
+      compile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}'
+      testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
+    @end
+    @if metadata.hasGaxHttpVersionBound
+      compile 'com.google.api:gax-httpjson:{@metadata.gaxHttpVersionBound.lower}'
+      testCompile 'com.google.api:gax-httpjson:{@metadata.gaxHttpVersionBound.lower}:testlib'
+    @end
     testCompile 'junit:junit:4.12'
-    testCompile 'com.google.api:gax-grpc:{@metadata.gaxGrpcVersionBound.lower}:testlib'
-    testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    @if metadata.hasGrpcVersionBound
+      testCompile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    @end
     @switch metadata.artifactType.toString
+    @case "DISCOGAPIC"
+    @case "DISCOGAPIC_CONFIG"
     @case "GAPIC_ONLY"
       @join dependency : metadata.protoPackageDependencies
         compile project(':proto-{@dependency.name}')
@@ -36,7 +51,7 @@
       testCompile project(':{@metadata.grpcPackageName}')
     @end
     @join dependency : metadata.protoPackageTestDependencies
-      testCompile project(':grpc-{@dependency.name}')
+      testCompile '{@dependency.group}:grpc-{@dependency.name}:{@dependency.versionBound.lower}'
     @end
   }
 
@@ -59,6 +74,14 @@
     }
   }
 
-  compileJava.options.encoding = 'UTF-8'
-  javadoc.options.encoding = 'UTF-8'
+  clean {
+    delete 'all-jars'
+  }
+
+  task allJars(type: Copy) {
+    dependsOn test, jar
+    into 'all-jars'
+    // Replace with `from configurations.testRuntime, jar` to include test dependencies
+    from configurations.runtime, jar
+  }
 @end

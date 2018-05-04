@@ -19,7 +19,7 @@ and Python. This feature is not yet documented here in detail - the instructions
 
 ## Supported platforms
 
-Toolkit itself doesn't have a platform restriction (because it is purely Java). Since `protoc` needs to be used as
+The GAPIC Generator itself doesn't have a platform restriction (because it is purely Java). Since `protoc` needs to be used as
 part of the code generation process, the platforms are naturally restricted to what protoc supports.
 
 As of release 3.5.1 of `protoc`, below are the known platforms that `protoc` has pre-built binaries for:
@@ -50,7 +50,7 @@ There are two main ways to generate clients:
 2. You need a yaml file describing certain service values. This is not yet well-documented, but you can
   figure out some of the settings by looking at existing files.
   - Example: https://github.com/googleapis/googleapis/blob/master/google/cloud/language/language_v1.yaml
-3. An active internet connection. The first time you build toolkit, it will download Java dependencies over
+3. An active internet connection. The first time you build gapic-generator, it will download Java dependencies over
   the network.
 
 ### Process overview for generating a client library
@@ -81,12 +81,12 @@ Given a platform ${PROTOC_PLATFORM} and a protoc version ${PROTOC_VERSION}:
 Clone the present repository and build API Client Generator:
 
 ```
-git clone https://github.com/googleapis/toolkit.git
-cd toolkit
+git clone https://github.com/googleapis/gapic-generator.git
+cd gapic-generator
 ./gradlew fatJar
 ```
 
-The `googleapis/toolkit` directory will hereafter be referenced as `${TOOLKIT_DIR}`.
+The `googleapis/gapic-generator` directory will hereafter be referenced as `${GAPIC_GENERATOR_DIR}`.
 
 Clone the googleapis/googleapis repository (it has some config that is needed):
 
@@ -170,7 +170,7 @@ You need to locate/decide on the following before you call config generation:
 Run the following command to generate the client config:
 
 ```
-cd ${TOOLKIT_DIR}
+cd ${GAPIC_GENERATOR_DIR}
 java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.configgen.ConfigGeneratorTool \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
   -o=${YOUR_CLIENT_CONFIG}
@@ -249,7 +249,7 @@ Special note for java: several files will be dumped into the parent directory of
 - gradlew
 - gradlew.bat
 
-(There is an open issue to fix this: https://github.com/googleapis/toolkit/issues/1918 )
+(There is an open issue to fix this: https://github.com/googleapis/gapic-generator/issues/1918 )
 
 ### Perform fixes to get a working library
 
@@ -267,7 +267,7 @@ In `${GENERATED_CLIENT_DIR}/build.gradle`, there are a couple dependencies that 
 are bundling your proto-generated classes and grpc stubs in the same package as the client. They have a
 comment starting with "`// Remove this line if you are bundling`". Warning: If you regenerate again, you will
 need to remove the lines from the build.gradle file again. (There is an open issue to fix this:
-https://github.com/googleapis/toolkit/issues/1917 ).
+https://github.com/googleapis/gapic-generator/issues/1917 ).
 
 #### Node
 

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -39,6 +38,7 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.py.NodeJSMethodViewGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
@@ -47,16 +47,19 @@ import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /** Responsible for producing GAPIC surface views for NodeJS */
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -69,6 +72,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer());
+  private final NodeJSMethodViewGenerator methodGenerator =
+      new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -111,7 +116,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
-    List<ApiMethodView> methods = generateApiMethods(context, hasMultipleServices);
+    List<OptionalArrayMethodView> methods =
+        methodGenerator.generateApiMethods(context, hasMultipleServices);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -156,9 +162,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.apiMethods(methods);
-
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
+    xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
 
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
@@ -191,19 +195,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       validDescriptorsNames.add("this._descriptors.longrunning");
     }
     return validDescriptorsNames.build();
-  }
-
-  private List<ApiMethodView> generateApiMethods(
-      GapicInterfaceContext context, boolean packageHasMultipleServices) {
-    ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(
-          apiMethodTransformer.generateMethod(
-              context.asDynamicMethodContext(method), packageHasMultipleServices));
-    }
-
-    return apiMethods.build();
   }
 
   private List<GrpcStreamingDetailView> createGrpcStreamingDescriptors(
@@ -269,7 +260,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     String version = namer.getApiWrapperModuleVersion();
-    boolean hasVersion = version != null && !version.isEmpty();
+    boolean hasVersion = !Strings.isNullOrEmpty(version);
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (InterfaceModel apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
@@ -277,7 +268,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       ApiMethodView exampleMethod =
-          generateApiMethods(context, apiInterface.getApiModel().hasMultipleServices()).get(0);
+          methodGenerator
+              .generateApiMethods(context, apiInterface.getApiModel().hasMultipleServices())
+              .get(0);
       VersionIndexRequireView require =
           VersionIndexRequireView.newBuilder()
               .clientName(
@@ -298,7 +291,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .primaryService(requireViews.get(0))
             .packageVersion(
                 packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-            .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     productConfig, ImportSectionView.newBuilder().build(), namer))
@@ -321,7 +313,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .isGcloud(NodeJSUtils.isGcloud(productConfig))
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
-              .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))

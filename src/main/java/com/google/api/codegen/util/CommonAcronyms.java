@@ -30,6 +30,7 @@ public class CommonAcronyms {
       ImmutableSet.<String>builder()
           .add("IAM")
           .add("HTTP")
+          // TODO(andrealin): add "HTTPS"
           .add("XML")
           .add("API")
           .add("SQL")

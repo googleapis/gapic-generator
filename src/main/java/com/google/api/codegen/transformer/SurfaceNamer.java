@@ -276,11 +276,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "gapic-" + configPackageName;
   }
 
-  /** The name of the module for the version of an API. */
-  public String getModuleVersionName() {
-    return getNotImplementedString("SurfaceNamer.getModuleVersionName");
-  }
-
   /** The name of the module for the service of an API. */
   public String getModuleServiceName() {
     return getNotImplementedString("SurfaceNamer.getModuleServiceName");
@@ -777,6 +772,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the implementation class that implements a particular proto interface. */
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
+  }
+
+  /**
+   * The name of the class that holds a sample for an API method, calling form, and value set id.
+   */
+  public String getApiSampleClassName(String methodName, String callingForm, String values) {
+    return publicClassName(
+        Name.anyCamel(
+            methodName,
+            "sample",
+            Name.anyCamel(callingForm).toUpperCamel(),
+            Name.anyLower(values).toUpperCamel()));
+  }
+
+  /**
+   * The name of the file holding the sample class for a single API method and variant. The variant
+   * is typically a calling form.
+   */
+  public String getApiSampleFileName(String className) {
+    return getNotImplementedString("SurfaceNamer.getApiSampleFileName");
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */
