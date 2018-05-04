@@ -58,7 +58,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +99,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
+    reservedKeywords.add("fieldMask");
   }
 
   private static final String REQUEST_TEMPLATE_FILENAME = "java/message.snip";
@@ -142,14 +142,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         surfaceRequests.add(generateRequestFile(requestContext, requestView));
       }
     }
-    Collections.sort(
-        surfaceRequests,
-        new Comparator<ViewModel>() {
-          @Override
-          public int compare(ViewModel o1, ViewModel o2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(o1.outputPath(), o2.outputPath());
-          }
-        });
+    surfaceRequests.sort(
+        (ViewModel o1, ViewModel o2) ->
+            String.CASE_INSENSITIVE_ORDER.compare(o1.outputPath(), o2.outputPath()));
     return surfaceRequests;
   }
 
@@ -207,7 +202,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
                 DiscoGapicParser.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
-    boolean hasRequiredProperties = false;
 
     requestView.name(requestName);
     requestView.description(method.getDescription());
@@ -243,21 +237,19 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               .getResourceSetterName(
                   param, SurfaceNamer.Cardinality.NOT_REPEATED, context.getNamer()));
       paramView.properties(Collections.emptyList());
-      paramView.isRequestMessage(false);
-      paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
     }
 
     for (FieldModel entry : method.getInputFields()) {
       if (entry.mayBeInResourceName()) {
-        hasRequiredProperties = true;
+        requestView.hasRequiredProperties(true);
         continue;
       }
       String parameterName = entry.getNameAsParameter();
       properties.add(
           schemaToParamView(context, entry, parameterName, symbolTable, EscapeName.ESCAPE_NAME));
       if (entry.isRequired()) {
-        hasRequiredProperties = true;
+        requestView.hasRequiredProperties(true);
       }
     }
 
@@ -282,8 +274,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.fieldGetFunction(resourceNameView.getCallName());
     paramView.fieldSetFunction(resourceNameView.setCallName());
     paramView.properties(new LinkedList<>());
-    paramView.isRequestMessage(false);
-    paramView.hasRequiredProperties(false);
     properties.add(paramView.build());
 
     Collections.sort(properties);
@@ -291,8 +281,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
-    requestView.hasRequiredProperties(hasRequiredProperties);
-    requestView.isRequestMessage(true);
     requestView.pathAsResourceName(resourceNameView);
 
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
@@ -343,8 +331,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
                 context.getNamer()));
     paramView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schema));
     paramView.properties(new LinkedList<>());
-    paramView.isRequestMessage(false);
-    paramView.hasRequiredProperties(false);
     return paramView.build();
   }
 

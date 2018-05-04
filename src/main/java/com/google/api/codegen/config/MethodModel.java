@@ -102,5 +102,6 @@ public interface MethodModel {
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
 
-  boolean isUpdateMethod();
+  /** If this method should generate a resource message fieldmask in the request message. */
+  boolean generateFieldMask();
 }
