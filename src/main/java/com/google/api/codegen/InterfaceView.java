@@ -16,8 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.protobuf.Api;
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
@@ -28,11 +27,12 @@ public class InterfaceView implements InputElementView<Interface> {
 
   /** Gets the interfaces for the apis in the service config. */
   @Override
-  public Iterable<Interface> getElementIterable(Model model) {
-    List<Interface> interfaces = new ArrayList<>();
-    for (Api api : model.getServiceConfig().getApisList()) {
-      interfaces.add(model.getSymbolTable().lookupInterface(api.getName()));
-    }
-    return interfaces;
+  public List<Interface> getElements(Model model) {
+    return model
+        .getServiceConfig()
+        .getApisList()
+        .stream()
+        .map(api -> model.getSymbolTable().lookupInterface(api.getName()))
+        .collect(ImmutableList.toImmutableList());
   }
 }
