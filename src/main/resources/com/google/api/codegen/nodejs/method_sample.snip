@@ -25,32 +25,36 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    {@sampleCode(apiMethod, empty())}
+    {@sampleCode(apiMethod, apiMethod.initCode)}
+@end
+
+@snippet sampleCode(apiMethod, init)
+    {@sampleCode(apiMethod, init, empty())}
 @end
 
 @private empty()
 @end
 
-@snippet sampleCode(apiMethod, additionalCallback)
+@snippet sampleCode(apiMethod, init, additionalCallback)
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod, additionalCallback)}
+        {@optionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
     @case "LongRunningOptionalArrayMethod"
-        {@lroSampleCode(apiMethod, additionalCallback)}
+        {@lroSampleCode(apiMethod, init, additionalCallback)}
     @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)}
+        {@pagedOptionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
-@snippet sampleCodePageStreaming(apiMethod)
-    {@sampleCodePageStreaming(apiMethod, empty())}
+@snippet sampleCodePageStreaming(apiMethod, init)
+    {@sampleCodePageStreaming(apiMethod, init, empty())}
 @end
 
-@snippet sampleCodePageStreaming(apiMethod, additionalCallback)
-    {@initCode(apiMethod)}
-    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)})
+@snippet sampleCodePageStreaming(apiMethod, init, additionalCallback)
+    {@initCode(apiMethod, init)}
+    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod, init)})
       @if additionalCallback
         .on('data', element => {
           console.log(element);
@@ -66,7 +70,7 @@
       @end
 @end
 
-@private clientStreamingSampleCode(apiMethod, additionalCallback)
+@private clientStreamingSampleCode(apiMethod, init, additionalCallback)
     var stream = client.{@apiMethod.name}((err, response) => {
       @if additionalCallback
         if (err) {
@@ -83,11 +87,11 @@
         // doThingsWith(response)
       @end
     });
-    {@initCode(apiMethod)}
+    {@initCode(apiMethod, init)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@private bidiStreamingSampleCode(apiMethod, additionalCallback)
+@private bidiStreamingSampleCode(apiMethod, init, additionalCallback)
     var stream = client.{@apiMethod.name}().on('data', response => {
       @if additionalCallback
         console.log(response);
@@ -96,7 +100,7 @@
         // doThingsWith(response)
       @end
     });
-    {@initCode(apiMethod)}
+    {@initCode(apiMethod, init)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
@@ -105,11 +109,11 @@
     stream.write(request);
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod, additionalCallback)
+@private optionalArrayMethodSampleCode(apiMethod, init, additionalCallback)
     @switch apiMethod.grpcStreamingType.toString
     @case "ServerStreaming"
-      {@initCode(apiMethod)}
-      {@methodCallSampleCode(apiMethod)}.on('data', response => {
+      {@initCode(apiMethod, init)}
+      {@methodCallSampleCode(apiMethod, init)}.on('data', response => {
         @if additionalCallback
           console.log(response);
           {@additionalCallback}();
@@ -118,43 +122,43 @@
         @end
       });
     @case "ClientStreaming"
-      {@clientStreamingSampleCode(apiMethod, additionalCallback)}
+      {@clientStreamingSampleCode(apiMethod, init, additionalCallback)}
     @case "BidiStreaming"
-      {@bidiStreamingSampleCode(apiMethod, additionalCallback)}
+      {@bidiStreamingSampleCode(apiMethod, init, additionalCallback)}
     @case "NonStreaming"
       @if apiMethod.hasReturnValue
-        {@methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)}
+        {@methodCallSampleCodeWithReturnValue(apiMethod, init, additionalCallback)}
       @else
-        {@methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)}
+        {@methodCallSampleCodeWithoutReturnValue(apiMethod, init, additionalCallback)}
       @end
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)}
+@private pagedOptionalArrayMethodSampleCode(apiMethod, init, additionalCallback)
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, init, additionalCallback)}
 
-    {@methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, init, additionalCallback)}
 @end
 
-@private methodCallSampleCode(apiMethod)
+@private methodCallSampleCode(apiMethod, init)
     client.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(apiMethod)})
+        {@sampleMethodCallArgList(apiMethod, init)})
 @end
 
-@private sampleMethodCallArgListAndComma(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        {@sampleMethodCallArgList(apiMethod)}, {@""}
+@private sampleMethodCallArgListAndComma(apiMethod, init)
+    @if sampleMethodCallArgList(apiMethod, init)
+        {@sampleMethodCallArgList(apiMethod, init)}, {@""}
     @else
     @end
 @end
 
-@snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
+@snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, init, additionalCallback)
   // Iterate over all elements.
-  @if initCode(apiMethod)
-    {@initCode(apiMethod)}
+  @if initCode(apiMethod, init)
+    {@initCode(apiMethod, init)}
 
   @end
-  {@methodCallSampleCodePrefix(apiMethod)}
+  {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
       var resources = responses[0];
       for (let i = 0; i < resources.length; i += 1) {
@@ -168,11 +172,11 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
+@snippet methodCallSampleCodeForPagedResponse(apiMethod, init, additionalCallback)
     // Or obtain the paged response.
     # TODO(landrito) figure out how to remove this repetition for method samples.
-    @if initCode(apiMethod)
-      {@initCode(apiMethod)}
+    @if initCode(apiMethod, init)
+      {@initCode(apiMethod, init)}
 
     @end
 
@@ -196,23 +200,23 @@
         return client.{@apiMethod.name}(nextRequest, options).then(callback);
       }
     }
-    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod, init)}options)
       .then(callback)
       {@promiseCallbacks(additionalCallback)}
 @end
 
-@private methodCallSampleCodePrefix(apiMethod)
-  @if sampleMethodCallArgList(apiMethod)
+@private methodCallSampleCodePrefix(apiMethod, init)
+  @if sampleMethodCallArgList(apiMethod, init)
     client.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod)})
+      {@sampleMethodCallArgList(apiMethod, init)})
   @else
     client.{@apiMethod.name}()
   @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
-  {@initCode(apiMethod)}
-  {@methodCallSampleCodePrefix(apiMethod)}
+@private methodCallSampleCodeWithReturnValue(apiMethod, init, additionalCallback)
+  {@initCode(apiMethod, init)}
+  {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
       var response = responses[0];
       @if additionalCallback
@@ -224,18 +228,18 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@private lroSampleCode(apiMethod, additionalCallback)
+@private lroSampleCode(apiMethod, init, additionalCallback)
   # TODO(landrito) figure out how to remove initcode repetition for method samples.
-  {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
+  {@methodCallSampleCodeLongrunningPromise(apiMethod, init, additionalCallback)}
 
-  {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
+  {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, init, additionalCallback)}
 @end
 
-@snippet methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
-  {@initCode(apiMethod)}
+@snippet methodCallSampleCodeLongrunningPromise(apiMethod, init, additionalCallback)
+  {@initCode(apiMethod, init)}
 
   // Handle the operation using the promise pattern.
-  {@methodCallSampleCodePrefix(apiMethod)}
+  {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
       var operation = responses[0];
       var initialApiResponse = responses[1];
@@ -266,11 +270,11 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)
-  {@initCode(apiMethod)}
+@snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, init, additionalCallback)
+  {@initCode(apiMethod, init)}
 
   // Handle the operation using the event emitter pattern.
-  {@methodCallSampleCodePrefix(apiMethod)}
+  {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
       var operation = responses[0];
       var initialApiResponse = responses[1];
@@ -303,24 +307,24 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@private methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)
-    {@initCode(apiMethod)}
+@private methodCallSampleCodeWithoutReturnValue(apiMethod, init, additionalCallback)
+    {@initCode(apiMethod, init)}
     @if additionalCallback
-      {@methodCallSampleCodePrefix(apiMethod)}
+      {@methodCallSampleCodePrefix(apiMethod, init)}
         .then(console.log)
         .then({@additionalCallback})
         .catch({@additionalCallback});
     @else
-      {@methodCallSampleCodePrefix(apiMethod)}.catch(err => {
+      {@methodCallSampleCodePrefix(apiMethod, init)}.catch(err => {
         console.error(err);
       });
     @end
 @end
 
-@private initCode(apiMethod)
-  {@initCodeLines(apiMethod.initCode)}
-  @if initializeRequestObject(apiMethod)
-    {@initializeRequestObject(apiMethod)}
+@private initCode(apiMethod, init)
+  {@initCodeLines(init)}
+  @if initializeRequestObject(apiMethod, init)
+    {@initializeRequestObject(apiMethod, init)}
   @end
 @end
 
@@ -384,12 +388,12 @@
   @end
 @end
 
-@private sampleMethodCallArgList(apiMethod)
-  @switch apiMethod.initCode.fieldSettings.size.toString
+@private sampleMethodCallArgList(apiMethod, init)
+  @switch init.fieldSettings.size.toString
   @case "0"
     {}
   @case "1"
-    @let field = apiMethod.initCode.fieldSettings.get(0)
+    @let field = init.fieldSettings.get(0)
       {{@field.fieldName}: {@field.identifier}}
     @end
   @default
@@ -397,13 +401,13 @@
   @end
 @end
 
-@private initializeRequestObject(apiMethod)
-    @switch apiMethod.initCode.fieldSettings.size.toString
+@private initializeRequestObject(apiMethod, init)
+    @switch init.fieldSettings.size.toString
     @case "0"
     @case "1"
     @default
       var request = {
-        @join fieldSetting : apiMethod.initCode.fieldSettings on BREAK
+        @join fieldSetting : init.fieldSettings on BREAK
           {@fieldSetting.fieldName}: {@fieldSetting.identifier},
         @end
       };
