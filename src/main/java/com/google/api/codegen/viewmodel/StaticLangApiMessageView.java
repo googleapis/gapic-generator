@@ -80,6 +80,7 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @Nullable
   public abstract RequestObjectParamView pathAsResourceName();
 
+  // If this field should be part of the parent message's serialization.
   public abstract boolean isSerializable();
 
   public boolean hasResourceName() {
