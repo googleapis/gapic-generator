@@ -138,7 +138,7 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the HTTP method. */
   public abstract String httpMethod();
 
-  /** @return the ID. */
+  /** @return the ID. This should be unique, within the context of the parent Document. */
   @Override
   public abstract String id();
 
@@ -180,6 +180,16 @@ public abstract class Method implements Comparable<Method>, Node {
    */
   public boolean isPluralMethod() {
     return parameters().containsKey("maxResults");
+  }
+
+  @Override
+  public int hashCode() {
+    return id().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o2) {
+    return (o2 instanceof Method && (id().equals(((Method) o2).id())));
   }
 
   public Document getDocument() {
