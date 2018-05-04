@@ -295,10 +295,4 @@ public final class DiscoveryMethodModel implements MethodModel {
   public TypeModel getOutputType() {
     return outputType;
   }
-
-  @Override
-  public boolean generateFieldMask() {
-    String httpMethod = method.httpMethod().toUpperCase().trim();
-    return httpMethod.equals("PATCH") || httpMethod.equals("PUT");
-  }
 }

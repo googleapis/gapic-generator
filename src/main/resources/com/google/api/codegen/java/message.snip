@@ -68,13 +68,12 @@
 
 @private members(schema)
   @join property : schema.properties
-    private final {@property.typeName} {@property.name};
+    @if schema.isSerializable
+      private final {@property.typeName} {@property.name};
+    @else
+      private final transient {@property.typeName} {@property.name};
+    @end
   @end
-
-  @if schema.hasFieldMask
-    private final transient List<String> fieldMask;
-  @else
-
   {@""}
 @end
 
@@ -141,10 +140,12 @@
 
 @private getters(schema)
   @join param : schema.properties
-    public {@param.typeName} {@param.fieldGetFunction}() {
-      return {@param.name};
-    }
+    @if param.isSerializable
+      public {@param.typeName} {@param.fieldGetFunction}() {
+        return {@param.name};
+      }
 
+    @end
   @end
 @end
 

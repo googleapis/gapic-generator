@@ -101,7 +101,4 @@ public interface MethodModel {
   boolean isIdempotent();
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
-
-  /** If this method should generate a resource message fieldmask in the request message. */
-  boolean generateFieldMask();
 }

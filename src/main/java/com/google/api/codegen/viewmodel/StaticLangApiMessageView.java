@@ -80,6 +80,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @Nullable
   public abstract RequestObjectParamView pathAsResourceName();
 
+  public abstract boolean isSerializable();
+
   public boolean hasResourceName() {
     return pathAsResourceName() != null;
   }
@@ -87,7 +89,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   public static StaticLangApiMessageView.Builder newBuilder() {
     return new AutoValue_StaticLangApiMessageView.Builder()
         .hasRequiredProperties(false)
-        .hasFieldMask(false);
+        .hasFieldMask(false)
+        .isSerializable(true);
   }
 
   @AutoValue.Builder
@@ -119,6 +122,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder canRepeat(boolean val);
 
     public abstract Builder hasFieldMask(boolean val);
+
+    public abstract Builder isSerializable(boolean val);
 
     public abstract Builder requestBodyType(StaticLangApiMessageView val);
 

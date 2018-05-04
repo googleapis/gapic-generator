@@ -276,6 +276,36 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.properties(new LinkedList<>());
     properties.add(paramView.build());
 
+    String httpMethod = discoMethod.httpMethod().toUpperCase().trim();
+    if (httpMethod.equals("PATCH") || httpMethod.equals("PUT")) {
+      Name fieldMaskName = Name.anyCamel("fieldMask");
+      requestView.hasFieldMask(true);
+      StaticLangApiMessageView.Builder fieldMaskView = StaticLangApiMessageView.newBuilder();
+      fieldMaskView.isSerializable(false);
+      fieldMaskView.description("The mask to control which fields get updated.");
+      fieldMaskView.name(nameFormatter.localVarName(fieldMaskName));
+      fieldMaskView.typeName("List<String>");
+      fieldMaskView.innerTypeName("List<String>");
+      fieldMaskView.isRequired(false);
+      fieldMaskView.canRepeat(false);
+      fieldMaskView.fieldGetFunction(
+          context
+              .getNamer()
+              .getFieldGetFunctionName(
+                  fieldMaskName,
+                  SurfaceNamer.MapType.NOT_MAP,
+                  SurfaceNamer.Cardinality.NOT_REPEATED));
+      fieldMaskView.fieldSetFunction(
+          context
+              .getNamer()
+              .getFieldSetFunctionName(
+                  fieldMaskName,
+                  SurfaceNamer.MapType.NOT_MAP,
+                  SurfaceNamer.Cardinality.NOT_REPEATED));
+      fieldMaskView.properties(new LinkedList<>());
+      properties.add(fieldMaskView.build());
+    }
+
     Collections.sort(properties);
 
     requestView.canRepeat(false);
@@ -283,7 +313,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.properties(properties);
     requestView.pathAsResourceName(resourceNameView);
 
-    Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
+    Schema requestBodyDef = discoMethod.request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
       FieldModel requestBody =
           DiscoveryField.create(requestBodyDef, context.getDocContext().getApiModel());

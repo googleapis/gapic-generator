@@ -243,10 +243,4 @@ public final class ProtoMethodModel implements MethodModel {
   public TypeModel getOutputType() {
     return outputType;
   }
-
-  @Override
-  public boolean generateFieldMask() {
-    // The proto API definition handles fieldmasks.
-    return false;
-  }
 }
