@@ -140,19 +140,21 @@
             @end
             'clientConfig' => __DIR__ . '{@xapiClass.clientConfigPath}',
             'descriptorsConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_descriptor_config.php',
-            @if xapiClass.hasDefaultServiceAddress
-                'versionFile' => __DIR__ . '/../../VERSION',
-            @end
-            'authConfig' => [
+            'credentialsConfig' => [
                 @if xapiClass.hasDefaultServiceScopes
                     'scopes' => self::$serviceScopes,
                 @end
             ],
             'transportConfig' => [
-                'rest' => ['restConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',]
+                'rest' => ['restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',]
             ],
+            'versionFile' => __DIR__ . '/../../../VERSION',
         ];
     }
+
+    @if xapiClass.hasLongRunningOperations
+        private $operationsClient;
+    @end
 
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
@@ -331,18 +333,18 @@
          *           Required. The address of the API remote host. May optionally include the port,
          *           formatted as "<uri>:<port>".
      @end
-     *     @@type string|array $auth
+     *     @@type string|array $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
      *           *Advanced usage*: In addition, this option can also accept a pre-constructed
-     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
+     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\CredentialsWrapper
      *           object. Note that when one of these objects are provided, any settings in
-     *           $authConfig will be ignored.
-     *     @@type array $authConfig
-     *           Options used to configure auth, including auth token caching, for the client. For
-     *           a full list of supporting configuration options, see
-     *           \Google\ApiCore\AuthWrapper::build.
+     *           $credentialsConfig will be ignored.
+     *     @@type array $credentialsConfig
+     *           Options used to configure credentials, including auth token caching, for the client.
+     *           For a full list of supporting configuration options, see
+     *           \Google\ApiCore\CredentialsWrapper::build.
      *     @@type bool $disableRetries
      *           Determines whether or not retries defined by the client configuration should be
      *           disabled. Defaults to `false`.
@@ -375,9 +377,7 @@
         $clientOptions = $this->buildClientOptions($options);
         $this->setClientOptions($clientOptions);
         @if xapiClass.hasLongRunningOperations
-            $operationsClientOptions = $this->buildOperationsClientOptions($options);
-            $this->operationsClient = $this->pluck('operationsClient', $operationsClientOptions, false)
-                ?: new OperationsClient($operationsClientOptions);
+            $this->operationsClient = $this->createOperationsClient($clientOptions);
         @end
     }
     {@""}

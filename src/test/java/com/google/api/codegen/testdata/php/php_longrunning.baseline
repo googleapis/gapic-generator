@@ -206,11 +206,17 @@ class OperationsGapicClient
     {
         return [
             'serviceName' => self::SERVICE_NAME,
-            'clientConfigPath' => __DIR__ . '/../resources/operations_client_config.json',
-            'restClientConfigPath' => __DIR__ . '/../resources/operations_rest_client_config.php',
+            'clientConfig' => __DIR__ . '/../resources/operations_client_config.json',
             'descriptorsConfigPath' => __DIR__ . '/../resources/operations_descriptor_config.php',
+            'credentialsConfig' => [
+            ],
+            'transportConfig' => [
+                'rest' => ['restClientConfigPath' => __DIR__ . '/../resources/operations_rest_client_config.php',]
+            ],
+            'versionFile' => __DIR__ . '/../../../VERSION',
         ];
     }
+
 
 
 
@@ -225,18 +231,18 @@ class OperationsGapicClient
      *     @type string $serviceAddress
      *           Required. The address of the API remote host. May optionally include the port,
      *           formatted as "<uri>:<port>".
-     *     @type string|array $auth
+     *     @type string|array $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
      *           *Advanced usage*: In addition, this option can also accept a pre-constructed
-     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
+     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\CredentialsWrapper
      *           object. Note that when one of these objects are provided, any settings in
-     *           $authConfig will be ignored.
-     *     @type array $authConfig
-     *           Options used to configure auth, including auth token caching, for the client. For
-     *           a full list of supporting configuration options, see
-     *           \Google\ApiCore\AuthWrapper::build.
+     *           $credentialsConfig will be ignored.
+     *     @type array $credentialsConfig
+     *           Options used to configure credentials, including auth token caching, for the client.
+     *           For a full list of supporting configuration options, see
+     *           \Google\ApiCore\CredentialsWrapper::build.
      *     @type bool $disableRetries
      *           Determines whether or not retries defined by the client configuration should be
      *           disabled. Defaults to `false`.
@@ -266,7 +272,8 @@ class OperationsGapicClient
      */
     public function __construct($options = [])
     {
-        $this->setClientOptions($options + self::getClientDefaults());
+        $clientOptions = $this->buildClientOptions($options);
+        $this->setClientOptions($clientOptions);
     }
 
     /**
@@ -772,7 +779,10 @@ class OperationsClientTest extends GeneratedTest
      */
     private function createClient(array $options = [])
     {
-        return new OperationsClient($options);
+        return new OperationsClient($options + [
+            'serviceAddress' => '',
+            'scopes' => [],
+        ]);
     }
     /**
      * @test
@@ -821,12 +831,12 @@ class OperationsClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -904,12 +914,12 @@ class OperationsClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -975,12 +985,12 @@ class OperationsClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -1045,12 +1055,12 @@ class OperationsClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
