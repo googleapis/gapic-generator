@@ -37,6 +37,7 @@ import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
@@ -92,10 +93,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperModuleVersion() {
     List<String> names = Splitter.on(".").splitToList(packageName);
-    if (names.size() < 2) {
-      return null;
+    for (String n : names) {
+      if (VersionMatcher.isVersion(n)) {
+        return n;
+      }
     }
-    return names.get(names.size() - 1);
+    return null;
   }
 
   @Override
@@ -108,6 +111,21 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getApiWrapperClassConstructorName(InterfaceConfig interfaceConfig) {
     return publicFieldName(
         Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiSampleClassName(String methodName, String callingForm, String values) {
+    return publicClassName(
+        Name.anyLower(
+            Name.anyLower(methodName).toLowerUnderscore(),
+            "sample",
+            Name.anyCamel(callingForm).toLowerUnderscore(),
+            Name.anyLower(values).toLowerUnderscore()));
+  }
+
+  @Override
+  public String getApiSampleFileName(String className) {
+    return Name.anyCamel(className).toLowerUnderscore() + ".js";
   }
 
   @Override

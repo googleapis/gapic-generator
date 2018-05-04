@@ -15,13 +15,13 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /** A RubyPackageMetadataNamer provides ruby specific names for metadata views. */
 public class RubyPackageMetadataNamer extends PackageMetadataNamer {
@@ -35,15 +35,20 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
 
   @Override
   public String getMetadataIdentifier() {
-    List<String> names = Splitter.on("::").splitToList(packageName);
-    if (names.size() > 1) {
+    // strip out the string before the first v0 part of the path
+    Matcher m = RubyUtil.getVersionMatcher(packageName);
+    List<String> names = Splitter.on("::").splitToList(m.matches() ? m.group(1) : packageName);
+
+    // drop last if not a versioned id
+    if (!m.matches() && names.size() > 0) {
       names = names.subList(0, names.size() - 1);
     }
-    ImmutableList.Builder<String> lowerNames = ImmutableList.builder();
-    for (String name : names) {
-      lowerNames.add(Name.upperCamel(name).toLowerUnderscore());
-    }
-    return Joiner.on(METADATA_IDENTIFIER_SEPARATOR).join(lowerNames.build());
+
+    // convert case and replace :: with -
+    return names
+        .stream()
+        .map(x -> Name.upperCamel(x).toLowerUnderscore())
+        .reduce("", (x, y) -> x.length() > 0 ? x + METADATA_IDENTIFIER_SEPARATOR + y : y);
   }
 
   @Override

@@ -359,6 +359,21 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAndSaveResourceTypeName(ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    String commonResourceName = fieldConfig.getResourceNameConfig().getCommonResourceName();
+
+    String resourceClassName;
+    if (commonResourceName == null) {
+      resourceClassName =
+          publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    } else {
+      // Common resource name is fully-qualified.
+      resourceClassName = commonResourceName.substring(commonResourceName.lastIndexOf(".") + 1);
+    }
+    return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
+  }
+
+  @Override
   public String getPackagePath() {
     List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
     int endIndex = packagePath.size();

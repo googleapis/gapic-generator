@@ -18,7 +18,6 @@ import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.
 
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoveryField;
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
@@ -96,8 +95,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             surfaceNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
-    // Escape any schema's field names that are Java keywords.
-
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaTransformationContext.comparator);
@@ -147,7 +144,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
 
-    FieldModel schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
+    DiscoveryField schemaModel = DiscoveryField.create(schema, documentContext.getApiModel());
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaTransformationContext context =
@@ -157,8 +154,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
     boolean hasRequiredProperties = false;
 
-    // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
-    // the same symbols.
     SymbolTable symbolTableCopy = SymbolTable.fromSeed(reservedKeywords);
 
     String schemaId = Name.anyCamel(schema.getIdentifier()).toLowerCamel();
@@ -172,11 +167,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
     schemaView.fieldAddFunction(context.getNamer().getFieldAddFunctionName(schemaModel));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schemaModel);
 
     schemaView.typeName(schemaTypeName);
     if (schema.repeated() || schema.type() == Type.ARRAY) {
-      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
+      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schemaModel));
     } else {
       schemaView.innerTypeName(schemaTypeName);
     }
@@ -190,9 +185,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     }
     for (Schema property : schemaProperties) {
       viewProperties.add(generateSchemaClasses(messageViewAccumulator, documentContext, property));
-      if (!property.properties().isEmpty() || (property.items() != null)) {
+      if (DiscoveryField.isTopLevelSchema(property)) {
         // Add non-primitive-type property to imports.
-        schemaTypeTable.getAndSaveNicknameFor(property);
+        schemaTypeTable.getAndSaveNicknameFor(
+            DiscoveryField.create(property, schemaModel.getDiscoApiModel()));
       }
       if (property.required()) {
         hasRequiredProperties = true;
@@ -206,13 +202,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);
 
-    if (!schema.properties().isEmpty()
-        || (schema.items() != null && !schema.items().properties().isEmpty())) {
-      // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+    StaticLangApiMessageView messageView = schemaView.build();
 
-      messageViewAccumulator.put(context, schemaView.build());
+    if (DiscoveryField.isTopLevelSchema(schema)) {
+      // Add message type schema to list of file ViewModels for rendering.
+      messageViewAccumulator.put(context, messageView);
     }
-    return schemaView.build();
+    return messageView;
   }
 
   private void addApiImports(ImportTypeTable typeTable) {

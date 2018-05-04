@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
@@ -46,17 +47,28 @@ public class DiscoGapicParser {
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the
    * request object, then returns "resource" appended to the schema's id().
    */
-  public static Name getSchemaNameAsParameter(Schema schema) {
-    Schema deref = schema.dereference();
+  public static Name getFieldNameAsParameter(DiscoveryField field) {
+    Schema deref = field.getDiscoveryField().dereference();
     if (Strings.isNullOrEmpty(deref.location())
         && deref.type().equals(Schema.Type.OBJECT)
-        && schema.parent() instanceof Method) {
+        && field.getOriginalDiscoveryField().parent() instanceof Method) {
       // This is the resource object for an API request message type.
       Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
       return param.join("resource");
     } else {
-      return DiscoGapicParser.stringToName(schema.getIdentifier());
+      return DiscoGapicParser.stringToName(field.getOriginalDiscoveryField().getIdentifier());
     }
+  }
+
+  /**
+   * Returns the name of a method's request object as a parameter. For non-null The name is the
+   * string "resource" appended to the schema's id().
+   */
+  public static Name getMethodInputName(Method method) {
+    Schema deref = method.request().dereference();
+    // This is the resource object for an API request message type.
+    Name param = DiscoGapicParser.stringToName(deref.getIdentifier());
+    return param.join("resource");
   }
 
   /** Get the request type name from a method. */

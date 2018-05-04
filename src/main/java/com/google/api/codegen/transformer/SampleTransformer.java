@@ -22,7 +22,7 @@ import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodView;
-import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
@@ -87,7 +87,7 @@ class SampleTransformer {
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator generator,
-      List<ClientMethodType> callingForms) {
+      List<CallingForm> callingForms) {
 
     List<MethodSampleView> methodSampleViews =
         generateSamples(context, fieldConfigs, initCodeOutputType, generator, callingForms);
@@ -126,11 +126,11 @@ class SampleTransformer {
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator sampleGenerator,
-      List<ClientMethodType> callingForms) {
+      List<CallingForm> callingForms) {
 
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
 
-    for (ClientMethodType form : callingForms) {
+    for (CallingForm form : callingForms) {
       MethodConfig methodConfig = context.getMethodConfig();
 
       Set<SampleValueSet> matchingValueSets;
@@ -164,7 +164,7 @@ class SampleTransformer {
                     context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
         methodSampleViews.add(
             MethodSampleView.newBuilder()
-                .callingFormId(form.toString())
+                .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
                 .build());

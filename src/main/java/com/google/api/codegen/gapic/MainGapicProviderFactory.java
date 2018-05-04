@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSamplesTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
+import com.google.api.codegen.transformer.nodejs.NodeJSGapicSamplesTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
@@ -269,6 +270,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModelToViewTransformer(
                     new NodeJSGapicSurfaceTransformer(nodeJSPathMapper, packageConfig))
                 .build();
+
         GapicProvider metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
@@ -291,6 +293,18 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
         providers.add(metadataProvider);
         providers.add(clientConfigProvider);
 
+        if (id.equals(NODEJS)) {
+          GapicProvider sampleProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new NodeJSGapicSamplesTransformer(nodeJSPathMapper, packageConfig))
+                  .build();
+          providers.add(sampleProvider);
+        }
+
         if (id.equals(NODEJS_DOC)) {
           GapicProvider messageProvider =
               ViewModelGapicProvider.newBuilder()
@@ -302,6 +316,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
           providers.add(messageProvider);
         }
       }
+
       if (generatorConfig.enableTestGenerator()) {
         GapicProvider testProvider =
             ViewModelGapicProvider.newBuilder()
@@ -379,7 +394,8 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
-                .setModelToViewTransformer(new PythonGapicSamplesTransformer(pythonPathMapper))
+                .setModelToViewTransformer(
+                    new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
                 .build();
         GapicProvider clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()

@@ -2668,7 +2668,7 @@ public final class Data implements ApiMessage {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObject.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/DUMMYObject.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -2702,14 +2702,178 @@ import javax.annotation.Nullable;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class DummyObject implements ApiMessage {
+public final class DUMMYObject implements ApiMessage {
+  private final String name;
+
+  private DUMMYObject() {
+    this.name = null;
+  }
+
+
+  private DUMMYObject(
+      String name
+      ) {
+    this.name = name;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("name") && name != null) {
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
+    }
+    return fieldMap;
+  }
+
+  @Override
+  public String getFieldStringValue(String fieldName) {
+    if (fieldName.equals("name")) {
+      return String.valueOf(name);
+    }
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(DUMMYObject prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static DUMMYObject getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+  private static final DUMMYObject DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new DUMMYObject();
+  }
+
+  public static class Builder {
+    private String name;
+
+    Builder() {}
+
+    public Builder mergeFrom(DUMMYObject other) {
+      if (other == DUMMYObject.getDefaultInstance()) return this;
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      return this;
+    }
+
+    Builder(DUMMYObject source) {
+      this.name = source.name;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+
+    public DUMMYObject build() {
+      return new DUMMYObject(
+        name
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setName(this.name);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "DUMMYObject{"
+        + "name=" + name
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof DUMMYObject) {
+      DUMMYObject that = (DUMMYObject) o;
+      return
+          Objects.equals(this.name, that.getName())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      name
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObject2.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.ApiMessage;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nullable;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class DummyObject2 implements ApiMessage {
   private final Float floatie;
   private final String name;
   private final Double precisionFloatie;
   private final Address primaryAddress;
   private final Address secondaryAddress;
 
-  private DummyObject() {
+  private DummyObject2() {
     this.floatie = null;
     this.name = null;
     this.precisionFloatie = null;
@@ -2718,7 +2882,7 @@ public final class DummyObject implements ApiMessage {
   }
 
 
-  private DummyObject(
+  private DummyObject2(
       Float floatie,
       String name,
       Double precisionFloatie,
@@ -2803,7 +2967,7 @@ public final class DummyObject implements ApiMessage {
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(DummyObject prototype) {
+  public static Builder newBuilder(DummyObject2 prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() {
@@ -2811,12 +2975,12 @@ public final class DummyObject implements ApiMessage {
         ? new Builder() : new Builder().mergeFrom(this);
   }
 
-  public static DummyObject getDefaultInstance() {
+  public static DummyObject2 getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
-  private static final DummyObject DEFAULT_INSTANCE;
+  private static final DummyObject2 DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new DummyObject();
+    DEFAULT_INSTANCE = new DummyObject2();
   }
 
   public static class Builder {
@@ -2828,8 +2992,8 @@ public final class DummyObject implements ApiMessage {
 
     Builder() {}
 
-    public Builder mergeFrom(DummyObject other) {
-      if (other == DummyObject.getDefaultInstance()) return this;
+    public Builder mergeFrom(DummyObject2 other) {
+      if (other == DummyObject2.getDefaultInstance()) return this;
       if (other.getFloatie() != null) {
         this.floatie = other.floatie;
       }
@@ -2848,7 +3012,7 @@ public final class DummyObject implements ApiMessage {
       return this;
     }
 
-    Builder(DummyObject source) {
+    Builder(DummyObject2 source) {
       this.floatie = source.floatie;
       this.name = source.name;
       this.precisionFloatie = source.precisionFloatie;
@@ -2902,12 +3066,12 @@ public final class DummyObject implements ApiMessage {
     }
 
 
-    public DummyObject build() {
+    public DummyObject2 build() {
 
 
 
 
-      return new DummyObject(
+      return new DummyObject2(
         floatie,
         name,
         precisionFloatie,
@@ -2929,7 +3093,7 @@ public final class DummyObject implements ApiMessage {
 
   @Override
   public String toString() {
-    return "DummyObject{"
+    return "DummyObject2{"
         + "floatie=" + floatie + ", "
         + "name=" + name + ", "
         + "precisionFloatie=" + precisionFloatie + ", "
@@ -2943,8 +3107,8 @@ public final class DummyObject implements ApiMessage {
     if (o == this) {
       return true;
     }
-    if (o instanceof DummyObject) {
-      DummyObject that = (DummyObject) o;
+    if (o instanceof DummyObject2) {
+      DummyObject2 that = (DummyObject2) o;
       return
           Objects.equals(this.floatie, that.getFloatie()) &&
           Objects.equals(this.name, that.getName()) &&
@@ -9812,7 +9976,7 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class AddressClient implements BackgroundResource {
   private final AddressSettings settings;
@@ -10979,7 +11143,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class AddressSettings extends ClientSettings<AddressSettings> {
   /**
@@ -11303,7 +11467,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   /**
@@ -11835,7 +11999,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class AddressStub implements BackgroundResource {
 
@@ -11954,7 +12118,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonAddressStub extends AddressStub {
   @InternalApi
@@ -12331,7 +12495,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFactory {
   @Override
@@ -12471,7 +12635,7 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class DummyObjectClient implements BackgroundResource {
   private final DummyObjectSettings settings;
@@ -13056,7 +13220,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
   /**
@@ -13316,7 +13480,7 @@ import org.threeten.bp.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi
 public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSettings> {
   /**
@@ -13686,7 +13850,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class DummyObjectStub implements BackgroundResource {
 
@@ -13771,7 +13935,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public class HttpJsonDummyObjectStub extends DummyObjectStub {
   @InternalApi
@@ -14002,7 +14166,7 @@ import javax.annotation.Generated;
  *
  * <p>This class is for advanced usage.
  */
-@Generated("by GAPIC v0.0.5")
+@Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
 public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableFactory {
   @Override
@@ -14097,7 +14261,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-simplecompute-v1'
-group = 'com.google.api'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -14105,6 +14270,9 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 
 dependencies {
   compile 'com.google.api:gax:1.0.0'
@@ -14133,8 +14301,16 @@ sourceSets {
   }
 }
 
-compileJava.options.encoding = 'UTF-8'
-javadoc.options.encoding = 'UTF-8'
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
 /*
  * Copyright 2018 Google LLC

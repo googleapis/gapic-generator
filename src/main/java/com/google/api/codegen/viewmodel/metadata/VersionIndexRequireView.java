@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -37,6 +38,13 @@ public abstract class VersionIndexRequireView {
   @Nullable
   public abstract String topLevelNamespace();
 
+  @Nullable
+  public abstract String postVersionNamespace();
+
+  public boolean hasPostVersionNamespace() {
+    return !Strings.isNullOrEmpty(postVersionNamespace());
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_VersionIndexRequireView.Builder();
   }
@@ -54,6 +62,8 @@ public abstract class VersionIndexRequireView {
     public abstract Builder fileName(String val);
 
     public abstract Builder topLevelNamespace(String val);
+
+    public abstract Builder postVersionNamespace(String val);
 
     public abstract VersionIndexRequireView build();
   }
