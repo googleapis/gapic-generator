@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -366,5 +367,63 @@ public abstract class Schema implements Node {
   @Override
   public String toString() {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
+  }
+
+  /**
+   * @return hashCode that should be unique for each underlying Node in the Document. This function
+   *     includes the location of the node in its calculation, so two different nodes with the same
+   *     content but different parents will still have different hashCodes.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+        defaultValue(),
+        description(),
+        format(),
+        id(),
+        isEnum(),
+        items() == null ? null : items().getIdentifier(),
+        key(),
+        location(),
+        pattern(),
+        parent != null ? parent.id() : "",
+        properties().keySet(),
+        reference(),
+        repeated(),
+        required(),
+        type());
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof Schema)) {
+      return false;
+    }
+    Schema schema2 = (Schema) other;
+
+    return Objects.equals(
+            additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+            schema2.additionalProperties() == null
+                ? null
+                : schema2.additionalProperties().getIdentifier())
+        && Objects.equals(defaultValue(), schema2.defaultValue())
+        && Objects.equals(description(), schema2.description())
+        && Objects.equals(format(), schema2.format())
+        && Objects.equals(id(), schema2.id())
+        && Objects.equals(isEnum(), schema2.isEnum())
+        && Objects.equals(
+            items() == null ? null : items().getIdentifier(),
+            schema2.items() == null ? null : schema2.items().getIdentifier())
+        && Objects.equals(key(), schema2.key())
+        && Objects.equals(location(), schema2.location())
+        && Objects.equals(pattern(), schema2.pattern())
+        && Objects.equals(
+            parent != null ? parent.id() : "", schema2.parent != null ? schema2.parent.id() : "")
+        && Objects.equals(properties().keySet(), schema2.properties().keySet())
+        && Objects.equals(reference(), schema2.reference())
+        && Objects.equals(repeated(), schema2.repeated())
+        && Objects.equals(required(), schema2.required())
+        && Objects.equals(type(), schema2.type());
   }
 }

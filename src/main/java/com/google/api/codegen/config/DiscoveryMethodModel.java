@@ -77,9 +77,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       return DiscoveryField.create(targetSchema, apiModel);
     }
     if (method.request() != null
-        && DiscoGapicParser.getSchemaNameAsParameter(method.request())
-            .toLowerCamel()
-            .equals(fieldName)) {
+        && DiscoGapicParser.getMethodInputName(method).toLowerCamel().equals(fieldName)) {
       return DiscoveryField.create(method.request(), apiModel);
     }
     return null;

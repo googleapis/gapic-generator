@@ -4,16 +4,36 @@
 @snippet generate(sampleFile)
   @#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
   @#### STUB standalone sample "{@sampleFile.className}" #####
+
+  @# FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+  @# To run with the published packaged, execute the following before running this code:
+  @#   pip install {@sampleFile.gapicPackageName}
+   
+  @# [START full_sample]
+
+  @# FIXME: Insert here boilerplate code not directly related to the method call itself.
+   
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
       @##     calling form "{@sample.callingForm.toString}"
       @##     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
       @##       {@sample.valueSet.parameters}
       @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-      @## TODO: Replace with a full sample
-      sample = """
-           {@sampleCode(apiMethod, sample.initCode)}
-      """
-     @end
+      
+      @# [START core_sample]
+
+      @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
+       
+      {@sampleCode(apiMethod, sample.initCode)}
+      # TODO(pongad): Make this work on non-unary too.
+      print(response)
+      
+      @# [END core_sample]
+
+      @# FIXME: Insert here clean-up code.
+      
+    @end
   @end
+  @# [END full_sample]
 @end
