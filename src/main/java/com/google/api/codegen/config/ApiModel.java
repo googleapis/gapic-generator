@@ -40,9 +40,9 @@ public interface ApiModel {
   /** Return a list of scopes for authentication. */
   List<String> getAuthScopes();
 
-  Iterable<? extends InterfaceModel> getInterfaces();
+  List<? extends InterfaceModel> getInterfaces();
 
-  Iterable<? extends TypeModel> getAdditionalTypes();
+  List<? extends TypeModel> getAdditionalTypes();
 
   boolean hasMultipleServices();
 

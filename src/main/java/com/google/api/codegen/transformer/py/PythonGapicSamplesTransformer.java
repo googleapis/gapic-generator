@@ -14,12 +14,14 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -41,7 +43,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,9 +64,12 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
   private final PythonMethodViewGenerator methodGenerator =
       new PythonMethodViewGenerator(apiMethodTransformer);
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageConfig;
 
-  public PythonGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
+  public PythonGapicSamplesTransformer(
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = pathMapper;
+    this.packageConfig = packageConfig;
   }
 
   @Override
@@ -147,14 +152,17 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
       for (MethodSampleView methodSample : method.samples()) {
         String className =
             namer.getApiSampleClassName(
-                method.name(), methodSample.callingFormId(), methodSample.valueSet().id());
+                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id());
         String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .outputPath(sampleOutputPath)
                 .className(className)
-                .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
+                .libraryMethod(
+                    method.toBuilder().samples(Collections.singletonList(methodSample)).build())
+                .gapicPackageName(
+                    namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)))
                 .build());
       }
     }

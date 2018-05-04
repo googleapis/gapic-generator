@@ -35,6 +35,8 @@ public abstract class DynamicLangSampleView implements ViewModel {
   /** The client library method illustrated in this sample. */
   public abstract OptionalArrayMethodView libraryMethod();
 
+  public abstract String gapicPackageName();
+
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangSampleView.Builder();
   }
@@ -51,6 +53,8 @@ public abstract class DynamicLangSampleView implements ViewModel {
     public abstract Builder className(String val);
 
     public abstract Builder libraryMethod(OptionalArrayMethodView val);
+
+    public abstract Builder gapicPackageName(String val);
 
     public abstract DynamicLangSampleView build();
   }

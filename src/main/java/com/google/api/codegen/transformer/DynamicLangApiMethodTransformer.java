@@ -23,6 +23,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
@@ -112,7 +113,7 @@ public class DynamicLangApiMethodTransformer {
         initCodeContext ->
             initCodeTransformer.generateInitCode(
                 context.cloneWithEmptyTypeTable(), initCodeContext),
-        Arrays.asList(ClientMethodType.OptionalArrayMethod));
+        Arrays.asList(CallingForm.Generic));
 
     apiMethod.doc(generateMethodDoc(context));
 

@@ -307,11 +307,6 @@ public abstract class PackageMetadataConfig {
           createProtoPackageDependencies(configMap, "proto_test_deps"));
     }
 
-    if (configMap.containsKey("generated_ga_package_version")) {
-      builder.generatedGAPackageVersionBound(
-          createVersionMap(
-              (Map<String, Map<String, String>>) configMap.get("generated_ga_package_version")));
-    }
     return builder.build();
   }
 

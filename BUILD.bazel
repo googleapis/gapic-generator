@@ -1,0 +1,57 @@
+java_plugin(
+    name = "auto_value_plugin",
+    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
+    deps = ["@com_google_auto_value_auto_value//jar"],
+)
+
+java_library(
+    name = "auto_value",
+    exported_plugins = [":auto_value_plugin"],
+    exports = ["@com_google_auto_value_auto_value//jar"],
+)
+
+proto_library(
+    name = "config_proto",
+    srcs = ["src/main/proto/com/google/api/codegen/config.proto"],
+)
+
+java_proto_library(
+    name = "config_java_proto",
+    deps = [":config_proto"],
+)
+
+java_binary(
+    name = "gapic_generator",
+    srcs = glob(["src/main/java/**/*.java"]),
+    resources = glob(["src/main/resources/**/*"]),
+    main_class = "com.google.api.codegen.CodeGeneratorTool",
+    create_executable = True,
+    deps = [
+        ":config_java_proto",
+        ":auto_value",
+        "@cglib_cglib//jar",
+        "@com_atlassian_commonmark_commonmark//jar",
+        "@com_fasterxml_jackson_core_jackson_annotations//jar",
+        "@com_fasterxml_jackson_core_jackson_core//jar",
+        "@com_fasterxml_jackson_core_jackson_databind//jar",
+        "@com_google_api_api_common//jar",
+        "@com_google_api_api_compiler//jar",
+        "@com_google_api_gax//jar",
+        "@com_google_api_grpc_proto_google_common_protos//jar",
+        "@com_google_auto_value_auto_value//jar",
+        "@com_google_auto_value_auto_value_annotations//jar",
+        "@com_google_code_findbugs_jsr305//jar",
+        "@com_google_code_gson_gson//jar",
+        "@com_google_guava_guava//jar",
+        "@com_google_inject_guice//jar",
+        "@com_google_protobuf//:protobuf_java",
+        "@commons_cli_commons_cli//jar",
+        "@io_grpc_grpc_core//jar",
+        "@javax_inject_javax_inject//jar",
+        "@org_apache_commons_commons_lang3//jar",
+        "@org_ow2_asm_asm//jar",
+        "@org_threeten_threetenbp//jar",
+        "@org_yaml_snakeyaml//jar",
+    ],
+    visibility = ["//visibility:public"],
+)

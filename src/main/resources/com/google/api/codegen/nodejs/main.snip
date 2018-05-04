@@ -78,7 +78,7 @@
 
       // Determine the client header string.
       var clientHeader = [
-        `gl-node/${process.version.node}`,
+        `gl-node/${process.version}`,
         `grpc/${gaxGrpc.grpcVersion}`,
         `gax/${gax.version}`,
         `gapic/${VERSION}`,
@@ -400,7 +400,7 @@
 @end
 
 @private decorateSampleCodeSegment(method)
-  @let coreSampleCode = sampleCode(method), \
+  @let coreSampleCode = sampleCode\(method, method.initCode), \
       finalSampleCode = decorateSampleCode(method, coreSampleCode)
     @if finalSampleCode
       {@finalSampleCode}
@@ -494,7 +494,7 @@
    *
    * @@example
    *
-   {@comments(util.getDocLines(decorateSampleCode(method, sampleCodePageStreaming(method))))}
+   {@comments(util.getDocLines(decorateSampleCode(method, sampleCodePageStreaming(method, method.initCode))))}
    */
   {@method.name}Stream({@methodRequestParameters(method)}options) {
     options = options || {};
