@@ -78,7 +78,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<Doc> {
 
     // Run the generator for each service.
     Map<String, GeneratedResult<Doc>> generated = new TreeMap<>();
-    for (ElementT element : view.getElementIterable(model)) {
+    for (ElementT element : view.getElements(model)) {
 
       String subPath;
       // Note on usage of instanceof: there is one case (as of this writing)

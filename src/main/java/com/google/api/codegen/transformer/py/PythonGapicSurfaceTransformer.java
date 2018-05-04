@@ -60,7 +60,6 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
@@ -343,19 +342,18 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<VersionIndexRequireView> versionedInitRequireViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
-    ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : apiInterfaces) {
-      views.add(
-          VersionIndexRequireView.newBuilder()
-              .clientName(
-                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
-              .localName(
-                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
-              .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
-              .build());
-    }
-    return views.build();
+    return new InterfaceView()
+        .getElements(model)
+        .stream()
+        .map(intf -> productConfig.getInterfaceConfig(intf))
+        .map(
+            conf ->
+                VersionIndexRequireView.newBuilder()
+                    .clientName(namer.getApiWrapperClassName(conf))
+                    .localName(namer.getApiWrapperVariableName(conf))
+                    .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
+                    .build())
+        .collect(ImmutableList.toImmutableList());
   }
 
   private ModelTypeTable emptyTypeTable(GapicProductConfig productConfig) {
@@ -413,18 +411,17 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<VersionIndexRequireView> topLevelRequireViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
-    ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : apiInterfaces) {
-      views.add(
-          VersionIndexRequireView.newBuilder()
-              .clientName(
-                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
-              .localName(
-                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
-              .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
-              .build());
-    }
-    return views.build();
+    return new InterfaceView()
+        .getElements(model)
+        .stream()
+        .map(intf -> productConfig.getInterfaceConfig(intf))
+        .map(
+            conf ->
+                VersionIndexRequireView.newBuilder()
+                    .clientName(namer.getApiWrapperClassName(conf))
+                    .localName(namer.getApiWrapperVariableName(conf))
+                    .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
+                    .build())
+        .collect(ImmutableList.toImmutableList());
   }
 }
