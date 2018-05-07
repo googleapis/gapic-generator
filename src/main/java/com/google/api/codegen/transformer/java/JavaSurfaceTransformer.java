@@ -193,13 +193,14 @@ public class JavaSurfaceTransformer {
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
+    xapiClass.context(context);
     ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod, productConfig));
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseLevelAnnotation(
         namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xapiClass.name(name);
+    // xapiClass.name(name);
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
