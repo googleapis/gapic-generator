@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumValueDocView;
@@ -51,8 +52,8 @@ public class GrpcElementDocTransformer {
       GrpcMessageDocView.Builder doc = GrpcMessageDocView.newBuilder();
       doc.name(namer.getMessageTypeName(typeTable, message));
       doc.fullName(typeTable.getFullNameFor(TypeRef.of(message)));
-      doc.fileUrl(namer.getFileUrl(message.getFile()));
-      doc.lines(namer.getDocLines(message));
+      doc.fileUrl(GapicParser.getFileUrl(message.getFile()));
+      doc.lines(namer.getDocLines(GapicParser.getDocString(message)));
       doc.properties(
           generateMessagePropertyDocs(
               typeTable, namer, FieldConfig.toFieldTypeIterableFromField(message.getFields())));
@@ -85,7 +86,7 @@ public class GrpcElementDocTransformer {
       }
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
       doc.name(namer.getEnumTypeName(typeTable, enumElement));
-      doc.lines(namer.getDocLines(enumElement));
+      doc.lines(namer.getDocLines(GapicParser.getDocString(enumElement)));
       doc.values(generateEnumValueDocs(namer, enumElement));
       doc.packageName(enumElement.getFile().getFullName());
       enumDocs.add(doc.build());
@@ -100,7 +101,7 @@ public class GrpcElementDocTransformer {
       GrpcEnumValueDocView.Builder doc = GrpcEnumValueDocView.newBuilder();
       doc.name(value.getSimpleName());
       doc.number(value.getNumber());
-      doc.lines(namer.getDocLines(value));
+      doc.lines(namer.getDocLines(GapicParser.getDocString(value)));
       valueDocs.add(doc.build());
     }
     return valueDocs.build();

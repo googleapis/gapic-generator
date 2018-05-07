@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -106,14 +106,12 @@ public class DiscoGapicGeneratorTool {
 
   private static void generate(
       String discoveryDoc,
-      //      String[] configs,
       String[] generatorConfigs,
       String packageConfig,
       String outputDirectory,
       String[] enabledArtifacts)
       throws Exception {
     ToolOptions options = ToolOptions.create();
-    //    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     options.set(DiscoGapicGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));

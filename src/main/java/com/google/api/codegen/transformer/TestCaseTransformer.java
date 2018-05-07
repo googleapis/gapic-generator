@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 package com.google.api.codegen.transformer;
+
+import static com.google.api.codegen.metacode.InitCodeLineType.MapInitLine;
 
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldConfig;
@@ -23,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -32,6 +35,7 @@ import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -44,16 +48,21 @@ import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
-import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
+import com.google.api.codegen.viewmodel.testing.MockRpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.api.tools.framework.model.Oneof;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** TestCaseTransformer contains helper methods useful for creating test views. */
 public class TestCaseTransformer {
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
   private final TestValueGenerator valueGenerator;
   private boolean packageHasMultipleServices;
 
@@ -71,6 +80,17 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
+    return createTestCaseView(
+        methodContext, testNameTable, initCodeContext, clientMethodType, Synchronicity.Sync, null);
+  }
+
+  public TestCaseView createTestCaseView(
+      MethodContext methodContext,
+      SymbolTable testNameTable,
+      InitCodeContext initCodeContext,
+      ClientMethodType clientMethodType,
+      Synchronicity synchronicity,
+      InitCodeContext requestObjectInitCodeContext) {
     MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -106,12 +126,19 @@ public class TestCaseTransformer {
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     } else {
-      clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
+      clientMethodName =
+          synchronicity == Synchronicity.Sync
+              ? namer.getApiMethodName(method, methodConfig.getVisibility())
+              : namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
       callerResponseTypeName = responseTypeName;
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
+    InitCodeView requestObjectInitCode =
+        requestObjectInitCodeContext != null
+            ? initCodeTransformer.generateInitCode(methodContext, requestObjectInitCodeContext)
+            : null;
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !method.isOutputTypeEmpty();
@@ -119,9 +146,12 @@ public class TestCaseTransformer {
       hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
+    // Escape variables names that may clash with hardcoded variable names in generated test surface.
+    initCodeContext.symbolTable().getNewSymbol(methodContext.getNamer().getPagedResourceName());
+
     InitCodeContext responseInitCodeContext =
         createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
-    MockGrpcResponseView mockGrpcResponseView =
+    MockRpcResponseView mockRpcResponseView =
         createMockResponseView(methodContext, responseInitCodeContext);
 
     GrpcStreamingView grpcStreamingView = null;
@@ -145,7 +175,7 @@ public class TestCaseTransformer {
                   createGrpcStreamingInitCodeViews(methodContext, initCodeContext, initCode))
               .responseInitCodeList(
                   createGrpcStreamingInitCodeViews(
-                      methodContext, responseInitCodeContext, mockGrpcResponseView.initCode()))
+                      methodContext, responseInitCodeContext, mockRpcResponseView.initCode()))
               .build();
     }
 
@@ -156,9 +186,13 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
-        .mockResponse(mockGrpcResponseView)
+        .requestObjectInitCode(requestObjectInitCode)
+        .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
-        .name(namer.getTestCaseName(testNameTable, method))
+        .name(
+            synchronicity == Synchronicity.Sync
+                ? namer.getTestCaseName(testNameTable, method)
+                : namer.getAsyncTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
@@ -178,7 +212,31 @@ public class TestCaseTransformer {
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
+        .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
+        .methodDescriptor(getMethodDescriptorName(methodContext))
+        .grpcMethodName(
+            synchronicity == Synchronicity.Sync
+                ? namer.getGrpcMethodName(method)
+                : namer.getAsyncGrpcMethodName(method))
         .build();
+  }
+
+  private String getMethodDescriptorName(MethodContext context) {
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      TypeName rpcStubClassName =
+          new TypeName(
+              context
+                  .getNamer()
+                  .getFullyQualifiedRpcStubType(
+                      context.getInterfaceConfig().getInterfaceModel(),
+                      context.getProductConfig().getTransportProtocol()));
+      return context
+          .getTypeTable()
+          .getAndSaveNicknameForInnerType(
+              rpcStubClassName.getFullName(),
+              context.getNamer().getMethodDescriptorName(context.getMethodModel()));
+    }
+    return null;
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
@@ -186,8 +244,7 @@ public class TestCaseTransformer {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
-    List<PageStreamingResponseView> pageStreamingResponseViews =
-        new ArrayList<PageStreamingResponseView>();
+    List<PageStreamingResponseView> pageStreamingResponseViews = new ArrayList<>();
 
     if (!methodConfig.isPageStreaming()) {
       return pageStreamingResponseViews;
@@ -197,13 +254,14 @@ public class TestCaseTransformer {
     FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
-    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
+
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterName(resourcesFieldGetterName)
+            .resourcesFieldGetterName(namer.getFieldGetFunctionName(resourcesField))
+            .resourcesFieldIsMap(resourcesField.isMap())
             .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
-            .resourcesVarName(namer.localVarName(Name.from("resources")))
+            .resourcesVarName(namer.getPagedResourceName())
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
@@ -213,14 +271,24 @@ public class TestCaseTransformer {
               .getAndSaveElementResourceTypeName(
                   methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
+      String resourceGetterName =
+          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesFieldConfig);
+
+      String expectedTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameConverters(resourcesFieldConfig)) {
+        expectedTransformFunction =
+            namer.getResourceTypeParseMethodName(
+                methodContext.getTypeTable(), resourcesFieldConfig);
+      }
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .resourcesFieldGetterName(resourceGetterName)
+              .resourcesFieldIsMap(resourcesField.isMap())
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
+              .expectedValueTransformFunction(expectedTransformFunction)
               .resourcesVarName(namer.localVarName(Name.from("resource_names")))
               .build());
     }
@@ -242,41 +310,54 @@ public class TestCaseTransformer {
     return requestInitCodeList;
   }
 
-  private MockGrpcResponseView createMockResponseView(
+  private MockRpcResponseView createMockResponseView(
       MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
+    methodContext =
+        methodContext
+            .getSurfaceInterfaceContext()
+            .asRequestMethodContext(methodContext.getMethodModel());
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =
         methodContext
             .getMethodModel()
             .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
-    return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
+    return MockRpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
   private InitCodeContext createResponseInitCodeContext(
       MethodContext context, SymbolTable symbolTable) {
-    ArrayList<FieldModel> primitiveFields = new ArrayList<>();
     TypeModel outputType = context.getMethodModel().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
-    }
-    for (FieldModel field : outputType.getFields()) {
-      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
-      }
     }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .initFields(primitiveFields)
+        .initFieldConfigStrings(ImmutableList.of())
+        .initValueConfigMap(ImmutableMap.of())
+        .initFields(responseInitFields(outputType.getFields()))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
+  }
+
+  @VisibleForTesting
+  static <E extends FieldModel> List<FieldModel> responseInitFields(List<E> fields) {
+    HashSet<Oneof> oneofSet = new HashSet<>();
+    return fields
+        .stream()
+        .filter(f -> f.isPrimitive() && !f.isRepeated())
+        .filter(
+            f -> {
+              // Includes field if field is not a part of a oneof, or it's the first field of the oneof.
+              Oneof oneof = f.getOneof();
+              return oneof == null || oneofSet.add(oneof);
+            })
+        .collect(Collectors.toList());
   }
 
   private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(MethodContext context) {
@@ -284,8 +365,19 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesFieldName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+      FieldModel field = config.getResourcesField();
+      InitCodeNode initCodeNode;
+      if (field.isRepeated()) {
+        initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
+      } else {
+        initCodeNode = InitCodeNode.create(field.getNameAsParameter());
+      }
+      if (config.getResourcesField().isMap()) {
+        initCodeNode =
+            InitCodeNode.createWithChildren(
+                config.getResourcesField().getNameAsParameter(), MapInitLine, initCodeNode);
+      }
+      additionalSubTrees.add(initCodeNode);
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available
@@ -312,50 +404,35 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(MethodContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
-    ClientMethodType methodType;
-
-    if (methodConfig.isPageStreaming()) {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.PagedFlattenedMethod;
-      } else {
-        methodType = ClientMethodType.PagedRequestObjectMethod;
-      }
-    } else {
-      if (context.isFlattenedMethodContext()) {
-        methodType = ClientMethodType.FlattenedMethod;
-      } else {
-        methodType = ClientMethodType.RequestObjectMethod;
-      }
-    }
-
-    return createTestCaseView(
-        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
-  }
-
   public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
     for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
-      InitCodeLineView line = settingsView.initCodeLine();
-      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
-        SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
-        String projectVarName =
-            namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
-        if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
-          ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
-          ResourceNameOneofInitValueView initValue =
-              (ResourceNameOneofInitValueView) simpleLine.initValue();
-          ResourceNameInitValueView subValue = initValue.specificResourceNameView();
-          return subValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
-          SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
-          return initValue.initialValue().equals(projectVarName);
-        } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
-          FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        }
+      if (requireProjectIdInSmokeTest(settingsView, namer)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean requireProjectIdInSmokeTest(FieldSettingView settingsView, SurfaceNamer namer) {
+    InitCodeLineView line = settingsView.initCodeLine();
+    if (line.lineType() == InitCodeLineType.SimpleInitLine) {
+      SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
+      String projectVarName =
+          namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+      if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
+        ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
+        return initValue.formatArgs().contains(projectVarName);
+      } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
+        ResourceNameOneofInitValueView initValue =
+            (ResourceNameOneofInitValueView) simpleLine.initValue();
+        ResourceNameInitValueView subValue = initValue.specificResourceNameView();
+        return subValue.formatArgs().contains(projectVarName);
+      } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
+        SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
+        return initValue.initialValue().equals(projectVarName);
+      } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
+        FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
+        return initValue.formatArgs().contains(projectVarName);
       }
     }
     return false;

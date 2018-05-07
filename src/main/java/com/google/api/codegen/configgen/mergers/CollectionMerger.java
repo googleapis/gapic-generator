@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.ListTransformer;
+import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
@@ -36,20 +37,25 @@ public class CollectionMerger {
 
   public ConfigNode generateCollectionsNode(ConfigNode prevNode, Map<String, String> nameMap) {
     FieldConfigNode collectionsNode =
-        new FieldConfigNode("collections").setComment(new DefaultComment(COLLECTIONS_COMMENT));
+        new FieldConfigNode(NodeFinder.getNextLine(prevNode), "collections")
+            .setComment(new DefaultComment(COLLECTIONS_COMMENT));
     prevNode.insertNext(collectionsNode);
     ListTransformer.generateList(
         nameMap.entrySet(),
         collectionsNode,
-        entry -> generateCollectionNode(entry.getKey(), entry.getValue()));
+        (startLine, entry) -> generateCollectionNode(startLine, entry.getKey(), entry.getValue()));
     return collectionsNode;
   }
 
-  private ConfigNode generateCollectionNode(String namePattern, String entityName) {
-    ConfigNode collectionNode = new ListItemConfigNode();
-    ConfigNode namePatternNode = FieldConfigNode.createStringPair("name_pattern", namePattern);
+  private ConfigNode generateCollectionNode(int startLine, String namePattern, String entityName) {
+    ConfigNode collectionNode = new ListItemConfigNode(startLine);
+    ConfigNode namePatternNode =
+        FieldConfigNode.createStringPair(
+            collectionNode.getStartLine(), "name_pattern", namePattern);
     collectionNode.setChild(namePatternNode);
-    ConfigNode entityNameNode = FieldConfigNode.createStringPair("entity_name", entityName);
+    ConfigNode entityNameNode =
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(namePatternNode), "entity_name", entityName);
     namePatternNode.insertNext(entityNameNode);
     return collectionNode;
   }

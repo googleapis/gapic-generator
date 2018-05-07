@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,6 +35,7 @@ import com.google.api.codegen.util.go.GoCommentReformatter;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -221,6 +222,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    if (!Strings.isNullOrEmpty(interfaceConfig.getInterfaceNameOverride())) {
+      return publicClassName(clientNamePrefix(interfaceConfig.getInterfaceNameOverride()));
+    }
     return publicClassName(clientNamePrefix(interfaceConfig.getRawName()).join("client"));
   }
 

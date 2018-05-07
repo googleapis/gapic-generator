@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,6 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import java.util.Set;
  * Represents a node in an tree of objects to be initialized.
  */
 public class InitCodeNode {
+  private static final TypeModel INT_TYPE = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
 
   private String key;
   private InitCodeLineType lineType;
@@ -230,7 +230,7 @@ public class InitCodeNode {
       // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
       for (FieldModel field : context.initFields()) {
-        String nameString = field.getSimpleName();
+        String nameString = field.getNameAsParameter();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
           newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
@@ -238,16 +238,7 @@ public class InitCodeNode {
           newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }
       }
-      // Filter subTrees using fieldSet
-      Set<String> fieldSet = new HashSet<>();
-      for (FieldModel field : context.initFields()) {
-        fieldSet.add(field.getSimpleName());
-      }
-      for (InitCodeNode subTree : subTrees) {
-        if (fieldSet.contains(subTree.getKey())) {
-          newSubTrees.add(subTree);
-        }
-      }
+      newSubTrees.addAll(subTrees);
       subTrees = newSubTrees;
     } else if (context.outputType() == InitCodeOutputType.FieldList) {
       throw new IllegalArgumentException("Init field array is not set for flattened method.");
@@ -361,11 +352,10 @@ public class InitCodeNode {
 
   private static void validateKeyValue(TypeModel parentType, String key) {
     if (parentType.isMap()) {
-      TypeModel keyType = parentType.getMapKeyField().getType();
+      TypeModel keyType = parentType.getMapKeyType();
       validateValue(keyType, key);
     } else if (parentType.isRepeated()) {
-      TypeModel keyType = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
-      validateValue(keyType, key);
+      validateValue(INT_TYPE, key);
     } else {
       // Don't validate message types, field will be missing for a bad key
     }
@@ -373,18 +363,17 @@ public class InitCodeNode {
 
   private static TypeModel getChildType(TypeModel parentType, String key) {
     if (parentType.isMap()) {
-      return parentType.getMapValueField().getType();
+      return parentType.getMapValueType();
     } else if (parentType.isRepeated()) {
       // Using the Optional cardinality replaces the Repeated cardinality
       return parentType.makeOptional();
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          return field.getType();
-        }
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      return childField.getType();
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);
@@ -401,17 +390,16 @@ public class InitCodeNode {
     } else if (parentType.isRepeated()) {
       return parentFieldConfig;
     } else if (parentType.isMessage()) {
-      for (FieldModel field : parentType.getFields()) {
-        if (field.getSimpleName().equals(key)) {
-          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
-          if (fieldConfig == null) {
-            fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-          }
-          return fieldConfig;
-        }
+      FieldModel childField = parentType.getField(key);
+      if (childField == null) {
+        throw new IllegalArgumentException(
+            "Message type " + parentType + " does not have field " + key);
       }
-      throw new IllegalArgumentException(
-          "Message type " + parentType + " does not have field " + key);
+      FieldConfig fieldConfig = fieldConfigMap.get(childField.getFullName());
+      if (fieldConfig == null) {
+        fieldConfig = FieldConfig.createDefaultFieldConfig(childField);
+      }
+      return fieldConfig;
     } else {
       throw new IllegalArgumentException(
           "Primitive type " + parentType + " cannot have children. Child key: " + key);

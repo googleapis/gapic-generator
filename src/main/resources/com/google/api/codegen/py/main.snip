@@ -3,184 +3,251 @@
 
 @snippet generate(xapiClass)
     {@licenseSection(xapiClass.fileHeader)}
-    {@editingInstructions(xapiClass)}
 
-    {@moduleDocstring(xapiClass)}
+    """Accesses the {@xapiClass.servicePhraseName}."""
     {@renderImportSection(xapiClass.fileHeader.importSection)}
+
 
     _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
         '{@xapiClass.gapicPackageName}',
     ).version
 
 
-    {@serviceClass(xapiClass)}
-@end
-
-@private editingInstructions(xapiClass)
-    @#
-    @# EDITING INSTRUCTIONS
-    @# This file was generated from the file
-    @# https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename},
-    @# and updates to that file get reflected here through a refresh process.
-    @# For the short term, the refresh process will only be runnable by Google engineers.
-    @#
-    @# The only allowed edits are to method and file documentation. A 3-way
-    @# merge preserves those additions if the generated source changes.
-@end
-
-@private moduleDocstring(xapiClass)
-    """Accesses the {@xapiClass.servicePhraseName}."""
-@end
-
-@private serviceClass(xapiClass)
     class {@xapiClass.name}(object):
         @if xapiClass.doc.lines
-            {@documentation(xapiClass.doc)}
+            @if xapiClass.doc.remainingLines
+                """
+                @join line : xapiClass.doc.lines
+                    {@line}
+                @end
+                """
+            @else
+                """{@xapiClass.doc.firstLine}"""
+            @end
+
 
         @end
-        {@constantSection(xapiClass)}
+        SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
+        """The default address of the service."""
 
-        @if xapiClass.pathTemplates
-            {@pathTemplateSection(xapiClass)}
-
-        @end
-        {@initMethodSection(xapiClass)}
-
-        {@serviceMethodsSection(xapiClass)}
-
-@end
-
-@private documentation(doc)
-    @if doc.remainingLines
-        """
-        @join line : doc.lines
-            {@line}
-        @end
-        """
-    @else
-        """{@doc.firstLine}"""
-    @end
-@end
-
-@private constantSection(xapiClass)
-    SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
-    """The default address of the service."""
-
-    @# The scopes needed to make gRPC calls to all of the methods defined in
-    @# this service
-    _DEFAULT_SCOPES = (
-        @join auth_scope : xapiClass.authScopes on BREAK
-            '{@auth_scope}',
-        @end
-    )
-
-    @# The name of the interface for this client. This is the key used to find
-    @# method configuration in the client_config dictionary
-    _INTERFACE_NAME = (
-        '{@xapiClass.interfaceKey}')
-@end
-
-@private constructDefaults(xapiClass)
-    defaults = api_callable.construct_settings(
-        '{@xapiClass.interfaceKey}',
-        {@xapiClass.clientConfigName}.config,
-        client_config,
-        config.STATUS_CODE_NAMES,
-        metrics_headers=metrics_headers,
-        @if xapiClass.hasPageStreamingMethods
-            page_descriptors=self._PAGE_DESCRIPTORS,
-        @end
-    )
-@end
-
-@private initMethodSection(xapiClass)
-    def __init__(self,
-            channel=None,
-            credentials=None,
-            client_config={@xapiClass.clientConfigName}.config,
-            client_info=None):
-        """Constructor.
-
-        Args:
-            channel (grpc.Channel): A ``Channel`` instance through
-                which to make calls. If specified, then the ``credentials``
-                argument is ignored.
-            credentials (google.auth.credentials.Credentials): The
-                authorization credentials to attach to requests. These
-                credentials identify this application to the service. If none
-                are specified, the client will attempt to ascertain the
-                credentials from the environment.
-            client_config (dict):
-                A dictionary of call options for each method. If not specified
-                the default configuration is used. Generally, you only need
-                to set this if you're developing your own client library.
-            client_info (google.api_core.gapic_v1.client_info.ClientInfo):
-                The client info used to send a user-agent string along with
-                API requests. If ``None``, then default info will be used.
-                Generally, you only need to set this if you're developing
-                your own client library.
-        """
-        # gRPC channel & client stub initialization.
-        if channel is not None and credentials is not None:
-            raise ValueError(
-                'channel and credentials arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__))
-
-        if channel is None:
-            channel = google.api_core.grpc_helpers.create_channel(
-                self.SERVICE_ADDRESS,
-                credentials=credentials,
-                scopes=self._DEFAULT_SCOPES)
-
-        @join stub : xapiClass.stubs
-            self.{@stub.name} = (
-                {@stub.grpcClientTypeName}(channel))
-        @end
-
-        @if xapiClass.hasLongRunningOperations
-            @# Operations client for methods that return long-running operations
-            @# futures.
-            self.operations_client = (
-                google.api_core.operations_v1.OperationsClient(channel))
-        @end
-
-        # Client information initialization.
-        if client_info is None:
-            client_info = (
-                google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
-
-        client_info.gapic_version = _GAPIC_LIBRARY_VERSION
-
-        # The interface config contains all of the default settings for retry
-        # and timeout for each RPC method.
-        interface_config = client_config['interfaces'][self._INTERFACE_NAME]
-        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
-            interface_config)
-
-        @join apiMethod : xapiClass.apiMethods
-            self._{@apiMethod.name} = google.api_core.gapic_v1.method.wrap_method(
-                self.{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
-                default_retry=method_configs['{@apiMethod.grpcMethodName}'].retry,
-                default_timeout=method_configs['{@apiMethod.grpcMethodName}'].timeout,
-                client_info=client_info)
-        @end
-@end
-
-@private pathTemplateSection(xapiClass)
-    @join function : xapiClass.formatResourceFunctions
-
-        {@createResourceFunction(function)}
-    @end
-@end
-
-@private createResourceFunction(function)
-    @@classmethod
-    def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
-        """Returns a fully-qualified {@function.entityName} resource name string."""
-        return google.api_core.path_template.expand(
-            '{@function.pattern}',
-            {@createRenderParams(function.resourceIdParams)}
+        @# The scopes needed to make gRPC calls to all of the methods defined in
+        @# this service
+        _DEFAULT_SCOPES = (
+            @join auth_scope : xapiClass.authScopes on BREAK
+                '{@auth_scope}',
+            @end
         )
+
+        @# The name of the interface for this client. This is the key used to find
+        @# method configuration in the client_config dictionary.
+        _INTERFACE_NAME = '{@xapiClass.interfaceKey}'
+
+        @if xapiClass.formatResourceFunctions
+
+            @join function : xapiClass.formatResourceFunctions
+                @@classmethod
+                def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
+                    """Return a fully-qualified {@function.entityName} string."""
+                    return google.api_core.path_template.expand(
+                        '{@function.pattern}',
+                        {@createRenderParams(function.resourceIdParams)}
+                    )
+
+            @end
+        @end
+        def __init__(self, channel=None, credentials=None,
+                client_config={@xapiClass.clientConfigName}.config,
+                client_info=None):
+            """Constructor.
+
+            Args:
+                channel (grpc.Channel): A ``Channel`` instance through
+                    which to make calls. This argument is mutually exclusive
+                    with ``credentials``; providing both will raise an exception.
+                credentials (google.auth.credentials.Credentials): The
+                    authorization credentials to attach to requests. These
+                    credentials identify this application to the service. If none
+                    are specified, the client will attempt to ascertain the
+                    credentials from the environment.
+                client_config (dict): A dictionary of call options for each
+                    method. If not specified, the default configuration is used.
+                client_info (google.api_core.gapic_v1.client_info.ClientInfo):
+                    The client info used to send a user-agent string along with
+                    API requests. If ``None``, then default info will be used.
+                    Generally, you only need to set this if you're developing
+                    your own client library.
+            """
+            # gRPC channel & client stub initialization.
+            @# If both `channel` and `credentials` are specified, raise an
+            @# exception (channels come with credentials baked in already).
+            if channel is not None and credentials is not None:
+                raise ValueError(
+                    'The `channel` and `credentials` arguments to {} are mutually '
+                    'exclusive.'.format(self.__class__.__name__),
+                )
+
+            @# Create the channel.
+            if channel is None:
+                channel = google.api_core.grpc_helpers.create_channel(
+                    self.SERVICE_ADDRESS,
+                    credentials=credentials,
+                    scopes=self._DEFAULT_SCOPES,
+                )
+
+            @# Create the gRPC stubs.
+            @join stub : xapiClass.stubs
+                self.{@stub.name} = (
+                    {@stub.grpcClientTypeName}(channel))
+            @end
+
+            @if xapiClass.hasLongRunningOperations
+                @# Operations client for methods that return long-running operations
+                @# futures.
+                self.operations_client = (
+                    google.api_core.operations_v1.OperationsClient(channel))
+            @end
+
+            # Client information initialization.
+            if client_info is None:
+                client_info = (
+                    google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
+            client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+
+            @# Parse out the default settings for retry and timeout for each RPC
+            @# from the client configuration.
+            @# (Ordinarily, these are the defaults specified in the `*_config.py`
+            @# file next to this one.)
+            method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+                client_config['interfaces'][self._INTERFACE_NAME],
+            )
+
+            @# Write the "inner API call" methods to the class.
+            @# These are wrapped versions of the gRPC stub methods, with retry and
+            @# timeout configuration applied, called by the public methods on
+            @# this class.
+            @join apiMethod : xapiClass.apiMethods
+                self._{@apiMethod.name} = google.api_core.gapic_v1.method.wrap_method(
+                    self.{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
+                    default_retry=method_configs['{@apiMethod.grpcMethodName}'].retry,
+                    default_timeout=method_configs['{@apiMethod.grpcMethodName}'].timeout,
+                    client_info=client_info,
+                )
+            @end
+
+        @# Service calls
+        @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+            def {@apiMethod.name}(
+                    {@renderMethodParams(apiMethod.methodParams)}):
+                """
+                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                    {@line}
+                @end
+
+                @if apiMethod.hasRequestStreaming
+                    EXPERIMENTAL: This method interface might change in the future.
+
+                @end
+                {@exampleCode(apiMethod, apiMethod.initCode)}
+
+                Args:
+                    @join paramDoc : apiMethod.doc.paramDocs
+                        @if paramDoc.lines
+                            {@paramDoc.paramName} ({@paramDoc.typeName}): {@paramDoc.firstLine}
+                                @join line : paramDoc.remainingLines
+                                    {@line}
+                                @end
+                        @else
+                            {@paramDoc.paramName} ({@paramDoc.typeName})
+                        @end
+                    @end
+                @if apiMethod.doc.returnsDocLines
+
+                    Returns:
+                        @join line : apiMethod.doc.returnsDocLines
+                              {@line}
+                        @end
+                @end
+
+                Raises:
+                    @join line : apiMethod.doc.throwsDocLines
+                        {@line}
+                    @end
+                """
+                @if apiMethod.isSingularRequestMethod
+                    @if apiMethod.oneofParams
+                        @join oneOf : apiMethod.oneofParams on BREAK
+                            @# Sanity check: We have some fields which are mutually exclusive;
+                            @# raise ValueError if more than one is sent.
+                            google.api_core.protobuf_helpers.check_oneof(
+                                @join oneOfField : oneOf on BREAK
+                                    {@oneOfField}={@oneOfField},
+                                @end
+                            )
+
+                        @end
+
+
+                    @end
+                    @if apiMethod.optionalRequestObjectParamsNoPageToken
+                        @if apiMethod.requiredRequestObjectParams
+                            request = {@apiMethod.requestTypeName}(
+                                {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
+                                {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)},
+                            )
+                        @else
+                            request = {@apiMethod.requestTypeName}(
+                                {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)},
+                            )
+                        @end
+                    @else
+                        @if apiMethod.requiredRequestObjectParams
+                            request = {@apiMethod.requestTypeName}(
+                                {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
+                            )
+                        @else
+                            request = {@apiMethod.requestTypeName}()
+                        @end
+                    @end
+
+                    @if apiMethod.headerRequestParams
+
+                        routing_header = google.api_core.gapic_v1.routing_header(
+                            [{@routingHeader(apiMethod.headerRequestParams)}],
+                        )
+                        metadata.append(routing_header)
+
+                    @end
+                @end
+                @switch apiMethod.type
+                @case "OptionalArrayMethod"
+                    @if apiMethod.hasReturnValue
+                        return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                    @else
+                        self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                    @end
+                @case "PagedOptionalArrayMethod"
+                    iterator = google.api_core.page_iterator.GRPCIterator(
+                        client=None,
+                        method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
+                        request={@apiMethod.requestVariableName},
+                        items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
+                        request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
+                        response_token_field='{@apiMethod.pageStreamingView.responseTokenFieldName}',
+                    )
+                    return iterator
+                @case "LongRunningOptionalArrayMethod"
+                    operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                    return google.api_core.operation.from_gapic(
+                        operation,
+                        self.operations_client,
+                        {@apiMethod.longRunningView.operationPayloadTypeName},
+                        metadata_type={@apiMethod.longRunningView.metadataTypeName},
+                    )
+                @default
+                    {@unhandledCase()}
+                @end
+        @end
+
 @end
 
 @private createResourceFunctionParams(params)
@@ -195,125 +262,8 @@
     @end
 @end
 
-@private methodComments(apiMethod, apiMethodDoc)
-    """
-    @join line : util.trimDocs(apiMethodDoc.mainDocLines)
-        {@line}
-    @end
-
-    @if apiMethod.hasRequestStreaming
-        EXPERIMENTAL: This method interface might change in the future.
-
-    @end
-    {@sampleCode(apiMethod)}
-
-    Args:
-        @join paramDoc : apiMethodDoc.paramDocs
-            @if paramDoc.lines
-                {@paramDoc.paramName} ({@paramDoc.typeName}): {@paramDoc.firstLine}
-                    @join line : paramDoc.remainingLines
-                        {@line}
-                    @end
-            @else
-                {@paramDoc.paramName} ({@paramDoc.typeName})
-            @end
-        @end
-    @if apiMethodDoc.returnsDocLines
-
-        Returns:
-            @join line : apiMethodDoc.returnsDocLines
-                  {@line}
-            @end
-    @end
-
-    Raises:
-        @join line : apiMethodDoc.throwsDocLines
-            {@line}
-        @end
-    """
-@end
-
-@private serviceMethodsSection(xapiClass)
-    @# Service calls
-    @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
-        {@flattenedMethod(apiMethod)}
-    @end
-@end
-
-@private callLine(apiMethod)
-    @if apiMethod.isLongRunningOperation
-        operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
-        return google.api_core.operation.from_gapic(
-            operation,
-            self.operations_client,
-            {@apiMethod.longRunningView.operationPayloadTypeName},
-            metadata_type={@apiMethod.longRunningView.metadataTypeName})
-    @else
-        @switch apiMethod.type
-        @case "OptionalArrayMethod"
-            @if apiMethod.hasReturnValue
-                return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
-            @else
-                self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
-            @end
-        @case "PagedOptionalArrayMethod"
-            iterator = google.api_core.page_iterator.GRPCIterator(
-                client=None,
-                method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
-                request={@apiMethod.requestVariableName},
-                items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
-                request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
-                response_token_field='{@apiMethod.pageStreamingView.responseTokenFieldName}')
-            return iterator
-        @default
-            {@unhandledCase()}
-        @end
-    @end
-@end
-
 @private optionalParams(apiMethod)
-    @if apiMethod.headerRequestParams
-        , retry=retry, timeout=timeout, metadata=[routing_header]
-    @else
-        , retry=retry, timeout=timeout
-    @end
-@end
-
-@private flattenedMethod(apiMethod)
-    def {@apiMethod.name}(
-            {@renderMethodParams(apiMethod.methodParams)}):
-        {@methodComments(apiMethod, apiMethod.doc)}
-        @if apiMethod.isSingularRequestMethod
-            @if apiMethod.oneofParams
-                {@checkOneOfParams(apiMethod.oneofParams)}
-
-            @end
-            @if apiMethod.optionalRequestObjectParamsNoPageToken
-                @if apiMethod.requiredRequestObjectParams
-                    request = {@apiMethod.requestTypeName}(
-                        {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
-                        {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)})
-                @else
-                    request = {@apiMethod.requestTypeName}(
-                        {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)})
-                @end
-            @else
-                @if apiMethod.requiredRequestObjectParams
-                    request = {@apiMethod.requestTypeName}(
-                        {@requestObjectParams(apiMethod.requiredRequestObjectParams)})
-                @else
-                    request = {@apiMethod.requestTypeName}()
-                @end
-            @end
-
-            @if apiMethod.headerRequestParams
-
-                routing_header = google.api_core.gapic_v1.routing_header(
-                    [{@routingHeader(apiMethod.headerRequestParams)}])
-
-            @end
-        @end
-        {@callLine(apiMethod)}
+    , retry=retry, timeout=timeout, metadata=metadata
 @end
 
 @private renderMethodParams(params)
@@ -323,19 +273,6 @@
         @else
             {@param.name}
         @end
-    @end
-@end
-
-@private checkOneOfParams(oneOfs)
-    @join oneOf : oneOfs on BREAK
-        @# Sanity check: We have some fields which are mutually exclusive;
-        @# raise ValueError if more than one is sent.
-        google.api_core.protobuf_helpers.check_oneof(
-            @join oneOfField : oneOf on BREAK
-                {@oneOfField}={@oneOfField},
-            @end
-        )
-
     @end
 @end
 

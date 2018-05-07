@@ -20,6 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
+    - "acceptance/**/*smoke_test.rb"
 
 Documentation:
   Enabled: false
@@ -28,44 +29,6 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 Style/MethodDefParentheses:
   EnforcedStyle: require_no_parentheses
-Style/NumericLiterals:
-  Enabled: false
-Style/SpaceAroundOperators:
-  Enabled: false
-Metrics/ClassLength:
-  Enabled: false
-Style/EmptyLines:
-  Enabled: false
-Style/EmptyElse:
-  Enabled: false
-Style/HashSyntax:
-  Exclude:
-    - "lib/library/v1/**/*"
-Metrics/LineLength:
-  Exclude:
-    - "lib/library/v1/**/*"
-Metrics/CyclomaticComplexity:
-  Max: 10
-Metrics/PerceivedComplexity:
-  Max: 10
-Metrics/AbcSize:
-  Max: 25
-  Exclude:
-    - "lib/library/v1/**/*"
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - "lib/library/v1/**/*"
-Metrics/ParameterLists:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
-Style/ClassVars:
-  Enabled: false
-Style/TrivialAccessors:
-  Enabled: false
-Style/FileName:
-  Enabled: false
 
 ============== file: .yardopts ==============
 --no-private
@@ -82,7 +45,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rake", "~> 11.0"
 gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
@@ -90,15 +52,12 @@ gem "gcloud-jsondoc",
 # WORKAROUND: builds are having problems since the release of 3.0.0
 # pin to the last known good version
 gem "public_suffix", "~> 2.0"
-
-# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
-# so pinning to 2.1 for now.
-gem "rainbow", "~> 2.1.0"
+gem "rake", "~> 11.0"
 
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        https://www.apache.org/licenses/
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -290,7 +249,7 @@ gem "rainbow", "~> 2.1.0"
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -311,8 +270,9 @@ In order to use this library, you first need to go through the following
 steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
 ```
@@ -346,12 +306,12 @@ response = library_service_client.update_book(formatted_name, book, optional_foo
 [Product Documentation]: https://cloud.google.com/library
 
 ============== file: Rakefile ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -389,10 +349,6 @@ end
 
 desc "Runs the smoke tests."
 task :smoke_test do
-  if ENV["LIBRARY_TEST_PROJECT"].nil?
-    fail "The LIBRARY_TEST_PROJECT environment variable must be set. "\
-      "e.g LIBRARY_TEST_PROJECT=test123 rake smoke_test"
-  end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
   Dir.glob("acceptance/**/*smoke_test.rb").each { |file| require_relative file }
@@ -414,7 +370,34 @@ end
 
 # Acceptance tests
 desc "Run the library acceptance tests."
-task :acceptance do
+task :acceptance, :project, :keyfile do |t, args|
+  project = args[:project]
+  project ||=
+    ENV["LIBRARY_TEST_PROJECT"] ||
+    ENV["GCLOUD_TEST_PROJECT"]
+  keyfile = args[:keyfile]
+  keyfile ||=
+    ENV["LIBRARY_TEST_KEYFILE"] ||
+    ENV["GCLOUD_TEST_KEYFILE"]
+  if keyfile
+    keyfile = File.read keyfile
+  else
+    keyfile ||=
+      ENV["LIBRARY_TEST_KEYFILE_JSON"] ||
+      ENV["GCLOUD_TEST_KEYFILE_JSON"]
+  end
+  if project.nil? || keyfile.nil?
+    fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
+  end
+  require "library/credentials"
+  (Library::Credentials::PATH_ENV_VARS +
+   Library::Credentials::JSON_ENV_VARS).each do |path|
+    ENV[path] = nil
+  end
+  ENV["LIBRARY_PROJECT"] = project
+  ENV["LIBRARY_TEST_PROJECT"] = project
+  ENV["LIBRARY_KEYFILE_JSON"] = keyfile
+
   Rake::Task["acceptance:run"].invoke
 end
 
@@ -493,15 +476,6 @@ task :ci do
 end
 
 namespace :ci do
-  desc "Run the CI build, with smoke tests."
-  task :smoke_test do
-    Rake::Task["ci"].invoke
-    header "library smoke_test", "*"
-    sh "bundle exec rake smoke_test -v"
-  end
-end
-
-namespace :ci do
   desc "Run the CI build, with acceptance tests."
   task :acceptance do
     Rake::Task["ci"].invoke
@@ -526,13 +500,13 @@ def header str, token = "#"
 end
 
 ============== file: acceptance/library/v1/library_service_smoke_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -549,10 +523,10 @@ require "library"
 
 describe "LibraryServiceSmokeTest" do
   it "runs one smoke test with update_book" do
-    unless ENV["SMOKE_TEST_PROJECT"]
-      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
+    unless ENV["LIBRARY_TEST_PROJECT"]
+      fail "LIBRARY_TEST_PROJECT environment variable must be defined"
     end
-    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
+    project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
     library_service_client = Library.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
@@ -566,13 +540,13 @@ describe "LibraryServiceSmokeTest" do
 end
 
 ============== file: lib/library.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -597,8 +571,9 @@ require "pathname"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -679,6 +654,11 @@ module Library
   #     or the specified config is missing data points.
   #   @param timeout [Numeric]
   #     The default timeout, in seconds, for calls made through this client.
+  #   @param metadata [Hash]
+  #     Default metadata to be sent with each request. This can be overridden on a per call basis.
+  #   @param exception_transformer [Proc]
+  #     An optional proc that intercepts any exceptions raised during an API call to inject
+  #     custom error handling.
   def self.new(*args, version: :v1, **kwargs)
     unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
       raise "The version: #{version} is not available. The available versions " \
@@ -695,13 +675,13 @@ module Library
 end
 
 ============== file: lib/library/credentials.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -724,13 +704,13 @@ module Library
 end
 
 ============== file: lib/library/v1.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -739,6 +719,7 @@ end
 # limitations under the License.
 
 require "library/v1/library_service_client"
+require "library/v1/errors_pb"
 
 # rubocop:disable LineLength
 
@@ -754,8 +735,9 @@ require "library/v1/library_service_client"
 # steps:
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -825,28 +807,27 @@ module Library
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
+    # @param metadata [Hash]
+    #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+    # @param exception_transformer [Proc]
+    #   An optional proc that intercepts any exceptions raised during an API call to inject
+    #   custom error handling.
     def self.new \
-        service_path: nil,
-        port: nil,
-        channel: nil,
-        chan_creds: nil,
-        updater_proc: nil,
         credentials: nil,
         scopes: nil,
         client_config: nil,
         timeout: nil,
+        metadata: nil,
+        exception_transformer: nil,
         lib_name: nil,
         lib_version: nil
       kwargs = {
-        service_path: service_path,
-        port: port,
-        channel: channel,
-        chan_creds: chan_creds,
-        updater_proc: updater_proc,
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
+        metadata: metadata,
+        exception_transformer: exception_transformer,
         lib_name: lib_name,
         lib_version: lib_version
       }.select { |_, v| v != nil }
@@ -856,13 +837,13 @@ module Library
 end
 
 ============== file: lib/library/v1/library_service_client.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -876,9 +857,6 @@ end
 # and updates to that file get reflected here through a refresh process.
 # For the short term, the refresh process will only be runnable by Google
 # engineers.
-#
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
 
 require "json"
 require "pathname"
@@ -968,6 +946,10 @@ module Library
         "https://www.googleapis.com/auth/library"
       ].freeze
 
+      class OperationsClient < Google::Longrunning::OperationsClient
+        self::SERVICE_ADDRESS = LibraryServiceClient::SERVICE_ADDRESS
+      end
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -985,6 +967,18 @@ module Library
       )
 
       private_constant :RETURN_PATH_TEMPLATE
+
+      PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}"
+      )
+
+      private_constant :PROJECT_PATH_TEMPLATE
+
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive_path}/books/{book_id=**}"
+      )
+
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       # Returns a fully-qualified shelf resource name string.
       # @param shelf_id [String]
@@ -1019,6 +1013,26 @@ module Library
         )
       end
 
+      # Returns a fully-qualified project resource name string.
+      # @param project [String]
+      # @return [String]
+      def self.project_path project
+        PROJECT_PATH_TEMPLATE.render(
+          :"project" => project
+        )
+      end
+
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive_path [String]
+      # @param book_id [String]
+      # @return [String]
+      def self.archived_book_path archive_path, book_id
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive_path" => archive_path,
+          :"book_id" => book_id
+        )
+      end
+
       # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
       #   be many types.
@@ -1043,16 +1057,18 @@ module Library
       #   or the specified config is missing data points.
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+      # @param exception_transformer [Proc]
+      #   An optional proc that intercepts any exceptions raised during an API call to inject
+      #   custom error handling.
       def initialize \
-          service_path: SERVICE_ADDRESS,
-          port: DEFAULT_SERVICE_PORT,
-          channel: nil,
-          chan_creds: nil,
-          updater_proc: nil,
           credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
+          metadata: nil,
+          exception_transformer: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -1062,21 +1078,9 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
-        if channel || chan_creds || updater_proc
-          warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
-            "on 2017/09/08"
-          credentials ||= channel
-          credentials ||= chan_creds
-          credentials ||= updater_proc
-        end
-        if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
-          warn "`service_path` and `port` parameters are deprecated and will be removed"
-        end
-
         credentials ||= Library::Credentials.default
 
-        @operations_client = Google::Longrunning::OperationsClient.new(
-          service_path: service_path,
+        @operations_client = OperationsClient.new(
           credentials: credentials,
           scopes: scopes,
           client_config: client_config,
@@ -1101,13 +1105,16 @@ module Library
           updater_proc = credentials.updater_proc
         end
 
+        package_version = Gem.loaded_specs['library'].version.version
+
         google_api_client = "gl-ruby/#{RUBY_VERSION}"
         google_api_client << " #{lib_name}/#{lib_version}" if lib_name
-        google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+        google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
         google_api_client << " grpc/#{GRPC::VERSION}"
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        headers.merge!(metadata) unless metadata.nil?
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
         )
@@ -1121,9 +1128,13 @@ module Library
             bundle_descriptors: BUNDLE_DESCRIPTORS,
             page_descriptors: PAGE_DESCRIPTORS,
             errors: Google::Gax::Grpc::API_ERRORS,
-            kwargs: headers
+            metadata: headers
           )
         end
+
+        # Allow overriding the service path/port in subclasses.
+        service_path = self.class::SERVICE_ADDRESS
+        port = self.class::DEFAULT_SERVICE_PORT
         @library_service_stub = Google::Gax::Grpc.create_stub(
           service_path,
           port,
@@ -1145,118 +1156,146 @@ module Library
 
         @create_shelf = Google::Gax.create_api_call(
           @library_service_stub.method(:create_shelf),
-          defaults["create_shelf"]
+          defaults["create_shelf"],
+          exception_transformer: exception_transformer
         )
         @get_shelf = Google::Gax.create_api_call(
           @library_service_stub.method(:get_shelf),
-          defaults["get_shelf"]
+          defaults["get_shelf"],
+          exception_transformer: exception_transformer
         )
         @list_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:list_shelves),
-          defaults["list_shelves"]
+          defaults["list_shelves"],
+          exception_transformer: exception_transformer
         )
         @delete_shelf = Google::Gax.create_api_call(
           @library_service_stub.method(:delete_shelf),
-          defaults["delete_shelf"]
+          defaults["delete_shelf"],
+          exception_transformer: exception_transformer
         )
         @merge_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:merge_shelves),
-          defaults["merge_shelves"]
+          defaults["merge_shelves"],
+          exception_transformer: exception_transformer
         )
         @create_book = Google::Gax.create_api_call(
           @library_service_stub.method(:create_book),
           defaults["create_book"],
+          exception_transformer: exception_transformer,
           params_extractor: proc do |request|
             {'name' => request.name, 'book.read' => request.book.read}
           end
         )
         @publish_series = Google::Gax.create_api_call(
           @library_service_stub.method(:publish_series),
-          defaults["publish_series"]
+          defaults["publish_series"],
+          exception_transformer: exception_transformer
         )
         @get_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book),
-          defaults["get_book"]
+          defaults["get_book"],
+          exception_transformer: exception_transformer
         )
         @list_books = Google::Gax.create_api_call(
           @library_service_stub.method(:list_books),
-          defaults["list_books"]
+          defaults["list_books"],
+          exception_transformer: exception_transformer
         )
         @delete_book = Google::Gax.create_api_call(
           @library_service_stub.method(:delete_book),
-          defaults["delete_book"]
+          defaults["delete_book"],
+          exception_transformer: exception_transformer
         )
         @update_book = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book),
-          defaults["update_book"]
+          defaults["update_book"],
+          exception_transformer: exception_transformer
         )
         @move_book = Google::Gax.create_api_call(
           @library_service_stub.method(:move_book),
-          defaults["move_book"]
+          defaults["move_book"],
+          exception_transformer: exception_transformer
         )
         @list_strings = Google::Gax.create_api_call(
           @library_service_stub.method(:list_strings),
-          defaults["list_strings"]
+          defaults["list_strings"],
+          exception_transformer: exception_transformer
         )
         @add_comments = Google::Gax.create_api_call(
           @library_service_stub.method(:add_comments),
-          defaults["add_comments"]
+          defaults["add_comments"],
+          exception_transformer: exception_transformer
         )
         @get_book_from_archive = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_archive),
-          defaults["get_book_from_archive"]
+          defaults["get_book_from_archive"],
+          exception_transformer: exception_transformer
         )
         @get_book_from_anywhere = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_anywhere),
-          defaults["get_book_from_anywhere"]
+          defaults["get_book_from_anywhere"],
+          exception_transformer: exception_transformer
         )
         @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_absolutely_anywhere),
-          defaults["get_book_from_absolutely_anywhere"]
+          defaults["get_book_from_absolutely_anywhere"],
+          exception_transformer: exception_transformer
         )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
-          defaults["update_book_index"]
+          defaults["update_book_index"],
+          exception_transformer: exception_transformer
         )
         @stream_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:stream_shelves),
-          defaults["stream_shelves"]
+          defaults["stream_shelves"],
+          exception_transformer: exception_transformer
         )
         @stream_books = Google::Gax.create_api_call(
           @library_service_stub.method(:stream_books),
-          defaults["stream_books"]
+          defaults["stream_books"],
+          exception_transformer: exception_transformer
         )
         @discuss_book = Google::Gax.create_api_call(
           @library_service_stub.method(:discuss_book),
-          defaults["discuss_book"]
+          defaults["discuss_book"],
+          exception_transformer: exception_transformer
         )
         @monolog_about_book = Google::Gax.create_api_call(
           @library_service_stub.method(:monolog_about_book),
-          defaults["monolog_about_book"]
+          defaults["monolog_about_book"],
+          exception_transformer: exception_transformer
         )
         @find_related_books = Google::Gax.create_api_call(
           @library_service_stub.method(:find_related_books),
-          defaults["find_related_books"]
+          defaults["find_related_books"],
+          exception_transformer: exception_transformer
         )
         @add_tag = Google::Gax.create_api_call(
           @library_service_stub.method(:add_tag),
-          defaults["add_tag"]
+          defaults["add_tag"],
+          exception_transformer: exception_transformer
         )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
-          defaults["add_label"]
+          defaults["add_label"],
+          exception_transformer: exception_transformer
         )
         @get_big_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_book),
-          defaults["get_big_book"]
+          defaults["get_big_book"],
+          exception_transformer: exception_transformer
         )
         @get_big_nothing = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_nothing),
-          defaults["get_big_nothing"]
+          defaults["get_big_nothing"],
+          exception_transformer: exception_transformer
         )
         @test_optional_required_flattening_params = Google::Gax.create_api_call(
           @library_service_stub.method(:test_optional_required_flattening_params),
-          defaults["test_optional_required_flattening_params"]
+          defaults["test_optional_required_flattening_params"],
+          exception_transformer: exception_transformer
         )
       end
 
@@ -1272,23 +1311,29 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Shelf]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +shelf+:
       #   shelf = {}
       #   response = library_service_client.create_shelf(shelf)
 
       def create_shelf \
           shelf,
-          options: nil
+          options: nil,
+          &block
         req = {
           shelf: shelf
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateShelfRequest)
-        @create_shelf.call(req, options)
+        @create_shelf.call(req, options, &block)
       end
 
       # Gets a shelf.
@@ -1307,6 +1352,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Shelf]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1314,6 +1362,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #
+      #   # TODO: Initialize +options_+:
       #   options_ = ''
       #   response = library_service_client.get_shelf(formatted_name, options_)
 
@@ -1322,7 +1372,8 @@ module Library
           options_,
           message: nil,
           string_builder: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           options: options_,
@@ -1330,7 +1381,7 @@ module Library
           string_builder: string_builder
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetShelfRequest)
-        @get_shelf.call(req, options)
+        @get_shelf.call(req, options, &block)
       end
 
       # Lists shelves.
@@ -1338,6 +1389,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
       #   An enumerable of Google::Example::Library::V1::Shelf instances.
       #   See Google::Gax::PagedEnumerable documentation for other
@@ -1362,9 +1416,9 @@ module Library
       #     end
       #   end
 
-      def list_shelves options: nil
+      def list_shelves options: nil, &block
         req = Google::Example::Library::V1::ListShelvesRequest.new
-        @list_shelves.call(req, options)
+        @list_shelves.call(req, options, &block)
       end
 
       # Deletes a shelf.
@@ -1374,6 +1428,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
@@ -1384,12 +1441,13 @@ module Library
 
       def delete_shelf \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteShelfRequest)
-        @delete_shelf.call(req, options)
+        @delete_shelf.call(req, options, &block)
         nil
       end
 
@@ -1404,6 +1462,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Shelf]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1417,13 +1478,14 @@ module Library
       def merge_shelves \
           name,
           other_shelf_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           other_shelf_name: other_shelf_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MergeShelvesRequest)
-        @merge_shelves.call(req, options)
+        @merge_shelves.call(req, options, &block)
       end
 
       # Creates a book.
@@ -1437,6 +1499,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Book]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1444,19 +1509,22 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #
+      #   # TODO: Initialize +book+:
       #   book = {}
       #   response = library_service_client.create_book(formatted_name, book)
 
       def create_book \
           name,
           book,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           book: book
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateBookRequest)
-        @create_book.call(req, options)
+        @create_book.call(req, options, &block)
       end
 
       # Creates a series of books.
@@ -1480,13 +1548,20 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::PublishSeriesResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::PublishSeriesResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +shelf+:
       #   shelf = {}
+      #
+      #   # TODO: Initialize +books+:
       #   books = []
       #   series_string = "foobar"
       #   series_uuid = { series_string: series_string }
@@ -1498,7 +1573,8 @@ module Library
           series_uuid,
           edition: nil,
           review_copy: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           shelf: shelf,
           books: books,
@@ -1507,7 +1583,7 @@ module Library
           review_copy: review_copy
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::PublishSeriesRequest)
-        @publish_series.call(req, options)
+        @publish_series.call(req, options, &block)
       end
 
       # Gets a book.
@@ -1517,6 +1593,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Book]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1528,12 +1607,13 @@ module Library
 
       def get_book \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
-        @get_book.call(req, options)
+        @get_book.call(req, options, &block)
       end
 
       # Lists books in a shelf.
@@ -1551,6 +1631,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
       #   An enumerable of Google::Example::Library::V1::Book instances.
       #   See Google::Gax::PagedEnumerable documentation for other
@@ -1562,14 +1645,15 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   filter = "book-filter-string"
       #
       #   # Iterate over all results.
-      #   library_service_client.list_books(formatted_name).each do |element|
+      #   library_service_client.list_books(formatted_name, filter: filter).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client.list_books(formatted_name).each_page do |page|
+      #   library_service_client.list_books(formatted_name, filter: filter).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -1580,14 +1664,15 @@ module Library
           name,
           page_size: nil,
           filter: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           page_size: page_size,
           filter: filter
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListBooksRequest)
-        @list_books.call(req, options)
+        @list_books.call(req, options, &block)
       end
 
       # Deletes a book.
@@ -1597,6 +1682,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
@@ -1607,12 +1695,13 @@ module Library
 
       def delete_book \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteBookRequest)
-        @delete_book.call(req, options)
+        @delete_book.call(req, options, &block)
         nil
       end
 
@@ -1637,6 +1726,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Book]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1644,6 +1736,8 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +book+:
       #   book = {}
       #   response = library_service_client.update_book(formatted_name, book)
 
@@ -1653,7 +1747,8 @@ module Library
           optional_foo: nil,
           update_mask: nil,
           physical_mask: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           book: book,
@@ -1662,7 +1757,7 @@ module Library
           physical_mask: physical_mask
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookRequest)
-        @update_book.call(req, options)
+        @update_book.call(req, options, &block)
       end
 
       # Moves a book to another shelf, and returns the new book.
@@ -1674,6 +1769,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Book]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1687,13 +1785,14 @@ module Library
       def move_book \
           name,
           other_shelf_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           other_shelf_name: other_shelf_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MoveBookRequest)
-        @move_book.call(req, options)
+        @move_book.call(req, options, &block)
       end
 
       # Lists a primitive resource. To test go page streaming.
@@ -1708,6 +1807,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Gax::PagedEnumerable<String>]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Gax::PagedEnumerable<String>]
       #   An enumerable of String instances.
       #   See Google::Gax::PagedEnumerable documentation for other
@@ -1735,13 +1837,14 @@ module Library
       def list_strings \
           name: nil,
           page_size: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           page_size: page_size
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListStringsRequest)
-        @list_strings.call(req, options)
+        @list_strings.call(req, options, &block)
       end
 
       # Adds comments to a book
@@ -1753,6 +1856,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
@@ -1773,13 +1879,14 @@ module Library
       def add_comments \
           name,
           comments,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           comments: comments
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::AddCommentsRequest)
-        @add_comments.call(req, options)
+        @add_comments.call(req, options, &block)
         nil
       end
 
@@ -1790,6 +1897,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::BookFromArchive]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::BookFromArchive]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1801,12 +1911,13 @@ module Library
 
       def get_book_from_archive \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromArchiveRequest)
-        @get_book_from_archive.call(req, options)
+        @get_book_from_archive.call(req, options, &block)
       end
 
       # Gets a book from a shelf or archive.
@@ -1819,6 +1930,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::BookFromAnywhere]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::BookFromAnywhere]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1832,13 +1946,14 @@ module Library
       def get_book_from_anywhere \
           name,
           alt_book_name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           alt_book_name: alt_book_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
-        @get_book_from_anywhere.call(req, options)
+        @get_book_from_anywhere.call(req, options, &block)
       end
 
       # Test proper OneOf-Any resource name mapping
@@ -1848,6 +1963,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::BookFromAnywhere]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::BookFromAnywhere]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -1859,12 +1977,13 @@ module Library
 
       def get_book_from_absolutely_anywhere \
           name,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
-        @get_book_from_absolutely_anywhere.call(req, options)
+        @get_book_from_absolutely_anywhere.call(req, options, &block)
       end
 
       # Updates the index of a book.
@@ -1878,6 +1997,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
@@ -1885,6 +2007,8 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
+      #
+      #   # TODO: Initialize +index_map_item+:
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
       #   library_service_client.update_book_index(formatted_name, index_name, index_map)
@@ -1893,14 +2017,15 @@ module Library
           name,
           index_name,
           index_map,
-          options: nil
+          options: nil,
+          &block
         req = {
           name: name,
           index_name: index_name,
           index_map: index_map
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookIndexRequest)
-        @update_book_index.call(req, options)
+        @update_book_index.call(req, options, &block)
         nil
       end
 
@@ -1943,6 +2068,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   library_service_client.stream_books(name).each do |element|
       #     # Process element.
@@ -1980,6 +2107,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -2014,6 +2143,8 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +name+:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -2037,6 +2168,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Gax::PagedEnumerable<String>]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Gax::PagedEnumerable<String>]
       #   An enumerable of String instances.
       #   See Google::Gax::PagedEnumerable documentation for other
@@ -2047,8 +2181,12 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +names_element+:
       #   names_element = ''
       #   names = [names_element]
+      #
+      #   # TODO: Initialize +shelves+:
       #   shelves = []
       #
       #   # Iterate over all results.
@@ -2068,14 +2206,15 @@ module Library
           names,
           shelves,
           page_size: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           names: names,
           shelves: shelves,
           page_size: page_size
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::FindRelatedBooksRequest)
-        @find_related_books.call(req, options)
+        @find_related_books.call(req, options, &block)
       end
 
       # Adds a tag to the book. This RPC is a mixin.
@@ -2089,6 +2228,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Tagger::V1::AddTagResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Tagger::V1::AddTagResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -2096,19 +2238,22 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +tag+:
       #   tag = ''
       #   response = library_service_client.add_tag(formatted_resource, tag)
 
       def add_tag \
           resource,
           tag,
-          options: nil
+          options: nil,
+          &block
         req = {
           resource: resource,
           tag: tag
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Tagger::V1::AddTagRequest)
-        @add_tag.call(req, options)
+        @add_tag.call(req, options, &block)
       end
 
       # Adds a label to the entity.
@@ -2122,6 +2267,9 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Tagger::V1::AddLabelResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Tagger::V1::AddLabelResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
@@ -2129,19 +2277,22 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # TODO: Initialize +label+:
       #   label = ''
       #   response = library_service_client.add_label(formatted_resource, label)
 
       def add_label \
           resource,
           label,
-          options: nil
+          options: nil,
+          &block
         req = {
           resource: resource,
           label: label
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Tagger::V1::AddLabelRequest)
-        @add_label.call(req, options)
+        @add_label.call(req, options, &block)
       end
 
       # Test long-running operations
@@ -2279,6 +2430,7 @@ module Library
       #   can also be provided.
       # @param required_singular_resource_name [String]
       # @param required_singular_resource_name_oneof [String]
+      # @param required_singular_resource_name_common [String]
       # @param required_singular_fixed32 [Integer]
       # @param required_singular_fixed64 [Integer]
       # @param required_repeated_int32 [Array<Integer>]
@@ -2294,6 +2446,7 @@ module Library
       #   can also be provided.
       # @param required_repeated_resource_name [Array<String>]
       # @param required_repeated_resource_name_oneof [Array<String>]
+      # @param required_repeated_resource_name_common [Array<String>]
       # @param required_repeated_fixed32 [Array<Integer>]
       # @param required_repeated_fixed64 [Array<Integer>]
       # @param required_map [Hash{Integer => String}]
@@ -2310,6 +2463,7 @@ module Library
       #   can also be provided.
       # @param optional_singular_resource_name [String]
       # @param optional_singular_resource_name_oneof [String]
+      # @param optional_singular_resource_name_common [String]
       # @param optional_singular_fixed32 [Integer]
       # @param optional_singular_fixed64 [Integer]
       # @param optional_repeated_int32 [Array<Integer>]
@@ -2325,46 +2479,110 @@ module Library
       #   can also be provided.
       # @param optional_repeated_resource_name [Array<String>]
       # @param optional_repeated_resource_name_oneof [Array<String>]
+      # @param optional_repeated_resource_name_common [Array<String>]
       # @param optional_repeated_fixed32 [Array<Integer>]
       # @param optional_repeated_fixed64 [Array<Integer>]
       # @param optional_map [Hash{Integer => String}]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
       # @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
+      #
+      #   # TODO: Initialize +required_singular_int32+:
       #   required_singular_int32 = 0
+      #
+      #   # TODO: Initialize +required_singular_int64+:
       #   required_singular_int64 = 0
+      #
+      #   # TODO: Initialize +required_singular_float+:
       #   required_singular_float = 0.0
+      #
+      #   # TODO: Initialize +required_singular_double+:
       #   required_singular_double = 0.0
+      #
+      #   # TODO: Initialize +required_singular_bool+:
       #   required_singular_bool = false
+      #
+      #   # TODO: Initialize +required_singular_enum+:
       #   required_singular_enum = :ZERO
+      #
+      #   # TODO: Initialize +required_singular_string+:
       #   required_singular_string = ''
+      #
+      #   # TODO: Initialize +required_singular_bytes+:
       #   required_singular_bytes = ''
+      #
+      #   # TODO: Initialize +required_singular_message+:
       #   required_singular_message = {}
+      #
+      #   # TODO: Initialize +required_singular_resource_name+:
       #   required_singular_resource_name = ''
+      #
+      #   # TODO: Initialize +required_singular_resource_name_oneof+:
       #   required_singular_resource_name_oneof = ''
+      #
+      #   # TODO: Initialize +required_singular_resource_name_common+:
+      #   required_singular_resource_name_common = ''
+      #
+      #   # TODO: Initialize +required_singular_fixed32+:
       #   required_singular_fixed32 = 0
+      #
+      #   # TODO: Initialize +required_singular_fixed64+:
       #   required_singular_fixed64 = 0
+      #
+      #   # TODO: Initialize +required_repeated_int32+:
       #   required_repeated_int32 = []
+      #
+      #   # TODO: Initialize +required_repeated_int64+:
       #   required_repeated_int64 = []
+      #
+      #   # TODO: Initialize +required_repeated_float+:
       #   required_repeated_float = []
+      #
+      #   # TODO: Initialize +required_repeated_double+:
       #   required_repeated_double = []
+      #
+      #   # TODO: Initialize +required_repeated_bool+:
       #   required_repeated_bool = []
+      #
+      #   # TODO: Initialize +required_repeated_enum+:
       #   required_repeated_enum = []
+      #
+      #   # TODO: Initialize +required_repeated_string+:
       #   required_repeated_string = []
+      #
+      #   # TODO: Initialize +required_repeated_bytes+:
       #   required_repeated_bytes = []
+      #
+      #   # TODO: Initialize +required_repeated_message+:
       #   required_repeated_message = []
+      #
+      #   # TODO: Initialize +formatted_required_repeated_resource_name+:
       #   formatted_required_repeated_resource_name = []
+      #
+      #   # TODO: Initialize +formatted_required_repeated_resource_name_oneof+:
       #   formatted_required_repeated_resource_name_oneof = []
+      #
+      #   # TODO: Initialize +required_repeated_resource_name_common+:
+      #   required_repeated_resource_name_common = []
+      #
+      #   # TODO: Initialize +required_repeated_fixed32+:
       #   required_repeated_fixed32 = []
+      #
+      #   # TODO: Initialize +required_repeated_fixed64+:
       #   required_repeated_fixed64 = []
+      #
+      #   # TODO: Initialize +required_map+:
       #   required_map = {}
-      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -2378,6 +2596,7 @@ module Library
           required_singular_message,
           required_singular_resource_name,
           required_singular_resource_name_oneof,
+          required_singular_resource_name_common,
           required_singular_fixed32,
           required_singular_fixed64,
           required_repeated_int32,
@@ -2391,6 +2610,7 @@ module Library
           required_repeated_message,
           required_repeated_resource_name,
           required_repeated_resource_name_oneof,
+          required_repeated_resource_name_common,
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
@@ -2405,6 +2625,7 @@ module Library
           optional_singular_message: nil,
           optional_singular_resource_name: nil,
           optional_singular_resource_name_oneof: nil,
+          optional_singular_resource_name_common: nil,
           optional_singular_fixed32: nil,
           optional_singular_fixed64: nil,
           optional_repeated_int32: nil,
@@ -2418,10 +2639,12 @@ module Library
           optional_repeated_message: nil,
           optional_repeated_resource_name: nil,
           optional_repeated_resource_name_oneof: nil,
+          optional_repeated_resource_name_common: nil,
           optional_repeated_fixed32: nil,
           optional_repeated_fixed64: nil,
           optional_map: nil,
-          options: nil
+          options: nil,
+          &block
         req = {
           required_singular_int32: required_singular_int32,
           required_singular_int64: required_singular_int64,
@@ -2434,6 +2657,7 @@ module Library
           required_singular_message: required_singular_message,
           required_singular_resource_name: required_singular_resource_name,
           required_singular_resource_name_oneof: required_singular_resource_name_oneof,
+          required_singular_resource_name_common: required_singular_resource_name_common,
           required_singular_fixed32: required_singular_fixed32,
           required_singular_fixed64: required_singular_fixed64,
           required_repeated_int32: required_repeated_int32,
@@ -2447,6 +2671,7 @@ module Library
           required_repeated_message: required_repeated_message,
           required_repeated_resource_name: required_repeated_resource_name,
           required_repeated_resource_name_oneof: required_repeated_resource_name_oneof,
+          required_repeated_resource_name_common: required_repeated_resource_name_common,
           required_repeated_fixed32: required_repeated_fixed32,
           required_repeated_fixed64: required_repeated_fixed64,
           required_map: required_map,
@@ -2461,6 +2686,7 @@ module Library
           optional_singular_message: optional_singular_message,
           optional_singular_resource_name: optional_singular_resource_name,
           optional_singular_resource_name_oneof: optional_singular_resource_name_oneof,
+          optional_singular_resource_name_common: optional_singular_resource_name_common,
           optional_singular_fixed32: optional_singular_fixed32,
           optional_singular_fixed64: optional_singular_fixed64,
           optional_repeated_int32: optional_repeated_int32,
@@ -2474,12 +2700,13 @@ module Library
           optional_repeated_message: optional_repeated_message,
           optional_repeated_resource_name: optional_repeated_resource_name,
           optional_repeated_resource_name_oneof: optional_repeated_resource_name_oneof,
+          optional_repeated_resource_name_common: optional_repeated_resource_name_common,
           optional_repeated_fixed32: optional_repeated_fixed32,
           optional_repeated_fixed64: optional_repeated_fixed64,
           optional_map: optional_map
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest)
-        @test_optional_required_flattening_params.call(req, options)
+        @test_optional_required_flattening_params.call(req, options, &block)
       end
     end
   end
@@ -2690,22 +2917,20 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
-  gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
-  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
-  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
 end
 
 ============== file: test/library/v1/library_service_client_test.rb ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -2792,7 +3017,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::CreateShelfRequest, request)
         assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
@@ -2808,6 +3033,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.create_shelf(shelf) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -2867,7 +3099,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
@@ -2883,6 +3115,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_shelf(formatted_name, options_) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -2933,7 +3172,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
@@ -2993,7 +3232,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::DeleteShelfRequest, request)
         assert_equal(formatted_name, request.name)
-        nil
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
@@ -3009,6 +3248,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.delete_shelf(formatted_name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3068,7 +3314,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::MergeShelvesRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
@@ -3084,6 +3330,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.merge_shelves(formatted_name, formatted_other_shelf_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3147,7 +3400,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::CreateBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
@@ -3163,6 +3416,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.create_book(formatted_name, book) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3225,7 +3485,7 @@ describe Library::V1::LibraryServiceClient do
         end
         assert_equal(books, request.books)
         assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
@@ -3245,6 +3505,17 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.publish_series(
+            shelf,
+            books,
+            series_uuid
+          ) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3316,7 +3587,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
@@ -3332,6 +3603,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3373,6 +3651,7 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes list_books without error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      filter = "book-filter-string"
 
       # Create expected grpc response
       next_page_token = ""
@@ -3385,7 +3664,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
@@ -3397,7 +3676,7 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.list_books(formatted_name)
+          response = client.list_books(formatted_name, filter: filter)
 
           # Verify the response
           assert(response.instance_of?(Google::Gax::PagedEnumerable))
@@ -3411,6 +3690,7 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes list_books with error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      filter = "book-filter-string"
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -3429,7 +3709,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.list_books(formatted_name)
+            client.list_books(formatted_name, filter: filter)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -3450,7 +3730,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::DeleteBookRequest, request)
         assert_equal(formatted_name, request.name)
-        nil
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
@@ -3466,6 +3746,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.delete_book(formatted_name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3527,7 +3814,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::UpdateBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
@@ -3543,6 +3830,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.update_book(formatted_name, book) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3606,7 +3900,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::MoveBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
@@ -3622,6 +3916,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.move_book(formatted_name, formatted_other_shelf_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3672,7 +3973,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
@@ -3745,7 +4046,7 @@ describe Library::V1::LibraryServiceClient do
           Google::Gax::to_proto(req, Google::Example::Library::V1::Comment)
         end
         assert_equal(comments, request.comments)
-        nil
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
@@ -3761,6 +4062,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.add_comments(formatted_name, comments) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3833,7 +4141,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
@@ -3849,6 +4157,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_archive(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3910,7 +4225,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
@@ -3926,6 +4241,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -3987,7 +4309,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
@@ -4003,6 +4325,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_book_from_absolutely_anywhere(formatted_name) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4053,8 +4382,8 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::UpdateBookIndexRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(index_name, request.index_name)
-        assert_equal(Google::Gax::to_proto(index_map, Google::Example::Library::V1::UpdateBookIndexRequest::IndexMapEntry), request.index_map)
-        nil
+        assert_equal(index_map, request.index_map)
+        OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
@@ -4074,6 +4403,17 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_nil(response)
+
+          # Call method with block
+          client.update_book_index(
+            formatted_name,
+            index_name,
+            index_map
+          ) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4090,7 +4430,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::UpdateBookIndexRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(index_name, request.index_name)
-        assert_equal(Google::Gax::to_proto(index_map, Google::Example::Library::V1::UpdateBookIndexRequest::IndexMapEntry), request.index_map)
+        assert_equal(index_map, request.index_map)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
@@ -4419,7 +4759,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
         assert_equal(names, request.names)
         assert_equal(shelves, request.shelves)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
@@ -4493,7 +4833,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(tag, request.tag)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
@@ -4509,6 +4849,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.add_tag(formatted_resource, tag) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4563,7 +4910,7 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(label, request.label)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
@@ -4579,6 +4926,13 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.add_label(formatted_resource, label) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4865,6 +5219,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -4878,6 +5233,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
+      required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -4900,6 +5256,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -4916,10 +5273,11 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
-        assert_equal(Google::Gax::to_proto(required_map, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::RequiredMapEntry), request.required_map)
-        expected_response
+        assert_equal(required_map, request.required_map)
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
@@ -4943,6 +5301,7 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             required_singular_resource_name,
             required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -4956,6 +5315,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
+            required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -4963,6 +5323,43 @@ describe Library::V1::LibraryServiceClient do
 
           # Verify the response
           assert_equal(expected_response, response)
+
+          # Call method with block
+          client.test_optional_required_flattening_params(
+            required_singular_int32,
+            required_singular_int64,
+            required_singular_float,
+            required_singular_double,
+            required_singular_bool,
+            required_singular_enum,
+            required_singular_string,
+            required_singular_bytes,
+            required_singular_message,
+            required_singular_resource_name,
+            required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
+            required_singular_fixed32,
+            required_singular_fixed64,
+            required_repeated_int32,
+            required_repeated_int64,
+            required_repeated_float,
+            required_repeated_double,
+            required_repeated_bool,
+            required_repeated_enum,
+            required_repeated_string,
+            required_repeated_bytes,
+            required_repeated_message,
+            formatted_required_repeated_resource_name,
+            formatted_required_repeated_resource_name_oneof,
+            required_repeated_resource_name_common,
+            required_repeated_fixed32,
+            required_repeated_fixed64,
+            required_map
+          ) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            assert_not_nil(operation)
+          end
         end
       end
     end
@@ -4980,6 +5377,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -4993,6 +5391,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
+      required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -5011,6 +5410,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -5027,9 +5427,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
-        assert_equal(Google::Gax::to_proto(required_map, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::RequiredMapEntry), request.required_map)
+        assert_equal(required_map, request.required_map)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
@@ -5055,6 +5456,7 @@ describe Library::V1::LibraryServiceClient do
               required_singular_message,
               required_singular_resource_name,
               required_singular_resource_name_oneof,
+              required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
@@ -5068,6 +5470,7 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_message,
               formatted_required_repeated_resource_name,
               formatted_required_repeated_resource_name_oneof,
+              required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
               required_map

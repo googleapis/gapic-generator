@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,13 +28,15 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext transformationContext) {
+  public ImportSectionView generateImportSection(
+      TransformationContext transformationContext, String className) {
     // TODO support non-Gapic inputs
     GapicInterfaceContext context = (GapicInterfaceContext) transformationContext;
     Set<String> importFilenames = generateImportFilenames(context);
@@ -58,6 +60,21 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     importSection.standardImports(generateTestStandardImports());
     importSection.externalImports(generateTestExternalImports(context));
     importSection.appImports(generateTestAppImports(context));
+    importSection.serviceImports(none);
+    return importSection.build();
+  }
+
+  public ImportSectionView generateRakefileAcceptanceTaskImportSection(
+      List<GapicInterfaceContext> contexts) {
+    List<ImportFileView> none = ImmutableList.of();
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.standardImports(none);
+    importSection.externalImports(none);
+    Set<ImportFileView> credentialsImports = new HashSet<>();
+    for (GapicInterfaceContext context : contexts) {
+      credentialsImports.add(createImport(context.getNamer().getCredentialsClassImportName()));
+    }
+    importSection.appImports(ImmutableList.copyOf(credentialsImports));
     importSection.serviceImports(none);
     return importSection.build();
   }

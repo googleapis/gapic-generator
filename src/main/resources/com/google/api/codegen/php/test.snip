@@ -19,51 +19,20 @@
 @end
 
 @private setupMethods(testClass)
-    @join mockService : testClass.mockServices
-        public function create{@mockService.implName}($hostname, $opts)
-        {
-            return new {@mockService.implName}($hostname, $opts);
-        }
-
-    @end
-
-    @if testClass.apiHasLongRunningMethods
-        public function createMockOperationsStub($hostname, $opts)
-        {
-            return new MockOperationsImpl($hostname, $opts);
-        }
-
-    @end
-    private function createStub($createGrpcStub)
+    /**
+     * @@return TransportInterface
+     */
+    private function createTransport($deserialize = null)
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([
-            @if testClass.missingDefaultServiceAddress
-                'serviceAddress' => 'unknown-service-address',
-            @else
-                'serviceAddress' => {@testClass.apiClassName}::SERVICE_ADDRESS,
-            @end
-            'port' => {@testClass.apiClassName}::DEFAULT_SERVICE_PORT,
-            'scopes' => ['unknown-service-scopes'],
-        ]);
-        return $grpcCredentialsHelper->createStub($createGrpcStub);
+        return new MockTransport($deserialize);
     }
 
     /**
      * @@return {@testClass.apiClassName}
      */
-    private function createClient($createStubFuncName, $grpcStub, $options = [])
+    private function createClient(array $options = [])
     {
-        return new {@testClass.apiClassName}($options + [
-            $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-            @if testClass.missingDefaultServiceAddress
-                'serviceAddress' => 'unknown-service-address',
-            @end
-            @if testClass.missingDefaultServiceScopes
-                'scopes' => ['unknown-service-scopes'],
-            @end
-        ]);
+        return new {@testClass.apiClassName}($options);
     }
 @end
 
@@ -84,7 +53,7 @@
     @join initCodeItem : responseInitCodeList
         {@initCode(initCodeItem, "client")}
         @join line : initCodeItem.topLevelLines
-            $grpcStub->addResponse(${@line.identifier});
+            $transport->addResponse(${@line.identifier});
         @end
     @end
 @end
@@ -115,10 +84,10 @@
      */
     public function {@test.name}()
     {
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
 
         // Mock response
         {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
@@ -142,14 +111,14 @@
 
         {@responseAssertStreaming(test.grpcStreamingView)}
 
-        $createStreamRequests = $grpcStub->popReceivedCalls();
+        $createStreamRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($createStreamRequests));
         $streamFuncCall = $createStreamRequests[0]->getFuncCall();
         $streamRequestObject = $createStreamRequests[0]->getRequestObject();
         $this->assertSame('{@test.grpcStubCallString}', $streamFuncCall);
         $this->assertNull($streamRequestObject);
 
-        $callObjects = $grpcStub->popCallObjects();
+        $callObjects = $transport->popCallObjects();
         $this->assertSame(1, count($callObjects));
         $bidiCall = $callObjects[0];
 
@@ -162,7 +131,7 @@
         @end
         $this->assertEquals($expectedRequests, $writeRequests);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
     }
 
     /**
@@ -170,14 +139,14 @@
      */
     public function {@test.nameWithException}()
     {
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
 
         {@createErrorStatus()}
 
-        $grpcStub->setStreamingStatus($status);
+        $transport->setStreamingStatus($status);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
 
         $bidi = $client->{@test.clientMethodName}();
         $results = $bidi->closeWriteAndReadAll();
@@ -192,8 +161,8 @@
         }
 
         // Call popReceivedCalls to ensure the stub is exhausted
-        $grpcStub->popReceivedCalls();
-        $this->assertTrue($grpcStub->isExhausted());
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
     }
 @end
 
@@ -203,10 +172,10 @@
      */
     public function {@test.name}()
     {
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
 
         // Mock response
         {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
@@ -223,7 +192,7 @@
 
         {@singleCallSuccessAsserts(test)}
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
     }
 
     /**
@@ -231,14 +200,14 @@
      */
     public function {@test.nameWithException}()
     {
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
 
         {@createErrorStatus()}
 
-        $grpcStub->setStreamingStatus($status);
+        $transport->setStreamingStatus($status);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
 
         // Mock request
         {@initCode(test.initCode, "client")}
@@ -256,8 +225,8 @@
         }
 
         // Call popReceivedCalls to ensure the stub is exhausted
-        $grpcStub->popReceivedCalls();
-        $this->assertTrue($grpcStub->isExhausted());
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
     }
 @end
 
@@ -269,7 +238,7 @@
     @case "PagedOptionalArrayMethod"
         {@pageStreamingTestCase(test)}
         {@simpleExceptionTestCase(test)}
-    @case "OperationOptionalArrayMethod"
+    @case "LongRunningOptionalArrayMethod"
         {@lroTestCase(test)}
         {@lroExceptionTestCase(test)}
     @default
@@ -305,7 +274,7 @@
         @end
         {@singleCallSuccessAsserts(test)}
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
     }
 @end
 
@@ -325,7 +294,7 @@
         @end
 
         {@singleCallSuccessAsserts(test)}
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
     }
 @end
 
@@ -336,13 +305,13 @@
      */
     public function {@test.nameWithException}()
     {
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
 
-        $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
 
         {@createErrorStatus()}
-        $grpcStub->addResponse(null, $status);
+        $transport->addResponse(null, $status);
 
         @if test.hasRequestParameters
           // Mock request
@@ -359,8 +328,8 @@
         }
 
         // Call popReceivedCalls to ensure the stub is exhausted
-        $grpcStub->popReceivedCalls();
-        $this->assertTrue($grpcStub->isExhausted());
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
     }
 @end
 
@@ -370,27 +339,26 @@
      */
     public function {@test.name}()
     {
-        $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
+        $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
             'scopes' => [],
-            'createOperationsStubFunction' => function ($hostname, $opts) use ($operationsStub) {
-                return $operationsStub;
-            }
+            'transport' => $operationsTransport
         ]);
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub, [
+        $transport = $this->createTransport();
+        $client = $this->createClient([
+            'transport' => $transport,
             'operationsClient' => $operationsClient
         ]);
 
-        $this->assertTrue($grpcStub->isExhausted());
-        $this->assertTrue($operationsStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
+        $this->assertTrue($operationsTransport->isExhausted());
 
         // Mock response
         $incompleteOperation = new Operation();
         $incompleteOperation->setName('operations/{@test.name}');
         $incompleteOperation->setDone(false);
-        $grpcStub->addResponse($incompleteOperation);
+        $transport->addResponse($incompleteOperation);
         @if test.hasReturnValue
             {@initCode(test.mockResponse.initCode, "client")}
         @else
@@ -402,7 +370,7 @@
         $completeOperation->setName('operations/{@test.name}');
         $completeOperation->setDone(true);
         $completeOperation->setResponse($anyResponse);
-        $operationsStub->addResponse($completeOperation);
+        $operationsTransport->addResponse($completeOperation);
 
         @if test.hasRequestParameters
           // Mock request
@@ -420,9 +388,9 @@
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
-        $apiRequestsEmpty = $grpcStub->popReceivedCalls();
+        $apiRequestsEmpty = $transport->popReceivedCalls();
         $this->assertSame(0, count($apiRequestsEmpty));
-        $operationsRequests = $operationsStub->popReceivedCalls();
+        $operationsRequests = $operationsTransport->popReceivedCalls();
         $this->assertSame(1, count($operationsRequests));
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
@@ -430,8 +398,8 @@
         $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
         $this->assertEquals($expectedOperationsRequestObject, $actualOperationsRequestObject);
 
-        $this->assertTrue($grpcStub->isExhausted());
-        $this->assertTrue($operationsStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
+        $this->assertTrue($operationsTransport->isExhausted());
     }
 @end
 
@@ -442,30 +410,29 @@
      */
     public function {@test.nameWithException}()
     {
-        $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
+        $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
             'scopes' => [],
-            'createOperationsStubFunction' => function ($hostname, $opts) use ($operationsStub) {
-                return $operationsStub;
-            }
+            'transport' => $operationsTransport
         ]);
-        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub, [
+        $transport = $this->createTransport();
+        $client = $this->createClient([
+            'transport' => $transport,
             'operationsClient' => $operationsClient
         ]);
 
-        $this->assertTrue($grpcStub->isExhausted());
-        $this->assertTrue($operationsStub->isExhausted());
+        $this->assertTrue($transport->isExhausted());
+        $this->assertTrue($operationsTransport->isExhausted());
 
         // Mock response
         $incompleteOperation = new Operation();
         $incompleteOperation->setName('operations/{@test.name}');
         $incompleteOperation->setDone(false);
-        $grpcStub->addResponse($incompleteOperation);
+        $transport->addResponse($incompleteOperation);
 
         {@createErrorStatus()}
-        $operationsStub->addResponse(null, $status);
+        $operationsTransport->addResponse(null, $status);
 
         @if test.hasRequestParameters
           // Mock request
@@ -489,10 +456,10 @@
         }
 
         // Call popReceivedCalls to ensure the stubs are exhausted
-        $grpcStub->popReceivedCalls();
-        $operationsStub->popReceivedCalls();
-        $this->assertTrue($grpcStub->isExhausted());
-        $this->assertTrue($operationsStub->isExhausted());
+        $transport->popReceivedCalls();
+        $operationsTransport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+        $this->assertTrue($operationsTransport->isExhausted());
     }
 @end
 
@@ -501,10 +468,10 @@
 @end
 
 @private singleCallTestSetup(test)
-    $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
-    $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+    $transport = $this->createTransport();
+    $client = $this->createClient(['transport' => $transport]);
 
-    $this->assertTrue($grpcStub->isExhausted());
+    $this->assertTrue($transport->isExhausted());
 
     // Mock response
     @if test.hasReturnValue
@@ -512,7 +479,7 @@
     @else
         $expectedResponse = new GPBEmpty();
     @end
-    $grpcStub->addResponse($expectedResponse);
+    $transport->addResponse($expectedResponse);
 
     @if test.hasRequestParameters
       // Mock request
@@ -522,41 +489,45 @@
 @end
 
 @private singleCallSuccessAsserts(test)
-    $actualRequests = $grpcStub->popReceivedCalls();
+    $actualRequests = $transport->popReceivedCalls();
     $this->assertSame(1, count($actualRequests));
     $actualFuncCall = $actualRequests[0]->getFuncCall();
     $actualRequestObject = $actualRequests[0]->getRequestObject();
     $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
 
     @join assert : test.asserts
+        $actualValue = $actualRequestObject->{@assert.actualValueGetter}();
+
         @if assert.hasExpectedValueTransformFunction
             $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                $actualRequestObject->{@assert.actualValueGetter}());
+                $actualValue);
         @else
             $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
-                $actualRequestObject->{@assert.actualValueGetter}());
+                $actualValue);
         @end
     @end
 @end
 
 @private lroCallSuccessAsserts(test)
-    $apiRequests = $grpcStub->popReceivedCalls();
+    $apiRequests = $transport->popReceivedCalls();
     $this->assertSame(1, count($apiRequests));
-    $operationsRequestsEmpty = $operationsStub->popReceivedCalls();
+    $operationsRequestsEmpty = $operationsTransport->popReceivedCalls();
     $this->assertSame(0, count($operationsRequestsEmpty));
 
     $actualApiFuncCall = $apiRequests[0]->getFuncCall();
     $actualApiRequestObject = $apiRequests[0]->getRequestObject();
     $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
     @join assert : test.asserts
+        $actualValue = $actualApiRequestObject->{@assert.actualValueGetter}();
+
         @if assert.hasExpectedValueTransformFunction
             $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                $actualApiRequestObject->{@assert.actualValueGetter}());
+                $actualValue);
         @else
             $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
-                $actualApiRequestObject->{@assert.actualValueGetter}());
+                $actualValue);
         @end
     @end
 @end

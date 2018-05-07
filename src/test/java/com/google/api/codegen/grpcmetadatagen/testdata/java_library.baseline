@@ -1,7 +1,7 @@
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        https://www.apache.org/licenses/
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -193,7 +193,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -209,12 +209,10 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
 description = 'PROTO library for proto-google-cloud-library-v1'
-group = "com.google.api.grpc"
-version = "0.1.7"
+group = 'com.google.api.grpc'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -224,19 +222,17 @@ repositories {
 }
 
 dependencies {
-  compile "com.google.protobuf:protobuf-java:3.0.0"
-  compile "com.google.api:api-common:0.0.2"
-  compile project(":proto-google-common-protos")
-  compile project(":proto-google-some-other-package-v1")
-}
-
-ext {
-  packageName = 'proto-google-cloud-library-v1'
-  javaDocRoot = projectDir.getAbsolutePath() + '/tmp_gh-pages'
+  compile 'com.google.protobuf:protobuf-java:3.0.0'
+  compile 'com.google.api:api-common:0.0.2'
+  compile 'com.google.api.grpc:proto-google-common-protos:0.1.6'
+  compile 'com.google.api.grpc:proto-google-some-other-package-v1:0.0.0'
 }
 
 sourceSets {
   main {
+    resources {
+      srcDir 'src/main/proto'
+    }
     java {
       srcDir 'src/main/java'
     }
@@ -257,117 +253,42 @@ artifacts {
   archives javadocJar, sourcesJar
 }
 
-signing {
-  required false
-  sign configurations.archives
-}
-
-if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: ossrhUsername, password: ossrhPassword)
-        }
-
-        pom.project {
-          name "com.google.api.grpc:proto-google-cloud-library-v1"
-          description project.description
-          url 'https://github.com/googleapis/googleapis'
-          scm {
-            url 'https://github.com/googleapis/googleapis'
-            connection 'scm:git:https://github.com/googleapis/googleapis'
-          }
-
-          licenses {
-            license {
-              name 'Apache-2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-            }
-          }
-
-          developers {
-            developer {
-              id 'Google LLC'
-              name 'Google LLC'
-              email 'googleapis-packages@google.com'
-              url 'https://github.com/googleapis/googleapis'
-              organization 'Google LLC'
-              organizationUrl 'https://www.google.com'
-            }
-          }
-        }
-      }
-    }
-  }
-} else {
-  task failUploadArchives << {
-    throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
-      + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
-  }
-  tasks.uploadArchives.dependsOn(failUploadArchives)
-}
-
-task checkOutGhPages << {
-  if (!new File(javaDocRoot).exists()) {
-    exec {
-      workingDir projectDir
-      commandLine 'git', 'clone', '--branch', 'gh-pages',
-          '--single-branch', 'git@github.com:googleapis/googleapis.git', 'tmp_gh-pages'
-    }
-  }
-}
-
-task copyFilesToGhPages {
-  dependsOn 'checkOutGhPages'
-  dependsOn 'javadoc'
-  doLast {
-    def newSiteDirPath = javaDocRoot + "/java/${packageName}/${project.version}/apidocs/"
-    new File(newSiteDirPath).mkdirs()
-    copy {
-      from 'build/docs/javadoc'
-      into newSiteDirPath
-    }
-  }
-}
-
-// Regenerates the gh-pages branch under tmp_gh-pages
-task updateDocs {
-  dependsOn 'copyFilesToGhPages'
-  doLast {
-    def outputContent = new File(projectDir.getAbsolutePath() + '/templates/apidocs_index.html.template').text
-    outputContent = outputContent.replace('{{siteVersion}}', project.version)
-    outputContent = outputContent.replace('{{packageName}}', packageName)
-    new File(javaDocRoot + "/java/${packageName}/apidocs").mkdirs()
-    new File(javaDocRoot + "/java/${packageName}/apidocs/index.html").write(outputContent)
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'add', '.'
-    }
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'commit', '-m', "Regenerating docs for ${packageName} ${project.version}"
-    }
-    println 'New docs have been generated under tmp_gh-pages and have been committed;'
-    println 'Next they just need to be pushed with "git push".'
-  }
-}
-
-// Regenerates and push the gh-pages branch under tmp_gh-pages
-task updateAndPushDocs {
-  dependsOn 'updateDocs'
-  doLast {
-    exec {
-      workingDir javaDocRoot
-      commandLine 'git', 'push'
-      println "New docs have been pushed to Github for ${packageName} ${project.version}"
-    }
-  }
-}
-
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+============== file: pom.xml ==============
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>proto-google-cloud-library-v1</artifactId>
+  <version>0.0.0-SNAPSHOT</version><!-- {x-version-update:proto-google-cloud-library-v1:current} -->
+  <name>proto-google-cloud-library-v1</name>
+  <description>PROTO library for proto-google-cloud-library-v1</description>
+  <parent>
+    <groupId>com.google.api.grpc</groupId>
+    <artifactId>google-api-pom</artifactId>
+    <version>0.0.0-SNAPSHOT</version><!-- {x-version-update:google-api-pom:current} -->
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-some-other-package-v1</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

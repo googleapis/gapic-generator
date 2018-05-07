@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,55 +14,65 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-import java.util.HashSet;
+import com.google.api.tools.framework.model.TypeRef;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A file-based view of model, consisting of a strategy for getting the protocol buffer files from
  * which the model was constructed.
  */
-public class ProtoFileView implements InputElementView<ProtoFile> {
+public class ProtoFileView {
 
   /**
    * Gets the ProtoFile objects in which the fields of the reachable methods in the model are
    * defined.
    */
-  @Override
-  public Iterable<ProtoFile> getElementIterable(Model model) {
-    Set<ProtoFile> files = new HashSet<>();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      for (Method method : apiInterface.getMethods()) {
-        if (!method.isReachable()) {
-          continue;
-        }
-        for (Field field : method.getInputType().getMessageType().getFields()) {
-          files.addAll(protoFiles(field));
-        }
-        for (Field field : method.getOutputType().getMessageType().getFields()) {
-          files.addAll(protoFiles(field));
-        }
+  public Iterable<ProtoFile> getProtoFiles(GapicProductConfig productConfig) {
+    Set<ProtoFile> files = newFileSet();
+    for (InterfaceConfig interfaceConfig : productConfig.getInterfaceConfigMap().values()) {
+      for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+        MethodModel method = methodConfig.getMethodModel();
+        files.addAll(
+            getFilesForMessage(
+                ((ProtoTypeRef) method.getInputType()).getProtoType().getMessageType(), false));
+        files.addAll(
+            getFilesForMessage(
+                ((ProtoTypeRef) method.getOutputType()).getProtoType().getMessageType(), false));
       }
     }
     return files;
   }
 
-  private Set<ProtoFile> protoFiles(Field field) {
-    Set<ProtoFile> fields = new HashSet<ProtoFile>();
-    if (field.getType().getKind() != Type.TYPE_MESSAGE) {
-      return fields;
+  private Set<ProtoFile> getFilesForMessage(MessageType messageType, boolean messageOnly) {
+    Set<ProtoFile> files = newFileSet();
+    files.add(messageType.getFile());
+    if (messageOnly) {
+      return files;
     }
-    MessageType messageType = field.getType().getMessageType();
-    fields.add(messageType.getFile());
-    for (Field f : messageType.getNonCyclicFields()) {
-      fields.addAll(protoFiles(f));
+
+    for (Field field : messageType.getFields()) {
+      TypeRef type = field.getType();
+      if (type.isMessage()) {
+        files.addAll(getFilesForMessage(type.getMessageType(), type.isCyclic()));
+      }
     }
-    return fields;
+    return files;
+  }
+
+  private Set<ProtoFile> newFileSet() {
+    return new TreeSet<>((fileA, fileB) -> getPath(fileA).compareTo(getPath(fileB)));
+  }
+
+  private String getPath(ProtoFile file) {
+    return file.getFullName() + "." + file.getSimpleName();
   }
 }

@@ -30,15 +30,15 @@
       @if smokeTest.apiMethod.isLongRunningOperation
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, additionalCallback)})}
+            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, mochaCompletedCallback())})}
 
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, additionalCallback)})}
+            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, mochaCompletedCallback())})}
     @else
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}}
+            {@sampleCode(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback()))}}
       @end
     @case "PagedOptionalArrayMethod"
         {@smokeTestBody(smokeTest, \
@@ -51,7 +51,7 @@
 
         {@smokeTestBody(smokeTest, \
           "successfully makes a call to the service using streaming", \
-          {sampleCodePageStreaming(smokeTest.apiMethod, mochaCompletedCallback())})}
+          {sampleCodePageStreaming(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback())})}
     @default
         $unhandledCase: {@smokeTest.apiMethod.type.toString}$
     @end

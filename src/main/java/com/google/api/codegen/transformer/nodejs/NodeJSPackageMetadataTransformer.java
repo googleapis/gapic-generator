@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -44,7 +43,6 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,14 +82,13 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    ProtoApiModel apiModel = new ProtoApiModel(model);
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.addAll(generateMetadataViews(apiModel, productConfig, namer));
-    models.add(generateReadmeView(apiModel, productConfig, namer));
+    models.addAll(generateMetadataViews(model, productConfig, namer));
+    models.add(generateReadmeView(model, productConfig, namer));
     return models;
   }
 
@@ -120,7 +117,9 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.NODEJS))
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
-                    namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.NODEJS)))
+                    namer.getReleaseAnnotation(
+                        metadataTransformer.getMergedReleaseLevel(
+                            packageConfig, productConfig, TargetLanguage.NODEJS)))
                 .targetLanguage("Node.js")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(

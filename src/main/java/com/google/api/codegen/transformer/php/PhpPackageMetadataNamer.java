@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,12 +21,40 @@ import com.google.api.codegen.util.php.PhpPackageUtil;
 /** PHPPackageMetadataNamer provides PHP specific names for metadata views. */
 public class PhpPackageMetadataNamer extends PackageMetadataNamer {
   private Name serviceName;
-  private String domainLayerLocation;
+  private String metadataIdenfifier;
 
   public PhpPackageMetadataNamer(String packageName, String domainLayerLocation) {
-    // Get the service name from the package name by removing the version suffix (if any).
-    this.serviceName = getApiNameFromPackageName(packageName);
-    this.domainLayerLocation = domainLayerLocation;
+    String basePackageName = PhpPackageUtil.getBasePackageName(packageName);
+    String[] packagePieces = PhpPackageUtil.splitPackageName(basePackageName);
+
+    this.serviceName = Name.upperCamel(packagePieces);
+
+    // To build metadata identifier, update pieces to be lowercase, so each piece is treated as a
+    // single piece in the Name object
+    for (int i = 0; i < packagePieces.length; i++) {
+      packagePieces[i] = packagePieces[i].toLowerCase();
+    }
+
+    Name composerVendor;
+    Name composerPackage;
+    // The metadataIdentifier for composer is formatted as "vendor/package". If a
+    // domainLayerLocation is provided, set that as the vendor. Otherwise, take the first piece of
+    // packagePieces to use as the vendor.
+    if (domainLayerLocation != null && !domainLayerLocation.isEmpty()) {
+      composerVendor = Name.anyCamel(domainLayerLocation);
+      composerPackage = Name.anyLower(packagePieces);
+    } else if (packagePieces.length == 1) {
+      composerVendor = Name.anyLower(packagePieces[0]);
+      composerPackage = composerVendor;
+    } else {
+      composerVendor = Name.anyLower(packagePieces[0]);
+      composerPackage = Name.from();
+      for (int i = 1; i < packagePieces.length; i++) {
+        composerPackage = composerPackage.join(Name.anyLower(packagePieces[i]));
+      }
+    }
+    metadataIdenfifier =
+        composerVendor.toSeparatedString("-") + "/" + composerPackage.toSeparatedString("-");
   }
 
   @Override
@@ -36,24 +64,6 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
 
   @Override
   public String getMetadataIdentifier() {
-    String serviceNameLower = serviceName.toSeparatedString("");
-    if (domainLayerLocation != null && !domainLayerLocation.isEmpty()) {
-      return domainLayerLocation + "/" + serviceNameLower;
-    } else {
-      return serviceNameLower + "/" + serviceNameLower;
-    }
-  }
-
-  public static Name getApiNameFromPackageName(String packageName) {
-    String[] names = PhpPackageUtil.splitPackageName(packageName);
-    if (names.length < 2) {
-      return Name.upperCamel(packageName);
-    } else {
-      String serviceName = names[names.length - 1];
-      if (PhpPackageUtil.isPackageVersion(serviceName)) {
-        serviceName = names[names.length - 2];
-      }
-      return Name.upperCamel(serviceName);
-    }
+    return metadataIdenfifier;
   }
 }

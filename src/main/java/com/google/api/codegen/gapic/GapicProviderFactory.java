@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,16 +20,15 @@ import com.google.api.tools.framework.model.Model;
 import java.util.List;
 
 /** A factory for GapicProviders which perform code generation. */
-public interface GapicProviderFactory<ProviderT> {
+public interface GapicProviderFactory {
   /**
    * Create the provider from the given model, configs and the output path.
    *
    * <p>The outputPath is used for copying static files from resources into the output directory.
    */
-  List<ProviderT> create(
+  List<GapicProvider<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig,
-      String outputPath);
+      PackageMetadataConfig packageConfig);
 }

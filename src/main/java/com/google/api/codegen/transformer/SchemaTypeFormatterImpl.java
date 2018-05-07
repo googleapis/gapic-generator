@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,12 +34,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type) {
+  public String getFullNameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getFullName();
   }
 
   @Override
-  public String getInnerTypeNameFor(Schema type) {
+  public String getInnerTypeNameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getInnerTypeNames().get(0).getNickname();
   }
 
@@ -49,18 +49,18 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getNicknameFor(Schema type) {
+  public String getNicknameFor(DiscoveryField type) {
     return typeNameConverter.getTypeName(type).getNickname();
   }
 
   @Override
   public String getNicknameFor(TypeModel type) {
-    return getNicknameFor(((DiscoveryField) type).getDiscoveryField());
+    return getNicknameFor((DiscoveryField) type);
   }
 
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
-    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+    return typeNameConverter.renderPrimitiveValue(type, key);
   }
 
   @Override
@@ -70,7 +70,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldModel type) {
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameFor((DiscoveryField) type);
   }
 
   @Override
@@ -80,11 +80,17 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameForMessageType(TypeModel type) {
-    return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
+    return getFullNameFor((DiscoveryField) type);
   }
 
   @Override
   public String getFullNameForElementType(FieldModel type) {
+    return getFullNameFor(type);
+  }
+
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(TypeModel type) {
     return getFullNameFor(type);
   }
 
@@ -101,6 +107,6 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
   public String getNicknameFor(FieldModel type) {
-    return getNicknameFor(((DiscoveryField) type).getDiscoveryField());
+    return getNicknameFor((DiscoveryField) type);
   }
 }

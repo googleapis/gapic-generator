@@ -1,7 +1,7 @@
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        https://www.apache.org/licenses/
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -193,7 +193,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -204,6 +204,7 @@
 ============== file: MANIFEST.in ==============
 include README.rst LICENSE
 recursive-include google *.json *.proto
+recursive-include tests *
 global-exclude *.py[co]
 global-exclude __pycache__
 
@@ -218,7 +219,7 @@ Python Client for Google Fake API (`Beta`_)
 
 .. _Beta: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Fake API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library-usage
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -227,12 +228,14 @@ Quick Start
 In order to use this library, you first need to go through the following steps:
 
 1. `Select or create a Cloud Platform project.`_
-2. `Enable the Google Fake API.`_
-3. `Setup Authentication.`_
+2. `Enable billing for your project.`_
+3. `Enable the Google Fake API.`_
+4. `Setup Authentication.`_
 
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
+.. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Fake API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/google-cloud-auth
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -625,7 +628,7 @@ Python Client for Google Fake API (`Beta`_)
 
 .. _Beta: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Fake API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library-usage
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -634,12 +637,14 @@ Quick Start
 In order to use this library, you first need to go through the following steps:
 
 1. `Select or create a Cloud Platform project.`_
-2. `Enable the Google Fake API.`_
-3. `Setup Authentication.`_
+2. `Enable billing for your project.`_
+3. `Enable the Google Fake API.`_
+4. `Setup Authentication.`_
 
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
+.. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Fake API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/google-cloud-auth
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -697,13 +702,13 @@ Api Reference
     gapic/v1/api
     gapic/v1/types
 ============== file: example.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -723,13 +728,13 @@ __all__ = (
     'NoTemplatesAPIServiceClient',
 )
 ============== file: example/__init__.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -755,28 +760,19 @@ __all__ = (
 ============== file: example/gapic/__init__.py ==============
 
 ============== file: example/gapic/no_templates_api_service_client.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# EDITING INSTRUCTIONS
-# This file was generated from the file
-# https://github.com/google/googleapis/blob/master/no_path_templates.proto,
-# and updates to that file get reflected here through a refresh process.
-# For the short term, the refresh process will only be runnable by Google engineers.
-#
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
 
 """Accesses the google.cloud.example.v1 NoTemplatesAPIService API."""
 
@@ -789,7 +785,9 @@ import google.api_core.grpc_helpers
 
 from example.gapic import no_templates_api_service_client_config
 from example.proto import no_path_templates_messages_pb2
-from example.proto import no_path_templates_pb2
+from example.proto import no_path_templates_pb2_grpc
+from google.protobuf import empty_pb2
+
 
 
 _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
@@ -807,72 +805,82 @@ class NoTemplatesAPIServiceClient(object):
     )
 
     # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary
-    _INTERFACE_NAME = (
-        'google.cloud.example.v1.NoTemplatesAPIService')
+    # method configuration in the client_config dictionary.
+    _INTERFACE_NAME = 'google.cloud.example.v1.NoTemplatesAPIService'
 
-    def __init__(self,
-            channel=None,
-            credentials=None,
+    def __init__(self, channel=None, credentials=None,
             client_config=no_templates_api_service_client_config.config,
             client_info=None):
         """Constructor.
 
         Args:
             channel (grpc.Channel): A ``Channel`` instance through
-                which to make calls. If specified, then the ``credentials``
-                argument is ignored.
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
             credentials (google.auth.credentials.Credentials): The
                 authorization credentials to attach to requests. These
                 credentials identify this application to the service. If none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
-            client_config (dict):
-                A dictionary of call options for each method. If not specified
-                the default configuration is used. Generally, you only need
-                to set this if you're developing your own client library.
+            client_config (dict): A dictionary of call options for each
+                method. If not specified, the default configuration is used.
             client_info (google.api_core.gapic_v1.client_info.ClientInfo):
                 The client info used to send a user-agent string along with
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
         if channel is not None and credentials is not None:
             raise ValueError(
-                'channel and credentials arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__))
+                'The `channel` and `credentials` arguments to {} are mutually '
+                'exclusive.'.format(self.__class__.__name__),
+            )
 
+        # Create the channel.
         if channel is None:
             channel = google.api_core.grpc_helpers.create_channel(
                 self.SERVICE_ADDRESS,
                 credentials=credentials,
-                scopes=self._DEFAULT_SCOPES)
+                scopes=self._DEFAULT_SCOPES,
+            )
 
+        # Create the gRPC stubs.
         self.no_templates_api_service_stub = (
-            no_path_templates_pb2.NoTemplatesAPIServiceStub(channel))
+            no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(channel))
 
 
         if client_info is None:
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
-
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
 
-        interface_config = client_config['interfaces'][self._INTERFACE_NAME]
+        # Parse out the default settings for retry and timeout for each RPC
+        # from the client configuration.
+        # (Ordinarily, these are the defaults specified in the `*_config.py`
+        # file next to this one.)
         method_configs = google.api_core.gapic_v1.config.parse_method_configs(
-            interface_config)
+            client_config['interfaces'][self._INTERFACE_NAME],
+        )
 
+        # Write the "inner API call" methods to the class.
+        # These are wrapped versions of the gRPC stub methods, with retry and
+        # timeout configuration applied, called by the public methods on
+        # this class.
         self._increment = google.api_core.gapic_v1.method.wrap_method(
             self.no_templates_api_service_stub.Increment,
             default_retry=method_configs['Increment'].retry,
             default_timeout=method_configs['Increment'].timeout,
-            client_info=client_info)
+            client_info=client_info,
+        )
 
     # Service calls
     def increment(
             self,
             retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT):
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
         """
         Increments something.
         Sometimes the comments are indented, but Sphinx doesn't like that. So
@@ -895,6 +903,8 @@ class NoTemplatesAPIServiceClient(object):
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -903,7 +913,7 @@ class NoTemplatesAPIServiceClient(object):
                     to a retryable error and retry attempts failed.
         """
         request = no_path_templates_messages_pb2.IncrementRequest()
-        self._increment(request, retry=retry, timeout=timeout)
+        self._increment(request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: example/gapic/no_templates_api_service_client_config.py ==============
 config = {
@@ -921,13 +931,13 @@ config = {
 }
 
 ============== file: example/types.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -960,13 +970,13 @@ for module in (no_path_templates_messages_pb2,
 
 __all__ = tuple(sorted(names))
 ============== file: nox.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -982,17 +992,27 @@ import nox
 
 
 @nox.session
-@nox.parametrize('python_version', ['2.7', '3.4', '3.5', '3.6'])
-def unit_tests(session, python_version):
+def default(session):
+    return unit(session, 'default')
+
+
+@nox.session
+@nox.parametrize('py', ['2.7', '3.4', '3.5', '3.6'])
+def unit(session, py):
     """Run the unit test suite."""
 
-    session.interpreter = 'python{}'.format(python_version)
+    # Run unit tests against all supported versions of Python.
+    if py != 'default':
+        session.interpreter = 'python{}'.format(py)
 
-    session.virtualenv_dirname = 'unit-' + python_version
+    # Set the virtualenv directory name.
+    session.virtualenv_dirname = 'unit-' + py
 
+    # Install all test dependencies, then install this package in-place.
     session.install('pytest')
     session.install('-e', '.')
 
+    # Run py.test against the unit tests.
     session.run('py.test', '--quiet', os.path.join('tests', 'unit'))
 
 
@@ -1008,36 +1028,65 @@ def lint_setup_py(session):
 universal = 1
 
 ============== file: setup.py ==============
-"""A setup module for the GAPIC Google Fake API library.
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-See:
-https://packaging.python.org/en/latest/distributing.html
-https://github.com/pypa/sampleproject
-"""
-
-from setuptools import setup, find_packages
 import io
-import sys
+import os
 
-install_requires = [
-    'google-api-core>=0.1.0, <0.2.0dev',
-    'google-auth>=1.0.2, <2.0dev',
-    'googleapis-common-protos[grpc]>=1.5.0, <2.0dev',
-    'python-other-package>=12.1.0, <13.5.1',
-    'requests>=2.18.4, <3.0dev',
+import setuptools
+
+
+
+name = 'google-cloud-library'
+description = 'Google Fake API API client library'
+version = '0.15.0'
+release_status = '4 - Beta'
+dependencies = [
+  'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
+
+  'python-other-package >= 12.1.0, < 13.5.1',
 ]
 
-with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
-    long_description = readme_file.read()
 
-setup(
-    name='google-cloud-library',
-    version='0.15.0',
+
+package_root = os.path.abspath(os.path.dirname(__file__))
+
+readme_filename = os.path.join(package_root, 'README.rst')
+with io.open(readme_filename, encoding='utf-8') as readme_file:
+    readme = readme_file.read()
+
+packages = [
+    package for package in setuptools.find_packages()
+    if package.startswith('google')]
+
+namespaces = ['google']
+if 'google.cloud' in packages:
+    namespaces.append('google.cloud')
+
+
+setuptools.setup(
+    name=name,
+    version=version,
+    description=description,
+    long_description=readme,
     author='Google LLC',
-    author_email='googleapis-packages@google.com',
+    author_email='googleapis-packages@oogle.com',
+    license='Apache 2.0',
+    url='https://github.com/GoogleCloudPlatform/google-cloud-python',
     classifiers=[
-        'Intended Audience :: Developers',
-        'Development Status :: 4 - Beta',
+        release_status,
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
@@ -1047,26 +1096,25 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
+        'Operating System :: OS Independent',
+        'Topic :: Internet',
     ],
-    description='GAPIC library for the Google Fake API',
+    platforms='Posix; MacOS X; Windows',
+    packages=packages,
+    namespace_packages=namespaces,
+    install_requires=dependencies,
+    extras_require=extras,
     include_package_data=True,
-    long_description=long_description,
-    install_requires=install_requires,
-    license='Apache 2.0',
-    packages=find_packages(),
-    namespace_packages=[],
-    url='https://github.com/googleapis/googleapis'
+    zip_safe=False,
 )
-
 ============== file: tests/unit/gapic/v1/test_no_templates_api_service_client_v1.py ==============
-# Copyright 2017, Google LLC All rights reserved.
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,

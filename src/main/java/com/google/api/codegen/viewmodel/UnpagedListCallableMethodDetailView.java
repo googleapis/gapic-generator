@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,8 @@ import com.google.auto.value.AutoValue;
 public abstract class UnpagedListCallableMethodDetailView {
   public abstract String resourceListGetFunction();
 
+  public abstract String resourceListParseFunction();
+
   public static Builder newBuilder() {
     return new AutoValue_UnpagedListCallableMethodDetailView.Builder();
   }
@@ -27,6 +29,8 @@ public abstract class UnpagedListCallableMethodDetailView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder resourceListGetFunction(String name);
+
+    public abstract Builder resourceListParseFunction(String name);
 
     public abstract UnpagedListCallableMethodDetailView build();
   }

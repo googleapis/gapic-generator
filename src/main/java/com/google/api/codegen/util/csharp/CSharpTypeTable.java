@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +30,40 @@ import java.util.TreeMap;
 
 public class CSharpTypeTable implements TypeTable {
 
+  // Constants for aliases that are used outside of this class.
+  public static final String ALIAS_SYSTEM = "sys";
+  public static final String ALIAS_SYSTEM_THREADING = "st";
+  public static final String ALIAS_SYSTEM_COLLECTIONS_GENERIC = "scg";
+  public static final String ALIAS_GAX = "gax";
+  public static final String ALIAS_GAX_GRPC = "gaxgrpc";
+
+  private static final Map<String, String> wellKnownAliases =
+      ImmutableMap.<String, String>builder()
+          .put("Google.Api.Gax", ALIAS_GAX)
+          .put("Google.Api.Gax.Grpc", ALIAS_GAX_GRPC)
+          .put("Google.Api.Gax.ResourceNames", "gaxres")
+          .put("Google.Protobuf", "pb")
+          .put("Google.Protobuf.WellKnownTypes", "pbwkt")
+          .put("Grpc.Core", "grpccore")
+          .put("System", ALIAS_SYSTEM)
+          .put("System.Collections", "sc")
+          .put("System.Collections.Generic", ALIAS_SYSTEM_COLLECTIONS_GENERIC)
+          .put("System.Collections.ObjectModel", "sco")
+          .put("System.Linq", "linq")
+          .put("System.Threading", ALIAS_SYSTEM_THREADING)
+          .put("System.Threading.Tasks", "stt")
+          .put("Google.LongRunning", "lro")
+          .put("Google.Cloud.Iam.V1", "iam")
+          .build();
+
   private final String implicitPackageName;
+  private final CSharpAliasMode aliasMode;
   // Full name to nickname map
   private final Map<String, TypeAlias> imports = new HashMap<>();
 
-  public CSharpTypeTable(String implicitPackageName) {
+  public CSharpTypeTable(String implicitPackageName, CSharpAliasMode aliasMode) {
     this.implicitPackageName = implicitPackageName;
+    this.aliasMode = aliasMode;
   }
 
   @Override
@@ -55,6 +84,35 @@ public class CSharpTypeTable implements TypeTable {
       return new TypeName(fullName, fullName);
     }
     String shortTypeName = fullName.substring(lastDotIndex + 1);
+    String namespace = fullName.substring(0, lastDotIndex);
+    switch (aliasMode) {
+      case Global:
+        // Alias the type namespace if:
+        // * This isn't a type defined in this namespace; and
+        // * It's in one of the well-known namespaces.
+        if (!implicitPackageName.equals(namespace)) {
+          String wellKnownAlias = wellKnownAliases.getOrDefault(namespace, null);
+          if (wellKnownAlias != null) {
+            shortTypeName = wellKnownAlias + "::" + shortTypeName;
+          }
+        }
+        break;
+      case MessagesOnly:
+        // Aliase the type namespace if:
+        // * It's a type in the API namespace; and
+        // * It's a type that shares a name with an imported type; and
+        // * The shared name is not this type itself (e.g. when generating Google.LongRunning)
+        if (implicitPackageName.startsWith(namespace + ".")) {
+          List<String> namespaceList =
+              CSharpImports.typeNamesToAlias.getOrDefault(shortTypeName, null);
+          if (namespaceList != null && !namespaceList.contains(namespace)) {
+            shortTypeName = "apis::" + shortTypeName;
+          }
+        }
+        break;
+      default:
+        throw new UnsupportedOperationException("Unrecognised aliasMode: " + aliasMode);
+    }
     return new TypeName(fullName, shortTypeName);
   }
 
@@ -87,12 +145,12 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeTable cloneEmpty() {
-    return new CSharpTypeTable(implicitPackageName);
+    return new CSharpTypeTable(implicitPackageName, aliasMode);
   }
 
   @Override
   public TypeTable cloneEmpty(String packageName) {
-    return new CSharpTypeTable(packageName);
+    return new CSharpTypeTable(packageName, aliasMode);
   }
 
   private String resolveInner(String name) {
@@ -126,13 +184,31 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public Map<String, TypeAlias> getImports() {
+    int lastDotPos = implicitPackageName.lastIndexOf('.');
+    String parentNamespace = implicitPackageName.substring(0, Math.max(0, lastDotPos));
     SortedMap<String, TypeAlias> result = new TreeMap<>();
     for (String fullName : imports.keySet()) {
       int index = fullName.lastIndexOf('.');
       if (index >= 0) {
         String using = fullName.substring(0, index);
         if (!implicitPackageName.equals(using)) {
-          result.put(using, TypeAlias.create(using)); // Value isn't used
+          switch (aliasMode) {
+            case Global:
+              result.put(
+                  using,
+                  TypeAlias.create(
+                      using, wellKnownAliases.getOrDefault(using, ""))); // Value isn't used
+              break;
+            case MessagesOnly:
+              if (parentNamespace.equals(using)) {
+                result.put(using, TypeAlias.create(using, "apis"));
+              } else {
+                result.put(using, TypeAlias.create(using, "")); // Value isn't used
+              }
+              break;
+            default:
+              throw new UnsupportedOperationException("Unrecognised aliasMode: " + aliasMode);
+          }
         }
       }
     }

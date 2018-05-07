@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,6 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +54,7 @@ public class PageStreamingTransformer {
     descriptor.resourcesGetMethodName(
         context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
     descriptor.methodName(context.getNamer().getMethodKey(method));
+    descriptor.transportMethodName(context.getNamer().getGrpcMethodName(method));
     return descriptor.build();
   }
 
@@ -111,11 +111,8 @@ public class PageStreamingTransformer {
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
 
-    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
-    for (FieldModel field : resourceFieldConfig.getFieldPath()) {
-      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
-    }
-    desc.resourcesFieldGetFunctions(resourcesFieldGetFunctionList.build());
+    desc.resourcesFieldGetFunction(namer.getFieldGetFunctionName(resourceField));
+    desc.resourcesFieldIsMap(resourceField.isMap());
 
     return desc.build();
   }

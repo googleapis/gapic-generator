@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,9 +23,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Document;
-import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -200,18 +198,16 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   public static GapicProductConfig create(
-      Document document, ConfigProto configProto, DiscoGapicNamer discoGapicNamer) {
+      DiscoApiModel model, ConfigProto configProto, SurfaceNamer namer) {
     String defaultPackage =
         configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
 
-    DiagCollector diagCollector = new BoundedDiagCollector();
-
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            document, diagCollector, configProto, defaultPackage, discoGapicNamer);
+            model, configProto, defaultPackage, namer);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(diagCollector, configProto, null);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, null);
 
     TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
@@ -223,13 +219,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document,
-            diagCollector,
-            configProto,
-            settings,
-            messageConfigs,
-            resourceNameConfigs,
-            discoGapicNamer);
+            model, configProto, settings, messageConfigs, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -243,7 +233,9 @@ public abstract class GapicProductConfig implements ProductConfig {
       copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
       licenseLines = getResourceLines(licenseHeader.getLicenseFile());
     } catch (Exception e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
+      model
+          .getDiagCollector()
+          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }
@@ -251,9 +243,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     String configSchemaVersion = configProto.getConfigSchemaVersion();
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml."));
+      model
+          .getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "config_schema_version field is required in GAPIC yaml."));
     }
 
     return new AutoValue_GapicProductConfig(
@@ -354,13 +349,11 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   private static ImmutableMap<String, InterfaceConfig> createDiscoGapicInterfaceConfigMap(
-      Document document,
-      DiagCollector diagCollector,
+      DiscoApiModel model,
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      DiscoGapicNamer discoGapicNamer) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
@@ -368,21 +361,19 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       DiscoGapicInterfaceConfig interfaceConfig =
           DiscoGapicInterfaceConfig.createInterfaceConfig(
-              document,
-              diagCollector,
+              model,
               configProto.getLanguage(),
               interfaceConfigProto,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs,
-              discoGapicNamer);
+              resourceNameConfigs);
       if (interfaceConfig == null) {
         continue;
       }
       interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
     }
 
-    if (diagCollector.getErrorCount() > 0) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     } else {
       return interfaceConfigMap.build();
@@ -454,13 +445,13 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
       createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
+          diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         createSingleResourceNameConfig(
-            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
+            diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
       }
     }
 
@@ -473,28 +464,29 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
+      ConfigProto configProto,
       CollectionConfigProto collectionConfigProto,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
       ProtoFile file) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            diagCollector, collectionConfigProto, file);
+            diagCollector, configProto, collectionConfigProto, file);
     if (singleResourceNameConfig == null) {
       return;
     }
-    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityName())) {
+    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
       SingleResourceNameConfig otherConfig =
-          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityName());
+          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());
       if (!singleResourceNameConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Inconsistent collection configs across interfaces. Entity name: "
-                    + singleResourceNameConfig.getEntityName()));
+                    + singleResourceNameConfig.getEntityId()));
       }
     } else {
       singleResourceNameConfigsMap.put(
-          singleResourceNameConfig.getEntityName(), singleResourceNameConfig);
+          singleResourceNameConfig.getEntityId(), singleResourceNameConfig);
     }
   }
 
@@ -511,7 +503,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (fixedConfig == null) {
         continue;
       }
-      fixedConfigBuilder.put(fixedConfig.getEntityName(), fixedConfig);
+      fixedConfigBuilder.put(fixedConfig.getEntityId(), fixedConfig);
     }
     return fixedConfigBuilder.build();
   }
@@ -562,8 +554,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
   @Override
-  public GapicInterfaceConfig getInterfaceConfig(InterfaceModel apiInterface) {
-    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  public InterfaceConfig getInterfaceConfig(InterfaceModel apiInterface) {
+    return getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
   /** Returns the GapicInterfaceConfig for the given API method. */

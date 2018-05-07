@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,6 +41,9 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
   @Nullable
   public abstract String transformParamFunctionName();
 
+  @Nullable
+  public abstract String formatMethodName();
+
   public abstract boolean isMap();
 
   public abstract boolean isArray();
@@ -71,12 +74,15 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     return transformParamFunctionName() != null;
   }
 
+  public boolean hasFormatMethodName() {
+    return formatMethodName() != null;
+  }
+
   // Methods for getting/setting the fields of the generated class.
-  public abstract List<FieldCopyView> fieldCopyMethods();
+  public abstract List<StaticLangMemberView> fieldCopyMethods();
 
   public static Builder newBuilder() {
-    return new AutoValue_RequestObjectParamView.Builder()
-        .fieldCopyMethods(new ArrayList<FieldCopyView>());
+    return new AutoValue_RequestObjectParamView.Builder().fieldCopyMethods(new ArrayList<>());
   }
 
   @AutoValue.Builder
@@ -99,6 +105,8 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
 
     public abstract Builder transformParamFunctionName(String val);
 
+    public abstract Builder formatMethodName(String val);
+
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
@@ -111,7 +119,7 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
 
     public abstract Builder optionalDefault(String val);
 
-    public abstract Builder fieldCopyMethods(List<FieldCopyView> val);
+    public abstract Builder fieldCopyMethods(List<StaticLangMemberView> val);
 
     public abstract RequestObjectParamView build();
   }

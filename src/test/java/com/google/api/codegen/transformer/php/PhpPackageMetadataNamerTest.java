@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,54 +15,46 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.common.truth.Truth;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class PhpPackageMetadataNamerTest {
 
   @Test
-  public void testWithoutDomainLayerLocation() {
-    PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("Package", null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package", null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package\\V1", null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package\\V1beta1", null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\CamelCasePackage\\V1", null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("CamelCasePackage");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("camelcasepackage/camelcasepackage");
+  @Parameters({
+    "Package, Package, package/package",
+    "Some\\Package, SomePackage, some/package",
+    "\\Some\\Package, SomePackage, some/package",
+    "Some\\Package\\V1, SomePackage, some/package",
+    "Some\\Package\\V1beta1, SomePackage, some/package",
+    "Some\\CamelCasePackage\\V1, SomeCamelCasePackage, some/camelcasepackage",
+    "Some\\Deep\\Package\\V1, SomeDeepPackage, some/deep-package"
+  })
+  public void testWithoutDomainLayerLocationParams(
+      String packageName, String expectedMetadataName, String expectedMetadataIdentifier) {
+    PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer(packageName, null);
+    Truth.assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
+    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
   }
 
   @Test
-  public void testWithDomainLayerLocation() {
-    PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("Package", "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package", "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package\\V1", "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\Package\\V1beta1", "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
-
-    namer = new PhpPackageMetadataNamer("Some\\CamelCasePackage\\V1", "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo("CamelCasePackage");
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/camelcasepackage");
+  @Parameters({
+    "Package, Package, domain/package",
+    "Some\\Package, SomePackage, domain/some-package",
+    "\\Some\\Package, SomePackage, domain/some-package",
+    "Some\\Package\\V1, SomePackage, domain/some-package",
+    "Some\\Package\\V1beta1, SomePackage, domain/some-package",
+    "Some\\CamelCasePackage\\V1, SomeCamelCasePackage, domain/some-camelcasepackage",
+    "Some\\Deep\\Package\\V1, SomeDeepPackage, domain/some-deep-package"
+  })
+  public void testWithDomainLayerLocationParams(
+      String packageName, String expectedMetadataName, String expectedMetadataIdentifier) {
+    PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer(packageName, "domain");
+    Truth.assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
+    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
   }
 
   @Test(expected = IllegalArgumentException.class)

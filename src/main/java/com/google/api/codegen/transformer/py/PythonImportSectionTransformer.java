@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(TransformationContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context, String className) {
     InterfaceContext interfaceContext = (InterfaceContext) context;
     return ImportSectionView.newBuilder()
         .standardImports(generateFileHeaderStandardImports(interfaceContext))
@@ -392,12 +392,13 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateVersionedInitAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElements(model)) {
       imports.add(
           createImport(
               productConfig.getPackageName(),
               namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface))));
     }
+
     if (packageHasEnums) {
       imports.add(createImport(productConfig.getPackageName(), "enums"));
     }
@@ -417,7 +418,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateTopLevelEntryPointAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElements(model)) {
       imports.add(
           createImport(
               namer.getVersionedDirectoryNamespace(),

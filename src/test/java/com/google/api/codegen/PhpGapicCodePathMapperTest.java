@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
-        .isEqualTo("prefix/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithGoogleNonCloud =
         GapicProductConfig.createDummyInstance(
@@ -51,7 +51,7 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
-        .isEqualTo("prefix/NonCloud/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithAlphabet =
         GapicProductConfig.createDummyInstance(
@@ -60,6 +60,6 @@ public class PhpGapicCodePathMapperTest {
             "",
             null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithAlphabet))
-        .isEqualTo("prefix/Alphabet/Google/Cloud/Sample/Package/V1/suffix");
+        .isEqualTo("prefix/V1/suffix");
   }
 }

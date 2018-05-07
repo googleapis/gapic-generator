@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
+import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
@@ -36,7 +37,7 @@ public class PythonPackageCopier {
 
   /** Copies gRPC source while computing namespace packages and generating __init__.py. */
   private class PythonPackageFileVisitor extends SimpleFileVisitor<Path> {
-    ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
+    ImmutableMap.Builder<String, GeneratedResult<Doc>> docBuilder = new ImmutableMap.Builder<>();
     List<String> pythonNamespacePackages = new ArrayList<>();
     Path inputPath;
     Path outputPath;
@@ -72,12 +73,14 @@ public class PythonPackageCopier {
       String outFile = inputPath.relativize(dir.resolve("__init__.py")).toString();
       // Version directory gets an empty __init__.py
       if (dir.getFileName().toString().equals(apiVersion)) {
-        docBuilder.put(outFile, Doc.text("\n"));
+        docBuilder.put(outFile, GeneratedResult.create(Doc.text("\n"), false));
 
         // All others get become namespace packages
       } else {
         docBuilder.put(
-            outFile, Doc.text("__import__('pkg_resources').declare_namespace(__name__)\n"));
+            outFile,
+            GeneratedResult.create(
+                Doc.text("__import__('pkg_resources').declare_namespace(__name__)\n"), false));
         pythonNamespacePackages.add(Joiner.on(".").join(inputPath.relativize(dir).iterator()));
       }
       return FileVisitResult.CONTINUE;
@@ -87,7 +90,7 @@ public class PythonPackageCopier {
       return pythonNamespacePackages;
     }
 
-    public ImmutableMap.Builder<String, Doc> getDocBuilder() {
+    public ImmutableMap.Builder<String, GeneratedResult<Doc>> getDocBuilder() {
       return docBuilder;
     }
   }
@@ -106,7 +109,7 @@ public class PythonPackageCopier {
     Files.walkFileTree(Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)), visitor);
 
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
-    ImmutableMap.Builder<String, Doc> docBuilder = visitor.getDocBuilder();
+    ImmutableMap.Builder<String, GeneratedResult<Doc>> docBuilder = visitor.getDocBuilder();
 
     return PythonPackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
   }

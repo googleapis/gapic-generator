@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,9 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -31,19 +29,12 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a protobuf Field. */
 public class ProtoField implements FieldModel {
   private final Field protoField;
   private final ProtoTypeRef protoTypeRef;
-
-  @Override
-  /* @return the type of the underlying model resource. */
-  public ApiSource getApiSource() {
-    return PROTO;
-  }
 
   /* Create a FieldModel object from a non-null Field object. */
   public ProtoField(Field protoField) {
@@ -73,11 +64,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public Name asName() {
-    return Name.from(protoField.getSimpleName());
-  }
-
-  @Override
   public String getTypeFullName() {
     return protoField.getType().getMessageType().getFullName();
   }
@@ -85,16 +71,6 @@ public class ProtoField implements FieldModel {
   @Override
   public boolean isMap() {
     return protoField.getType().isMap();
-  }
-
-  @Override
-  public ProtoField getMapKeyField() {
-    return new ProtoField(protoField.getType().getMapKeyField());
-  }
-
-  @Override
-  public ProtoField getMapValueField() {
-    return new ProtoField(protoField.getType().getMapValueField());
   }
 
   @Override
@@ -204,14 +180,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    String resourceFieldGetFunctionName =
-        namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
-    return ImmutableList.of(resourceFieldGetFunctionName);
-  }
-
-  @Override
   public ProtoTypeRef getType() {
     return protoTypeRef;
   }
@@ -223,7 +191,7 @@ public class ProtoField implements FieldModel {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
+    return String.format("Protobuf FieldModel: {%s}", protoField.toString());
   }
 
   @Override

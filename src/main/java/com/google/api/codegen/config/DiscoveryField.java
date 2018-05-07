@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,27 +14,27 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.ApiSource.DISCOVERY;
-
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discogapic.StringTypeModel;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
-import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -42,52 +42,87 @@ import javax.annotation.Nullable;
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
+  private final DiscoApiModel apiModel;
+  // Dereferenced schema to use for rendering type names and determining properties, type, and format.
   private final Schema schema;
-  private final DiscoGapicNamer discoGapicNamer;
+  // Not dereferenced schema; used in rendering this FieldModel's parameter name.
+  private final Schema originalSchema;
 
-  /* Create a FieldModel object from a non-null Schema object. */
-  private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
-    Preconditions.checkNotNull(schema);
-    this.schema = schema;
-    this.discoGapicNamer = discoGapicNamer;
+  // Unformatted type name for this Field.
+  // For message-type Fields, this will be unique per namespace, as defined by apiModel.
+  private final String typeName;
+
+  // Comparator for Schemas that have children schemas.
+  private static Comparator<Schema> messageSchemaComparator =
+      (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
+
+  private static Comparator<String> caseInsensitiveComparator =
+      (String s1, String s2) -> s1.compareToIgnoreCase(s2);
+
+  // For each namespace, stores the symbol table and table of schemas and their names to
+  // ensure unique message type names for each namespace.
+  private static Map<String, SchemaNamer> namespaceToSchemaNamer = new HashMap<>();
+
+  /**
+   * Create a FieldModel object from a non-null Schema object, and internally dereference the input
+   * schema.
+   */
+  private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
+    Preconditions.checkNotNull(refSchema);
+    this.originalSchema = refSchema;
+    this.schema = refSchema.dereference();
+    this.apiModel = apiModel;
+
+    String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
+    String namespace = apiModel.getDefaultPackageName();
+    if (isTopLevelSchema(schema)) {
+      // Within this namespace, get a unique name for this message-type schema.
+      SchemaNamer messageNamer =
+          namespaceToSchemaNamer.computeIfAbsent(namespace, k -> new SchemaNamer());
+      simpleName = messageNamer.getSchemaName(schema, simpleName);
+    }
+    this.typeName = simpleName;
 
     ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
-    for (Schema child : schema.properties().values()) {
-      propertiesBuilder.add(DiscoveryField.create(child, discoGapicNamer));
+    for (Schema child : this.schema.properties().values()) {
+      propertiesBuilder.add(DiscoveryField.create(child, apiModel));
     }
     this.properties = propertiesBuilder.build();
   }
 
-  /* Create a FieldModel object from a non-null Schema object. */
-  public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
-    Preconditions.checkNotNull(schema);
-    return new DiscoveryField(schema, discoGapicNamer);
+  /** Create a FieldModel object from a non-null Schema object. */
+  public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
+    if (!Strings.isNullOrEmpty(schema.reference())) {
+      // First create a DiscoveryField for the underlying referenced Schema.
+      create(schema.dereference(), rootApiModel);
+    }
+    DiscoveryField field = new DiscoveryField(schema, rootApiModel);
+    return field;
   }
 
-  @Override
-  /* @return the type of the underlying model resource. */
-  public ApiSource getApiSource() {
-    return DISCOVERY;
-  }
-
-  /* @return the underlying Discovery Schema. */
+  /** @return the underlying dereferenced Discovery Schema. */
   public Schema getDiscoveryField() {
     return schema;
   }
 
+  /** @return the original underlying Discovery Schema. */
+  public Schema getOriginalDiscoveryField() {
+    return originalSchema;
+  }
+
+  /** @return the underlying DiscoApiModel. */
+  public DiscoApiModel getDiscoApiModel() {
+    return apiModel;
+  }
+
   @Override
   public String getSimpleName() {
-    String name =
-        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
-    String[] pieces = name.split("_");
-    return Name.anyCamel(pieces).toLowerCamel();
+    return typeName;
   }
 
   @Override
   public String getFullName() {
-    return discoGapicNamer
-        .getLanguageNamer()
-        .publicClassName(DiscoGapicNamer.getSchemaNameAsParameter(schema));
+    return DiscoGapicParser.getFieldNameAsParameter(this).toUpperCamel();
   }
 
   @Override
@@ -97,37 +132,39 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public Name getNameAsParameterName() {
-    return DiscoGapicNamer.getSchemaNameAsParameter(schema);
-  }
-
-  @Override
-  public Name asName() {
-    return Name.anyCamel(getSimpleName());
+    return DiscoGapicParser.getFieldNameAsParameter(this);
   }
 
   @Override
   public String getTypeFullName() {
-    return schema.getIdentifier();
+    return originalSchema.getIdentifier();
   }
 
   @Override
   public boolean isMap() {
-    return false;
+    return originalSchema.additionalProperties() != null;
   }
 
   @Override
-  public FieldModel getMapKeyField() {
-    throw new IllegalArgumentException("Discovery model types have no map keys.");
+  public TypeModel getMapKeyType() {
+    if (isMap()) {
+      // Assume that the schema's additionalProperties map keys are Strings.
+      return StringTypeModel.getInstance();
+    }
+    return null;
   }
 
   @Override
-  public FieldModel getMapValueField() {
-    throw new IllegalArgumentException("Discovery model types have no map values.");
+  public TypeModel getMapValueType() {
+    if (isMap()) {
+      return DiscoveryField.create(originalSchema.additionalProperties(), apiModel);
+    }
+    return null;
   }
 
   @Override
   public boolean isMessage() {
-    return false;
+    return isTopLevelSchema(schema);
   }
 
   @Override
@@ -137,13 +174,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isRepeated() {
-    if (schema.type() == Type.ARRAY) {
-      return true;
-    }
-    if (!Strings.isNullOrEmpty(schema.reference()) && schema.dereference() != null) {
-      return schema.dereference().type() == Type.ARRAY;
-    }
-    return false;
+    return schema.type() == Type.ARRAY;
   }
 
   @Override
@@ -154,24 +185,19 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getParentFullName() {
-    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
-    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
+    String parentName;
     if (schema.parent() instanceof Method) {
-      return typeNameConverter
-          .getTypeNameInImplicitPackage(
-              surfaceNamer.publicClassName(
-                  DiscoGapicNamer.getRequestName((Method) schema.parent())))
-          .getFullName();
+      parentName = DiscoGapicParser.getRequestName((Method) schema.parent()).toUpperCamel();
     } else if (schema.parent() instanceof Schema) {
-      return typeNameConverter
-          .getTypeNameInImplicitPackage(
-              surfaceNamer.publicClassName(
-                  Name.anyCamel(((Schema) schema.parent()).getIdentifier())))
-          .getFullName();
+      parentName = Name.anyCamel(((Schema) schema.parent()).getIdentifier()).toUpperCamel();
     } else if (schema.parent() instanceof Document) {
-      return ((Document) schema.parent()).name();
+      parentName = ((Document) schema.parent()).name();
+    } else {
+      parentName = "";
     }
-    return "";
+
+    return ResourceNameMessageConfig.getFullyQualifiedMessageName(
+        apiModel.getDefaultPackageName(), parentName);
   }
 
   @Override
@@ -182,7 +208,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
     if (schema.parent() instanceof Schema) {
-      DiscoveryField parent = DiscoveryField.create((Schema) schema.parent(), discoGapicNamer);
+      DiscoveryField parent = DiscoveryField.create((Schema) schema.parent(), apiModel);
       return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) parent));
     }
     return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) this));
@@ -195,12 +221,18 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEnum() {
-    return schema.isEnum();
+    // TODO(andrealin): implement.
+    return false;
+  }
+
+  public static boolean isTopLevelSchema(Schema schema) {
+    return !schema.properties().isEmpty()
+        || (schema.items() != null && !schema.items().properties().isEmpty());
   }
 
   @Override
   public boolean isPrimitive() {
-    return schema.reference().isEmpty() && schema.items() == null;
+    return schema.items() == null && schema.type() != Type.OBJECT;
   }
 
   @Override
@@ -225,24 +257,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
     return schema.type().toString();
   }
 
-  public DiscoGapicNamer getDiscoGapicNamer() {
-    return discoGapicNamer;
-  }
-
   @Nullable
   @Override
   public Oneof getOneof() {
     return null;
-  }
-
-  @Override
-  public List<String> getPagedResponseResourceMethods(
-      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    List<String> methodNames = new LinkedList<>();
-    for (FieldModel field : startingFieldConfig.getFieldPath()) {
-      methodNames.add(0, namer.getFieldGetFunctionName(field));
-    }
-    return ImmutableList.copyOf(methodNames);
   }
 
   @Override
@@ -299,8 +317,24 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  public List<? extends FieldModel> getFields() {
+  public List<DiscoveryField> getFields() {
     return properties;
+  }
+
+  @Override
+  public DiscoveryField getField(String key) {
+    for (DiscoveryField field : getFields()) {
+      if (field.getNameAsParameter().equals(key)) {
+        return field;
+      }
+    }
+
+    Schema parentTypeSchema = getDiscoveryField();
+    List<Schema> pathToKeySchema = parentTypeSchema.findChild(key);
+    if (pathToKeySchema.size() == 0) {
+      return null; // key not found.
+    }
+    return DiscoveryField.create(pathToKeySchema.get(pathToKeySchema.size() - 1), apiModel);
   }
 
   @Override
@@ -329,7 +363,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
             return "double";
         }
       case BOOLEAN:
-        return "boolean";
+        return "bool";
       case STRING:
         if (schema.format() == null) {
           return "string";
@@ -363,7 +397,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isStringType() {
-    return schema.type().equals(Type.STRING) && schema.format() == null;
+    return schema.type().equals(Type.STRING);
   }
 
   @Override
@@ -401,9 +435,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEmptyType() {
-    return schema.getIdentifier().equals("Empty")
-        && schema.type().equals(Type.OBJECT)
-        && (schema.properties() == null || schema.properties().size() == 0);
+    return false;
   }
 
   @Override
@@ -413,18 +445,31 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public int hashCode() {
-    return 5 + 31 * schema.hashCode();
+    return 5 + 31 * schema.hashCode() + 37 * getParentFullName().hashCode();
   }
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
+    return String.format("Discovery FieldModel: {%s}", schema.toString());
   }
 
   @Override
   public boolean equals(Object o) {
     return o != null
         && o instanceof DiscoveryField
-        && ((DiscoveryField) o).schema.equals(this.schema);
+        && ((DiscoveryField) o).schema.equals(this.schema)
+        && getParentFullName().equals(((DiscoveryField) o).getParentFullName());
+  }
+
+  // Util class for getting unique names within namespaces for message type schemas.
+  private class SchemaNamer {
+    private SymbolTable idSymbolTable = new SymbolTable(caseInsensitiveComparator);
+
+    // Stores the escaped name for each message-type schema.
+    private Map<Schema, String> messageNames = new TreeMap<>(messageSchemaComparator);
+
+    String getSchemaName(Schema schema, String basename) {
+      return messageNames.computeIfAbsent(schema, k -> idSymbolTable.getNewSymbol(basename));
+    }
   }
 }

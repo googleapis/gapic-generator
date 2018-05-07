@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,6 @@ import java.util.List;
 @AutoValue
 public abstract class GapicGeneratorConfig {
   public static final String ARTIFACT_SURFACE = "surface";
-  public static final String ARTIFACT_SAMPLE_APP = "sample_app";
   public static final String ARTIFACT_TEST = "test";
 
   public abstract List<String> enabledArtifacts();
@@ -32,10 +31,6 @@ public abstract class GapicGeneratorConfig {
 
   public boolean enableSurfaceGenerator() {
     return enabledArtifacts().isEmpty() || enabledArtifacts().contains(ARTIFACT_SURFACE);
-  }
-
-  public boolean enableSampleAppGenerator() {
-    return enabledArtifacts().contains(ARTIFACT_SAMPLE_APP);
   }
 
   public boolean enableTestGenerator() {

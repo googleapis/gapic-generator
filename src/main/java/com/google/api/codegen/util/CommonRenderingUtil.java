@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -93,12 +93,22 @@ public class CommonRenderingUtil {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 
-  /** Creates a whitespace string of the specified width. */
+  /**
+   * Creates a whitespace string of the specified width.
+   *
+   * @param width number of spaces
+   * @return padding whitespace
+   */
   public static String padding(int width) {
     return Strings.repeat(" ", width);
   }
 
-  /** Helper function for referencing integers from templates. */
+  /**
+   * Helper function for referencing integers from templates.
+   *
+   * @param value value
+   * @return int value
+   */
   public static int toInt(String value) {
     return Integer.valueOf(value);
   }

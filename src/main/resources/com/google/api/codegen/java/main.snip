@@ -5,11 +5,7 @@
   {@renderFileHeader(classFile.fileHeader)}
 
   {@classDoc(classFile.classView.doc)}
-  @if classFile.fileHeader.hasGeneratorVersion
-    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
-  @else
-    @@Generated("by GAPIC")
-  @end
+  @@Generated("by gapic-generator")
   @if classFile.classView.releaseLevelAnnotation
     {@classFile.classView.releaseLevelAnnotation}
   @end
@@ -25,28 +21,29 @@
     {@memberMethods(classView)}
     {@apiMethods(classView)}
     {@cleanupSection()}
+    {@staticPagedResponseWrappers(classView)}
   }
 @end
 
 @private classDoc(doc)
   @switch doc.exampleApiMethod.type
   @case "FlattenedMethod"
-    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "PagedFlattenedMethod"
-    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "RequestObjectMethod"
-    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
   @case "AsyncOperationFlattenedMethod"
-    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod), \
+    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
@@ -153,6 +150,94 @@
   @end
 @end
 
+@private staticPagedResponseWrappers(apiClass)
+  @join pagedResponseClass : apiClass.pagedResponseViews
+    public static class {@pagedResponseClass.pagedResponseTypeName} extends AbstractPagedListResponse<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      public static ApiFuture<{@pagedResponseClass.pagedResponseTypeName}> createAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        ApiFuture<{@pagedResponseClass.pageTypeName}> futurePage =
+            {@pagedResponseClass.pageTypeName}.createEmptyPage().createPageAsync(context, futureResponse);
+        return ApiFutures.transform(
+            futurePage,
+            new ApiFunction<{@pagedResponseClass.pageTypeName}, {@pagedResponseClass.pagedResponseTypeName}>() {
+              @@Override
+              public {@pagedResponseClass.pagedResponseTypeName} apply({@pagedResponseClass.pageTypeName} input) {
+                return new {@pagedResponseClass.pagedResponseTypeName}(input);
+              }
+            });
+      }
+
+      private {@pagedResponseClass.pagedResponseTypeName}({@pagedResponseClass.pageTypeName} page) {
+        super(page, {@pagedResponseClass.fixedSizeCollectionTypeName}.createEmptyCollection());
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.pageTypeName} extends AbstractPage<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName}> {
+
+      private {@pagedResponseClass.pageTypeName}(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        super(context, response);
+      }
+
+      private static {@pagedResponseClass.pageTypeName} createEmptyPage() {
+        return new {@pagedResponseClass.pageTypeName}(null, null);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.pageTypeName} createPage(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        return new {@pagedResponseClass.pageTypeName}(context, response);
+      }
+
+      @@Override
+      public ApiFuture<{@pagedResponseClass.pageTypeName}> createPageAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        return super.createPageAsync(context, futureResponse);
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        super(pages, collectionSize);
+      }
+
+      private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+          List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
+      }
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
+  @end
+@end
+
 @private formatResourceFunction(function)
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -235,7 +320,7 @@
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
-    this.stub = settings.createStub();
+    this.stub = (({@xapiClass.stubSettingsClassName}) settings.getStubSettings()).createStub();
     @if xapiClass.hasLongRunningOperations
       this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end
@@ -310,7 +395,7 @@
 
 @private cleanupSection()
   @@Override
-  public final void close() throws Exception {
+  public final void close() {
     stub.close();
   }
 
@@ -342,7 +427,7 @@
 @end
 
 @private pagedFlattenedMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -362,7 +447,7 @@
 @end
 
 @private pagedRequestObjectMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -377,21 +462,21 @@
 @end
 
 @private pagedCallableMethod(apiMethod)
-  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
 @end
 
 @private unpagedListCallableMethod(apiMethod)
-  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
 @end
 
 @private flattenedMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -410,7 +495,7 @@
 @end
 
 @private requestObjectMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -428,7 +513,7 @@
 @end
 
 @private callableMethod(apiMethod)
-  @let coreSampleCode = callableMethodSampleCode(apiMethod)
+  @let coreSampleCode = callableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@callableMethodImpl(apiMethod)}
@@ -446,7 +531,7 @@
 @end
 
 @private streamingCallableMethod(apiMethod)
-  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -461,7 +546,7 @@
 @end
 
 @private asyncOperationFlattenedMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -477,7 +562,7 @@
 @end
 
 @private asyncOperationRequestObjectMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -492,7 +577,7 @@
 @end
 
 @private operationCallableMethod(apiMethod)
-  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
+  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   @if apiMethod.releaseLevelAnnotation
@@ -573,12 +658,23 @@
 
 @private builderSetCalls(requestObjectParams)
   @join requestObjectParam : requestObjectParams
-    @if requestObjectParam.hasTransformParamFunction
-      .{@requestObjectParam.setCallName}(\
-        {@requestObjectParam.name} == null ? null : \
-        {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
+    .{@requestObjectParam.setCallName}({@builderSetCallParam(requestObjectParam)})
+  @end
+@end
+
+@private builderSetCallParam(requestObjectParam)
+  @if requestObjectParam.hasTransformParamFunction
+    {@requestObjectParam.name} == null ? null : \
+      {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name})
+    @if requestObjectParam.hasFormatMethodName
+      .{@requestObjectParam.formatMethodName}()
+    @end
+  @else
+    @if requestObjectParam.hasFormatMethodName
+      {@requestObjectParam.name} == null ? null : \
+        {@requestObjectParam.name}.{@requestObjectParam.formatMethodName}()
     @else
-      .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+      {@requestObjectParam.name}
     @end
   @end
 @end
@@ -593,4 +689,34 @@
     {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
       "{@pathTemplateCheck.validationMessageContext}");
   @end
+@end
+
+@private iterateAllResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end
+
+@private getValuesResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
+      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
 @end

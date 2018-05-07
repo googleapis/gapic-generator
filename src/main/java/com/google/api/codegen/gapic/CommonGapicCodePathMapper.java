@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,9 +41,25 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
+    return getOutputPath(elementFullName, config, null);
+  }
+
+  @Override
+  public String getSamplesOutputPath(
+      String elementFullName, ProductConfig config, String methodName) {
+    return getOutputPath(elementFullName, config, methodName);
+  }
+
+  private String getOutputPath(String elementFullName, ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
+    boolean haveSample = !Strings.isNullOrEmpty(methodSample);
+
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);
+    }
+
+    if (haveSample) {
+      dirs.add(SAMPLES_DIRECTORY);
     }
 
     if (shouldAppendPackage && !Strings.isNullOrEmpty(config.getPackageName())) {
@@ -51,14 +67,22 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
         // We can have empty segments in cases like Ruby where the separator
         // between path components is multiple characters ("::")
         if (!segment.isEmpty()) {
-          dirs.add(
-              nameFormatter == null
-                  ? segment.toLowerCase()
-                  : nameFormatter.packageFilePathPiece(Name.upperCamel(segment)));
+          dirs.add(format(segment));
         }
       }
     }
+
+    if (haveSample) {
+      dirs.add(format(methodSample));
+    }
     return Joiner.on("/").join(dirs);
+  }
+
+  /** Formats the given segment of a file path. */
+  private String format(final String segment) {
+    return nameFormatter == null
+        ? segment.toLowerCase()
+        : nameFormatter.packageFilePathPiece(Name.upperCamel(segment));
   }
 
   public static Builder newBuilder() {

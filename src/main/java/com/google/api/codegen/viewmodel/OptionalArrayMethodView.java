@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,11 +42,20 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String requestTypeName();
 
+  public abstract String responseTypeName();
+
   public abstract String key();
+
+  @Nullable
+  public abstract String rerouteToGrpcInterface();
 
   public abstract String grpcMethodName();
 
   public abstract GrpcStreamingType grpcStreamingType();
+
+  public boolean hasRerouteToGrpcInterface() {
+    return rerouteToGrpcInterface() != null;
+  }
 
   public boolean isGrpcStreamingMethod() {
     return grpcStreamingType() == GrpcStreamingType.BidiStreaming
@@ -106,6 +115,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
+  @Nullable
+  public abstract List<MethodSampleView> samples();
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -117,7 +129,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
+  public abstract static class Builder implements ApiMethodView.Builder {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
@@ -138,7 +150,11 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder requestTypeName(String val);
 
+    public abstract Builder responseTypeName(String val);
+
     public abstract Builder key(String val);
+
+    public abstract Builder rerouteToGrpcInterface(String val);
 
     public abstract Builder grpcMethodName(String val);
 
@@ -185,6 +201,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder localPackageName(String val);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
+    public abstract Builder samples(List<MethodSampleView> samples);
 
     public abstract OptionalArrayMethodView build();
   }

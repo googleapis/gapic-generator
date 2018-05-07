@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 
 /**
@@ -38,20 +39,39 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
+    return getOutputPath(elementFullName, config, null);
+  }
+
+  @Override
+  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
+    return getOutputPath(elementFullName, config, method);
+  }
+
+  private String getOutputPath(String elementFullName, ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
     String prefix = getPrefix();
+    boolean haveSample = !Strings.isNullOrEmpty(methodSample);
+
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);
     }
 
-    for (String packageElement :
-        PhpPackageUtil.splitPackageNameWithoutStandardPrefix(config.getPackageName())) {
-      dirs.add(packageElement);
+    String shortenedPackageName = PhpPackageUtil.removeBasePackageName(config.getPackageName());
+    if (shortenedPackageName != null) {
+      dirs.addAll(Arrays.asList(PhpPackageUtil.splitPackageName(shortenedPackageName)));
+    }
+
+    if (haveSample) {
+      dirs.add(SAMPLES_DIRECTORY);
     }
 
     String suffix = getSuffix();
     if (!Strings.isNullOrEmpty(suffix)) {
       dirs.add(suffix);
+    }
+
+    if (haveSample) {
+      dirs.add(methodSample);
     }
     return Joiner.on("/").join(dirs);
   }

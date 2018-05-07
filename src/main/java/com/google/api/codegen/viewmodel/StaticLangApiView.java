@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -65,12 +65,36 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  // Used in C#
+  public abstract boolean apiHasUnaryMethod();
+
+  // Used in C#
+  public abstract boolean apiHasServerStreamingMethod();
+
+  // Used in C#
+  public abstract boolean apiHasClientStreamingMethod();
+
+  // Used in C#
+  public abstract boolean apiHasBidiStreamingMethod();
+
   @Nullable // Used in Java
   public abstract String stubInterfaceName();
 
+  @Nullable // Used in Java
+  public abstract String stubSettingsClassName();
+
+  @Nullable // Used in Java
+  public abstract List<StaticLangPagedResponseView> pagedResponseViews();
+
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangApiView.Builder();
+    return new AutoValue_StaticLangApiView.Builder()
+        .apiHasUnaryMethod(false)
+        .apiHasServerStreamingMethod(false)
+        .apiHasClientStreamingMethod(false)
+        .apiHasBidiStreamingMethod(false);
   }
+
+  public abstract Builder toBuilder();
 
   @AutoValue.Builder
   public abstract static class Builder {
@@ -111,7 +135,19 @@ public abstract class StaticLangApiView {
 
     public abstract Builder hasLongRunningOperations(boolean val);
 
+    public abstract Builder apiHasUnaryMethod(boolean val);
+
+    public abstract Builder apiHasServerStreamingMethod(boolean val);
+
+    public abstract Builder apiHasClientStreamingMethod(boolean val);
+
+    public abstract Builder apiHasBidiStreamingMethod(boolean val);
+
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
+
+    public abstract Builder stubSettingsClassName(String apiSettingsStubInterfaceName);
+
+    public abstract Builder pagedResponseViews(List<StaticLangPagedResponseView> val);
 
     public abstract StaticLangApiView build();
   }

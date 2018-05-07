@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,7 +53,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
-  @Nullable
   public abstract List<BatchingDescriptorView> batchingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
@@ -103,8 +102,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return missingDefaultServiceAddress() || missingDefaultServiceScopes();
   }
 
-  public abstract String toolkitVersion();
-
   @Nullable
   public abstract String packageVersion();
 
@@ -144,6 +141,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
+
+  public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangXApiView.Builder()
@@ -212,8 +211,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder hasDefaultServiceAddress(boolean val);
 
     public abstract Builder hasDefaultServiceScopes(boolean val);
-
-    public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
 

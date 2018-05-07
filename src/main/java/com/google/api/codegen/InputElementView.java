@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,12 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Model;
+import java.util.List;
 
 /**
  * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
  * retrieving a sequence of items from a model.
  */
 public interface InputElementView<InputElementT> {
-  public Iterable<InputElementT> getElementIterable(Model model);
+  public List<InputElementT> getElements(Model model);
 }

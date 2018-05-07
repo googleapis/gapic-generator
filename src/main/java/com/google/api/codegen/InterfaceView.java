@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,8 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.protobuf.Api;
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /**
  * An interface-based view of model, consisting of a strategy for getting the interfaces of the
@@ -27,11 +27,12 @@ public class InterfaceView implements InputElementView<Interface> {
 
   /** Gets the interfaces for the apis in the service config. */
   @Override
-  public Iterable<Interface> getElementIterable(Model model) {
-    ArrayList<Interface> interfaces = new ArrayList<>();
-    for (Api api : model.getServiceConfig().getApisList()) {
-      interfaces.add(model.getSymbolTable().lookupInterface(api.getName()));
-    }
-    return interfaces;
+  public List<Interface> getElements(Model model) {
+    return model
+        .getServiceConfig()
+        .getApisList()
+        .stream()
+        .map(api -> model.getSymbolTable().lookupInterface(api.getName()))
+        .collect(ImmutableList.toImmutableList());
   }
 }

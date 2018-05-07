@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,13 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
@@ -54,6 +60,63 @@ public abstract class Schema implements Node {
       }
     }
     return this;
+  }
+
+  /**
+   * Traverses the schema's child nodes to find a Schema with the given childName. Returns a schema
+   * traversal path to the target; this path will include the starting node if the target was found.
+   * Returns an empty list if the target is not found.
+   */
+  public List<Schema> findChild(String childName) {
+    Set<Schema> visitedNodes = new HashSet<>();
+    Map<Schema, Schema> nodeToPrevNode = new HashMap<>();
+
+    Schema currentNode = this;
+    Queue<Schema> queue = new LinkedList<>();
+    queue.add(this);
+    visitedNodes.add(this);
+
+    // BFS to find the target node.
+    while (queue.size() != 0 && !currentNode.getIdentifier().equals(childName)) {
+      currentNode = queue.poll().dereference();
+
+      // Add all direct children of current node to local queue.
+      Queue<Schema> localQueue = new LinkedList<>();
+      if (currentNode.properties() != null && currentNode.properties().size() > 0) {
+        localQueue.addAll(currentNode.properties().values());
+      }
+      if (currentNode.additionalProperties() != null) {
+        localQueue.add(currentNode.additionalProperties());
+      }
+
+      while (localQueue.peek() != null) {
+        Schema next = localQueue.poll().dereference();
+
+        if (next.getIdentifier().equals(childName)) {
+          // Success.
+          nodeToPrevNode.put(next, currentNode);
+          currentNode = next;
+          break;
+        }
+        if (!visitedNodes.contains(next)) {
+          nodeToPrevNode.put(next, currentNode);
+          visitedNodes.add(next);
+          queue.add(next);
+        }
+      }
+    }
+
+    // Get the path to the schema.
+    List<Schema> pathToChild = new LinkedList<>();
+    if (currentNode.getIdentifier().equals(childName)) {
+      while (!currentNode.equals(this)) {
+        pathToChild.add(0, currentNode);
+        currentNode = nodeToPrevNode.get(currentNode);
+      }
+      pathToChild.add(0, currentNode);
+    }
+
+    return pathToChild;
   }
 
   /**
@@ -105,6 +168,9 @@ public abstract class Schema implements Node {
     boolean required = root.getBoolean("required");
     Type type = Type.getEnum(root.getString("type"));
 
+    // additionalProperties is a dynamically-keyed map in Discovery docs.
+    boolean isMap = additionalProperties != null;
+
     Schema thisSchema =
         new AutoValue_Schema(
             additionalProperties,
@@ -121,6 +187,7 @@ public abstract class Schema implements Node {
             reference,
             repeated,
             required,
+            isMap,
             type);
     thisSchema.parent = parent;
     if (items != null) {
@@ -138,7 +205,7 @@ public abstract class Schema implements Node {
 
   /** @return a non-null identifier for this schema. */
   public String getIdentifier() {
-    return id().isEmpty() ? key() : id();
+    return Strings.isNullOrEmpty(id()) ? key() : id();
   }
 
   public static Schema empty() {
@@ -155,6 +222,7 @@ public abstract class Schema implements Node {
         "",
         new HashMap<String, Schema>(),
         "",
+        false,
         false,
         false,
         Type.EMPTY);
@@ -217,6 +285,9 @@ public abstract class Schema implements Node {
 
   /** @return whether or not the schema is required. */
   public abstract boolean required();
+
+  /** @return whether or not the schema is a map. */
+  public abstract boolean isMap();
 
   /** @return the type. */
   public abstract Type type();
@@ -296,5 +367,63 @@ public abstract class Schema implements Node {
   @Override
   public String toString() {
     return String.format("Schema \"%s\", type %s", getIdentifier(), type());
+  }
+
+  /**
+   * @return hashCode that should be unique for each underlying Node in the Document. This function
+   *     includes the location of the node in its calculation, so two different nodes with the same
+   *     content but different parents will still have different hashCodes.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+        defaultValue(),
+        description(),
+        format(),
+        id(),
+        isEnum(),
+        items() == null ? null : items().getIdentifier(),
+        key(),
+        location(),
+        pattern(),
+        parent != null ? parent.id() : "",
+        properties().keySet(),
+        reference(),
+        repeated(),
+        required(),
+        type());
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof Schema)) {
+      return false;
+    }
+    Schema schema2 = (Schema) other;
+
+    return Objects.equals(
+            additionalProperties() == null ? null : additionalProperties().getIdentifier(),
+            schema2.additionalProperties() == null
+                ? null
+                : schema2.additionalProperties().getIdentifier())
+        && Objects.equals(defaultValue(), schema2.defaultValue())
+        && Objects.equals(description(), schema2.description())
+        && Objects.equals(format(), schema2.format())
+        && Objects.equals(id(), schema2.id())
+        && Objects.equals(isEnum(), schema2.isEnum())
+        && Objects.equals(
+            items() == null ? null : items().getIdentifier(),
+            schema2.items() == null ? null : schema2.items().getIdentifier())
+        && Objects.equals(key(), schema2.key())
+        && Objects.equals(location(), schema2.location())
+        && Objects.equals(pattern(), schema2.pattern())
+        && Objects.equals(
+            parent != null ? parent.id() : "", schema2.parent != null ? schema2.parent.id() : "")
+        && Objects.equals(properties().keySet(), schema2.properties().keySet())
+        && Objects.equals(reference(), schema2.reference())
+        && Objects.equals(repeated(), schema2.repeated())
+        && Objects.equals(required(), schema2.required())
+        && Objects.equals(type(), schema2.type());
   }
 }

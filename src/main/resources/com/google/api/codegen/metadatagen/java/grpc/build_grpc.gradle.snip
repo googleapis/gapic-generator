@@ -1,0 +1,11 @@
+@extends "metadatagen/java/grpc/build_base.gradle.snip"
+
+@override description(metadata)
+  'GRPC library for {@metadata.identifier}'
+@end
+
+@override dependencies(metadata)
+  compile 'io.grpc:grpc-stub:{@metadata.grpcVersionBound.lower}'
+  compile 'io.grpc:grpc-protobuf:{@metadata.grpcVersionBound.lower}'
+  compile project(':{@metadata.protoPackageName}')
+@end

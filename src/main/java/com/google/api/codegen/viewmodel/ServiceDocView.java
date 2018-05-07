@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,13 +41,9 @@ public abstract class ServiceDocView {
     return new AutoValue_ServiceDocView.Builder();
   }
 
-  public String firstLine() {
-    return lines().get(0);
-  }
+  public abstract String firstLine();
 
-  public List<String> remainingLines() {
-    return lines().subList(1, lines().size());
-  }
+  public abstract List<String> remainingLines();
 
   public abstract String defaultTransportProviderBuilder();
 
@@ -55,7 +51,12 @@ public abstract class ServiceDocView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+
     public abstract Builder lines(List<String> val);
+
+    public abstract Builder firstLine(String val);
+
+    public abstract Builder remainingLines(List<String> val);
 
     public abstract Builder exampleApiMethod(ApiMethodView val);
 

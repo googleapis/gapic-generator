@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,11 +21,9 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -33,9 +31,6 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class FieldConfig {
   public abstract FieldModel getField();
-
-  /** The list of fields that must be traversed to reach the field in getField(). */
-  public abstract List<FieldModel> getFieldPath();
 
   @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
@@ -45,13 +40,6 @@ public abstract class FieldConfig {
 
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();
-
-  public String getEntityName() {
-    if (getResourceNameConfig() == null) {
-      return null;
-    }
-    return getResourceNameConfig().getEntityName();
-  }
 
   public ResourceNameType getResourceNameType() {
     if (getResourceNameConfig() == null) {
@@ -65,20 +53,6 @@ public abstract class FieldConfig {
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
-    return createFieldConfig(
-        field,
-        ImmutableList.of(field),
-        resourceNameTreatment,
-        resourceNameConfig,
-        messageResourceNameConfig);
-  }
-
-  private static FieldConfig createFieldConfig(
-      FieldModel field,
-      List<FieldModel> fieldPath,
-      ResourceNameTreatment resourceNameTreatment,
-      ResourceNameConfig resourceNameConfig,
-      ResourceNameConfig messageResourceNameConfig) {
     if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
@@ -89,15 +63,11 @@ public abstract class FieldConfig {
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(
-        field, fieldPath, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
   static FieldConfig createFieldConfig(FieldModel field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
-  }
-
-  static FieldConfig createFieldConfig(FieldModel field, List<FieldModel> fieldPath) {
-    return FieldConfig.createFieldConfig(field, fieldPath, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
@@ -135,7 +105,7 @@ public abstract class FieldConfig {
       messageFieldEntityName = messageConfigs.getFieldResourceName(field);
     }
     if (fieldNamePatterns != null) {
-      flattenedFieldEntityName = fieldNamePatterns.get(field.getSimpleName());
+      flattenedFieldEntityName = fieldNamePatterns.get(field.getNameAsParameter());
     }
     if (flattenedFieldEntityName == null) {
       flattenedFieldEntityName = messageFieldEntityName;
@@ -162,10 +132,7 @@ public abstract class FieldConfig {
       // messageField uses a oneof containing that type, or when the messageField accepts any
       // resource name, or for Discovery fields.
       ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
-      boolean ok =
-          resourceTypeName == ResourceNameType.ANY
-              || (resourceTypeName == ResourceNameType.SINGLE
-                  && field.getApiSource().equals(ApiSource.DISCOVERY));
+      boolean ok = resourceTypeName == ResourceNameType.ANY;
       if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
@@ -227,6 +194,10 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES;
   }
 
+  public boolean useResourceNameTypeInSampleOnly() {
+    return getResourceNameTreatment() == ResourceNameTreatment.SAMPLE_ONLY;
+  }
+
   public boolean useValidation() {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
   }
@@ -236,11 +207,19 @@ public abstract class FieldConfig {
         getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
   }
 
+  public FieldConfig withResourceNameInSampleOnly() {
+    ResourceNameTreatment newTreatment = ResourceNameTreatment.NONE;
+    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())) {
+      newTreatment = ResourceNameTreatment.SAMPLE_ONLY;
+    }
+    return FieldConfig.createFieldConfig(
+        getField(), newTreatment, getResourceNameConfig(), getMessageResourceNameConfig());
+  }
+
   public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && !getResourceNameConfig().equals(getMessageResourceNameConfig())
-        && getField().getApiSource() != ApiSource.DISCOVERY;
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
   }
 
   public boolean requiresParamTransformationFromAny() {
@@ -266,10 +245,6 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
-    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-      // There are no proto messages in Discovery.
-      return;
-    }
     switch (treatment) {
       case NONE:
         break;

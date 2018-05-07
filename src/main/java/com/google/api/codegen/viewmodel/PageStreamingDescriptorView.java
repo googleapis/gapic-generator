@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,6 +46,8 @@ public abstract class PageStreamingDescriptorView {
 
   public abstract String methodName();
 
+  public abstract String transportMethodName();
+
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingDescriptorView.Builder();
   }
@@ -79,6 +81,8 @@ public abstract class PageStreamingDescriptorView {
     public abstract Builder resourcesGetMethodName(String val);
 
     public abstract Builder methodName(String val);
+
+    public abstract Builder transportMethodName(String val);
 
     public abstract PageStreamingDescriptorView build();
   }

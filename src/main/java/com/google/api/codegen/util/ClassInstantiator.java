@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -35,19 +37,24 @@ public final class ClassInstantiator {
       Object[] ctorArg,
       String classDescription,
       ErrorReporter errorReporter) {
+    Preconditions.checkArgument(
+        !Strings.isNullOrEmpty(className),
+        "ClassInstantiator.createClass: className is not provided");
     Class<?> classType;
     try {
       classType = Class.forName(className);
     } catch (ClassNotFoundException e) {
-      errorReporter.error(
-          "Cannot resolve %s class '%s'. Is it in the class path?", classDescription, className);
-      return null;
+      throw new RuntimeException(
+          String.format(
+              "Cannot resolve %s class '%s'. Is it in the class path?",
+              classDescription, className),
+          e);
     }
     if (!coerceType.isAssignableFrom(classType)) {
-      errorReporter.error(
-          "the %s class '%s' does not extend the expected class '%s'",
-          classDescription, classType.getName(), coerceType.getName());
-      return null;
+      throw new RuntimeException(
+          String.format(
+              "the %s class '%s' does not extend the expected class '%s'",
+              classDescription, classType.getName(), coerceType.getName()));
     }
     Constructor<?> ctor;
     try {
@@ -62,8 +69,7 @@ public final class ClassInstantiator {
         error.append(" ");
         error.append(c.getName());
       }
-      errorReporter.error(error.toString());
-      return null;
+      throw new RuntimeException(error.toString(), e);
     }
     try {
       // Unchecked cast here. This is safe though, since we make sure that coerceType is assignable
@@ -74,7 +80,8 @@ public final class ClassInstantiator {
         | IllegalArgumentException
         | InvocationTargetException e) {
       // At this point, this is likely a bug and not a user error, so propagate exception.
-      throw Throwables.propagate(e);
+      Throwables.throwIfUnchecked(e);
+      throw new RuntimeException(e);
     }
   }
 }

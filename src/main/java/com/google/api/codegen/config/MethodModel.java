@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,17 +23,15 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+// TODO(andrealin): Remove functions that have identical implementations in the implementing classes.
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
-
-  /* @return find a nested field in the method's input type by the nested field's name. */
+  /* @return find a nested field in the method's input type by the nested field's name. Returns null if not found. */
   @Nullable
   FieldModel getInputField(String fieldName);
 
-  /* @return find a nested field in the method's output type by the nested field's name. */
+  /* @return find a nested field in the method's output type by the nested field's name. Returns null if not found. */
   @Nullable
   FieldModel getOutputField(String fieldName);
 
@@ -64,7 +62,7 @@ public interface MethodModel {
   /* @return the type of the input field. */
   TypeModel getInputType();
 
-  /* @return the type of the input field. */
+  /* @return the type of the output field. */
   TypeModel getOutputType();
 
   /* @return theTypeName for the output type. Save it in the table. */
@@ -91,8 +89,6 @@ public interface MethodModel {
   Name asName();
 
   boolean isOutputTypeEmpty();
-
-  boolean hasReturnValue();
 
   Iterable<? extends FieldModel> getInputFields();
 
