@@ -28,9 +28,7 @@ import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A class that performs the transformations needed to generate the MethodSampleView for the
@@ -133,8 +131,8 @@ class SampleTransformer {
     for (CallingForm form : callingForms) {
       MethodConfig methodConfig = context.getMethodConfig();
 
-      Set<SampleValueSet> matchingValueSets;
-      matchingValueSets = methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
+      List<SampleValueSet> matchingValues =
+          methodConfig.getSampleSpec().getMatchingValues(form, sampleType);
 
       // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
       // to generate the samples in various scenarios. Once all the configs have been migrated to
@@ -145,19 +143,18 @@ class SampleTransformer {
           || sampleType
               == SampleType
                   .IN_CODE // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
-          || matchingValueSets.size()
-              == 0) { // ApiMethodView.initCode still needs to be set for now
-        matchingValueSets = new LinkedHashSet<>();
-        matchingValueSets.add(
-            SampleValueSet.newBuilder()
-                .addAllParameters(methodConfig.getSampleCodeInitFields())
-                .setId(LEGACY_SAMPLE_CODE_INIT_VALUES) // only use these samples for initCode
-                .setDescription("value set imported from sample_code_init_fields")
-                .setTitle("Sample Values")
-                .build());
+          || matchingValues.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
+        matchingValues =
+            Collections.singletonList(
+                SampleValueSet.newBuilder()
+                    .addAllParameters(methodConfig.getSampleCodeInitFields())
+                    .setId(LEGACY_SAMPLE_CODE_INIT_VALUES) // only use these samples for initCode
+                    .setDescription("value set imported from sample_code_init_fields")
+                    .setTitle("Sample Values")
+                    .build());
       }
 
-      for (SampleValueSet valueSet : matchingValueSets) {
+      for (SampleValueSet valueSet : matchingValues) {
         InitCodeView initCodeView =
             sampleGenerator.generate(
                 createInitCodeContext(

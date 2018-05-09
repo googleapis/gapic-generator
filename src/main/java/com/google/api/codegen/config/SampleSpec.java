@@ -20,12 +20,10 @@ import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.common.collect.Iterables;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import com.google.common.collect.ImmutableList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class SampleSpec stores the sample specification for a given method, and provides methods to
@@ -36,10 +34,10 @@ public class SampleSpec {
   /** A reference to the Sample Configuration from which the other fields are derived. */
   private final SampleConfiguration sampleConfiguration;
 
-  /** All the SampleValueSets defined for this method, indexed by their IDs. */
-  private Map<String, SampleValueSet> valueSets;
+  /** All the SampleValueSets defined for this method. */
+  private final List<SampleValueSet> valueSets;
 
-  private boolean specified;
+  private final boolean specified;
 
   /** The various types of supported samples. */
   public enum SampleType {
@@ -51,7 +49,15 @@ public class SampleSpec {
   public SampleSpec(MethodConfigProto methodConfigProto) {
     specified = methodConfigProto.hasSamples();
     sampleConfiguration = methodConfigProto.getSamples();
-    storeValueSets(methodConfigProto.getSampleValueSetsList(), methodConfigProto.getName());
+    valueSets = methodConfigProto.getSampleValueSetsList();
+
+    HashSet<String> ids = new HashSet<>();
+    for (SampleValueSet valueSet : valueSets) {
+      String id = valueSet.getId();
+      if (!ids.add(id)) {
+        throw new IllegalArgumentException("duplicate element: " + id);
+      }
+    }
   }
 
   public boolean isConfigured() {
@@ -70,10 +76,11 @@ public class SampleSpec {
     return id.matches(expression);
   }
 
-  public Set<SampleValueSet> getMatchingValueSets(
+  public List<SampleValueSet> getMatchingValues(
       ClientMethodType methodForm, SampleType sampleType) {
-    return getMatchingValueSets(CallingForm.Generic, sampleType);
+    return getMatchingValues(CallingForm.Generic, sampleType);
   }
+
   /**
    * Returns the SampleValueSets that were specified for this methodForm and sampleType.
    *
@@ -81,37 +88,29 @@ public class SampleSpec {
    * @param sampleType The sample type for which value sets are requested
    * @return A set of SampleValueSets for methodForm andSampleType
    */
-  public Set<SampleValueSet> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
-    Set<SampleValueSet> matchingValueSets = new LinkedHashSet<>();
-    List<SampleTypeConfiguration> sampleConfigList = getConfigFor(sampleType);
+  public List<SampleValueSet> getMatchingValues(CallingForm methodForm, SampleType sampleType) {
     String methodFormString = methodForm.toString();
 
-    for (SampleTypeConfiguration sampleConfig : sampleConfigList) {
+    List<String> valueSetExpressions =
+        getConfigFor(sampleType)
+            .stream()
+            .filter(
+                sampleConfig ->
+                    sampleConfig
+                        .getCallingFormsList()
+                        .stream()
+                        .anyMatch(form -> expressionMatchesId(form, methodFormString)))
+            .flatMap(sampleConfig -> sampleConfig.getValueSetsList().stream())
+            .collect(Collectors.toList());
 
-      // Determine whether sampleConfig applies to methodForm.
-      boolean configMatchesForm = false;
-      for (String callingFormExpression : sampleConfig.getCallingFormsList()) {
-        if (expressionMatchesId(callingFormExpression, methodFormString)) {
-          configMatchesForm = true;
-          break;
-        }
-      }
-      if (!configMatchesForm) {
-        continue;
-      }
-
-      // Add the value sets referenced in this sampleConfig.
-      for (String valueSetExpression : sampleConfig.getValueSetsList()) {
-        Iterable<String> valueSetNames =
-            Iterables.filter(
-                valueSets.keySet(), (String id) -> expressionMatchesId(valueSetExpression, id));
-        for (String name : valueSetNames) {
-          matchingValueSets.add(valueSets.get(name));
-        }
-      }
-    }
-
-    return matchingValueSets;
+    return valueSets
+        .stream()
+        .filter(
+            valueSet ->
+                valueSetExpressions
+                    .stream()
+                    .anyMatch(expression -> expressionMatchesId(expression, valueSet.getId())))
+        .collect(ImmutableList.toImmutableList());
   }
 
   /** Returns the single SampleTypeConfiguration for the specified sampleType. */
@@ -125,22 +124,6 @@ public class SampleSpec {
         return sampleConfiguration.getApiExplorerList();
       default:
         throw new IllegalArgumentException("unhandled SampleType: " + sampleType.toString());
-    }
-  }
-
-  /** Populates the map valueSets so as to be able to access each SampleValueSet by its ID. */
-  private void storeValueSets(List<SampleValueSet> sampleValueSets, String methodName) {
-    valueSets = new HashMap<>();
-    if (sampleConfiguration != null && sampleValueSets != null) {
-      for (SampleValueSet set : sampleValueSets) {
-        String id = set.getId();
-        SampleValueSet previous = valueSets.put(id, set);
-        if (previous != null) {
-          throw new IllegalArgumentException(
-              String.format(
-                  "value set \"%s\" defined multiple times in method \"%s\"", id, methodName));
-        }
-      }
     }
   }
 }

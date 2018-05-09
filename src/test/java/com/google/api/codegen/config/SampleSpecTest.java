@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.SampleConfiguration;
@@ -24,7 +22,7 @@ import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import java.util.Set;
+import java.util.List;
 import org.junit.Test;
 
 public class SampleSpecTest {
@@ -76,12 +74,9 @@ public class SampleSpecTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    final Set<SampleValueSet> matchingValueSets =
-        sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE);
-    assertEquals(2, matchingValueSets.size());
-    assertTrue(matchingValueSets.contains(valueSetAlice));
-    assertTrue(matchingValueSets.contains(valueSetAlison));
-    assertFalse(matchingValueSets.contains(valueSetBob));
+    final List<SampleValueSet> matchingValues =
+        sampleSpec.getMatchingValues(ClientMethodType.CallableMethod, SampleType.STANDALONE);
+    assertThat(matchingValues).containsExactly(valueSetAlice, valueSetAlison).inOrder();
   }
 
   @Test
@@ -106,10 +101,7 @@ public class SampleSpecTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    assertEquals(
-        2,
-        sampleSpec
-            .getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE)
-            .size());
+    assertThat(sampleSpec.getMatchingValues(ClientMethodType.CallableMethod, SampleType.STANDALONE))
+        .hasSize(2);
   }
 }
