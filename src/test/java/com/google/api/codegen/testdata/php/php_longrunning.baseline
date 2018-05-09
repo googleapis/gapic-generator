@@ -232,7 +232,7 @@ class OperationsGapicClient
      *     @type string $serviceAddress
      *           Required. The address of the API remote host. May optionally include the port,
      *           formatted as "<uri>:<port>".
-     *     @type string|array $credentials
+     *     @type string|array|FetchAuthTokenInterface|CredentialsWrapper $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
@@ -252,12 +252,13 @@ class OperationsGapicClient
      *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
      *           in the resources folder.
-     *     @type string $transport
+     *     @type string|TransportInterface $transport
      *           The transport used for executing network requests. May be either the string `rest`
      *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
      *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
-     *           {@see TransportInterface} object. Note that when this object is provided, any
-     *           settings in $transportConfig, and any $serviceAddress setting, will be ignored.
+     *           {@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+     *           object is provided, any settings in $transportConfig, and any $serviceAddress
+     *           setting, will be ignored.
      *     @type array $transportConfig
      *           Configuration options that will be used to construct the transport. Options for
      *           each supported transport type should be passed in a key for that transport. For
@@ -784,7 +785,9 @@ class OperationsClientTest extends GeneratedTest
     {
         return new OperationsClient($options + [
             'serviceAddress' => '',
-            'scopes' => [],
+            'transportConfig' => [
+                'scopes' => [],
+            ],
         ]);
     }
     /**

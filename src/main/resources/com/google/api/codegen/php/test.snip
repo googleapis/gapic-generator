@@ -38,7 +38,9 @@
                     'serviceAddress' => '',
                 @end
                 @if testClass.missingDefaultServiceScopes
-                    'scopes' => [],
+                    'transportConfig' => [
+                        'scopes' => [],
+                    ],
                 @end
             ]);
         @else
@@ -353,7 +355,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -424,7 +425,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
