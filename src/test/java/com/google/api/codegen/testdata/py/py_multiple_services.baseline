@@ -608,14 +608,14 @@ napoleon_use_rtype = True
 Client for Google Example API
 =============================
 
-.. automodule:: google.cloud.example_v1.foo
+.. automodule:: google.cloud.example_v1
     :members:
     :inherited-members:
 ============== file: docs/gapic/v1/types.rst ==============
 Types for Google Example API Client
 ===================================
 
-.. automodule:: google.cloud.example_v1.foo.types
+.. automodule:: google.cloud.example_v1.types
     :members:
 ============== file: docs/index.rst ==============
 Python Client for Google Example API (`Alpha`_)
@@ -743,9 +743,7 @@ try:
 except ImportError:
     import pkgutil
     __path__ = pkgutil.extend_path(__path__, __name__)
-============== file: google/cloud/example_v1/__init__.py ==============
-
-============== file: google/cloud/example_v1/foo.py ==============
+============== file: google/cloud/example.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -763,9 +761,9 @@ except ImportError:
 
 from __future__ import absolute_import
 
-from google.cloud.example_v1.foo import DecrementerServiceClient
-from google.cloud.example_v1.foo import IncrementerServiceClient
-from google.cloud.example_v1.foo import types
+from google.cloud.example_v1 import DecrementerServiceClient
+from google.cloud.example_v1 import IncrementerServiceClient
+from google.cloud.example_v1 import types
 
 
 __all__ = (
@@ -773,7 +771,7 @@ __all__ = (
     'IncrementerServiceClient',
     'DecrementerServiceClient',
 )
-============== file: google/cloud/example_v1/foo/__init__.py ==============
+============== file: google/cloud/example_v1/__init__.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -791,7 +789,7 @@ __all__ = (
 
 from __future__ import absolute_import
 
-from google.cloud.example_v1.foo import types
+from google.cloud.example_v1 import types
 from google.cloud.example_v1.foo.gapic import decrementer_service_client
 from google.cloud.example_v1.foo.gapic import incrementer_service_client
 
@@ -808,6 +806,8 @@ __all__ = (
     'IncrementerServiceClient',
     'DecrementerServiceClient',
 )
+============== file: google/cloud/example_v1/foo/__init__.py ==============
+
 ============== file: google/cloud/example_v1/foo/gapic/__init__.py ==============
 
 ============== file: google/cloud/example_v1/foo/gapic/decrementer_service_client.py ==============
@@ -936,9 +936,9 @@ class DecrementerServiceClient(object):
         Decrement.
 
         Example:
-            >>> from google.cloud.example_v1 import foo
+            >>> from google.cloud import example_v1
             >>>
-            >>> client = foo.DecrementerServiceClient()
+            >>> client = example_v1.DecrementerServiceClient()
             >>>
             >>> client.decrement()
 
@@ -1102,9 +1102,9 @@ class IncrementerServiceClient(object):
         Increment.
 
         Example:
-            >>> from google.cloud.example_v1 import foo
+            >>> from google.cloud import example_v1
             >>>
-            >>> client = foo.IncrementerServiceClient()
+            >>> client = example_v1.IncrementerServiceClient()
             >>>
             >>> client.increment()
 
@@ -1142,7 +1142,7 @@ config = {
   }
 }
 
-============== file: google/cloud/example_v1/foo/types.py ==============
+============== file: google/cloud/example_v1/types.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1175,7 +1175,7 @@ for module in (http_pb2,
                descriptor_pb2,
                empty_pb2,):
     for name, message in get_messages(module).items():
-        message.__module__ = 'google.cloud.example_v1.foo.types'
+        message.__module__ = 'google.cloud.example_v1.types'
         setattr(sys.modules[__name__], name, message)
         names.append(name)
 
@@ -1338,7 +1338,7 @@ setuptools.setup(
 
 import pytest
 
-from google.cloud.example_v1 import foo
+from google.cloud import example_v1
 from google.cloud.example_v1.foo.proto import multiple_services_pb2
 from google.protobuf import empty_pb2
 
@@ -1383,7 +1383,7 @@ class TestDecrementerServiceClient(object):
 
     def test_decrement(self):
         channel = ChannelStub()
-        client = foo.DecrementerServiceClient(
+        client = example_v1.DecrementerServiceClient(
             channel=channel)
 
         client.decrement()
@@ -1396,7 +1396,7 @@ class TestDecrementerServiceClient(object):
     def test_decrement_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = foo.DecrementerServiceClient(
+        client = example_v1.DecrementerServiceClient(
              channel=channel)
 
         with pytest.raises(CustomException):
@@ -1421,7 +1421,7 @@ class TestDecrementerServiceClient(object):
 
 import pytest
 
-from google.cloud.example_v1 import foo
+from google.cloud import example_v1
 from google.cloud.example_v1.foo.proto import multiple_services_pb2
 from google.protobuf import empty_pb2
 
@@ -1466,7 +1466,7 @@ class TestIncrementerServiceClient(object):
 
     def test_increment(self):
         channel = ChannelStub()
-        client = foo.IncrementerServiceClient(
+        client = example_v1.IncrementerServiceClient(
             channel=channel)
 
         client.increment()
@@ -1479,7 +1479,7 @@ class TestIncrementerServiceClient(object):
     def test_increment_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = foo.IncrementerServiceClient(
+        client = example_v1.IncrementerServiceClient(
              channel=channel)
 
         with pytest.raises(CustomException):
