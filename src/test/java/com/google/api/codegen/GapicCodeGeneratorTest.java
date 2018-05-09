@@ -122,6 +122,11 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "no_path_templates_pkg.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.PYTHON,
+            new String[] {"python_gapic.yaml", "multiple_services_gapic.yaml"},
+            "multiple_services_pkg.yaml",
+            "multiple_services"),
+        GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.NODEJS,
             new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
             "library_pkg.yaml",
