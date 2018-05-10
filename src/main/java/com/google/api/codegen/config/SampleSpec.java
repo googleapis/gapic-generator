@@ -55,7 +55,7 @@ public class SampleSpec {
     for (SampleValueSet valueSet : valueSets) {
       String id = valueSet.getId();
       if (!ids.add(id)) {
-        throw new IllegalArgumentException("duplicate element: " + id);
+        throw new IllegalArgumentException("SampleSpec: duplicate element: " + id);
       }
     }
   }
@@ -72,13 +72,13 @@ public class SampleSpec {
    * @param id The ID to be matched against the regex
    * @return True iff id matches expression
    */
-  public static boolean expressionMatchesId(String expression, String id) {
+  private static boolean expressionMatchesId(String expression, String id) {
     return id.matches(expression);
   }
 
-  public List<SampleValueSet> getMatchingValues(
+  public List<SampleValueSet> getMatchingValueSets(
       ClientMethodType methodForm, SampleType sampleType) {
-    return getMatchingValues(CallingForm.Generic, sampleType);
+    return getMatchingValueSets(CallingForm.Generic, sampleType);
   }
 
   /**
@@ -88,9 +88,10 @@ public class SampleSpec {
    * @param sampleType The sample type for which value sets are requested
    * @return A set of SampleValueSets for methodForm andSampleType
    */
-  public List<SampleValueSet> getMatchingValues(CallingForm methodForm, SampleType sampleType) {
+  public List<SampleValueSet> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
     String methodFormString = methodForm.toString();
 
+    // Get the value set expressions configured for this calling form.
     List<String> valueSetExpressions =
         getConfigFor(sampleType)
             .stream()
@@ -99,10 +100,11 @@ public class SampleSpec {
                     sampleConfig
                         .getCallingFormsList()
                         .stream()
-                        .anyMatch(form -> expressionMatchesId(form, methodFormString)))
+                        .anyMatch(expression -> expressionMatchesId(expression, methodFormString)))
             .flatMap(sampleConfig -> sampleConfig.getValueSetsList().stream())
             .collect(Collectors.toList());
 
+    // Return the value sets corresponding to the selected value set expressions.
     return valueSets
         .stream()
         .filter(

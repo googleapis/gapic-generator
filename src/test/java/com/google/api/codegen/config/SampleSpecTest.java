@@ -75,7 +75,7 @@ public class SampleSpecTest {
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
     final List<SampleValueSet> matchingValues =
-        sampleSpec.getMatchingValues(ClientMethodType.CallableMethod, SampleType.STANDALONE);
+        sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE);
     assertThat(matchingValues).containsExactly(valueSetAlice, valueSetAlison).inOrder();
   }
 
@@ -101,7 +101,8 @@ public class SampleSpecTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    assertThat(sampleSpec.getMatchingValues(ClientMethodType.CallableMethod, SampleType.STANDALONE))
+    assertThat(
+            sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE))
         .hasSize(2);
   }
 }

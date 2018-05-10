@@ -131,8 +131,8 @@ class SampleTransformer {
     for (CallingForm form : callingForms) {
       MethodConfig methodConfig = context.getMethodConfig();
 
-      List<SampleValueSet> matchingValues =
-          methodConfig.getSampleSpec().getMatchingValues(form, sampleType);
+      List<SampleValueSet> matchingValueSets =
+          methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
 
       // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
       // to generate the samples in various scenarios. Once all the configs have been migrated to
@@ -143,8 +143,8 @@ class SampleTransformer {
           || sampleType
               == SampleType
                   .IN_CODE // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
-          || matchingValues.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
-        matchingValues =
+          || matchingValueSets.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
+        matchingValueSets =
             Collections.singletonList(
                 SampleValueSet.newBuilder()
                     .addAllParameters(methodConfig.getSampleCodeInitFields())
@@ -154,7 +154,7 @@ class SampleTransformer {
                     .build());
       }
 
-      for (SampleValueSet valueSet : matchingValues) {
+      for (SampleValueSet valueSet : matchingValueSets) {
         InitCodeView initCodeView =
             sampleGenerator.generate(
                 createInitCodeContext(
