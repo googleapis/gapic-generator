@@ -125,14 +125,14 @@ class OperationsClient extends OperationsGapicClient
 namespace Google\LongRunning\Gapic;
 
 use Google\ApiCore\ApiException;
-use Google\ApiCore\Call;
+use Google\ApiCore\CredentialsWrapper;
+use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
 use Google\ApiCore\PathTemplate;
 use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\RetrySettings;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
-use Google\Auth\CredentialsLoader;
 use Google\LongRunning\CancelOperationRequest;
 use Google\LongRunning\DeleteOperationRequest;
 use Google\LongRunning\GetOperationRequest;
@@ -141,8 +141,6 @@ use Google\LongRunning\ListOperationsResponse;
 use Google\LongRunning\Operation;
 use Google\LongRunning\OperationsGrpcClient;
 use Google\Protobuf\GPBEmpty;
-use Grpc\Channel;
-use Grpc\ChannelCredentials;
 
 /**
  * Service Description: Manages long-running operations with an API service.
@@ -165,7 +163,9 @@ use Grpc\ChannelCredentials;
  * ```
  * $options = [
  *     'serviceAddress' => 'my-service-address',
- *     'scopes' => ['my-service-scope'],
+ *     'credentialsConfig' => [
+ *         'scopes' => ['my-service-scope'],
+ *     ],
  * ];
  * $operationsClient = new OperationsClient($options);
  * try {
@@ -289,7 +289,9 @@ class OperationsGapicClient
      * ```
      * $options = [
      *     'serviceAddress' => 'my-service-address',
-     *     'scopes' => ['my-service-scope'],
+     *     'credentialsConfig' => [
+     *         'scopes' => ['my-service-scope'],
+     *     ],
      * ];
      * $operationsClient = new OperationsClient($options);
      * try {
@@ -341,7 +343,9 @@ class OperationsGapicClient
      * ```
      * $options = [
      *     'serviceAddress' => 'my-service-address',
-     *     'scopes' => ['my-service-scope'],
+     *     'credentialsConfig' => [
+     *         'scopes' => ['my-service-scope'],
+     *     ],
      * ];
      * $operationsClient = new OperationsClient($options);
      * try {
@@ -428,7 +432,9 @@ class OperationsGapicClient
      * ```
      * $options = [
      *     'serviceAddress' => 'my-service-address',
-     *     'scopes' => ['my-service-scope'],
+     *     'credentialsConfig' => [
+     *         'scopes' => ['my-service-scope'],
+     *     ],
      * ];
      * $operationsClient = new OperationsClient($options);
      * try {
@@ -477,7 +483,9 @@ class OperationsGapicClient
      * ```
      * $options = [
      *     'serviceAddress' => 'my-service-address',
-     *     'scopes' => ['my-service-scope'],
+     *     'credentialsConfig' => [
+     *         'scopes' => ['my-service-scope'],
+     *     ],
      * ];
      * $operationsClient = new OperationsClient($options);
      * try {
@@ -785,7 +793,7 @@ class OperationsClientTest extends GeneratedTest
     {
         return new OperationsClient($options + [
             'serviceAddress' => '',
-            'transportConfig' => [
+            'credentialsConfig' => [
                 'scopes' => [],
             ],
         ]);

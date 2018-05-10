@@ -436,16 +436,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
-    typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\FetchAuthTokenInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RetrySettings");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Transport\\TransportInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
-    typeTable.saveNicknameFor("\\Google\\Auth\\CredentialsLoader");
-    typeTable.saveNicknameFor("\\Grpc\\Channel");
-    typeTable.saveNicknameFor("\\Grpc\\ChannelCredentials");
 
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");

@@ -54,7 +54,8 @@
 namespace Google\Example\Library\V1\Gapic;
 
 use Google\ApiCore\ApiException;
-use Google\ApiCore\Call;
+use Google\ApiCore\CredentialsWrapper;
+use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\OperationResponse;
@@ -63,7 +64,6 @@ use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\RetrySettings;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
-use Google\Auth\CredentialsLoader;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -117,8 +117,6 @@ use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
 use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
-use Grpc\Channel;
-use Grpc\ChannelCredentials;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
