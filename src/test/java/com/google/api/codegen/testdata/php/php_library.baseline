@@ -554,6 +554,11 @@ class LibraryServiceGapicClient
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
+     *     @type string $timeout
+     *          Other problematic field names
+     *     @type string $retry
+     *     @type string $retrySettings
+     *     @type string $metadata
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -576,6 +581,18 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['stringBuilder'])) {
             $request->setStringBuilder($optionalArgs['stringBuilder']);
+        }
+        if (isset($optionalArgs['timeout'])) {
+            $request->setTimeout($optionalArgs['timeout']);
+        }
+        if (isset($optionalArgs['retry'])) {
+            $request->setRetry($optionalArgs['retry']);
+        }
+        if (isset($optionalArgs['retrySettings'])) {
+            $request->setRetrySettings($optionalArgs['retrySettings']);
+        }
+        if (isset($optionalArgs['metadata'])) {
+            $request->setMetadata($optionalArgs['metadata']);
         }
 
         return $this->startCall(

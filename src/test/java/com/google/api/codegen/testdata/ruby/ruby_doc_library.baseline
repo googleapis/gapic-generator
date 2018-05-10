@@ -2037,6 +2037,15 @@ module Google
         # @!attribute [rw] options
         #   @return [String]
         #     To test 'options' parameter name conflict.
+        # @!attribute [rw] timeout
+        #   @return [String]
+        #     Other problematic field names
+        # @!attribute [rw] retry
+        #   @return [String]
+        # @!attribute [rw] retry_settings
+        #   @return [String]
+        # @!attribute [rw] metadata
+        #   @return [String]
         class GetShelfRequest; end
 
         # Creates a name conflict with java.lang type
@@ -3113,6 +3122,11 @@ module Library
       # @param string_builder [Google::Example::Library::V1::StringBuilder | Hash]
       #   A hash of the same form as `Google::Example::Library::V1::StringBuilder`
       #   can also be provided.
+      # @param timeout [String]
+      #   Other problematic field names
+      # @param retry_ [String]
+      # @param retry_settings [String]
+      # @param metadata [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3136,13 +3150,21 @@ module Library
           options_,
           message: nil,
           string_builder: nil,
+          timeout: nil,
+          retry_: nil,
+          retry_settings: nil,
+          metadata: nil,
           options: nil,
           &block
         req = {
           name: name,
           options: options_,
           message: message,
-          string_builder: string_builder
+          string_builder: string_builder,
+          timeout: timeout,
+          retry: retry_,
+          retry_settings: retry_settings,
+          metadata: metadata
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetShelfRequest)
         @get_shelf.call(req, options, &block)
