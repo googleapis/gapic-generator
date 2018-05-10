@@ -17,6 +17,8 @@ package com.google.api.codegen.util.java;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Utility class for Java to process text in the templates. */
 public class JavaRenderingUtil {
@@ -28,10 +30,14 @@ public class JavaRenderingUtil {
     return CommonRenderingUtil.getDocLines(new JavaCommentReformatter().reformat(text));
   }
 
+  /** Splits given text into lines and returns an list of strings, each one representing a line. */
+  public static List<String> splitLines(String text) {
+    return CommonRenderingUtil.getDocLines(text);
+  }
+
   public List<String> getMultilineHeading(String heading) {
-    final char[] array = new char[heading.length()];
-    Arrays.fill(array, '=');
-    String eqsString = new String(array);
+    String eqsString =
+        Stream.generate(() -> "=").limit(heading.length()).collect(Collectors.joining());
     return Arrays.asList(eqsString, heading, eqsString);
   }
 }

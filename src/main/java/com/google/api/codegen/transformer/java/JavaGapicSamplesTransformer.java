@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -86,29 +87,30 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
 
     StaticLangFileView.Builder<StaticLangSampleClassView> sampleFile =
-        StaticLangFileView.<StaticLangSampleClassView>newBuilder();
+        StaticLangFileView.newBuilder();
     sampleFile.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
 
-    List<StaticLangApiMethodView> allMethods = methodGenerator.generateApiMethods(context);
-
-    for (StaticLangApiMethodView method : allMethods) {
-      for (MethodSampleView methodSample : method.samples()) {
-        StaticLangSampleClassView classView = generateSampleClass(context, method, methodSample);
+    for (MethodModel method : context.getSupportedMethods()) {
+      context = context.withNewTypeTable();
+      for (StaticLangApiMethodView methodView :
+          methodGenerator.generateApiMethod(context, method)) {
         String outputPath =
             pathMapper.getSamplesOutputPath(
                 context.getInterfaceModel().getFullName(),
                 context.getProductConfig(),
-                method.name());
-        files.add(
-            sampleFile
-                .classView(classView)
-                .outputPath(
-                    outputPath + File.separator + namer.getApiSampleFileName(classView.name()))
-                .fileHeader(
-                    fileHeaderTransformer.generateFileHeader(
-                        context,
-                        classView.name())) // must be done as the last step to catch all imports
-                .build());
+                methodView.name());
+
+        for (MethodSampleView methodSample : methodView.samples()) {
+          StaticLangSampleClassView classView =
+              generateSampleClass(context, methodView, methodSample);
+          files.add(
+              sampleFile
+                  .classView(classView)
+                  .outputPath(
+                      outputPath + File.separator + namer.getApiSampleFileName(classView.name()))
+                  .fileHeader(fileHeaderTransformer.generateFileHeader(context, classView.name()))
+                  .build());
+        }
       }
     }
 
