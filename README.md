@@ -188,36 +188,27 @@ the quality of the generated output.
 
 You need to locate/decide on the following before you create the package metadata config file:
 
-1. The output file to contain the package metadata for your client generation. Hereafter, this will be
-   referenced as `${PKG_META_CONFIG}`.
-2. A short name, which typically does not include the major version. For example, Cloud Language v1's short name
-   is `language`. Hereafter, this will be referenced as `${SHORT_NAME}`.
-3. The major version. The first major version will typically be `v1`. Hereafter, this will be referenced as
-   `${MAJOR_VERSION}`.
-4. The package name, which typically includes the fully-qualified product name and major version.
-   For example, Cloud Language v1's package name is `google-cloud-language-v1`. Hereafter, this will be
-   referenced as `${PACKAGE_NAME}`.
+1. The output file to contain the packaging config for your client generation. Hereafter, this will be
+   referenced as `${PACKAGING_CONFIG}`.
+2. The short name of your API, which typically does not include the major version. For example, Cloud Language v1's short name
+   is `language`. Hereafter, this will be referenced as `${API_NAME}`.
+3. The API major version. The first major version will typically be `v1`. Hereafter, this will be referenced as
+   `${API_VERSION}`.
+4. The organization name of the API. This would typically include the company name. For example,
+   Cloud Language's organization name is `google-cloud`. This is used to for the full artifact name.
+   Hereafter, this will be referenced as `${ORGANIZATION_NAME}`.
 5. The proto path, which is the proto's package with dots converted to slashes. For example, Cloud Language v1's
    proto path is `google/cloud/language/v1`. Hereafter, this will be referenced as `${PROTO_PATH}`.
 
-First, copy the contents of api_defaults.yaml and dependencies.yaml into a single file, hereafter
-referenced as `${PKG_META_CONFIG}`.
-
-```
-cp ${GOOGLEAPIS_DIR}/gapic/packaging/api_defaults.yaml ${PKG_META_CONFIG}
-cat < ${GOOGLEAPIS_DIR}/gapic/packaging/dependencies.yaml >> ${PKG_META_CONFIG}
-```
-
-Add the following lines to the end:
+Add the following lines to the ${PACKAGING_CONFIG} file:
 
 ```
 artifact_type: GAPIC
 proto_deps:
 - google-common-protos
-short_name: ${SHORT_NAME}
-major_version: ${MAJOR_VERSION}
-package_name:
-  default: ${PACKAGE_NAME}
+api_name: ${API_NAME}
+api_version: ${API_VERSION}
+organization_name: ${ORGANIZATION_NAME}
 proto_path: ${PROTO_PATH}
 ```
 
@@ -236,7 +227,7 @@ You need to locate/decide on the following before you call code generation:
 java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGeneratorTool \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
   --gapic_yaml=${YOUR_CLIENT_CONFIG} --gapic_yaml=${LANGUAGE_CONFIG} \
-  --package_yaml=${PKG_META_CONFIG} --o=${GENERATED_CLIENT_DIR}
+  --package_yaml2=${PACKAGING_CONFIG} --o=${GENERATED_CLIENT_DIR}
 ```
 
 The generated client library code will appear in `${GENERATED_CLIENT_DIR}`.
