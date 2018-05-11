@@ -54,19 +54,17 @@
 namespace Google\Example\V1\Gapic;
 
 use Google\ApiCore\ApiException;
-use Google\ApiCore\Call;
+use Google\ApiCore\CredentialsWrapper;
+use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
 use Google\ApiCore\PathTemplate;
 use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\RetrySettings;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
-use Google\Auth\CredentialsLoader;
 use Google\Cloud\Example\V1\IncrementRequest;
 use Google\Cloud\Example\V1\NoTemplatesAPIServiceGrpcClient;
 use Google\Protobuf\GPBEmpty;
-use Grpc\Channel;
-use Grpc\ChannelCredentials;
 
 /**
  * Service Description:
@@ -81,7 +79,9 @@ use Grpc\ChannelCredentials;
  * ```
  * $options = [
  *     'serviceAddress' => 'my-service-address',
- *     'scopes' => ['my-service-scope'],
+ *     'credentialsConfig' => [
+ *         'scopes' => ['my-service-scope'],
+ *     ],
  * ];
  * $noTemplatesApiServiceClient = new NoTemplatesApiServiceClient($options);
  * try {
@@ -122,9 +122,16 @@ class NoTemplatesApiServiceGapicClient
     {
         return [
             'serviceName' => self::SERVICE_NAME,
-            'clientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_client_config.json',
-            'restClientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_rest_client_config.php',
+            'clientConfig' => __DIR__ . '/../resources/no_templates_api_service_client_config.json',
             'descriptorsConfigPath' => __DIR__ . '/../resources/no_templates_api_service_descriptor_config.php',
+            'credentialsConfig' => [
+            ],
+            'transportConfig' => [
+                'rest' => [
+                    'restClientConfigPath' => __DIR__ . '/../resources/no_templates_api_service_rest_client_config.php',
+                ]
+            ],
+            'versionFile' => __DIR__ . '/../../../VERSION',
         ];
     }
 
@@ -141,18 +148,18 @@ class NoTemplatesApiServiceGapicClient
      *     @type string $serviceAddress
      *           Required. The address of the API remote host. May optionally include the port,
      *           formatted as "<uri>:<port>".
-     *     @type string|array $auth
+     *     @type string|array|FetchAuthTokenInterface|CredentialsWrapper $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
      *           *Advanced usage*: In addition, this option can also accept a pre-constructed
-     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
-     *           object. Note that when one of these objects are provided, any settings in
-     *           $authConfig will be ignored.
-     *     @type array $authConfig
-     *           Options used to configure auth, including auth token caching, for the client. For
-     *           a full list of supporting configuration options, see
-     *           \Google\ApiCore\AuthWrapper::build.
+     *           {@see \Google\Auth\FetchAuthTokenInterface} object or
+     *           {@see \Google\ApiCore\CredentialsWrapper} object. Note that when one of these
+     *           objects are provided, any settings in $credentialsConfig will be ignored.
+     *     @type array $credentialsConfig
+     *           Options used to configure credentials, including auth token caching, for the client.
+     *           For a full list of supporting configuration options, see
+     *           {@see \Google\ApiCore\CredentialsWrapper::build()}.
      *     @type bool $disableRetries
      *           Determines whether or not retries defined by the client configuration should be
      *           disabled. Defaults to `false`.
@@ -161,12 +168,13 @@ class NoTemplatesApiServiceGapicClient
      *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
      *           in the resources folder.
-     *     @type string $transport
+     *     @type string|TransportInterface $transport
      *           The transport used for executing network requests. May be either the string `rest`
      *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
      *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
-     *           TransportInterface object. Note that when this objects is provided, any settings in
-     *           $transportConfig, and any $serviceAddress setting, will be ignored.
+     *           {@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+     *           object is provided, any settings in $transportConfig, and any $serviceAddress
+     *           setting, will be ignored.
      *     @type array $transportConfig
      *           Configuration options that will be used to construct the transport. Options for
      *           each supported transport type should be passed in a key for that transport. For
@@ -175,14 +183,17 @@ class NoTemplatesApiServiceGapicClient
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the GrpcTransport::build and RestTransport::build methods for the supported
-     *           options.
+     *           See the {@see \Google\Cloud\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@see \Google\Cloud\ApiCore\Transport\RestTransport::build()} methods for the
+     *           supported options.
      * }
+     * @throws ValidationException
      * @experimental
      */
     public function __construct($options = [])
     {
-        $this->setClientOptions($options + self::getClientDefaults());
+        $clientOptions = $this->buildClientOptions($options);
+        $this->setClientOptions($clientOptions);
     }
 
     /**
@@ -197,7 +208,9 @@ class NoTemplatesApiServiceGapicClient
      * ```
      * $options = [
      *     'serviceAddress' => 'my-service-address',
-     *     'scopes' => ['my-service-scope'],
+     *     'credentialsConfig' => [
+     *         'scopes' => ['my-service-scope'],
+     *     ],
      * ];
      * $noTemplatesApiServiceClient = new NoTemplatesApiServiceClient($options);
      * try {
@@ -355,7 +368,7 @@ use Google\Cloud\Example\V1\NoTemplatesAPIServiceGrpcClient;
 use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
-use Grpc;
+use Google\Rpc\Code;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -378,7 +391,12 @@ class NoTemplatesApiServiceClientTest extends GeneratedTest
      */
     private function createClient(array $options = [])
     {
-        return new NoTemplatesApiServiceClient($options);
+        return new NoTemplatesApiServiceClient($options + [
+            'serviceAddress' => '',
+            'credentialsConfig' => [
+                'scopes' => [],
+            ],
+        ]);
     }
     /**
      * @test
@@ -416,12 +434,12 @@ class NoTemplatesApiServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
