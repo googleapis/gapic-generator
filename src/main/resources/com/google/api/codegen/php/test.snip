@@ -32,7 +32,20 @@
      */
     private function createClient(array $options = [])
     {
-        return new {@testClass.apiClassName}($options);
+        @if testClass.hasMissingDefaultOptions
+            return new {@testClass.apiClassName}($options + [
+                @if testClass.missingDefaultServiceAddress
+                    'serviceAddress' => '',
+                @end
+                @if testClass.missingDefaultServiceScopes
+                    'credentialsConfig' => [
+                        'scopes' => [],
+                    ],
+                @end
+            ]);
+        @else
+            return new {@testClass.apiClassName}($options);
+        @end
     }
 @end
 
@@ -248,12 +261,12 @@
 
 @private createErrorStatus()
     $status = new stdClass();
-    $status->code = Grpc\STATUS_DATA_LOSS;
+    $status->code = Code::DATA_LOSS;
     $status->details = 'internal error';
 
     $expectedExceptionMessage = json_encode([
        'message' => 'internal error',
-       'code' => Grpc\STATUS_DATA_LOSS,
+       'code' => Code::DATA_LOSS,
        'status' => 'DATA_LOSS',
        'details' => [],
     ], JSON_PRETTY_PRINT);
@@ -342,7 +355,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -413,7 +425,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
