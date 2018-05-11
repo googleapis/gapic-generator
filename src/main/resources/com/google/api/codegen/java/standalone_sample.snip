@@ -13,8 +13,9 @@
        
    @let apiMethod = sampleFile.classView.libraryMethod
      @let sample = apiMethod.samples.get(0)
-       //     calling form "{@sample.callingForm.toString}"
+       //     calling form: "{@sample.callingForm.toString}"
        //     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+       //       description: "{@sample.valueSet.description}"
        //       {@sample.valueSet.parameters}
        //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
 
@@ -40,32 +41,34 @@
 # For real use, we'll want to switch on the calling form id.
 @private generateSample(apiMethod, callingForm, initCode)
     @switch callingForm
-    @case "FlattenedPaging"
-      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "RequestPaged"
-      {@pagedRequestObjectMethod(apiMethod, initCode)}
-    @case "CallablePaging"
-      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "CallableList"
-      {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
-    @case "Flattened"
-      {@syncMethodSampleCode(apiMethod, initCode)}
     @case "Request"
       {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "RequestPaged"
+      {@pagedIterableMethodSampleCode(apiMethod, initCode)}
+    @case "Flattened"
+      {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "FlattenedPaged"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}      
     @case "Callable"
-      @if apiMethod.isStreaming
-        {@streamingCallableMethodSampleCode(apiMethod, initCode)}
-      @else
-        {@callableMethodSampleCode(apiMethod, initCode)}
-      @end
-    @case "LongRunningFlattenedAsync"
-      {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+      {@callableMethodSampleCode(apiMethod, initCode)}
+    @case "CallableList"
+      {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
+    @case "CallablePaged"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
+    @case "CallableClientStreaming"
+      {@clientStreamingCallableSampleCode(apiMethod, initCode)}
+    @case "CallableServerStreaming"
+      {@serverStreamingCallableSampleCode(apiMethod, initCode)}
+    @case "CallableBidiStreaming"
+      {@bidiStreamingCallableSampleCode(apiMethod, initCode)}      
     @case "LongRunningRequestAsync"
       {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+    @case "LongRunningFlattenedAsync"
+      {@asyncOperationMethodSampleCode(apiMethod, initCode)}
     @case "LongRunningCallable"
-      {@asyncOperationCallableMethodSampleCall(apiMethod, initCode)}
+      {@asyncOperationCallableMethodSampleCode(apiMethod, initCode)}
     @default
-      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+      $unhandledCallingForm: {@callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
 @end
 
