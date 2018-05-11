@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains the common logic for generating view models for GAPIC surface methods. This is used in
@@ -46,92 +47,98 @@ public class JavaMethodViewGenerator {
    * Generates the StaticLangApiMethodView for each of the methods in the InterfaceContext.
    *
    * @param context The context containing the methods for which to generate StaticLangApiMethodView
-   * @return The list of StaticLangApiMethodView, one per method
+   * @return The list of StaticLangApiMethodView
    */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {
+    return context
+        .getSupportedMethods()
+        .stream()
+        .flatMap(method -> generateApiMethod(context, method).stream())
+        .collect(Collectors.toList());
+  }
+
+  /** Generates the StaticLangApiMethodView for the given method. */
+  public List<StaticLangApiMethodView> generateApiMethod(
+      InterfaceContext context, MethodModel method) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
-    for (MethodModel method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
+    MethodConfig methodConfig = context.getMethodConfig(method);
+    MethodContext requestMethodContext = context.asRequestMethodContext(method);
 
-      if (methodConfig.isPageStreaming()) {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+    if (methodConfig.isPageStreaming()) {
+      if (methodConfig.isFlattening()) {
+        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+          MethodContext flattenedMethodContext =
+              context.asFlattenedMethodContext(method, flatteningGroup);
+          apiMethods.add(
+              clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
+          if (hasAnyResourceNameParameter(flatteningGroup)) {
             apiMethods.add(
-                clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  clientMethodTransformer.generatePagedFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
+                clientMethodTransformer.generatePagedFlattenedMethod(
+                    flattenedMethodContext.withResourceNamesInSamplesOnly()));
           }
         }
-        apiMethods.add(
-            clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
+      }
+      apiMethods.add(
+          clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
+      apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
 
-        apiMethods.add(
-            clientMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
-      } else if (methodConfig.isGrpcStreaming()) {
-        ImportTypeTable typeTable = context.getImportTypeTable();
-        switch (methodConfig.getGrpcStreamingType()) {
-          case BidiStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
-            break;
-          case ClientStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
-            break;
-          case ServerStreaming:
-            typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
-            break;
-          default:
-            throw new IllegalArgumentException(
-                "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
-        }
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+      apiMethods.add(
+          clientMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
+    } else if (methodConfig.isGrpcStreaming()) {
+      ImportTypeTable typeTable = context.getImportTypeTable();
+      switch (methodConfig.getGrpcStreamingType()) {
+        case BidiStreaming:
+          typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+          break;
+        case ClientStreaming:
+          typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+          break;
+        case ServerStreaming:
+          typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+          break;
+        default:
+          throw new IllegalArgumentException(
+              "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
+      }
+      apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+    } else if (methodConfig.isLongRunningOperation()) {
+      context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
+      if (methodConfig.isFlattening()) {
+        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+          MethodContext flattenedMethodContext =
+              context.asFlattenedMethodContext(method, flatteningGroup);
+          apiMethods.add(
+              clientMethodTransformer.generateAsyncOperationFlattenedMethod(
+                  flattenedMethodContext));
+          if (hasAnyResourceNameParameter(flatteningGroup)) {
             apiMethods.add(
                 clientMethodTransformer.generateAsyncOperationFlattenedMethod(
-                    flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  clientMethodTransformer.generateAsyncOperationFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
+                    flattenedMethodContext.withResourceNamesInSamplesOnly()));
           }
         }
-        apiMethods.add(
-            clientMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                requestMethodContext));
-        apiMethods.add(
-            clientMethodTransformer.generateOperationCallableMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
-      } else {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
-
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  clientMethodTransformer.generateFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
-            }
-          }
-        }
-        apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(requestMethodContext));
-
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
       }
+      apiMethods.add(
+          clientMethodTransformer.generateAsyncOperationRequestObjectMethod(requestMethodContext));
+      apiMethods.add(clientMethodTransformer.generateOperationCallableMethod(requestMethodContext));
+      apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+    } else {
+      if (methodConfig.isFlattening()) {
+        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+          MethodContext flattenedMethodContext =
+              context.asFlattenedMethodContext(method, flatteningGroup);
+          apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
+
+          if (hasAnyResourceNameParameter(flatteningGroup)) {
+            apiMethods.add(
+                clientMethodTransformer.generateFlattenedMethod(
+                    flattenedMethodContext.withResourceNamesInSamplesOnly()));
+          }
+        }
+      }
+      apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(requestMethodContext));
+
+      apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
     }
 
     return apiMethods;

@@ -37,7 +37,7 @@ public interface InterfaceContext extends TransformationContext {
 
   FeatureConfig getFeatureConfig();
 
-  Iterable<MethodModel> getSupportedMethods();
+  List<MethodModel> getSupportedMethods();
 
   Iterable<MethodModel> getPublicMethods();
 
