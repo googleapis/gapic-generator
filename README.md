@@ -195,7 +195,7 @@ You need to locate/decide on the following before you create the package metadat
 3. The API major version. The first major version will typically be `v1`. Hereafter, this will be referenced as
    `${API_VERSION}`.
 4. The organization name of the API. This would typically include the company name. For example,
-   Cloud Language's organization name is `google-cloud`. This is used to for the full artifact name.
+   Cloud Language's organization name is `google-cloud`. This is used for the full artifact name.
    Hereafter, this will be referenced as `${ORGANIZATION_NAME}`.
 5. The proto path, which is the proto's package with dots converted to slashes. For example, Cloud Language v1's
    proto path is `google/cloud/language/v1`. Hereafter, this will be referenced as `${PROTO_PATH}`.

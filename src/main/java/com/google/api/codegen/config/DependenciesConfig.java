@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
-/** This class holds dependency version information for dependencies that generated code has. */
+/** This class holds dependency version information for the dependencies of the generated code. */
 @AutoValue
 public abstract class DependenciesConfig {
 
