@@ -15,8 +15,11 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.advising.Adviser;
+import com.google.api.codegen.config.ApiDefaultsConfig;
+import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
@@ -67,7 +70,13 @@ public class CodeGeneratorApi extends ToolDriverBase {
 
   public static final Option<String> PACKAGE_CONFIG_FILE =
       ToolOptions.createOption(
-          String.class, "package_config", "The package metadata configuration.", "");
+          String.class,
+          "package_config",
+          "The package metadata configuration (deprecated in favor of package_config2).",
+          "");
+
+  public static final Option<String> PACKAGE_CONFIG2_FILE =
+      ToolOptions.createOption(String.class, "package_config2", "The packaging configuration.", "");
 
   public static final Option<List<String>> ENABLED_ARTIFACTS =
       ToolOptions.createOption(
@@ -134,6 +143,22 @@ public class CodeGeneratorApi extends ToolDriverBase {
               Files.readAllBytes(Paths.get(options.get(PACKAGE_CONFIG_FILE))),
               StandardCharsets.UTF_8);
       packageConfig = PackageMetadataConfig.createFromString(contents);
+    }
+    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
+      if (packageConfig != null) {
+        throw new IllegalArgumentException(
+            "Both "
+                + PACKAGE_CONFIG_FILE
+                + " and "
+                + PACKAGE_CONFIG2_FILE
+                + " were set, but only can be provided at once.");
+      }
+      ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+      DependenciesConfig dependenciesConfig = DependenciesConfig.load();
+      PackagingConfig packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
+      packageConfig =
+          PackageMetadataConfig.createFromPackaging(
+              apiDefaultsConfig, dependenciesConfig, packagingConfig);
     }
     GeneratorProto generator = configProto.getGenerator();
     if (GeneratorProto.getDefaultInstance().equals(generator)) {
