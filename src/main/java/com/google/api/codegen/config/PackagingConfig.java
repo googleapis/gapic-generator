@@ -19,10 +19,13 @@ import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.io.Resources;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -104,7 +107,7 @@ public abstract class PackagingConfig {
             .apiName((String) configMap.get("api_name"))
             .apiVersion((String) configMap.get("api_version"))
             .organizationName((String) configMap.get("organization_name"))
-            .protoPackageDependencies((List<String>) configMap.get("proto_deps"))
+            .protoPackageDependencies(nullToEmpty((List<String>) configMap.get("proto_deps")))
             .releaseLevel(Configs.parseReleaseLevel((String) configMap.get("release_level")))
             .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
             .protoPath((String) configMap.get("proto_path"));
@@ -115,8 +118,21 @@ public abstract class PackagingConfig {
     return builder.build();
   }
 
+  public static List<String> nullToEmpty(List<String> list) {
+    if (list == null) {
+      return new ArrayList<>();
+    } else {
+      return list;
+    }
+  }
+
   public static PackagingConfig load(String path) throws IOException {
     String contents = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+    return createFromString(contents);
+  }
+
+  public static PackagingConfig loadFromURL(URL url) throws IOException {
+    String contents = Resources.toString(url, StandardCharsets.UTF_8);
     return createFromString(contents);
   }
 }
