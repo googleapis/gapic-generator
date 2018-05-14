@@ -1118,8 +1118,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveElementResourceTypeName(
       ImportTypeTable typeTable, FieldConfig fieldConfig) {
-    String resourceClassName =
-        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    ResourceNameConfig resourceNameConfig = fieldConfig.getResourceNameConfig();
+    if (resourceNameConfig.getCommonResourceName() != null) {
+      String resourceClassName = resourceNameConfig.getCommonResourceName();
+      return typeTable.getAndSaveNicknameFor(resourceClassName);
+    }
+    String resourceClassName = publicClassName(getResourceTypeNameObject(resourceNameConfig));
     return typeTable.getAndSaveNicknameForResourceNameElementType(fieldConfig, resourceClassName);
   }
 

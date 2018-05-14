@@ -18,9 +18,12 @@ import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JA
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.config.ApiDefaultsConfig;
+import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
@@ -82,7 +85,13 @@ public class DiscoGapicGeneratorApi {
 
   public static final Option<String> PACKAGE_CONFIG_FILE =
       ToolOptions.createOption(
-          String.class, "package_config", "The package metadata configuration.", "");
+          String.class,
+          "package_config",
+          "The package metadata configuration (deprecated in favor of package_config2).",
+          "");
+
+  public static final Option<String> PACKAGE_CONFIG2_FILE =
+      ToolOptions.createOption(String.class, "package_config2", "The packaging configuration.", "");
 
   public static final Option<List<String>> ENABLED_ARTIFACTS =
       ToolOptions.createOption(
@@ -104,6 +113,7 @@ public class DiscoGapicGeneratorApi {
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfigFile,
+      String packageConfig2File,
       List<String> enabledArtifacts)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
@@ -129,6 +139,22 @@ public class DiscoGapicGeneratorApi {
       String contents =
           new String(Files.readAllBytes(Paths.get(packageConfigFile)), StandardCharsets.UTF_8);
       packageConfig = PackageMetadataConfig.createFromString(contents);
+    }
+    if (!Strings.isNullOrEmpty(packageConfig2File)) {
+      if (packageConfig != null) {
+        throw new IllegalArgumentException(
+            "Both "
+                + PACKAGE_CONFIG_FILE
+                + " and "
+                + PACKAGE_CONFIG2_FILE
+                + " were set, but only can be provided at once.");
+      }
+      ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+      DependenciesConfig dependenciesConfig = DependenciesConfig.load();
+      PackagingConfig packagingConfig = PackagingConfig.load(packageConfig2File);
+      packageConfig =
+          PackageMetadataConfig.createFromPackaging(
+              apiDefaultsConfig, dependenciesConfig, packagingConfig);
     }
     GeneratorProto generator = configProto.getGenerator();
     String language = configProto.getLanguage();
@@ -164,10 +190,16 @@ public class DiscoGapicGeneratorApi {
     String discoveryDocPath = options.get(DISCOVERY_DOC);
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
+    String packageConfig2File = options.get(PACKAGE_CONFIG2_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
     List<GapicProvider<?>> providers =
-        getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
+        getProviders(
+            discoveryDocPath,
+            configFileNames,
+            packageConfigFile,
+            packageConfig2File,
+            enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
     for (GapicProvider<?> provider : providers) {
