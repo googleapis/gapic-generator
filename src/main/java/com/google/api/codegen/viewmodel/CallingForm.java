@@ -20,24 +20,29 @@ package com.google.api.codegen.viewmodel;
  * language.
  */
 public enum CallingForm {
-  Request,
+  Request, // Java
   RequestAsync,
-  RequestStreaming,
-  RequestPaged,
-  RequestAsyncPaging,
-  Flattened,
-  FlattenedPaging,
+  RequestAsyncPaged,
+  RequestServerStreaming,
+  RequestPaged, // Java
+
+  Flattened, // Java
+  FlattenedPaged, // Java
   FlattenedAsync,
-  FlattenedAsyncPaging,
-  Callable,
-  CallableList,
-  CallablePaging,
+  FlattenedAsyncPaged,
+
+  Callable, // Java
+  CallableList, // Java
+  CallablePaged, // Java
+  CallableClientStreaming, // Java
+  CallableServerStreaming, // Java
+  CallableBidiStreaming, // Java
 
   LongRunningRequest,
-  LongRunningRequestAsync,
+  LongRunningRequestAsync, // Java
   LongRunningFlattened,
-  LongRunningFlattenedAsync,
-  LongRunningCallable,
+  LongRunningFlattenedAsync, // Java
+  LongRunningCallable, // Java
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
