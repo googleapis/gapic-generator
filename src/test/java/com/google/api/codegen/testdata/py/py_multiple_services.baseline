@@ -836,7 +836,6 @@ import google.api_core.grpc_helpers
 
 from google.cloud.example_v1.foo.gapic import decrementer_service_client_config
 from google.cloud.example_v1.foo.proto import multiple_services_pb2
-from google.cloud.example_v1.foo.proto import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
 
 
@@ -899,7 +898,7 @@ class DecrementerServiceClient(object):
 
         # Create the gRPC stubs.
         self.decrementer_service_stub = (
-            multiple_services_pb2_grpc.DecrementerServiceStub(channel))
+            multiple_services_pb2.DecrementerServiceStub(channel))
 
 
         if client_info is None:
@@ -958,6 +957,9 @@ class DecrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = multiple_services_pb2.DecrementRequest()
         self._decrement(request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -1002,7 +1004,6 @@ import google.api_core.grpc_helpers
 
 from google.cloud.example_v1.foo.gapic import incrementer_service_client_config
 from google.cloud.example_v1.foo.proto import multiple_services_pb2
-from google.cloud.example_v1.foo.proto import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
 
 
@@ -1065,7 +1066,7 @@ class IncrementerServiceClient(object):
 
         # Create the gRPC stubs.
         self.incrementer_service_stub = (
-            multiple_services_pb2_grpc.IncrementerServiceStub(channel))
+            multiple_services_pb2.IncrementerServiceStub(channel))
 
 
         if client_info is None:
@@ -1124,6 +1125,9 @@ class IncrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         request = multiple_services_pb2.IncrementRequest()
         self._increment(request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -1254,51 +1258,34 @@ universal = 1
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""A setup module for the GAPIC Google Example API library.
+
+See:
+https://packaging.python.org/en/latest/distributing.html
+https://github.com/pypa/sampleproject
+"""
+
+from setuptools import setup, find_packages
 import io
-import os
+import sys
 
-import setuptools
-
-
-
-name = 'google-cloud-multiple_services'
-description = 'Google Example API API client library'
-version = '0.15.0'
-release_status = '3 - Alpha'
-dependencies = [
-  'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
-
-  'python-other-package >= 12.1.0, < 13.5.1',
+install_requires = [
+    'google-api-core >= 0.1.0, < 0.2.0dev',
+    'googleapis-common-protos[grpc] >= 1.5.0, < 2.0dev',
+    'python-other-package >= 12.1.0, < 13.5.1',
 ]
 
+with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
+    long_description = readme_file.read()
 
-
-package_root = os.path.abspath(os.path.dirname(__file__))
-
-readme_filename = os.path.join(package_root, 'README.rst')
-with io.open(readme_filename, encoding='utf-8') as readme_file:
-    readme = readme_file.read()
-
-packages = [
-    package for package in setuptools.find_packages()
-    if package.startswith('google')]
-
-namespaces = ['google']
-if 'google.cloud' in packages:
-    namespaces.append('google.cloud')
-
-
-setuptools.setup(
-    name=name,
-    version=version,
-    description=description,
-    long_description=readme,
+setup(
+    name='google-cloud-multiple_services',
+    version='0.15.0',
     author='Google LLC',
-    author_email='googleapis-packages@oogle.com',
-    license='Apache 2.0',
-    url='https://github.com/GoogleCloudPlatform/google-cloud-python',
+    author_email='googleapis-packages@google.com',
     classifiers=[
-        release_status,
+        'Intended Audience :: Developers',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
@@ -1308,17 +1295,18 @@ setuptools.setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Operating System :: OS Independent',
-        'Topic :: Internet',
     ],
-    platforms='Posix; MacOS X; Windows',
-    packages=packages,
-    namespace_packages=namespaces,
-    install_requires=dependencies,
-    extras_require=extras,
+    description='GAPIC library for the Google Example API',
     include_package_data=True,
+    long_description=long_description,
+    install_requires=install_requires,
+    license='Apache 2.0',
+    packages=find_packages(exclude=('tests*',)),
+    namespace_packages=['google', 'google.cloud'],
+    url='https://github.com/googleapis/googleapis',
     zip_safe=False,
 )
+
 ============== file: tests/unit/gapic/v1/test_decrementer_service_client_v1.py ==============
 # Copyright 2018 Google LLC
 #
