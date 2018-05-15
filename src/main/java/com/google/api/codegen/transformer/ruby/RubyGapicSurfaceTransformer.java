@@ -355,7 +355,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .type(VersionIndexType.TopLevelIndex)
         .versionDirBasePath(versionDirBasePath)
         .postVersionDirPath(postVersionDirPath(namer))
-        .versionFileBasePath(versionFileBasePath)
         .build();
   }
 
