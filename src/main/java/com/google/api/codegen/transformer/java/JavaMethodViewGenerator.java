@@ -83,15 +83,15 @@ public class JavaMethodViewGenerator {
         switch (methodConfig.getGrpcStreamingType()) {
           case BidiStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
-            callingForms = Collections.singletonList(CallingForm.CallableBidiStreaming);
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingBidi);
             break;
           case ClientStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
-            callingForms = Collections.singletonList(CallingForm.CallableClientStreaming);
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingClient);
             break;
           case ServerStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
-            callingForms = Collections.singletonList(CallingForm.CallableServerStreaming);
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingServer);
             break;
           default:
             throw new IllegalArgumentException(

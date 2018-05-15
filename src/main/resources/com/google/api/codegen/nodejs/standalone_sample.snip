@@ -25,7 +25,7 @@
        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
        
        /*
-       {@sampleCode(apiMethod, sample.initCode)}
+       {@standaloneSample(apiMethod, sample)}
        */
        // [END core_sample]
 
@@ -34,4 +34,35 @@
      @end
    @end
    // [END full_sample]
+@end
+
+# FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
+@snippet standaloneSample(apiMethod, sample)
+  @switch sample.callingForm
+  @case "Request"
+    @if apiMethod.hasReturnValue
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.initCode, empty())}
+    @else
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.initCode, empty())}
+    @end
+  @case "RequestAsyncPaged"
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.initCode, empty())}
+  @case "RequestAsyncPagedAll"
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.initCode, empty())}
+  @case "RequestStreamingBidi"
+    {@bidiStreamingSampleCode(apiMethod, sample.initCode, empty())}
+  @case "RequestStreamingClient"
+    {@clientStreamingSampleCode(apiMethod, sample.initCode, empty())}
+  @case "RequestStreamingServer"
+    {@initCode(apiMethod, sample.initCode)}
+      {@methodCallSampleCode(apiMethod, sample.initCode)}.on('data', response => {
+          // doThingsWith(response)
+      });
+  @case "LongRunningEventEmitter"
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.initCode, empty())}
+  @case "LongRunningPromise"
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.initCode, empty())}
+  @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$    
+  @end
 @end
