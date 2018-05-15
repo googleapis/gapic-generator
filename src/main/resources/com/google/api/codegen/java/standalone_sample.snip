@@ -13,8 +13,9 @@
        
    @let apiMethod = sampleFile.classView.libraryMethod
      @let sample = apiMethod.samples.get(0)
-       //     calling form "{@sample.callingForm.toString}"
+       //     calling form: "{@sample.callingForm.toString}"
        //     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+       //       description: "{@sample.valueSet.description}"
        //       {@sample.valueSet.parameters}
        //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
 
@@ -23,7 +24,7 @@
        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
        
        /*
-       @let coreSampleCode = generateSample(apiMethod, sample.initCode)
+       @let coreSampleCode = generateSample(apiMethod, sample.callingForm, sample.initCode)
          {@methodDoc(coreSampleCode)}
        @end
        */
@@ -38,34 +39,36 @@
 
 # adapted from main.snip:apiMethods(xapiClass) and its dependencies
 # For real use, we'll want to switch on the calling form id.
-@private generateSample(apiMethod, initCode)
-    @switch apiMethod.type
-    @case "PagedFlattenedMethod"
-      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "PagedRequestObjectMethod"
-      {@pagedRequestObjectMethod(apiMethod, initCode)}
-    @case "PagedCallableMethod"
-      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
-    @case "UnpagedListCallableMethod"
+@private generateSample(apiMethod, callingForm, initCode)
+    @switch callingForm
+    @case "Request"
+      {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "RequestPaged"
+      {@pagedIterableMethodSampleCode(apiMethod, initCode)}
+    @case "Flattened"
+      {@syncMethodSampleCode(apiMethod, initCode)}
+    @case "FlattenedPaged"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}      
+    @case "Callable"
+      {@callableMethodSampleCode(apiMethod, initCode)}
+    @case "CallableList"
       {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
-    @case "FlattenedMethod"
-      {@syncMethodSampleCode(apiMethod, initCode)}
-    @case "RequestObjectMethod"
-      {@syncMethodSampleCode(apiMethod, initCode)}
-    @case "CallableMethod"
-      @if apiMethod.isStreaming
-        {@streamingCallableMethodSampleCode(apiMethod, initCode)}
-      @else
-        {@callableMethodSampleCode(apiMethod, initCode)}
-      @end
-    @case "AsyncOperationFlattenedMethod"
+    @case "CallablePaged"
+      {@pagedCallableMethodSampleCode(apiMethod, initCode)}
+    @case "CallableClientStreaming"
+      {@clientStreamingCallableSampleCode(apiMethod, initCode)}
+    @case "CallableServerStreaming"
+      {@serverStreamingCallableSampleCode(apiMethod, initCode)}
+    @case "CallableBidiStreaming"
+      {@bidiStreamingCallableSampleCode(apiMethod, initCode)}      
+    @case "LongRunningRequestAsync"
       {@asyncOperationMethodSampleCode(apiMethod, initCode)}
-    @case "AsyncOperationRequestObjectMethod"
+    @case "LongRunningFlattenedAsync"
       {@asyncOperationMethodSampleCode(apiMethod, initCode)}
-    @case "OperationCallableMethod"
-      {@asyncOperationCallableMethodSampleCall(apiMethod, initCode)}
+    @case "LongRunningCallable"
+      {@asyncOperationCallableMethodSampleCode(apiMethod, initCode)}
     @default
-      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+      $unhandledCallingForm: {@callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
 @end
 

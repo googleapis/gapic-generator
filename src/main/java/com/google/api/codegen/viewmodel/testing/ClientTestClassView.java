@@ -74,6 +74,10 @@ public abstract class ClientTestClassView {
 
   public abstract boolean missingDefaultServiceScopes();
 
+  public boolean hasMissingDefaultOptions() {
+    return missingDefaultServiceAddress() || missingDefaultServiceScopes();
+  }
+
   @Nullable
   public abstract String apiVersion();
 
