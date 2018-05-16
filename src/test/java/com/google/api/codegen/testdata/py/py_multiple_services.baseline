@@ -901,7 +901,7 @@ class DecrementerServiceClient(object):
 
         # Create the gRPC stubs.
         self._decrementer_service_stub = (
-            multiple_services_pb2_grpc.DecrementerServiceStub(channel))
+            multiple_services_pb2_grpc.DecrementerServiceStub(self.channel))
 
 
         if client_info is None:
@@ -1088,7 +1088,7 @@ class IncrementerServiceClient(object):
 
         # Create the gRPC stubs.
         self._incrementer_service_stub = (
-            multiple_services_pb2_grpc.IncrementerServiceStub(channel))
+            multiple_services_pb2_grpc.IncrementerServiceStub(self.channel))
 
 
         if client_info is None:
@@ -1311,6 +1311,7 @@ dependencies = [
   'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
 
   'python-other-package >= 12.1.0, < 13.5.1',
+  'enum34; python_version < "3.4"',
 ]
 
 
