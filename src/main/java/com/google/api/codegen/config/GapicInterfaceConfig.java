@@ -376,4 +376,14 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
     return false;
   }
+
+  @Override
+  public boolean hasReroutedInterfaceMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (!Strings.isNullOrEmpty(methodConfig.getRerouteToGrpcInterface())) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
