@@ -863,8 +863,10 @@ __all__ = (
 
 """Wrappers for protocol buffer enum types."""
 
+import enum
 
-class NullValue(object):
+
+class NullValue(enum.IntEnum):
     """
     ``NullValue`` is a singleton enumeration to represent the null value for the
     ``Value`` type union.
@@ -878,7 +880,7 @@ class NullValue(object):
 
 
 class FieldMask(object):
-    class Material(object):
+    class Material(enum.IntEnum):
         """
         Attributes:
           PAPIER_MACHE (int)
@@ -895,7 +897,7 @@ class FieldMask(object):
 
 
 class Book(object):
-    class Rating(object):
+    class Rating(enum.IntEnum):
         """
         Attributes:
           GOOD (int): GOOD enum description
@@ -906,7 +908,7 @@ class Book(object):
 
 
 class SomeMessage(object):
-    class Alignment(object):
+    class Alignment(enum.IntEnum):
         """
         Tests service with two enums of the same simple name
 
@@ -921,7 +923,7 @@ class SomeMessage(object):
 
 
 class SomeMessage2(object):
-    class Alignment(object):
+    class Alignment(enum.IntEnum):
         """
         Another enum with duplicated simple name
 
@@ -938,7 +940,7 @@ class SomeMessage2(object):
 
 
     class SomeMessage3(object):
-        class Alignment(object):
+        class Alignment(enum.IntEnum):
             """
             Tests Python nested enums
 
@@ -953,7 +955,7 @@ class SomeMessage2(object):
 
 
 class Comment(object):
-    class Stage(object):
+    class Stage(enum.IntEnum):
         """
         Attributes:
           UNSET (int)
@@ -968,7 +970,7 @@ class Comment(object):
 
 
 class TestOptionalRequiredFlatteningParamsRequest(object):
-    class InnerEnum(object):
+    class InnerEnum(enum.IntEnum):
         """
         For testing all types, plus resource-names, as required and optional.
 
@@ -3891,6 +3893,7 @@ dependencies = [
   'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
 
   'python-other-package >= 12.1.0, < 13.5.1',
+  'enum34; python_version < "3.4"',
 ]
 
 
