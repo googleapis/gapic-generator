@@ -27,18 +27,13 @@ unusedForms=$(
 	# Grep src/
 	#   recursively (-r)
 	#   in baseline files (--include='*.baseline')
-	#   for any calling forms: -f <(cat <<< $callingForms)
+	#   for any calling forms: -f <(echo "$callingForms")
 	#   use fixed strings, not regexp (-F)
 	#   match whole word (-w)
 	#   print only the calling form, not surrounding line (-o)
 	#   don't print file names (-h)
 	# Prints all occurences of used calling forms
-	#
-	# NOTE(pongad): "cat <<< $callingForms" and "echo $callingForms" are not the same thing.
-	# Cat will preserve the fact that each calling form is in its own line, while echo will
-	# print on the same line separated by space. Grep expects patterns on its own line, so
-	# echo does not work.
-	grep --include='*.baseline' -h -w -o -r -F -f <(cat <<< $callingForms) src/ |
+	grep --include='*.baseline' -h -w -o -r -F -f <(echo "$callingForms") src/ |
 
 	# Then turn it into a set.
 	sort -u |
@@ -47,7 +42,7 @@ unusedForms=$(
 	# so sorting  them together means
 	#   used forms appear twice together (one from $callingForms, one from the used forms)
 	#   unused forms appear only once
-	sort <(cat <<< $callingForms) - |
+	sort <(echo "$callingForms") - |
 
 	# Only print unique lines, leaving unused forms.
 	uniq -u
