@@ -2,7 +2,7 @@
 
 set -e
 
-# TODO: We should figure out how to do this as part of GapicGeneratorTest at some point.
+# TODO: Do this as part of GapicGeneratorTest so this check can be run with Gradle check command.
 
 exitStatus=0
 
@@ -20,7 +20,7 @@ fi
 ## Check that every calling form is used somewhere.
 callingFormsFile="src/main/java/com/google/api/codegen/viewmodel/CallingForm.java"
 
-# Calling forms are in an enum, so we look for capital identifiers that begins the line.
+# Calling forms are in an enum, so we look for lines that begin with whitespace plus a capital letter.
 callingForms=$(< $callingFormsFile grep -o '^[[:space:]]*[A-Z][a-zA-Z]*' | tr -d -c '[a-zA-Z\n]')
 
 unusedForms=$(
@@ -33,13 +33,19 @@ unusedForms=$(
 	#   print only the calling form, not surrounding line (-o)
 	#   don't print file names (-h)
 	# Prints all occurences of used calling forms
+	#
+	# NOTE(pongad): "cat <<< $callingForms" and "echo $callingForms" are not the same thing.
+	# Cat will preserve the fact that each calling form is in its own line, while echo will
+	# print on the same line separated by space. Grep expects patterns on its own line, so
+	# echo does not work.
 	grep --include='*.baseline' -h -w -o -r -F -f <(cat <<< $callingForms) src/ |
 
 	# Then turn it into a set.
 	sort -u |
 
-	# Both callingForms and used forms are sets, sorting them together means
-	#   used forms appear twice together (one from callingForms, one from used forms)
+	# Both $callingForms and the used forms determined so far in this pipeline are sets,
+	# so sorting  them together means
+	#   used forms appear twice together (one from $callingForms, one from the used forms)
 	#   unused forms appear only once
 	sort <(cat <<< $callingForms) - |
 
