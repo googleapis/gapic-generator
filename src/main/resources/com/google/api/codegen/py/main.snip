@@ -87,8 +87,9 @@
                 )
 
             @# Create the channel.
-            if channel is None:
-                channel = google.api_core.grpc_helpers.create_channel(
+            self.channel = channel
+            if self.channel is None:
+                self.channel = google.api_core.grpc_helpers.create_channel(
                     self.SERVICE_ADDRESS,
                     credentials=credentials,
                     scopes=self._DEFAULT_SCOPES,
@@ -96,14 +97,14 @@
 
             @# Create the gRPC stubs.
             @join stub : xapiClass.stubs
-                self.{@stub.name} = (
+                self._{@stub.name} = (
                     {@stub.grpcClientTypeName}(channel))
             @end
 
             @if xapiClass.hasLongRunningOperations
                 @# Operations client for methods that return long-running operations
                 @# futures.
-                self.operations_client = (
+                self._operations_client = (
                     google.api_core.operations_v1.OperationsClient(channel))
             @end
 
@@ -112,27 +113,44 @@
                 client_info = (
                     google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
             client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+            self._client_info = client_info
 
             @# Parse out the default settings for retry and timeout for each RPC
             @# from the client configuration.
             @# (Ordinarily, these are the defaults specified in the `*_config.py`
             @# file next to this one.)
-            method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+            self._method_configs = google.api_core.gapic_v1.config.parse_method_configs(
                 client_config['interfaces'][self._INTERFACE_NAME],
             )
 
-            @# Write the "inner API call" methods to the class.
-            @# These are wrapped versions of the gRPC stub methods, with retry and
-            @# timeout configuration applied, called by the public methods on
-            @# this class.
-            @join apiMethod : xapiClass.apiMethods
-                self._{@apiMethod.name} = google.api_core.gapic_v1.method.wrap_method(
-                    self.{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
-                    default_retry=method_configs['{@apiMethod.grpcMethodName}'].retry,
-                    default_timeout=method_configs['{@apiMethod.grpcMethodName}'].timeout,
-                    client_info=client_info,
-                )
+            self._inner_api_calls = {}
+
+        def _intercept_channel(self, *interceptors):
+            """ Experimental. Bind gRPC interceptors to the gRPC channel.
+
+            Args:
+                interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+                  Zero or more gRPC interceptors. Interceptors are given control in the order
+                  they are listed.
+            Raises:
+                TypeError: If interceptor does not derive from any of
+                  UnaryUnaryClientInterceptor,
+                  UnaryStreamClientInterceptor,
+                  StreamUnaryClientInterceptor, or
+                  StreamStreamClientInterceptor.
+            """
+            self.channel = grpc.intercept_channel(self.channel, *interceptors)
+            @join stub : xapiClass.stubs
+                self._{@stub.name} = (
+                    {@stub.grpcClientTypeName}(self.channel))
             @end
+            @if xapiClass.hasLongRunningOperations
+                @# Operations client for methods that return long-running operations
+                @# futures.
+                self._operations_client = (
+                    google.api_core.operations_v1.OperationsClient(self.channel))
+            @end
+            self._inner_api_calls.clear()
 
         @# Service calls
         @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
@@ -173,6 +191,14 @@
                         {@line}
                     @end
                 """
+                if '{@apiMethod.name}' not in self._inner_api_calls:
+                    self._inner_api_calls['{@apiMethod.name}'] = google.api_core.gapic_v1.method.wrap_method(
+                        self._{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
+                        default_retry=self._method_configs['{@apiMethod.grpcMethodName}'].retry,
+                        default_timeout=self._method_configs['{@apiMethod.grpcMethodName}'].timeout,
+                        client_info=self._client_info,
+                    )
+
                 @if apiMethod.isSingularRequestMethod
                     @if apiMethod.oneofParams
                         @join oneOf : apiMethod.oneofParams on BREAK
@@ -221,14 +247,14 @@
                 @switch apiMethod.type
                 @case "OptionalArrayMethod"
                     @if apiMethod.hasReturnValue
-                        return self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                        return self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     @else
-                        self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                        self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     @end
                 @case "PagedOptionalArrayMethod"
                     iterator = google.api_core.page_iterator.GRPCIterator(
                         client=None,
-                        method=functools.partial(self._{@apiMethod.name}{@optionalParams(apiMethod)}),
+                        method=functools.partial(self._inner_api_calls['{@apiMethod.name}']{@optionalParams(apiMethod)}),
                         request={@apiMethod.requestVariableName},
                         items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
                         request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
@@ -236,10 +262,10 @@
                     )
                     return iterator
                 @case "LongRunningOptionalArrayMethod"
-                    operation = self._{@apiMethod.name}({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                    operation = self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     return google.api_core.operation.from_gapic(
                         operation,
-                        self.operations_client,
+                        self._operations_client,
                         {@apiMethod.longRunningView.operationPayloadTypeName},
                         metadata_type={@apiMethod.longRunningView.metadataTypeName},
                     )
