@@ -99,6 +99,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateFileHeaderExternalImports(InterfaceContext context) {
     List<ImportFileView> imports = new ArrayList<>();
+    imports.add(createImport("grpc"));
     imports.add(createImport("google.api_core.grpc_helpers"));
     imports.add(createImport("google.api_core.gapic_v1.client_info"));
     imports.add(createImport("google.api_core.gapic_v1.config"));
