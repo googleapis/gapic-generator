@@ -280,7 +280,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   @Override
-  public boolean hasRereoutedInterfaceMethods() {
+  public boolean hasReroutedInterfaceMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (!Strings.isNullOrEmpty(methodConfig.getRerouteToGrpcInterface())) {
         return true;

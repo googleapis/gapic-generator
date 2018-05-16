@@ -61,7 +61,7 @@ public interface InterfaceConfig {
 
   boolean hasDefaultInstance();
 
-  boolean hasRereoutedInterfaceMethods();
+  boolean hasReroutedInterfaceMethods();
 
   ImmutableList<? extends FieldModel> getIamResources();
 
