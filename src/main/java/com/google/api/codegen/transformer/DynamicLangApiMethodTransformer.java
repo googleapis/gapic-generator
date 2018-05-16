@@ -69,10 +69,57 @@ public class DynamicLangApiMethodTransformer {
     return generateMethod(context, false);
   }
 
+  public OptionalArrayMethodView generateRequestMethod(
+      GapicMethodContext context,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.type(ClientMethodType.OptionalArrayMethod);
+
+    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  public OptionalArrayMethodView generateLongRunningMethod(
+      GapicMethodContext context,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.longRunningView(lroTransformer.generateDetailView(context));
+    apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
+
+    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  public OptionalArrayMethodView generatePagedStreamingMethod(
+      GapicMethodContext context,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
+    apiMethod.pageStreamingView(
+        pageStreamingTransformer.generateDescriptor(context.getSurfaceInterfaceContext(), method));
+
+    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  // For languages that don't yet call the more specific methods above.
   public OptionalArrayMethodView generateMethod(
       GapicMethodContext context, boolean packageHasMultipleServices) {
     MethodModel method = context.getMethodModel();
-    SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
     if (context.getMethodConfig().isPageStreaming()) {
@@ -86,6 +133,22 @@ public class DynamicLangApiMethodTransformer {
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }
+
+    generateMethodCommon(
+        context, packageHasMultipleServices, method, apiMethod, Arrays.asList(CallingForm.Generic));
+
+    return apiMethod.build();
+  }
+
+  private void generateMethodCommon(
+      GapicMethodContext context,
+      boolean packageHasMultipleServices,
+      MethodModel method,
+      OptionalArrayMethodView.Builder apiMethod,
+      List<CallingForm> callingForms) {
+
+    SurfaceNamer namer = context.getNamer();
+
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
@@ -98,22 +161,6 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     apiMethod.localPackageName(namer.getLocalPackageName());
-
-    // TODO(vchudnov-g): Here we need to import the logic from the snippet file for
-    // selecting the proper calling form.
-    InitCodeOutputType initCodeOutputType =
-        context.getMethodModel().getRequestStreaming()
-            ? InitCodeOutputType.SingleObject
-            : InitCodeOutputType.FieldList;
-    sampleTransformer.generateSamples(
-        apiMethod,
-        context,
-        context.getMethodConfig().getRequiredFieldConfigs(),
-        initCodeOutputType,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
-        Arrays.asList(CallingForm.Generic));
 
     apiMethod.doc(generateMethodDoc(context));
 
@@ -161,7 +208,19 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.headerRequestParams(
         headerRequestParamTransformer.generateHeaderRequestParams(context));
 
-    return apiMethod.build();
+    InitCodeOutputType initCodeOutputType =
+        context.getMethodModel().getRequestStreaming()
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
+    sampleTransformer.generateSamples(
+        apiMethod,
+        context,
+        context.getMethodConfig().getRequiredFieldConfigs(),
+        initCodeOutputType,
+        initCodeContext ->
+            initCodeTransformer.generateInitCode(
+                context.cloneWithEmptyTypeTable(), initCodeContext),
+        callingForms);
   }
 
   private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {

@@ -38,7 +38,6 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.py.NodeJSMethodViewGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;

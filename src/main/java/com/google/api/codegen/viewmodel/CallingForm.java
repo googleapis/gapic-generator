@@ -20,11 +20,21 @@ package com.google.api.codegen.viewmodel;
  * language.
  */
 public enum CallingForm {
-  Request, // Java
+
+  // By convention, the names of these enum values should be
+  // concatenations of the following descriptive parts (some of which may
+  // be empty), in order:
+  //
+  // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
+
+  Request, // Java, NodeJS
   RequestAsync,
-  RequestAsyncPaged,
-  RequestServerStreaming,
+  RequestAsyncPaged, // NodeJS
+  RequestAsyncPagedAll, // NodeJS
   RequestPaged, // Java
+  RequestStreamingBidi, // NodeJS
+  RequestStreamingClient, // NodeJS
+  RequestStreamingServer, // NodeJS
 
   Flattened, // Java
   FlattenedPaged, // Java
@@ -34,15 +44,17 @@ public enum CallingForm {
   Callable, // Java
   CallableList, // Java
   CallablePaged, // Java
-  CallableClientStreaming, // Java
-  CallableServerStreaming, // Java
-  CallableBidiStreaming, // Java
+  CallableStreamingBidi, // Java
+  CallableStreamingClient, // Java
+  CallableStreamingServer, // Java
 
-  LongRunningRequest,
-  LongRunningRequestAsync, // Java
+  LongRunningCallable, // Java
+  LongRunningEventEmitter, // NodeJS
   LongRunningFlattened,
   LongRunningFlattenedAsync, // Java
-  LongRunningCallable, // Java
+  LongRunningPromise, // NodeJS
+  LongRunningRequest,
+  LongRunningRequestAsync, // Java
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
