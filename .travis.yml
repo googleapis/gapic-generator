@@ -6,6 +6,7 @@ env:
 jdk:
   - oraclejdk8
 script:
-  ./gradlew check --info
+  - ./gradlew check --info
+  - ./testutils/check-baselines.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
