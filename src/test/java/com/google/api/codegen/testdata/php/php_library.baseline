@@ -54,6 +54,7 @@
 namespace Google\Example\Library\V1\Gapic;
 
 use Google\ApiCore\ApiException;
+use Google\ApiCore\Call;
 use Google\ApiCore\CredentialsWrapper;
 use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
@@ -2799,6 +2800,7 @@ namespace Google\Example\Library\Tests\Unit\V1;
 use Google\Example\Library\V1\LibraryServiceClient;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
+use Google\ApiCore\CredentialsWrapper;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
@@ -2876,6 +2878,11 @@ class LibraryServiceClientTest extends GeneratedTest
      */
     private function createClient(array $options = [])
     {
+        $options += [
+            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+        ];
         return new LibraryServiceClient($options);
     }
     /**

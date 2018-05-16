@@ -449,6 +449,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
       typeTable.saveNicknameFor("\\Google\\ApiCore\\OperationResponse");
     }
+
+    if (interfaceConfig.hasGrpcStreamingMethods()
+        || interfaceConfig.hasReroutedInterfaceMethods()) {
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
+    }
   }
 
   private List<String> generateMethodKeys(GapicInterfaceContext context) {
