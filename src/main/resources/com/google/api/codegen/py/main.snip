@@ -98,14 +98,14 @@
             @# Create the gRPC stubs.
             @join stub : xapiClass.stubs
                 self._{@stub.name} = (
-                    {@stub.grpcClientTypeName}(channel))
+                    {@stub.grpcClientTypeName}(self.channel))
             @end
 
             @if xapiClass.hasLongRunningOperations
                 @# Operations client for methods that return long-running operations
                 @# futures.
                 self._operations_client = (
-                    google.api_core.operations_v1.OperationsClient(channel))
+                    google.api_core.operations_v1.OperationsClient(self.channel))
             @end
 
             # Client information initialization.
