@@ -833,6 +833,7 @@ import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
 import google.api_core.grpc_helpers
+import grpc
 
 from google.cloud.example_v1.gapic.foo import decrementer_service_client_config
 from google.cloud.example_v1.proto.foo import multiple_services_pb2
@@ -890,15 +891,16 @@ class DecrementerServiceClient(object):
             )
 
         # Create the channel.
-        if channel is None:
-            channel = google.api_core.grpc_helpers.create_channel(
+        self.channel = channel
+        if self.channel is None:
+            self.channel = google.api_core.grpc_helpers.create_channel(
                 self.SERVICE_ADDRESS,
                 credentials=credentials,
                 scopes=self._DEFAULT_SCOPES,
             )
 
         # Create the gRPC stubs.
-        self.decrementer_service_stub = (
+        self._decrementer_service_stub = (
             multiple_services_pb2_grpc.DecrementerServiceStub(channel))
 
 
@@ -906,25 +908,36 @@ class DecrementerServiceClient(object):
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+        self._client_info = client_info
 
         # Parse out the default settings for retry and timeout for each RPC
         # from the client configuration.
         # (Ordinarily, these are the defaults specified in the `*_config.py`
         # file next to this one.)
-        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+        self._method_configs = google.api_core.gapic_v1.config.parse_method_configs(
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
-        # Write the "inner API call" methods to the class.
-        # These are wrapped versions of the gRPC stub methods, with retry and
-        # timeout configuration applied, called by the public methods on
-        # this class.
-        self._decrement = google.api_core.gapic_v1.method.wrap_method(
-            self.decrementer_service_stub.Decrement,
-            default_retry=method_configs['Decrement'].retry,
-            default_timeout=method_configs['Decrement'].timeout,
-            client_info=client_info,
-        )
+        self._inner_api_calls = {}
+
+    def _intercept_channel(self, *interceptors):
+        """ Experimental. Bind gRPC interceptors to the gRPC channel.
+
+        Args:
+            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+              Zero or more gRPC interceptors. Interceptors are given control in the order
+              they are listed.
+        Raises:
+            TypeError: If interceptor does not derive from any of
+              UnaryUnaryClientInterceptor,
+              UnaryStreamClientInterceptor,
+              StreamUnaryClientInterceptor, or
+              StreamStreamClientInterceptor.
+        """
+        self.channel = grpc.intercept_channel(self.channel, *interceptors)
+        self._decrementer_service_stub = (
+            multiple_services_pb2_grpc.DecrementerServiceStub(self.channel))
+        self._inner_api_calls.clear()
 
     # Service calls
     def decrement(
@@ -958,8 +971,16 @@ class DecrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if 'decrement' not in self._inner_api_calls:
+            self._inner_api_calls['decrement'] = google.api_core.gapic_v1.method.wrap_method(
+                self._decrementer_service_stub.Decrement,
+                default_retry=self._method_configs['Decrement'].retry,
+                default_timeout=self._method_configs['Decrement'].timeout,
+                client_info=self._client_info,
+            )
+
         request = multiple_services_pb2.DecrementRequest()
-        self._decrement(request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls['decrement'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example_v1/gapic/foo/decrementer_service_client_config.py ==============
 config = {
@@ -999,6 +1020,7 @@ import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
 import google.api_core.grpc_helpers
+import grpc
 
 from google.cloud.example_v1.gapic.foo import incrementer_service_client_config
 from google.cloud.example_v1.proto.foo import multiple_services_pb2
@@ -1056,15 +1078,16 @@ class IncrementerServiceClient(object):
             )
 
         # Create the channel.
-        if channel is None:
-            channel = google.api_core.grpc_helpers.create_channel(
+        self.channel = channel
+        if self.channel is None:
+            self.channel = google.api_core.grpc_helpers.create_channel(
                 self.SERVICE_ADDRESS,
                 credentials=credentials,
                 scopes=self._DEFAULT_SCOPES,
             )
 
         # Create the gRPC stubs.
-        self.incrementer_service_stub = (
+        self._incrementer_service_stub = (
             multiple_services_pb2_grpc.IncrementerServiceStub(channel))
 
 
@@ -1072,25 +1095,36 @@ class IncrementerServiceClient(object):
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+        self._client_info = client_info
 
         # Parse out the default settings for retry and timeout for each RPC
         # from the client configuration.
         # (Ordinarily, these are the defaults specified in the `*_config.py`
         # file next to this one.)
-        method_configs = google.api_core.gapic_v1.config.parse_method_configs(
+        self._method_configs = google.api_core.gapic_v1.config.parse_method_configs(
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
-        # Write the "inner API call" methods to the class.
-        # These are wrapped versions of the gRPC stub methods, with retry and
-        # timeout configuration applied, called by the public methods on
-        # this class.
-        self._increment = google.api_core.gapic_v1.method.wrap_method(
-            self.incrementer_service_stub.Increment,
-            default_retry=method_configs['Increment'].retry,
-            default_timeout=method_configs['Increment'].timeout,
-            client_info=client_info,
-        )
+        self._inner_api_calls = {}
+
+    def _intercept_channel(self, *interceptors):
+        """ Experimental. Bind gRPC interceptors to the gRPC channel.
+
+        Args:
+            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+              Zero or more gRPC interceptors. Interceptors are given control in the order
+              they are listed.
+        Raises:
+            TypeError: If interceptor does not derive from any of
+              UnaryUnaryClientInterceptor,
+              UnaryStreamClientInterceptor,
+              StreamUnaryClientInterceptor, or
+              StreamStreamClientInterceptor.
+        """
+        self.channel = grpc.intercept_channel(self.channel, *interceptors)
+        self._incrementer_service_stub = (
+            multiple_services_pb2_grpc.IncrementerServiceStub(self.channel))
+        self._inner_api_calls.clear()
 
     # Service calls
     def increment(
@@ -1124,8 +1158,16 @@ class IncrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        if 'increment' not in self._inner_api_calls:
+            self._inner_api_calls['increment'] = google.api_core.gapic_v1.method.wrap_method(
+                self._incrementer_service_stub.Increment,
+                default_retry=self._method_configs['Increment'].retry,
+                default_timeout=self._method_configs['Increment'].timeout,
+                client_info=self._client_info,
+            )
+
         request = multiple_services_pb2.IncrementRequest()
-        self._increment(request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example_v1/gapic/foo/incrementer_service_client_config.py ==============
 config = {
@@ -1316,7 +1358,6 @@ setuptools.setup(
     packages=packages,
     namespace_packages=namespaces,
     install_requires=dependencies,
-    extras_require=extras,
     include_package_data=True,
     zip_safe=False,
 )
