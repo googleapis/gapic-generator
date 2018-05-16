@@ -359,6 +359,7 @@ namespace Google\Example\Tests\Unit\V1;
 use Google\Example\V1\NoTemplatesApiServiceClient;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
+use Google\ApiCore\CredentialsWrapper;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
@@ -391,12 +392,16 @@ class NoTemplatesApiServiceClientTest extends GeneratedTest
      */
     private function createClient(array $options = [])
     {
-        return new NoTemplatesApiServiceClient($options + [
+        $options += [
+            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
             'serviceAddress' => '',
             'credentialsConfig' => [
                 'scopes' => [],
             ],
-        ]);
+        ];
+        return new NoTemplatesApiServiceClient($options);
     }
     /**
      * @test

@@ -32,20 +32,23 @@
      */
     private function createClient(array $options = [])
     {
-        @if testClass.hasMissingDefaultOptions
-            return new {@testClass.apiClassName}($options + [
+        $options += [
+            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+            @if testClass.hasMissingDefaultOptions
                 @if testClass.missingDefaultServiceAddress
                     'serviceAddress' => '',
+
                 @end
                 @if testClass.missingDefaultServiceScopes
                     'credentialsConfig' => [
                         'scopes' => [],
                     ],
                 @end
-            ]);
-        @else
-            return new {@testClass.apiClassName}($options);
-        @end
+            @end
+        ];
+        return new {@testClass.apiClassName}($options);
     }
 @end
 
