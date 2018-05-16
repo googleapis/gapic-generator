@@ -26,9 +26,11 @@ import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -94,11 +96,20 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
 
   public PythonModelTypeNameConverter(String implicitPackageName) {
     typeNameConverter = new PythonTypeTable(implicitPackageName);
-    if (implicitPackageName.endsWith(".gapic")) {
-      protoNamespace = implicitPackageName.replace(".gapic", ".proto");
-    } else {
-      protoNamespace = String.format("%s.proto", implicitPackageName);
+    List<String> names = new ArrayList<>();
+    boolean found = false;
+    for (String n : ImmutableList.copyOf(implicitPackageName.split("\\.")).reverse()) {
+      if (n.equals("gapic") && !found) {
+        names.add(0, "proto");
+        found = true;
+      } else {
+        names.add(0, n);
+      }
     }
+    if (!found) {
+      names.add("proto");
+    }
+    protoNamespace = Joiner.on(".").join(names);
   }
 
   @Override
