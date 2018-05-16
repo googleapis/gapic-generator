@@ -237,6 +237,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     ResourceNameMessageConfigs resourceConfigs =
         context.getProductConfig().getResourceNameMessageConfigs();
+    String packageName = context.getProductConfig().getPackageName();
     ListMultimap<String, FieldModel> fieldsByMessage =
         resourceConfigs.getFieldsWithResourceNamesByMessage();
     Map<String, FieldConfig> fieldConfigMap =
@@ -244,6 +245,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     List<ResourceProtoView> protos = new ArrayList<>();
     for (Entry<String, Collection<FieldModel>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
+      msgName = packageName + msgName.substring(msgName.lastIndexOf('.'));
       Collection<FieldModel> fields = new ArrayList<>(entry.getValue());
       ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
       protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
