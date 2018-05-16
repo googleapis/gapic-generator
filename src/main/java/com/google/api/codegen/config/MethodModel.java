@@ -92,8 +92,6 @@ public interface MethodModel {
 
   Iterable<? extends FieldModel> getInputFields();
 
-  List<? extends FieldModel> getMaybeRequiredInputFields();
-
   List<? extends FieldModel> getInputFieldsForResourceNameMethod();
 
   Iterable<? extends FieldModel> getOutputFields();

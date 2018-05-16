@@ -24,7 +24,6 @@ import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -32,7 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
@@ -189,19 +187,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public String getScopedDescription() {
     return method.description();
-  }
-
-  @Override
-  public List<? extends FieldModel> getMaybeRequiredInputFields() {
-    return getInputFields()
-        .stream()
-        .filter(
-            f ->
-                f.isRequired()
-                    || f.getDiscoveryField().isPathParam()
-                    || Strings.isNullOrEmpty(f.getDiscoveryField().description())
-                    || !f.getDiscoveryField().description().toLowerCase().contains("optional"))
-        .collect(Collectors.toList());
   }
 
   @Override

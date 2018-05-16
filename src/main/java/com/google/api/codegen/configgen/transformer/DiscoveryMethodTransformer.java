@@ -17,17 +17,19 @@ package com.google.api.codegen.configgen.transformer;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.HttpPagingParameters;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
+import com.google.common.base.Strings;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
 public class DiscoveryMethodTransformer implements InputSpecificMethodTransformer {
-  private final PagingParameters pagingParameters = new HttpPagingParameters();
+  private static final PagingParameters PAGING_PARAMETERS = new HttpPagingParameters();
 
   // For Discovery doc configgen, assume that paged resource field name is "items". This is the only resource name
   // seen in Google Cloud Compute API.
@@ -35,12 +37,22 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
 
   @Override
   public PagingParameters getPagingParameters() {
-    return pagingParameters;
+    return PAGING_PARAMETERS;
   }
 
   @Override
   public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
     return ResourceNameTreatment.STATIC_TYPES;
+  }
+
+  @Override
+  public boolean isIgnoredParameter(FieldModel parameter) {
+    Schema f = ((DiscoveryField) parameter).getDiscoveryField();
+    return PAGING_PARAMETERS.getIgnoredParameters().contains(parameter.getSimpleName())
+        || !(parameter.isRequired()
+            || f.isPathParam()
+            || Strings.isNullOrEmpty(f.description())
+            || !f.description().toLowerCase().contains("optional"));
   }
 
   /**
@@ -61,7 +73,7 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
       }
       // Verify that the paging response object contains a paging token.
       for (Schema property : field.getDiscoveryField().properties().values()) {
-        if (property.getIdentifier().equals(pagingParameters.getNameForNextPageToken())) {
+        if (property.getIdentifier().equals(PAGING_PARAMETERS.getNameForNextPageToken())) {
           hasNextPageToken = true;
           break;
         }
@@ -88,7 +100,7 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
     }
 
     return PageStreamingResponseView.newBuilder()
-        .tokenField(pagingParameters.getNameForNextPageToken())
+        .tokenField(PAGING_PARAMETERS.getNameForNextPageToken())
         .resourcesField(configResourcesName)
         .build();
   }
