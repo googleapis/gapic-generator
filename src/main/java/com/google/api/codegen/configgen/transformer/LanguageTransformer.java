@@ -175,14 +175,19 @@ public class LanguageTransformer {
       }
       List<String> names = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
       LinkedList<String> collector = new LinkedList<>();
+      boolean found = false;
       for (String n : names) {
         if (VersionMatcher.isVersion(n)) {
           collector.add(String.format("%s_%s", collector.removeLast(), n));
+          collector.add("gapic");
+          found = true;
         } else {
           collector.add(n);
         }
       }
-      collector.add("gapic");
+      if (!found) {
+        collector.add("gapic");
+      }
       return Joiner.on('.').join(collector);
     }
   }
