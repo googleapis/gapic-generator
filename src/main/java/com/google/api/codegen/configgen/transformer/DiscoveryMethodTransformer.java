@@ -48,11 +48,14 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   @Override
   public boolean isIgnoredParameter(FieldModel parameter) {
     Schema f = ((DiscoveryField) parameter).getDiscoveryField();
-    return PAGING_PARAMETERS.getIgnoredParameters().contains(parameter.getSimpleName())
-        || !(parameter.isRequired()
-            || f.isPathParam()
-            || Strings.isNullOrEmpty(f.description())
-            || !f.description().toLowerCase().contains("optional"));
+    if (parameter.isRequired() || f.isPathParam()) {
+      return false;
+    }
+    if (PAGING_PARAMETERS.getIgnoredParameters().contains(parameter.getSimpleName())) {
+      return true;
+    }
+    return !Strings.isNullOrEmpty(f.description())
+        && f.description().toLowerCase().contains("optional");
   }
 
   /**
