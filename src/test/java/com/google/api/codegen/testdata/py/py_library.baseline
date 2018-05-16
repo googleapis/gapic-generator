@@ -1161,6 +1161,7 @@ class LibraryServiceClient(object):
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+        self._client_info = client_info
 
         # Parse out the default settings for retry and timeout for each RPC
         # from the client configuration.
@@ -1170,8 +1171,7 @@ class LibraryServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
-        self._methods = {}
-
+        self._stubs = {}
 
     def _intercept_channel(self, *interceptors):
         """ Experimental. Bind gRPC interceptors to the gRPC channel.
@@ -1196,7 +1196,7 @@ class LibraryServiceClient(object):
         # futures.
         self.operations_client = (
             google.api_core.operations_v1.OperationsClient(self.channel))
-        self._methods.clear()
+        self._stubs.clear()
 
     # Service calls
     def create_shelf(
@@ -1242,18 +1242,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['create_shelf'] is None:
-            self._methods['create_shelf'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'create_shelf' not in self._stubs:
+            self._stubs['create_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.CreateShelf,
                 default_retry=self._method_configs['CreateShelf'].retry,
                 default_timeout=self._method_configs['CreateShelf'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.CreateShelfRequest(
             shelf=shelf,
         )
-        return self._methods['create_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['create_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_shelf(
             self,
@@ -1306,12 +1306,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_shelf'] is None:
-            self._methods['get_shelf'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_shelf' not in self._stubs:
+            self._stubs['get_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetShelf,
                 default_retry=self._method_configs['GetShelf'].retry,
                 default_timeout=self._method_configs['GetShelf'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetShelfRequest(
@@ -1320,7 +1320,7 @@ class LibraryServiceClient(object):
             message=message,
             string_builder=string_builder,
         )
-        return self._methods['get_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['get_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_shelves(
             self,
@@ -1369,18 +1369,18 @@ class LibraryServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if self._methods['list_shelves'] is None:
-            self._methods['list_shelves'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_shelves' not in self._stubs:
+            self._stubs['list_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.ListShelves,
                 default_retry=self._method_configs['ListShelves'].retry,
                 default_timeout=self._method_configs['ListShelves'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.ListShelvesRequest()
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._methods['list_shelves'], retry=retry, timeout=timeout, metadata=metadata),
+            method=functools.partial(self._stubs['list_shelves'], retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='shelves',
             request_token_field='page_token',
@@ -1424,18 +1424,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['delete_shelf'] is None:
-            self._methods['delete_shelf'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'delete_shelf' not in self._stubs:
+            self._stubs['delete_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.DeleteShelf,
                 default_retry=self._method_configs['DeleteShelf'].retry,
                 default_timeout=self._method_configs['DeleteShelf'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.DeleteShelfRequest(
             name=name,
         )
-        self._methods['delete_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._stubs['delete_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def merge_shelves(
             self,
@@ -1481,19 +1481,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['merge_shelves'] is None:
-            self._methods['merge_shelves'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'merge_shelves' not in self._stubs:
+            self._stubs['merge_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.MergeShelves,
                 default_retry=self._method_configs['MergeShelves'].retry,
                 default_timeout=self._method_configs['MergeShelves'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.MergeShelvesRequest(
             name=name,
             other_shelf_name=other_shelf_name,
         )
-        return self._methods['merge_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['merge_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def create_book(
             self,
@@ -1541,12 +1541,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['create_book'] is None:
-            self._methods['create_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'create_book' not in self._stubs:
+            self._stubs['create_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.CreateBook,
                 default_retry=self._method_configs['CreateBook'].retry,
                 default_timeout=self._method_configs['CreateBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.CreateBookRequest(
@@ -1559,7 +1559,7 @@ class LibraryServiceClient(object):
         )
         metadata.append(routing_header)
 
-        return self._methods['create_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['create_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def publish_series(
             self,
@@ -1620,12 +1620,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['publish_series'] is None:
-            self._methods['publish_series'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'publish_series' not in self._stubs:
+            self._stubs['publish_series'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.PublishSeries,
                 default_retry=self._method_configs['PublishSeries'].retry,
                 default_timeout=self._method_configs['PublishSeries'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         # Sanity check: We have some fields which are mutually exclusive;
@@ -1642,7 +1642,7 @@ class LibraryServiceClient(object):
             edition=edition,
             review_copy=review_copy,
         )
-        return self._methods['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book(
             self,
@@ -1683,18 +1683,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_book'] is None:
-            self._methods['get_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book' not in self._stubs:
+            self._stubs['get_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBook,
                 default_retry=self._method_configs['GetBook'].retry,
                 default_timeout=self._method_configs['GetBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        return self._methods['get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_books(
             self,
@@ -1757,12 +1757,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['list_books'] is None:
-            self._methods['list_books'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_books' not in self._stubs:
+            self._stubs['list_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.ListBooks,
                 default_retry=self._method_configs['ListBooks'].retry,
                 default_timeout=self._method_configs['ListBooks'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.ListBooksRequest(
@@ -1772,7 +1772,7 @@ class LibraryServiceClient(object):
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._methods['list_books'], retry=retry, timeout=timeout, metadata=metadata),
+            method=functools.partial(self._stubs['list_books'], retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='books',
             request_token_field='page_token',
@@ -1816,18 +1816,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['delete_book'] is None:
-            self._methods['delete_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'delete_book' not in self._stubs:
+            self._stubs['delete_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.DeleteBook,
                 default_retry=self._method_configs['DeleteBook'].retry,
                 default_timeout=self._method_configs['DeleteBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.DeleteBookRequest(
             name=name,
         )
-        self._methods['delete_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._stubs['delete_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book(
             self,
@@ -1885,12 +1885,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['update_book'] is None:
-            self._methods['update_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'update_book' not in self._stubs:
+            self._stubs['update_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.UpdateBook,
                 default_retry=self._method_configs['UpdateBook'].retry,
                 default_timeout=self._method_configs['UpdateBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.UpdateBookRequest(
@@ -1900,7 +1900,7 @@ class LibraryServiceClient(object):
             update_mask=update_mask,
             physical_mask=physical_mask,
         )
-        return self._methods['update_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['update_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def move_book(
             self,
@@ -1944,19 +1944,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['move_book'] is None:
-            self._methods['move_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'move_book' not in self._stubs:
+            self._stubs['move_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.MoveBook,
                 default_retry=self._method_configs['MoveBook'].retry,
                 default_timeout=self._method_configs['MoveBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.MoveBookRequest(
             name=name,
             other_shelf_name=other_shelf_name,
         )
-        return self._methods['move_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['move_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_strings(
             self,
@@ -2014,12 +2014,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['list_strings'] is None:
-            self._methods['list_strings'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_strings' not in self._stubs:
+            self._stubs['list_strings'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.ListStrings,
                 default_retry=self._method_configs['ListStrings'].retry,
                 default_timeout=self._method_configs['ListStrings'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.ListStringsRequest(
@@ -2028,7 +2028,7 @@ class LibraryServiceClient(object):
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._methods['list_strings'], retry=retry, timeout=timeout, metadata=metadata),
+            method=functools.partial(self._stubs['list_strings'], retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='strings',
             request_token_field='page_token',
@@ -2081,19 +2081,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['add_comments'] is None:
-            self._methods['add_comments'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_comments' not in self._stubs:
+            self._stubs['add_comments'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.AddComments,
                 default_retry=self._method_configs['AddComments'].retry,
                 default_timeout=self._method_configs['AddComments'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.AddCommentsRequest(
             name=name,
             comments=comments,
         )
-        self._methods['add_comments'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._stubs['add_comments'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_archive(
             self,
@@ -2134,18 +2134,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_book_from_archive'] is None:
-            self._methods['get_book_from_archive'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_archive' not in self._stubs:
+            self._stubs['get_book_from_archive'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBookFromArchive,
                 default_retry=self._method_configs['GetBookFromArchive'].retry,
                 default_timeout=self._method_configs['GetBookFromArchive'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
         )
-        return self._methods['get_book_from_archive'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['get_book_from_archive'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_anywhere(
             self,
@@ -2190,19 +2190,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_book_from_anywhere'] is None:
-            self._methods['get_book_from_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_anywhere' not in self._stubs:
+            self._stubs['get_book_from_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBookFromAnywhere,
                 default_retry=self._method_configs['GetBookFromAnywhere'].retry,
                 default_timeout=self._method_configs['GetBookFromAnywhere'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name,
         )
-        return self._methods['get_book_from_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['get_book_from_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_absolutely_anywhere(
             self,
@@ -2243,18 +2243,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_book_from_absolutely_anywhere'] is None:
-            self._methods['get_book_from_absolutely_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_absolutely_anywhere' not in self._stubs:
+            self._stubs['get_book_from_absolutely_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBookFromAbsolutelyAnywhere,
                 default_retry=self._method_configs['GetBookFromAbsolutelyAnywhere'].retry,
                 default_timeout=self._method_configs['GetBookFromAbsolutelyAnywhere'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name,
         )
-        return self._methods['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book_index(
             self,
@@ -2301,12 +2301,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['update_book_index'] is None:
-            self._methods['update_book_index'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'update_book_index' not in self._stubs:
+            self._stubs['update_book_index'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.UpdateBookIndex,
                 default_retry=self._method_configs['UpdateBookIndex'].retry,
                 default_timeout=self._method_configs['UpdateBookIndex'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.UpdateBookIndexRequest(
@@ -2314,7 +2314,7 @@ class LibraryServiceClient(object):
             index_name=index_name,
             index_map=index_map,
         )
-        self._methods['update_book_index'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._stubs['update_book_index'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_shelves(
             self,
@@ -2353,16 +2353,16 @@ class LibraryServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if self._methods['stream_shelves'] is None:
-            self._methods['stream_shelves'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'stream_shelves' not in self._stubs:
+            self._stubs['stream_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.StreamShelves,
                 default_retry=self._method_configs['StreamShelves'].retry,
                 default_timeout=self._method_configs['StreamShelves'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.StreamShelvesRequest()
-        return self._methods['stream_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['stream_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_books(
             self,
@@ -2407,18 +2407,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['stream_books'] is None:
-            self._methods['stream_books'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'stream_books' not in self._stubs:
+            self._stubs['stream_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.StreamBooks,
                 default_retry=self._method_configs['StreamBooks'].retry,
                 default_timeout=self._method_configs['StreamBooks'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.StreamBooksRequest(
             name=name,
         )
-        return self._methods['stream_books'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['stream_books'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def discuss_book(
             self,
@@ -2468,15 +2468,15 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['discuss_book'] is None:
-            self._methods['discuss_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'discuss_book' not in self._stubs:
+            self._stubs['discuss_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.DiscussBook,
                 default_retry=self._method_configs['DiscussBook'].retry,
                 default_timeout=self._method_configs['DiscussBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
-        return self._methods['discuss_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['discuss_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
 
     def monolog_about_book(
             self,
@@ -2524,15 +2524,15 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['monolog_about_book'] is None:
-            self._methods['monolog_about_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'monolog_about_book' not in self._stubs:
+            self._stubs['monolog_about_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.MonologAboutBook,
                 default_retry=self._method_configs['MonologAboutBook'].retry,
                 default_timeout=self._method_configs['MonologAboutBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
-        return self._methods['monolog_about_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['monolog_about_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
 
     def find_related_books(
             self,
@@ -2598,12 +2598,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['find_related_books'] is None:
-            self._methods['find_related_books'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'find_related_books' not in self._stubs:
+            self._stubs['find_related_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.FindRelatedBooks,
                 default_retry=self._method_configs['FindRelatedBooks'].retry,
                 default_timeout=self._method_configs['FindRelatedBooks'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.FindRelatedBooksRequest(
@@ -2613,7 +2613,7 @@ class LibraryServiceClient(object):
         )
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
-            method=functools.partial(self._methods['find_related_books'], retry=retry, timeout=timeout, metadata=metadata),
+            method=functools.partial(self._stubs['find_related_books'], retry=retry, timeout=timeout, metadata=metadata),
             request=request,
             items_field='names',
             request_token_field='page_token',
@@ -2667,19 +2667,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['add_tag'] is None:
-            self._methods['add_tag'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_tag' not in self._stubs:
+            self._stubs['add_tag'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.AddTag,
                 default_retry=self._method_configs['AddTag'].retry,
                 default_timeout=self._method_configs['AddTag'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = tagger_pb2.AddTagRequest(
             resource=resource,
             tag=tag,
         )
-        return self._methods['add_tag'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['add_tag'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def add_label(
             self,
@@ -2727,19 +2727,19 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['add_label'] is None:
-            self._methods['add_label'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_label' not in self._stubs:
+            self._stubs['add_label'] = google.api_core.gapic_v1.method.wrap_method(
                 self.labeler_stub.AddLabel,
                 default_retry=self._method_configs['AddLabel'].retry,
                 default_timeout=self._method_configs['AddLabel'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
             label=label,
         )
-        return self._methods['add_label'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['add_label'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_big_book(
             self,
@@ -2789,18 +2789,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_big_book'] is None:
-            self._methods['get_big_book'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_big_book' not in self._stubs:
+            self._stubs['get_big_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBigBook,
                 default_retry=self._method_configs['GetBigBook'].retry,
                 default_timeout=self._method_configs['GetBigBook'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        operation = self._methods['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        operation = self._stubs['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
@@ -2856,18 +2856,18 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['get_big_nothing'] is None:
-            self._methods['get_big_nothing'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_big_nothing' not in self._stubs:
+            self._stubs['get_big_nothing'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.GetBigNothing,
                 default_retry=self._method_configs['GetBigNothing'].retry,
                 default_timeout=self._method_configs['GetBigNothing'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.GetBookRequest(
             name=name,
         )
-        operation = self._methods['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
+        operation = self._stubs['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
             self.operations_client,
@@ -3118,12 +3118,12 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
             ValueError: If the parameters are invalid.
         """
-        if self._methods['test_optional_required_flattening_params'] is None:
-            self._methods['test_optional_required_flattening_params'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'test_optional_required_flattening_params' not in self._stubs:
+            self._stubs['test_optional_required_flattening_params'] = google.api_core.gapic_v1.method.wrap_method(
                 self.library_service_stub.TestOptionalRequiredFlatteningParams,
                 default_retry=self._method_configs['TestOptionalRequiredFlatteningParams'].retry,
                 default_timeout=self._method_configs['TestOptionalRequiredFlatteningParams'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
@@ -3186,7 +3186,7 @@ class LibraryServiceClient(object):
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
         )
-        return self._methods['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._stubs['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
@@ -3937,7 +3937,6 @@ setuptools.setup(
     packages=packages,
     namespace_packages=namespaces,
     install_requires=dependencies,
-    extras_require=extras,
     include_package_data=True,
     zip_safe=False,
 )

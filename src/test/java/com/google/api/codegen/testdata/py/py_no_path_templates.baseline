@@ -857,6 +857,7 @@ class NoTemplatesAPIServiceClient(object):
             client_info = (
                 google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
         client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+        self._client_info = client_info
 
         # Parse out the default settings for retry and timeout for each RPC
         # from the client configuration.
@@ -866,8 +867,7 @@ class NoTemplatesAPIServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
-        self._methods = {}
-
+        self._stubs = {}
 
     def _intercept_channel(self, *interceptors):
         """ Experimental. Bind gRPC interceptors to the gRPC channel.
@@ -886,7 +886,7 @@ class NoTemplatesAPIServiceClient(object):
         self.channel = grpc.intercept_channel(self.channel, *interceptors)
         self.no_templates_api_service_stub = (
             no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel))
-        self._methods.clear()
+        self._stubs.clear()
 
     # Service calls
     def increment(
@@ -925,16 +925,16 @@ class NoTemplatesAPIServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if self._methods['increment'] is None:
-            self._methods['increment'] = google.api_core.gapic_v1.method.wrap_method(
+        if 'increment' not in self._stubs:
+            self._stubs['increment'] = google.api_core.gapic_v1.method.wrap_method(
                 self.no_templates_api_service_stub.Increment,
                 default_retry=self._method_configs['Increment'].retry,
                 default_timeout=self._method_configs['Increment'].timeout,
-                client_info=client_info,
+                client_info=self._client_info,
             )
 
         request = no_path_templates_messages_pb2.IncrementRequest()
-        self._methods['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._stubs['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: example/gapic/no_templates_api_service_client_config.py ==============
 config = {
@@ -1124,7 +1124,6 @@ setuptools.setup(
     packages=packages,
     namespace_packages=namespaces,
     install_requires=dependencies,
-    extras_require=extras,
     include_package_data=True,
     zip_safe=False,
 )
