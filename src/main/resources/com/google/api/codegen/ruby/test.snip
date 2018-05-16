@@ -476,7 +476,7 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
-    operation
+    OpenStruct.new(execute: operation)
   end
 @end
 
@@ -494,7 +494,7 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
-    [expected_response]
+    OpenStruct.new(execute: [expected_response])
   end
 @end
 
@@ -505,9 +505,9 @@
       {@requestAsserts(test)}
     @end
     @if test.hasReturnValue
-      expected_response
+      OpenStruct.new(execute: expected_response)
     @else
-      nil
+      OpenStruct.new(execute: nil)
     @end
   end
 @end
@@ -518,7 +518,7 @@
     @if test.asserts
       {@requestAsserts(test)}
     @end
-    [expected_response]
+    OpenStruct.new(execute: [expected_response])
   end
 @end
 

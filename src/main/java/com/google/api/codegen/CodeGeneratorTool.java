@@ -61,9 +61,17 @@ public class CodeGeneratorTool {
     options.addOption(
         Option.builder()
             .longOpt("package_yaml")
-            .desc("The package metadata YAML configuration file.")
+            .desc(
+                "The package metadata YAML configuration file (deprecated in favor of package_yaml2).")
             .hasArg()
             .argName("PACKAGE-YAML")
+            .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("package_yaml2")
+            .desc("The packaging YAML configuration file.")
+            .hasArg()
+            .argName("PACKAGE-YAML2")
             .build());
     options.addOption(
         Option.builder("o")
@@ -95,6 +103,7 @@ public class CodeGeneratorTool {
             cl.getOptionValues("service_yaml"),
             cl.getOptionValues("gapic_yaml"),
             cl.getOptionValue("package_yaml"),
+            cl.getOptionValue("package_yaml2"),
             cl.getOptionValue("output", ""),
             cl.getOptionValues("enabled_artifacts"));
     System.exit(exitCode);
@@ -105,12 +114,18 @@ public class CodeGeneratorTool {
       String[] configs,
       String[] generatorConfigs,
       String packageConfig,
+      String packageConfig2,
       String outputDirectory,
       String[] enabledArtifacts) {
     checkFile(descriptorSet);
     checkFiles(configs);
     checkFiles(generatorConfigs);
-    checkFile(packageConfig);
+    if (packageConfig != null) {
+      checkFile(packageConfig);
+    }
+    if (packageConfig2 != null) {
+      checkFile(packageConfig2);
+    }
 
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
@@ -118,6 +133,7 @@ public class CodeGeneratorTool {
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
     options.set(CodeGeneratorApi.PACKAGE_CONFIG_FILE, packageConfig);
+    options.set(CodeGeneratorApi.PACKAGE_CONFIG2_FILE, packageConfig2);
 
     if (enabledArtifacts != null) {
       options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
