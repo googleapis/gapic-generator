@@ -34,30 +34,10 @@
 
 @private interfaceMethods(schema)
   @@Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    @join param : schema.properties
-      if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
-        @if param.canRepeat
-          ImmutableList.Builder stringList = ImmutableList.builder();
-          for ({@param.innerTypeName} item : {@param.name}) {
-            stringList.add(item.toString());
-          }
-          fieldMap.put("{@param.name}", stringList.build());
-        @else
-          fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
-        @end
-      }
-    @end
-    return fieldMap;
-  }
-
-  @@Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     @join param : schema.properties
       if (fieldName.equals("{@param.name}")) {
-        # TODO(andrealin): Handle list values.
-        return String.valueOf({@param.name});
+        return {@param.name};
       }
     @end
     return null;
@@ -74,11 +54,25 @@
       return null;
     }
   @end
+
+  @@Nullable
+  @@Override
+  public List<String> getFieldMask() {
+    @if schema.hasFieldMask
+      return fieldMask;
+    @else
+      return null;
+    @end
+  }
 @end
 
 @private members(schema)
   @join property : schema.properties
-    private final {@property.typeName} {@property.name};
+    @if schema.isSerializable
+      private final {@property.typeName} {@property.name};
+    @else
+      private final transient {@property.typeName} {@property.name};
+    @end
   @end
   {@""}
 @end
@@ -146,10 +140,12 @@
 
 @private getters(schema)
   @join param : schema.properties
-    public {@param.typeName} {@param.fieldGetFunction}() {
-      return {@param.name};
-    }
+    @if param.isSerializable
+      public {@param.typeName} {@param.fieldGetFunction}() {
+        return {@param.name};
+      }
 
+    @end
   @end
 @end
 
