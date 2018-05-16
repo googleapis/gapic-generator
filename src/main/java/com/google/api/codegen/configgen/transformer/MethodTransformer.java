@@ -66,7 +66,7 @@ public class MethodTransformer {
   private void generateField(MethodModel method, MethodView.Builder methodView) {
     List<String> parameterList = new ArrayList<>();
     List<FieldModel> fieldList = new ArrayList<>();
-    Iterable<? extends FieldModel> inputFields = method.getRequiredInputFields();
+    Iterable<? extends FieldModel> inputFields = method.getMaybeRequiredInputFields();
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null

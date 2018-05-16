@@ -192,16 +192,15 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public List<? extends FieldModel> getRequiredInputFields() {
+  public List<? extends FieldModel> getMaybeRequiredInputFields() {
     return getInputFields()
         .stream()
         .filter(
             f ->
                 f.isRequired()
-                    || !(!Strings.isNullOrEmpty(f.getDiscoveryField().description())
-                        && f.getDiscoveryField().description().toLowerCase().contains("optional")
-                        && !Strings.isNullOrEmpty(f.getDiscoveryField().location())
-                        && f.getDiscoveryField().location().equals("query")))
+                    || f.getDiscoveryField().isPathParam()
+                    || Strings.isNullOrEmpty(f.getDiscoveryField().description())
+                    || !f.getDiscoveryField().description().toLowerCase().contains("optional"))
         .collect(Collectors.toList());
   }
 

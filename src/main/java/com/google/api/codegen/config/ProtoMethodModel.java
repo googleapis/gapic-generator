@@ -190,7 +190,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public List<? extends FieldModel> getRequiredInputFields() {
+  public List<? extends FieldModel> getMaybeRequiredInputFields() {
     return getInputFields();
   }
 
