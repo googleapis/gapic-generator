@@ -790,8 +790,8 @@ __all__ = (
 from __future__ import absolute_import
 
 from google.cloud.example_v1 import types
-from google.cloud.example_v1.foo.gapic import decrementer_service_client
-from google.cloud.example_v1.foo.gapic import incrementer_service_client
+from google.cloud.example_v1.gapic.foo import decrementer_service_client
+from google.cloud.example_v1.gapic.foo import incrementer_service_client
 
 
 class IncrementerServiceClient(incrementer_service_client.IncrementerServiceClient):
@@ -806,11 +806,11 @@ __all__ = (
     'IncrementerServiceClient',
     'DecrementerServiceClient',
 )
-============== file: google/cloud/example_v1/foo/__init__.py ==============
+============== file: google/cloud/example_v1/gapic/__init__.py ==============
 
-============== file: google/cloud/example_v1/foo/gapic/__init__.py ==============
+============== file: google/cloud/example_v1/gapic/foo/__init__.py ==============
 
-============== file: google/cloud/example_v1/foo/gapic/decrementer_service_client.py ==============
+============== file: google/cloud/example_v1/gapic/foo/decrementer_service_client.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -835,9 +835,9 @@ import google.api_core.gapic_v1.method
 import google.api_core.grpc_helpers
 import grpc
 
-from google.cloud.example_v1.foo.gapic import decrementer_service_client_config
-from google.cloud.example_v1.foo.proto import multiple_services_pb2
-from google.cloud.example_v1.foo.proto import multiple_services_pb2_grpc
+from google.cloud.example_v1.gapic.foo import decrementer_service_client_config
+from google.cloud.example_v1.proto.foo import multiple_services_pb2
+from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
 
 
@@ -982,7 +982,7 @@ class DecrementerServiceClient(object):
         request = multiple_services_pb2.DecrementRequest()
         self._stubs['decrement'](request, retry=retry, timeout=timeout, metadata=metadata)
 
-============== file: google/cloud/example_v1/foo/gapic/decrementer_service_client_config.py ==============
+============== file: google/cloud/example_v1/gapic/foo/decrementer_service_client_config.py ==============
 config = {
   "interfaces": {
     "google.cloud.example.v1.foo.DecrementerService": {
@@ -997,7 +997,7 @@ config = {
   }
 }
 
-============== file: google/cloud/example_v1/foo/gapic/incrementer_service_client.py ==============
+============== file: google/cloud/example_v1/gapic/foo/incrementer_service_client.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1022,9 +1022,9 @@ import google.api_core.gapic_v1.method
 import google.api_core.grpc_helpers
 import grpc
 
-from google.cloud.example_v1.foo.gapic import incrementer_service_client_config
-from google.cloud.example_v1.foo.proto import multiple_services_pb2
-from google.cloud.example_v1.foo.proto import multiple_services_pb2_grpc
+from google.cloud.example_v1.gapic.foo import incrementer_service_client_config
+from google.cloud.example_v1.proto.foo import multiple_services_pb2
+from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
 
 
@@ -1169,7 +1169,7 @@ class IncrementerServiceClient(object):
         request = multiple_services_pb2.IncrementRequest()
         self._stubs['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
 
-============== file: google/cloud/example_v1/foo/gapic/incrementer_service_client_config.py ==============
+============== file: google/cloud/example_v1/gapic/foo/incrementer_service_client_config.py ==============
 config = {
   "interfaces": {
     "google.cloud.example.v1.foo.IncrementerService": {
@@ -1206,7 +1206,7 @@ import sys
 from google.api_core.protobuf_helpers import get_messages
 
 from google.api import http_pb2
-from google.cloud.example_v1.foo.proto import multiple_services_pb2
+from google.cloud.example_v1.proto.foo import multiple_services_pb2
 from google.protobuf import descriptor_pb2
 from google.protobuf import empty_pb2
 
@@ -1380,7 +1380,7 @@ setuptools.setup(
 import pytest
 
 from google.cloud import example_v1
-from google.cloud.example_v1.foo.proto import multiple_services_pb2
+from google.cloud.example_v1.proto.foo import multiple_services_pb2
 from google.protobuf import empty_pb2
 
 
@@ -1463,7 +1463,7 @@ class TestDecrementerServiceClient(object):
 import pytest
 
 from google.cloud import example_v1
-from google.cloud.example_v1.foo.proto import multiple_services_pb2
+from google.cloud.example_v1.proto.foo import multiple_services_pb2
 from google.protobuf import empty_pb2
 
 
