@@ -1150,14 +1150,14 @@ class LibraryServiceClient(object):
 
         # Create the gRPC stubs.
         self._library_service_stub = (
-            library_pb2_grpc.LibraryServiceStub(channel))
+            library_pb2_grpc.LibraryServiceStub(self.channel))
         self._labeler_stub = (
-            tagger_pb2_grpc.LabelerStub(channel))
+            tagger_pb2_grpc.LabelerStub(self.channel))
 
         # Operations client for methods that return long-running operations
         # futures.
         self._operations_client = (
-            google.api_core.operations_v1.OperationsClient(channel))
+            google.api_core.operations_v1.OperationsClient(self.channel))
 
         if client_info is None:
             client_info = (
