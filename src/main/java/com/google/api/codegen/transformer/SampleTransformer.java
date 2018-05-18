@@ -34,7 +34,7 @@ import java.util.List;
  * A class that performs the transformations needed to generate the MethodSampleView for the
  * applicable sample types.
  */
-class SampleTransformer {
+public class SampleTransformer {
 
   private final SampleType sampleType;
 
