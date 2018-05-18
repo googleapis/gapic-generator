@@ -56,7 +56,7 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
               "com/google/api/codegen/java/java_discogapic.yaml",
               "com/google/api/codegen/testdata/simplecompute_gapic.yaml",
             },
-            "com/google/api/codegen/testdata/simplecompute_pkg.yaml"
+            "com/google/api/codegen/testdata/simplecompute_pkg2.yaml"
           });
     }
     return builder.build();

@@ -114,6 +114,7 @@ public class DiscoGapicGeneratorApi {
       List<String> configFileNames,
       String packageConfigFile,
       String packageConfig2File,
+      String dependencyConfigFile,
       List<String> enabledArtifacts)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
@@ -150,7 +151,13 @@ public class DiscoGapicGeneratorApi {
                 + " were set, but only can be provided at once.");
       }
       ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
-      DependenciesConfig dependenciesConfig = DependenciesConfig.load();
+      DependenciesConfig dependenciesConfig;
+      if (dependencyConfigFile != null) {
+        dependenciesConfig =
+            DependenciesConfig.loadFromURL(new File(dependencyConfigFile).toURI().toURL());
+      } else {
+        dependenciesConfig = DependenciesConfig.load();
+      }
       PackagingConfig packagingConfig = PackagingConfig.load(packageConfig2File);
       packageConfig =
           PackageMetadataConfig.createFromPackaging(
@@ -199,6 +206,7 @@ public class DiscoGapicGeneratorApi {
             configFileNames,
             packageConfigFile,
             packageConfig2File,
+            null,
             enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
