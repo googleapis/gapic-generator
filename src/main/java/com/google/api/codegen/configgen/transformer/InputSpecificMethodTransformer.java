@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
@@ -24,6 +25,8 @@ import javax.annotation.Nullable;
 public interface InputSpecificMethodTransformer {
 
   PagingParameters getPagingParameters();
+
+  boolean isIgnoredParameter(FieldModel parameter);
 
   /** Get the ResourceNameTreatment for a method. */
   @Nullable

@@ -69,8 +69,7 @@ public class MethodTransformer {
     Iterable<? extends FieldModel> inputFields = method.getInputFields();
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
-      if (field.getOneof() == null
-          && !helperTransformer.getPagingParameters().getIgnoredParameters().contains(fieldName)) {
+      if (field.getOneof() == null && !helperTransformer.isIgnoredParameter(field)) {
         parameterList.add(fieldName);
         fieldList.add(field);
       }
