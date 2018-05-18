@@ -248,7 +248,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
-            CallingForm.RequestServerStreaming);
+            CallingForm.RequestStreamingServer);
     String callerResponseTypeName = method.name() + "Stream";
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
