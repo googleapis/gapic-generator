@@ -16,7 +16,7 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -25,6 +25,7 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains the common logic for generating view models for GAPIC surface methods. This is used in
@@ -43,49 +44,59 @@ public class NodeJSMethodViewGenerator {
       GapicInterfaceContext context, boolean packageHasMultipleServices) {
     ImmutableList.Builder<OptionalArrayMethodView> apiMethodsAndSamples = ImmutableList.builder();
 
-    for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
-      OptionalArrayMethodView methodView;
-      if (methodContext.getMethodConfig().isPageStreaming()) {
-        methodView =
-            clientMethodTransformer.generatePagedStreamingMethod(
-                methodContext,
-                packageHasMultipleServices,
-                Arrays.asList(CallingForm.RequestAsyncPaged, CallingForm.RequestAsyncPagedAll));
-      } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        methodView =
-            clientMethodTransformer.generateLongRunningMethod(
-                methodContext,
-                packageHasMultipleServices,
-                Arrays.asList(CallingForm.LongRunningPromise, CallingForm.LongRunningEventEmitter));
-      } else {
-        List<CallingForm> callingForms;
-        GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
-        switch (streamingType) {
-          case BidiStreaming:
-            callingForms = Arrays.asList(CallingForm.RequestStreamingBidi);
-            break;
-          case ClientStreaming:
-            callingForms = Arrays.asList(CallingForm.RequestStreamingClient);
-            break;
-          case ServerStreaming:
-            callingForms = Arrays.asList(CallingForm.RequestStreamingServer);
-            break;
-          case NonStreaming:
-            callingForms = Arrays.asList(CallingForm.Request);
-            break;
-          default:
-            throw new IllegalArgumentException(
-                "unhandled grpcStreamingType: " + streamingType.toString());
-        }
-        methodView =
-            clientMethodTransformer.generateRequestMethod(
-                methodContext, packageHasMultipleServices, callingForms);
+    return context
+        .getSupportedMethods()
+        .stream()
+        .map(
+            methodModel ->
+                generateOneApiMethod(
+                    context.asDynamicMethodContext(methodModel), null, packageHasMultipleServices))
+        .collect((Collectors.toList()));
+  }
+
+  public OptionalArrayMethodView generateOneApiMethod(
+      GapicMethodContext methodContext,
+      InitCodeContext initContext,
+      boolean packageHasMultipleServices) {
+    OptionalArrayMethodView methodView;
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      methodView =
+          clientMethodTransformer.generatePagedStreamingMethod(
+              methodContext,
+              initContext,
+              packageHasMultipleServices,
+              Arrays.asList(CallingForm.RequestAsyncPagedAll, CallingForm.RequestAsyncPaged));
+    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      methodView =
+          clientMethodTransformer.generateLongRunningMethod(
+              methodContext,
+              initContext,
+              packageHasMultipleServices,
+              Arrays.asList(CallingForm.LongRunningPromise, CallingForm.LongRunningEventEmitter));
+    } else {
+      List<CallingForm> callingForms;
+      GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
+      switch (streamingType) {
+        case BidiStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingBidi);
+          break;
+        case ClientStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingClient);
+          break;
+        case ServerStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingServer);
+          break;
+        case NonStreaming:
+          callingForms = Arrays.asList(CallingForm.Request);
+          break;
+        default:
+          throw new IllegalArgumentException(
+              "unhandled grpcStreamingType: " + streamingType.toString());
       }
-
-      apiMethodsAndSamples.add(methodView);
+      methodView =
+          clientMethodTransformer.generateRequestMethod(
+              methodContext, initContext, packageHasMultipleServices, callingForms);
     }
-
-    return apiMethodsAndSamples.build();
+    return methodView;
   }
 }

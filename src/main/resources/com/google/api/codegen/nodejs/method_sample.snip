@@ -24,27 +24,51 @@
     {@coreSampleCode}
 @end
 
-@snippet sampleCode(apiMethod, init)
-    {@sampleCode(apiMethod, init, empty())}
-@end
-
 @snippet empty()
 @end
 
-# TODO(vchudnov-g): When we implement in-code samples, the switch
-# statement below will switch on the callingfrom selected for the
-# sample (as happens now in standalone_sample.snip).
-@snippet sampleCode(apiMethod, init, additionalCallback)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
-    @case "LongRunningOptionalArrayMethod"
-        {@lroSampleCode(apiMethod, init, additionalCallback)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
+@snippet incodeSamples(apiMethod, additionalCallback)
+    @join sample : apiMethod.samples
+      {@oneIncodeSample(apiMethod, sample, additionalCallback)}
+
     @end
+@end
+
+
+# The structure of this should be parallel to that of standalone_sample.snip:@standaloneSample
+@snippet oneIncodeSample(apiMethod, sample, additionalCallback)
+  @switch sample.callingForm
+  @case "Request"
+    @if apiMethod.hasReturnValue
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.initCode, additionalCallback)}
+    @else
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.initCode, additionalCallback)}
+    @end
+  @case "RequestAsyncPaged"
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestAsyncPagedAll"
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingBidi"
+    {@bidiStreamingSampleCode(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingClient"
+    {@clientStreamingSampleCode(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingServer"
+    {@initCode(apiMethod, sample.initCode)}
+    {@methodCallSampleCode(apiMethod, sample.initCode)}.on('data', response => {
+      @if additionalCallback
+        console.log(response);
+        {@additionalCallback}();
+      @else
+        // doThingsWith(response)
+      @end
+    });
+  @case "LongRunningEventEmitter"
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.initCode, additionalCallback)}
+  @case "LongRunningPromise"
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.initCode, additionalCallback)}
+  @default
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$    
+  @end
 @end
 
 @snippet sampleCodePageStreaming(apiMethod, init)
