@@ -18,14 +18,15 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -107,7 +108,9 @@ public abstract class PackagingConfig {
             .apiName((String) configMap.get("api_name"))
             .apiVersion((String) configMap.get("api_version"))
             .organizationName((String) configMap.get("organization_name"))
-            .protoPackageDependencies(nullToEmpty((List<String>) configMap.get("proto_deps")))
+            .protoPackageDependencies(
+                MoreObjects.firstNonNull(
+                    (List<String>) configMap.get("proto_deps"), ImmutableList.of()))
             .releaseLevel(Configs.parseReleaseLevel((String) configMap.get("release_level")))
             .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
             .protoPath((String) configMap.get("proto_path"));
@@ -116,14 +119,6 @@ public abstract class PackagingConfig {
     }
 
     return builder.build();
-  }
-
-  public static List<String> nullToEmpty(List<String> list) {
-    if (list == null) {
-      return new ArrayList<>();
-    } else {
-      return list;
-    }
   }
 
   public static PackagingConfig load(String path) throws IOException {
