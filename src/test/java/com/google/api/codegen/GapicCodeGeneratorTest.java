@@ -69,92 +69,92 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PHP,
             new String[] {"php_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PHP,
             new String[] {"php_gapic.yaml", "longrunning_gapic.yaml"},
-            "longrunning_pkg.yaml",
+            "longrunning_pkg2.yaml",
             "longrunning"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PHP,
             new String[] {"php_gapic.yaml", "no_path_templates_gapic.yaml"},
-            "no_path_templates_pkg.yaml",
+            "no_path_templates_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.JAVA,
             new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.JAVA,
             new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"},
-            "no_path_templates_pkg.yaml",
+            "no_path_templates_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.RUBY,
             new String[] {"ruby_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.RUBY_DOC,
             new String[] {"ruby_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.RUBY,
             new String[] {"ruby_gapic.yaml", "multiple_services_gapic.yaml"},
-            "multiple_services_pkg.yaml",
+            "multiple_services_pkg2.yaml",
             "multiple_services"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.RUBY,
             new String[] {"ruby_gapic.yaml", "longrunning_gapic.yaml"},
-            "longrunning_pkg.yaml",
+            "longrunning_pkg2.yaml",
             "longrunning"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PYTHON,
             new String[] {"python_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PYTHON,
             new String[] {"python_gapic.yaml", "no_path_templates_gapic.yaml"},
-            "no_path_templates_pkg.yaml",
+            "no_path_templates_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.PYTHON,
             new String[] {"python_gapic.yaml", "multiple_services_gapic.yaml"},
-            "multiple_services_pkg.yaml",
+            "multiple_services_pkg2.yaml",
             "multiple_services"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.NODEJS,
             new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.NODEJS_DOC,
             new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.NODEJS,
             new String[] {"nodejs_gapic.yaml", "no_path_templates_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.NODEJS,
             new String[] {"nodejs_gapic.yaml", "multiple_services_gapic.yaml"},
-            "multiple_services_pkg.yaml",
+            "multiple_services_pkg2.yaml",
             "multiple_services"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.CSHARP,
             new String[] {"csharp_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.CLIENT_CONFIG,
             new String[] {"client_gapic.yaml", "library_gapic.yaml"},
-            "library_pkg.yaml",
+            "library_pkg2.yaml",
             "library"));
   }
 
