@@ -382,7 +382,7 @@ public class StaticLangApiMethodTransformer {
         namer.getCallableMethodName(method),
         Synchronicity.Sync,
         methodViewBuilder,
-        Arrays.asList(CallingForm.RequestServerStreaming));
+        Arrays.asList(CallingForm.RequestStreamingServer));
     setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();

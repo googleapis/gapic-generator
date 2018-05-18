@@ -199,7 +199,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
-    schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);
 
     StaticLangApiMessageView messageView = schemaView.build();

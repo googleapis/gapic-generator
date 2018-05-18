@@ -56,6 +56,8 @@ public class CSharpTypeTable implements TypeTable {
           .put("Google.Cloud.Iam.V1", "iam")
           .build();
 
+  private final Map<String, String> dynamicAliases = new HashMap<String, String>();
+
   private final String implicitPackageName;
   private final CSharpAliasMode aliasMode;
   // Full name to nickname map
@@ -87,13 +89,31 @@ public class CSharpTypeTable implements TypeTable {
     String namespace = fullName.substring(0, lastDotIndex);
     switch (aliasMode) {
       case Global:
-        // Alias the type namespace if:
-        // * This isn't a type defined in this namespace; and
-        // * It's in one of the well-known namespaces.
-        if (!implicitPackageName.equals(namespace)) {
+        // Alias the type namespace, unless it's in this (or parent) namespace.
+        // Use well-known alias if possible, otherwise use a dynamically created alias.
+        if (!implicitPackageName.startsWith(namespace)) {
           String wellKnownAlias = wellKnownAliases.getOrDefault(namespace, null);
           if (wellKnownAlias != null) {
             shortTypeName = wellKnownAlias + "::" + shortTypeName;
+          } else {
+            String alias = dynamicAliases.getOrDefault(namespace, null);
+            if (alias == null) {
+              int[] chars =
+                  Splitter.on('.')
+                      .splitToList(namespace)
+                      .stream()
+                      .mapToInt(part -> part.charAt(0))
+                      .toArray();
+              String aliasNoSuffix = new String(chars, 0, chars.length).toLowerCase();
+              for (int i = 0; ; i++) {
+                alias = aliasNoSuffix + (i == 0 ? "" : Integer.toString(i));
+                if (!dynamicAliases.containsKey(alias) && !wellKnownAliases.containsKey(alias)) {
+                  break;
+                }
+              }
+              dynamicAliases.put(namespace, alias);
+            }
+            shortTypeName = alias + "::" + shortTypeName;
           }
         }
         break;
@@ -194,10 +214,11 @@ public class CSharpTypeTable implements TypeTable {
         if (!implicitPackageName.equals(using)) {
           switch (aliasMode) {
             case Global:
-              result.put(
-                  using,
-                  TypeAlias.create(
-                      using, wellKnownAliases.getOrDefault(using, ""))); // Value isn't used
+              String alias = wellKnownAliases.getOrDefault(using, null);
+              if (alias == null) {
+                alias = dynamicAliases.getOrDefault(using, "");
+              }
+              result.put(using, TypeAlias.create(using, alias));
               break;
             case MessagesOnly:
               if (parentNamespace.equals(using)) {
