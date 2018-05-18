@@ -159,7 +159,7 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return resolveInner(getAndSaveNicknameFor(getTypeName(fullName)));
+    return getAndSaveNicknameFor(getTypeName(fullName));
   }
 
   @Override
