@@ -248,9 +248,9 @@ module.exports.v1 = gapic.v1;
 // Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
-============== file: src/samples/v1/discuss_book_sample_generic_prog.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleGenericProg" ]
-//// STUB standalone sample "DiscussBookSampleGenericProg" /////
+============== file: src/samples/v1/discuss_book_sample_request_streaming_bidi_prog.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleRequestStreamingBidiProg" ]
+//// STUB standalone sample "DiscussBookSampleRequestStreamingBidiProg" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -258,7 +258,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "RequestStreamingBidi"
 //     valueSet "prog" ("Programming Books")
 //       description: "Testing calling forms: {Java:[CallableBidiStreaming]}"
 //       [name=BASIC]
@@ -284,9 +284,9 @@ stream.write(request);
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/find_related_books_sample_generic_odyssey.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleGenericOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksSampleGenericOdyssey" /////
+============== file: src/samples/v1/find_related_books_sample_request_async_paged_all_odyssey.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestAsyncPagedAllOdyssey" ]
+//// STUB standalone sample "FindRelatedBooksSampleRequestAsyncPagedAllOdyssey" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -294,7 +294,7 @@ stream.write(request);
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "RequestAsyncPagedAll"
 //     valueSet "odyssey" ("The Odyssey")
 //       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged]}"
 //       [names[0]=Odyssey, shelves[0]=Classics]
@@ -325,7 +325,33 @@ client.findRelatedBooks(request)
   .catch(err => {
     console.error(err);
   });
+*/
+// [END core_sample]
 
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/samples/v1/find_related_books_sample_request_async_paged_odyssey.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestAsyncPagedOdyssey" ]
+//// STUB standalone sample "FindRelatedBooksSampleRequestAsyncPagedOdyssey" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestAsyncPaged"
+//     valueSet "odyssey" ("The Odyssey")
+//       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged]}"
+//       [names[0]=Odyssey, shelves[0]=Classics]
+//     apiMethod "findRelatedBooks" of type "PagedOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
 // Or obtain the paged response.
 var namesElement = 'Odyssey';
 var names = [namesElement];
@@ -364,9 +390,9 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/get_big_book_sample_generic_wap.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleGenericWap" ]
-//// STUB standalone sample "GetBigBookSampleGenericWap" /////
+============== file: src/samples/v1/get_big_book_sample_long_running_event_emitter_wap.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleLongRunningEventEmitterWap" ]
+//// STUB standalone sample "GetBigBookSampleLongRunningEventEmitterWap" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -374,7 +400,7 @@ client.findRelatedBooks(request, options)
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "LongRunningEventEmitter"
 //     valueSet "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable]}"
 //       [name="War and Peace"]
@@ -385,31 +411,6 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-// Handle the operation using the promise pattern.
-client.getBigBook({name: formattedName})
-  .then(responses => {
-    var operation = responses[0];
-    var initialApiResponse = responses[1];
-
-    // Operation#promise starts polling for the completion of the LRO.
-    return operation.promise();
-  })
-  .then(responses => {
-    // The final result of the operation.
-    var result = responses[0];
-
-    // The metadata value of the completed operation.
-    var metadata = responses[1];
-
-    // The response of the api call returning the complete operation.
-    var finalApiResponse = responses[2];
-  })
-  .catch(err => {
-    console.error(err);
-  });
-
 var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
 
 // Handle the operation using the event emitter pattern.
@@ -444,9 +445,9 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/monolog_about_book_sample_generic_prog.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleGenericProg" ]
-//// STUB standalone sample "MonologAboutBookSampleGenericProg" /////
+============== file: src/samples/v1/get_big_book_sample_long_running_promise_wap.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleLongRunningPromiseWap" ]
+//// STUB standalone sample "GetBigBookSampleLongRunningPromiseWap" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -454,7 +455,58 @@ client.getBigBook({name: formattedName})
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "LongRunningPromise"
+//     valueSet "wap" ("GetBigBook: 'War and Peace'")
+//       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable]}"
+//       [name="War and Peace"]
+//     apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+// Handle the operation using the promise pattern.
+client.getBigBook({name: formattedName})
+  .then(responses => {
+    var operation = responses[0];
+    var initialApiResponse = responses[1];
+
+    // Operation#promise starts polling for the completion of the LRO.
+    return operation.promise();
+  })
+  .then(responses => {
+    // The final result of the operation.
+    var result = responses[0];
+
+    // The metadata value of the completed operation.
+    var metadata = responses[1];
+
+    // The response of the api call returning the complete operation.
+    var finalApiResponse = responses[2];
+  })
+  .catch(err => {
+    console.error(err);
+  });
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/samples/v1/monolog_about_book_sample_request_streaming_client_prog.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleRequestStreamingClientProg" ]
+//// STUB standalone sample "MonologAboutBookSampleRequestStreamingClientProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingClient"
 //     valueSet "prog" ("Programming Books")
 //       description: "Testing calling forms: {Java:[CallableClientStreaming]}"
 //       [name=BASIC]
@@ -484,9 +536,9 @@ stream.write(request);
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/publish_series_sample_generic_pi_version.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleGenericPiVersion" ]
-//// STUB standalone sample "PublishSeriesSampleGenericPiVersion" /////
+============== file: src/samples/v1/publish_series_sample_request_pi_version.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleRequestPiVersion" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -494,7 +546,7 @@ stream.write(request);
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "Request"
 //     valueSet "pi_version" ("Pi version")
 //       description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
@@ -533,9 +585,9 @@ client.publishSeries(request)
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/publish_series_sample_generic_second_edition.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleGenericSecondEdition" ]
-//// STUB standalone sample "PublishSeriesSampleGenericSecondEdition" /////
+============== file: src/samples/v1/publish_series_sample_request_second_edition.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleRequestSecondEdition" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -543,7 +595,7 @@ client.publishSeries(request)
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "Request"
 //     valueSet "second_edition" ("Second edition")
 //       description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
 //       [edition=2]
@@ -578,9 +630,9 @@ client.publishSeries(request)
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/stream_books_sample_generic_prog.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksSampleGenericProg" ]
-//// STUB standalone sample "StreamBooksSampleGenericProg" /////
+============== file: src/samples/v1/stream_books_sample_request_streaming_server_prog.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksSampleRequestStreamingServerProg" ]
+//// STUB standalone sample "StreamBooksSampleRequestStreamingServerProg" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -588,7 +640,7 @@ client.publishSeries(request)
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "RequestStreamingServer"
 //     valueSet "prog" ("Programming Books")
 //       description: "Testing calling forms: {Java:[CallableServerStreaming]}"
 //       [name=BASIC]
@@ -600,18 +652,18 @@ client.publishSeries(request)
 
 /*
 var name = 'BASIC';
-client.streamBooks({name: name}).on('data', response => {
-  // doThingsWith(response)
-});
+  client.streamBooks({name: name}).on('data', response => {
+      // doThingsWith(response)
+  });
 */
 // [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
 // [END full_sample]
-============== file: src/samples/v1/stream_shelves_sample_generic_empty.js ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesSampleGenericEmpty" ]
-//// STUB standalone sample "StreamShelvesSampleGenericEmpty" /////
+============== file: src/samples/v1/stream_shelves_sample_request_streaming_server_empty.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesSampleRequestStreamingServerEmpty" ]
+//// STUB standalone sample "StreamShelvesSampleRequestStreamingServerEmpty" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -619,7 +671,7 @@ client.streamBooks({name: name}).on('data', response => {
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-//     calling form "Generic"
+//     calling form "RequestStreamingServer"
 //     valueSet "empty" ("Server streaming")
 //       description: "Testing calling forms: {Java:[CallableServerStreaming]}"
 //       []
@@ -631,9 +683,9 @@ client.streamBooks({name: name}).on('data', response => {
 
 /*
 
-client.streamShelves({}).on('data', response => {
-  // doThingsWith(response)
-});
+  client.streamShelves({}).on('data', response => {
+      // doThingsWith(response)
+  });
 */
 // [END core_sample]
 

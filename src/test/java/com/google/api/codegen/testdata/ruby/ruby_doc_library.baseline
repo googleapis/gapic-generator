@@ -6234,7 +6234,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do
-        [expected_response]
+        OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
@@ -6305,7 +6305,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::StreamBooksRequest, request)
         assert_equal(name, request.name)
-        [expected_response]
+        OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
@@ -6376,7 +6376,7 @@ describe Library::V1::LibraryServiceClient do
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
-        [expected_response]
+        OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
@@ -6449,7 +6449,7 @@ describe Library::V1::LibraryServiceClient do
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
-        expected_response
+        OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
@@ -6765,7 +6765,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        operation
+        OpenStruct.new(execute: operation)
       end
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
@@ -6803,7 +6803,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        operation
+        OpenStruct.new(execute: operation)
       end
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
@@ -6877,7 +6877,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        operation
+        OpenStruct.new(execute: operation)
       end
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
@@ -6915,7 +6915,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
-        operation
+        OpenStruct.new(execute: operation)
       end
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 

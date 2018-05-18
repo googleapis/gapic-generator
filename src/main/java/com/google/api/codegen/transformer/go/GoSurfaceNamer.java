@@ -143,7 +143,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);
     }
-    return publicClassName(Name.anyCamel(typeName).join("iterator"));
+
+    // NOTE(pongad): The name here might be a primitive, eg "string", so make sure to upper-case the first letter.
+    // We do "raw" string manipulation here; the field might be in a nested message, eg "Outer_Inner",
+    // which is not well-supported by the Name class.
+    if (Character.isLowerCase(typeName.charAt(0))) {
+      typeName = Character.toUpperCase(typeName.charAt(0)) + typeName.substring(1);
+    }
+    return typeName + "Iterator";
   }
 
   @Override

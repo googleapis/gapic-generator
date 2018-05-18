@@ -31,9 +31,12 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
   private static final String GOOGLE_PREFIX = "google";
@@ -93,14 +96,31 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
 
   private final TypeNameConverter typeNameConverter;
   private String protoNamespace;
+  private String parentProtoPackage;
 
   public PythonModelTypeNameConverter(String implicitPackageName) {
     typeNameConverter = new PythonTypeTable(implicitPackageName);
-    if (implicitPackageName.endsWith(".gapic")) {
-      protoNamespace = implicitPackageName.replace(".gapic", ".proto");
-    } else {
-      protoNamespace = String.format("%s.proto", implicitPackageName);
+    List<String> protoNames = new ArrayList<>();
+    for (String n : implicitPackageName.split("\\.")) {
+      if (n.equals("gapic")) {
+        break;
+      }
+      protoNames.add(n);
     }
+
+    List<String> parentProtoPackageNames = new ArrayList<>(protoNames);
+    Pattern versionNamespacePattern =
+        Pattern.compile("(.+?)_(([vV]\\d+)([pP_]\\d+)?(([aA]lpha|[bB]eta)\\d*)?)");
+    Matcher matcher = versionNamespacePattern.matcher(protoNames.get(protoNames.size() - 1));
+    if (matcher.matches()) {
+      parentProtoPackageNames.remove(protoNames.get(protoNames.size() - 1));
+      parentProtoPackageNames.add(matcher.group(1));
+      parentProtoPackageNames.add(matcher.group(2));
+    }
+    parentProtoPackage = Joiner.on(".").join(parentProtoPackageNames);
+
+    protoNames.add("proto");
+    protoNamespace = Joiner.on(".").join(protoNames);
   }
 
   @Override
@@ -242,6 +262,14 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
       }
     }
 
+    // This bit of logic assumes that the package of the element will have the same parent package
+    // as the service protos for the client. For instance if the proto package of the element is
+    // `a.b.v1.c` and the proto package of the service is `a.b.v1.d` the correct python package
+    // for the element should be `a.b_v1.proto.c` and the correct python package for the service
+    // is `a.b_v1.proto.d`.
+    if (protoPackage.startsWith(parentProtoPackage)) {
+      return protoNamespace + protoPackage.substring(parentProtoPackage.length());
+    }
     return protoNamespace;
   }
 
