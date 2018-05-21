@@ -106,7 +106,7 @@ public abstract class PackagingConfig {
     Builder builder =
         newBuilder()
             .apiName((String) configMap.get("api_name"))
-            .apiVersion((String) configMap.get("api_version"))
+            .apiVersion(Strings.nullToEmpty((String) configMap.get("api_version")))
             .organizationName((String) configMap.get("organization_name"))
             .protoPackageDependencies(
                 MoreObjects.firstNonNull(
