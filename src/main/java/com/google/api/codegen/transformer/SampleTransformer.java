@@ -62,13 +62,12 @@ public class SampleTransformer {
    * configurations that still rely on sample_code_init_fields. The format of this string is
    * purposefully set to something that will cause errors if it makes it to an artifact.
    */
-  private static final String LEGACY_SAMPLE_CODE_INIT_VALUES = "[ sample_code_init_fields ]";
+  private static final String INIT_CODE_SHIM = "[ shim for initcode ]";
 
   /**
-   * Populates methodViewBuilder.samples with the appropriate MethodSampleViews. This method is
-   * provided to provide backward compatibility for configuring in-code samples via
-   * MethodView.initCode. Once that configuration is removed, this function becomes a one-liner that
-   * should then be inlined at the callsites.
+   * Populates {@code methodViewBuilder.samples} with the appropriate {@code MethodSampleView}s.
+   * This method provides backward compatibility for configuring in-code samples via {@code
+   * MethodView.initCode}.
    *
    * @param methodViewBuilder
    * @param context
@@ -77,7 +76,7 @@ public class SampleTransformer {
    * @param generator The function (typically a lambda) to generate the InitCode for a sample given
    *     an InitCodeContext
    * @param callingForms The list of calling forms applicable to this method, for which we will
-   *     generate samples if so configured via context.getMethodConfig()
+   *     generate samples if so configured via {@code context.getMethodConfig()}
    */
   public void generateSamples(
       ApiMethodView.Builder methodViewBuilder,
@@ -86,9 +85,51 @@ public class SampleTransformer {
       InitCodeOutputType initCodeOutputType,
       Generator generator,
       List<CallingForm> callingForms) {
+    generateSamples(
+        methodViewBuilder,
+        context,
+        null,
+        fieldConfigs,
+        initCodeOutputType,
+        generator,
+        callingForms);
+  }
+
+  /**
+   * Populates {@code methodViewBuilder.samples} with the appropriate {@code MethodSampleView}s.
+   * This method provides backward compatibility for configuring in-code samples via {@code
+   * MethodView.initCode}.
+   *
+   * <p>TODO: Once MethodView.initCode is removed, this function becomes a one-liner (calling the
+   * overloaded form of generateSamples) that should then be inlined at the call sites:
+   * methodViewBuilder.samples( generateSamples(context, initContext, fieldConfigs,
+   * initCodeOutputType, generator, callingForms));
+   *
+   * @param methodViewBuilder
+   * @param context
+   * @param initContext If null, an {@code InitCodeContext} will be created for each sample based on
+   *     the {@code fieldConfigs} and {@code initCodeOutputType}.
+   * @param fieldConfigs Only used if {@code initContext} is null to create an {@code
+   *     InitCodeContext}. Can be null otherwise.
+   * @param initCodeOutputType Only used if {@code initContext} is null to create an {@code
+   *     InitCodeContext}. Can be null otherwise.
+   * @param generator The function (typically a lambda) to generate the InitCode for a sample given
+   *     an InitCodeContext
+   * @param callingForms The list of calling forms applicable to this method, for which we will
+   *     generate samples if so configured via {@code context.getMethodConfig()}
+   */
+  public void generateSamples(
+      ApiMethodView.Builder methodViewBuilder,
+      MethodContext context,
+      InitCodeContext initContext,
+      Iterable<FieldConfig> fieldConfigs,
+      InitCodeOutputType initCodeOutputType,
+      Generator generator,
+      List<CallingForm> callingForms) {
 
     List<MethodSampleView> methodSampleViews =
-        generateSamples(context, fieldConfigs, initCodeOutputType, generator, callingForms);
+        generateSamples(
+            context, initContext, fieldConfigs, initCodeOutputType, generator, callingForms);
 
     // Until we get rid of the non-nullable StaticLangApiMethodView.initCode field, set it to a
     // non-null value. For an in-code sample not specified through the SampleSpec, the correct value to
@@ -98,7 +139,7 @@ public class SampleTransformer {
 
       // Don't emit samples that were specifically generated for backward-compatibility. We only
       // wanted them for initCode above.
-      if (methodSampleViews.get(0).valueSet().id().equals(LEGACY_SAMPLE_CODE_INIT_VALUES)) {
+      if (methodSampleViews.get(0).valueSet().id().equals(INIT_CODE_SHIM)) {
         methodSampleViews = Collections.emptyList();
       }
     }
@@ -121,6 +162,7 @@ public class SampleTransformer {
    */
   public List<MethodSampleView> generateSamples(
       MethodContext context,
+      InitCodeContext initContext,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator sampleGenerator,
@@ -137,18 +179,23 @@ public class SampleTransformer {
       // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
       // to generate the samples in various scenarios. Once all the configs have been migrated to
       // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
-      if (!methodConfig
+      String id = null;
+      if (sampleType
+          == SampleType
+              .IN_CODE) { // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
+        id = "sample_code_init_field";
+      } else if (!methodConfig
               .getSampleSpec()
               .isConfigured() // if not configured, make the sample_code_init_fields available to all sample types
-          || sampleType
-              == SampleType
-                  .IN_CODE // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
           || matchingValueSets.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
+        id = INIT_CODE_SHIM;
+      }
+      if (id != null) {
         matchingValueSets =
             Collections.singletonList(
                 SampleValueSet.newBuilder()
                     .addAllParameters(methodConfig.getSampleCodeInitFields())
-                    .setId(LEGACY_SAMPLE_CODE_INIT_VALUES) // only use these samples for initCode
+                    .setId(id)
                     .setDescription("value set imported from sample_code_init_fields")
                     .setTitle("Sample Values")
                     .build());
@@ -157,8 +204,10 @@ public class SampleTransformer {
       for (SampleValueSet valueSet : matchingValueSets) {
         InitCodeView initCodeView =
             sampleGenerator.generate(
-                createInitCodeContext(
-                    context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
+                initContext != null
+                    ? initContext
+                    : createInitCodeContext(
+                        context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)

@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -71,6 +72,7 @@ public class DynamicLangApiMethodTransformer {
 
   public OptionalArrayMethodView generateRequestMethod(
       GapicMethodContext context,
+      InitCodeContext initContext,
       boolean packageHasMultipleServices,
       List<CallingForm> callingForms) {
     MethodModel method = context.getMethodModel();
@@ -79,13 +81,15 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.type(ClientMethodType.OptionalArrayMethod);
 
-    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
 
     return apiMethod.build();
   }
 
   public OptionalArrayMethodView generateLongRunningMethod(
       GapicMethodContext context,
+      InitCodeContext initContext,
       boolean packageHasMultipleServices,
       List<CallingForm> callingForms) {
     MethodModel method = context.getMethodModel();
@@ -95,13 +99,15 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.longRunningView(lroTransformer.generateDetailView(context));
     apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
 
-    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
 
     return apiMethod.build();
   }
 
   public OptionalArrayMethodView generatePagedStreamingMethod(
       GapicMethodContext context,
+      InitCodeContext initContext,
       boolean packageHasMultipleServices,
       List<CallingForm> callingForms) {
     MethodModel method = context.getMethodModel();
@@ -111,7 +117,8 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.pageStreamingView(
         pageStreamingTransformer.generateDescriptor(context.getSurfaceInterfaceContext(), method));
 
-    generateMethodCommon(context, packageHasMultipleServices, method, apiMethod, callingForms);
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
 
     return apiMethod.build();
   }
@@ -135,13 +142,19 @@ public class DynamicLangApiMethodTransformer {
     }
 
     generateMethodCommon(
-        context, packageHasMultipleServices, method, apiMethod, Arrays.asList(CallingForm.Generic));
+        context,
+        null,
+        packageHasMultipleServices,
+        method,
+        apiMethod,
+        Arrays.asList(CallingForm.Generic));
 
     return apiMethod.build();
   }
 
   private void generateMethodCommon(
       GapicMethodContext context,
+      InitCodeContext initContext,
       boolean packageHasMultipleServices,
       MethodModel method,
       OptionalArrayMethodView.Builder apiMethod,
@@ -215,6 +228,7 @@ public class DynamicLangApiMethodTransformer {
     sampleTransformer.generateSamples(
         apiMethod,
         context,
+        initContext,
         context.getMethodConfig().getRequiredFieldConfigs(),
         initCodeOutputType,
         initCodeContext ->
