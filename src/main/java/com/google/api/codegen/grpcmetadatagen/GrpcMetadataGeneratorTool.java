@@ -71,10 +71,17 @@ public class GrpcMetadataGeneratorTool {
     options.addOption(
         Option.builder("c")
             .longOpt("metadata_config")
-            .desc("The YAML file configuring the package metadata.")
+            .desc(
+                "The YAML file configuring the package metadata (deprecated in favor of package_yaml2).")
             .hasArg()
             .argName("METADATA-CONFIG")
-            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("c2")
+            .longOpt("package_yaml2")
+            .desc("The packaging YAML configuration file.")
+            .hasArg()
+            .argName("PACKAGE-YAML2")
             .build());
     options.addOption(
         Option.builder()
@@ -100,6 +107,7 @@ public class GrpcMetadataGeneratorTool {
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
         cl.getOptionValue("metadata_config"),
+        cl.getOptionValue("package_yaml2"),
         cl.getOptionValue("artifact_type"));
   }
 
@@ -110,6 +118,7 @@ public class GrpcMetadataGeneratorTool {
       String outputDir,
       String languageString,
       String metadataConfig,
+      String packageConfig2,
       String artifactType) {
     TargetLanguage language = TargetLanguage.fromString(languageString);
     ToolOptions options = ToolOptions.create();
@@ -120,6 +129,7 @@ public class GrpcMetadataGeneratorTool {
       options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     }
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfig);
+    options.set(GrpcMetadataGenerator.PACKAGE_CONFIG2_FILE, packageConfig2);
     options.set(GrpcMetadataGenerator.LANGUAGE, languageString);
 
     if (artifactType != null) {

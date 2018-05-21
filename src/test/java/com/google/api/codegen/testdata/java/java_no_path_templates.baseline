@@ -38,8 +38,8 @@ dependencies {
   testCompile 'com.google.api:gax:1.0.0:testlib'
   compile 'com.google.api:gax-grpc:0.18.0'
   testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
-  testCompile 'junit:junit:4.12'
   testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  testCompile 'junit:junit:4.12'
   // Remove this line if you are bundling your proto-generated classes together with your client classes
   compile project(':proto-google-cloud-library-v1')
   // Remove this line if you are bundling your proto-generated classes together with your client classes
@@ -593,6 +593,7 @@ public class GrpcNoTemplatesApiServiceCallableFactory implements GrpcStubCallabl
     return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
   }
 
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   @Override
   public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
       GrpcCallSettings<RequestT, com.google.longrunning.Operation> grpcCallSettings,

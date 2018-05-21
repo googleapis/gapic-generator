@@ -62,9 +62,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   public abstract boolean canRepeat();
 
-  // If this an HTTP Request message.
-  public abstract boolean isRequestMessage();
-
   @Nullable
   public abstract StaticLangApiMessageView requestBodyType();
 
@@ -77,16 +74,24 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   public abstract boolean hasRequiredProperties();
 
+  public abstract boolean hasFieldMask();
+
   // List of ResourceNames that this message contains.
   @Nullable
   public abstract RequestObjectParamView pathAsResourceName();
+
+  // If this field should be part of the parent message's serialization.
+  public abstract boolean isSerializable();
 
   public boolean hasResourceName() {
     return pathAsResourceName() != null;
   }
 
   public static StaticLangApiMessageView.Builder newBuilder() {
-    return new AutoValue_StaticLangApiMessageView.Builder();
+    return new AutoValue_StaticLangApiMessageView.Builder()
+        .hasRequiredProperties(false)
+        .hasFieldMask(false)
+        .isSerializable(true);
   }
 
   @AutoValue.Builder
@@ -117,7 +122,9 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
     public abstract Builder canRepeat(boolean val);
 
-    public abstract Builder isRequestMessage(boolean val);
+    public abstract Builder hasFieldMask(boolean val);
+
+    public abstract Builder isSerializable(boolean val);
 
     public abstract Builder requestBodyType(StaticLangApiMessageView val);
 

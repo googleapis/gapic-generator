@@ -55,7 +55,6 @@
           .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<{@methodDescriptor.requestTypeName}>newBuilder()
-                  .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{@methodDescriptor.httpMethod.pathTemplate}"))
                   .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
                   .setResourceNameFactory({@methodDescriptor.httpMethod.resourceNameTypeName}.newFactory())
@@ -224,6 +223,7 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
+  @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
       {@apiMethod.name}() {
