@@ -22,7 +22,6 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,8 +41,6 @@ public class NodeJSMethodViewGenerator {
 
   public List<OptionalArrayMethodView> generateApiMethods(
       GapicInterfaceContext context, boolean packageHasMultipleServices) {
-    ImmutableList.Builder<OptionalArrayMethodView> apiMethodsAndSamples = ImmutableList.builder();
-
     return context
         .getSupportedMethods()
         .stream()
@@ -51,7 +48,7 @@ public class NodeJSMethodViewGenerator {
             methodModel ->
                 generateOneApiMethod(
                     context.asDynamicMethodContext(methodModel), null, packageHasMultipleServices))
-        .collect((Collectors.toList()));
+        .collect(Collectors.toList());
   }
 
   public OptionalArrayMethodView generateOneApiMethod(
