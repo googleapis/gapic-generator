@@ -19,6 +19,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -294,7 +295,7 @@ public abstract class PackageMetadataConfig {
                 Configs.buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
             .shortName((String) configMap.get("short_name"))
             .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
-            .apiVersion((String) configMap.get("major_version"))
+            .apiVersion(Strings.nullToEmpty((String) configMap.get("major_version")))
             .protoPath((String) configMap.get("proto_path"))
             .author((String) configMap.get("author"))
             .email((String) configMap.get("email"))

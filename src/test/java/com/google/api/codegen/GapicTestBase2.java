@@ -15,8 +15,11 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.codegen.config.ApiDefaultsConfig;
+import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
@@ -27,11 +30,6 @@ import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -81,11 +79,16 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
-        URI packageConfigUrl = getTestDataLocator().findTestData(packageConfigFileName).toURI();
-        String contents =
-            new String(Files.readAllBytes(Paths.get(packageConfigUrl)), StandardCharsets.UTF_8);
-        packageConfig = PackageMetadataConfig.createFromString(contents);
-      } catch (IOException | URISyntaxException e) {
+        ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+        DependenciesConfig dependenciesConfig =
+            DependenciesConfig.loadFromURL(
+                getTestDataLocator().findTestData("frozen_dependencies.yaml"));
+        PackagingConfig packagingConfig =
+            PackagingConfig.loadFromURL(getTestDataLocator().findTestData(packageConfigFileName));
+        packageConfig =
+            PackageMetadataConfig.createFromPackaging(
+                apiDefaultsConfig, dependenciesConfig, packagingConfig);
+      } catch (IOException e) {
         throw new IllegalArgumentException("Problem creating packageConfig");
       }
     }

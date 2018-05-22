@@ -145,9 +145,13 @@ public abstract class DependenciesConfig {
   }
 
   public static DependenciesConfig load() throws IOException {
-    URL apiDefaultsUrl =
+    URL dependenciesUrl =
         DependenciesConfig.class.getResource("/com/google/api/codegen/packaging/dependencies.yaml");
-    String contents = Resources.toString(apiDefaultsUrl, StandardCharsets.UTF_8);
+    return loadFromURL(dependenciesUrl);
+  }
+
+  public static DependenciesConfig loadFromURL(URL url) throws IOException {
+    String contents = Resources.toString(url, StandardCharsets.UTF_8);
     return createFromString(contents);
   }
 }

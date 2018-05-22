@@ -71,11 +71,14 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
           DiscoGapicGeneratorApi.getProviders(
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
-              getTestDataLocator().findTestData(packageConfigFileName).getPath(),
               null,
+              getTestDataLocator().findTestData(packageConfigFileName).getPath(),
+              getTestDataLocator()
+                  .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml")
+                  .getPath(),
               Collections.emptyList());
     } catch (IOException e) {
-      throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
+      throw new IllegalArgumentException("Problem creating DiscoGapic generator.", e);
     }
 
     config =
