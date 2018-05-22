@@ -106,13 +106,13 @@ type checkConfigSlice []checkConfig
 func (s checkConfigSlice) Len() int      { return len(s) }
 func (s checkConfigSlice) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s checkConfigSlice) Less(i, j int) bool {
-	if errs[i].lang != errs[j].lang {
-		return errs[i].lang < errs[j].lang
+	if s[i].lang != s[j].lang {
+		return s[i].lang < s[j].lang
 	}
-	if errs[i].id != errs[j].id {
-		return errs[i].id < errs[j].id
+	if s[i].id != s[j].id {
+		return s[i].id < s[j].id
 	}
-	return errs[i].form < errs[j].form
+	return s[i].form < s[j].form
 }
 
 var checkPrefix = "callingFormCheck:"
