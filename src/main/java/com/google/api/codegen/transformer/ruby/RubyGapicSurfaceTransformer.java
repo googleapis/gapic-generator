@@ -33,7 +33,6 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
@@ -44,19 +43,16 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CredentialsClassFileView;
 import com.google.api.codegen.viewmodel.CredentialsClassView;
-import com.google.api.codegen.viewmodel.DynamicLangXApiView;
-import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
-import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
-import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.ModuleView;
 import com.google.api.codegen.viewmodel.metadata.SimpleModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
+import com.google.api.codegen.viewmodel.ruby.RubyApiView;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -129,74 +125,9 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
-      serviceSurfaces.add(generateApiClass(context, packageName));
+      serviceSurfaces.add(new RubyApiView(context));
     }
     return serviceSurfaces.build();
-  }
-
-  private ViewModel generateApiClass(GapicInterfaceContext context, String packageName) {
-    SurfaceNamer namer = context.getNamer();
-    PackageMetadataNamer metadataNamer = new RubyPackageMetadataNamer(packageName);
-    String subPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
-    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
-    List<ApiMethodView> methods = generateApiMethods(context);
-
-    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
-
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-
-    xapiClass.name(name);
-    xapiClass.doc(
-        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
-    xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
-
-    ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(model.getServiceAddress());
-    xapiClass.servicePort(model.getServicePort());
-    xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
-    xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
-    xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
-
-    xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.batchingDescriptors(batchingTransformer.generateDescriptors(context));
-    xapiClass.longRunningDescriptors(ImmutableList.<LongRunningOperationDetailView>of());
-    xapiClass.grpcStreamingDescriptors(ImmutableList.<GrpcStreamingDetailView>of());
-    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
-    xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
-    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
-
-    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    xapiClass.formatResourceFunctions(
-        pathTemplateTransformer.generateFormatResourceFunctions(context));
-    xapiClass.parseResourceFunctions(
-        pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
-
-    xapiClass.methodKeys(ImmutableList.<String>of());
-    xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
-    xapiClass.grpcClientTypeName(
-        namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getImportTypeTable(), context.getInterfaceModel()));
-
-    xapiClass.apiMethods(methods);
-
-    xapiClass.gapicPackageName(
-        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
-            ? "google-gax"
-            : metadataNamer.getMetadataIdentifier());
-
-    xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
-    xapiClass.defaultCredentialsInitializerCall(
-        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
-            ? "default(scopes: scopes)"
-            : "default");
-    return xapiClass.build();
   }
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {

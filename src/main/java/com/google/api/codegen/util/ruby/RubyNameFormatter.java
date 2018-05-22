@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
 /** The NameFormatter for Ruby. */
 public class RubyNameFormatter implements NameFormatter {
 
-  private String wrapIfKeywordOrBuiltIn(String name) {
+  public static String wrapIfKeywordOrBuiltIn(String name) {
     if (RESERVED_IDENTIFIER_SET.contains(name)) {
       return name + "_";
     } else {

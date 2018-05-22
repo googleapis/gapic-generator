@@ -950,11 +950,11 @@ module Library
         self::SERVICE_ADDRESS = LibraryServiceClient::SERVICE_ADDRESS
       end
 
-      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}"
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive_path}/books/{book_id=**}"
       )
 
-      private_constant :SHELF_PATH_TEMPLATE
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}/books/{book_id}"
@@ -962,30 +962,32 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
-      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}/returns/{return}"
-      )
-
-      private_constant :RETURN_PATH_TEMPLATE
-
       PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}"
       )
 
       private_constant :PROJECT_PATH_TEMPLATE
 
-      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path}/books/{book_id=**}"
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
       )
 
-      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+      private_constant :RETURN_PATH_TEMPLATE
 
-      # Returns a fully-qualified shelf resource name string.
-      # @param shelf_id [String]
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
+      )
+
+      private_constant :SHELF_PATH_TEMPLATE
+
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive_path [String]
+      # @param book_id [String]
       # @return [String]
-      def self.shelf_path shelf_id
-        SHELF_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id
+      def self.archived_book_path archive_path, book_id
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive_path" => archive_path,
+          :"book_id" => book_id
         )
       end
 
@@ -997,6 +999,15 @@ module Library
         BOOK_PATH_TEMPLATE.render(
           :"shelf_id" => shelf_id,
           :"book_id" => book_id
+        )
+      end
+
+      # Returns a fully-qualified project resource name string.
+      # @param project [String]
+      # @return [String]
+      def self.project_path project
+        PROJECT_PATH_TEMPLATE.render(
+          :"project" => project
         )
       end
 
@@ -1013,23 +1024,12 @@ module Library
         )
       end
 
-      # Returns a fully-qualified project resource name string.
-      # @param project [String]
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
       # @return [String]
-      def self.project_path project
-        PROJECT_PATH_TEMPLATE.render(
-          :"project" => project
-        )
-      end
-
-      # Returns a fully-qualified archived_book resource name string.
-      # @param archive_path [String]
-      # @param book_id [String]
-      # @return [String]
-      def self.archived_book_path archive_path, book_id
-        ARCHIVED_BOOK_PATH_TEMPLATE.render(
-          :"archive_path" => archive_path,
-          :"book_id" => book_id
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
         )
       end
 
