@@ -45,12 +45,11 @@ import java.util.List;
 public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
-  private static final SampleType sampleType = SampleType.STANDALONE;
 
   private final GapicCodePathMapper pathMapper;
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), sampleType);
+          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final PackageMetadataConfig packageConfig;
