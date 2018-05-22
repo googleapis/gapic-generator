@@ -44,7 +44,7 @@ func main() {
 	yamlFname := flag.String("yaml", "", "gapic yaml file")
 	flag.Usage = func() {
 		binName := os.Args[0]
-		out := flag.CommandLine.Output()
+		out := os.Stderr // Should be flag.CommandLine.Output(), but Travis is too old
 		fmt.Fprintf(out, "Usage of %s:\n", binName)
 		fmt.Fprintf(out, "%s -yaml <gapic_yaml_file> [dir]\n", binName)
 		flag.PrintDefaults()
@@ -95,18 +95,24 @@ func main() {
 		for c := range checks {
 			errs = append(errs, c)
 		}
-		sort.Slice(errs, func(i, j int) bool {
-			if errs[i].lang != errs[j].lang {
-				return errs[i].lang < errs[j].lang
-			}
-			if errs[i].id != errs[j].id {
-				return errs[i].id < errs[j].id
-			}
-			return errs[i].form < errs[j].form
-		})
+		sort.Sort(checkConfigSlice(errs)) // Not sort.Slice, Travis is too old.
 		fmt.Println("not found:", errs)
 		os.Exit(1)
 	}
+}
+
+type checkConfigSlice []checkConfig
+
+func (s checkConfigSlice) Len() int      { return len(s) }
+func (s checkConfigSlice) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s checkConfigSlice) Less(i, j int) bool {
+	if errs[i].lang != errs[j].lang {
+		return errs[i].lang < errs[j].lang
+	}
+	if errs[i].id != errs[j].id {
+		return errs[i].id < errs[j].id
+	}
+	return errs[i].form < errs[j].form
 }
 
 var checkPrefix = "callingFormCheck:"
