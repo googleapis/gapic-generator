@@ -114,12 +114,11 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 .fullName(model.getTitle())
                 .apiSummary(model.getDocumentationSummary())
                 .hasMultipleServices(model.hasMultipleServices())
-                .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.NODEJS))
+                .gapicPackageName("gapic-" + packageConfig.packageName())
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     namer.getReleaseAnnotation(
-                        metadataTransformer.getMergedReleaseLevel(
-                            packageConfig, productConfig, TargetLanguage.NODEJS)))
+                        metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
                 .targetLanguage("Node.js")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(

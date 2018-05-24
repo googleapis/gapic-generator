@@ -48,8 +48,7 @@ public class PythonGrpcMetadataTransformer {
 
   public List<PackageMetadataView> transform(ApiModel model, PackageMetadataConfig config) {
     ArrayList<PackageMetadataView> views = new ArrayList<>();
-    PythonSurfaceNamer surfaceNamer =
-        new PythonSurfaceNamer(config.packageName(TargetLanguage.PYTHON));
+    PythonSurfaceNamer surfaceNamer = new PythonSurfaceNamer(config.packageName());
 
     PackageMetadataTransformer transformer = new PackageMetadataTransformer();
     for (String snippetFilename : SNIPPETS) {
@@ -64,8 +63,7 @@ public class PythonGrpcMetadataTransformer {
                   TargetLanguage.PYTHON,
                   PROTO_PACKAGE_DEPENDENCY_WHITELIST)
               .namespacePackages(copierResult.namespacePackages())
-              .developmentStatus(
-                  surfaceNamer.getReleaseAnnotation(config.releaseLevel(TargetLanguage.PYTHON)))
+              .developmentStatus(surfaceNamer.getReleaseAnnotation(config.releaseLevel()))
               .build();
       views.add(view);
     }

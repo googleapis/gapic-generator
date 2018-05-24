@@ -32,9 +32,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 /** ToolDriver for gRPC meta-data generation. */
@@ -94,22 +91,7 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
 
     PackageMetadataConfig config = null;
-    if (!Strings.isNullOrEmpty(options.get(METADATA_CONFIG_FILE))) {
-      String configContent =
-          new String(
-              Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
-              StandardCharsets.UTF_8);
-      config = PackageMetadataConfig.createFromString(configContent);
-    }
     if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
-      if (config != null) {
-        throw new IllegalArgumentException(
-            "Both "
-                + METADATA_CONFIG_FILE
-                + " and "
-                + PACKAGE_CONFIG2_FILE
-                + " were set, but only can be provided at once.");
-      }
       ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
       DependenciesConfig dependenciesConfig;
       if (dependenciesYamlUrl != null) {
