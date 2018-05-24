@@ -53,20 +53,6 @@ class Configs {
         });
   }
 
-  static Map<TargetLanguage, ReleaseLevel> createReleaseLevelMap(Map<String, String> inputMap) {
-    Map<TargetLanguage, String> intermediate = buildMapWithDefault(inputMap);
-    // Convert parsed YAML map into ReleaseLevel enum
-    return Maps.transformValues(
-        intermediate,
-        new Function<String, ReleaseLevel>() {
-          @Override
-          @Nullable
-          public ReleaseLevel apply(@Nullable String releaseLevelName) {
-            return parseReleaseLevel(releaseLevelName);
-          }
-        });
-  }
-
   static ReleaseLevel parseReleaseLevel(String releaseLevelName) {
     if (releaseLevelName == null) {
       return null;

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -161,8 +160,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
                 .className(className)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
-                .gapicPackageName(
-                    namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)))
+                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }
     }
