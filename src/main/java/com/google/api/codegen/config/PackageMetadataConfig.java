@@ -19,6 +19,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.List;
@@ -279,14 +280,9 @@ public abstract class PackageMetadataConfig {
     builder.protoPackageTestDependencies(protoPackageTestDependencies);
 
     builder.releaseLevel(
-        mergeReleaseLevels(apiDefaultsConfig.releaseLevel(), packagingConfig.releaseLevel()));
+        MoreObjects.firstNonNull(packagingConfig.releaseLevel(), apiDefaultsConfig.releaseLevel()));
 
     return builder.build();
-  }
-
-  private static ReleaseLevel mergeReleaseLevels(
-      ReleaseLevel defaultReleaseLevel, ReleaseLevel thisReleaseLevel) {
-    return thisReleaseLevel == null ? defaultReleaseLevel : thisReleaseLevel;
   }
 
   @SuppressWarnings("unchecked")
