@@ -40,15 +40,9 @@ public abstract class ApiDefaultsConfig {
   /** The name of the license of the client library. */
   public abstract String licenseName();
 
-  protected abstract Map<TargetLanguage, ReleaseLevel> releaseLevel();
-
   /** The development status of the client library. Configured per language. */
-  public ReleaseLevel releaseLevel(TargetLanguage language) {
-    ReleaseLevel level = releaseLevel().get(language);
-    if (level == null) {
-      level = ReleaseLevel.UNSET_RELEASE_LEVEL;
-    }
-    return level;
+  public ReleaseLevel releaseLevel() {
+    return ReleaseLevel.ALPHA;
   }
 
   protected abstract Map<TargetLanguage, VersionBound> generatedNonGAPackageVersionBound();
@@ -68,8 +62,6 @@ public abstract class ApiDefaultsConfig {
 
     abstract Builder licenseName(String val);
 
-    abstract Builder releaseLevel(Map<TargetLanguage, ReleaseLevel> val);
-
     abstract Builder generatedNonGAPackageVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract ApiDefaultsConfig build();
@@ -86,8 +78,6 @@ public abstract class ApiDefaultsConfig {
             .email((String) configMap.get("email"))
             .homepage((String) configMap.get("homepage"))
             .licenseName((String) configMap.get("license"))
-            .releaseLevel(
-                Configs.createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
             .generatedNonGAPackageVersionBound(
                 Configs.createVersionMap(
                     (Map<String, Map<String, String>>) configMap.get("generated_package_version")));

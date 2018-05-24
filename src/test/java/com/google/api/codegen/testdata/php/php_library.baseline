@@ -211,8 +211,7 @@ class LibraryServiceGapicClient
                 'rest' => [
                     'restClientConfigPath' => __DIR__ . '/../resources/library_service_rest_client_config.php',
                 ]
-            ],
-            'versionFile' => __DIR__ . '/../../../VERSION',
+            ]
         ];
     }
 
@@ -776,8 +775,8 @@ class LibraryServiceGapicClient
           'name' => $request->getName(),
           'book.read' => $request->getBook()->getRead(),
         ]);
-        $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
-            ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
             : $requestParams->getHeader();
 
         return $this->startCall(

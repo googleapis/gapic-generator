@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -107,8 +106,7 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer {
                 .outputPath(sampleOutputPath)
                 .className(className)
                 .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
-                .gapicPackageName(
-                    namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.NODEJS)))
+                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }
     }

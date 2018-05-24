@@ -63,7 +63,7 @@ public class JavaPackageMetadataTransformer {
    */
   protected final List<PackageMetadataView.Builder> generateMetadataViewBuilders(
       ApiModel model, PackageMetadataConfig config, ArtifactType artifactType) {
-    String packageName = config.packageName(TargetLanguage.JAVA);
+    String packageName = config.packageName();
     JavaPackageMetadataNamer namer = new JavaPackageMetadataNamer(packageName, artifactType);
 
     List<PackageDependencyView> additionalDependencies = new ArrayList<>();

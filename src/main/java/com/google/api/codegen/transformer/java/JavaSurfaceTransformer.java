@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -198,7 +197,7 @@ public class JavaSurfaceTransformer {
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseLevelAnnotation(
-        namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+        namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
     xapiClass.name(name);
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
@@ -216,7 +215,7 @@ public class JavaSurfaceTransformer {
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
     xapiClass.pagedResponseViews(
         generatePagedResponseWrappers(
-            context, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+            context, productConfig, packageMetadataConfig.releaseLevel()));
     return xapiClass.build();
   }
 
@@ -433,9 +432,7 @@ public class JavaSurfaceTransformer {
 
     StaticLangStubSettingsView.Builder xsettingsClass = StaticLangStubSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
-        context
-            .getNamer()
-            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+        context.getNamer().getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
     xsettingsClass.doc(
         generateSettingsDoc(
             context,
@@ -533,9 +530,7 @@ public class JavaSurfaceTransformer {
 
     String name = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
     stubInterface.releaseLevelAnnotation(
-        context
-            .getNamer()
-            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+        context.getNamer().getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
     stubInterface.name(name);
     stubInterface.callableMethods(filterIncludeCallableMethods(methods));
     stubInterface.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
