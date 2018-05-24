@@ -61,14 +61,6 @@ public class DiscoGapicGeneratorTool {
             .build());
     options.addOption(
         Option.builder()
-            .longOpt("package_yaml")
-            .desc(
-                "The package metadata YAML configuration file (deprecated in favor of package_yaml2).")
-            .hasArg()
-            .argName("PACKAGE-YAML")
-            .build());
-    options.addOption(
-        Option.builder()
             .longOpt("package_yaml2")
             .desc("The packaging YAML configuration file.")
             .hasArg()
@@ -103,7 +95,6 @@ public class DiscoGapicGeneratorTool {
           cl.getOptionValue("discovery_doc"),
           //          cl.getOptionValues("service_yaml"),
           cl.getOptionValues("gapic_yaml"),
-          cl.getOptionValue("package_yaml"),
           cl.getOptionValue("package_yaml2"),
           cl.getOptionValue("output", ""),
           cl.getOptionValues("enabled_artifacts"));
@@ -116,7 +107,6 @@ public class DiscoGapicGeneratorTool {
   private static void generate(
       String discoveryDoc,
       String[] generatorConfigs,
-      String packageConfig,
       String packageConfig2,
       String outputDirectory,
       String[] enabledArtifacts)
@@ -125,7 +115,6 @@ public class DiscoGapicGeneratorTool {
     options.set(DiscoGapicGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
-    options.set(CodeGeneratorApi.PACKAGE_CONFIG_FILE, packageConfig);
     options.set(CodeGeneratorApi.PACKAGE_CONFIG2_FILE, packageConfig2);
 
     if (enabledArtifacts != null) {

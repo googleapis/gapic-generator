@@ -19,14 +19,12 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * PackageMetadataConfig represents the package metadata for an API library contained in the
@@ -53,14 +51,14 @@ public abstract class PackageMetadataConfig {
   @Nullable
   protected abstract Map<TargetLanguage, VersionBound> generatedGAPackageVersionBound();
 
-  protected abstract Map<TargetLanguage, String> packageName();
+  public abstract String packageName();
 
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
   @Nullable
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageTestDependencies();
 
-  protected abstract Map<TargetLanguage, ReleaseLevel> releaseLevel();
+  public abstract ReleaseLevel releaseLevel();
 
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
@@ -97,7 +95,7 @@ public abstract class PackageMetadataConfig {
 
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
   public VersionBound generatedPackageVersionBound(TargetLanguage language) {
-    if (releaseLevel(language) == ReleaseLevel.GA
+    if (releaseLevel() == ReleaseLevel.GA
         && generatedGAPackageVersionBound() != null
         && generatedGAPackageVersionBound().containsKey(language)) {
       return generatedGAPackageVersionBound().get(language);
@@ -126,23 +124,6 @@ public abstract class PackageMetadataConfig {
       return protoPackageTestDependencies().get(language);
     }
     return null;
-  }
-
-  /** The development status of the client library. Configured per language. */
-  public ReleaseLevel releaseLevel(TargetLanguage language) {
-    ReleaseLevel level = releaseLevel().get(language);
-    if (level == null) {
-      level = ReleaseLevel.UNSET_RELEASE_LEVEL;
-    }
-    return level;
-  }
-
-  /**
-   * The base name of the client library package. E.g., "google-cloud-logging-v1". Configured per
-   * language.
-   */
-  public String packageName(TargetLanguage language) {
-    return packageName().get(language);
   }
 
   @Nullable
@@ -193,7 +174,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
 
-    abstract Builder packageName(Map<TargetLanguage, String> val);
+    abstract Builder packageName(String val);
 
     abstract Builder generatedNonGAPackageVersionBound(Map<TargetLanguage, VersionBound> val);
 
@@ -205,7 +186,7 @@ public abstract class PackageMetadataConfig {
     abstract Builder protoPackageTestDependencies(
         Map<TargetLanguage, Map<String, VersionBound>> val);
 
-    abstract Builder releaseLevel(Map<TargetLanguage, ReleaseLevel> val);
+    abstract Builder releaseLevel(ReleaseLevel val);
 
     abstract Builder shortName(String val);
 
@@ -237,13 +218,13 @@ public abstract class PackageMetadataConfig {
         .gaxHttpVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
-        .packageName(ImmutableMap.<TargetLanguage, String>of())
+        .packageName("")
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedNonGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
-        .releaseLevel(ImmutableMap.<TargetLanguage, ReleaseLevel>of())
+        .releaseLevel(ReleaseLevel.ALPHA)
         .shortName("")
         .artifactType(ArtifactType.GRPC)
         .apiVersion("")
@@ -254,100 +235,6 @@ public abstract class PackageMetadataConfig {
         .licenseName("")
         .gapicConfigName("")
         .build();
-  }
-
-  @SuppressWarnings("unchecked")
-  @Deprecated
-  public static PackageMetadataConfig createFromString(String yamlContents) {
-    Yaml yaml = new Yaml();
-    Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
-
-    Builder builder =
-        newBuilder()
-            .gaxVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("gax_version")))
-            .gaxGrpcVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("gax_grpc_version")))
-            .gaxHttpVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("gax_http_version")))
-            .grpcVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("grpc_version")))
-            .protoVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("proto_version")))
-            .authVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("auth_version")))
-            .generatedNonGAPackageVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
-            .apiCommonVersionBound(
-                Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("api_common_version")))
-            .releaseLevel(
-                Configs.createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
-            .protoPackageDependencies(createProtoPackageDependenciesOld(configMap, "proto_deps"))
-            .packageName(
-                Configs.buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
-            .shortName((String) configMap.get("short_name"))
-            .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
-            .apiVersion(Strings.nullToEmpty((String) configMap.get("major_version")))
-            .protoPath((String) configMap.get("proto_path"))
-            .author((String) configMap.get("author"))
-            .email((String) configMap.get("email"))
-            .homepage((String) configMap.get("homepage"))
-            .licenseName((String) configMap.get("license"))
-            .gapicConfigName((String) configMap.get("gapic_config_name"));
-    if (configMap.containsKey("proto_test_deps")) {
-      builder.protoPackageTestDependencies(
-          createProtoPackageDependenciesOld(configMap, "proto_test_deps"));
-    }
-
-    return builder.build();
-  }
-
-  private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependenciesOld(
-      Map<String, Object> configMap, String key) {
-    Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
-    @SuppressWarnings("unchecked")
-    List<String> packages = (List<String>) configMap.get(key);
-    if (packages == null) {
-      return packageDependencies;
-    }
-
-    for (String packageName : packages) {
-      @SuppressWarnings("unchecked")
-      Map<String, Map<String, String>> config =
-          (Map<String, Map<String, String>>) configMap.get(packageName + "_version");
-      if (config == null) {
-        throw new IllegalArgumentException(
-            "'" + packageName + "' in proto_deps was not found in dependency list.");
-      }
-
-      Map<TargetLanguage, Map<String, String>> versionMap = Configs.buildMapWithDefault(config);
-      for (Map.Entry<TargetLanguage, Map<String, String>> entry : versionMap.entrySet()) {
-        if (entry.getValue() == null) {
-          continue;
-        }
-        if (!packageDependencies.containsKey(entry.getKey())) {
-          packageDependencies.put(entry.getKey(), new HashMap<String, VersionBound>());
-        }
-
-        String packageNameForLanguage = entry.getValue().get("name_override");
-        if (packageNameForLanguage == null) {
-          packageNameForLanguage = packageName;
-        }
-        VersionBound version =
-            VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
-        packageDependencies.get(entry.getKey()).put(packageNameForLanguage, version);
-      }
-    }
-
-    return packageDependencies;
   }
 
   public static PackageMetadataConfig createFromPackaging(
@@ -375,9 +262,7 @@ public abstract class PackageMetadataConfig {
 
     // packaging config
     builder
-        .packageName(
-            Configs.buildMapWithDefault(
-                Collections.singletonMap("default", packagingConfig.packageName())))
+        .packageName(packagingConfig.packageName())
         .shortName(packagingConfig.apiName())
         .artifactType(packagingConfig.artifactType())
         .apiVersion(packagingConfig.apiVersion())
@@ -385,39 +270,23 @@ public abstract class PackageMetadataConfig {
 
     // config depending on multiple sources
     Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies =
-        createProtoPackageDependenciesNew(
+        createProtoPackageDependencies(
             packagingConfig.protoPackageDependencies(), dependenciesConfig);
     builder.protoPackageDependencies(protoPackageDependencies);
 
     Map<TargetLanguage, Map<String, VersionBound>> protoPackageTestDependencies =
-        createProtoPackageDependenciesNew(
+        createProtoPackageDependencies(
             packagingConfig.protoPackageTestDependencies(), dependenciesConfig);
     builder.protoPackageTestDependencies(protoPackageTestDependencies);
 
     builder.releaseLevel(
-        mergeReleaseLevels(apiDefaultsConfig.releaseLevel(), packagingConfig.releaseLevel()));
+        MoreObjects.firstNonNull(packagingConfig.releaseLevel(), apiDefaultsConfig.releaseLevel()));
 
     return builder.build();
   }
 
-  private static Map<TargetLanguage, ReleaseLevel> mergeReleaseLevels(
-      Map<TargetLanguage, ReleaseLevel> lhs, ReleaseLevel thisReleaseLevel) {
-    if (thisReleaseLevel == null) {
-      return lhs;
-    } else {
-      Map<TargetLanguage, ReleaseLevel> result = new HashMap<>();
-      for (Map.Entry<TargetLanguage, ReleaseLevel> entry : lhs.entrySet()) {
-        // This just sets every language's release level to the release level of the current
-        // context. This is admittedly a little heavy-hadned, but it doesn't matter since
-        // we only run one language in an invocation of gapic-generator.
-        result.put(entry.getKey(), thisReleaseLevel);
-      }
-      return result;
-    }
-  }
-
   @SuppressWarnings("unchecked")
-  private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependenciesNew(
+  private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependencies(
       List<String> packages, DependenciesConfig dependenciesConfig) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
     if (packages == null) {
@@ -438,7 +307,7 @@ public abstract class PackageMetadataConfig {
           continue;
         }
         if (!packageDependencies.containsKey(entry.getKey())) {
-          packageDependencies.put(entry.getKey(), new HashMap<String, VersionBound>());
+          packageDependencies.put(entry.getKey(), new HashMap<>());
         }
 
         String packageNameForLanguage = entry.getValue().get("name_override");

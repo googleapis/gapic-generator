@@ -119,13 +119,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .shortName(packageConfig.shortName())
         .fullName(model.getTitle())
         .apiSummary(model.getDocumentationSummary())
-        .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.RUBY))
+        .gapicPackageName("gapic-" + packageConfig.packageName())
         .majorVersion(packageConfig.apiVersion())
         .hasMultipleServices(false)
         .developmentStatusTitle(
             namer.getReleaseAnnotation(
-                metadataTransformer.getMergedReleaseLevel(
-                    packageConfig, productConfig, TargetLanguage.RUBY)))
+                metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
         .targetLanguage("Ruby")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink("")

@@ -231,8 +231,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.gapicPackageName(
-        namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
+    xapiClass.gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()));
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     // Generate the view for the API class.
