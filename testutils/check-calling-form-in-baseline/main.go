@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +build ignore
-
 package main
 
 import (
@@ -30,21 +28,26 @@ import (
 	"strings"
 )
 
-const usage = `Reads calling forms from gapic_yaml_file and make sure each is used by
+const usage = `Reads calling forms from gapic_yaml_file and makes sure each is used by
 some *.baseline file in dir.
-The line specifying the calling form is in format
+The line specifying the calling form is in the format:
 
-  callingFormCheck: <id> <language>: <callingForm1> <callingForm2> ...
+  callingFormCheck: <valueSetID> <language>: <callingForm1> <callingForm2> ...
 
 The string "callingFormCheck" must start the line, preceded only by a possilby empty
-run of whitespaces.
+run of whitespaces. To check for multiple languages or vaule sets, simply write the line
+multiple times. Hint: YAML files allow multi-line string literals like
+
+  sometext: >
+    callingFormCheck: foo bar: zip zap
+    callingFormCheck: spam eggs: ham
 `
 
 func main() {
 	yamlFname := flag.String("yaml", "", "gapic yaml file")
 	flag.Usage = func() {
 		binName := os.Args[0]
-		out := os.Stderr // Should be flag.CommandLine.Output(), but Travis is too old
+		out := os.Stderr // Should be flag.CommandLine.Output(), but Go version on Travis is too old.
 		fmt.Fprintf(out, "Usage of %s:\n", binName)
 		fmt.Fprintf(out, "%s -yaml <gapic_yaml_file> [dir]\n", binName)
 		flag.PrintDefaults()
@@ -80,7 +83,13 @@ func main() {
 		if filepath.Ext(path) != ".baseline" {
 			return nil
 		}
-		return delFoundForms(path, checks)
+		baseline, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		lang := filepath.Base(filepath.Dir(path))
+		delFoundForms(string(baseline), lang, checks)
+		return nil
 	}
 	dir := "."
 	if flag.NArg() > 0 {
@@ -95,8 +104,11 @@ func main() {
 		for c := range checks {
 			errs = append(errs, c)
 		}
-		sort.Sort(checkConfigSlice(errs)) // Not sort.Slice, Travis is too old.
-		fmt.Println("not found:", errs)
+		sort.Sort(checkConfigSlice(errs)) // Not sort.Slice, Go version on Travis is too old.
+		fmt.Println("not found:")
+		for _, e := range errs {
+			fmt.Println(e)
+		}
 		os.Exit(1)
 	}
 }
@@ -117,6 +129,8 @@ func (s checkConfigSlice) Less(i, j int) bool {
 
 var checkPrefix = "callingFormCheck:"
 
+// readChecks reads r for callingFormCheck lines as described in command's usage
+// and returns the set of the check configuration.
 func readChecks(r io.Reader) (map[checkConfig]bool, error) {
 	sc := bufio.NewScanner(r)
 	checks := map[checkConfig]bool{}
@@ -165,43 +179,37 @@ var (
 	valueSetRe    = regexp.MustCompile(`valueSet "(.*?)"`)
 )
 
-func delFoundForms(fname string, forms map[checkConfig]bool) error {
-	totalBytes, err := ioutil.ReadFile(fname)
-	if err != nil {
-		return err
-	}
-	totalTxt := string(totalBytes)
-
-	// Split the baseline file into its "logical file"
-	lang := filepath.Base(filepath.Dir(fname))
+// delFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
+func delFoundForms(baseline string, lang string, forms map[checkConfig]bool) error {
+	// Split the baseline file into its "logical files"
 	var files []string
 	for {
 		const fileHeader = "============== file:"
-		p := strings.Index(totalTxt, fileHeader)
+		p := strings.Index(baseline, fileHeader)
 		if p < 0 {
-			files = append(files, totalTxt)
+			files = append(files, baseline)
 			break
 		}
-		files = append(files, totalTxt[:p])
+		files = append(files, baseline[:p])
 
-		totalTxt = totalTxt[p:]
-		totalTxt = totalTxt[strings.IndexByte(totalTxt, '\n')+1:]
+		baseline = baseline[p:]
+		baseline = baseline[strings.IndexByte(baseline, '\n')+1:]
 	}
 
 	for _, file := range files {
-		cf := callingFormRe.FindStringSubmatch(file)
-		if len(cf) == 0 {
+		form := callingFormRe.FindStringSubmatch(file)
+		if len(form) == 0 {
 			continue
 		}
 
-		vs := valueSetRe.FindStringSubmatch(file)
-		if len(vs) == 0 {
+		valSet := valueSetRe.FindStringSubmatch(file)
+		if len(valSet) == 0 {
 			continue
 		}
 
 		delete(forms, checkConfig{
-			id:   vs[1],
-			form: cf[1],
+			id:   valSet[1],
+			form: form[1],
 			lang: lang,
 		})
 	}
