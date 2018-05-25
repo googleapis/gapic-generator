@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
+import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
@@ -26,11 +26,11 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 /** Responsible for producing package meta-data related views for Java GAPIC clients */
-public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
+public class JavaGapicPackageTransformer extends JavaPackageTransformer
     implements ModelToViewTransformer {
   private final PackageMetadataConfig packageConfig;
 
-  public JavaGapicMetadataTransformer(PackageMetadataConfig packageConfig) {
+  public JavaGapicPackageTransformer(PackageMetadataConfig packageConfig) {
     super(ImmutableMap.of("java/build_gapic.gradle.snip", "build.gradle"), null);
     this.packageConfig = packageConfig;
   }

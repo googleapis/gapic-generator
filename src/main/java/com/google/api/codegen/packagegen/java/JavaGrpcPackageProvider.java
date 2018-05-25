@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.java;
+package com.google.api.codegen.packagegen.java;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
+import com.google.api.codegen.packagegen.PackageProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
@@ -26,12 +26,12 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Map;
 
-/** Performs gRPC meta-data generation for Java */
-public class JavaGrpcMetadataProvider implements GrpcMetadataProvider<Doc> {
+/** Performs grpc package generation for Java */
+public class JavaGrpcPackageProvider implements PackageProvider<Doc> {
 
-  private final JavaPackageMetadataTransformer transformer;
+  private final JavaPackageTransformer transformer;
 
-  public JavaGrpcMetadataProvider(JavaPackageMetadataTransformer transformer) {
+  public JavaGrpcPackageProvider(JavaPackageTransformer transformer) {
     this.transformer = transformer;
   }
 

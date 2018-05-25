@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.TargetLanguage;
@@ -35,7 +35,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.junit.Test;
 
-public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
+public class PackageGeneratorTest extends ConfigBaselineTestCase {
   private class OutputCollector extends SimpleFileVisitor<Path> {
     Map<String, GeneratedResult<Doc>> collectedFiles = new TreeMap<>();
     Path testDir;
@@ -82,19 +82,18 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     String metadataConfigPath = getTestDataLocator().findTestData(packageConfig).getPath();
 
     ToolOptions options = ToolOptions.create();
-    options.set(GrpcMetadataGenerator.OUTPUT_DIR, outFile);
+    options.set(PackageGenerator.OUTPUT_DIR, outFile);
     options.set(
-        GrpcMetadataGenerator.INPUT_DIR,
-        getTestDataLocator().findTestData("fakeprotodir").getPath());
-    options.set(GrpcMetadataGenerator.PACKAGE_CONFIG2_FILE, metadataConfigPath);
-    options.set(GrpcMetadataGenerator.LANGUAGE, language);
-    options.set(GrpcMetadataGenerator.ARTIFACT_TYPE, artifactType);
+        PackageGenerator.INPUT_DIR, getTestDataLocator().findTestData("fakeprotodir").getPath());
+    options.set(PackageGenerator.PACKAGE_CONFIG2_FILE, metadataConfigPath);
+    options.set(PackageGenerator.LANGUAGE, language);
+    options.set(PackageGenerator.ARTIFACT_TYPE, artifactType);
     URL dependenciesYamlUrl =
         getTestDataLocator()
             .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml");
     Preconditions.checkNotNull(dependenciesYamlUrl);
     Map<String, GeneratedResult<Doc>> generatedDocs =
-        new GrpcMetadataGenerator(options, dependenciesYamlUrl).generate(model);
+        new PackageGenerator(options, dependenciesYamlUrl).generate(model);
 
     if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
       OutputCollector collector = new OutputCollector(Paths.get(outFile));
