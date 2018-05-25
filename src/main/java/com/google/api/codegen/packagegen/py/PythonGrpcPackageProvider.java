@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.py;
+package com.google.api.codegen.packagegen.py;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
+import com.google.api.codegen.packagegen.PackageProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
@@ -28,12 +28,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-/** Performs gRPC meta-data generation for Python */
-public class PythonGrpcMetadataProvider implements GrpcMetadataProvider<Doc> {
+/** Performs gRPC package generation for Python */
+public class PythonGrpcPackageProvider implements PackageProvider<Doc> {
 
   private final ToolOptions options;
 
-  public PythonGrpcMetadataProvider(ToolOptions options) {
+  public PythonGrpcPackageProvider(ToolOptions options) {
     this.options = options;
   }
 
@@ -47,8 +47,7 @@ public class PythonGrpcMetadataProvider implements GrpcMetadataProvider<Doc> {
     PythonPackageCopierResult copierResult = copier.run(options, config);
 
     results.putAll(copierResult.results());
-    PythonGrpcMetadataTransformer pythonTransformer =
-        new PythonGrpcMetadataTransformer(copierResult);
+    PythonGrpcPackageTransformer pythonTransformer = new PythonGrpcPackageTransformer(copierResult);
     ProtoApiModel apiModel = new ProtoApiModel(model);
     metadataViews.addAll(pythonTransformer.transform(apiModel, config));
 

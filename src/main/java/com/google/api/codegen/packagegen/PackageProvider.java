@@ -12,24 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
-public enum ArtifactType {
-  UNKNOWN,
-  GAPIC,
-  DISCOGAPIC,
-  GAPIC_CONFIG,
-  DISCOGAPIC_CONFIG,
-  GRPC,
-  GRPC_COMMON,
-  PROTOBUF,
-  GAPIC_ONLY;
+import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.tools.framework.model.Model;
+import java.io.IOException;
+import java.util.Map;
 
-  public static ArtifactType of(String generationLayerString) {
-    if (generationLayerString != null) {
-      return ArtifactType.valueOf(generationLayerString.toUpperCase());
-    } else {
-      return UNKNOWN;
-    }
-  }
+/** A PackageProvider performs package generation. */
+public interface PackageProvider<T> {
+  Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
+      throws IOException;
 }

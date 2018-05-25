@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.TargetLanguage;
@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.Map;
 
 /** ToolDriver for gRPC meta-data generation. */
-public class GrpcMetadataGenerator extends ToolDriverBase {
+public class PackageGenerator extends ToolDriverBase {
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
           String.class, "output_file", "The name of the output folder to put generated code.", "");
@@ -44,12 +44,6 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
           String.class,
           "input_file",
           "The name of the folder containing the gRPC package to generate metadata for.",
-          "");
-  public static final Option<String> METADATA_CONFIG_FILE =
-      ToolOptions.createOption(
-          String.class,
-          "metadata_config_file",
-          "The name of the yaml file that configures package metadata (deprecated in favor of package_config2).",
           "");
   public static final Option<String> PACKAGE_CONFIG2_FILE =
       ToolOptions.createOption(String.class, "package_config2", "The packaging configuration.", "");
@@ -64,11 +58,11 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
 
   private URL dependenciesYamlUrl;
 
-  protected GrpcMetadataGenerator(ToolOptions options) {
+  protected PackageGenerator(ToolOptions options) {
     super(options);
   }
 
-  protected GrpcMetadataGenerator(ToolOptions options, URL dependenciesYamlUrl) {
+  protected PackageGenerator(ToolOptions options, URL dependenciesYamlUrl) {
     super(options);
     this.dependenciesYamlUrl = dependenciesYamlUrl;
   }
@@ -106,12 +100,12 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     }
     Preconditions.checkNotNull(config);
 
-    ArtifactType artifactType = options.get(GrpcMetadataGenerator.ARTIFACT_TYPE);
+    ArtifactType artifactType = options.get(PackageGenerator.ARTIFACT_TYPE);
     if (artifactType == null) {
       artifactType = config.artifactType();
     }
-    GrpcMetadataProvider<Doc> provider =
-        GrpcMetadataProviderFactory.create(language, artifactType, options);
+    PackageProvider<Doc> provider =
+        MainPackageProviderFactory.create(language, artifactType, options);
 
     return provider.generate(model, config);
   }

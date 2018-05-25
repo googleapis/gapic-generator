@@ -16,7 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.grpcmetadatagen.ArtifactType;
+import com.google.api.codegen.packagegen.ArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;

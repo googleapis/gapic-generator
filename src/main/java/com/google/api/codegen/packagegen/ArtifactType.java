@@ -12,16 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.tools.framework.model.Model;
-import java.io.IOException;
-import java.util.Map;
+public enum ArtifactType {
+  UNKNOWN,
+  GAPIC,
+  DISCOGAPIC,
+  GAPIC_CONFIG,
+  DISCOGAPIC_CONFIG,
+  GRPC,
+  GRPC_COMMON,
+  PROTOBUF,
+  GAPIC_ONLY;
 
-/** A GrpcMetadataProvider performs gRPC meta-data generation. */
-public interface GrpcMetadataProvider<T> {
-  Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
-      throws IOException;
+  public static ArtifactType of(String generationLayerString) {
+    if (generationLayerString != null) {
+      return ArtifactType.valueOf(generationLayerString.toUpperCase());
+    } else {
+      return UNKNOWN;
+    }
+  }
 }

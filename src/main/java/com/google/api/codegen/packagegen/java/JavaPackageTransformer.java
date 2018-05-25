@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.java;
+package com.google.api.codegen.packagegen.java;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.grpcmetadatagen.ArtifactType;
+import com.google.api.codegen.packagegen.ArtifactType;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaPackageMetadataNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Responsible for producing package meta-data related views for Java */
-public class JavaPackageMetadataTransformer {
+/** Responsible for producing packaging related views for Java */
+public class JavaPackageTransformer {
   // TODO determine if an API uses resource names from GAPIC config
   // https://github.com/googleapis/toolkit/issues/1668
   private ImmutableSet<String> SERVICES_WITH_NO_RESOURCE_NAMES =
@@ -39,8 +39,7 @@ public class JavaPackageMetadataTransformer {
   private final Map<String, String> snippetsOutput;
   private final ArtifactType artifactType;
 
-  public JavaPackageMetadataTransformer(
-      Map<String, String> snippetsOutput, ArtifactType artifactType) {
+  public JavaPackageTransformer(Map<String, String> snippetsOutput, ArtifactType artifactType) {
     this.snippetsOutput = ImmutableMap.copyOf(snippetsOutput);
     this.artifactType = artifactType;
   }

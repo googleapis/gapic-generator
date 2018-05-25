@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.py;
+package com.google.api.codegen.packagegen.py;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
@@ -27,8 +27,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Python specific transformer to generate meta-data views for gRPC packages. */
-public class PythonGrpcMetadataTransformer {
+/** Python specific transformer to generate views for gRPC packages. */
+public class PythonGrpcPackageTransformer {
   private static final List<String> SNIPPETS =
       Lists.newArrayList(
           "LICENSE.snip",
@@ -42,7 +42,7 @@ public class PythonGrpcMetadataTransformer {
 
   private PythonPackageCopierResult copierResult;
 
-  public PythonGrpcMetadataTransformer(PythonPackageCopierResult copierResult) {
+  public PythonGrpcPackageTransformer(PythonPackageCopierResult copierResult) {
     this.copierResult = copierResult;
   }
 

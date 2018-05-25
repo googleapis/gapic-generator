@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -23,8 +23,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-/** Tool to generate package metadata. */
-public class GrpcMetadataGeneratorTool {
+/** Tool to generate packaging files. */
+public class PackageGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
@@ -63,18 +63,10 @@ public class GrpcMetadataGeneratorTool {
     options.addOption(
         Option.builder("l")
             .longOpt("language")
-            .desc("The language for which to generate package metadata.")
+            .desc("The language for which to generate packaging files.")
             .hasArg()
             .argName("LANGUAGE")
             .required(true)
-            .build());
-    options.addOption(
-        Option.builder("c")
-            .longOpt("metadata_config")
-            .desc(
-                "The YAML file configuring the package metadata (deprecated in favor of package_yaml2).")
-            .hasArg()
-            .argName("METADATA-CONFIG")
             .build());
     options.addOption(
         Option.builder("c2")
@@ -97,7 +89,7 @@ public class GrpcMetadataGeneratorTool {
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
       HelpFormatter formater = new HelpFormatter();
-      formater.printHelp("ConfigGeneratorTool", options);
+      formater.printHelp("PackageGeneratorTool", options);
     }
 
     generate(
@@ -106,7 +98,6 @@ public class GrpcMetadataGeneratorTool {
         cl.getOptionValue("input"),
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
-        cl.getOptionValue("metadata_config"),
         cl.getOptionValue("package_yaml2"),
         cl.getOptionValue("artifact_type"));
   }
@@ -117,26 +108,24 @@ public class GrpcMetadataGeneratorTool {
       String inputDir,
       String outputDir,
       String languageString,
-      String metadataConfig,
       String packageConfig2,
       String artifactType) {
     TargetLanguage language = TargetLanguage.fromString(languageString);
     ToolOptions options = ToolOptions.create();
-    options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
-    options.set(GrpcMetadataGenerator.OUTPUT_DIR, outputDir);
+    options.set(PackageGenerator.INPUT_DIR, inputDir);
+    options.set(PackageGenerator.OUTPUT_DIR, outputDir);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     if (configs != null) {
       options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     }
-    options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfig);
-    options.set(GrpcMetadataGenerator.PACKAGE_CONFIG2_FILE, packageConfig2);
-    options.set(GrpcMetadataGenerator.LANGUAGE, languageString);
+    options.set(PackageGenerator.PACKAGE_CONFIG2_FILE, packageConfig2);
+    options.set(PackageGenerator.LANGUAGE, languageString);
 
     if (artifactType != null) {
-      options.set(GrpcMetadataGenerator.ARTIFACT_TYPE, ArtifactType.of(artifactType));
+      options.set(PackageGenerator.ARTIFACT_TYPE, ArtifactType.of(artifactType));
     }
 
-    GrpcMetadataGenerator generator = new GrpcMetadataGenerator(options);
+    PackageGenerator generator = new PackageGenerator(options);
     generator.run();
   }
 }

@@ -12,21 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen;
+package com.google.api.codegen.packagegen;
 
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcMetadataProvider;
-import com.google.api.codegen.grpcmetadatagen.java.JavaPackageMetadataTransformer;
-import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataProvider;
+import com.google.api.codegen.packagegen.java.JavaGrpcPackageProvider;
+import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
+import com.google.api.codegen.packagegen.py.PythonGrpcPackageProvider;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 
-/** A factory for GrpcMetadataProvider which performs gRPC meta-data generation. */
-public class GrpcMetadataProviderFactory {
+/** A factory for package providers. So far, only grpc packages are supported. */
+public class MainPackageProviderFactory {
 
-  /** Create the GrpcMetadataProvider based on the given language */
-  public static GrpcMetadataProvider<Doc> create(
+  /** Create the PackageProvider based on the given language */
+  public static PackageProvider<Doc> create(
       TargetLanguage language, ArtifactType artifactType, ToolOptions options) {
     switch (language) {
       case PYTHON:
@@ -39,23 +39,23 @@ public class GrpcMetadataProviderFactory {
     }
   }
 
-  private static GrpcMetadataProvider<Doc> createForPython(ToolOptions options) {
-    return new PythonGrpcMetadataProvider(options);
+  private static PackageProvider<Doc> createForPython(ToolOptions options) {
+    return new PythonGrpcPackageProvider(options);
   }
 
-  private static GrpcMetadataProvider<Doc> createForJava(ArtifactType artifactType) {
+  private static PackageProvider<Doc> createForJava(ArtifactType artifactType) {
     switch (artifactType) {
       case GRPC:
-        return new JavaGrpcMetadataProvider(
-            new JavaPackageMetadataTransformer(
+        return new JavaGrpcPackageProvider(
+            new JavaPackageTransformer(
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle",
                     "metadatagen/java/grpc/pom_grpc.xml.snip", "pom.xml"),
                 artifactType));
       case PROTOBUF:
-        return new JavaGrpcMetadataProvider(
-            new JavaPackageMetadataTransformer(
+        return new JavaGrpcPackageProvider(
+            new JavaPackageTransformer(
                 ImmutableMap.of(
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle",
