@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -76,9 +77,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             model.getDiagCollector(), interfaceConfigProto);
-    ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        RetryDefinitionsTransformer.createRetrySettingsDefinition(
-            model.getDiagCollector(), interfaceConfigProto);
+    ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
