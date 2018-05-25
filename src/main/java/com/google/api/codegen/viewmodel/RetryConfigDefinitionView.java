@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.codegen.config.RetrySettings;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 

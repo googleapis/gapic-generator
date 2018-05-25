@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.gax.retrying.RetrySettings.Builder;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
