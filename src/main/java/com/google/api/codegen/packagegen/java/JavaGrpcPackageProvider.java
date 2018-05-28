@@ -14,29 +14,41 @@
  */
 package com.google.api.codegen.packagegen.java;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.packagegen.PackageProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /** Performs grpc package generation for Java */
-public class JavaGrpcPackageProvider implements PackageProvider<Doc> {
+public class JavaGrpcPackageProvider implements OutputProvider<Doc> {
 
   private final JavaPackageTransformer transformer;
+  private final Model model;
+  private final PackageMetadataConfig config;
 
-  public JavaGrpcPackageProvider(JavaPackageTransformer transformer) {
+  public JavaGrpcPackageProvider(
+      JavaPackageTransformer transformer, Model model, PackageMetadataConfig config) {
     this.transformer = transformer;
+    this.model = model;
+    this.config = config;
   }
 
   @Override
-  public Map<String, GeneratedResult<Doc>> generate(Model model, PackageMetadataConfig config) {
+  public List<String> getInputFileNames() {
+    return ImmutableList.of();
+  }
+
+  @Override
+  public Map<String, GeneratedResult<Doc>> generate() {
     ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
 
     ProtoApiModel apiModel = new ProtoApiModel(model);

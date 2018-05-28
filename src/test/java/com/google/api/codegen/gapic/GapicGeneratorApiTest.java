@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /** Code generator unit tests. */
-public class CodeGeneratorApiTest {
+public class GapicGeneratorApiTest {
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 
   @Test
@@ -41,7 +41,7 @@ public class CodeGeneratorApiTest {
 
     // Verify that files are outputed to a directory.
     String outputDir = tempDir.getRoot().getPath();
-    CodeGeneratorApi generator = new CodeGeneratorApi(ToolOptions.create());
+    GapicGeneratorApi generator = new GapicGeneratorApi(ToolOptions.create());
     generator.writeCodeGenOutput(outputFiles, outputDir);
     generator.setOutputFilesPermissions(Collections.singleton("tmp3"), outputDir);
     assertTrue((new File(outputDir, "tmp.txt")).exists());

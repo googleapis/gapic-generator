@@ -14,32 +14,42 @@
  */
 package com.google.api.codegen.packagegen.py;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.packagegen.PackageProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /** Performs gRPC package generation for Python */
-public class PythonGrpcPackageProvider implements PackageProvider<Doc> {
+public class PythonGrpcPackageProvider implements OutputProvider<Doc> {
 
   private final ToolOptions options;
+  private final Model model;
+  private final PackageMetadataConfig config;
 
-  public PythonGrpcPackageProvider(ToolOptions options) {
+  public PythonGrpcPackageProvider(ToolOptions options, Model model, PackageMetadataConfig config) {
     this.options = options;
+    this.model = model;
+    this.config = config;
   }
 
   @Override
-  public Map<String, GeneratedResult<Doc>> generate(Model model, PackageMetadataConfig config)
-      throws IOException {
+  public List<String> getInputFileNames() {
+    return ImmutableList.of();
+  }
+
+  @Override
+  public Map<String, GeneratedResult<Doc>> generate() throws IOException {
     ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
 

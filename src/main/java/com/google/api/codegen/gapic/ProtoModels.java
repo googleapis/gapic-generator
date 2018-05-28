@@ -12,15 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
- * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
- * retrieving a sequence of items from a model.
+ * An interface-based view of model, consisting of a strategy for getting the interfaces of the
+ * model.
  */
-public interface InputElementView<InputElementT> {
-  public List<InputElementT> getElements(Model model);
+public class ProtoModels {
+
+  /** Gets the interfaces for the apis in the service config. */
+  public static List<Interface> getInterfaces(Model model) {
+    return model
+        .getServiceConfig()
+        .getApisList()
+        .stream()
+        .map(api -> model.getSymbolTable().lookupInterface(api.getName()))
+        .collect(ImmutableList.toImmutableList());
+  }
 }

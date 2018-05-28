@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.clientconfig;
 
-import com.google.api.codegen.CodegenContext;
-import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.common.CodegenContext;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;

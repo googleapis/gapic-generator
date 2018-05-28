@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
@@ -27,7 +27,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicProvider implements GapicProvider<Doc> {
+public class DiscoGapicProvider implements OutputProvider<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;

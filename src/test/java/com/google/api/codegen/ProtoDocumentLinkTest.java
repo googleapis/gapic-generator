@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.util.CommentPatterns;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;

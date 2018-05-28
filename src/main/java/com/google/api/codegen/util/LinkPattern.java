@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentTransformer.Transformation;
 import com.google.common.base.Function;
 import java.util.regex.Matcher;

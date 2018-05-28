@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.packagegen.py;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.packagegen.PackageGenerator;
 import com.google.api.tools.framework.snippet.Doc;

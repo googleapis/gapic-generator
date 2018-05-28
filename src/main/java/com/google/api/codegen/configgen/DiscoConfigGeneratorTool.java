@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.configgen;
 
-import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
+import static com.google.api.codegen.discogapic.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import org.apache.commons.cli.CommandLine;

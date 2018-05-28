@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.packagegen.py;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
 import java.util.List;

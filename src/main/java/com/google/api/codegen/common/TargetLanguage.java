@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.common;
 
 /** Target languages supported by the code generators */
 public enum TargetLanguage {

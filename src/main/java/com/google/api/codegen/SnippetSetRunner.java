@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.common.CodegenContext;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import java.util.Map;
 

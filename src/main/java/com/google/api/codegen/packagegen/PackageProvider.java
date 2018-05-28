@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.Model;
 import java.io.IOException;

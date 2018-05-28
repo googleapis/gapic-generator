@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.configgen;
 
-import com.google.api.codegen.Inflector;
-import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.util.Inflector;
+import com.google.api.codegen.util.LanguageUtil;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;

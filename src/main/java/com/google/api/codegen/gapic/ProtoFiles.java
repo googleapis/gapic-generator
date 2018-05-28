@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -30,13 +30,13 @@ import java.util.TreeSet;
  * A file-based view of model, consisting of a strategy for getting the protocol buffer files from
  * which the model was constructed.
  */
-public class ProtoFileView {
+public class ProtoFiles {
 
   /**
    * Gets the ProtoFile objects in which the fields of the reachable methods in the model are
    * defined.
    */
-  public Iterable<ProtoFile> getProtoFiles(GapicProductConfig productConfig) {
+  public static Iterable<ProtoFile> getProtoFiles(GapicProductConfig productConfig) {
     Set<ProtoFile> files = newFileSet();
     for (InterfaceConfig interfaceConfig : productConfig.getInterfaceConfigMap().values()) {
       for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
@@ -52,7 +52,7 @@ public class ProtoFileView {
     return files;
   }
 
-  private Set<ProtoFile> getFilesForMessage(MessageType messageType, boolean messageOnly) {
+  private static Set<ProtoFile> getFilesForMessage(MessageType messageType, boolean messageOnly) {
     Set<ProtoFile> files = newFileSet();
     files.add(messageType.getFile());
     if (messageOnly) {
@@ -68,11 +68,11 @@ public class ProtoFileView {
     return files;
   }
 
-  private Set<ProtoFile> newFileSet() {
+  private static Set<ProtoFile> newFileSet() {
     return new TreeSet<>((fileA, fileB) -> getPath(fileA).compareTo(getPath(fileB)));
   }
 
-  private String getPath(ProtoFile file) {
+  private static String getPath(ProtoFile file) {
     return file.getFullName() + "." + file.getSimpleName();
   }
 }

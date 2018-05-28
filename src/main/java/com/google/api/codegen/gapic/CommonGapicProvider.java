@@ -14,12 +14,11 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.OutputProvider;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
@@ -28,24 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Common GapicProvider which runs code generation. */
-public class CommonGapicProvider<ElementT> implements GapicProvider<Doc> {
+/** Common OutputProvider which runs code generation. */
+public class CommonGapicProvider implements OutputProvider<Doc> {
   private final Model model;
-  private final InputElementView<ElementT> view;
   private final GapicContext context;
-  private final SnippetSetRunner.Generator<ElementT> generator;
+  private final SnippetSetRunner.Generator<Interface> generator;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
   private CommonGapicProvider(
       Model model,
-      InputElementView<ElementT> view,
       GapicContext context,
-      SnippetSetRunner.Generator<ElementT> generator,
+      SnippetSetRunner.Generator<Interface> generator,
       List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
-    this.view = view;
     this.context = context;
     this.generator = generator;
     this.snippetFileNames = snippetFileNames;
@@ -78,21 +74,17 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<Doc> {
 
     // Run the generator for each service.
     Map<String, GeneratedResult<Doc>> generated = new TreeMap<>();
-    for (ElementT element : view.getElements(model)) {
+    for (Interface modelInterface : ProtoModels.getInterfaces(model)) {
 
       String subPath;
-      // Note on usage of instanceof: there is one case (as of this writing)
-      // where the element is an Iterable<> instead of a ProtoElement.
-      if (element instanceof ProtoElement) {
-        subPath =
-            pathMapper.getOutputPath(
-                ((ProtoElement) element).getFullName(), context.getApiConfig());
-      } else {
+      if (modelInterface == null) {
         subPath = pathMapper.getOutputPath(null, context.getApiConfig());
+      } else {
+        subPath = pathMapper.getOutputPath(modelInterface.getFullName(), context.getApiConfig());
       }
 
       Map<String, GeneratedResult<Doc>> result =
-          generator.generate(element, snippetFileName, context);
+          generator.generate(modelInterface, snippetFileName, context);
 
       for (Map.Entry<String, GeneratedResult<Doc>> resEntry : result.entrySet()) {
         String resSubPath =
@@ -109,53 +101,46 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<Doc> {
     return generated;
   }
 
-  public static <ElementT> Builder<ElementT> newBuilder() {
-    return new Builder<>();
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
-  public static class Builder<ElementT> {
+  public static class Builder {
     private Model model;
-    private InputElementView<ElementT> view;
     private GapicContext context;
-    private SnippetSetRunner.Generator<ElementT> generator;
+    private SnippetSetRunner.Generator<Interface> generator;
     private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
     private Builder() {}
 
-    public Builder<ElementT> setModel(Model model) {
+    public Builder setModel(Model model) {
       this.model = model;
       return this;
     }
 
-    public Builder<ElementT> setView(InputElementView<ElementT> view) {
-      this.view = view;
-      return this;
-    }
-
-    public Builder<ElementT> setContext(GapicContext context) {
+    public Builder setContext(GapicContext context) {
       this.context = context;
       return this;
     }
 
-    public Builder<ElementT> setSnippetSetRunner(SnippetSetRunner.Generator<ElementT> generator) {
+    public Builder setSnippetSetRunner(SnippetSetRunner.Generator<Interface> generator) {
       this.generator = generator;
       return this;
     }
 
-    public Builder<ElementT> setSnippetFileNames(List<String> snippetFileNames) {
+    public Builder setSnippetFileNames(List<String> snippetFileNames) {
       this.snippetFileNames = snippetFileNames;
       return this;
     }
 
-    public Builder<ElementT> setCodePathMapper(GapicCodePathMapper pathMapper) {
+    public Builder setCodePathMapper(GapicCodePathMapper pathMapper) {
       this.pathMapper = pathMapper;
       return this;
     }
 
-    public CommonGapicProvider<ElementT> build() {
-      return new CommonGapicProvider<ElementT>(
-          model, view, context, generator, snippetFileNames, pathMapper);
+    public CommonGapicProvider build() {
+      return new CommonGapicProvider(model, context, generator, snippetFileNames, pathMapper);
     }
   }
 }
