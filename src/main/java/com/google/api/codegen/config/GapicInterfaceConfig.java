@@ -18,8 +18,8 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -72,7 +72,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public abstract ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
   @Override
-  public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
+  public abstract ImmutableMap<String, RetryParamsDefinitionProto> getRetrySettingsDefinition();
 
   @Override
   public abstract ImmutableList<FieldModel> getIamResources();
@@ -115,9 +115,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
-    ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        RetryDefinitionsTransformer.createRetrySettingsDefinition(
-            diagCollector, interfaceConfigProto);
+    ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
