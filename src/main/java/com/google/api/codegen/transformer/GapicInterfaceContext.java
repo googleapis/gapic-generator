@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
@@ -27,6 +26,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -77,7 +77,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   private static Map<Interface, Interface> createGrpcRerouteMap(
       Model model, GapicProductConfig productConfig) {
     HashMap<Interface, Interface> grpcRerouteMap = new HashMap<>();
-    for (Interface apiInterface : new InterfaceView().getElements(model)) {
+    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
       if (!apiInterface.isReachable()) {
         continue;
       }

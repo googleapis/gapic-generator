@@ -12,18 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.GeneratorProto;
 import com.google.api.codegen.advising.Adviser;
+import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.gapic.GapicProvider;
-import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
+import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -50,7 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 /** Main class for the code generator. */
-public class CodeGeneratorApi extends ToolDriverBase {
+public class GapicGeneratorApi extends ToolDriverBase {
   public static final Option<String> OUTPUT_FILE =
       ToolOptions.createOption(
           String.class,
@@ -83,7 +85,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
           ImmutableList.of());
 
   /** Constructs a code generator api based on given options. */
-  public CodeGeneratorApi(ToolOptions options) {
+  public GapicGeneratorApi(ToolOptions options) {
     super(options);
   }
 
@@ -158,11 +160,11 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       String outputPath = options.get(OUTPUT_FILE);
-      List<GapicProvider<?>> providers =
+      List<CodeGenerator<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
       ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
       ImmutableSet.Builder<String> executables = ImmutableSet.builder();
-      for (GapicProvider<?> provider : providers) {
+      for (CodeGenerator<?> provider : providers) {
         Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
         for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
           outputFiles.put(entry.getKey(), entry.getValue().getBody());

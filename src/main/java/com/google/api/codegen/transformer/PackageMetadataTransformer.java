@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;

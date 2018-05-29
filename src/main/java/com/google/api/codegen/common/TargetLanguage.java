@@ -12,15 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.common;
 
-import com.google.api.tools.framework.model.Model;
-import java.util.List;
+/** Target languages supported by the code generators */
+public enum TargetLanguage {
+  CSHARP,
+  GO,
+  JAVA,
+  NODEJS,
+  PHP,
+  PYTHON,
+  RUBY;
 
-/**
- * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
- * retrieving a sequence of items from a model.
- */
-public interface InputElementView<InputElementT> {
-  public List<InputElementT> getElements(Model model);
+  public static TargetLanguage fromString(String language) {
+    return Enum.valueOf(TargetLanguage.class, language.toUpperCase());
+  }
 }

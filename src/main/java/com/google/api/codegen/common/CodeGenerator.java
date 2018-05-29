@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.common;
 
-import com.google.api.codegen.GeneratedResult;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+
 /**
- * A GapicProvider performs file generation (code, static resources, etc.) using a proto-based Model
- * for a particular language.
+ * A CodeGenerator performs file generation (code, config, etc) or file copying (static resources)
+ * based on input provided at construction time.
  *
- * @param <T> Class which represent generated file body (may be {@code byte[]})
+ * @param <T> Class which represents the generated file body.
  */
-public interface GapicProvider<T> {
+public interface CodeGenerator<T> {
   /**
    * Returns the file names that this provider will use for generation. They can be static files,
    * snippet templates or any other type of files, depending on the actual provider implementation.

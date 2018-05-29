@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.Inflector;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -34,6 +33,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.Inflector;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.java.JavaCommentReformatter;

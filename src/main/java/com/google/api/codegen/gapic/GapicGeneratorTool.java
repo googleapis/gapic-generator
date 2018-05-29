@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
+import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -24,33 +25,31 @@ import org.apache.commons.cli.Options;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
-
-// DiscoGapicGeneratorTool \
-//   --gapic_yaml=$BASE/src/main/resources/com/google/api/codegen/java/java_discogapic.yaml \
-//   --gapic_yaml=$BASE/src/main/resources/com/google/api/codegen/testdata/compute_gapic.yaml \
-//   --discovery_doc=$BASE/src/test/java/com/google/api/codegen/testdata/discoveries/compute.v1.json \
-//   --output=output
-public class DiscoGapicGeneratorTool {
+//
+//     GapicGeneratorTool --descriptor_set=$BASE/src/main/generated/_descriptors/bigtable.desc \
+//        --service_yaml=$BASE/src/main/configs/bigtabletableadmin.yaml \
+//        --gapic_yaml=$BASE/src/main/configs/bigtable_table_gapic.yaml \
+//        --output=$BASE
+public class GapicGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(
         Option.builder()
-            .longOpt("discovery_doc")
-            .desc("The Discovery doc representing the service description.")
+            .longOpt("descriptor_set")
+            .desc("The descriptor set representing the compiled input protos.")
             .hasArg()
-            .argName("DISCOVERY-DOC")
+            .argName("DESCRIPTOR-SET")
             .required(true)
             .build());
-    // TODO add this option back
-    //    options.addOption(
-    //        Option.builder()
-    //            .longOpt("service_yaml")
-    //            .desc("The service YAML configuration file or files.")
-    //            .hasArg()
-    //            .argName("SERVICE-YAML")
-    //            .required(true)
-    //            .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("service_yaml")
+            .desc("The service YAML configuration file or files.")
+            .hasArg()
+            .argName("SERVICE-YAML")
+            .required(true)
+            .build());
     options.addOption(
         Option.builder()
             .longOpt("gapic_yaml")
@@ -87,40 +86,58 @@ public class DiscoGapicGeneratorTool {
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
       HelpFormatter formater = new HelpFormatter();
-      formater.printHelp("CodeGeneratorTool", options);
+      formater.printHelp("GapicGeneratorTool", options);
     }
 
-    try {
-      generate(
-          cl.getOptionValue("discovery_doc"),
-          //          cl.getOptionValues("service_yaml"),
-          cl.getOptionValues("gapic_yaml"),
-          cl.getOptionValue("package_yaml2"),
-          cl.getOptionValue("output", ""),
-          cl.getOptionValues("enabled_artifacts"));
-    } catch (Exception e) {
-      e.printStackTrace(System.err);
-      System.exit(1);
-    }
+    int exitCode =
+        generate(
+            cl.getOptionValue("descriptor_set"),
+            cl.getOptionValues("service_yaml"),
+            cl.getOptionValues("gapic_yaml"),
+            cl.getOptionValue("package_yaml2"),
+            cl.getOptionValue("output", ""),
+            cl.getOptionValues("enabled_artifacts"));
+    System.exit(exitCode);
   }
 
-  private static void generate(
-      String discoveryDoc,
+  private static int generate(
+      String descriptorSet,
+      String[] configs,
       String[] generatorConfigs,
       String packageConfig2,
       String outputDirectory,
-      String[] enabledArtifacts)
-      throws Exception {
+      String[] enabledArtifacts) {
+    checkFile(descriptorSet);
+    checkFiles(configs);
+    checkFiles(generatorConfigs);
+    if (packageConfig2 != null) {
+      checkFile(packageConfig2);
+    }
+
     ToolOptions options = ToolOptions.create();
-    options.set(DiscoGapicGeneratorApi.DISCOVERY_DOC, discoveryDoc);
-    options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
-    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
-    options.set(CodeGeneratorApi.PACKAGE_CONFIG2_FILE, packageConfig2);
+    options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
+    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
+    options.set(GapicGeneratorApi.OUTPUT_FILE, outputDirectory);
+    options.set(GapicGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
+    options.set(GapicGeneratorApi.PACKAGE_CONFIG2_FILE, packageConfig2);
 
     if (enabledArtifacts != null) {
-      options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
+      options.set(GapicGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
     }
-    DiscoGapicGeneratorApi codeGen = new DiscoGapicGeneratorApi(options);
-    codeGen.run();
+    GapicGeneratorApi codeGen = new GapicGeneratorApi(options);
+
+    return codeGen.run();
+  }
+
+  private static void checkFiles(String[] files) {
+    for (String filePath : files) {
+      checkFile(filePath);
+    }
+  }
+
+  private static void checkFile(String filePath) {
+    if (!new File(filePath).exists()) {
+      throw new IllegalArgumentException("File not found: " + filePath);
+    }
   }
 }

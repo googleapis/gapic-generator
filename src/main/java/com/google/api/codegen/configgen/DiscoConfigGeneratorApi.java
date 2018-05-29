@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.configgen;
 
-import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
+import static com.google.api.codegen.discogapic.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
 
-import com.google.api.codegen.DiscoGapicGeneratorApi;
-import com.google.api.codegen.DocumentGenerator;
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.configgen.transformer.DiscoConfigTransformer;
+import com.google.api.codegen.discogapic.DiscoGapicGeneratorApi;
+import com.google.api.codegen.discogapic.DocumentGenerator;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;

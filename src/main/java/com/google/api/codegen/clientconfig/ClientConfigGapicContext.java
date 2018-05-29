@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.clientconfig;
 
-import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.gapic.GapicContext;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
