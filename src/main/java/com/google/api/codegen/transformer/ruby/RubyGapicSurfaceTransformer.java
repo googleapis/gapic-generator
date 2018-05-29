@@ -234,10 +234,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (type instanceof ProtoTypeRef) {
         ProtoTypeRef t = (ProtoTypeRef) type;
         String name =
-            namer.getVersionIndexFileImportName()
-                + "/"
-                + namer.getProtoFileImportName(
-                    t.getProtoType().getMessageType().getFile().getSimpleName());
+            namer.getProtoFileImportName(
+                t.getProtoType().getMessageType().getFile().getSimpleName());
         requireTypes.add(name);
       }
     }
