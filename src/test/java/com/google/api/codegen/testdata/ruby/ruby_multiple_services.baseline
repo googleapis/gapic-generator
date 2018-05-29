@@ -629,35 +629,6 @@ module Google
   end
 end
 
-============== file: lib/google/example/credentials.rb ==============
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-require "googleauth"
-
-module Google
-  module Example
-    class Credentials < Google::Auth::Credentials
-      SCOPE = [
-      ].freeze
-      PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
-      JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
-      DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
-    end
-  end
-end
-
 ============== file: lib/google/example/v1/foo.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -822,6 +793,39 @@ module Google
   end
 end
 
+============== file: lib/google/example/v1/foo/credentials.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "googleauth"
+
+module Google
+  module Example
+    module V1
+      module Foo
+        class Credentials < Google::Auth::Credentials
+          SCOPE = [
+          ].freeze
+          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+          DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
+        end
+      end
+    end
+  end
+end
+
 ============== file: lib/google/example/v1/foo/decrementer_service_client.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -919,10 +923,10 @@ module Google
             require "google/gax/grpc"
             require "multiple_services_services_pb"
 
-            credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::V1::Foo::Credentials.default
 
             if credentials.is_a?(String) || credentials.is_a?(Hash)
-              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+              updater_proc = Google::Example::V1::Foo::Credentials.new(credentials).updater_proc
             end
             if credentials.is_a?(GRPC::Core::Channel)
               channel = credentials
@@ -1122,10 +1126,10 @@ module Google
             require "google/gax/grpc"
             require "multiple_services_services_pb"
 
-            credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::V1::Foo::Credentials.default
 
             if credentials.is_a?(String) || credentials.is_a?(Hash)
-              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+              updater_proc = Google::Example::V1::Foo::Credentials.new(credentials).updater_proc
             end
             if credentials.is_a?(GRPC::Core::Channel)
               channel = credentials
@@ -1283,7 +1287,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockDecrementerServiceCredentials < Google::Example::Credentials
+class MockDecrementerServiceCredentials < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1313,7 +1317,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
           # Call method
@@ -1343,7 +1347,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
           # Call method
@@ -1413,7 +1417,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockIncrementerServiceCredentials < Google::Example::Credentials
+class MockIncrementerServiceCredentials < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1443,7 +1447,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
           # Call method
@@ -1473,7 +1477,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
           # Call method

@@ -267,9 +267,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
                         .types(ImmutableList.<ImportTypeView>of())
                         .build()))
             .build();
-    List<String> modules = namer.getTopLevelApiModules();
+    List<String> modules = namer.getApiModules();
+    GapicInterfaceContext context = createContext(model.getInterfaces().get(0), productConfig);
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     return CredentialsClassFileView.newBuilder()
-        .outputPath("lib" + File.separator + namer.getCredentialsClassImportName() + ".rb")
+        .outputPath(namer.getSourceFilePath(subPath, "Credentials"))
         .templateFileName(CREDENTIALS_CLASS_TEMPLATE_FILE)
         .credentialsClass(credentialsClass)
         .fileHeader(
