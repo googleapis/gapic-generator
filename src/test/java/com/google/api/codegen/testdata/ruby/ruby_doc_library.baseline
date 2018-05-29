@@ -2665,6 +2665,9 @@ module Library
       # The default port of the service.
       DEFAULT_SERVICE_PORT = 443
 
+      # The default set of gRPC interceptors.
+      GRPC_INTERCEPTORS = []
+
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
@@ -2714,6 +2717,7 @@ module Library
 
       class OperationsClient < Google::Longrunning::OperationsClient
         self::SERVICE_ADDRESS = LibraryServiceClient::SERVICE_ADDRESS
+        self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
@@ -2901,6 +2905,7 @@ module Library
         # Allow overriding the service path/port in subclasses.
         service_path = self.class::SERVICE_ADDRESS
         port = self.class::DEFAULT_SERVICE_PORT
+        interceptors = self.class::GRPC_INTERCEPTORS
         @library_service_stub = Google::Gax::Grpc.create_stub(
           service_path,
           port,
@@ -2908,6 +2913,7 @@ module Library
           channel: channel,
           updater_proc: updater_proc,
           scopes: scopes,
+          interceptors: interceptors,
           &Google::Example::Library::V1::LibraryService::Stub.method(:new)
         )
         @labeler_stub = Google::Gax::Grpc.create_stub(
@@ -2917,6 +2923,7 @@ module Library
           channel: channel,
           updater_proc: updater_proc,
           scopes: scopes,
+          interceptors: interceptors,
           &Google::Tagger::V1::Labeler::Stub.method(:new)
         )
 
