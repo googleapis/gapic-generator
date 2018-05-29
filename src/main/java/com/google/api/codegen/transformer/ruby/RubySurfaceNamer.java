@@ -236,7 +236,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
     if (RubyUtil.isLongrunning(getPackageName())) {
       return "Google::Auth::Credentials";
     }
-    return getTopLevelNamespace() + "::Credentials";
+    return getPackageName() + "::Credentials";
   }
 
   @Override
