@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class ProtoModels {
 
+  private ProtoModels() {}
+
   /** Gets the interfaces for the apis in the service config. */
   public static List<Interface> getInterfaces(Model model) {
     return model

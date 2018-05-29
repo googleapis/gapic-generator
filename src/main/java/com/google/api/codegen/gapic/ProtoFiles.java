@@ -32,6 +32,8 @@ import java.util.TreeSet;
  */
 public class ProtoFiles {
 
+  private ProtoFiles() {}
+
   /**
    * Gets the ProtoFile objects in which the fields of the reachable methods in the model are
    * defined.
