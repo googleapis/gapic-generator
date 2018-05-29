@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.common.OutputProvider;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.packagegen.java.JavaGrpcPackageProvider;
@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableMap;
 public class MainPackageProviderFactory {
 
   /** Create the PackageProvider based on the given language */
-  public static OutputProvider<Doc> create(
+  public static CodeGenerator<Doc> create(
       TargetLanguage language,
       ArtifactType artifactType,
       ToolOptions options,
@@ -46,12 +46,12 @@ public class MainPackageProviderFactory {
     }
   }
 
-  private static OutputProvider<Doc> createForPython(
+  private static CodeGenerator<Doc> createForPython(
       ToolOptions options, Model model, PackageMetadataConfig config) {
     return new PythonGrpcPackageProvider(options, model, config);
   }
 
-  private static OutputProvider<Doc> createForJava(
+  private static CodeGenerator<Doc> createForJava(
       ArtifactType artifactType, Model model, PackageMetadataConfig config) {
     switch (artifactType) {
       case GRPC:

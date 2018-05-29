@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.discogapic.DiscoGapicGeneratorApi;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -45,7 +45,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  private List<OutputProvider<?>> discoGapicProviders;
+  private List<CodeGenerator<?>> discoGapicProviders;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -94,7 +94,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected Map<String, ?> run() throws IOException {
     Map<String, Object> output = new LinkedHashMap<>();
 
-    for (OutputProvider<?> provider : discoGapicProviders) {
+    for (CodeGenerator<?> provider : discoGapicProviders) {
       Map<String, ? extends GeneratedResult<?>> out = provider.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
         Object value =

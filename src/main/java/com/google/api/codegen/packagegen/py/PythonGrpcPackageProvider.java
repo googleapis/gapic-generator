@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.packagegen.py;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Performs gRPC package generation for Python */
-public class PythonGrpcPackageProvider implements OutputProvider<Doc> {
+public class PythonGrpcPackageProvider implements CodeGenerator<Doc> {
 
   private final ToolOptions options;
   private final Model model;

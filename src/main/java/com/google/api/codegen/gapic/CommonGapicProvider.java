@@ -15,8 +15,8 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -27,18 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Common OutputProvider which runs code generation. */
-public class CommonGapicProvider implements OutputProvider<Doc> {
+/** Common CodeGenerator which runs code generation. */
+public class CommonGapicProvider implements CodeGenerator<Doc> {
   private final Model model;
   private final GapicContext context;
-  private final SnippetSetRunner.Generator<Interface> generator;
+  private final SnippetSetRunner<Interface> generator;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
   private CommonGapicProvider(
       Model model,
       GapicContext context,
-      SnippetSetRunner.Generator<Interface> generator,
+      SnippetSetRunner<Interface> generator,
       List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
@@ -108,7 +108,7 @@ public class CommonGapicProvider implements OutputProvider<Doc> {
   public static class Builder {
     private Model model;
     private GapicContext context;
-    private SnippetSetRunner.Generator<Interface> generator;
+    private SnippetSetRunner<Interface> generator;
     private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
@@ -124,7 +124,7 @@ public class CommonGapicProvider implements OutputProvider<Doc> {
       return this;
     }
 
-    public Builder setSnippetSetRunner(SnippetSetRunner.Generator<Interface> generator) {
+    public Builder setSnippetSetRunner(SnippetSetRunner<Interface> generator) {
       this.generator = generator;
       return this;
     }

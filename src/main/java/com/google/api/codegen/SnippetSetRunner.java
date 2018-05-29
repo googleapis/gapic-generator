@@ -23,15 +23,12 @@ import java.util.Map;
  * A SnippetSetRunner takes the element, snippet file, and context as input and then uses the
  * Snippet Set templating engine to generate an output document.
  */
-public final class SnippetSetRunner {
+public interface SnippetSetRunner<Element> {
 
   /** The path to the root of snippet resources. */
-  public static final String SNIPPET_RESOURCE_ROOT =
-      SnippetSetRunner.class.getPackage().getName().replace('.', '/');
+  String SNIPPET_RESOURCE_ROOT = SnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
-  public interface Generator<Element> {
-    /** Runs the code generation. */
-    Map<String, GeneratedResult<Doc>> generate(
-        Element element, String snippetFileName, CodegenContext context);
-  }
+  /** Runs the code generation. */
+  Map<String, GeneratedResult<Doc>> generate(
+      Element element, String snippetFileName, CodegenContext context);
 }

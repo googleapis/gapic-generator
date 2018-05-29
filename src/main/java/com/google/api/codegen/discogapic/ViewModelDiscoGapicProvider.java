@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ViewModelDiscoGapicProvider implements OutputProvider<Doc> {
+public class ViewModelDiscoGapicProvider implements CodeGenerator<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;

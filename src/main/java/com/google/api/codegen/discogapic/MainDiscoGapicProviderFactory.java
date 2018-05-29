@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.common.OutputProvider;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -41,13 +41,13 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
   public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<OutputProvider<?>> defaultCreate(
+  public static List<CodeGenerator<?>> defaultCreate(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<OutputProvider<?>> providers = new ArrayList<>();
+    ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
@@ -74,7 +74,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
         providers.add(provider);
 
-        OutputProvider metadataProvider =
+        CodeGenerator metadataProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -90,7 +90,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        OutputProvider<?> testProvider =
+        CodeGenerator<?> testProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -112,7 +112,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   /** Create the DiscoGapicProvider based on the given id */
   @Override
-  public List<OutputProvider<?>> create(
+  public List<CodeGenerator<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,

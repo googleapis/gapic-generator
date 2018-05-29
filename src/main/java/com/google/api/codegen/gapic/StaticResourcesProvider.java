@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.util.StaticResourcesHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class StaticResourcesProvider implements OutputProvider<byte[]> {
+public class StaticResourcesProvider implements CodeGenerator<byte[]> {
   private StaticResourcesHandler resourcesExtractor;
   private Set<String> executableFilenames;
 

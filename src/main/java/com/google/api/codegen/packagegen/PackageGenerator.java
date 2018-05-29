@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.packagegen;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
@@ -105,7 +105,7 @@ public class PackageGenerator extends ToolDriverBase {
     if (artifactType == null) {
       artifactType = config.artifactType();
     }
-    OutputProvider<Doc> provider =
+    CodeGenerator<Doc> provider =
         MainPackageProviderFactory.create(language, artifactType, options, model, config);
 
     return provider.generate();

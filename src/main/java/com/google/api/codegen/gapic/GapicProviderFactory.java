@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.common.OutputProvider;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.Model;
@@ -27,7 +27,7 @@ public interface GapicProviderFactory {
    *
    * <p>The outputPath is used for copying static files from resources into the output directory.
    */
-  List<OutputProvider<?>> create(
+  List<CodeGenerator<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,

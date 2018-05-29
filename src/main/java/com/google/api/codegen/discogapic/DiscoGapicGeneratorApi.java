@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.GeneratorProto;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.DiscoApiModel;
@@ -101,7 +101,7 @@ public class DiscoGapicGeneratorApi {
 
   /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  public static List<OutputProvider<?>> getProviders(
+  public static List<CodeGenerator<?>> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfig2File,
@@ -177,11 +177,11 @@ public class DiscoGapicGeneratorApi {
     String packageConfig2File = options.get(PACKAGE_CONFIG2_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<OutputProvider<?>> providers =
+    List<CodeGenerator<?>> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfig2File, null, enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
-    for (OutputProvider<?> provider : providers) {
+    for (CodeGenerator<?> provider : providers) {
       outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));

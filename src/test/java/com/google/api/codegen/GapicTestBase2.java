@@ -15,8 +15,8 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -112,7 +112,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
    * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
    * methods. The idForFactory String is passed to GapicProviderFactory to get the GapicProviders
    * provided by that id, and then the snippet file names are scraped from those providers, and a
-   * set of arguments is created for each combination of OutputProvider x snippet that
+   * set of arguments is created for each combination of CodeGenerator x snippet that
    * GapicProviderFactory returns.
    */
   public static Object[] createTestConfig(
@@ -129,12 +129,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
-    List<OutputProvider<?>> providers =
+    List<CodeGenerator<?>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
-    for (OutputProvider<?> provider : providers) {
+    for (CodeGenerator<?> provider : providers) {
       snippetNames.addAll(provider.getInputFileNames());
     }
 
@@ -178,20 +178,20 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .id(idForFactory)
             .enabledArtifacts(enabledArtifacts)
             .build();
-    List<OutputProvider<?>> providers =
+    List<CodeGenerator<?>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig);
 
     // Don't run any providers we're not testing.
-    ArrayList<OutputProvider<?>> testedProviders = new ArrayList<>();
-    for (OutputProvider<?> provider : providers) {
+    ArrayList<CodeGenerator<?>> testedProviders = new ArrayList<>();
+    for (CodeGenerator<?> provider : providers) {
       if (!Collections.disjoint(provider.getInputFileNames(), snippetNames)) {
         testedProviders.add(provider);
       }
     }
 
     Map<String, Object> output = new TreeMap<>();
-    for (OutputProvider<?> provider : testedProviders) {
+    for (CodeGenerator<?> provider : testedProviders) {
       Map<String, ? extends GeneratedResult<?>> out = provider.generate();
 
       if (!Collections.disjoint(out.keySet(), output.keySet())) {

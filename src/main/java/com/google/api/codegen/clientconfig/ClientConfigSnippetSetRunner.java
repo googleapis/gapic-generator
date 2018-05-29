@@ -22,8 +22,7 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
-public class ClientConfigSnippetSetRunner<ElementT>
-    implements SnippetSetRunner.Generator<ElementT> {
+public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   private final String resourceRoot;
 

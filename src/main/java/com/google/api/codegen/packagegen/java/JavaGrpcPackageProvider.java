@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.packagegen.java;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Performs grpc package generation for Java */
-public class JavaGrpcPackageProvider implements OutputProvider<Doc> {
+public class JavaGrpcPackageProvider implements CodeGenerator<Doc> {
 
   private final JavaPackageTransformer transformer;
   private final Model model;

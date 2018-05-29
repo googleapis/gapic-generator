@@ -17,8 +17,8 @@ package com.google.api.codegen.gapic;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.GeneratorProto;
 import com.google.api.codegen.advising.Adviser;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.common.OutputProvider;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -160,11 +160,11 @@ public class GapicGeneratorApi extends ToolDriverBase {
               .build();
 
       String outputPath = options.get(OUTPUT_FILE);
-      List<OutputProvider<?>> providers =
+      List<CodeGenerator<?>> providers =
           providerFactory.create(model, productConfig, generatorConfig, packageConfig);
       ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
       ImmutableSet.Builder<String> executables = ImmutableSet.builder();
-      for (OutputProvider<?> provider : providers) {
+      for (CodeGenerator<?> provider : providers) {
         Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
         for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
           outputFiles.put(entry.getKey(), entry.getValue().getBody());

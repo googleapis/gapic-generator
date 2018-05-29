@@ -19,12 +19,12 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * An OutputProvider performs file generation (code, config, etc) or file copying (static resources)
+ * A CodeGenerator performs file generation (code, config, etc) or file copying (static resources)
  * based on input provided at construction time.
  *
  * @param <T> Class which represents the generated file body.
  */
-public interface OutputProvider<T> {
+public interface CodeGenerator<T> {
   /**
    * Returns the file names that this provider will use for generation. They can be static files,
    * snippet templates or any other type of files, depending on the actual provider implementation.

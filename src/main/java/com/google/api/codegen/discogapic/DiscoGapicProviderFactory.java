@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.common.OutputProvider;
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -28,7 +28,7 @@ public interface DiscoGapicProviderFactory {
    *
    * <p>The outputPath is used for copying static files from resources into the output directory.
    */
-  List<OutputProvider<?>> create(
+  List<CodeGenerator<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
