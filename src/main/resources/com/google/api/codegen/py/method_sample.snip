@@ -10,9 +10,10 @@
 
 # Generate code samples for standalone samples.
 @snippet sampleCode(apiMethod, initCode)
-      @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
-          {@line}
-      @end
+    def sample_{@apiMethod.name}_form(...):
+        @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
+            {@line}
+        @end
 @end
 
 @snippet sampleCode_(apiMethod)
