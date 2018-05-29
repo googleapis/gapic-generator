@@ -14,10 +14,13 @@
  */
 package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.packagegen.java.JavaGrpcPackageProvider;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.packagegen.py.PythonGrpcPackageProvider;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
@@ -26,24 +29,30 @@ import com.google.common.collect.ImmutableMap;
 public class MainPackageProviderFactory {
 
   /** Create the PackageProvider based on the given language */
-  public static PackageProvider<Doc> create(
-      TargetLanguage language, ArtifactType artifactType, ToolOptions options) {
+  public static CodeGenerator<Doc> create(
+      TargetLanguage language,
+      ArtifactType artifactType,
+      ToolOptions options,
+      Model model,
+      PackageMetadataConfig config) {
     switch (language) {
       case PYTHON:
-        return createForPython(options);
+        return createForPython(options, model, config);
       case JAVA:
-        return createForJava(artifactType);
+        return createForJava(artifactType, model, config);
       default:
         throw new IllegalArgumentException(
             "The target language \"" + language + "\" is not supported");
     }
   }
 
-  private static PackageProvider<Doc> createForPython(ToolOptions options) {
-    return new PythonGrpcPackageProvider(options);
+  private static CodeGenerator<Doc> createForPython(
+      ToolOptions options, Model model, PackageMetadataConfig config) {
+    return new PythonGrpcPackageProvider(options, model, config);
   }
 
-  private static PackageProvider<Doc> createForJava(ArtifactType artifactType) {
+  private static CodeGenerator<Doc> createForJava(
+      ArtifactType artifactType, Model model, PackageMetadataConfig config) {
     switch (artifactType) {
       case GRPC:
         return new JavaGrpcPackageProvider(
@@ -52,7 +61,9 @@ public class MainPackageProviderFactory {
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_grpc.gradle.snip", "build.gradle",
                     "metadatagen/java/grpc/pom_grpc.xml.snip", "pom.xml"),
-                artifactType));
+                artifactType),
+            model,
+            config);
       case PROTOBUF:
         return new JavaGrpcPackageProvider(
             new JavaPackageTransformer(
@@ -60,7 +71,9 @@ public class MainPackageProviderFactory {
                     "LICENSE.snip", "LICENSE",
                     "metadatagen/java/grpc/build_protobuf.gradle.snip", "build.gradle",
                     "metadatagen/java/grpc/pom_protobuf.xml.snip", "pom.xml"),
-                artifactType));
+                artifactType),
+            model,
+            config);
     }
 
     throw new IllegalArgumentException(

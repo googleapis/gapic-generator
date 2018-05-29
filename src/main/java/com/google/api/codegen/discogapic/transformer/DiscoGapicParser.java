@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.Inflector;
 import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.util.Inflector;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
 import java.util.regex.Pattern;

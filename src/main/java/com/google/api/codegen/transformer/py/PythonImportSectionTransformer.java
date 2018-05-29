@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -393,7 +393,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateVersionedInitAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElements(model)) {
+    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
       imports.add(
           createImport(
               productConfig.getPackageName(),
@@ -419,7 +419,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateTopLevelEntryPointAppImports(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : new InterfaceView().getElements(model)) {
+    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
       imports.add(
           createImport(
               namer.getVersionedDirectoryNamespace(),

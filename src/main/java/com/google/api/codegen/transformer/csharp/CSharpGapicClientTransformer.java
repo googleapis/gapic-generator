@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;

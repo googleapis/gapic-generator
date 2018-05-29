@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.rendering;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;

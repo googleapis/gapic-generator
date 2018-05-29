@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
@@ -23,11 +23,12 @@ import java.util.List;
  * An interface-based view of model, consisting of a strategy for getting the interfaces of the
  * model.
  */
-public class InterfaceView implements InputElementView<Interface> {
+public class ProtoModels {
+
+  private ProtoModels() {}
 
   /** Gets the interfaces for the apis in the service config. */
-  @Override
-  public List<Interface> getElements(Model model) {
+  public static List<Interface> getInterfaces(Model model) {
     return model
         .getServiceConfig()
         .getApisList()

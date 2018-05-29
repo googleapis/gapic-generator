@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
 import org.apache.commons.cli.CommandLine;

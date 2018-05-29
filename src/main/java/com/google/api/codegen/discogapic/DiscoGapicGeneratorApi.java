@@ -12,12 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
 import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JAVA;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.GeneratorProto;
+import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.DiscoApiModel;
@@ -28,11 +32,9 @@ import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
@@ -99,7 +101,7 @@ public class DiscoGapicGeneratorApi {
 
   /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  static List<GapicProvider<?>> getProviders(
+  public static List<CodeGenerator<?>> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfig2File,
@@ -175,11 +177,11 @@ public class DiscoGapicGeneratorApi {
     String packageConfig2File = options.get(PACKAGE_CONFIG2_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<GapicProvider<?>> providers =
+    List<CodeGenerator<?>> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfig2File, null, enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
-    for (GapicProvider<?> provider : providers) {
+    for (CodeGenerator<?> provider : providers) {
       outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
