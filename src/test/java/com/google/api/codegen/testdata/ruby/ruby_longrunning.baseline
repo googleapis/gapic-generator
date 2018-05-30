@@ -891,6 +891,9 @@ module Google
       # The default port of the service.
       DEFAULT_SERVICE_PORT = 443
 
+      # The default set of gRPC interceptors.
+      GRPC_INTERCEPTORS = []
+
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
@@ -999,6 +1002,7 @@ module Google
         # Allow overriding the service path/port in subclasses.
         service_path = self.class::SERVICE_ADDRESS
         port = self.class::DEFAULT_SERVICE_PORT
+        interceptors = self.class::GRPC_INTERCEPTORS
         @operations_stub = Google::Gax::Grpc.create_stub(
           service_path,
           port,
@@ -1006,6 +1010,7 @@ module Google
           channel: channel,
           updater_proc: updater_proc,
           scopes: scopes,
+          interceptors: interceptors,
           &Google::Longrunning::Operations::Stub.method(:new)
         )
 
