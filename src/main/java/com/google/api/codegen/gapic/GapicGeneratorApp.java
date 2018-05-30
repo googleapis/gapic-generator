@@ -156,7 +156,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
       String outputPath = options.get(OUTPUT_FILE);
       List<CodeGenerator<?>> providers =
-          MainGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+          GapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
       ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
       ImmutableSet.Builder<String> executables = ImmutableSet.builder();
       for (CodeGenerator<?> provider : providers) {

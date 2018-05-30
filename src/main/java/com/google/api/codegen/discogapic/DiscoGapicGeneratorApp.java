@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
-import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JAVA;
+import static com.google.api.codegen.discogapic.DiscoGapicProviderFactory.JAVA;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -162,8 +162,7 @@ public class DiscoGapicGeneratorApp {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
 
-    return MainDiscoGapicProviderFactory.create(
-        model, productConfig, generatorConfig, packageConfig);
+    return DiscoGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
   }
 
   public int run() throws Exception {

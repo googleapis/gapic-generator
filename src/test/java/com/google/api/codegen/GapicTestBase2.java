@@ -23,7 +23,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
+import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -130,7 +130,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
     List<CodeGenerator<?>> providers =
-        MainGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+        GapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> provider : providers) {
@@ -178,7 +178,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .enabledArtifacts(enabledArtifacts)
             .build();
     List<CodeGenerator<?>> providers =
-        MainGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+        GapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
 
     // Don't run any providers we're not testing.
     ArrayList<CodeGenerator<?>> testedProviders = new ArrayList<>();

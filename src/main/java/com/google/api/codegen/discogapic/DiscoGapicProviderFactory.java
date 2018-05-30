@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class MainDiscoGapicProviderFactory {
+public class DiscoGapicProviderFactory {
 
   public static final String JAVA = "java";
 

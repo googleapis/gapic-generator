@@ -66,8 +66,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
-/** MainGapicProviderFactory creates CodeGenerator instances based on an id. */
-public class MainGapicProviderFactory {
+/** GapicProviderFactory creates CodeGenerator instances based on an id. */
+public class GapicProviderFactory {
 
   public static final String CLIENT_CONFIG = "client_config";
   public static final String CSHARP = "csharp";

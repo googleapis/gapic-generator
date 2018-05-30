@@ -26,7 +26,7 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 
 /** A factory for package providers. So far, only grpc packages are supported. */
-public class MainPackageProviderFactory {
+public class PackageProviderFactory {
 
   /** Create the PackageProvider based on the given language */
   public static CodeGenerator<Doc> create(
