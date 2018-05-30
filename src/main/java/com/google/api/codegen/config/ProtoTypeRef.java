@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;

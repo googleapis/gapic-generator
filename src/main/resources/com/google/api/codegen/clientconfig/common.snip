@@ -58,13 +58,13 @@
     @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service)
         @join retryDef : context.entrySet(gapicInterfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
             "{@retryDef.getKey}": {
-              "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelay.toMillis()},
+              "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelayMillis()},
               "retry_delay_multiplier": {@retryDef.getValue.getRetryDelayMultiplier},
-              "max_retry_delay_millis": {@retryDef.getValue.getMaxRetryDelay.toMillis()},
-              "initial_rpc_timeout_millis": {@retryDef.getValue.getInitialRpcTimeout.toMillis()},
+              "max_retry_delay_millis": {@retryDef.getValue.getMaxRetryDelayMillis()},
+              "initial_rpc_timeout_millis": {@retryDef.getValue.getInitialRpcTimeoutMillis()},
               "rpc_timeout_multiplier": {@retryDef.getValue.getRpcTimeoutMultiplier},
-              "max_rpc_timeout_millis": {@retryDef.getValue.getMaxRpcTimeout.toMillis()},
-              "total_timeout_millis": {@retryDef.getValue.getTotalTimeout.toMillis()}
+              "max_rpc_timeout_millis": {@retryDef.getValue.getMaxRpcTimeoutMillis()},
+              "total_timeout_millis": {@retryDef.getValue.getTotalTimeoutMillis()}
             }
         @end
     @end

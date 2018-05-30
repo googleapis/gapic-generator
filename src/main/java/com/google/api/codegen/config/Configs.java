@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import java.util.HashMap;
@@ -49,20 +49,6 @@ class Configs {
               return null;
             }
             return VersionBound.create(versionMap.get("lower"), versionMap.get("upper"));
-          }
-        });
-  }
-
-  static Map<TargetLanguage, ReleaseLevel> createReleaseLevelMap(Map<String, String> inputMap) {
-    Map<TargetLanguage, String> intermediate = buildMapWithDefault(inputMap);
-    // Convert parsed YAML map into ReleaseLevel enum
-    return Maps.transformValues(
-        intermediate,
-        new Function<String, ReleaseLevel>() {
-          @Override
-          @Nullable
-          public ReleaseLevel apply(@Nullable String releaseLevelName) {
-            return parseReleaseLevel(releaseLevelName);
           }
         });
   }

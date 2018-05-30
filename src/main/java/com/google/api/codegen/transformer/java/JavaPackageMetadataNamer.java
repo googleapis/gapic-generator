@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.grpcmetadatagen.ArtifactType;
+import com.google.api.codegen.packagegen.ArtifactType;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 
-/** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
+/** A JavaPackageMetadataNamer provides nodejs specific names for metadata views. */
 public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   private final String packageName;
   private final ArtifactType artifactType;

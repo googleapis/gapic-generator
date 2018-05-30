@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -187,16 +187,14 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       SurfaceNamer surfaceNamer,
       String outputPath) {
     List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
-    String gapicPackageName =
-        surfaceNamer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON));
+    String gapicPackageName = surfaceNamer.getGapicPackageName(packageConfig.packageName());
     return metadataTransformer
         .generateMetadataView(
             metadataNamer, packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName()))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(
-                metadataTransformer.getMergedReleaseLevel(
-                    packageConfig, productConfig, TargetLanguage.PYTHON)))
+                metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
         .clientModules(clientModules(surfaceNamer))
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
@@ -221,8 +219,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     metadataNamer.getReleaseAnnotation(
-                        metadataTransformer.getMergedReleaseLevel(
-                            packageConfig, productConfig, TargetLanguage.PYTHON)))
+                        metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
                 .targetLanguage("Python")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(

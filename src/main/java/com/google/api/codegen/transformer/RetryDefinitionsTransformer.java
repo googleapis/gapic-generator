@@ -20,7 +20,6 @@ import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import org.threeten.bp.Duration;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
@@ -87,33 +85,11 @@ public class RetryDefinitionsTransformer {
     return builder.build();
   }
 
-  public static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetrySettings> builder = ImmutableMap.builder();
+  public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(
+      InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, RetryParamsDefinitionProto> builder = ImmutableMap.builder();
     for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      try {
-        RetrySettings settings =
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.ofMillis(retryDef.getInitialRetryDelayMillis()))
-                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxRetryDelay(Duration.ofMillis(retryDef.getMaxRetryDelayMillis()))
-                .setInitialRpcTimeout(Duration.ofMillis(retryDef.getInitialRpcTimeoutMillis()))
-                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxRpcTimeout(Duration.ofMillis(retryDef.getMaxRpcTimeoutMillis()))
-                .setTotalTimeout(Duration.ofMillis(retryDef.getTotalTimeoutMillis()))
-                .build();
-        builder.put(retryDef.getName(), settings);
-      } catch (IllegalStateException | NullPointerException e) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "error while creating retry params: %s (in interface %s)",
-                e,
-                interfaceConfigProto.getName()));
-      }
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
+      builder.put(retryDef.getName(), retryDef);
     }
     return builder.build();
   }
@@ -122,22 +98,15 @@ public class RetryDefinitionsTransformer {
     List<RetryParamsDefinitionView> definitions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
-    for (Entry<String, RetrySettings> retryCodesDef :
+    for (Entry<String, RetryParamsDefinitionProto> retryCodesDef :
         context.getInterfaceConfig().getRetrySettingsDefinition().entrySet()) {
-      RetrySettings settings = retryCodesDef.getValue();
-      RetryParamsDefinitionView.Builder params = RetryParamsDefinitionView.newBuilder();
-      params.key(retryCodesDef.getKey());
-      params.name(namer.publicMethodName(Name.from(retryCodesDef.getKey())));
-      params.retryBackoffMethodName(namer.retryBackoffMethodName(retryCodesDef.getKey()));
-      params.timeoutBackoffMethodName(namer.timeoutBackoffMethodName(retryCodesDef.getKey()));
-      params.initialRetryDelay(settings.getInitialRetryDelay());
-      params.retryDelayMultiplier(settings.getRetryDelayMultiplier());
-      params.maxRetryDelay(settings.getMaxRetryDelay());
-      params.initialRpcTimeout(settings.getInitialRpcTimeout());
-      params.rpcTimeoutMultiplier(settings.getRpcTimeoutMultiplier());
-      params.maxRpcTimeout(settings.getMaxRpcTimeout());
-      params.totalTimeout(settings.getTotalTimeout());
-      definitions.add(params.build());
+      RetryParamsDefinitionView.Builder view = RetryParamsDefinitionView.newBuilder();
+      view.key(retryCodesDef.getKey());
+      view.name(namer.publicMethodName(Name.from(retryCodesDef.getKey())));
+      view.retryBackoffMethodName(namer.retryBackoffMethodName(retryCodesDef.getKey()));
+      view.timeoutBackoffMethodName(namer.timeoutBackoffMethodName(retryCodesDef.getKey()));
+      view.params(retryCodesDef.getValue());
+      definitions.add(view.build());
     }
 
     return definitions;

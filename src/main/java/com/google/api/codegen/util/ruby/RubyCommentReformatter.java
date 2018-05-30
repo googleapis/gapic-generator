@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.util.ruby;
 
-import com.google.api.codegen.CommentPatterns;
+import com.google.api.codegen.util.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.CommentTransformer.Transformation;

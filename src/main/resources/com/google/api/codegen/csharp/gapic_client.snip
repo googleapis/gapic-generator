@@ -95,15 +95,15 @@
             /// <remarks>
             /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
-            /// <item><description>Initial delay: {@retry.initialRetryDelay.toMillis} milliseconds</description></item>
-            /// <item><description>Maximum delay: {@retry.maxRetryDelay.toMillis} milliseconds</description></item>
-            /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
+            /// <item><description>Initial delay: {@retry.params.getInitialRetryDelayMillis} milliseconds</description></item>
+            /// <item><description>Maximum delay: {@retry.params.getMaxRetryDelayMillis} milliseconds</description></item>
+            /// <item><description>Delay multiplier: {@retry.params.getRetryDelayMultiplier}</description></item>
             /// </list>
             /// </remarks>
             public static gaxgrpc::BackoffSettings {@retry.retryBackoffMethodName}() => new gaxgrpc::BackoffSettings(
-                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
-                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
-                delayMultiplier: {@retry.retryDelayMultiplier}
+                delay: sys::TimeSpan.FromMilliseconds({@retry.params.getInitialRetryDelayMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.params.getMaxRetryDelayMillis}),
+                delayMultiplier: {@retry.params.getRetryDelayMultiplier}
             );
             
             /// <summary>
@@ -115,15 +115,15 @@
             /// <remarks>
             /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
-            /// <item><description>Initial timeout: {@retry.initialRpcTimeout.toMillis} milliseconds</description></item>
-            /// <item><description>Timeout multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
-            /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.toMillis} milliseconds</description></item>
+            /// <item><description>Initial timeout: {@retry.params.getInitialRpcTimeoutMillis} milliseconds</description></item>
+            /// <item><description>Timeout multiplier: {@retry.params.getRpcTimeoutMultiplier}</description></item>
+            /// <item><description>Maximum timeout: {@retry.params.getMaxRpcTimeoutMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
             public static gaxgrpc::BackoffSettings {@retry.timeoutBackoffMethodName}() => new gaxgrpc::BackoffSettings(
-                delay: sys::TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
-                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
-                delayMultiplier: {@retry.rpcTimeoutMultiplier}
+                delay: sys::TimeSpan.FromMilliseconds({@retry.params.getInitialRpcTimeoutMillis}),
+                maxDelay: sys::TimeSpan.FromMilliseconds({@retry.params.getMaxRpcTimeoutMillis}),
+                delayMultiplier: {@retry.params.getRpcTimeoutMultiplier}
             );
 
         @end
@@ -139,12 +139,12 @@
                 /// The default <c>{@api.name}.{@call.methodName}</c> and
                 /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="gaxgrpc::RetrySettings"/> are:
                 /// <list type="bullet">
-                /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.toMillis} milliseconds</description></item>
-                /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
-                /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.toMillis} milliseconds</description></item>
-                /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.toMillis} milliseconds</description></item>
-                /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
-                /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.toMillis} milliseconds</description></item>
+                /// <item><description>Initial retry delay: {@call.retryParamsView.params.getInitialRetryDelayMillis} milliseconds</description></item>
+                /// <item><description>Retry delay multiplier: {@call.retryParamsView.params.getRetryDelayMultiplier}</description></item>
+                /// <item><description>Retry maximum delay: {@call.retryParamsView.params.getMaxRetryDelayMillis} milliseconds</description></item>
+                /// <item><description>Initial timeout: {@call.retryParamsView.params.getInitialRpcTimeoutMillis} milliseconds</description></item>
+                /// <item><description>Timeout multiplier: {@call.retryParamsView.params.getRpcTimeoutMultiplier}</description></item>
+                /// <item><description>Timeout maximum delay: {@call.retryParamsView.params.getMaxRpcTimeoutMillis} milliseconds</description></item>
                 /// </list>
                 /// Retry will be attempted on the following response status codes:
                 /// <list>
@@ -156,13 +156,13 @@
                     /// <item><description>No status codes</description></item>
                 @end
                 /// </list>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.params.getTotalTimeoutMillis} milliseconds.
                 /// </remarks>
                 public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
                     gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                         retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
                         timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                        totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
+                        totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.params.getTotalTimeoutMillis})),
                         retryFilter: {@call.retryCodesView.retryFilterMethodName}
                     )));
             @case "ServerStreaming"
@@ -170,19 +170,19 @@
                 /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.params.getTotalTimeoutMillis} milliseconds.
                 /// </remarks>
                 public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.params.getTotalTimeoutMillis})));
             @case "BidiStreaming"
                 /// <summary>
                 /// <see cref="gaxgrpc::CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.params.getTotalTimeoutMillis} milliseconds.
                 /// </remarks>
                 public gaxgrpc::CallSettings {@call.memberName} { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
+                    gaxgrpc::CallTiming.FromTimeout(sys::TimeSpan.FromMilliseconds({@call.retryParamsView.params.getTotalTimeoutMillis})));
 
                 /// <summary>
                 /// <see cref="gaxgrpc::BidirectionalStreamingSettings"/> for calls to

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -25,9 +26,8 @@ import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceT
 import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
@@ -41,13 +41,13 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
   public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<GapicProvider<?>> defaultCreate(
+  public static List<CodeGenerator<?>> defaultCreate(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
       PackageMetadataConfig packageConfig) {
 
-    ArrayList<GapicProvider<?>> providers = new ArrayList<>();
+    ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
     String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
@@ -74,12 +74,12 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
         providers.add(provider);
 
-        GapicProvider metadataProvider =
+        CodeGenerator metadataProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
+                .setModelToViewTransformer(new JavaGapicPackageTransformer(packageConfig))
                 .build();
         providers.add(metadataProvider);
       }
@@ -90,7 +90,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        GapicProvider<?> testProvider =
+        CodeGenerator<?> testProvider =
             ViewModelDiscoGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
@@ -112,7 +112,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
 
   /** Create the DiscoGapicProvider based on the given id */
   @Override
-  public List<GapicProvider<?>> create(
+  public List<CodeGenerator<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
