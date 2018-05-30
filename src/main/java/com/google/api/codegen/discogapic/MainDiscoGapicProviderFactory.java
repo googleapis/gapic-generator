@@ -36,12 +36,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory {
+public class MainDiscoGapicProviderFactory {
 
   public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
-  public static List<CodeGenerator<?>> defaultCreate(
+  public static List<CodeGenerator<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
@@ -108,15 +108,5 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
     } else {
       throw new NotImplementedException("DiscoGapicProviderFactory: invalid id \"" + id + "\"");
     }
-  }
-
-  /** Create the DiscoGapicProvider based on the given id */
-  @Override
-  public List<CodeGenerator<?>> create(
-      DiscoApiModel model,
-      GapicProductConfig productConfig,
-      GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
-    return defaultCreate(model, productConfig, generatorConfig, packageConfig);
   }
 }

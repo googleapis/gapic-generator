@@ -67,7 +67,7 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates CodeGenerator instances based on an id. */
-public class MainGapicProviderFactory implements GapicProviderFactory {
+public class MainGapicProviderFactory {
 
   public static final String CLIENT_CONFIG = "client_config";
   public static final String CSHARP = "csharp";
@@ -81,7 +81,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
   public static final String RUBY_DOC = "ruby_doc";
 
   /** Create the GapicProviders based on the given id */
-  public static List<CodeGenerator<?>> defaultCreate(
+  public static List<CodeGenerator<?>> create(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
@@ -508,15 +508,5 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
       throw new IllegalArgumentException("No artifacts are enabled.");
     }
     return providers;
-  }
-
-  /** Create the GapicProviders based on the given id */
-  @Override
-  public List<CodeGenerator<?>> create(
-      Model model,
-      GapicProductConfig productConfig,
-      GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
-    return defaultCreate(model, productConfig, generatorConfig, packageConfig);
   }
 }

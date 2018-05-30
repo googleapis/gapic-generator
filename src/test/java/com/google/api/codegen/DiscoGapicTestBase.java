@@ -16,7 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.discogapic.DiscoGapicGeneratorApi;
+import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -70,7 +70,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected void setupDiscovery() {
     try {
       discoGapicProviders =
-          DiscoGapicGeneratorApi.getProviders(
+          DiscoGapicGeneratorApp.getProviders(
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),

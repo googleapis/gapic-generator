@@ -37,7 +37,6 @@ import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -58,13 +57,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicGeneratorApi {
-  public static final String DISCOVERY_DOC_OPTION_NAME = "discovery_doc";
-
+public class DiscoGapicGeneratorApp {
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
-          DISCOVERY_DOC_OPTION_NAME,
+          "discovery_doc",
           "The Discovery doc representing the service description.",
           "");
 
@@ -95,7 +92,7 @@ public class DiscoGapicGeneratorApi {
   private final ToolOptions options;
 
   /** Constructs a code generator api based on given options. */
-  public DiscoGapicGeneratorApi(ToolOptions options) {
+  public DiscoGapicGeneratorApp(ToolOptions options) {
     this.options = options;
   }
 
@@ -152,7 +149,7 @@ public class DiscoGapicGeneratorApi {
     }
     if (surfaceNamer == null) {
       throw new UnsupportedOperationException(
-          "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
+          "DiscoGapicGeneratorApp: language \"" + language + "\" not yet supported");
     }
 
     DiscoApiModel model =
@@ -160,17 +157,16 @@ public class DiscoGapicGeneratorApi {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, surfaceNamer);
 
-    String factory = generator.getFactory();
     String id = generator.getId();
 
-    DiscoGapicProviderFactory providerFactory = createProviderFactory(factory);
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
 
-    return providerFactory.create(model, productConfig, generatorConfig, packageConfig);
+    return MainDiscoGapicProviderFactory.create(
+        model, productConfig, generatorConfig, packageConfig);
   }
 
-  public void run() throws Exception {
+  public int run() throws Exception {
 
     String discoveryDocPath = options.get(DISCOVERY_DOC);
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
@@ -185,19 +181,7 @@ public class DiscoGapicGeneratorApi {
       outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
-  }
-
-  private static DiscoGapicProviderFactory createProviderFactory(String factory) {
-    @SuppressWarnings("unchecked")
-    DiscoGapicProviderFactory provider =
-        ClassInstantiator.createClass(
-            factory,
-            DiscoGapicProviderFactory.class,
-            new Class<?>[] {},
-            new Object[] {},
-            "generator",
-            System.err::printf);
-    return provider;
+    return 0;
   }
 
   private static List<File> pathsToFiles(List<String> configFileNames) {

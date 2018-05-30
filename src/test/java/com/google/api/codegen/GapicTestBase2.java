@@ -130,8 +130,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .enabledArtifacts(Arrays.asList("surface", "test"))
             .build();
     List<CodeGenerator<?>> providers =
-        MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+        MainGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> provider : providers) {
@@ -179,8 +178,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             .enabledArtifacts(enabledArtifacts)
             .build();
     List<CodeGenerator<?>> providers =
-        MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+        MainGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
 
     // Don't run any providers we're not testing.
     ArrayList<CodeGenerator<?>> testedProviders = new ArrayList<>();
