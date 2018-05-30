@@ -1066,6 +1066,25 @@ class LibraryServiceClient(object):
 
 
     @classmethod
+    def create_channel(cls, credentials=none, **kwargs):
+        """Create a secure channel with credentials scoped to this API.
+        Args:
+            credentials (google.auth.credentials.Credentials): The credentials. If
+                not specified, then this function will attempt to ascertain the
+                credentials from the environment using :func:`google.auth.default`..
+            kwargs: Additional key-word args passed to
+                :func:`google.auth.transport.grpc.secure_authorized_channel`.
+        Returns:
+            grpc.Channel: The created channel.
+        """
+        return google.api_core.grpc_helpers.create_channel(
+            cls.SERVICE_ADDRESS,
+            credentials=credentials,
+            scopes=cls._DEFAULT_SCOPES,
+        )
+
+
+    @classmethod
     def shelf_path(cls, shelf_id):
         """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
