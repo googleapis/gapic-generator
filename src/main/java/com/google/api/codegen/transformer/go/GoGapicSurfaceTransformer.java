@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -53,9 +54,9 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import java.io.File;
@@ -293,7 +294,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
     Map<String, ImmutableSet<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
-    Map<String, RetrySettings> retryParamsDef =
+    ImmutableMap<String, RetryParamsDefinitionProto> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
       ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());

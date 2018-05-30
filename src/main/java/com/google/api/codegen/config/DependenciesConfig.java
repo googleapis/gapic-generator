@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.auto.value.AutoValue;
 import com.google.common.io.Resources;
 import java.io.IOException;
