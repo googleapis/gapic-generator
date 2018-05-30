@@ -31,7 +31,7 @@ unrelated line
 		t.Fatal(err)
 	}
 
-	expected := []checkConfig{
+	for _, exp := range []checkConfig{
 		{
 			id:   "set1",
 			lang: "java",
@@ -52,11 +52,9 @@ unrelated line
 			lang: "go",
 			form: "zap",
 		},
-	}
-
-	for _, exp := range expected {
+	} {
 		if !checks[exp] {
-			t.Errorf("expeted %v, not found", exp)
+			t.Errorf("expected %v, not found", exp)
 		}
 		delete(checks, exp)
 	}
@@ -65,7 +63,7 @@ unrelated line
 	}
 }
 
-func TestDelFoundForms(t *testing.T) {
+func TestDeleteFoundForms(t *testing.T) {
 	const lang = "mylang"
 	const baselineFile = `
 ============== file: foo ==============
@@ -75,7 +73,18 @@ func TestDelFoundForms(t *testing.T) {
 // calling form: "badform"
 ============== file: bar ==============
 // valueSet "badset"
-`
+============== file: x ==============
+// Deleting a config not present in the set is a no-op
+// calling form: "formNotFound"
+// valueSet "setNotFound"
+============== file: x ==============
+// Deleting partial matches are no-ops
+// calling form: "form1"
+// valueSet "set2"
+============== file: x ==============
+// Deleting partial matches are no-ops
+// calling form: "form2"
+// valueSet "set1"`
 	tests := []struct {
 		conf       checkConfig
 		inBaseline bool
@@ -96,13 +105,29 @@ func TestDelFoundForms(t *testing.T) {
 			},
 			inBaseline: false,
 		},
+		{
+			conf: checkConfig{
+				id:   "form2",
+				form: "set2",
+				lang: lang,
+			},
+			inBaseline: false,
+		},
 	}
 
 	checks := map[checkConfig]bool{}
 	for _, ts := range tests {
 		checks[ts.conf] = true
 	}
-	delFoundForms(baselineFile, lang, checks)
+
+	deleteFoundForms(baselineFile, lang+"wrong", checks)
+	for _, ts := range tests {
+		if !checks[ts.conf] {
+			t.Errorf("deleteFoundForms in a different language should be no-op; expected %v but not found", ts.conf)
+		}
+	}
+
+	deleteFoundForms(baselineFile, lang, checks)
 	for _, ts := range tests {
 		if ts.inBaseline && checks[ts.conf] {
 			t.Errorf("config is in baseline but not deleted: %v", ts.conf)

@@ -34,13 +34,13 @@ The line specifying the calling form is in the format:
 
   callingFormCheck: <valueSetID> <language>: <callingForm1> <callingForm2> ...
 
-The string "callingFormCheck" must start the line, preceded only by a possilby empty
-run of whitespaces. To check for multiple languages or vaule sets, simply write the line
+The string "callingFormCheck" must start the line, preceded only by a possibly empty
+run of whitespaces. To check for multiple languages or value sets, simply write the line
 multiple times. Hint: YAML files allow multi-line string literals like
 
   sometext: >
-    callingFormCheck: foo bar: zip zap
-    callingFormCheck: spam eggs: ham
+    callingFormCheck: valud_id java: form1 form2
+    callingFormCheck: another_value_id python: formSpam formEgg formHam
 `
 
 func main() {
@@ -88,7 +88,7 @@ func main() {
 			return err
 		}
 		lang := filepath.Base(filepath.Dir(path))
-		delFoundForms(string(baseline), lang, checks)
+		deleteFoundForms(string(baseline), lang, checks)
 		return nil
 	}
 	dir := "."
@@ -105,7 +105,7 @@ func main() {
 			errs = append(errs, c)
 		}
 		sort.Sort(checkConfigSlice(errs)) // Not sort.Slice, Go version on Travis is too old.
-		fmt.Println("not found:")
+		fmt.Printf("The following value set/calling form cominations are specified in %q but weren't found in *.baseline files:\n", *yamlFname)
 		for _, e := range errs {
 			fmt.Println(e)
 		}
@@ -130,7 +130,7 @@ func (s checkConfigSlice) Less(i, j int) bool {
 var checkPrefix = "callingFormCheck:"
 
 // readChecks reads r for callingFormCheck lines as described in command's usage
-// and returns the set of the check configuration.
+// and returns the set of the checkCnfigs to be verified in the baselines.
 func readChecks(r io.Reader) (map[checkConfig]bool, error) {
 	sc := bufio.NewScanner(r)
 	checks := map[checkConfig]bool{}
@@ -179,8 +179,8 @@ var (
 	valueSetRe    = regexp.MustCompile(`valueSet "(.*?)"`)
 )
 
-// delFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
-func delFoundForms(baseline string, lang string, forms map[checkConfig]bool) error {
+// deleteFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
+func deleteFoundForms(baseline string, lang string, forms map[checkConfig]bool) error {
 	// Split the baseline file into its "logical files"
 	var files []string
 	for {
