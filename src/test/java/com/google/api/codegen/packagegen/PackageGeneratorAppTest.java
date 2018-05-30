@@ -35,7 +35,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.junit.Test;
 
-public class PackageGeneratorTest extends ConfigBaselineTestCase {
+public class PackageGeneratorAppTest extends ConfigBaselineTestCase {
   private class OutputCollector extends SimpleFileVisitor<Path> {
     Map<String, GeneratedResult<Doc>> collectedFiles = new TreeMap<>();
     Path testDir;
@@ -59,7 +59,7 @@ public class PackageGeneratorTest extends ConfigBaselineTestCase {
 
   private String language;
   private String packageConfig;
-  private ArtifactType artifactType;
+  private PackagingArtifactType artifactType;
 
   @Override
   protected boolean suppressDiagnosis() {
@@ -67,7 +67,8 @@ public class PackageGeneratorTest extends ConfigBaselineTestCase {
     return true;
   }
 
-  private void test(String name, String packageConfig, String language, ArtifactType artifactType)
+  private void test(
+      String name, String packageConfig, String language, PackagingArtifactType artifactType)
       throws Exception {
     this.language = language;
     this.packageConfig = packageConfig;
@@ -82,18 +83,18 @@ public class PackageGeneratorTest extends ConfigBaselineTestCase {
     String metadataConfigPath = getTestDataLocator().findTestData(packageConfig).getPath();
 
     ToolOptions options = ToolOptions.create();
-    options.set(PackageGenerator.OUTPUT_DIR, outFile);
+    options.set(PackageGeneratorApp.OUTPUT_DIR, outFile);
     options.set(
-        PackageGenerator.INPUT_DIR, getTestDataLocator().findTestData("fakeprotodir").getPath());
-    options.set(PackageGenerator.PACKAGE_CONFIG2_FILE, metadataConfigPath);
-    options.set(PackageGenerator.LANGUAGE, language);
-    options.set(PackageGenerator.ARTIFACT_TYPE, artifactType);
+        PackageGeneratorApp.INPUT_DIR, getTestDataLocator().findTestData("fakeprotodir").getPath());
+    options.set(PackageGeneratorApp.PACKAGE_CONFIG2_FILE, metadataConfigPath);
+    options.set(PackageGeneratorApp.LANGUAGE, language);
+    options.set(PackageGeneratorApp.ARTIFACT_TYPE, artifactType);
     URL dependenciesYamlUrl =
         getTestDataLocator()
             .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml");
     Preconditions.checkNotNull(dependenciesYamlUrl);
     Map<String, GeneratedResult<Doc>> generatedDocs =
-        new PackageGenerator(options, dependenciesYamlUrl).generate(model);
+        new PackageGeneratorApp(options, dependenciesYamlUrl).generate(model);
 
     if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
       OutputCollector collector = new OutputCollector(Paths.get(outFile));
@@ -113,21 +114,21 @@ public class PackageGeneratorTest extends ConfigBaselineTestCase {
   // =====
   @Test
   public void java_library() throws Exception {
-    test("library", "library_pkg2.yaml", "java", ArtifactType.PROTOBUF);
+    test("library", "library_pkg2.yaml", "java", PackagingArtifactType.PROTOBUF);
   }
 
   @Test
   public void java_grpc_stubs() throws Exception {
-    test("library", "library_stubs_pkg2.yaml", "java", ArtifactType.GRPC);
+    test("library", "library_stubs_pkg2.yaml", "java", PackagingArtifactType.GRPC);
   }
 
   @Test
   public void java_common_protos() throws Exception {
-    test("library", "common_protos_pkg2.yaml", "java", ArtifactType.PROTOBUF);
+    test("library", "common_protos_pkg2.yaml", "java", PackagingArtifactType.PROTOBUF);
   }
 
   @Test
   public void python_library() throws Exception {
-    test("library", "library_pkg2.yaml", "python", ArtifactType.GRPC);
+    test("library", "library_pkg2.yaml", "python", PackagingArtifactType.GRPC);
   }
 }

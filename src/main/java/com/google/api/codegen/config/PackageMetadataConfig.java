@@ -16,7 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.packagegen.ArtifactType;
+import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
@@ -127,7 +127,7 @@ public abstract class PackageMetadataConfig {
   }
 
   @Nullable
-  public abstract ArtifactType artifactType();
+  public abstract PackagingArtifactType artifactType();
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
@@ -190,7 +190,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder shortName(String val);
 
-    abstract Builder artifactType(ArtifactType val);
+    abstract Builder artifactType(PackagingArtifactType val);
 
     abstract Builder apiVersion(String val);
 
@@ -226,7 +226,7 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .releaseLevel(ReleaseLevel.ALPHA)
         .shortName("")
-        .artifactType(ArtifactType.GRPC)
+        .artifactType(PackagingArtifactType.GRPC)
         .apiVersion("")
         .protoPath("")
         .author("")
