@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import java.util.HashMap;

@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -25,7 +25,7 @@ public abstract class RetryConfigDefinitionView {
 
   public abstract List<String> retryCodes();
 
-  public abstract RetrySettings params();
+  public abstract RetryParamsDefinitionProto params();
 
   public static Builder newBuilder() {
     return new AutoValue_RetryConfigDefinitionView.Builder();
@@ -38,7 +38,7 @@ public abstract class RetryConfigDefinitionView {
 
     public abstract Builder retryCodes(List<String> val);
 
-    public abstract Builder params(RetrySettings val);
+    public abstract Builder params(RetryParamsDefinitionProto val);
 
     public abstract RetryConfigDefinitionView build();
   }

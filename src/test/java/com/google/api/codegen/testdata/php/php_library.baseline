@@ -4944,7 +4944,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigBookTest');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -5009,7 +5011,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject->setName('operations/getBigBookTest');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -5078,7 +5082,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -5143,7 +5149,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.gax.retrying.RetrySettings.Builder;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
-import org.threeten.bp.Duration;
 
 @AutoValue
 public abstract class RetryParamsDefinitionView {
@@ -30,19 +29,7 @@ public abstract class RetryParamsDefinitionView {
 
   public abstract String timeoutBackoffMethodName();
 
-  public abstract Duration totalTimeout();
-
-  public abstract Duration initialRetryDelay();
-
-  public abstract double retryDelayMultiplier();
-
-  public abstract Duration maxRetryDelay();
-
-  public abstract Duration initialRpcTimeout();
-
-  public abstract double rpcTimeoutMultiplier();
-
-  public abstract Duration maxRpcTimeout();
+  public abstract RetryParamsDefinitionProto params();
 
   public static Builder newBuilder() {
     return new AutoValue_RetryParamsDefinitionView.Builder();
@@ -58,19 +45,7 @@ public abstract class RetryParamsDefinitionView {
 
     public abstract Builder timeoutBackoffMethodName(String val);
 
-    public abstract Builder initialRetryDelay(Duration initialDelay);
-
-    public abstract Builder retryDelayMultiplier(double multiplier);
-
-    public abstract Builder maxRetryDelay(Duration maxDelay);
-
-    public abstract Builder initialRpcTimeout(Duration initialTimeout);
-
-    public abstract Builder rpcTimeoutMultiplier(double multiplier);
-
-    public abstract Builder maxRpcTimeout(Duration maxTimeout);
-
-    public abstract Builder totalTimeout(Duration totalTimeout);
+    public abstract Builder params(RetryParamsDefinitionProto val);
 
     public abstract RetryParamsDefinitionView build();
   }

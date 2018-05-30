@@ -427,8 +427,8 @@ task :acceptance, :project, :keyfile do |t, args|
     fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
   end
   require "library/credentials"
-  (Library::Credentials::PATH_ENV_VARS +
-   Library::Credentials::JSON_ENV_VARS).each do |path|
+  (Library::V1::Credentials::PATH_ENV_VARS +
+   Library::V1::Credentials::JSON_ENV_VARS).each do |path|
     ENV[path] = nil
   end
   ENV["LIBRARY_PROJECT"] = project
@@ -736,35 +736,6 @@ module Library
   end
 end
 
-============== file: lib/library/credentials.rb ==============
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-require "googleauth"
-
-module Library
-  class Credentials < Google::Auth::Credentials
-    SCOPE = [
-      "https://www.googleapis.com/auth/cloud-platform",
-      "https://www.googleapis.com/auth/library"
-    ].freeze
-    PATH_ENV_VARS = %w(LIBRARY_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
-    JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
-    DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
-  end
-end
-
 ============== file: lib/library/v1.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -781,7 +752,7 @@ end
 # limitations under the License.
 
 require "library/v1/library_service_client"
-require "library/v1/errors_pb"
+require "errors_pb"
 
 # rubocop:disable LineLength
 
@@ -919,6 +890,37 @@ module Library
         lib_version: lib_version
       }.select { |_, v| v != nil }
       Library::V1::LibraryServiceClient.new(**kwargs)
+    end
+  end
+end
+
+============== file: lib/library/v1/credentials.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "googleauth"
+
+module Library
+  module V1
+    class Credentials < Google::Auth::Credentials
+      SCOPE = [
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/library"
+      ].freeze
+      PATH_ENV_VARS = %w(LIBRARY_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+      JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+      DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
     end
   end
 end
@@ -2954,7 +2956,7 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
-        credentials ||= Library::Credentials.default
+        credentials ||= Library::V1::Credentials.default
 
         @operations_client = OperationsClient.new(
           credentials: credentials,
@@ -2966,7 +2968,7 @@ module Library
         )
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
-          updater_proc = Library::Credentials.new(credentials).updater_proc
+          updater_proc = Library::V1::Credentials.new(credentials).updater_proc
         end
         if credentials.is_a?(GRPC::Core::Channel)
           channel = credentials
@@ -4856,7 +4858,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockLibraryServiceCredentials < Library::Credentials
+class MockLibraryServiceCredentials < Library::V1::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -4901,7 +4903,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -4936,7 +4938,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -4983,7 +4985,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5020,7 +5022,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5056,7 +5058,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5082,7 +5084,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5116,7 +5118,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5151,7 +5153,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5198,7 +5200,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5235,7 +5237,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5284,7 +5286,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5321,7 +5323,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5369,7 +5371,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5420,7 +5422,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5471,7 +5473,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5506,7 +5508,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5548,7 +5550,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5580,7 +5582,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5614,7 +5616,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5649,7 +5651,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5698,7 +5700,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5735,7 +5737,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5784,7 +5786,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5821,7 +5823,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5857,7 +5859,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5883,7 +5885,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5930,7 +5932,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -5978,7 +5980,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6025,7 +6027,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6060,7 +6062,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6109,7 +6111,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6146,7 +6148,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6193,7 +6195,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6228,7 +6230,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6267,7 +6269,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6315,7 +6317,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6354,7 +6356,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6378,7 +6380,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6425,7 +6427,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6454,7 +6456,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6496,7 +6498,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6527,7 +6529,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6569,7 +6571,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6599,7 +6601,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6643,7 +6645,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6677,7 +6679,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6717,7 +6719,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6754,7 +6756,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6794,7 +6796,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6831,7 +6833,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6885,7 +6887,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6923,7 +6925,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6952,7 +6954,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -6997,7 +6999,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -7035,7 +7037,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -7064,7 +7066,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -7161,7 +7163,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method
@@ -7315,7 +7317,7 @@ describe Library::V1::LibraryServiceClient do
       mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::Credentials.stub(:default, mock_credentials) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library.new(version: :v1)
 
           # Call method

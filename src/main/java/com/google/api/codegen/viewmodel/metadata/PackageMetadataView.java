@@ -16,7 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
-import com.google.api.codegen.grpcmetadatagen.ArtifactType;
+import com.google.api.codegen.packagegen.ArtifactType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;

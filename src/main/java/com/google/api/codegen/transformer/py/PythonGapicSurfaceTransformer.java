@@ -14,8 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -27,6 +26,7 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicParser;
+import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -341,8 +341,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<VersionIndexRequireView> versionedInitRequireViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
-    return new InterfaceView()
-        .getElements(model)
+    return ProtoModels.getInterfaces(model)
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
         .map(
@@ -410,8 +409,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<VersionIndexRequireView> topLevelRequireViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
-    return new InterfaceView()
-        .getElements(model)
+    return ProtoModels.getInterfaces(model)
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
         .map(

@@ -66,7 +66,6 @@ ext {
     commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
-    gax: 'com.google.api:gax:1.5.1',
     grpcCore: 'io.grpc:grpc-core:1.0.1',
     gson: 'com.google.code.gson:gson:2.3',
     guava: 'com.google.guava:guava:25.0-jre',
@@ -106,7 +105,6 @@ dependencies {
     libraries.commonmark,
     libraries.commonsCli,
     libraries.commonsLang,
-    libraries.gax,
     libraries.grpcCore,
     libraries.gson,
     libraries.guava,
@@ -389,14 +387,14 @@ classes {
   dependsOn createProperties
 }
 
-// Task to run CodeGeneratorTool
+// Task to run GapicGeneratorTool
 // =============================
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.CodeGeneratorTool'
+  main = 'com.google.api.codegen.gapic.GapicGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
@@ -409,20 +407,7 @@ task runCodeGen(type: JavaExec) {
 //   ./gradlew runDiscoCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runDiscoCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoGapicGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-// Task to run SynchronizerTool
-// =============================
-//
-// Command line args can be passed to the tool as a comma-separated list:
-//   ./gradlew runSynchronizer '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
-task runSynchronizer(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.SynchronizerTool'
+  main = 'com.google.api.codegen.discogapic.DiscoGapicGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
@@ -488,7 +473,7 @@ task runDiscoConfigGen(type: JavaExec) {
 //   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
+  main = 'com.google.api.codegen.packagegen.PackageGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }

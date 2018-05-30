@@ -400,7 +400,9 @@
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -461,7 +463,9 @@
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

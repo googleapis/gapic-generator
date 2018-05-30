@@ -16,7 +16,7 @@ package com.google.api.codegen.util.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.ESCAPE_JAVA_LANG_CLASH;
 
-import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.util.LanguageUtil;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
