@@ -26,12 +26,12 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 
 /** A factory for package providers. So far, only grpc packages are supported. */
-public class MainPackageProviderFactory {
+public class PackageProviderFactory {
 
   /** Create the PackageProvider based on the given language */
   public static CodeGenerator<Doc> create(
       TargetLanguage language,
-      ArtifactType artifactType,
+      PackagingArtifactType artifactType,
       ToolOptions options,
       Model model,
       PackageMetadataConfig config) {
@@ -52,7 +52,7 @@ public class MainPackageProviderFactory {
   }
 
   private static CodeGenerator<Doc> createForJava(
-      ArtifactType artifactType, Model model, PackageMetadataConfig config) {
+      PackagingArtifactType artifactType, Model model, PackageMetadataConfig config) {
     switch (artifactType) {
       case GRPC:
         return new JavaGrpcPackageProvider(

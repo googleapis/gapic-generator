@@ -14,12 +14,10 @@
  */
 package com.google.api.codegen.configgen;
 
-import static com.google.api.codegen.discogapic.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
-
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.configgen.transformer.DiscoConfigTransformer;
-import com.google.api.codegen.discogapic.DiscoGapicGeneratorApi;
+import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
 import com.google.api.codegen.discogapic.DocumentGenerator;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -38,13 +36,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Main class for the config generator. */
-public class DiscoConfigGeneratorApi extends GenericToolDriverBase {
+/** Main class for the Discogapic config generator. */
+public class DiscoConfigGeneratorApp extends GenericToolDriverBase {
 
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
-          DISCOVERY_DOC_OPTION_NAME,
+          "discovery_doc",
           "The Discovery doc representing the service description.",
           "");
 
@@ -53,7 +51,7 @@ public class DiscoConfigGeneratorApi extends GenericToolDriverBase {
           String.class, "output_file", "The path of the output file to put generated config.", "");
 
   /** Constructs a config generator api based on given options. */
-  public DiscoConfigGeneratorApi(ToolOptions options) {
+  public DiscoConfigGeneratorApp(ToolOptions options) {
     super(options);
   }
 
@@ -77,7 +75,7 @@ public class DiscoConfigGeneratorApi extends GenericToolDriverBase {
   private Document setupDocument() {
     // Prevent INFO messages from polluting the log.
     Logger.getLogger("").setLevel(Level.WARNING);
-    String discoveryDocPath = options.get(DiscoGapicGeneratorApi.DISCOVERY_DOC);
+    String discoveryDocPath = options.get(DiscoGapicGeneratorApp.DISCOVERY_DOC);
 
     Document document = null;
     try {

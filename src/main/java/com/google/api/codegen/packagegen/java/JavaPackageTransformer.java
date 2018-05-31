@@ -17,7 +17,7 @@ package com.google.api.codegen.packagegen.java;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.packagegen.ArtifactType;
+import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaPackageMetadataNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -37,9 +37,10 @@ public class JavaPackageTransformer {
 
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final Map<String, String> snippetsOutput;
-  private final ArtifactType artifactType;
+  private final PackagingArtifactType artifactType;
 
-  public JavaPackageTransformer(Map<String, String> snippetsOutput, ArtifactType artifactType) {
+  public JavaPackageTransformer(
+      Map<String, String> snippetsOutput, PackagingArtifactType artifactType) {
     this.snippetsOutput = ImmutableMap.copyOf(snippetsOutput);
     this.artifactType = artifactType;
   }
@@ -61,7 +62,7 @@ public class JavaPackageTransformer {
    * Creates a partially initialized builders that can be used to build PackageMetadataViews later.
    */
   protected final List<PackageMetadataView.Builder> generateMetadataViewBuilders(
-      ApiModel model, PackageMetadataConfig config, ArtifactType artifactType) {
+      ApiModel model, PackageMetadataConfig config, PackagingArtifactType artifactType) {
     String packageName = config.packageName();
     JavaPackageMetadataNamer namer = new JavaPackageMetadataNamer(packageName, artifactType);
 
@@ -88,7 +89,7 @@ public class JavaPackageTransformer {
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())
-              .publishProtos(artifactType == ArtifactType.PROTOBUF);
+              .publishProtos(artifactType == PackagingArtifactType.PROTOBUF);
       viewBuilders.add(viewBuilder);
     }
     return viewBuilders;

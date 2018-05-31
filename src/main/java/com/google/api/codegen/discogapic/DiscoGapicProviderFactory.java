@@ -18,19 +18,98 @@ import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
+import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
+import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.java.JavaRenderingUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.NotImplementedException;
 
-/** A factory for DiscoGapicProviders which perform code generation. */
-public interface DiscoGapicProviderFactory {
-  /**
-   * Create the provider from the given model, configs and the output path.
-   *
-   * <p>The outputPath is used for copying static files from resources into the output directory.
-   */
-  List<CodeGenerator<?>> create(
+/* Factory for DiscoGapicProviders based on an id. */
+public class DiscoGapicProviderFactory {
+
+  public static final String JAVA = "java";
+
+  /** Create the DiscoGapicProvider based on the given id */
+  public static List<CodeGenerator<?>> create(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig);
+      PackageMetadataConfig packageConfig) {
+
+    ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
+    String id = generatorConfig.id();
+
+    // Please keep the following IDs in alphabetical order
+    if (id.equals(JAVA)) {
+      if (generatorConfig.enableSurfaceGenerator()) {
+        GapicCodePathMapper javaPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/main/java")
+                .setShouldAppendPackage(true)
+                .build();
+        List<ModelToViewTransformer<DiscoApiModel>> transformers =
+            Arrays.asList(
+                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicRequestToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
+        DiscoGapicProvider provider =
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformers(transformers)
+                .build();
+
+        providers.add(provider);
+
+        CodeGenerator metadataProvider =
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformers(
+                    Arrays.asList(new JavaGapicPackageTransformer<DiscoApiModel>(packageConfig)))
+                .build();
+        providers.add(metadataProvider);
+      }
+
+      if (generatorConfig.enableTestGenerator()) {
+        GapicCodePathMapper javaTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/test/java")
+                .setShouldAppendPackage(true)
+                .build();
+        CodeGenerator<?> testProvider =
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformers(
+                    Arrays.asList(
+                        new JavaSurfaceTestTransformer<DiscoApiModel>(
+                            javaTestPathMapper,
+                            new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                            "java/http_test.snip")))
+                .build();
+        providers.add(testProvider);
+      }
+      return providers;
+
+    } else {
+      throw new NotImplementedException("DiscoGapicProviderFactory: invalid id \"" + id + "\"");
+    }
+  }
 }

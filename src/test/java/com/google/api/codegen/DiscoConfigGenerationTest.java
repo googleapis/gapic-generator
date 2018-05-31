@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.configgen.DiscoConfigGeneratorApi;
+import com.google.api.codegen.configgen.DiscoConfigGeneratorApp;
 import com.google.api.tools.framework.tools.ToolOptions;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -40,9 +40,9 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
     String discoveryFile = getTestDataLocator().findTestData(discoveryFileName).getFile();
     ToolOptions options = ToolOptions.create();
-    options.set(DiscoConfigGeneratorApi.OUTPUT_FILE, outFile);
-    options.set(DiscoConfigGeneratorApi.DISCOVERY_DOC, discoveryFile);
-    new DiscoConfigGeneratorApi(options).run();
+    options.set(DiscoConfigGeneratorApp.OUTPUT_FILE, outFile);
+    options.set(DiscoConfigGeneratorApp.DISCOVERY_DOC, discoveryFile);
+    new DiscoConfigGeneratorApp(options).run();
 
     return new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);
   }

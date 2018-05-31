@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /*
- * A context class which stores config data used by MainGapicProviderFactory.
+ * A context class which stores config data used by GapicProviderFactory.
  */
 @AutoValue
 public abstract class GapicGeneratorConfig {

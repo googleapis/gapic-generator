@@ -16,7 +16,7 @@ package com.google.api.codegen.packagegen.py;
 
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.packagegen.PackageGenerator;
+import com.google.api.codegen.packagegen.PackageGeneratorApp;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.base.Joiner;
@@ -102,11 +102,11 @@ public class PythonPackageCopier {
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =
         new PythonPackageFileVisitor(
-            Paths.get(options.get(PackageGenerator.INPUT_DIR)),
-            Paths.get(options.get(PackageGenerator.OUTPUT_DIR)),
+            Paths.get(options.get(PackageGeneratorApp.INPUT_DIR)),
+            Paths.get(options.get(PackageGeneratorApp.OUTPUT_DIR)),
             config.apiVersion());
 
-    Files.walkFileTree(Paths.get(options.get(PackageGenerator.INPUT_DIR)), visitor);
+    Files.walkFileTree(Paths.get(options.get(PackageGeneratorApp.INPUT_DIR)), visitor);
 
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
     ImmutableMap.Builder<String, GeneratedResult<Doc>> docBuilder = visitor.getDocBuilder();
