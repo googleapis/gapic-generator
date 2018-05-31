@@ -286,7 +286,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       fieldMaskView.name(nameFormatter.localVarName(fieldMaskName));
       fieldMaskView.typeName("List<String>");
       fieldMaskView.innerTypeName("List<String>");
-      fieldMaskView.isRequired(false);
+      fieldMaskView.isRequired(true);
       fieldMaskView.canRepeat(false);
       fieldMaskView.fieldGetFunction(
           context
