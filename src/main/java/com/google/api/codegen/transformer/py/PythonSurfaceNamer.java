@@ -453,4 +453,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         throw new IllegalStateException("Invalid development status");
     }
   }
+
+  @Override
+  public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
+    return packageFilePathPiece(Name.anyCamel(getInterfaceName(interfaceConfig), "GrpcTransport"));
+  }
 }

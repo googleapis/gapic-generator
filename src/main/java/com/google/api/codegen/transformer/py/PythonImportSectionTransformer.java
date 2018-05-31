@@ -88,6 +88,14 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
+  public ImportSectionView generateGrpcTransportImportSection(GapicInterfaceContext context) {
+    return ImportSectionView.newBuilder()
+        .standardImports(ImmutableList.of())
+        .externalImports(ImmutableList.of())
+        .appImports(ImmutableList.of())
+        .build();
+  }
+
   private List<ImportFileView> generateFileHeaderStandardImports(InterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
@@ -153,7 +161,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(
         createImport(
             namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
-
+    imports.add(
+        createImport(
+            namer.getPackageName(),
+            namer.getGrpcTransportImportName(context.getInterfaceConfig())));
     Collections.sort(imports, importFileViewComparator());
     return imports;
   }
