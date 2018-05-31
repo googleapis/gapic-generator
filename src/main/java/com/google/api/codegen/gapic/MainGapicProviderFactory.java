@@ -21,6 +21,7 @@ import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -207,7 +208,8 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicPackageTransformer(packageConfig))
+                .setModelToViewTransformer(
+                    new JavaGapicPackageTransformer<ProtoApiModel>(packageConfig))
                 .build();
         providers.add(metadataProvider);
 
@@ -249,7 +251,7 @@ public class MainGapicProviderFactory implements GapicProviderFactory {
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
-                    new JavaSurfaceTestTransformer(
+                    new JavaSurfaceTestTransformer<ProtoApiModel>(
                         javaTestPathMapper,
                         new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
                         "java/grpc_test.snip"))

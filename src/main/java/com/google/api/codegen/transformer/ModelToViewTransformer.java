@@ -20,11 +20,14 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.util.List;
 
 /**
- * A ModelToViewTransformer transforms a Model into a list of ViewModel instances that can be
+ * A ModelToViewTransformer transforms an ApiModel into a list of ViewModel instances that can be
  * rendered by a template engine.
  */
-public interface ModelToViewTransformer {
-  List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig);
+public interface ModelToViewTransformer<T extends ApiModel> {
 
+  /** Generate a list of ViewModels from a given ApiModel. */
+  List<ViewModel> transform(T model, GapicProductConfig productConfig);
+
+  /** The list of template filenames the ViewModels apply to. */
   List<String> getTemplateFileNames();
 }

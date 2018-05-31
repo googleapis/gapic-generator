@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -42,7 +42,7 @@ import java.util.List;
  * A transformer to generate Java standalone samples for each method in the GAPIC surface generated
  * from the same ApiModel.
  */
-public class JavaGapicSamplesTransformer implements ModelToViewTransformer {
+public class JavaGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private final GapicCodePathMapper pathMapper;
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
@@ -58,7 +58,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = createSurfaceNamer(productConfig);
 

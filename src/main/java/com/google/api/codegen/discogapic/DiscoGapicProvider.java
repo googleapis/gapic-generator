@@ -18,8 +18,8 @@ import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
@@ -27,11 +27,12 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
 
+/** CodeGenerator for discogapic, the GAPIC library surface for Discovery documents. */
 public class DiscoGapicProvider implements CodeGenerator<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
-  private final List<DocumentToViewTransformer> transformers;
+  private final List<ModelToViewTransformer<DiscoApiModel>> transformers;
 
   private final List<String> snippetFileNames;
 
@@ -39,14 +40,14 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
       DiscoApiModel model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      List<DocumentToViewTransformer> transformers) {
+      List<ModelToViewTransformer<DiscoApiModel>> transformers) {
     this.model = model;
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.transformers = transformers;
 
     ImmutableList.Builder<String> snippetFileNames = ImmutableList.builder();
-    for (DocumentToViewTransformer transformer : transformers) {
+    for (ModelToViewTransformer<DiscoApiModel> transformer : transformers) {
       snippetFileNames.addAll(transformer.getTemplateFileNames());
     }
     this.snippetFileNames = snippetFileNames.build();
@@ -61,7 +62,7 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
   public Map<String, GeneratedResult<Doc>> generate() {
     Map<String, GeneratedResult<Doc>> results = new LinkedTreeMap<>();
 
-    for (DocumentToViewTransformer transformer : transformers) {
+    for (ModelToViewTransformer<DiscoApiModel> transformer : transformers) {
       List<ViewModel> surfaceDocs = transformer.transform(model, productConfig);
 
       for (ViewModel surfaceDoc : surfaceDocs) {
@@ -80,7 +81,7 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
     private DiscoApiModel model;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
-    private List<DocumentToViewTransformer> transformers;
+    private List<ModelToViewTransformer<DiscoApiModel>> transformers;
 
     private Builder() {}
 
@@ -99,7 +100,8 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
       return this;
     }
 
-    public Builder setDocumentToViewTransformers(List<DocumentToViewTransformer> transformers) {
+    public Builder setModelToViewTransformers(
+        List<ModelToViewTransformer<DiscoApiModel>> transformers) {
       this.transformers = transformers;
       return this;
     }
