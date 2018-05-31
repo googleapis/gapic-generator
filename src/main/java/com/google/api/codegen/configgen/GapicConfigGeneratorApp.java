@@ -26,14 +26,14 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /** Main class for the config generator. */
-public class ConfigGeneratorApi extends ToolDriverBase {
+public class GapicConfigGeneratorApp extends ToolDriverBase {
 
   public static final Option<String> OUTPUT_FILE =
       ToolOptions.createOption(
           String.class, "output_file", "The path of the output file to put generated config.", "");
 
   /** Constructs a config generator api based on given options. */
-  public ConfigGeneratorApi(ToolOptions options) {
+  public GapicConfigGeneratorApp(ToolOptions options) {
     super(options);
   }
 
