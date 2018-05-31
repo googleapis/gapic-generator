@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -32,7 +33,12 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
       String discoveryDocFileName,
       String[] gapicConfigFileNames,
       String packageConfigFileName) {
-    super(name, discoveryDocFileName, gapicConfigFileNames, packageConfigFileName);
+    super(
+        TargetLanguage.JAVA,
+        name,
+        discoveryDocFileName,
+        gapicConfigFileNames,
+        packageConfigFileName);
   }
 
   /**
@@ -53,7 +59,6 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
             "java_" + fileName,
             "discogapic/" + fileName,
             new String[] {
-              "com/google/api/codegen/java/java_discogapic.yaml",
               "com/google/api/codegen/testdata/simplecompute_gapic.yaml",
             },
             "com/google/api/codegen/testdata/simplecompute_pkg2.yaml"

@@ -19,6 +19,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.codegen.util.java.JavaTypeTable;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -46,7 +48,19 @@ public class DiscoGapicNamer {
     }
   }
 
-  /** Get the request type name from a method. */
+  /** Get the language-independent request message name from a method. */
+  public String getRequestMessageFullName(Method method, String defaultPackageName) {
+    // TODO remove reference to Java formatting - it is accidental that the fully-qualified
+    // message type matches the fully-qualified Java type
+    TypeNameConverter typeNameConverter = new JavaTypeTable(defaultPackageName);
+    JavaNameFormatter nameFormatter = new JavaNameFormatter();
+    return typeNameConverter
+        .getTypeNameInImplicitPackage(
+            nameFormatter.publicClassName(DiscoGapicParser.getRequestName(method)))
+        .getFullName();
+  }
+
+  /** Get the language-specific request type name from a method. */
   public TypeName getRequestTypeName(Method method, SurfaceNamer languageNamer) {
     TypeNameConverter typeNameConverter = languageNamer.getTypeNameConverter();
     return typeNameConverter.getTypeNameInImplicitPackage(
