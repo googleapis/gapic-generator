@@ -394,9 +394,10 @@ classes {
 //   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.gapic.GapicGeneratorTool'
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['LEGACY_GAPIC_AND_PACKAGE']
   if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
+    args += clargs.split(',').toList()
   }
 }
 
@@ -407,9 +408,10 @@ task runCodeGen(type: JavaExec) {
 //   ./gradlew runDiscoCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runDiscoCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.discogapic.DiscoGapicGeneratorTool'
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['LEGACY_DISCOGAPIC_AND_PACKAGE']
   if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
+    args += clargs.split(',').toList()
   }
 }
 
@@ -447,9 +449,10 @@ task showJavaFormatterPath {
 //   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.configgen.ConfigGeneratorTool'
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['GAPIC_CONFIG']
   if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
+    args += clargs.split(',').toList()
   }
 }
 
@@ -460,9 +463,10 @@ task runConfigGen(type: JavaExec) {
 //   ./gradlew runDiscoConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runDiscoConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.configgen.DiscoConfigGeneratorTool'
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['DISCOGAPIC_CONFIG']
   if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
+    args += clargs.split(',').toList()
   }
 }
 
@@ -473,9 +477,10 @@ task runDiscoConfigGen(type: JavaExec) {
 //   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.packagegen.PackageGeneratorTool'
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['LEGACY_GRPC_PACKAGE']
   if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
+    args += clargs.split(',').toList()
   }
 }
 

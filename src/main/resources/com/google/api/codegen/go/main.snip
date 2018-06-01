@@ -275,6 +275,7 @@
             return nextPageToken, nil
         }
         it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+        it.pageInfo.MaxSize = int(req.PageSize)
         return it
     }
 @end
