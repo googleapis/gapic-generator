@@ -15,20 +15,18 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.GeneratorProto;
 import com.google.api.codegen.advising.Adviser;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.tools.ToolDriverBase;
@@ -36,7 +34,6 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -52,7 +49,9 @@ import java.util.Map;
 import java.util.Set;
 
 /** Main class for the code generator. */
-public class GapicGeneratorApi extends ToolDriverBase {
+public class GapicGeneratorApp extends ToolDriverBase {
+  public static final Option<String> LANGUAGE =
+      ToolOptions.createOption(String.class, "language", "The target language.", "");
   public static final Option<String> OUTPUT_FILE =
       ToolOptions.createOption(
           String.class,
@@ -85,7 +84,7 @@ public class GapicGeneratorApi extends ToolDriverBase {
           ImmutableList.of());
 
   /** Constructs a code generator api based on given options. */
-  public GapicGeneratorApi(ToolOptions options) {
+  public GapicGeneratorApp(ToolOptions options) {
     super(options);
   }
 
@@ -137,45 +136,41 @@ public class GapicGeneratorApi extends ToolDriverBase {
           PackageMetadataConfig.createFromPackaging(
               apiDefaultsConfig, dependenciesConfig, packagingConfig);
     }
-    GeneratorProto generator = configProto.getGenerator();
-    if (GeneratorProto.getDefaultInstance().equals(generator)) {
-      throw new IllegalArgumentException("Language-specific generator config not provided");
-    }
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
+    TargetLanguage language;
+    if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
+      language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
+    } else {
+      String languageStr = configProto.getLanguage();
+      if (Strings.isNullOrEmpty(languageStr)) {
+        throw new IllegalArgumentException(
+            "Language not set by --language option or by gapic config.");
+      }
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
+    }
+
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
     if (productConfig == null) {
       return;
     }
-    if (generator != null) {
-      String factory = generator.getFactory();
-      String id = generator.getId();
-      Preconditions.checkArgument(!Strings.isNullOrEmpty(factory), "generator.factory is not set");
-      Preconditions.checkArgument(!Strings.isNullOrEmpty(id), "generator.id is not set");
 
-      GapicProviderFactory providerFactory = createProviderFactory(model, factory);
-      GapicGeneratorConfig generatorConfig =
-          GapicGeneratorConfig.newBuilder()
-              .id(id)
-              .enabledArtifacts(options.get(ENABLED_ARTIFACTS))
-              .build();
-
-      String outputPath = options.get(OUTPUT_FILE);
-      List<CodeGenerator<?>> providers =
-          providerFactory.create(model, productConfig, generatorConfig, packageConfig);
-      ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
-      ImmutableSet.Builder<String> executables = ImmutableSet.builder();
-      for (CodeGenerator<?> provider : providers) {
-        Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
-        for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
-          outputFiles.put(entry.getKey(), entry.getValue().getBody());
-          if (entry.getValue().isExecutable()) {
-            executables.add(entry.getKey());
-          }
+    String outputPath = options.get(OUTPUT_FILE);
+    List<CodeGenerator<?>> providers =
+        GapicProviderFactory.create(
+            language, model, productConfig, packageConfig, options.get(ENABLED_ARTIFACTS));
+    ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
+    ImmutableSet.Builder<String> executables = ImmutableSet.builder();
+    for (CodeGenerator<?> provider : providers) {
+      Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
+      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
+        outputFiles.put(entry.getKey(), entry.getValue().getBody());
+        if (entry.getValue().isExecutable()) {
+          executables.add(entry.getKey());
         }
       }
-      writeCodeGenOutput(outputFiles.build(), outputPath);
-      setOutputFilesPermissions(executables.build(), outputPath);
     }
+    writeCodeGenOutput(outputFiles.build(), outputPath);
+    setOutputFilesPermissions(executables.build(), outputPath);
   }
 
   @VisibleForTesting
@@ -202,22 +197,6 @@ public class GapicGeneratorApi extends ToolDriverBase {
         warning("Failed to set output file as executable. Probably running on a non-POSIX system.");
       }
     }
-  }
-
-  private static GapicProviderFactory createProviderFactory(final Model model, String factory) {
-    @SuppressWarnings("unchecked")
-    GapicProviderFactory provider =
-        ClassInstantiator.createClass(
-            factory,
-            GapicProviderFactory.class,
-            new Class<?>[] {},
-            new Object[] {},
-            "generator",
-            (message, args) ->
-                model
-                    .getDiagCollector()
-                    .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args)));
-    return provider;
   }
 
   private ConfigSource loadConfigFromFiles(List<String> configFileNames) {

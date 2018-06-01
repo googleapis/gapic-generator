@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.configgen.ConfigGeneratorApi;
+import com.google.api.codegen.configgen.GapicConfigGeneratorApp;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
@@ -44,10 +44,10 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
         getTestDataLocator().findTestData(testName.getMethodName() + ".yaml").getPath();
 
     ToolOptions options = ToolOptions.create();
-    options.set(ConfigGeneratorApi.OUTPUT_FILE, outFile);
+    options.set(GapicConfigGeneratorApp.OUTPUT_FILE, outFile);
     options.set(ToolOptions.DESCRIPTOR_SET, testConfig.getDescriptorFile().toString());
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(serviceConfigPath));
-    new ConfigGeneratorApi(options).run();
+    new GapicConfigGeneratorApp(options).run();
 
     String outputContent =
         new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);

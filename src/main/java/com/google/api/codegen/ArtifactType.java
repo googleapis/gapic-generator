@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,24 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.packagegen;
+package com.google.api.codegen;
 
 public enum ArtifactType {
-  UNKNOWN,
-  GAPIC,
-  DISCOGAPIC,
   GAPIC_CONFIG,
   DISCOGAPIC_CONFIG,
-  GRPC,
-  GRPC_COMMON,
-  PROTOBUF,
-  GAPIC_ONLY;
 
-  public static ArtifactType of(String generationLayerString) {
-    if (generationLayerString != null) {
-      return ArtifactType.valueOf(generationLayerString.toUpperCase());
-    } else {
-      return UNKNOWN;
-    }
-  }
+  // This will be split into GAPIC and GAPIC_PACKAGE
+  LEGACY_GAPIC_AND_PACKAGE,
+  // This will be split into DISCOGAPIC and DISCOGAPIC_PACKAGE
+  LEGACY_DISCOGAPIC_AND_PACKAGE,
+
+  // The different artifact types will be split out (e.g. PROTOBUF_PACKAGE, GRPC_PACKAGE)
+  LEGACY_GRPC_PACKAGE
 }

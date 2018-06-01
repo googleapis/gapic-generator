@@ -19,7 +19,6 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -80,10 +79,7 @@ public abstract class ResourceNameMessageConfigs {
   }
 
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      DiscoApiModel model,
-      ConfigProto configProto,
-      String defaultPackage,
-      SurfaceNamer languageNamer) {
+      DiscoApiModel model, ConfigProto configProto, String defaultPackage) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
@@ -98,7 +94,7 @@ public abstract class ResourceNameMessageConfigs {
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();
 
     for (Method method : model.getDocument().methods()) {
-      String fullName = discoGapicNamer.getRequestTypeName(method, languageNamer).getFullName();
+      String fullName = discoGapicNamer.getRequestMessageFullName(method, defaultPackage);
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
       if (messageConfig == null) {
         continue;

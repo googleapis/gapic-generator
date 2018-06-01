@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.packagegen.ArtifactType;
+import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
@@ -63,7 +63,7 @@ public abstract class PackagingConfig {
 
   /** The artifact type that should be generated. */
   @Nullable
-  public abstract ArtifactType artifactType();
+  public abstract PackagingArtifactType artifactType();
 
   /** The release level of the API. */
   @Nullable
@@ -91,7 +91,7 @@ public abstract class PackagingConfig {
 
     abstract Builder releaseLevel(ReleaseLevel val);
 
-    abstract Builder artifactType(ArtifactType val);
+    abstract Builder artifactType(PackagingArtifactType val);
 
     abstract Builder protoPath(String val);
 
@@ -112,7 +112,7 @@ public abstract class PackagingConfig {
                 MoreObjects.firstNonNull(
                     (List<String>) configMap.get("proto_deps"), ImmutableList.of()))
             .releaseLevel(Configs.parseReleaseLevel((String) configMap.get("release_level")))
-            .artifactType(ArtifactType.of((String) configMap.get("artifact_type")))
+            .artifactType(PackagingArtifactType.of((String) configMap.get("artifact_type")))
             .protoPath((String) configMap.get("proto_path"));
     if (configMap.containsKey("proto_test_deps")) {
       builder.protoPackageTestDependencies((List<String>) configMap.get("proto_test_deps"));

@@ -14,23 +14,100 @@
  */
 package com.google.api.codegen.discogapic;
 
+import static com.google.api.codegen.common.TargetLanguage.JAVA;
+
 import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
+import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.gapic.GapicProviderFactory;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
+import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.java.JavaRenderingUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/** A factory for DiscoGapicProviders which perform code generation. */
-public interface DiscoGapicProviderFactory {
-  /**
-   * Create the provider from the given model, configs and the output path.
-   *
-   * <p>The outputPath is used for copying static files from resources into the output directory.
-   */
-  List<CodeGenerator<?>> create(
+public class DiscoGapicProviderFactory {
+
+  /** Create the DiscoGapicProvider based on the given id */
+  public static List<CodeGenerator<?>> create(
+      TargetLanguage language,
       DiscoApiModel model,
       GapicProductConfig productConfig,
-      GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig);
+      PackageMetadataConfig packageConfig,
+      List<String> enabledArtifacts) {
+
+    ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
+
+    // Please keep the following IDs in alphabetical order
+    if (language.equals(JAVA)) {
+      if (GapicProviderFactory.enableSurfaceGenerator(enabledArtifacts)) {
+        GapicCodePathMapper javaPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/main/java")
+                .setShouldAppendPackage(true)
+                .build();
+        List<DocumentToViewTransformer> transformers =
+            Arrays.asList(
+                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicRequestToViewTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
+        DiscoGapicProvider provider =
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setDocumentToViewTransformers(transformers)
+                .build();
+
+        providers.add(provider);
+
+        CodeGenerator metadataProvider =
+            ViewModelDiscoGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformer(new JavaGapicPackageTransformer(packageConfig))
+                .build();
+        providers.add(metadataProvider);
+      }
+
+      if (GapicProviderFactory.enableTestGenerator(enabledArtifacts)) {
+        GapicCodePathMapper javaTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/test/java")
+                .setShouldAppendPackage(true)
+                .build();
+        CodeGenerator<?> testProvider =
+            ViewModelDiscoGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new JavaSurfaceTestTransformer(
+                        javaTestPathMapper,
+                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                        "java/http_test.snip"))
+                .build();
+        providers.add(testProvider);
+      }
+      return providers;
+
+    } else {
+      throw new UnsupportedOperationException(
+          "DiscoGapicProviderFactory: unsupported language \"" + language + "\"");
+    }
+  }
 }

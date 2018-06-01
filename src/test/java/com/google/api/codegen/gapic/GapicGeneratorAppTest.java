@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /** Code generator unit tests. */
-public class GapicGeneratorApiTest {
+public class GapicGeneratorAppTest {
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 
   @Test
@@ -41,7 +41,7 @@ public class GapicGeneratorApiTest {
 
     // Verify that files are outputed to a directory.
     String outputDir = tempDir.getRoot().getPath();
-    GapicGeneratorApi generator = new GapicGeneratorApi(ToolOptions.create());
+    GapicGeneratorApp generator = new GapicGeneratorApp(ToolOptions.create());
     generator.writeCodeGenOutput(outputFiles, outputDir);
     generator.setOutputFilesPermissions(Collections.singleton("tmp3"), outputDir);
     assertTrue((new File(outputDir, "tmp.txt")).exists());

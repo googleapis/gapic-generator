@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen.discogapic;
 
-import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JAVA;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.GeneratorProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.DiscoApiModel;
@@ -34,11 +32,6 @@ import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.ClassInstantiator;
-import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -58,13 +51,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DiscoGapicGeneratorApi {
-  public static final String DISCOVERY_DOC_OPTION_NAME = "discovery_doc";
+public class DiscoGapicGeneratorApp {
+  public static final Option<String> LANGUAGE =
+      ToolOptions.createOption(String.class, "language", "The target language.", "");
 
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
-          DISCOVERY_DOC_OPTION_NAME,
+          "discovery_doc",
           "The Discovery doc representing the service description.",
           "");
 
@@ -95,7 +89,7 @@ public class DiscoGapicGeneratorApi {
   private final ToolOptions options;
 
   /** Constructs a code generator api based on given options. */
-  public DiscoGapicGeneratorApi(ToolOptions options) {
+  public DiscoGapicGeneratorApp(ToolOptions options) {
     this.options = options;
   }
 
@@ -106,6 +100,7 @@ public class DiscoGapicGeneratorApi {
       List<String> configFileNames,
       String packageConfig2File,
       String dependencyConfigFile,
+      String languageStr,
       List<String> enabledArtifacts)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
@@ -141,63 +136,54 @@ public class DiscoGapicGeneratorApi {
           PackageMetadataConfig.createFromPackaging(
               apiDefaultsConfig, dependenciesConfig, packagingConfig);
     }
-    GeneratorProto generator = configProto.getGenerator();
-    String language = configProto.getLanguage();
-    String defaultPackageName = configProto.getLanguageSettingsMap().get(language).getPackageName();
-    SurfaceNamer surfaceNamer = null;
 
-    if (language.equals(JAVA)) {
-      surfaceNamer =
-          new JavaSurfaceNamer(defaultPackageName, defaultPackageName, new JavaNameFormatter());
+    TargetLanguage language;
+    if (!Strings.isNullOrEmpty(languageStr)) {
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
+    } else {
+      languageStr = configProto.getLanguage();
+      if (Strings.isNullOrEmpty(languageStr)) {
+        throw new IllegalArgumentException(
+            "Language not set by --language option or by gapic config.");
+      }
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
     }
-    if (surfaceNamer == null) {
-      throw new UnsupportedOperationException(
-          "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
-    }
+
+    String defaultPackageName =
+        configProto.getLanguageSettingsMap().get(languageStr).getPackageName();
 
     DiscoApiModel model =
         new DiscoApiModel(Document.from(new DiscoveryNode(root)), defaultPackageName);
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, surfaceNamer);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
-    String factory = generator.getFactory();
-    String id = generator.getId();
-
-    DiscoGapicProviderFactory providerFactory = createProviderFactory(factory);
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
-
-    return providerFactory.create(model, productConfig, generatorConfig, packageConfig);
+    return DiscoGapicProviderFactory.create(
+        language, model, productConfig, packageConfig, enabledArtifacts);
   }
 
-  public void run() throws Exception {
+  public int run() throws Exception {
 
     String discoveryDocPath = options.get(DISCOVERY_DOC);
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     String packageConfig2File = options.get(PACKAGE_CONFIG2_FILE);
+    String languageStr = options.get(LANGUAGE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
     List<CodeGenerator<?>> providers =
-        getProviders(discoveryDocPath, configFileNames, packageConfig2File, null, enabledArtifacts);
+        getProviders(
+            discoveryDocPath,
+            configFileNames,
+            packageConfig2File,
+            null,
+            languageStr,
+            enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
     for (CodeGenerator<?> provider : providers) {
       outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
-  }
-
-  private static DiscoGapicProviderFactory createProviderFactory(String factory) {
-    @SuppressWarnings("unchecked")
-    DiscoGapicProviderFactory provider =
-        ClassInstantiator.createClass(
-            factory,
-            DiscoGapicProviderFactory.class,
-            new Class<?>[] {},
-            new Object[] {},
-            "generator",
-            System.err::printf);
-    return provider;
+    return 0;
   }
 
   private static List<File> pathsToFiles(List<String> configFileNames) {

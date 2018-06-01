@@ -171,7 +171,8 @@ Run the following command to generate the client config:
 
 ```
 cd ${GAPIC_GENERATOR_DIR}
-java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.configgen.ConfigGeneratorTool \
+java -cp build/libs/gapic-generator-*-fatjar.jar \
+  com.google.api.codegen.GeneratorMain GAPIC_CONFIG \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
   -o=${YOUR_CLIENT_CONFIG}
 ```
@@ -224,7 +225,8 @@ You need to locate/decide on the following before you call code generation:
    referenced as `${GENERATED_CLIENT_DIR}`.
 
 ```
-java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGeneratorTool \
+java -cp build/libs/gapic-generator-*-fatjar.jar  \
+  com.google.api.codegen.GeneratorMain LEGACY_GAPIC_AND_PACKAGE \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
   --gapic_yaml=${YOUR_CLIENT_CONFIG} --gapic_yaml=${LANGUAGE_CONFIG} \
   --package_yaml2=${PACKAGING_CONFIG} --o=${GENERATED_CLIENT_DIR}
