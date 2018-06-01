@@ -23,7 +23,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -118,7 +118,8 @@ public abstract class GapicProductConfig implements ProductConfig {
    * returned, and diagnostics are reported to the model.
    */
   @Nullable
-  public static GapicProductConfig create(Model model, ConfigProto configProto) {
+  public static GapicProductConfig create(
+      Model model, ConfigProto configProto, TargetLanguage language) {
 
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
@@ -131,12 +132,12 @@ public abstract class GapicProductConfig implements ProductConfig {
             model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto, file);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, file, language);
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
     LanguageSettingsProto settings =
-        configProto.getLanguageSettings().get(configProto.getLanguage());
+        configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
@@ -148,7 +149,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             settings,
             messageConfigs,
             resourceNameConfigs,
-            model.getSymbolTable());
+            model.getSymbolTable(),
+            language);
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -198,28 +200,31 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   public static GapicProductConfig create(
-      DiscoApiModel model, ConfigProto configProto, SurfaceNamer namer) {
+      DiscoApiModel model, ConfigProto configProto, TargetLanguage language) {
     String defaultPackage =
-        configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
+        configProto
+            .getLanguageSettingsMap()
+            .get(language.toString().toLowerCase())
+            .getPackageName();
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model, configProto, defaultPackage, namer);
+            model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto, null);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, null, language);
 
     TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
     LanguageSettingsProto settings =
-        configProto.getLanguageSettingsMap().get(configProto.getLanguage());
+        configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            model, configProto, settings, messageConfigs, resourceNameConfigs);
+            model, configProto, settings, messageConfigs, resourceNameConfigs, language);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -311,7 +316,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      SymbolTable symbolTable) {
+      SymbolTable symbolTable,
+      TargetLanguage language) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
@@ -324,12 +330,12 @@ public abstract class GapicProductConfig implements ProductConfig {
         continue;
       }
       String interfaceNameOverride =
-          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
+          languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
 
       GapicInterfaceConfig interfaceConfig =
           GapicInterfaceConfig.createInterfaceConfig(
               diagCollector,
-              configProto.getLanguage(),
+              language,
               interfaceConfigProto,
               apiInterface,
               interfaceNameOverride,
@@ -353,16 +359,17 @@ public abstract class GapicProductConfig implements ProductConfig {
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      TargetLanguage language) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
-          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
+          languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
 
       DiscoGapicInterfaceConfig interfaceConfig =
           DiscoGapicInterfaceConfig.createInterfaceConfig(
               model,
-              configProto.getLanguage(),
+              language,
               interfaceConfigProto,
               interfaceNameOverride,
               messageConfigs,
@@ -418,9 +425,12 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      ProtoFile file,
+      TargetLanguage language) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
-        createSingleResourceNameConfigs(diagCollector, configProto, file);
+        createSingleResourceNameConfigs(diagCollector, configProto, file, language);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
         createFixedResourceNameConfigs(
             diagCollector, configProto.getFixedResourceNameValuesList(), file);
@@ -440,18 +450,21 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      ProtoFile file,
+      TargetLanguage language) {
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
       createSingleResourceNameConfig(
-          diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
+          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         createSingleResourceNameConfig(
-            diagCollector, configProto, collectionConfigProto, singleResourceNameConfigsMap, file);
+            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
       }
     }
 
@@ -464,13 +477,13 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
-      ConfigProto configProto,
       CollectionConfigProto collectionConfigProto,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
-      ProtoFile file) {
+      ProtoFile file,
+      TargetLanguage language) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            diagCollector, configProto, collectionConfigProto, file);
+            diagCollector, collectionConfigProto, file, language);
     if (singleResourceNameConfig == null) {
       return;
     }

@@ -16,7 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
-import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -38,9 +38,9 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector,
-      ConfigProto configProto,
       CollectionConfigProto collectionConfigProto,
-      ProtoFile file) {
+      ProtoFile file,
+      TargetLanguage language) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
@@ -51,12 +51,12 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     }
     String entityId = collectionConfigProto.getEntityName();
     String entityName = entityId;
-    String language = configProto.getLanguage();
     String commonResourceName = null;
     if (language != null) {
+      String languageStr = language.toString().toLowerCase();
       for (CollectionLanguageOverridesProto override :
           collectionConfigProto.getLanguageOverridesList()) {
-        if (language.equals(override.getLanguage())) {
+        if (languageStr.equals(override.getLanguage())) {
           if (!Strings.isNullOrEmpty(override.getEntityName())) {
             entityName = override.getEntityName();
           }
