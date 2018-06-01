@@ -17,12 +17,12 @@ package com.google.api.codegen;
 import com.google.api.Service;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -44,7 +44,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   // Wiring
   // ======
 
-  private final String idForFactory;
+  private final TargetLanguage language;
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   private final ImmutableList<String> snippetNames;
@@ -53,12 +53,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String baselineFile;
 
   public GapicTestBase2(
-      String idForFactory,
+      TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetNames,
       String baselineFile) {
-    this.idForFactory = idForFactory;
+    this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
@@ -116,7 +116,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
    * GapicProviderFactory returns.
    */
   public static Object[] createTestConfig(
-      String idForFactory,
+      TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName) {
@@ -124,23 +124,23 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
 
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(idForFactory)
-            .enabledArtifacts(Arrays.asList("surface", "test"))
-            .build();
     List<CodeGenerator<?>> providers =
-        GapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+        GapicProviderFactory.create(
+            language,
+            model,
+            productConfig,
+            packageConfig,
+            Arrays.asList("surface", "test", "samples"));
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> provider : providers) {
       snippetNames.addAll(provider.getInputFileNames());
     }
 
-    String baseline = idForFactory + "_" + apiName + ".baseline";
+    String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
 
     return new Object[] {
-      idForFactory, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
+      language, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
     };
   }
 
@@ -159,7 +159,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
@@ -169,16 +169,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test"));
+      enabledArtifacts.addAll(Arrays.asList("surface", "test", "samples"));
     }
 
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(idForFactory)
-            .enabledArtifacts(enabledArtifacts)
-            .build();
     List<CodeGenerator<?>> providers =
-        GapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+        GapicProviderFactory.create(
+            language, model, productConfig, packageConfig, enabledArtifacts);
 
     // Don't run any providers we're not testing.
     ArrayList<CodeGenerator<?>> testedProviders = new ArrayList<>();

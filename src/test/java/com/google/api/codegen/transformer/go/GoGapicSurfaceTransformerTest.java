@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
@@ -63,7 +64,7 @@ public class GoGapicSurfaceTransformerTest {
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), locator, new String[] {"myproto_gapic.yaml"});
 
-    productConfig = GapicProductConfig.create(model, configProto);
+    productConfig = GapicProductConfig.create(model, configProto, TargetLanguage.GO);
 
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());

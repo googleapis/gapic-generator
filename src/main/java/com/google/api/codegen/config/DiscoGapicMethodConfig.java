@@ -22,6 +22,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -74,7 +75,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
   @Nullable
   static DiscoGapicMethodConfig createDiscoGapicMethodConfig(
       DiscoApiModel apiModel,
-      String language,
+      TargetLanguage language,
       MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
@@ -187,7 +188,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.ALPHA;
     for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
-      if (!treatment.getIncludeLanguagesList().contains(language)) {
+      if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
         continue;
       }
       if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {

@@ -37,6 +37,8 @@ import java.util.Map;
 
 /** ToolDriver for gRPC meta-data generation. */
 public class PackageGeneratorApp extends ToolDriverBase {
+  public static final Option<String> LANGUAGE =
+      ToolOptions.createOption(String.class, "language", "The target language.", "");
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
           String.class, "output_file", "The name of the output folder to put generated code.", "");
@@ -48,8 +50,6 @@ public class PackageGeneratorApp extends ToolDriverBase {
           "");
   public static final Option<String> PACKAGE_CONFIG2_FILE =
       ToolOptions.createOption(String.class, "package_config2", "The packaging configuration.", "");
-  public static final Option<String> LANGUAGE =
-      ToolOptions.createOption(String.class, "language", "The package's language.", "");
   public static final Option<PackagingArtifactType> ARTIFACT_TYPE =
       ToolOptions.createOption(
           PackagingArtifactType.class,

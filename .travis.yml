@@ -8,5 +8,7 @@ jdk:
 script:
   - ./gradlew check --info
   - ./testutils/check-baselines.sh
+  - go test testutils/check-calling-form-in-baseline/*.go
+  - go run $(find testutils/check-calling-form-in-baseline -type f | grep -v _test) -yaml src/test/java/com/google/api/codegen/testsrc/library_gapic.yaml src
 after_success:
   - bash <(curl -s https://codecov.io/bash)
