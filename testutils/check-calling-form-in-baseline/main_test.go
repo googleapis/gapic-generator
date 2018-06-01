@@ -86,8 +86,8 @@ func TestDeleteFoundForms(t *testing.T) {
 // calling form: "form2"
 // valueSet "set1"`
 	tests := []struct {
-		conf       checkConfig
-		inBaseline bool
+		conf        checkConfig
+		expectMatch bool
 	}{
 		{
 			conf: checkConfig{
@@ -95,7 +95,7 @@ func TestDeleteFoundForms(t *testing.T) {
 				form: "form1",
 				lang: lang,
 			},
-			inBaseline: true,
+			expectMatch: true,
 		},
 		{
 			conf: checkConfig{
@@ -103,7 +103,7 @@ func TestDeleteFoundForms(t *testing.T) {
 				form: "badform",
 				lang: lang,
 			},
-			inBaseline: false,
+			expectMatch: false,
 		},
 		{
 			conf: checkConfig{
@@ -111,7 +111,7 @@ func TestDeleteFoundForms(t *testing.T) {
 				form: "set2",
 				lang: lang,
 			},
-			inBaseline: false,
+			expectMatch: false,
 		},
 	}
 
@@ -129,9 +129,9 @@ func TestDeleteFoundForms(t *testing.T) {
 
 	deleteFoundForms(baselineFile, lang, checks)
 	for _, ts := range tests {
-		if ts.inBaseline && checks[ts.conf] {
+		if ts.expectMatch && checks[ts.conf] {
 			t.Errorf("config is in baseline but not deleted: %v", ts.conf)
-		} else if !ts.inBaseline && !checks[ts.conf] {
+		} else if !ts.expectMatch && !checks[ts.conf] {
 			t.Errorf("config is not in baseline but deleted: %v", ts.conf)
 		}
 	}

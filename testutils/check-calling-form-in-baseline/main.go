@@ -130,7 +130,7 @@ func (s checkConfigSlice) Less(i, j int) bool {
 var checkPrefix = "callingFormCheck:"
 
 // readChecks reads r for callingFormCheck lines as described in command's usage
-// and returns the set of the checkCnfigs to be verified in the baselines.
+// and returns the set of the checkConfigs to be verified in the baselines.
 func readChecks(r io.Reader) (map[checkConfig]bool, error) {
 	sc := bufio.NewScanner(r)
 	checks := map[checkConfig]bool{}
