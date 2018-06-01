@@ -126,7 +126,11 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<CodeGenerator<?>> providers =
         GapicProviderFactory.create(
-            language, model, productConfig, packageConfig, Arrays.asList("surface", "test"));
+            language,
+            model,
+            productConfig,
+            packageConfig,
+            Arrays.asList("surface", "test", "samples"));
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> provider : providers) {
@@ -165,7 +169,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test"));
+      enabledArtifacts.addAll(Arrays.asList("surface", "test", "samples"));
     }
 
     List<CodeGenerator<?>> providers =
