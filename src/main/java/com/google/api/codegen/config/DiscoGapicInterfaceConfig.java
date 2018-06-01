@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -68,7 +69,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   static DiscoGapicInterfaceConfig createInterfaceConfig(
       DiscoApiModel model,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
@@ -145,7 +146,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
+    String manualDoc =
+        Strings.nullToEmpty(
+                interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
+            .trim();
 
     String interfaceName =
         interfaceNameOverride != null
@@ -181,7 +185,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(
       DiscoApiModel model,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
