@@ -219,8 +219,8 @@ You need to locate/decide on the following before you call code generation:
 
 1. Your target language, which can be one of `java`, `go`, `php`, `ruby`, `nodejs`, `python`, or `csharp`.
    Hereafter, this will be referenced as `${LANGUAGE}`.
-2. The output directory for your generated client classes. Hereafter, this will be
-   referenced as `${GENERATED_CLIENT_DIR}`.
+2. The output directory for your generated client classes. Hereafter, this will be referenced
+   as `${GENERATED_CLIENT_DIR}`.
 
 ```
 java -cp build/libs/gapic-generator-*-fatjar.jar  \
