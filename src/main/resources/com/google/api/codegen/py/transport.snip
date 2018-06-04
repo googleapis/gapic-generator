@@ -5,6 +5,124 @@
 
     {@renderImportSection(api.fileHeader.importSection)}
 
-    class {@api.grpcTransportClassName}():
-        pass
+    class {@api.grpcTransportClassName}(object):
+        """gRPC transport class providing stubs for
+        {@api.servicePhraseName}.
+
+        The transport provides access to the raw gRPC stubs,
+        which can be used to take advantage of advanced
+        features of gRPC.
+        """
+        @# The scopes needed to make gRPC calls to all of the methods defined
+        @# in this service.
+        _OAUTH_SCOPES = (
+            @join auth_scope : api.authScopes on BREAK
+                '{@auth_scope}',
+            @end
+        )
+
+        def __init__(self, channel=None, credentials=None,
+                     address='{@api.serviceAddress}:{@api.servicePort}'):
+            """Instantiate the transport class.
+
+            Args:
+                channel (grpc.Channel): A ``Channel`` instance through
+                    which to make calls. This argument is mutually exclusive
+                    with ``credentials``; providing both will raise an exception.
+                credentials (google.auth.credentials.Credentials): The
+                    authorization credentials to attach to requests. These
+                    credentials identify this application to the service. If none
+                    are specified, the client will attempt to ascertain the
+                    credentials from the environment.
+                address (str): The address where the service is hosted.
+            """
+            # gRPC channel & client stub initialization.
+            @# If both `channel` and `credentials` are specified, raise an
+            @# exception (channels come with credentials baked in already).
+            if channel is not None and credentials is not None:
+                raise ValueError(
+                    'The `channel` and `credentials` arguments are mutually '
+                    'exclusive.',
+                )
+
+            @# Create the channel.
+            self.channel = channel
+            if self.channel is None:
+                self.channel = google.api_core.grpc_helpers.create_channel(
+                    address,
+                    credentials=credentials,
+                    scopes=self._OAUTH_SCOPES,
+                )
+
+        # ----- RPC CALLS -----
+        @join apiMethod : api.apiMethods on BREAK.add(BREAK)
+            @@property
+            def {@apiMethod.name}(self):
+                """Return the gRPC stub for {$apiMethod.name}.
+
+                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                    {@line}
+                @end
+
+                Returns:
+                    Callable: A callable which accepts the appropriate
+                        deserialized request object and returns a
+                        deserialized response object.
+                """
+                return self._stubs['{@apiMethod.stubName}'].{@apiMethod.grpcMethodName}
+        @end
+
+        # ----- SUPPORT METHODS -----
+        @if api.hasLongRunningOperations
+        @@property
+        def operations_client(self):
+            if '_lro' not in self.__dict__:
+                self.__dict__['_lro'] = operations_v1.OperationsClient(
+                    self.channel,
+                )
+            return self.__dict__['_lro']
+        @end
+
+        @@property
+        def _stubs(self):
+            if '_stubs' not in self.__dict__:
+                self.__dict__['_stubs'] = {
+                    @join stub : api.stubs on BREAK
+                    '{@stub.name}': {@stub.grpcClientTypeName}(self.channel),
+                    @end
+                }
+            return self.__dict__['_stubs']
+
+        def _clear_cache(self):
+            """Clear any cached objects on this transport instance."""
+            @if api.hasLongRunningOperations
+            @# Clear out the LRO client.
+            self.__dict__.pop('_lro', None)
+
+            @end
+            @# Clear out any stubs already generated.
+            self.__dict__.pop('_stubs', None)
+
+        def _intercept_channel(self, *interceptors):
+            """Experimental. Bind gRPC interceptors to the gRPC channel.
+
+            Args:
+                interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+                  Zero or more gRPC interceptors. Interceptors are given control in the order
+                  they are listed.
+            Raises:
+                TypeError: If interceptor does not derive from any of
+                  UnaryUnaryClientInterceptor,
+                  UnaryStreamClientInterceptor,
+                  StreamUnaryClientInterceptor, or
+                  StreamStreamClientInterceptor.
+            """
+            @# Set the new channel with the provided interceptors.
+            self.channel = grpc.intercept_channel(self.channel, *interceptors)
+
+            @# Clear out the instance's cache of dependent objects.
+            @# These generally have the channel passed to them, and they
+            @# will hang on to an old reference since the channel has changed.
+            self._clear_cache()
+
 @end

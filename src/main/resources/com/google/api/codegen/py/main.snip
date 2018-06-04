@@ -1,53 +1,42 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-@snippet generate(xapiClass)
-    {@licenseSection(xapiClass.fileHeader)}
+@snippet generate(api)
+    {@licenseSection(api.fileHeader)}
 
-    """Accesses the {@xapiClass.servicePhraseName}."""
-    {@renderImportSection(xapiClass.fileHeader.importSection)}
+    """Accesses the {@api.servicePhraseName}."""
+    {@renderImportSection(api.fileHeader.importSection)}
 
 
     _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
-        '{@xapiClass.gapicPackageName}',
+        '{@api.gapicPackageName}',
     ).version
 
 
-    class {@xapiClass.name}(object):
-        @if xapiClass.doc.lines
-            @if xapiClass.doc.remainingLines
+    class {@api.name}(object):
+        @if api.doc.lines
+            @if api.doc.remainingLines
                 """
-                @join line : xapiClass.doc.lines
+                @join line : api.doc.lines
                     {@line}
                 @end
                 """
             @else
-                """{@xapiClass.doc.firstLine}"""
+                """{@api.doc.firstLine}"""
             @end
 
 
         @end
-        SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
+        SERVICE_ADDRESS = '{@api.serviceAddress}:{@api.servicePort}'
         """The default address of the service."""
 
-        @# The scopes needed to make gRPC calls to all of the methods defined in
-        @# this service
-        _DEFAULT_SCOPES = (
-            @join auth_scope : xapiClass.authScopes on BREAK
-                '{@auth_scope}',
-            @end
-        )
+        @# The name of the interface for this client. This is the key used to
+        @# find the method configuration in the client_config dictionary.
+        _INTERFACE_NAME = '{@api.interfaceKey}'
 
-        @# The name of the interface for this client. This is the key used to find
-        @# method configuration in the client_config dictionary.
-        _INTERFACE_NAME = '{@xapiClass.interfaceKey}'
+        @if api.formatResourceFunctions
 
-        # I don't expect this to go here. Just showing that you can now access the class like so:
-        _TRANSPORT = {@xapiClass.grpcTransportImportName}.{@xapiClass.grpcTransportClassName}()
-
-        @if xapiClass.formatResourceFunctions
-
-            @join function : xapiClass.formatResourceFunctions
+            @join function : api.formatResourceFunctions
                 @@classmethod
                 def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
                     """Return a fully-qualified {@function.entityName} string."""
@@ -59,7 +48,7 @@
             @end
         @end
         def __init__(self, channel=None, credentials=None,
-                client_config={@xapiClass.clientConfigName}.config,
+                client_config={@api.clientConfigName}.config,
                 client_info=None):
             """Constructor.
 
@@ -80,36 +69,14 @@
                     Generally, you only need to set this if you're developing
                     your own client library.
             """
-            # gRPC channel & client stub initialization.
-            @# If both `channel` and `credentials` are specified, raise an
-            @# exception (channels come with credentials baked in already).
-            if channel is not None and credentials is not None:
-                raise ValueError(
-                    'The `channel` and `credentials` arguments to {} are mutually '
-                    'exclusive.'.format(self.__class__.__name__),
-                )
-
-            @# Create the channel.
-            self.channel = channel
-            if self.channel is None:
-                self.channel = google.api_core.grpc_helpers.create_channel(
-                    self.SERVICE_ADDRESS,
-                    credentials=credentials,
-                    scopes=self._DEFAULT_SCOPES,
-                )
-
-            @# Create the gRPC stubs.
-            @join stub : xapiClass.stubs
-                self._{@stub.name} = (
-                    {@stub.grpcClientTypeName}(self.channel))
-            @end
-
-            @if xapiClass.hasLongRunningOperations
-                @# Operations client for methods that return long-running operations
-                @# futures.
-                self._operations_client = (
-                    google.api_core.operations_v1.OperationsClient(self.channel))
-            @end
+            @# Instantiate the transport.
+            @# The transport is responsible for handling serialization and
+            @# deserialization and actually sending data to the service.
+            self.transport = {@api.grpcTransportImportName}.{@api.grpcTransportClassName}(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
             # Client information initialization.
             if client_info is None:
@@ -126,37 +93,14 @@
                 client_config['interfaces'][self._INTERFACE_NAME],
             )
 
+            @# Save a dictionary of cached API call functions.
+            @# These are the actual callables which invoke the proper
+            @# transport methods, wrapped with `wrap_method` to add retry,
+            @# timeout, and the like.
             self._inner_api_calls = {}
 
-        def _intercept_channel(self, *interceptors):
-            """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-            Args:
-                interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-                  Zero or more gRPC interceptors. Interceptors are given control in the order
-                  they are listed.
-            Raises:
-                TypeError: If interceptor does not derive from any of
-                  UnaryUnaryClientInterceptor,
-                  UnaryStreamClientInterceptor,
-                  StreamUnaryClientInterceptor, or
-                  StreamStreamClientInterceptor.
-            """
-            self.channel = grpc.intercept_channel(self.channel, *interceptors)
-            @join stub : xapiClass.stubs
-                self._{@stub.name} = (
-                    {@stub.grpcClientTypeName}(self.channel))
-            @end
-            @if xapiClass.hasLongRunningOperations
-                @# Operations client for methods that return long-running operations
-                @# futures.
-                self._operations_client = (
-                    google.api_core.operations_v1.OperationsClient(self.channel))
-            @end
-            self._inner_api_calls.clear()
-
         @# Service calls
-        @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+        @join apiMethod : api.apiMethods on BREAK.add(BREAK)
             def {@apiMethod.name}(
                     {@renderMethodParams(apiMethod.methodParams)}):
                 """
@@ -194,9 +138,16 @@
                         {@line}
                     @end
                 """
-                if '{@apiMethod.name}' not in self._inner_api_calls:
-                    self._inner_api_calls['{@apiMethod.name}'] = google.api_core.gapic_v1.method.wrap_method(
-                        self._{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
+                @# Wrap the transport method to add retry and timeout logic.
+                @#
+                @# Note: We use the hash of the original transport method
+                @# in order to automatically invalidate the lookup if the
+                @# transport method changes in-place (this can happen because
+                @# the stubs must be regenerated if interceptors are added.)
+                cache_key = hash(self.transport.{@apiMethod.name})
+                if cache_key not in self._inner_api_calls:
+                    self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+                        self.transport.{@apiMethod.name},
                         default_retry=self._method_configs['{@apiMethod.grpcMethodName}'].retry,
                         default_timeout=self._method_configs['{@apiMethod.grpcMethodName}'].timeout,
                         client_info=self._client_info,
@@ -250,14 +201,14 @@
                 @switch apiMethod.type
                 @case "OptionalArrayMethod"
                     @if apiMethod.hasReturnValue
-                        return self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                        return self._inner_api_calls[cache_key]({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     @else
-                        self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                        self._inner_api_calls[cache_key]({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     @end
                 @case "PagedOptionalArrayMethod"
                     iterator = google.api_core.page_iterator.GRPCIterator(
                         client=None,
-                        method=functools.partial(self._inner_api_calls['{@apiMethod.name}']{@optionalParams(apiMethod)}),
+                        method=functools.partial(self._inner_api_calls[cache_key]{@optionalParams(apiMethod)}),
                         request={@apiMethod.requestVariableName},
                         items_field='{@apiMethod.pageStreamingView.resourcesFieldName}',
                         request_token_field='{@apiMethod.pageStreamingView.requestTokenFieldName}',
@@ -265,10 +216,10 @@
                     )
                     return iterator
                 @case "LongRunningOptionalArrayMethod"
-                    operation = self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
+                    operation = self._inner_api_calls[cache_key]({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     return google.api_core.operation.from_gapic(
                         operation,
-                        self._operations_client,
+                        self.transport.operations_client,
                         {@apiMethod.longRunningView.operationPayloadTypeName},
                         metadata_type={@apiMethod.longRunningView.metadataTypeName},
                     )
