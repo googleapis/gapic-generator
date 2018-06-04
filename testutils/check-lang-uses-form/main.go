@@ -180,5 +180,5 @@ func wordChar(c rune, w int) bool {
 	if w == 0 {
 		return false
 	}
-	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
 }
