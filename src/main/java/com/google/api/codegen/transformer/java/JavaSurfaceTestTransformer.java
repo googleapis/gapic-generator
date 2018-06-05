@@ -58,7 +58,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates an ApiModel into API tests in Java. */
-public class JavaSurfaceTestTransformer<T extends ApiModel> implements ModelToViewTransformer<T> {
+public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
+    implements ModelToViewTransformer<ApiModelT> {
 
   private static String SMOKE_TEST_TEMPLATE_FILE = "java/smoke_test.snip";
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
@@ -97,7 +98,7 @@ public class JavaSurfaceTestTransformer<T extends ApiModel> implements ModelToVi
   }
 
   @Override
-  public List<ViewModel> transform(T model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModelT model, GapicProductConfig productConfig) {
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
     boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
 

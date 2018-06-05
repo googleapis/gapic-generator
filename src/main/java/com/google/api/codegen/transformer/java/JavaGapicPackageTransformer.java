@@ -26,8 +26,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 /** Responsible for producing package meta-data related views for Java GAPIC clients */
-public class JavaGapicPackageTransformer<T extends ApiModel> extends JavaPackageTransformer
-    implements ModelToViewTransformer<T> {
+public class JavaGapicPackageTransformer<ApiModelT extends ApiModel> extends JavaPackageTransformer
+    implements ModelToViewTransformer<ApiModelT> {
   private final PackageMetadataConfig packageConfig;
 
   public JavaGapicPackageTransformer(PackageMetadataConfig packageConfig) {
@@ -36,7 +36,7 @@ public class JavaGapicPackageTransformer<T extends ApiModel> extends JavaPackage
   }
 
   @Override
-  public List<ViewModel> transform(T model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ApiModelT model, GapicProductConfig productConfig) {
     List<ViewModel> viewModels = Lists.newArrayList();
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {

@@ -23,10 +23,10 @@ import java.util.List;
  * A ModelToViewTransformer transforms an ApiModel into a list of ViewModel instances that can be
  * rendered by a template engine.
  */
-public interface ModelToViewTransformer<T extends ApiModel> {
+public interface ModelToViewTransformer<ApiModelT extends ApiModel> {
 
   /** Generate a list of ViewModels from a given ApiModel. */
-  List<ViewModel> transform(T model, GapicProductConfig productConfig);
+  List<ViewModel> transform(ApiModelT model, GapicProductConfig productConfig);
 
   /** The list of template filenames the ViewModels apply to. */
   List<String> getTemplateFileNames();
