@@ -158,21 +158,22 @@ func notFoundWords(s string, words []string) []string {
 
 // hasWord reports wheter s contains word w. See notFoundWords for details.
 func hasWord(s, w string) bool {
+	p := 0
 	for {
-		p := strings.Index(s, w)
-		if p < 0 {
+		dp := strings.Index(s[p:], w)
+		if dp < 0 {
 			return false
 		}
-		if wordChar(utf8.DecodeLastRuneInString(s[:p])) {
+		if wordChar(utf8.DecodeLastRuneInString(s[:p+dp])) {
 			goto notWord
 		}
-		if wordChar(utf8.DecodeRuneInString(s[p+len(w):])) {
+		if wordChar(utf8.DecodeRuneInString(s[p+dp+len(w):])) {
 			goto notWord
 		}
 		return true
 
 	notWord:
-		s = s[p+len(w):]
+		p += dp + len(w)
 	}
 }
 

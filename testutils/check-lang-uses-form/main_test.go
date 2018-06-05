@@ -64,6 +64,11 @@ func TestNotFoundWords(t *testing.T) {
 			in:   []string{"foo", "bar", "zip", "zap"},
 			want: []string{"zip", "zap"},
 		},
+		{
+			text: "abcabc",
+			in:   []string{"abc"},
+			want: []string{"abc"},
+		},
 	} {
 		got := notFoundWords(tst.text, tst.in)
 		if !strSetEq(tst.want, got) {
