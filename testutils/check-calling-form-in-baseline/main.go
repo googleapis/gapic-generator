@@ -39,8 +39,9 @@ run of whitespaces. To check for multiple languages or value sets, simply write 
 multiple times. The '#' makes the line a YAML comment, so that it can be inserted without
 affecting the meaning of the file.
 
-NOTE: It is regretable that we have to write valueSetID twice, once in YAML "id" field,
-and again in the comment. One may hope this will improve in the future.
+NOTE: It is regretable that we have to write valueSetID twice, once in the YAML "id" field,
+and again in the comment. We would like to improve this in the future, but this will require
+the additional complexity of parsing the YAML.
 `
 
 func main() {
