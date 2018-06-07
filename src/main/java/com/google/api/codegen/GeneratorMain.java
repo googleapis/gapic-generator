@@ -21,6 +21,7 @@ import com.google.api.codegen.gapic.GapicGeneratorApp;
 import com.google.api.codegen.packagegen.PackageGeneratorApp;
 import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.List;
@@ -237,7 +238,7 @@ public class GeneratorMain {
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
     checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
     checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
-    if (toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE) != null) {
+    if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
     }
 
