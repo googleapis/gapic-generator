@@ -15,12 +15,16 @@
 
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains the common logic for generating view models for GAPIC surface methods. This is used in
@@ -29,6 +33,12 @@ import java.util.List;
  * populates the view models with appropriate sample view models.
  */
 public class PythonMethodViewGenerator {
+  // TODO(vchudnov-g): After doing the other dynamic languages,
+  // consider combining the *MethodViewGenerator classes. Motivation:
+  // the logic in this class is the same as in the corresponding
+  // NodeJS class; the only difference is the list of calling forms in
+  // each case. Maybe we could provide a common class the list of
+  // calling forms for each condition via a language-specific table.
   final DynamicLangApiMethodTransformer clientMethodTransformer;
 
   public PythonMethodViewGenerator(DynamicLangApiMethodTransformer transformer) {
@@ -36,16 +46,57 @@ public class PythonMethodViewGenerator {
   }
 
   public List<OptionalArrayMethodView> generateApiMethods(GapicInterfaceContext context) {
-    // TODO(vchudnov-g): Move the signature selection logic (effectively, the ClientMethodType choice)
-    // here from the .snip files where it currently resides.
-    ImmutableList.Builder<OptionalArrayMethodView> apiMethodsAndSamples = ImmutableList.builder();
+    return context
+        .getSupportedMethods()
+        .stream()
+        .map(methodModel -> generateOneApiMethod(context.asDynamicMethodContext(methodModel)))
+        .collect(Collectors.toList());
+  }
 
-    for (MethodModel method : context.getSupportedMethods()) {
-      OptionalArrayMethodView methodView =
-          clientMethodTransformer.generateMethod(context.asDynamicMethodContext(method));
-      apiMethodsAndSamples.add(methodView);
+  public OptionalArrayMethodView generateOneApiMethod(GapicMethodContext methodContext) {
+    OptionalArrayMethodView methodView;
+    final boolean packageHasMultipleServices = false;
+    final InitCodeContext initContext = null;
+
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      methodView =
+          clientMethodTransformer.generatePagedStreamingMethod(
+              methodContext,
+              initContext,
+              packageHasMultipleServices,
+              Arrays.asList(CallingForm.RequestPagedAll, CallingForm.RequestPaged));
+    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      methodView =
+          clientMethodTransformer.generateLongRunningMethod(
+              methodContext,
+              initContext,
+              packageHasMultipleServices,
+              Arrays.asList(CallingForm.LongRunningPromise));
+    } else {
+      List<CallingForm> callingForms;
+      GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
+      switch (streamingType) {
+        case BidiStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingBidi);
+          break;
+        case ClientStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingClient);
+          break;
+        case ServerStreaming:
+          callingForms = Arrays.asList(CallingForm.RequestStreamingServer);
+          break;
+        case NonStreaming:
+          callingForms = Arrays.asList(CallingForm.Request);
+          break;
+        default:
+          throw new IllegalArgumentException(
+              "unhandled grpcStreamingType: " + streamingType.toString());
+      }
+      methodView =
+          clientMethodTransformer.generateRequestMethod(
+              methodContext, initContext, packageHasMultipleServices, callingForms);
     }
 
-    return apiMethodsAndSamples.build();
+    return methodView;
   }
 }

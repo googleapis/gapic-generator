@@ -21,9 +21,10 @@ import (
 
 func TestReadChecks(t *testing.T) {
 	const checkFile = `
-callingFormCheck: set1 java: foo bar
- callingFormCheck: set2 go: zip zap
-# callingFormCheck: ignored because: not at line start
+# callingFormCheck: set1 java: foo bar
+ # callingFormCheck: set2 go: zip zap
+callingFormCheck: ignored because no hash
+sometext # callingFormCheck: ignored because: not at line start
 unrelated line
 `
 	checks, err := readChecks(strings.NewReader(checkFile))
