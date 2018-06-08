@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -43,7 +44,7 @@ public class GapicConfigProducerTest {
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), locator, new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto);
+    productConfig = GapicProductConfig.create(model, configProto, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");

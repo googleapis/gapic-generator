@@ -32,15 +32,16 @@ const usage = `Reads calling forms from gapic_yaml_file and makes sure each is u
 some *.baseline file in dir.
 The line specifying the calling form is in the format:
 
-  callingFormCheck: <valueSetID> <language>: <callingForm1> <callingForm2> ...
+  # callingFormCheck: <valueSetID> <language>: <callingForm1> <callingForm2> ...
 
-The string "callingFormCheck" must start the line, preceded only by a possibly empty
+The string "# callingFormCheck" must start the line, preceded only by a possibly empty
 run of whitespaces. To check for multiple languages or value sets, simply write the line
-multiple times. Hint: YAML files allow multi-line string literals like
+multiple times. The '#' makes the line a YAML comment, so that it can be inserted without
+affecting the meaning of the file.
 
-  sometext: >
-    callingFormCheck: valud_id java: form1 form2
-    callingFormCheck: another_value_id python: formSpam formEgg formHam
+NOTE: It is regretable that we have to write valueSetID twice, once in the YAML "id" field,
+and again in the comment. We would like to improve this in the future, but this will require
+the additional complexity of parsing the YAML.
 `
 
 func main() {
@@ -127,7 +128,7 @@ func (s checkConfigSlice) Less(i, j int) bool {
 	return s[i].form < s[j].form
 }
 
-var checkPrefix = "callingFormCheck:"
+var checkPrefix = "# callingFormCheck:"
 
 // readChecks reads r for callingFormCheck lines as described in command's usage
 // and returns the set of the checkConfigs to be verified in the baselines.

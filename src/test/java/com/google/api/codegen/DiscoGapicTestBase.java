@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -39,6 +40,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   // Wiring
   // ======
 
+  private final TargetLanguage language;
   private final String name;
   private final String discoveryDocFileName;
   private final List<String> gapicConfigFilePaths = new LinkedList<>();
@@ -48,15 +50,20 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private List<CodeGenerator<?>> discoGapicProviders;
 
   public DiscoGapicTestBase(
-      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
-    this(name, discoveryDocFileName, gapicConfigFileNames, null);
+      TargetLanguage language,
+      String name,
+      String discoveryDocFileName,
+      String[] gapicConfigFileNames) {
+    this(language, name, discoveryDocFileName, gapicConfigFileNames, null);
   }
 
   public DiscoGapicTestBase(
+      TargetLanguage language,
       String name,
       String discoveryDocFileName,
       String[] gapicConfigFileNames,
       String packageConfigFileName) {
+    this.language = language;
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
@@ -77,6 +84,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
               getTestDataLocator()
                   .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml")
                   .getPath(),
+              language.toString().toLowerCase(),
               Collections.emptyList());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.", e);

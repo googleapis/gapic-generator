@@ -19,6 +19,7 @@ import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -106,7 +107,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Nullable
   static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       String interfaceNameOverride,
@@ -168,7 +169,10 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
-    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
+    String manualDoc =
+        Strings.nullToEmpty(
+                interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
+            .trim();
 
     if (diagCollector.hasErrors()) {
       return null;
@@ -204,7 +208,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
