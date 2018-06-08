@@ -1,4 +1,5 @@
 @extends "go/header.snip"
+@extends "common.snip"
 
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
@@ -348,9 +349,7 @@
         }
 
         // Poll fetches the latest state of the long-running operation.
-        //
-        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
-        //
+        {@pollMetadataDoc(lro)}
         // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
         // the operation has completed with failure, the error is returned and op.Done will return true.
         // If Poll succeeds and the operation has completed successfully, op.Done will return true.
@@ -370,9 +369,7 @@
         }
 
         // Poll fetches the latest state of the long-running operation.
-        //
-        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
-        //
+        {@pollMetadataDoc(lro)}
         // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
         // the operation has completed with failure, the error is returned and op.Done will return true.
         // If Poll succeeds and the operation has completed successfully,
@@ -390,19 +387,21 @@
         }
     @end
 
-    // Metadata returns metadata associated with the long-running operation.
-    // Metadata itself does not contact the server, but Poll does.
-    // To get the latest metadata, call this method after a successful call to Poll.
-    // If the metadata is not available, the returned metadata and error are both nil.
-    func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
-        var meta {@lro.metadataTypeName}
-        if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
-            return nil, nil
-        } else if err != nil {
-            return nil, err
+    @if not(lro.isEmptyMetadata)
+        // Metadata returns metadata associated with the long-running operation.
+        // Metadata itself does not contact the server, but Poll does.
+        // To get the latest metadata, call this method after a successful call to Poll.
+        // If the metadata is not available, the returned metadata and error are both nil.
+        func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
+            var meta {@lro.metadataTypeName}
+            if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+                return nil, nil
+            } else if err != nil {
+                return nil, err
+            }
+            return &meta, nil
         }
-        return &meta, nil
-    }
+    @end
 
     // Done reports whether the long-running operation has completed.
     func (op *{@lro.clientReturnTypeName}) Done() bool {
@@ -433,6 +432,16 @@
         func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context, opts ...gax.CallOption) error {
             return op.lro.Delete(ctx, opts...)
         }
+    @end
+@end
+
+@private pollMetadataDoc(lro)
+    @if lro.isEmptyMetadata
+        //
+    @else
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
     @end
 @end
 

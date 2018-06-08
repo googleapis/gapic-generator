@@ -28,6 +28,8 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract boolean isEmptyOperation();
 
+  public abstract boolean isEmptyMetadata();
+
   public abstract String metadataTypeName();
 
   public abstract boolean implementsDelete();
@@ -60,6 +62,8 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder operationPayloadTypeName(String val);
 
     public abstract Builder isEmptyOperation(boolean val);
+
+    public abstract Builder isEmptyMetadata(boolean val);
 
     public abstract Builder metadataTypeName(String val);
 
