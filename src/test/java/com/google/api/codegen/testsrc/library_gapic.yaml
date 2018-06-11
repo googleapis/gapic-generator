@@ -238,15 +238,16 @@ interfaces:
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
+      # callingFormCheck: pi_version java: Flattened Request Callable
     - id: pi_version
       title: "Pi version"
-      description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
+      description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
       parameters:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
     - id: second_edition
       title: "Second edition"
-      description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
+      description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
       parameters:
       - edition=2
     samples:
@@ -497,7 +498,7 @@ interfaces:
     sample_value_sets:
     - id: empty
       title: "Server streaming"
-      description: "Testing calling forms: {Java:[CallableServerStreaming]}"
+      description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
     samples:
       in_code:
       - calling_forms: ".*"
@@ -523,7 +524,7 @@ interfaces:
     sample_value_sets:
     - id: prog
       title: "Programming Books"
-      description: "Testing calling forms: {Java:[CallableServerStreaming]}"
+      description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
       parameters:
         - name=BASIC
     samples:
@@ -547,7 +548,7 @@ interfaces:
     sample_value_sets:
     - id: prog
       title: "Programming Books"
-      description: "Testing calling forms: {Java:[CallableBidiStreaming]}"
+      description: "Testing calling forms: {Java:[CallableStreamingBidi], NodeJS:[RequestStreamingBidi], Python:[RequestStreamingBidi]}"
       parameters:
         - name=BASIC
     samples:
@@ -571,7 +572,7 @@ interfaces:
     sample_value_sets:
     - id: prog
       title: "Programming Books"
-      description: "Testing calling forms: {Java:[CallableClientStreaming]}"
+      description: "Testing calling forms: {Java:[CallableStreamingClient], NodeJS:[RequestStreamingClient], Python:[RequestStreamingClient]}"
       parameters:
         - name=BASIC
     samples:
@@ -613,7 +614,7 @@ interfaces:
     sample_value_sets:
     - id: odyssey
       title: "The Odyssey"
-      description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged]}"
+      description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
       parameters:
       - names[0]=Odyssey
       - shelves[0]=Classics
@@ -695,7 +696,7 @@ interfaces:
     sample_value_sets:
     - id: wap
       title: "GetBigBook: 'War and Peace'"
-      description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable]}"
+      description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"
       parameters:
       - name="War and Peace"
     samples:

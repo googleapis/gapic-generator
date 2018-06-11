@@ -365,14 +365,14 @@
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the {@@see \Google\Cloud\ApiCore\Transport\GrpcTransport::build()} and
-     *           {@@see \Google\Cloud\ApiCore\Transport\RestTransport::build()} methods for the
+     *           See the {@@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
      *           supported options.
      * }
      * @@throws ValidationException
      * @@experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $clientOptions = $this->buildClientOptions($options);
         $this->setClientOptions($clientOptions);
@@ -503,10 +503,18 @@
 @private paramList(params)
     @join param : params on ", "
         @if param.defaultValue
-            ${@param.name} = {@param.defaultValue}
+            {@paramDeclaration(param)} = {@param.defaultValue}
         @else
-            ${@param.name}
+            {@paramDeclaration(param)}
         @end
+    @end
+@end
+
+@private paramDeclaration(param)
+    @if param.hasTypeHint
+        {@param.typeHint} ${@param.name}
+    @else
+        ${@param.name}
     @end
 @end
 

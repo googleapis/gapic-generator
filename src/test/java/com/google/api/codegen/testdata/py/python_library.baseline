@@ -1337,13 +1337,15 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>>
             >>> # Iterate over all results
             >>> for element in client.list_shelves():
             ...     # process element
             ...     pass
             >>>
-            >>> # Or iterate over results one page at a time
+            >>>
+            >>> # Alternatively:
+            >>>
+            >>> # Iterate over results one page at a time
             >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
             ...     for element in page:
             ...         # process element
@@ -1556,7 +1558,7 @@ class LibraryServiceClient(object):
             book=book,
         )
 
-        routing_header = google.api_core.gapic_v1.routing_header(
+        routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
             [('name', name), ('book.read', book.read)],
         )
         metadata.append(routing_header)
@@ -1717,13 +1719,15 @@ class LibraryServiceClient(object):
             >>> name = client.shelf_path('[SHELF_ID]')
             >>> filter_ = 'book-filter-string'
             >>>
-            >>>
             >>> # Iterate over all results
             >>> for element in client.list_books(name, filter=filter_):
             ...     # process element
             ...     pass
             >>>
-            >>> # Or iterate over results one page at a time
+            >>>
+            >>> # Alternatively:
+            >>>
+            >>> # Iterate over results one page at a time
             >>> for page in client.list_books(name, filter=filter_, options=CallOptions(page_token=INITIAL_PAGE)):
             ...     for element in page:
             ...         # process element
@@ -1975,13 +1979,15 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>>
             >>> # Iterate over all results
             >>> for element in client.list_strings():
             ...     # process element
             ...     pass
             >>>
-            >>> # Or iterate over results one page at a time
+            >>>
+            >>> # Alternatively:
+            >>>
+            >>> # Iterate over results one page at a time
             >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
             ...     for element in page:
             ...         # process element
@@ -2558,13 +2564,15 @@ class LibraryServiceClient(object):
             >>> # TODO: Initialize ``shelves``:
             >>> shelves = []
             >>>
-            >>>
             >>> # Iterate over all results
             >>> for element in client.find_related_books(names, shelves):
             ...     # process element
             ...     pass
             >>>
-            >>> # Or iterate over results one page at a time
+            >>>
+            >>> # Alternatively:
+            >>>
+            >>> # Iterate over results one page at a time
             >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
             ...     for element in page:
             ...         # process element
@@ -3519,9 +3527,9 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/discuss_book_sample_generic_prog.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleGenericProg" ]
-#### STUB standalone sample "DiscussBookSampleGenericProg" #####
+============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/discuss_book_sample_request_streaming_bidi_prog.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleRequestStreamingBidiProg" ]
+#### STUB standalone sample "DiscussBookSampleRequestStreamingBidiProg" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3532,9 +3540,9 @@ def lint_setup_py(session):
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "RequestStreamingBidi"
 ##     valueSet "prog" ("Programming Books")
-##       description: "Testing calling forms: {Java:[CallableBidiStreaming]}"
+##       description: "Testing calling forms: {Java:[CallableStreamingBidi], NodeJS:[RequestStreamingBidi], Python:[RequestStreamingBidi]}"
 ##       [name=BASIC]
 ##     apiMethod "discuss_book" of type "OptionalArrayMethod"
 
@@ -3560,9 +3568,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_sample_generic_odyssey.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleGenericOdyssey" ]
-#### STUB standalone sample "FindRelatedBooksSampleGenericOdyssey" #####
+============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_sample_request_paged_all_odyssey.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestPagedAllOdyssey" ]
+#### STUB standalone sample "FindRelatedBooksSampleRequestPagedAllOdyssey" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3573,9 +3581,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "RequestPagedAll"
 ##     valueSet "odyssey" ("The Odyssey")
-##       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged]}"
+##       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
 ##       [names[0]=Odyssey, shelves[0]=Classics]
 ##     apiMethod "find_related_books" of type "PagedOptionalArrayMethod"
 
@@ -3592,13 +3600,50 @@ names = [names_element]
 shelves_element = 'Classics'
 shelves = [shelves_element]
 
-
 # Iterate over all results
 for element in client.find_related_books(names, shelves):
     # process element
     pass
+print(response)
 
-# Or iterate over results one page at a time
+# [END core_sample]
+
+# FIXME: Insert here clean-up code.
+
+# [END full_sample]
+============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_sample_request_paged_odyssey.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestPagedOdyssey" ]
+#### STUB standalone sample "FindRelatedBooksSampleRequestPagedOdyssey" #####
+
+# FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+# To run with the published packaged, execute the following before running this code:
+#   pip install google-cloud-library
+
+# [START full_sample]
+
+# FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+##     calling form "RequestPaged"
+##     valueSet "odyssey" ("The Odyssey")
+##       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
+##       [names[0]=Odyssey, shelves[0]=Classics]
+##     apiMethod "find_related_books" of type "PagedOptionalArrayMethod"
+
+# [START core_sample]
+
+# FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+from google.cloud.example import library_v1
+
+client = library_v1.LibraryServiceClient()
+
+names_element = 'Odyssey'
+names = [names_element]
+shelves_element = 'Classics'
+shelves = [shelves_element]
+
+# Iterate over results one page at a time
 for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
     for element in page:
         # process element
@@ -3610,9 +3655,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_sample_generic_wap.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleGenericWap" ]
-#### STUB standalone sample "GetBigBookSampleGenericWap" #####
+============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_sample_long_running_promise_wap.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleLongRunningPromiseWap" ]
+#### STUB standalone sample "GetBigBookSampleLongRunningPromiseWap" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3623,9 +3668,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "LongRunningPromise"
 ##     valueSet "wap" ("GetBigBook: 'War and Peace'")
-##       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable]}"
+##       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"
 ##       [name="War and Peace"]
 ##     apiMethod "get_big_book" of type "LongRunningOptionalArrayMethod"
 
@@ -3656,9 +3701,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_sample_generic_prog.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleGenericProg" ]
-#### STUB standalone sample "MonologAboutBookSampleGenericProg" #####
+============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_sample_request_streaming_client_prog.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleRequestStreamingClientProg" ]
+#### STUB standalone sample "MonologAboutBookSampleRequestStreamingClientProg" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3669,9 +3714,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "RequestStreamingClient"
 ##     valueSet "prog" ("Programming Books")
-##       description: "Testing calling forms: {Java:[CallableClientStreaming]}"
+##       description: "Testing calling forms: {Java:[CallableStreamingClient], NodeJS:[RequestStreamingClient], Python:[RequestStreamingClient]}"
 ##       [name=BASIC]
 ##     apiMethod "monolog_about_book" of type "OptionalArrayMethod"
 
@@ -3695,9 +3740,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_generic_pi_version.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleGenericPiVersion" ]
-#### STUB standalone sample "PublishSeriesSampleGenericPiVersion" #####
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_request_pi_version.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestPiVersion" ]
+#### STUB standalone sample "PublishSeriesSampleRequestPiVersion" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3708,9 +3753,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "Request"
 ##     valueSet "pi_version" ("Pi version")
-##       description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
+##       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
 ##       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 ##     apiMethod "publish_series" of type "OptionalArrayMethod"
 
@@ -3738,9 +3783,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_generic_second_edition.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleGenericSecondEdition" ]
-#### STUB standalone sample "PublishSeriesSampleGenericSecondEdition" #####
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_sample_request_second_edition.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestSecondEdition" ]
+#### STUB standalone sample "PublishSeriesSampleRequestSecondEdition" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3751,9 +3796,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "Request"
 ##     valueSet "second_edition" ("Second edition")
-##       description: "Testing calling forms: {Java:[Flattened, Request, Callable]}"
+##       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
 ##       [edition=2]
 ##     apiMethod "publish_series" of type "OptionalArrayMethod"
 
@@ -3783,9 +3828,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/stream_books/stream_books_sample_generic_prog.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksSampleGenericProg" ]
-#### STUB standalone sample "StreamBooksSampleGenericProg" #####
+============== file: samples/google/cloud/example/library_v1/gapic/stream_books/stream_books_sample_request_streaming_server_prog.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksSampleRequestStreamingServerProg" ]
+#### STUB standalone sample "StreamBooksSampleRequestStreamingServerProg" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3796,9 +3841,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "RequestStreamingServer"
 ##     valueSet "prog" ("Programming Books")
-##       description: "Testing calling forms: {Java:[CallableServerStreaming]}"
+##       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
 ##       [name=BASIC]
 ##     apiMethod "stream_books" of type "OptionalArrayMethod"
 
@@ -3822,9 +3867,9 @@ print(response)
 # FIXME: Insert here clean-up code.
 
 # [END full_sample]
-============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_sample_generic_empty.py ==============
-#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesSampleGenericEmpty" ]
-#### STUB standalone sample "StreamShelvesSampleGenericEmpty" #####
+============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_sample_request_streaming_server_empty.py ==============
+#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesSampleRequestStreamingServerEmpty" ]
+#### STUB standalone sample "StreamShelvesSampleRequestStreamingServerEmpty" #####
 
 # FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
@@ -3835,9 +3880,9 @@ print(response)
 
 # FIXME: Insert here boilerplate code not directly related to the method call itself.
 
-##     calling form "Generic"
+##     calling form "RequestStreamingServer"
 ##     valueSet "empty" ("Server streaming")
-##       description: "Testing calling forms: {Java:[CallableServerStreaming]}"
+##       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
 ##       []
 ##     apiMethod "stream_shelves" of type "OptionalArrayMethod"
 

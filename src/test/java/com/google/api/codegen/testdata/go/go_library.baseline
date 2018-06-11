@@ -405,6 +405,7 @@ func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesR
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -520,6 +521,7 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -600,6 +602,7 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -776,6 +779,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 

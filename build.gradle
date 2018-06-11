@@ -140,6 +140,12 @@ task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   exclude 'META-INF/*.SF'
   exclude 'META-INF/*.DSA'
   exclude 'META-INF/*.RSA'
+
+  doLast {
+    Symlinks.createSymbolicLink(
+            "$buildDir/libs/gapic-generator-latest-fatjar.jar",
+            "$buildDir/libs/gapic-generator-${project.version}-fatjar.jar")
+  }
 }
 
 jacocoTestReport {
@@ -392,6 +398,8 @@ classes {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
 task runCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.GeneratorMain'
@@ -406,6 +414,8 @@ task runCodeGen(type: JavaExec) {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runDiscoCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
 task runDiscoCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.GeneratorMain'
@@ -415,7 +425,30 @@ task runDiscoCodeGen(type: JavaExec) {
   }
 }
 
+// Task to build symlinks to tools related to code generation.
+// Symlinks will be placed under `build/toolpaths`.
+task createToolPaths {
+  doLast {
+    new File("$buildDir/toolpaths/").mkdirs()
+    DependencyResolver resolver = new DependencyResolver(project)
+
+    def protoGenGrpcJavaExe = resolver.resolveExecutable(
+            'io.grpc:protoc-gen-grpc-java:1.10.0')
+    Symlinks.createSymbolicLink("$buildDir/toolpaths/protoGenGrpcJavaExe", protoGenGrpcJavaExe)
+
+    def protobufJavaDir = resolver.extractArchive(
+            'com.google.protobuf:protobuf-java:' + protoVersion)
+    Symlinks.createSymbolicLink("$buildDir/toolpaths/protobufJavaDir", protobufJavaDir)
+
+    def googleJavaFormatJar = resolver.locateArchive(
+            'com.google.googlejavaformat:google-java-format:1.1:all-deps')
+    Symlinks.createSymbolicLink("$buildDir/toolpaths/googleJavaFormatJar", googleJavaFormatJar)
+  }
+}
+
 // Task to display the cache path of GRPC Java plugin
+//
+// This task is deprecated - use createToolPaths instead
 task showGrpcJavaPluginPath {
   doLast {
     DependencyResolver resolver = new DependencyResolver(project)
@@ -425,6 +458,8 @@ task showGrpcJavaPluginPath {
 }
 
 // Task to display the cache path of protobuf
+//
+// This task is deprecated - use createToolPaths instead
 task showProtobufPath() {
   doLast {
     DependencyResolver resolver = new DependencyResolver(project)
@@ -434,6 +469,8 @@ task showProtobufPath() {
 }
 
 // Task to display the cache path of Google Java formatter
+//
+// This task is deprecated - use createToolPaths instead
 task showJavaFormatterPath {
   doLast {
     DependencyResolver resolver = new DependencyResolver(project)
@@ -447,6 +484,8 @@ task showJavaFormatterPath {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
 task runConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.GeneratorMain'
@@ -461,6 +500,8 @@ task runConfigGen(type: JavaExec) {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runDiscoConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
 task runDiscoConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.GeneratorMain'
@@ -475,6 +516,8 @@ task runDiscoConfigGen(type: JavaExec) {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.GeneratorMain'

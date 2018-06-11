@@ -1,46 +1,77 @@
 @extends "py/common.snip"
 
 # Generate brief code examples for method-level documentation.
-@snippet exampleCode(apiMethod, initCode)
+@snippet exampleInCode(apiMethod)
   Example:
-      @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
+      @join line : util.getDocLines(incodeSamples(apiMethod))
           {@util.exampleLine(line)}
       @end
 @end
 
-# Generate code samples for standalone samples.
-@snippet sampleCode(apiMethod, initCode)
-      @join line : util.getDocLines(sampleCode_(apiMethod, initCode))
-          {@line}
+@snippet incodeSamples(apiMethod)
+    @join sample : apiMethod.samples on BREAK.add(BREAK).add(BREAK).add("# Alternatively:").add(BREAK)
+      @let firstSample = apiMethod.samples.get(0)
+        # Print the set-up code for the first sample, and for
+        # subsequent samples where the code differs from the first
+        @if or(and(sample.callingForm == firstSample.callingForm, \
+                    sample.valueSet.id == firstSample.valueSet.id), \
+               sampleSetupDiffers(firstSample, sample))
+          {@incodeSampleSetup(apiMethod, sample)}
+        @end
+
+        {@incodeSampleCall(apiMethod, sample)}
       @end
+    @end
 @end
 
-@snippet sampleCode_(apiMethod)
-  {@sampleCode_(apiMethod, apiMethod.initCode)}
+# This function returns true iff @incodeSampleSetup() would produce
+# different code for firstSample and secondSample.
+@snippet sampleSetupDiffers(firstSample, secondSample) horizontal
+  @if or(secondSample.initCode.importSection.appImports != firstSample.initCode.importSection.appImports, \
+         secondSample.initCode.lines != firstSample.initCode.lines)
+    sampleSetupDiffers: true
+  @end
 @end
 
-@snippet sampleCode_(apiMethod, initCode)
-  {@importList(initCode.importSection.appImports)}
+@snippet incodeSampleSetup(apiMethod, sample)
+  {@importList(sample.initCode.importSection.appImports)}
 
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
-  @if initCode.lines
-    {@initCode(initCode)}
+  @if sample.initCode.lines
+    {@initCode(sample.initCode)}
 
-  @end
-  @switch apiMethod.type.toString
-  @case "OptionalArrayMethod"
-    {@optionalArrayMethodSampleCode(apiMethod, initCode)}
-  @case "LongRunningOptionalArrayMethod"
-    {@lroSampleCode(apiMethod, initCode)}
-  @case "PagedOptionalArrayMethod"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod, initCode)}
-  @default
-    {@unhandledCase()}
   @end
 @end
 
-# Helper functions for sampleCode()
+@snippet incodeSample(apiMethod, sample)
+  {@incodeSampleSetup(apiMethod, sample)}
+  {@incodeSampleCall(apiMethod, sample)}
+@end
+
+# The structure of this should be parallel to that of standalone_sample.snip:@standaloneSample
+@snippet incodeSampleCall(apiMethod, sample)
+  @switch sample.callingForm
+  @case "Request"
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+  @case "RequestPaged"
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
+  @case "RequestPagedAll"
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode)}
+  @case "RequestStreamingBidi"
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
+  @case "RequestStreamingClient"
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
+  @case "RequestStreamingServer"
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
+  @case "LongRunningPromise"
+    {@lroSampleCode(apiMethod, sample.initCode)}
+  @default
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @end
+@end
+
+# Helper functions
 
 # Generate argument initialization code for API call
 @snippet initCode(initCodeSpec)
@@ -128,30 +159,31 @@
   @end
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
+@snippet optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
   {@singularResponseSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
+@snippet optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
   {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
+@snippet optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
   requests = [request]
   {@singularResponseSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
+@snippet optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
   requests = [request]
   {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod, initCode)
-
+@snippet pagedOptionalArrayMethodSampleCodeAll(apiMethod, initCode)
   @# Iterate over all results
   {@responseStreamingSampleCode(apiMethod, initCode)}
+@end
 
-  @# Or iterate over results one page at a time
+@snippet pagedOptionalArrayMethodSampleCodePaged(apiMethod, initCode)
+  @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, initCode)}:
       for element in page:
           @# process element
@@ -172,7 +204,7 @@
   @end
 @end
 
-@private lroSampleCode(apiMethod, initCode)
+@snippet lroSampleCode(apiMethod, initCode)
   response = {@methodCallSampleCode(apiMethod, initCode)}
 
   def callback(operation_future):

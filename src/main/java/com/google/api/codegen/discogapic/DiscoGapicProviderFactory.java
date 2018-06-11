@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.discogapic;
 
+import static com.google.api.codegen.common.TargetLanguage.JAVA;
+
 import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -24,7 +27,7 @@ import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaTo
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
 import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
@@ -34,26 +37,23 @@ import com.google.api.codegen.util.java.JavaRenderingUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.NotImplementedException;
 
 /* Factory for DiscoGapicProviders based on an id. */
 public class DiscoGapicProviderFactory {
 
-  public static final String JAVA = "java";
-
   /** Create the DiscoGapicProvider based on the given id */
   public static List<CodeGenerator<?>> create(
+      TargetLanguage language,
       DiscoApiModel model,
       GapicProductConfig productConfig,
-      GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
+      PackageMetadataConfig packageConfig,
+      List<String> enabledArtifacts) {
 
     ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
-    String id = generatorConfig.id();
 
     // Please keep the following IDs in alphabetical order
-    if (id.equals(JAVA)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    if (language.equals(JAVA)) {
+      if (GapicProviderFactory.enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper javaPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/main/java")
@@ -86,7 +86,7 @@ public class DiscoGapicProviderFactory {
         providers.add(metadataProvider);
       }
 
-      if (generatorConfig.enableTestGenerator()) {
+      if (GapicProviderFactory.enableTestGenerator(enabledArtifacts)) {
         GapicCodePathMapper javaTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/test/java")
@@ -109,7 +109,8 @@ public class DiscoGapicProviderFactory {
       return providers;
 
     } else {
-      throw new NotImplementedException("DiscoGapicProviderFactory: invalid id \"" + id + "\"");
+      throw new UnsupportedOperationException(
+          "DiscoGapicProviderFactory: unsupported language \"" + language + "\"");
     }
   }
 }
