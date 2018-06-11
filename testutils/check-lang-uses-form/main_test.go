@@ -15,6 +15,7 @@
 package main
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -49,7 +50,7 @@ FormNoComma // used by: java
 	}
 }
 
-func TestNotFoundWords(t *testing.T) {
+func TestFormsRemaining(t *testing.T) {
 	for _, tst := range []struct {
 		text     string
 		in, want []string
@@ -70,9 +71,9 @@ func TestNotFoundWords(t *testing.T) {
 			want: []string{"abc"},
 		},
 	} {
-		got := notFoundWords(tst.text, tst.in)
+		got := formsRemaining(tst.text, tst.in)
 		if !strSetEq(tst.want, got) {
-			t.Errorf("notFoundWords(%q) = %q, want %q", tst.text, got, tst.want)
+			t.Errorf("formsRemaining(%q) = %q, want %q", tst.text, got, tst.want)
 		}
 	}
 }
@@ -91,4 +92,31 @@ func strSetEq(a, b []string) bool {
 		}
 	}
 	return true
+}
+
+// NOTE(pongad): The benchmarks are not that relevant and exist mostly for educational purposes.
+// If it gives anyone too much trouble maintaining, feel free to delete.
+
+var (
+	// The '#' breaks up the words
+	benchStr = strings.Repeat("#Derp#", 1000) + "CallingForm"
+	benchRe  = regexp.MustCompile(`\bCallingForm\b`)
+)
+
+func BenchmarkRegex(b *testing.B) {
+	b.SetBytes(int64(len(benchStr)))
+	for i := 0; i < b.N; i++ {
+		if benchRe.FindStringIndex(benchStr) == nil {
+			b.Fatal("should find match")
+		}
+	}
+}
+
+func BenchmarkHasWord(b *testing.B) {
+	b.SetBytes(int64(len(benchStr)))
+	for i := 0; i < b.N; i++ {
+		if !hasWord(benchStr, "CallingForm") {
+			b.Fatal("should find match")
+		}
+	}
 }

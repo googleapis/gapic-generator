@@ -27,12 +27,13 @@ import (
 	"unicode/utf8"
 )
 
-const usage = `Reads calling forms from -forms and makes sure each is used by
-the specified languages' *.baseline file in dir.
+const usage = `Reads calling forms from the file specified in -forms and makes sure each is used by
+the specified languages' *.baseline files in dir.
 The line specifying the calling forms is in the format:
 
   CallingForm[,] // used by: lang1 lang2 ...
 
+The spaces in "// used by" is significant.
 If the string "// used by" is itself preceeded by another "//" in the same line,
 it is ignored so that it is possible to talk about the comment in the file itself.
 
@@ -56,15 +57,37 @@ func main() {
 		os.Exit(1)
 	}
 
-	formf, err := os.Open(*formFname)
+	dir := "."
+	if flag.NArg() != 0 {
+		dir = flag.Arg(0)
+	}
+
+	remain, err := unusedCallingForms(*formFname, dir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer formf.Close()
 
-	checks, err := readChecks(formf)
+	if len(remain) != 0 {
+		fmt.Println("The following {language, callingForms}s are declared but not used:")
+		for lang, forms := range remain {
+			for _, form := range forms {
+				fmt.Printf("{%q, %q}\n", lang, form)
+			}
+		}
+		os.Exit(1)
+	}
+}
+
+func unusedCallingForms(formFname, dir string) (map[string][]string, error) {
+	formFile, err := os.Open(formFname)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
+	}
+	defer formFile.Close()
+
+	checks, err := readChecks(formFile)
+	if err != nil {
+		return nil, err
 	}
 
 	walkFn := func(path string, info os.FileInfo, err error) error {
@@ -79,8 +102,8 @@ func main() {
 		}
 
 		lang := filepath.Base(filepath.Dir(path))
-		words := checks[lang]
-		if len(words) == 0 {
+		formsToCheck := checks[lang]
+		if len(formsToCheck) == 0 {
 			return nil
 		}
 
@@ -89,64 +112,54 @@ func main() {
 			return err
 		}
 
-		words = notFoundWords(string(baseline), words)
-		if len(words) == 0 {
+		formsToCheck = formsRemaining(string(baseline), formsToCheck)
+		if len(formsToCheck) == 0 {
 			delete(checks, lang)
 		} else {
-			checks[lang] = words
+			checks[lang] = formsToCheck
 		}
 		return nil
 	}
 
-	dir := "."
-	if flag.NArg() > 0 {
-		dir = flag.Arg(0)
-	}
 	if err := filepath.Walk(dir, walkFn); err != nil {
-		log.Fatal(err)
-	}
-
-	if len(checks) != 0 {
-		fmt.Println("The following {language, callingForms}s are declared but not used:")
-		for lang, forms := range checks {
-			for _, form := range forms {
-				fmt.Printf("{%q, %q}\n", lang, form)
-			}
-		}
-		os.Exit(1)
-	}
-}
-
-// readChecks reads calling forms and languages where calling forms are expected in from r.
-// The format is described by the program's usage text.
-func readChecks(r io.Reader) (map[string][]string, error) {
-	checks := make(map[string][]string)
-	sc := bufio.NewScanner(r)
-	for sc.Scan() {
-		ln := sc.Text()
-		p := strings.Index(ln, "//")
-		const prefix = "// used by:"
-		if p < 0 || !strings.HasPrefix(ln[p:], prefix) {
-			continue
-		}
-		form := ln[:p]
-		form = strings.TrimSpace(form)
-		form = strings.TrimRight(form, ",")
-
-		for _, lang := range strings.Fields(ln[p+len(prefix):]) {
-			checks[lang] = append(checks[lang], form)
-		}
-	}
-	if err := sc.Err(); err != nil {
 		return nil, err
 	}
 	return checks, nil
 }
 
-// notFoundWords searches s for words and report words not found in s.
+// readChecks reads in from r calling forms and languages where calling forms are expected
+// and returns map[language][]callingForm.
+// The format for r is described by the program's usage text.
+func readChecks(r io.Reader) (map[string][]string, error) {
+	checks := make(map[string][]string)
+	br := bufio.NewReader(r)
+	for {
+		line, err := br.ReadString('\n')
+		if err == io.EOF {
+			return checks, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		p := strings.Index(line, "//")
+		const prefix = "// used by:"
+		if p < 0 || !strings.HasPrefix(line[p:], prefix) {
+			continue
+		}
+		form := line[:p]
+		form = strings.TrimSpace(form)
+		form = strings.TrimRight(form, ",")
+
+		for _, lang := range strings.Fields(line[p+len(prefix):]) {
+			checks[lang] = append(checks[lang], form)
+		}
+	}
+}
+
+// formsRemaining searches s for words and report words not found in s.
 // A word must be delimited by either string boundary or non-word character,
 // eg string "ab" does not contain the word "b".
-func notFoundWords(s string, words []string) []string {
+func formsRemaining(s string, words []string) []string {
 	var notFound []string
 	for _, w := range words {
 		if !hasWord(s, w) {
@@ -156,7 +169,7 @@ func notFoundWords(s string, words []string) []string {
 	return notFound
 }
 
-// hasWord reports wheter s contains word w. See notFoundWords for details.
+// hasWord reports wheter s contains word w. See formsRemaining for details.
 func hasWord(s, w string) bool {
 	p := 0
 	for {
@@ -164,15 +177,11 @@ func hasWord(s, w string) bool {
 		if dp < 0 {
 			return false
 		}
-		if wordChar(utf8.DecodeLastRuneInString(s[:p+dp])) {
-			goto notWord
+		isWord := !wordChar(utf8.DecodeLastRuneInString(s[:p+dp]))
+		isWord = isWord && !wordChar(utf8.DecodeRuneInString(s[p+dp+len(w):]))
+		if isWord {
+			return true
 		}
-		if wordChar(utf8.DecodeRuneInString(s[p+dp+len(w):])) {
-			goto notWord
-		}
-		return true
-
-	notWord:
 		p += dp + len(w)
 	}
 }

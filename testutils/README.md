@@ -13,18 +13,23 @@ check-calling-form-in-baseline
 ------------------------------
 Checks that calling forms and value sets tagged in `*_gapic.yaml` files is used in baselines.
 
-To test the test, run :
+To test the test, run the following command from repository root:
 
   go test testutils/check-calling-form-in-baseline/*.go
 
-from the root of the repository.
-
-To run the test, run 
+To run the test, run the following command from repository root: 
 
   go run testutils/check-calling-form-in-baseline/main.go -yaml src/test/java/com/google/api/codegen/testsrc/library_gapic.yaml src
   
-from the root of the repository.
-
 check-lang-uses-form
 --------------------
-Checks that calling forms defined in `CallingForm.java` are used by the specified languages.
+Checks that calling forms defined in `CallingForm.java` are used by the specified languages in the library baselines.
+
+To test the test, run the following command from repository root:
+
+  go test testutils/check-lang-uses-form/*.go
+
+To run the test, run the following command from repository root: 
+
+  go run testutils/check-lang-uses-form/main.go -yaml src/test/java/com/google/api/codegen/testsrc/library_gapic.yaml src
+  
