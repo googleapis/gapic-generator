@@ -372,7 +372,7 @@
      * @@throws ValidationException
      * @@experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $clientOptions = $this->buildClientOptions($options);
         $this->setClientOptions($clientOptions);
@@ -503,10 +503,18 @@
 @private paramList(params)
     @join param : params on ", "
         @if param.defaultValue
-            ${@param.name} = {@param.defaultValue}
+            {@paramName(param)} = {@param.defaultValue}
         @else
-            ${@param.name}
+            {@paramName(param)}
         @end
+    @end
+@end
+
+@private paramName(param)
+    @if param.hasTypeHint
+        {@param.typeHint} ${@param.name}
+    @else
+        ${@param.name}
     @end
 @end
 
