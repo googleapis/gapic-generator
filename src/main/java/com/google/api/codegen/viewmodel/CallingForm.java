@@ -32,6 +32,7 @@ public enum CallingForm {
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
   RequestPaged, // used by: java py
+  RequestPagedAll, // used by: py
   RequestStreamingBidi, // used by: nodejs py
   RequestStreamingClient, // used by: nodejs py
   RequestStreamingServer, // used by: nodejs py
