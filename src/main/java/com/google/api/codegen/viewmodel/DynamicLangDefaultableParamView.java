@@ -15,12 +15,20 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DynamicLangDefaultableParamView {
   public abstract String name();
 
   public abstract String defaultValue();
+
+  @Nullable
+  public abstract String typeHint();
+
+  public boolean hasTypeHint() {
+    return typeHint() != null && !typeHint().isEmpty();
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangDefaultableParamView.Builder();
@@ -31,6 +39,8 @@ public abstract class DynamicLangDefaultableParamView {
     public abstract Builder name(String name);
 
     public abstract Builder defaultValue(String value);
+
+    public abstract Builder typeHint(String value);
 
     public abstract DynamicLangDefaultableParamView build();
   }
