@@ -2204,6 +2204,10 @@ func TestLibraryServiceCreateShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.CreateShelfRequest{}
+    */
+
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var request = &librarypb.CreateShelfRequest{
         Shelf: shelf,
@@ -2266,6 +2270,10 @@ func TestLibraryServiceGetShelf(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.GetShelfRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var options string = "options-1249474914"
@@ -2333,6 +2341,10 @@ func TestLibraryServiceListShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.ListShelvesRequest{}
+    */
+
     var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -2393,6 +2405,10 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.DeleteShelfRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
         Name: formattedName,
@@ -2451,6 +2467,10 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.MergeShelvesRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
@@ -2521,6 +2541,10 @@ func TestLibraryServiceCreateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.CreateBookRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
@@ -2584,6 +2608,10 @@ func TestLibraryServicePublishSeries(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.PublishSeriesRequest{}
+    */
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
@@ -2668,6 +2696,10 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.GetBookRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
@@ -2729,6 +2761,10 @@ func TestLibraryServiceListBooks(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.ListBooksRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var filter string = "book-filter-string"
@@ -2800,6 +2836,10 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.DeleteBookRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
@@ -2860,6 +2900,10 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.UpdateBookRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
@@ -2930,6 +2974,10 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.MoveBookRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var request = &librarypb.MoveBookRequest{
@@ -2996,6 +3044,10 @@ func TestLibraryServiceListStrings(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.ListStringsRequest{}
+    */
+
     var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3055,6 +3107,10 @@ func TestLibraryServiceAddComments(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.AddCommentsRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
@@ -3137,6 +3193,10 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.GetBookFromArchiveRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
         Name: formattedName,
@@ -3201,6 +3261,10 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.GetBookFromAnywhereRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
@@ -3271,6 +3335,10 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.GetBookFromAbsolutelyAnywhereRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
         Name: formattedName,
@@ -3326,6 +3394,10 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.UpdateBookIndexRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var indexName string = "default index"
@@ -3397,6 +3469,10 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.StreamShelvesRequest{}
+    */
+
     var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3463,6 +3539,10 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.StreamBooksRequest{}
+    */
 
     var name string = "name3373707"
     var request = &librarypb.StreamBooksRequest{
@@ -3532,6 +3612,10 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.DiscussBookRequest{}
+    */
 
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
@@ -3614,6 +3698,10 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    /*
+    &librarypb.DiscussBookRequest{}
+    */
+
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
         Name: name,
@@ -3683,6 +3771,10 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.FindRelatedBooksRequest{}
+    */
 
     var namesElement string = "namesElement-249113339"
     var names = []string{namesElement}
@@ -3755,6 +3847,10 @@ func TestLabelerAddLabel(t *testing.T) {
     mockLabeler.reqs = nil
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
+
+    /*
+    &taggerpb.AddLabelRequest{}
+    */
 
     var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
@@ -3832,6 +3928,10 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
         Done: true,
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
+
+    /*
+    &librarypb.GetBookRequest{}
+    */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
@@ -3915,6 +4015,10 @@ func TestLibraryServiceGetBigNothing(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
+    /*
+    &librarypb.GetBookRequest{}
+    */
+
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
@@ -3984,6 +4088,10 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     mockLibrary.reqs = nil
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    /*
+    &librarypb.TestOptionalRequiredFlatteningParamsRequest{}
+    */
 
     var requiredSingularInt32 int32 = 72313594
     var requiredSingularInt64 int64 = 72313499
