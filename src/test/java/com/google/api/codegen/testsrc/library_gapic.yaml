@@ -239,12 +239,17 @@ interfaces:
     - series_uuid.series_string=foobar
     sample_value_sets:
       # callingFormCheck: pi_version java: Flattened Request Callable
+      # callingFormCheck: pi_version nodejs: Request
+      # callingFormCheck: pi_version py: Request
     - id: pi_version
       title: "Pi version"
       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
       parameters:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
+      # callingFormCheck: second_edition java: Flattened Request Callable
+      # callingFormCheck: second_edition nodejs: Request
+      # callingFormCheck: second_edition py: Request
     - id: second_edition
       title: "Second edition"
       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
@@ -496,6 +501,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 30000
     sample_value_sets:
+      # callingFormCheck: empty java: CallableStreamingServer
+      # callingFormCheck: empty nodejs: RequestStreamingServer
+      # callingFormCheck: empty py: RequestStreamingServer
     - id: empty
       title: "Server streaming"
       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
@@ -522,6 +530,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 30000
     sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingServer
+      # callingFormCheck: prog nodejs: RequestStreamingServer
+      # callingFormCheck: prog py: RequestStreamingServer
     - id: prog
       title: "Programming Books"
       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
@@ -546,6 +557,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 30000
     sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingBidi
+      # callingFormCheck: prog nodejs: RequestStreamingBidi
+      # callingFormCheck: prog py: RequestStreamingBidi
     - id: prog
       title: "Programming Books"
       description: "Testing calling forms: {Java:[CallableStreamingBidi], NodeJS:[RequestStreamingBidi], Python:[RequestStreamingBidi]}"
@@ -570,6 +584,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 30000
     sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingClient
+      # callingFormCheck: prog nodejs: RequestStreamingClient
+      # callingFormCheck: prog py: RequestStreamingClient
     - id: prog
       title: "Programming Books"
       description: "Testing calling forms: {Java:[CallableStreamingClient], NodeJS:[RequestStreamingClient], Python:[RequestStreamingClient]}"
@@ -612,6 +629,9 @@ interfaces:
     #- names[1]%shelf_id=my_shelf
     #- names[1]%book_id=my_first_book
     sample_value_sets:
+      # callingFormCheck: odyssey java: FlattenedPaged RequestPaged CallableList CallablePaged
+      # callingFormCheck: odyssey nodejs: RequestAsyncPaged RequestAsyncPagedAll
+      # callingFormCheck: odyssey py: RequestPaged RequestPagedAll
     - id: odyssey
       title: "The Odyssey"
       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
@@ -694,6 +714,9 @@ interfaces:
       max_poll_delay_millis: 30000
       total_poll_timeout_millis: 86400000
     sample_value_sets:
+      # callingFormCheck: wap java: LongRunningFlattenedAsync LongRunningRequestAsync Callable LongRunningCallable
+      # callingFormCheck: wap nodejs: LongRunningEventEmitter LongRunningPromise
+      # callingFormCheck: wap py: LongRunningPromise
     - id: wap
       title: "GetBigBook: 'War and Peace'"
       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"

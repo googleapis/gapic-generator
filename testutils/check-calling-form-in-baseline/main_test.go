@@ -69,7 +69,7 @@ func TestDeleteFoundForms(t *testing.T) {
 	const baselineFile = `
 ============== file: foo ==============
 // calling form: "form1"
-// valueSet "set1"
+// valueSet "set1" ("title1")
 ============== file: bar ==============
 // calling form: "badform"
 ============== file: bar ==============
@@ -121,14 +121,20 @@ func TestDeleteFoundForms(t *testing.T) {
 		checks[ts.conf] = true
 	}
 
-	deleteFoundForms(baselineFile, lang+"wrong", checks)
+	err := deleteFoundForms(strings.NewReader(baselineFile), lang+"wrong", checks)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, ts := range tests {
 		if !checks[ts.conf] {
 			t.Errorf("deleteFoundForms in a different language should be no-op; expected %v but not found", ts.conf)
 		}
 	}
 
-	deleteFoundForms(baselineFile, lang, checks)
+	err = deleteFoundForms(strings.NewReader(baselineFile), lang, checks)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, ts := range tests {
 		if ts.expectMatch && checks[ts.conf] {
 			t.Errorf("config is in baseline but not deleted: %v", ts.conf)

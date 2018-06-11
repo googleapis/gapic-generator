@@ -19,13 +19,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
+	"strconv"
 	"strings"
+	"unicode"
 )
 
 const usage = `Reads calling forms from gapic_yaml_file and makes sure each is used by
@@ -84,13 +84,14 @@ func main() {
 		if filepath.Ext(path) != ".baseline" {
 			return nil
 		}
-		baseline, err := ioutil.ReadFile(path)
+		lang := filepath.Base(filepath.Dir(path))
+		f, err := os.Open(path)
 		if err != nil {
 			return err
 		}
-		lang := filepath.Base(filepath.Dir(path))
-		deleteFoundForms(string(baseline), lang, checks)
-		return nil
+		defer f.Close()
+
+		return deleteFoundForms(f, lang, checks)
 	}
 	dir := "."
 	if flag.NArg() > 0 {
@@ -175,45 +176,78 @@ type checkConfig struct {
 	form string
 }
 
-var (
-	callingFormRe = regexp.MustCompile(`calling form: "(.*?)"`)
-	valueSetRe    = regexp.MustCompile(`valueSet "(.*?)"`)
-)
-
 // deleteFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
-func deleteFoundForms(baseline string, lang string, forms map[checkConfig]bool) error {
-	// Split the baseline file into its "logical files"
-	var files []string
-	for {
-		const fileHeader = "============== file:"
-		p := strings.Index(baseline, fileHeader)
-		if p < 0 {
-			files = append(files, baseline)
-			break
-		}
-		files = append(files, baseline[:p])
+func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) error {
+	var callingForm, valueSet string
 
-		baseline = baseline[p:]
-		baseline = baseline[strings.IndexByte(baseline, '\n')+1:]
-	}
-
-	for _, file := range files {
-		form := callingFormRe.FindStringSubmatch(file)
-		if len(form) == 0 {
-			continue
-		}
-
-		valSet := valueSetRe.FindStringSubmatch(file)
-		if len(valSet) == 0 {
-			continue
-		}
-
+	// del deletes the form specified in callingForm, valueSet, and lang from forms and reset.
+	// We call this at the end of every logical file.
+	del := func() {
 		delete(forms, checkConfig{
-			id:   valSet[1],
-			form: form[1],
+			id:   valueSet,
+			form: callingForm,
 			lang: lang,
 		})
+		callingForm = ""
+		valueSet = ""
 	}
 
-	return nil
+	br := bufio.NewReader(r)
+	for {
+		line, err := br.ReadString('\n')
+		if err == io.EOF {
+			del()
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		if strings.HasPrefix(line, "============== file:") {
+			del()
+			continue
+		}
+
+		// The expected lines look like this:
+		//   // calling form: "form"
+		//   ## valueSet "set" ("title")
+		// The comment character differs between languages.
+		// Some langs also have colons and others don't. Instead of mandating
+		// exact format, just be a little resilient.
+
+		// Trim out commets and whitespaces
+		line = strings.TrimFunc(line, func(r rune) bool {
+			return unicode.IsSpace(r) || r == '/' || r == '#'
+		})
+		var set *string
+		const (
+			formPrefix = "calling form"
+			setPrefix  = "valueSet"
+		)
+		switch {
+		case strings.HasPrefix(line, formPrefix):
+			set = &callingForm
+			line = line[len(formPrefix):]
+		case strings.HasPrefix(line, setPrefix):
+			set = &valueSet
+			line = line[len(setPrefix):]
+		default:
+			continue
+		}
+
+		// If there's a title, get rid of it
+		if p := strings.IndexByte(line, '('); p >= 0 {
+			line = line[:p]
+		}
+
+		// Trim colon and space.
+		line = strings.TrimFunc(line, func(r rune) bool {
+			return unicode.IsSpace(r) || r == ':'
+		})
+		if l, err := strconv.Unquote(line); err != nil {
+			return fmt.Errorf("%v: %q", err, line)
+		} else {
+			*set = l
+		}
+	}
 }
