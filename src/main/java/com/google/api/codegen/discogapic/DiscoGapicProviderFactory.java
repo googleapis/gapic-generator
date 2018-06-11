@@ -21,7 +21,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
@@ -30,6 +29,7 @@ import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
 import com.google.api.codegen.transformer.java.JavaSurfaceTestTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/* Factory for DiscoGapicProviders based on an id. */
 public class DiscoGapicProviderFactory {
 
   /** Create the DiscoGapicProvider based on the given id */
@@ -58,7 +59,7 @@ public class DiscoGapicProviderFactory {
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        List<DocumentToViewTransformer> transformers =
+        List<ModelToViewTransformer<DiscoApiModel>> transformers =
             Arrays.asList(
                 new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
@@ -69,17 +70,18 @@ public class DiscoGapicProviderFactory {
                 .setDiscoApiModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setDocumentToViewTransformers(transformers)
+                .setModelToViewTransformers(transformers)
                 .build();
 
         providers.add(provider);
 
         CodeGenerator metadataProvider =
-            ViewModelDiscoGapicProvider.newBuilder()
-                .setModel(model)
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicPackageTransformer(packageConfig))
+                .setModelToViewTransformers(
+                    Arrays.asList(new JavaGapicPackageTransformer<DiscoApiModel>(packageConfig)))
                 .build();
         providers.add(metadataProvider);
       }
@@ -91,15 +93,16 @@ public class DiscoGapicProviderFactory {
                 .setShouldAppendPackage(true)
                 .build();
         CodeGenerator<?> testProvider =
-            ViewModelDiscoGapicProvider.newBuilder()
-                .setModel(model)
+            DiscoGapicProvider.newBuilder()
+                .setDiscoApiModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new JavaSurfaceTestTransformer(
-                        javaTestPathMapper,
-                        new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
-                        "java/http_test.snip"))
+                .setModelToViewTransformers(
+                    Arrays.asList(
+                        new JavaSurfaceTestTransformer<DiscoApiModel>(
+                            javaTestPathMapper,
+                            new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                            "java/http_test.snip")))
                 .build();
         providers.add(testProvider);
       }

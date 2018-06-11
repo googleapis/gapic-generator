@@ -18,10 +18,10 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
@@ -36,9 +36,11 @@ import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 
-/** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
+/**
+ * The ModelToViewTransformer to transform a DiscoApiModel into the standard GAPIC surface in Java.
+ */
 public class JavaDiscoGapicSurfaceTransformer
-    implements DocumentToViewTransformer, SurfaceTransformer {
+    implements ModelToViewTransformer<DiscoApiModel>, SurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
 
