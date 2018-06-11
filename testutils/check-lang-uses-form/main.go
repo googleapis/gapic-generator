@@ -46,7 +46,7 @@ func main() {
 		binName := os.Args[0]
 		out := os.Stderr // Should be flag.CommandLine.Output(), but Go version on Travis is too old.
 		fmt.Fprintf(out, "Usage of %s:\n", binName)
-		fmt.Fprintf(out, "%s -form CallingForm.java [dir]\n", binName)
+		fmt.Fprintf(out, "%s -forms CallingForm.java [dir]\n", binName)
 		flag.PrintDefaults()
 		fmt.Fprint(out, usage)
 	}

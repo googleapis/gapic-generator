@@ -31,5 +31,5 @@ To test the test, run the following command from repository root:
 
 To run the test, run the following command from repository root: 
 
-  go run testutils/check-lang-uses-form/main.go -yaml src/test/java/com/google/api/codegen/testsrc/library_gapic.yaml src
+  go run testutils/check-lang-uses-form/main.go -forms src/main/java/com/google/api/codegen/viewmodel/CallingForm.java src
   
