@@ -13,7 +13,7 @@
   @# [START full_sample]
 
   @# FIXME: Insert here boilerplate code not directly related to the method call itself.
-   
+
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
       @##     calling form "{@sample.callingForm.toString}"
@@ -26,7 +26,7 @@
 
       @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
        
-      {@sampleCode(apiMethod, sample.initCode)}
+      {@standaloneSample(apiMethod, sample)}
       # TODO(pongad): Make this work on non-unary too.
       print(response)
       
@@ -37,4 +37,29 @@
     @end
   @end
   @# [END full_sample]
+@end
+
+# The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall.
+#
+# FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
+@snippet standaloneSample(apiMethod, sample)
+  {@incodeSampleSetup(apiMethod, sample)}
+  @switch sample.callingForm
+  @case "Request"
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+  @case "RequestPaged"
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
+  @case "RequestPagedAll"
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode)}
+  @case "RequestStreamingBidi"
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
+  @case "RequestStreamingClient"
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
+  @case "RequestStreamingServer"
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
+  @case "LongRunningPromise"
+    {@lroSampleCode(apiMethod, sample.initCode)}
+  @default
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @end
 @end

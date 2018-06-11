@@ -27,14 +27,14 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by: java nodejs
+  Request, // used by: java nodejs py
   RequestAsync,
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
-  RequestPaged, // used by: java
-  RequestStreamingBidi, // used by: nodejs
-  RequestStreamingClient, // used by: nodejs
-  RequestStreamingServer, // used by: nodejs
+  RequestPaged, // used by: java py
+  RequestStreamingBidi, // used by: nodejs py
+  RequestStreamingClient, // used by: nodejs py
+  RequestStreamingServer, // used by: nodejs py
 
   Flattened, // used by: java
   FlattenedPaged, // used by: java
@@ -52,7 +52,7 @@ public enum CallingForm {
   LongRunningEventEmitter, // used by: nodejs
   LongRunningFlattened,
   LongRunningFlattenedAsync, // used by: java
-  LongRunningPromise, // used by: nodejs
+  LongRunningPromise, // used by: nodejs py
   LongRunningRequest,
   LongRunningRequestAsync, // used by: java
 

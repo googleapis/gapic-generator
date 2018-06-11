@@ -240,6 +240,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
+              .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
