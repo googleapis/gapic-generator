@@ -42,6 +42,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     optionalArgs.name(context.getNamer().localVarName(Name.from("optional", "args")));
     optionalArgs.defaultValue(
         context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(arrayType));
+    optionalArgs.typeHint("array");
     methodParams.add(optionalArgs.build());
 
     return methodParams.build();
