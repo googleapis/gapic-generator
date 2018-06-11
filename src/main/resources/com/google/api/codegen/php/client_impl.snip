@@ -503,14 +503,14 @@
 @private paramList(params)
     @join param : params on ", "
         @if param.defaultValue
-            {@paramName(param)} = {@param.defaultValue}
+            {@paramDeclaration(param)} = {@param.defaultValue}
         @else
-            {@paramName(param)}
+            {@paramDeclaration(param)}
         @end
     @end
 @end
 
-@private paramName(param)
+@private paramDeclaration(param)
     @if param.hasTypeHint
         {@param.typeHint} ${@param.name}
     @else
