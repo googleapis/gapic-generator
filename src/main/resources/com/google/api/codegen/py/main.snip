@@ -235,17 +235,17 @@
                         @end
                     @end
 
-                    if metadata is None:
-                        metadata = []
-                    metadata = list(metadata)
                     @if apiMethod.headerRequestParams
+                        if metadata is None:
+                            metadata = []
+                        metadata = list(metadata)
                         try:
-                            routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
-                                [{@routingHeader(apiMethod.headerRequestParams)}],
-                            )
-                            metadata.append(routing_header)
+                            routing_header = [{@routingHeader(apiMethod.headerRequestParams)}]
                         except AttributeError:
                             pass
+                        else:
+                            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+                            metadata.append(routing_metadata)
 
                     @end
                 @end
