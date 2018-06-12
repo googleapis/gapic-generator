@@ -16,6 +16,8 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+
+import javax.annotation.Nullable;
 import java.util.List;
 
 @AutoValue
@@ -24,7 +26,14 @@ public abstract class ImportSectionView {
 
   public abstract List<ImportFileView> externalImports();
 
+  /** This is a superset of the union of localImports() and sharedImports(). */
   public abstract List<ImportFileView> appImports();
+
+  @Nullable
+  public abstract List<ImportFileView> localImports();
+
+  @Nullable
+  public abstract List<ImportFileView> sharedImports();
 
   public abstract List<ImportFileView> serviceImports();
 
@@ -43,6 +52,10 @@ public abstract class ImportSectionView {
     public abstract Builder externalImports(List<ImportFileView> val);
 
     public abstract Builder appImports(List<ImportFileView> val);
+
+    public abstract Builder localImports(List<ImportFileView> val);
+
+    public abstract Builder sharedImports(List<ImportFileView> val);
 
     public abstract Builder serviceImports(List<ImportFileView> val);
 

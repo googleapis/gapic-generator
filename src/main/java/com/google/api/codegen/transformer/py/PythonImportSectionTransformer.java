@@ -326,27 +326,40 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   public ImportSectionView generateTypesImportSection(
       Model model, GapicProductConfig productConfig) {
-    return ImportSectionView.newBuilder()
-        .appImports(generateTypesProtoImports(model, productConfig))
-        .externalImports(generateTypesExternalImports())
+    ImportSectionView.Builder importView = generateTypesProtoImports(model, productConfig);
+    return importView.externalImports(generateTypesExternalImports())
         .standardImports(generateTypesStandardImports())
         .build();
   }
 
-  private List<ImportFileView> generateTypesProtoImports(
+  private ImportSectionView.Builder generateTypesProtoImports(
       Model model, GapicProductConfig productConfig) {
-    ModelTypeTable typeTable = emptyTypeTable(productConfig);
-    Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+    ImportSectionView.Builder importView = ImportSectionView.newBuilder();
+
+    ModelTypeTable localTypeTable = emptyTypeTable(productConfig);
+    ModelTypeTable sharedTypeTable = emptyTypeTable(productConfig);
+    Set<ImportFileView> localImports = new TreeSet<>(importFileViewComparator());
+    Set<ImportFileView> sharedImports = new TreeSet<>(importFileViewComparator());
+    Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
 
     // Save proto file import names to the type table for disambiguation.
     List<ProtoFile> protoFileDependencies = model.getFiles();
-    populateTypeTable(protoFileDependencies, typeTable);
+    populateTypeTables(protoFileDependencies, localTypeTable, sharedTypeTable);
 
     // Get disambiguated imports.
-    for (Map.Entry<String, TypeAlias> entry : typeTable.getImports().entrySet()) {
-      imports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    for (Map.Entry<String, TypeAlias> entry : localTypeTable.getImports().entrySet()) {
+      localImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+      appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
     }
-    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+    for (Map.Entry<String, TypeAlias> entry : sharedTypeTable.getImports().entrySet()) {
+      sharedImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+      appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    }
+    importView.localImports(ImmutableList.<ImportFileView>builder().addAll(localImports).build());
+    importView.sharedImports(ImmutableList.<ImportFileView>builder().addAll(sharedImports).build());
+    importView.appImports(ImmutableList.<ImportFileView>builder().addAll(appImports).build());
+
+    return importView;
   }
 
   private ModelTypeTable emptyTypeTable(GapicProductConfig productConfig) {
@@ -363,13 +376,18 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.of(createImport("__future__", "absolute_import"), createImport("sys"));
   }
 
-  private void populateTypeTable(List<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
+  private void populateTypeTables(List<ProtoFile> protoFileDependencies,
+                                  ModelTypeTable localTypeTable, ModelTypeTable sharedTypeTable) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
       ImmutableList<MessageType> messages = protoFile.getMessages();
       if (!messages.isEmpty()) {
-        typeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+        if (protoFile.getSimpleName().contains("/")) {
+          sharedTypeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+        } else {
+          localTypeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+        }
       }
     }
   }
