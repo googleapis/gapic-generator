@@ -44,6 +44,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +52,12 @@ import java.util.TreeSet;
 
 /* Creates the import sections of GAPIC generated code for Python. */
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
+
+  private enum IMPORT_TYPE {
+    LOCAL,
+    SHARED
+  }
+
   @Override
   public ImportSectionView generateImportSection(TransformationContext context, String className) {
     InterfaceContext interfaceContext = (InterfaceContext) context;
@@ -351,6 +358,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
     // All imports.
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
+    Map<String, IMPORT_TYPE> importNamesAndTypes = new HashMap<>();
 
     List<ProtoElement> elements = Lists.newArrayList(model.getRoots());
     String serviceFullName = elements.get(0).getFullName();
@@ -358,18 +366,20 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
     // Save proto file import names to the type table for disambiguation.
     List<ProtoFile> protoFileDependencies = model.getFiles();
-    populateTypeTables(
-        protoFileDependencies, localTypeTable, sharedTypeTable, allTypeTable, packageName);
+    populateTypeTables(protoFileDependencies, allTypeTable, importNamesAndTypes, packageName);
 
     // Get disambiguated imports.
-    for (Map.Entry<String, TypeAlias> entry : localTypeTable.getImports().entrySet()) {
-      localImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
-    }
-    for (Map.Entry<String, TypeAlias> entry : sharedTypeTable.getImports().entrySet()) {
-      sharedImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
-    }
     for (Map.Entry<String, TypeAlias> entry : allTypeTable.getImports().entrySet()) {
-      appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+      String importFullName = entry.getKey();
+      appImports.add(generateAppImport(importFullName, entry.getValue().getNickname()));
+      switch (importNamesAndTypes.get(importFullName)) {
+        case LOCAL:
+          localImports.add(generateAppImport(importFullName, entry.getValue().getNickname()));
+          break;
+        case SHARED:
+          sharedImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+          break;
+      }
     }
     importView.localImports(ImmutableList.<ImportFileView>builder().addAll(localImports).build());
     importView.sharedImports(ImmutableList.<ImportFileView>builder().addAll(sharedImports).build());
@@ -394,20 +404,21 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private void populateTypeTables(
       List<ProtoFile> protoFileDependencies,
-      ModelTypeTable localTypeTable,
-      ModelTypeTable sharedTypeTable,
       ModelTypeTable allTypeTable,
+      Map<String, IMPORT_TYPE> importViews,
       String packageName) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
       ImmutableList<MessageType> messages = protoFile.getMessages();
       if (!messages.isEmpty()) {
-        allTypeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+        TypeRef typeRef = TypeRef.of(messages.get(0));
+        allTypeTable.getAndSaveNicknameFor(typeRef);
+
         if (protoFile.getFullName().equals(packageName)) {
-          localTypeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+          importViews.put(allTypeTable.getFullNameFor(typeRef), IMPORT_TYPE.LOCAL);
         } else {
-          sharedTypeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+          importViews.put(allTypeTable.getFullNameFor(typeRef), IMPORT_TYPE.SHARED);
         }
       }
     }
