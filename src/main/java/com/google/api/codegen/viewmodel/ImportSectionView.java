@@ -28,9 +28,11 @@ public abstract class ImportSectionView {
   /** This is a superset of the union of localImports() and sharedImports(). */
   public abstract List<ImportFileView> appImports();
 
+  /** Used in Python. */
   @Nullable
   public abstract List<ImportFileView> localImports();
 
+  /** Used in Python. */
   @Nullable
   public abstract List<ImportFileView> sharedImports();
 
