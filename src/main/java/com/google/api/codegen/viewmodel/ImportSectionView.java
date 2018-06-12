@@ -16,9 +16,8 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-
-import javax.annotation.Nullable;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ImportSectionView {

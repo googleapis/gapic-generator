@@ -379,8 +379,11 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.of(createImport("__future__", "absolute_import"), createImport("sys"));
   }
 
-  private void populateTypeTables(List<ProtoFile> protoFileDependencies,
-                                  ModelTypeTable localTypeTable, ModelTypeTable sharedTypeTable, ModelTypeTable allTypeTable) {
+  private void populateTypeTables(
+      List<ProtoFile> protoFileDependencies,
+      ModelTypeTable localTypeTable,
+      ModelTypeTable sharedTypeTable,
+      ModelTypeTable allTypeTable) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
