@@ -67,12 +67,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
-  public ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
-    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.appImports(generateFileHeaderAppImports(typeImports));
-    return importSection.build();
-  }
-
   public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(generateTestStandardImports())
