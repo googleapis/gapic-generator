@@ -1255,6 +1255,9 @@ class LibraryServiceClient(object):
         request = library_pb2.CreateShelfRequest(
             shelf=shelf,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['create_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_shelf(
@@ -1322,6 +1325,9 @@ class LibraryServiceClient(object):
             message=message,
             string_builder=string_builder,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['get_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_shelves(
@@ -1382,6 +1388,9 @@ class LibraryServiceClient(object):
             )
 
         request = library_pb2.ListShelvesRequest()
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._inner_api_calls['list_shelves'], retry=retry, timeout=timeout, metadata=metadata),
@@ -1439,6 +1448,9 @@ class LibraryServiceClient(object):
         request = library_pb2.DeleteShelfRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         self._inner_api_calls['delete_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def merge_shelves(
@@ -1497,6 +1509,9 @@ class LibraryServiceClient(object):
             name=name,
             other_shelf_name=other_shelf_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['merge_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def create_book(
@@ -1557,11 +1572,16 @@ class LibraryServiceClient(object):
             name=name,
             book=book,
         )
-
-        routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
-            [('name', name), ('book.read', book.read)],
-        )
-        metadata.append(routing_header)
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
+                [('name', name), ('book.read', book.read)],
+            )
+            metadata.append(routing_header)
+        except AttributeError:
+            pass
 
         return self._inner_api_calls['create_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -1646,6 +1666,9 @@ class LibraryServiceClient(object):
             edition=edition,
             review_copy=review_copy,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book(
@@ -1698,6 +1721,9 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_books(
@@ -1776,6 +1802,9 @@ class LibraryServiceClient(object):
             page_size=page_size,
             filter=filter_,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._inner_api_calls['list_books'], retry=retry, timeout=timeout, metadata=metadata),
@@ -1833,6 +1862,9 @@ class LibraryServiceClient(object):
         request = library_pb2.DeleteBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         self._inner_api_calls['delete_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book(
@@ -1906,6 +1938,9 @@ class LibraryServiceClient(object):
             update_mask=update_mask,
             physical_mask=physical_mask,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['update_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def move_book(
@@ -1962,6 +1997,9 @@ class LibraryServiceClient(object):
             name=name,
             other_shelf_name=other_shelf_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['move_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_strings(
@@ -2034,6 +2072,9 @@ class LibraryServiceClient(object):
             name=name,
             page_size=page_size,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._inner_api_calls['list_strings'], retry=retry, timeout=timeout, metadata=metadata),
@@ -2101,6 +2142,9 @@ class LibraryServiceClient(object):
             name=name,
             comments=comments,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         self._inner_api_calls['add_comments'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_archive(
@@ -2153,6 +2197,9 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['get_book_from_archive'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_anywhere(
@@ -2210,6 +2257,9 @@ class LibraryServiceClient(object):
             name=name,
             alt_book_name=alt_book_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['get_book_from_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_absolutely_anywhere(
@@ -2262,6 +2312,9 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book_index(
@@ -2322,6 +2375,9 @@ class LibraryServiceClient(object):
             index_name=index_name,
             index_map=index_map,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         self._inner_api_calls['update_book_index'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_shelves(
@@ -2370,6 +2426,9 @@ class LibraryServiceClient(object):
             )
 
         request = library_pb2.StreamShelvesRequest()
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['stream_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_books(
@@ -2426,6 +2485,9 @@ class LibraryServiceClient(object):
         request = library_pb2.StreamBooksRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['stream_books'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def discuss_book(
@@ -2621,6 +2683,9 @@ class LibraryServiceClient(object):
             shelves=shelves,
             page_size=page_size,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._inner_api_calls['find_related_books'], retry=retry, timeout=timeout, metadata=metadata),
@@ -2689,6 +2754,9 @@ class LibraryServiceClient(object):
             resource=resource,
             tag=tag,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['add_tag'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def add_label(
@@ -2749,6 +2817,9 @@ class LibraryServiceClient(object):
             resource=resource,
             label=label,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['add_label'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_big_book(
@@ -2810,6 +2881,9 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         operation = self._inner_api_calls['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
@@ -2877,6 +2951,9 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         operation = self._inner_api_calls['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
@@ -3196,6 +3273,9 @@ class LibraryServiceClient(object):
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
