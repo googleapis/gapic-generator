@@ -1557,11 +1557,16 @@ class LibraryServiceClient(object):
             name=name,
             book=book,
         )
-
-        routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
-            [('name', name), ('book.read', book.read)],
-        )
-        metadata.append(routing_header)
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name), ('book.read', book.read)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
 
         return self._inner_api_calls['create_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
