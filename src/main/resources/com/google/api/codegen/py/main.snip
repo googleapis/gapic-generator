@@ -235,9 +235,6 @@
                         @end
                     @end
 
-                    if metadata is None:
-                        metadata = []
-                    metadata = list(metadata)
                     @if apiMethod.headerRequestParams
                         try:
                             routing_header = google.api_core.gapic_v1.routing_header.to_grpc_metadata(
@@ -251,6 +248,9 @@
                 @end
                 @switch apiMethod.type
                 @case "OptionalArrayMethod"
+                    if metadata is None:
+                        metadata = []
+                    metadata = list(metadata)
                     @if apiMethod.hasReturnValue
                         return self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     @else
