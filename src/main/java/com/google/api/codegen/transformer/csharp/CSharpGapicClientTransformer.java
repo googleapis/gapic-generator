@@ -26,6 +26,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
@@ -86,7 +87,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CSharpGapicClientTransformer implements ModelToViewTransformer {
+/* Transforms a ProtoApiModel into the standard GAPIC library for C#. */
+public class CSharpGapicClientTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
@@ -117,7 +119,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();

@@ -25,13 +25,13 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -59,7 +59,8 @@ import java.util.Map;
 import java.util.Set;
 
 /* Creates the ViewModel for Discovery-Doc-based ResourceName and ResourceTypeName Java classes. */
-public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToViewTransformer {
+public class JavaDiscoGapicResourceNameToViewTransformer
+    implements ModelToViewTransformer<DiscoApiModel> {
   private final GapicCodePathMapper pathMapper;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();

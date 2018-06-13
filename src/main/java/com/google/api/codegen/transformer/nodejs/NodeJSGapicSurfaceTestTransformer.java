@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -62,7 +63,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** Responsible for producing testing related views for NodeJS */
-public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer {
+public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String TEST_TEMPLATE_FILE = "nodejs/test.snip";
   private static final String SMOKE_TEST_TEMPLATE_FILE = "nodejs/smoke_test.snip";
   private static final String SMOKE_TEST_OUTPUT_BASE_PATH = "smoke-test";
@@ -83,7 +84,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));

@@ -18,6 +18,7 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -57,7 +58,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
+/*
+ * Transforms a ProtoApiModel into the tests of API client for Go. Produces MockCombinedViews for
+ * units tests and SmokeTestClassViews for smoke tests.
+ */
+public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
   private static final String SMOKE_TEST_TEMPLATE_FILE = "go/smoke.snip";
 
@@ -80,7 +85,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> models = new ArrayList<ViewModel>();
     models.add(generateMockServiceView(model, productConfig, namer));
