@@ -23,11 +23,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class StaticResourcesProvider implements CodeGenerator<byte[]> {
+/** Generates static resources as a bytes result. */
+public class StaticResourcesGenerator implements CodeGenerator<byte[]> {
   private StaticResourcesHandler resourcesExtractor;
   private Set<String> executableFilenames;
 
-  public StaticResourcesProvider(Map<String, String> staticFiles, Set<String> executableFilenames) {
+  public StaticResourcesGenerator(
+      Map<String, String> staticFiles, Set<String> executableFilenames) {
     if (!staticFiles.values().containsAll(executableFilenames)) {
       throw new IllegalArgumentException(
           "executableFilenames contains a filename not found in staticFiles");

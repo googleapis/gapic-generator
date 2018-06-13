@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /** CodeGenerator for discogapic, the GAPIC library surface for Discovery documents. */
-public class DiscoGapicProvider implements CodeGenerator<Doc> {
+public class DiscoGapicGenerator implements CodeGenerator<Doc> {
   private final DiscoApiModel model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
@@ -36,7 +36,7 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
 
   private final List<String> snippetFileNames;
 
-  private DiscoGapicProvider(
+  private DiscoGapicGenerator(
       DiscoApiModel model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
@@ -106,8 +106,8 @@ public class DiscoGapicProvider implements CodeGenerator<Doc> {
       return this;
     }
 
-    public DiscoGapicProvider build() {
-      return new DiscoGapicProvider(model, productConfig, snippetSetRunner, transformers);
+    public DiscoGapicGenerator build() {
+      return new DiscoGapicGenerator(model, productConfig, snippetSetRunner, transformers);
     }
   }
 }
