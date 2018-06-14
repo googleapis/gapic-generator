@@ -47,7 +47,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  private List<CodeGenerator<?>> discoGapicProviders;
+  private List<CodeGenerator<?>> discoGapicGenerators;
 
   public DiscoGapicTestBase(
       TargetLanguage language,
@@ -76,8 +76,8 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   protected void setupDiscovery() {
     try {
-      discoGapicProviders =
-          DiscoGapicGeneratorApp.getProviders(
+      discoGapicGenerators =
+          DiscoGapicGeneratorApp.getGenerators(
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),
@@ -102,8 +102,8 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected Map<String, ?> run() throws IOException {
     Map<String, Object> output = new LinkedHashMap<>();
 
-    for (CodeGenerator<?> provider : discoGapicProviders) {
-      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
+    for (CodeGenerator<?> generator : discoGapicGenerators) {
+      Map<String, ? extends GeneratedResult<?>> out = generator.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
         Object value =
             (entry.getValue().getBody() instanceof byte[])

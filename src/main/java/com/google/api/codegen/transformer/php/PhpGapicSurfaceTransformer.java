@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
 import com.google.api.Service;
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -25,6 +24,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -68,7 +68,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
-public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
+public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private Model serviceModel;
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
@@ -106,7 +106,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       ModelTypeTable modelTypeTable =

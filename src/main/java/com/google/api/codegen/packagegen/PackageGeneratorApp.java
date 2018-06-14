@@ -105,9 +105,9 @@ public class PackageGeneratorApp extends ToolDriverBase {
     if (artifactType == null) {
       artifactType = config.artifactType();
     }
-    CodeGenerator<Doc> provider =
-        PackageProviderFactory.create(language, artifactType, options, model, config);
+    CodeGenerator<Doc> generator =
+        PackageGeneratorFactory.create(language, artifactType, options, model, config);
 
-    return provider.generate();
+    return generator.generate();
   }
 }

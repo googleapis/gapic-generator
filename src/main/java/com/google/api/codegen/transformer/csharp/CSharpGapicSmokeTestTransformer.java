@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -46,7 +46,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
+/* Transforms a ProtoApiModel into the smoke tests of an API for C#. */
+public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String SMOKETEST_SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_smoketest.snip";
   private static final String SMOKETEST_CSPROJ_TEMPLATE_FILENAME =
@@ -68,7 +69,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 

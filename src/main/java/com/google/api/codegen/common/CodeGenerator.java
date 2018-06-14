@@ -26,8 +26,8 @@ import java.util.Map;
  */
 public interface CodeGenerator<T> {
   /**
-   * Returns the file names that this provider will use for generation. They can be static files,
-   * snippet templates or any other type of files, depending on the actual provider implementation.
+   * Returns the file names that this generator will use. They can be static files, snippet
+   * templates or any other type of files, depending on the actual generator implementation.
    */
   Collection<String> getInputFileNames();
 

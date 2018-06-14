@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -56,8 +57,11 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-/** A subclass of ModelToViewTransformer which translates model into API smoke tests in Ruby. */
-public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
+/**
+ * A subclass of ModelToViewTransformer which translates a ProtoApiModel into API smoke tests in
+ * Ruby.
+ */
+public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static String SMOKE_TEST_TEMPLATE_FILE = "ruby/smoke_test.snip";
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
 
@@ -85,7 +89,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.addAll(createUnitTestViews(model, productConfig));
     views.addAll(createSmokeTestViews(model, productConfig));

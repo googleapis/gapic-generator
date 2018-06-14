@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Common CodeGenerator which runs code generation. */
-public class CommonGapicProvider implements CodeGenerator<Doc> {
+/** Legacy CodeGenerator that uses a custom SnippetSetRunner for each generator. */
+public class LegacyGapicGenerator implements CodeGenerator<Doc> {
   private final Model model;
   private final GapicContext context;
   private final SnippetSetRunner<Interface> generator;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
-  private CommonGapicProvider(
+  private LegacyGapicGenerator(
       Model model,
       GapicContext context,
       SnippetSetRunner<Interface> generator,
@@ -139,8 +139,8 @@ public class CommonGapicProvider implements CodeGenerator<Doc> {
       return this;
     }
 
-    public CommonGapicProvider build() {
-      return new CommonGapicProvider(model, context, generator, snippetFileNames, pathMapper);
+    public LegacyGapicGenerator build() {
+      return new LegacyGapicGenerator(model, context, generator, snippetFileNames, pathMapper);
     }
   }
 }
