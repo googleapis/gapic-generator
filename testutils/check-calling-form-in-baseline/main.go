@@ -180,7 +180,8 @@ type checkConfig struct {
 func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) error {
 	var callingForm, valueSet string
 
-	// del deletes the form specified in callingForm, valueSet, and lang from forms and reset.
+	// del deletes the form specified in callingForm, valueSet, and lang from forms
+	// and resets callingForm and valueSet.
 	// We call this at the end of every logical file.
 	del := func() {
 		delete(forms, checkConfig{
@@ -215,7 +216,7 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		// Some langs also have colons and others don't. Instead of mandating
 		// exact format, just be a little resilient.
 
-		// Trim out commets and whitespaces
+		// Trim out comments and whitespaces
 		line = strings.TrimFunc(line, func(r rune) bool {
 			return unicode.IsSpace(r) || r == '/' || r == '#'
 		})
