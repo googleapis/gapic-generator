@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -62,7 +63,7 @@ import java.util.Map;
 import java.util.Set;
 
 /** Responsible for producing package metadata related views for Python */
-public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
+public class PythonPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
   private static final String GITHUB_REPO_HOST =
@@ -105,7 +106,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(final ApiModel model, final GapicProductConfig productConfig) {
+  public List<ViewModel> transform(
+      final ProtoApiModel model, final GapicProductConfig productConfig) {
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
         .addAll(
@@ -311,12 +313,13 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
-    DynamicLangApiMethodTransformer apiMethodTransformer =
-        new DynamicLangApiMethodTransformer(
-            new PythonApiMethodParamTransformer(),
-            new InitCodeTransformer(new PythonImportSectionTransformer()));
+    PythonMethodViewGenerator methodViewGenerator =
+        new PythonMethodViewGenerator(
+            new DynamicLangApiMethodTransformer(
+                new PythonApiMethodParamTransformer(),
+                new InitCodeTransformer(new PythonImportSectionTransformer())));
 
-    return apiMethodTransformer.generateMethod(context);
+    return methodViewGenerator.generateOneApiMethod(context);
   }
 
   /**

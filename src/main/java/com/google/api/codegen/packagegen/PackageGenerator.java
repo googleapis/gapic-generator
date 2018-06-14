@@ -12,18 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer;
+package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.config.DiscoApiModel;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.viewmodel.ViewModel;
-import java.util.List;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.tools.framework.model.Model;
+import java.io.IOException;
+import java.util.Map;
 
-public interface DocumentToViewTransformer {
-
-  /** Generate a list of ViewModels from a given Document model. */
-  List<ViewModel> transform(DiscoApiModel document, GapicProductConfig productConfig);
-
-  /** Return the list of filenames of View templates to be applied to the transformed ViewModels. */
-  List<String> getTemplateFileNames();
+/** Generates package metadata. */
+public interface PackageGenerator<T> {
+  Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
+      throws IOException;
 }

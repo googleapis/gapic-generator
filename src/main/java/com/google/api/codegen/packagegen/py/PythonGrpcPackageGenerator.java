@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Map;
 
 /** Performs gRPC package generation for Python */
-public class PythonGrpcPackageProvider implements CodeGenerator<Doc> {
+public class PythonGrpcPackageGenerator implements CodeGenerator<Doc> {
 
   private final ToolOptions options;
   private final Model model;
   private final PackageMetadataConfig config;
 
-  public PythonGrpcPackageProvider(ToolOptions options, Model model, PackageMetadataConfig config) {
+  public PythonGrpcPackageGenerator(
+      ToolOptions options, Model model, PackageMetadataConfig config) {
     this.options = options;
     this.model = model;
     this.config = config;

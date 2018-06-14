@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -39,24 +40,30 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   // Wiring
   // ======
 
+  private final TargetLanguage language;
   private final String name;
   private final String discoveryDocFileName;
   private final List<String> gapicConfigFilePaths = new LinkedList<>();
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
-  private List<CodeGenerator<?>> discoGapicProviders;
+  private List<CodeGenerator<?>> discoGapicGenerators;
 
   public DiscoGapicTestBase(
-      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
-    this(name, discoveryDocFileName, gapicConfigFileNames, null);
+      TargetLanguage language,
+      String name,
+      String discoveryDocFileName,
+      String[] gapicConfigFileNames) {
+    this(language, name, discoveryDocFileName, gapicConfigFileNames, null);
   }
 
   public DiscoGapicTestBase(
+      TargetLanguage language,
       String name,
       String discoveryDocFileName,
       String[] gapicConfigFileNames,
       String packageConfigFileName) {
+    this.language = language;
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
@@ -69,14 +76,15 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   protected void setupDiscovery() {
     try {
-      discoGapicProviders =
-          DiscoGapicGeneratorApp.getProviders(
+      discoGapicGenerators =
+          DiscoGapicGeneratorApp.getGenerators(
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),
               getTestDataLocator()
                   .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml")
                   .getPath(),
+              language.toString().toLowerCase(),
               Collections.emptyList());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.", e);
@@ -94,8 +102,8 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   protected Map<String, ?> run() throws IOException {
     Map<String, Object> output = new LinkedHashMap<>();
 
-    for (CodeGenerator<?> provider : discoGapicProviders) {
-      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
+    for (CodeGenerator<?> generator : discoGapicGenerators) {
+      Map<String, ? extends GeneratedResult<?>> out = generator.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : out.entrySet()) {
         Object value =
             (entry.getValue().getBody() instanceof byte[])

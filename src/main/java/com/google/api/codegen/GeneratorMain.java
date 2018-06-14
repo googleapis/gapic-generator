@@ -21,6 +21,7 @@ import com.google.api.codegen.gapic.GapicGeneratorApp;
 import com.google.api.codegen.packagegen.PackageGeneratorApp;
 import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.List;
@@ -61,6 +62,22 @@ public class GeneratorMain {
           .desc("The service YAML configuration file or files.")
           .hasArg()
           .argName("SERVICE-YAML")
+          .required(false)
+          .build();
+  private static final Option LANGUAGE_OPTION =
+      Option.builder("l")
+          .longOpt("language")
+          .desc("The target programming language for generated output.")
+          .hasArg()
+          .argName("LANGUAGE")
+          .required(true)
+          .build();
+  private static final Option LANGUAGE_NONREQUIRED_OPTION =
+      Option.builder("l")
+          .longOpt("language")
+          .desc("The target programming language for generated output.")
+          .hasArg()
+          .argName("LANGUAGE")
           .required(false)
           .build();
   private static final Option OUTPUT_OPTION =
@@ -178,6 +195,8 @@ public class GeneratorMain {
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
     options.addOption(SERVICE_YAML_OPTION);
+    // TODO make required after artman passes this in
+    options.addOption(LANGUAGE_NONREQUIRED_OPTION);
     options.addOption(GAPIC_YAML_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(OUTPUT_OPTION);
@@ -206,6 +225,8 @@ public class GeneratorMain {
         ToolOptions.CONFIG_FILES,
         Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_OPTION.getLongOpt())));
     toolOptions.set(
+        GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_NONREQUIRED_OPTION.getLongOpt()));
+    toolOptions.set(
         GapicGeneratorApp.OUTPUT_FILE, cl.getOptionValue(OUTPUT_OPTION.getLongOpt(), ""));
     toolOptions.set(
         GapicGeneratorApp.GENERATOR_CONFIG_FILES,
@@ -217,7 +238,7 @@ public class GeneratorMain {
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
     checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
     checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
-    if (toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE) != null) {
+    if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
     }
 
@@ -236,6 +257,7 @@ public class GeneratorMain {
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
     options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
+    options.addOption(LANGUAGE_OPTION);
     Option inputOption =
         Option.builder("i")
             .longOpt("input")
@@ -246,15 +268,6 @@ public class GeneratorMain {
             .build();
     options.addOption(inputOption);
     options.addOption(OUTPUT_OPTION);
-    Option languageOption =
-        Option.builder("l")
-            .longOpt("language")
-            .desc("The language for which to generate packaging files.")
-            .hasArg()
-            .argName("LANGUAGE")
-            .required(true)
-            .build();
-    options.addOption(languageOption);
     options.addOption(PACKAGE_YAML2_OPTION);
     Option artifactTypeOption =
         Option.builder()
@@ -275,6 +288,7 @@ public class GeneratorMain {
     }
 
     ToolOptions toolOptions = ToolOptions.create();
+    toolOptions.set(PackageGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.INPUT_DIR, cl.getOptionValue(inputOption.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.OUTPUT_DIR, cl.getOptionValue(OUTPUT_OPTION.getLongOpt()));
     toolOptions.set(
@@ -287,7 +301,7 @@ public class GeneratorMain {
     toolOptions.set(
         PackageGeneratorApp.PACKAGE_CONFIG2_FILE,
         cl.getOptionValue(PACKAGE_YAML2_OPTION.getLongOpt()));
-    toolOptions.set(PackageGeneratorApp.LANGUAGE, cl.getOptionValue(languageOption.getLongOpt()));
+    toolOptions.set(PackageGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
 
     if (cl.getOptionValue(artifactTypeOption.getLongOpt()) != null) {
       toolOptions.set(
@@ -326,6 +340,8 @@ public class GeneratorMain {
   public static void discoGapicMain(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
+    // TODO make required after artman passes this in
+    options.addOption(LANGUAGE_NONREQUIRED_OPTION);
     options.addOption(DISCOVERY_DOC_OPTION);
     // TODO add this option back
     // options.addOption(SERVICE_YAML_OPTION);
@@ -351,6 +367,9 @@ public class GeneratorMain {
     }
 
     ToolOptions toolOptions = ToolOptions.create();
+    toolOptions.set(
+        DiscoGapicGeneratorApp.LANGUAGE,
+        cl.getOptionValue(LANGUAGE_NONREQUIRED_OPTION.getLongOpt()));
     toolOptions.set(
         DiscoGapicGeneratorApp.DISCOVERY_DOC, cl.getOptionValue(DISCOVERY_DOC_OPTION.getLongOpt()));
     toolOptions.set(

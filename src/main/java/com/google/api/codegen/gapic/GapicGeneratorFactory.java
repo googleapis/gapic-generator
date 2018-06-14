@@ -14,13 +14,23 @@
  */
 package com.google.api.codegen.gapic;
 
+import static com.google.api.codegen.common.TargetLanguage.CSHARP;
+import static com.google.api.codegen.common.TargetLanguage.GO;
+import static com.google.api.codegen.common.TargetLanguage.JAVA;
+import static com.google.api.codegen.common.TargetLanguage.NODEJS;
+import static com.google.api.codegen.common.TargetLanguage.PHP;
+import static com.google.api.codegen.common.TargetLanguage.PYTHON;
+import static com.google.api.codegen.common.TargetLanguage.RUBY;
+
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
 import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -64,135 +74,127 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.NotImplementedException;
 
-/** GapicProviderFactory creates CodeGenerator instances based on an id. */
-public class GapicProviderFactory {
+/** GapicGeneratorFactory creates CodeGenerator instances based on an id. */
+public class GapicGeneratorFactory {
+  public static final String ARTIFACT_SURFACE = "surface";
+  public static final String ARTIFACT_TEST = "test";
+  public static final String ARTIFACT_SAMPLES = "samples";
 
-  public static final String CLIENT_CONFIG = "client_config";
-  public static final String CSHARP = "csharp";
-  public static final String GO = "go";
-  public static final String JAVA = "java";
-  public static final String NODEJS = "nodejs";
-  public static final String NODEJS_DOC = "nodejs_doc";
-  public static final String PHP = "php";
-  public static final String PYTHON = "py";
-  public static final String RUBY = "ruby";
-  public static final String RUBY_DOC = "ruby_doc";
+  public static boolean enableSurfaceGenerator(List<String> enabledArtifacts) {
+    return enabledArtifacts.isEmpty() || enabledArtifacts.contains(ARTIFACT_SURFACE);
+  }
 
-  /** Create the GapicProviders based on the given id */
+  public static boolean enableTestGenerator(List<String> enabledArtifacts) {
+    return enabledArtifacts.isEmpty() || enabledArtifacts.contains(ARTIFACT_TEST);
+  }
+
+  public static boolean enableSampleGenerator(List<String> enabledArtifacts) {
+    return enabledArtifacts.contains(ARTIFACT_SAMPLES);
+  }
+
+  /** Create the GapicGenerators based on the given id */
   public static List<CodeGenerator<?>> create(
+      TargetLanguage language,
       Model model,
       GapicProductConfig productConfig,
-      GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
+      PackageMetadataConfig packageConfig,
+      List<String> enabledArtifacts) {
 
-    ArrayList<CodeGenerator<?>> providers = new ArrayList<>();
-    String id = generatorConfig.id();
+    ArrayList<CodeGenerator<?>> generators = new ArrayList<>();
     // Please keep the following IDs in alphabetical order
-    if (id.equals(CLIENT_CONFIG)) {
-      CodeGenerator provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setContext(new ClientConfigGapicContext(model, productConfig))
-              .setSnippetSetRunner(
-                  new ClientConfigSnippetSetRunner<>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
-              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
-              .build();
-      providers.add(provider);
-    } else if (id.equals(CSHARP)) {
+    if (language.equals(CSHARP)) {
       String packageName = productConfig.getPackageName();
-      if (generatorConfig.enableSurfaceGenerator()) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper pathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix(packageName + File.separator + packageName)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        CodeGenerator mainProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator mainGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
                 .setModelToViewTransformer(
                     new CSharpGapicClientTransformer(pathMapper, packageConfig))
                 .build();
-        providers.add(mainProvider);
+        generators.add(mainGenerator);
         GapicCodePathMapper snippetPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix(packageName + File.separator + packageName + ".Snippets")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        CodeGenerator snippetProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator snippetGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
                 .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(snippetPathMapper))
                 .build();
-        providers.add(snippetProvider);
+        generators.add(snippetGenerator);
       }
-      if (generatorConfig.enableTestGenerator()) {
+      if (enableTestGenerator(enabledArtifacts)) {
         GapicCodePathMapper smokeTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix(packageName + File.separator + packageName + ".SmokeTests")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        CodeGenerator smokeTestProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator smokeTestGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
                 .setModelToViewTransformer(new CSharpGapicSmokeTestTransformer(smokeTestPathMapper))
                 .build();
-        providers.add(smokeTestProvider);
+        generators.add(smokeTestGenerator);
         GapicCodePathMapper unitTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix(packageName + File.separator + packageName + ".Tests")
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
-        CodeGenerator unitTestProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator unitTestGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
                 .setModelToViewTransformer(new CSharpGapicUnitTestTransformer(unitTestPathMapper))
                 .build();
-        providers.add(unitTestProvider);
+        generators.add(unitTestGenerator);
       }
 
-    } else if (id.equals(GO)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
-        CodeGenerator provider =
-            ViewModelGapicProvider.newBuilder()
+    } else if (language.equals(GO)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
+        CodeGenerator generator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
                     new GoGapicSurfaceTransformer(new PackageNameCodePathMapper()))
                 .build();
-        providers.add(provider);
+        generators.add(generator);
       }
-      if (generatorConfig.enableTestGenerator()) {
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+      if (enableTestGenerator(enabledArtifacts)) {
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new GoGapicSurfaceTestTransformer())
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
 
-    } else if (id.equals(JAVA)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    } else if (language.equals(JAVA)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper javaPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        CodeGenerator mainProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator mainGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
@@ -200,19 +202,20 @@ public class GapicProviderFactory {
                     new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig))
                 .build();
 
-        providers.add(mainProvider);
+        generators.add(mainGenerator);
 
-        CodeGenerator metadataProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator metadataGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicPackageTransformer(packageConfig))
+                .setModelToViewTransformer(
+                    new JavaGapicPackageTransformer<ProtoApiModel>(packageConfig))
                 .build();
-        providers.add(metadataProvider);
+        generators.add(metadataGenerator);
 
-        CodeGenerator staticResourcesProvider =
-            new StaticResourcesProvider(
+        CodeGenerator staticResourcesGenerator =
+            new StaticResourcesGenerator(
                 ImmutableMap.<String, String>builder()
                     .put("java/static/build.gradle", "../build.gradle")
                     .put("java/static/settings.gradle", "../settings.gradle")
@@ -226,43 +229,43 @@ public class GapicProviderFactory {
                         "../gradle/wrapper/gradle-wrapper.properties")
                     .build(),
                 ImmutableSet.of("../gradlew"));
-        providers.add(staticResourcesProvider);
+        generators.add(staticResourcesGenerator);
 
-        CodeGenerator sampleProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
                 .setModelToViewTransformer(new JavaGapicSamplesTransformer(javaPathMapper))
                 .build();
-        providers.add(sampleProvider);
+        generators.add(sampleGenerator);
       }
-      if (generatorConfig.enableTestGenerator()) {
+      if (enableTestGenerator(enabledArtifacts)) {
         GapicCodePathMapper javaTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
-                    new JavaSurfaceTestTransformer(
+                    new JavaSurfaceTestTransformer<ProtoApiModel>(
                         javaTestPathMapper,
                         new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
                         "java/grpc_test.snip"))
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
-      return providers;
+      return generators;
 
-    } else if (id.equals(NODEJS) || id.equals(NODEJS_DOC)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    } else if (language.equals(NODEJS)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
-        CodeGenerator mainProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator mainGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
@@ -270,15 +273,15 @@ public class GapicProviderFactory {
                     new NodeJSGapicSurfaceTransformer(nodeJSPathMapper, packageConfig))
                 .build();
 
-        CodeGenerator metadataProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator metadataGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
-        CodeGenerator clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+        CodeGenerator clientConfigGenerator =
+            LegacyGapicGenerator.<Interface>newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -287,51 +290,49 @@ public class GapicProviderFactory {
                 .setCodePathMapper(nodeJSPathMapper)
                 .build();
 
-        providers.add(mainProvider);
-        providers.add(metadataProvider);
-        providers.add(clientConfigProvider);
+        generators.add(mainGenerator);
+        generators.add(metadataGenerator);
+        generators.add(clientConfigGenerator);
 
-        if (id.equals(NODEJS)) {
-          CodeGenerator sampleProvider =
-              ViewModelGapicProvider.newBuilder()
+        if (enableSampleGenerator(enabledArtifacts)) {
+          CodeGenerator sampleGenerator =
+              GapicGenerator.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
                       new NodeJSGapicSamplesTransformer(nodeJSPathMapper, packageConfig))
                   .build();
-          providers.add(sampleProvider);
+          generators.add(sampleGenerator);
         }
 
-        if (id.equals(NODEJS_DOC)) {
-          CodeGenerator messageProvider =
-              ViewModelGapicProvider.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(new NodeJSGapicSurfaceDocTransformer())
-                  .build();
-          providers.add(messageProvider);
-        }
+        CodeGenerator messageGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new NodeJSGapicSurfaceDocTransformer())
+                .build();
+        generators.add(messageGenerator);
       }
 
-      if (generatorConfig.enableTestGenerator()) {
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+      if (enableTestGenerator(enabledArtifacts)) {
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new NodeJSGapicSurfaceTestTransformer())
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
 
-    } else if (id.equals(PHP)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    } else if (language.equals(PHP)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper phpPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").build();
-        CodeGenerator provider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator generator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
@@ -341,8 +342,8 @@ public class GapicProviderFactory {
 
         GapicCodePathMapper phpClientConfigPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").setSuffix("resources").build();
-        CodeGenerator clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+        CodeGenerator clientConfigGenerator =
+            LegacyGapicGenerator.<Interface>newBuilder()
                 .setModel(model)
                 .setContext(new PhpClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -351,51 +352,51 @@ public class GapicProviderFactory {
                 .setCodePathMapper(phpClientConfigPathMapper)
                 .build();
 
-        CodeGenerator metadataProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator metadataGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
-        providers.add(provider);
-        providers.add(clientConfigProvider);
-        providers.add(metadataProvider);
+        generators.add(generator);
+        generators.add(clientConfigGenerator);
+        generators.add(metadataGenerator);
       }
-      if (generatorConfig.enableTestGenerator()) {
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+      if (enableTestGenerator(enabledArtifacts)) {
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer(packageConfig))
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
 
-    } else if (id.equals(PYTHON)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    } else if (language.equals(PYTHON)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper pythonPathMapper =
             CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
-        CodeGenerator mainProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator mainGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
-        CodeGenerator sampleProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                 .setModelToViewTransformer(
                     new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
                 .build();
-        CodeGenerator clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+        CodeGenerator clientConfigGenerator =
+            LegacyGapicGenerator.<Interface>newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -403,54 +404,54 @@ public class GapicProviderFactory {
                 .setSnippetFileNames(Arrays.asList("clientconfig/python_clientconfig.snip"))
                 .setCodePathMapper(pythonPathMapper)
                 .build();
-        providers.add(mainProvider);
-        providers.add(sampleProvider);
-        providers.add(clientConfigProvider);
+        generators.add(mainGenerator);
+        generators.add(sampleGenerator);
+        generators.add(clientConfigGenerator);
 
-        CodeGenerator metadataProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator metadataGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                 .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
                 .build();
-        providers.add(metadataProvider);
+        generators.add(metadataGenerator);
       }
-      if (generatorConfig.enableTestGenerator()) {
+      if (enableTestGenerator(enabledArtifacts)) {
         GapicCodePathMapper pythonTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("test")
                 .setShouldAppendPackage(true)
                 .build();
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTestTransformer(pythonTestPathMapper, packageConfig))
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
 
-    } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
+    } else if (language.equals(RUBY)) {
+      if (enableSurfaceGenerator(enabledArtifacts)) {
         GapicCodePathMapper rubyPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("lib")
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
-        CodeGenerator mainProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator mainGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(
                     new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
-        CodeGenerator clientConfigProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+        CodeGenerator clientConfigGenerator =
+            LegacyGapicGenerator.<Interface>newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -458,37 +459,35 @@ public class GapicProviderFactory {
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
-        CodeGenerator metadataProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator metadataGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new RubyPackageMetadataTransformer(packageConfig))
                 .build();
 
-        providers.add(mainProvider);
-        providers.add(clientConfigProvider);
-        providers.add(metadataProvider);
+        generators.add(mainGenerator);
+        generators.add(clientConfigGenerator);
+        generators.add(metadataGenerator);
 
-        if (id.equals(RUBY_DOC)) {
-          CodeGenerator messageProvider =
-              ViewModelGapicProvider.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(
-                      new RubyGapicSurfaceDocTransformer(rubyPathMapper, packageConfig))
-                  .build();
-          providers.add(messageProvider);
-        }
+        CodeGenerator messageGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new RubyGapicSurfaceDocTransformer(rubyPathMapper, packageConfig))
+                .build();
+        generators.add(messageGenerator);
       }
-      if (generatorConfig.enableTestGenerator()) {
+      if (enableTestGenerator(enabledArtifacts)) {
         CommonGapicCodePathMapper.Builder rubyTestPathMapperBuilder =
             CommonGapicCodePathMapper.newBuilder()
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter());
-        CodeGenerator testProvider =
-            ViewModelGapicProvider.newBuilder()
+        CodeGenerator testGenerator =
+            GapicGenerator.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
@@ -498,15 +497,16 @@ public class GapicProviderFactory {
                         rubyTestPathMapperBuilder.setPrefix("acceptance").build(),
                         packageConfig))
                 .build();
-        providers.add(testProvider);
+        generators.add(testGenerator);
       }
     } else {
-      throw new NotImplementedException("GapicProviderFactory: invalid id \"" + id + "\"");
+      throw new UnsupportedOperationException(
+          "GapicGeneratorFactory: unsupported language \"" + language + "\"");
     }
 
-    if (providers.isEmpty()) {
+    if (generators.isEmpty()) {
       throw new IllegalArgumentException("No artifacts are enabled.");
     }
-    return providers;
+    return generators;
   }
 }

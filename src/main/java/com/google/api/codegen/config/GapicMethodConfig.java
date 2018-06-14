@@ -23,6 +23,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -58,7 +59,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @Nullable
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
-      String language,
+      TargetLanguage language,
       MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
@@ -196,7 +197,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.GA;
     for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
-      if (!treatment.getIncludeLanguagesList().contains(language)) {
+      if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
         continue;
       }
       if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {

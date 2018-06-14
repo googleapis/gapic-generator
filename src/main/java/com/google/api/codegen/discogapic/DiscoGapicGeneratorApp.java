@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen.discogapic;
 
-import static com.google.api.codegen.discogapic.DiscoGapicProviderFactory.JAVA;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.GeneratorProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiDefaultsConfig;
 import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.DiscoApiModel;
@@ -34,10 +32,6 @@ import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -58,6 +52,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DiscoGapicGeneratorApp {
+  public static final Option<String> LANGUAGE =
+      ToolOptions.createOption(String.class, "language", "The target language.", "");
+
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
@@ -96,13 +93,14 @@ public class DiscoGapicGeneratorApp {
     this.options = options;
   }
 
-  /** From config file paths, constructs the DiscoGapicProviders to run. */
+  /** From config file paths, constructs the DiscoGapicGenerators to run. */
   @VisibleForTesting
-  public static List<CodeGenerator<?>> getProviders(
+  public static List<CodeGenerator<?>> getGenerators(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfig2File,
       String dependencyConfigFile,
+      String languageStr,
       List<String> enabledArtifacts)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
@@ -138,31 +136,29 @@ public class DiscoGapicGeneratorApp {
           PackageMetadataConfig.createFromPackaging(
               apiDefaultsConfig, dependenciesConfig, packagingConfig);
     }
-    GeneratorProto generator = configProto.getGenerator();
-    String language = configProto.getLanguage();
-    String defaultPackageName = configProto.getLanguageSettingsMap().get(language).getPackageName();
-    SurfaceNamer surfaceNamer = null;
 
-    if (language.equals(JAVA)) {
-      surfaceNamer =
-          new JavaSurfaceNamer(defaultPackageName, defaultPackageName, new JavaNameFormatter());
+    TargetLanguage language;
+    if (!Strings.isNullOrEmpty(languageStr)) {
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
+    } else {
+      languageStr = configProto.getLanguage();
+      if (Strings.isNullOrEmpty(languageStr)) {
+        throw new IllegalArgumentException(
+            "Language not set by --language option or by gapic config.");
+      }
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
     }
-    if (surfaceNamer == null) {
-      throw new UnsupportedOperationException(
-          "DiscoGapicGeneratorApp: language \"" + language + "\" not yet supported");
-    }
+
+    String defaultPackageName =
+        configProto.getLanguageSettingsMap().get(languageStr).getPackageName();
 
     DiscoApiModel model =
         new DiscoApiModel(Document.from(new DiscoveryNode(root)), defaultPackageName);
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, surfaceNamer);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
-    String id = generator.getId();
-
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
-
-    return DiscoGapicProviderFactory.create(model, productConfig, generatorConfig, packageConfig);
+    return DiscoGapicGeneratorFactory.create(
+        language, model, productConfig, packageConfig, enabledArtifacts);
   }
 
   public int run() throws Exception {
@@ -170,14 +166,21 @@ public class DiscoGapicGeneratorApp {
     String discoveryDocPath = options.get(DISCOVERY_DOC);
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     String packageConfig2File = options.get(PACKAGE_CONFIG2_FILE);
+    String languageStr = options.get(LANGUAGE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<CodeGenerator<?>> providers =
-        getProviders(discoveryDocPath, configFileNames, packageConfig2File, null, enabledArtifacts);
+    List<CodeGenerator<?>> generators =
+        getGenerators(
+            discoveryDocPath,
+            configFileNames,
+            packageConfig2File,
+            null,
+            languageStr,
+            enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
-    for (CodeGenerator<?> provider : providers) {
-      outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
+    for (CodeGenerator<?> generator : generators) {
+      outputFiles.putAll(GeneratedResult.extractBodies(generator.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
     return 0;

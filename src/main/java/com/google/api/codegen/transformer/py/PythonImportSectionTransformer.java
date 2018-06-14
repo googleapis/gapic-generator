@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -31,7 +33,6 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/* Creates the import sections of GAPIC generated code for Python. */
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
   public ImportSectionView generateImportSection(TransformationContext context, String className) {
@@ -390,9 +392,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateVersionedInitImportSection(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
-        .appImports(generateVersionedInitAppImports(model, productConfig, namer, packageHasEnums))
+        .appImports(
+            generateVersionedInitAppImports(apiModel, productConfig, namer, packageHasEnums))
         .standardImports(generateAbsoluteImportImportSection())
         .build();
   }
@@ -402,9 +405,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateVersionedInitAppImports(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       imports.add(
           createImport(
               productConfig.getPackageName(),
@@ -419,18 +422,18 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateTopLeveEntryPointImportSection(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
         .appImports(
-            generateTopLevelEntryPointAppImports(model, productConfig, namer, packageHasEnums))
+            generateTopLevelEntryPointAppImports(apiModel, productConfig, namer, packageHasEnums))
         .standardImports(generateAbsoluteImportImportSection())
         .build();
   }
 
   private List<ImportFileView> generateTopLevelEntryPointAppImports(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
       imports.add(
           createImport(
               namer.getVersionedDirectoryNamespace(),

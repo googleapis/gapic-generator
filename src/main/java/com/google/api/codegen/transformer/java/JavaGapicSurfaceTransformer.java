@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -31,8 +31,11 @@ import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 
-/** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
-public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, SurfaceTransformer {
+/**
+ * The ModelToViewTransformer to transform a ProtoApiModel into the standard GAPIC surface in Java.
+ */
+public class JavaGapicSurfaceTransformer
+    implements ModelToViewTransformer<ProtoApiModel>, SurfaceTransformer {
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
@@ -71,7 +74,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
             pathMapper,

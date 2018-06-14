@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -63,7 +64,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /** Responsible for producing GAPIC surface views for NodeJS */
-public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
+public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
@@ -96,7 +97,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
@@ -240,6 +241,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
+              .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)

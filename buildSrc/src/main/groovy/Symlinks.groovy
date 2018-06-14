@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.packagegen;
 
-import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.tools.framework.model.Model;
-import java.io.IOException;
-import java.util.Map;
-
-/** A PackageProvider performs package generation. */
-public interface PackageProvider<T> {
-  Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
-      throws IOException;
+class Symlinks {
+    static createSymbolicLink(String link, String target) {
+        def linkFile = new File(link)
+        linkFile.delete()
+        java.nio.file.Files.createSymbolicLink(
+                linkFile.toPath(),
+                new File(target).toPath())
+    }
 }

@@ -27,34 +27,35 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // Java, NodeJS
+  Request, // used by: java nodejs py
   RequestAsync,
-  RequestAsyncPaged, // NodeJS
-  RequestAsyncPagedAll, // NodeJS
-  RequestPaged, // Java
-  RequestStreamingBidi, // NodeJS
-  RequestStreamingClient, // NodeJS
-  RequestStreamingServer, // NodeJS
+  RequestAsyncPaged, // used by: nodejs
+  RequestAsyncPagedAll, // used by: nodejs
+  RequestPaged, // used by: java py
+  RequestPagedAll, // used by: py
+  RequestStreamingBidi, // used by: nodejs py
+  RequestStreamingClient, // used by: nodejs py
+  RequestStreamingServer, // used by: nodejs py
 
-  Flattened, // Java
-  FlattenedPaged, // Java
+  Flattened, // used by: java
+  FlattenedPaged, // used by: java
   FlattenedAsync,
   FlattenedAsyncPaged,
 
-  Callable, // Java
-  CallableList, // Java
-  CallablePaged, // Java
-  CallableStreamingBidi, // Java
-  CallableStreamingClient, // Java
-  CallableStreamingServer, // Java
+  Callable, // used by: java
+  CallableList, // used by: java
+  CallablePaged, // used by: java
+  CallableStreamingBidi, // used by: java
+  CallableStreamingClient, // used by: java
+  CallableStreamingServer, // used by: java
 
-  LongRunningCallable, // Java
-  LongRunningEventEmitter, // NodeJS
+  LongRunningCallable, // used by: java
+  LongRunningEventEmitter, // used by: nodejs
   LongRunningFlattened,
-  LongRunningFlattenedAsync, // Java
-  LongRunningPromise, // NodeJS
+  LongRunningFlattenedAsync, // used by: java
+  LongRunningPromise, // used by: nodejs py
   LongRunningRequest,
-  LongRunningRequestAsync, // Java
+  LongRunningRequestAsync, // used by: java
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

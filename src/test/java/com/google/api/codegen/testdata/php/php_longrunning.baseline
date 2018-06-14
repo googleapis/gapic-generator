@@ -58,10 +58,6 @@
  * https://github.com/google/googleapis/blob/master/longrunning.proto
  * and updates to that file get reflected here through a refresh process.
  *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
- *
  * @experimental
  */
 
@@ -95,10 +91,6 @@ use Google\Protobuf\GPBEmpty;
  * Google Cloud Pub/Sub API) to receive the response.  Any API service that
  * returns long-running operations should implement the `Operations` interface
  * so developers can have a consistent client experience.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
@@ -209,14 +201,14 @@ class OperationsGapicClient
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the {@see \Google\Cloud\ApiCore\Transport\GrpcTransport::build()} and
-     *           {@see \Google\Cloud\ApiCore\Transport\RestTransport::build()} methods for the
+     *           See the {@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
      *           supported options.
      * }
      * @throws ValidationException
      * @experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $clientOptions = $this->buildClientOptions($options);
         $this->setClientOptions($clientOptions);
@@ -261,7 +253,7 @@ class OperationsGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getOperation($name, $optionalArgs = [])
+    public function getOperation($name, array $optionalArgs = [])
     {
         $request = new GetOperationRequest();
         $request->setName($name);
@@ -338,7 +330,7 @@ class OperationsGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listOperations($name, $filter, $optionalArgs = [])
+    public function listOperations($name, $filter, array $optionalArgs = [])
     {
         $request = new ListOperationsRequest();
         $request->setName($name);
@@ -402,7 +394,7 @@ class OperationsGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function cancelOperation($name, $optionalArgs = [])
+    public function cancelOperation($name, array $optionalArgs = [])
     {
         $request = new CancelOperationRequest();
         $request->setName($name);
@@ -453,7 +445,7 @@ class OperationsGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function deleteOperation($name, $optionalArgs = [])
+    public function deleteOperation($name, array $optionalArgs = [])
     {
         $request = new DeleteOperationRequest();
         $request->setName($name);
@@ -504,10 +496,6 @@ class OperationsGapicClient
  * This file was generated from the file
  * https://github.com/google/googleapis/blob/master/longrunning.proto
  * and updates to that file get reflected here through a refresh process.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * @experimental
  */
@@ -693,7 +681,7 @@ use Google\LongRunning\ListOperationsResponse;
 
 /**
  * @group longrunning
- * @group grpc
+ * @group gapic
  */
 class OperationsSmokeTest extends GeneratedTest
 {
@@ -774,7 +762,7 @@ use stdClass;
 
 /**
  * @group longrunning
- * @group grpc
+ * @group gapic
  */
 class OperationsClientTest extends GeneratedTest
 {
