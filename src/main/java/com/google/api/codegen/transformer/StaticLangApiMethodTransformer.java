@@ -784,7 +784,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     String requestTypeFullName =
-        context.getMethodModel().getOutputTypeName(context.getTypeTable()).getFullName();
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
     String requestType = context.getTypeTable().getAndSaveNicknameFor(requestTypeFullName);
 
     String genericAwareResponseTypeFullName =
