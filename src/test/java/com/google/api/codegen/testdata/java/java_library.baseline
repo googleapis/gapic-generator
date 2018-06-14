@@ -2280,7 +2280,7 @@ public class LibraryClient implements BackgroundResource {
    *
    *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
    *
-   *   libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver));
+   *   libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver);
    * }
    * </code></pre>
    */
@@ -2319,7 +2319,7 @@ public class LibraryClient implements BackgroundResource {
    *     .setName(name)
    *     .build();
    *
-   *   libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver));
+   *   libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver);
    * }
    * </code></pre>
    */
@@ -2335,31 +2335,17 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ApiStreamObserver&lt;Comment&gt; responseObserver =
-   *       new ApiStreamObserver&lt;Comment&gt;() {
-   *         {@literal @}Override
-   *         public void onNext(Comment response) {
-   *           // Do something when receive a response
-   *         }
-   *
-   *         {@literal @}Override
-   *         public void onError(Throwable t) {
-   *           // Add error-handling
-   *         }
-   *
-   *         {@literal @}Override
-   *         public void onCompleted() {
-   *           // Do something when complete.
-   *         }
-   *       };
-   *   ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-   *       libraryClient.discussBookCallable().bidiStreamingCall(responseObserver));
+   *   BidiStream&lt;Comment&gt; bidiStream =
+   *       libraryClient.discussBookCallable().call();
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name)
    *     .build();
-   *   requestObserver.onNext(request);
+   *   bidiStream.send(request);
+   *   for (Comment response : bidiStream) {
+   *     // Do something when receive a response
+   *   }
    * }
    * </code></pre>
    */
@@ -2392,8 +2378,8 @@ public class LibraryClient implements BackgroundResource {
    *           // Do something when complete.
    *         }
    *       };
-   *   ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-   *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver));
+   *   ApiStreamObserver&lt;Comment&gt; requestObserver =
+   *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -7330,31 +7316,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-ApiStreamObserver&lt;Comment&gt; responseObserver =
-    new ApiStreamObserver&lt;Comment&gt;() {
-      {@literal @}Override
-      public void onNext(Comment response) {
-        // Do something when receive a response
-      }
-
-      {@literal @}Override
-      public void onError(Throwable t) {
-        // Add error-handling
-      }
-
-      {@literal @}Override
-      public void onCompleted() {
-        // Do something when complete.
-      }
-    };
-ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-    libraryClient.discussBookCallable().bidiStreamingCall(responseObserver));
+BidiStream&lt;Comment&gt; bidiStream =
+    libraryClient.discussBookCallable().call();
 
 String name = "BASIC";
 DiscussBookRequest request = DiscussBookRequest.newBuilder()
   .setName(name)
   .build();
-requestObserver.onNext(request);
+bidiStream.send(request);
+for (Comment response : bidiStream) {
+  // Do something when receive a response
+}
 */
 // [END core_sample]
 
@@ -7689,8 +7661,8 @@ ApiStreamObserver&lt;Comment&gt; responseObserver =
         // Do something when complete.
       }
     };
-ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-    libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver));
+ApiStreamObserver&lt;Comment&gt; requestObserver =
+    libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
 String name = "BASIC";
 DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -7981,7 +7953,7 @@ StreamBooksRequest request = StreamBooksRequest.newBuilder()
   .setName(name)
   .build();
 
-libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver));
+libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver);
 */
 // [END core_sample]
 
@@ -8029,7 +8001,7 @@ ApiStreamObserver&lt;StreamShelvesResponse&gt; responseObserver =
 
 StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
-libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver));
+libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver);
 */
 // [END core_sample]
 
