@@ -30,13 +30,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /* CodeGenerator for proto-based GAPIC libraries that uses ViewModels to render the templates. */
-public class ViewModelGapicProvider implements CodeGenerator<Doc> {
+public class GapicGenerator implements CodeGenerator<Doc> {
   private final Model model;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final ModelToViewTransformer<ProtoApiModel> modelToViewTransformer;
 
-  private ViewModelGapicProvider(
+  private GapicGenerator(
       Model model,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
@@ -107,9 +107,8 @@ public class ViewModelGapicProvider implements CodeGenerator<Doc> {
       return this;
     }
 
-    public ViewModelGapicProvider build() {
-      return new ViewModelGapicProvider(
-          model, productConfig, snippetSetRunner, modelToViewTransformer);
+    public GapicGenerator build() {
+      return new GapicGenerator(model, productConfig, snippetSetRunner, modelToViewTransformer);
     }
   }
 }

@@ -93,9 +93,9 @@ public class DiscoGapicGeneratorApp {
     this.options = options;
   }
 
-  /** From config file paths, constructs the DiscoGapicProviders to run. */
+  /** From config file paths, constructs the DiscoGapicGenerators to run. */
   @VisibleForTesting
-  public static List<CodeGenerator<?>> getProviders(
+  public static List<CodeGenerator<?>> getGenerators(
       String discoveryDocPath,
       List<String> configFileNames,
       String packageConfig2File,
@@ -157,7 +157,7 @@ public class DiscoGapicGeneratorApp {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
-    return DiscoGapicProviderFactory.create(
+    return DiscoGapicGeneratorFactory.create(
         language, model, productConfig, packageConfig, enabledArtifacts);
   }
 
@@ -169,8 +169,8 @@ public class DiscoGapicGeneratorApp {
     String languageStr = options.get(LANGUAGE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
-    List<CodeGenerator<?>> providers =
-        getProviders(
+    List<CodeGenerator<?>> generators =
+        getGenerators(
             discoveryDocPath,
             configFileNames,
             packageConfig2File,
@@ -179,8 +179,8 @@ public class DiscoGapicGeneratorApp {
             enabledArtifacts);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
-    for (CodeGenerator<?> provider : providers) {
-      outputFiles.putAll(GeneratedResult.extractBodies(provider.generate()));
+    for (CodeGenerator<?> generator : generators) {
+      outputFiles.putAll(GeneratedResult.extractBodies(generator.generate()));
     }
     ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
     return 0;
