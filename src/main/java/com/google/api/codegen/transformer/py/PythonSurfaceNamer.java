@@ -453,4 +453,27 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         throw new IllegalStateException("Invalid development status");
     }
   }
+
+  @Override
+  public String getPrintSpec(String spec) {
+    // Escaers don't work here. They only map from characters to strings.
+    StringBuilder sb = new StringBuilder();
+    int cursor = 0;
+    while (true) {
+      int p = spec.indexOf('%', cursor);
+      if (p < 0) {
+        return sb.append(spec, cursor, spec.length()).toString();
+      }
+      sb.append(spec, cursor, p);
+
+      if (spec.startsWith("%%", p)) {
+        sb.append('%');
+      } else if (spec.startsWith("%s", p)) {
+        sb.append("{}");
+      } else {
+        throw new IllegalArgumentException(String.format("bad format verb: %s", spec));
+      }
+      cursor = p + 2;
+    }
+  }
 }

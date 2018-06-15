@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -29,6 +30,7 @@ import com.google.api.codegen.viewmodel.SampleValueSetView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A class that performs the transformations needed to generate the MethodSampleView for the
@@ -208,11 +210,21 @@ public class SampleTransformer {
                     ? initContext
                     : createInitCodeContext(
                         context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
+        List<OutputSpec> outputs = valueSet.getOutputsList();
+        if (outputs.isEmpty()) {
+          outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
+        }
+        outputs =
+            outputs
+                .stream()
+                .map(s -> OutputTransformer.toLanguage(s, context))
+                .collect(Collectors.toList());
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
+                .outputs(outputs)
                 .build());
       }
     }

@@ -345,6 +345,8 @@ message SampleValueSet {
   //   a specially formatted string using `FIELD` as one of possibly
   //   several placeholders.
   repeated string parameters = 4;
+
+  repeated OutputSpec outputs = 5;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"
@@ -655,4 +657,29 @@ message LongRunningConfigProto {
 
   // Total polling timeout.
   uint64 total_poll_timeout_millis = 8;
+}
+
+message OutputSpec {
+  message LoopStmt {
+    string collection = 1;
+    string var = 2;
+    repeated OutputSpec body = 3;
+  }
+  message PrintStmt {
+    string spec = 1;
+    repeated string args = 2;
+
+    // Internally used by gapic generator. Do not set this in configuration.
+    repeated Accessor argsElems = 100;
+  }
+
+  oneof stmt {
+    LoopStmt loop = 1;
+    PrintStmt print = 2;
+  }
+}
+
+message Accessor {
+  string variable = 1;
+  repeated string fields = 2;
 }
