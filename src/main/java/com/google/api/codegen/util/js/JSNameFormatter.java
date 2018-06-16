@@ -102,11 +102,14 @@ public class JSNameFormatter implements NameFormatter {
 
   /**
    * A set of ECMAScript 2016 reserved words. See
-   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
+   * https://tc39.github.io/ecma262/2016/#sec-reserved-words A notable exception here is `done`
+   * which is not reserved but is de facto standard for mocha tests, see
+   * https://mochajs.org/#asynchronous-code for details.
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
+              "done",
               "break",
               "do",
               "in",
