@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -39,7 +37,6 @@ import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -50,7 +47,7 @@ import java.util.List;
  * A transformer to generate Python standalone samples for each method in the GAPIC surface
  * generated from the same ApiModel.
  */
-public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
+public class PythonGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "py/standalone_sample.snip";
   private static final SampleType sampleType = SampleType.STANDALONE;
 
@@ -78,21 +75,20 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel apiModel, GapicProductConfig productConfig) {
-    Model model = ((ProtoApiModel) apiModel).getProtoModel();
+  public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.addAll(generateSampleFiles(model, productConfig));
+    views.addAll(generateSampleFiles(apiModel, productConfig));
     return views.build();
   }
 
-  private Iterable<ViewModel> generateSampleFiles(Model model, GapicProductConfig productConfig) {
+  private Iterable<ViewModel> generateSampleFiles(
+      ProtoApiModel apiModel, GapicProductConfig productConfig) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new PythonTypeTable(productConfig.getPackageName()),
             new PythonModelTypeNameConverter(productConfig.getPackageName()));
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new DefaultFeatureConfig();
-    ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
 
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
@@ -161,8 +157,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer {
                 .className(className)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
-                .gapicPackageName(
-                    namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)))
+                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }
     }

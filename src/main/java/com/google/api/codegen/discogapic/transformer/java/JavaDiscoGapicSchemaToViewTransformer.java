@@ -21,13 +21,13 @@ import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -54,7 +54,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
-public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
+public class JavaDiscoGapicSchemaToViewTransformer
+    implements ModelToViewTransformer<DiscoApiModel> {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -199,7 +200,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     schemaView.canRepeat(schema.repeated() || schema.type().equals(Type.ARRAY));
     schemaView.isRequired(schema.required());
-    schemaView.isRequestMessage(false);
     schemaView.hasRequiredProperties(hasRequiredProperties);
 
     StaticLangApiMessageView messageView = schemaView.build();

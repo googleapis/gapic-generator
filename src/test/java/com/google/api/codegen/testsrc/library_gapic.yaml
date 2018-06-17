@@ -238,15 +238,16 @@ interfaces:
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
+      # callingFormCheck: pi_version java: Flattened Request Callable
     - id: pi_version
       title: "Pi version"
-      description: "Calling PublishSeries for the Pi series on the Math shelf"
+      description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
       parameters:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
     - id: second_edition
       title: "Second edition"
-      description: "Calling PublishSeries for a specified edition"
+      description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
       parameters:
       - edition=2
     samples:
@@ -494,6 +495,20 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 30000
+    sample_value_sets:
+    - id: empty
+      title: "Server streaming"
+      description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
+    samples:
+      in_code:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      api_explorer:
+      - calling_forms: ".*"
+        value_sets: ".*"    
   - name: StreamBooks
     request_object_method: false
     resource_name_treatment: STATIC_TYPES
@@ -506,6 +521,22 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 30000
+    sample_value_sets:
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
+      parameters:
+        - name=BASIC
+    samples:
+      in_code:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      api_explorer:
+      - calling_forms: ".*"
+        value_sets: ".*"    
   - name: DiscussBook
     # required_fields makes a difference on sample code.
     required_fields:
@@ -514,6 +545,22 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
+    sample_value_sets:
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms: {Java:[CallableStreamingBidi], NodeJS:[RequestStreamingBidi], Python:[RequestStreamingBidi]}"
+      parameters:
+        - name=BASIC
+    samples:
+      in_code:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      api_explorer:
+      - calling_forms: ".*"
+        value_sets: ".*"
   - name: MonologAboutBook
     # required_fields makes a difference on sample code.
     required_fields:
@@ -522,6 +569,22 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
+    sample_value_sets:
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms: {Java:[CallableStreamingClient], NodeJS:[RequestStreamingClient], Python:[RequestStreamingClient]}"
+      parameters:
+        - name=BASIC
+    samples:
+      in_code:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
+      api_explorer:
+      - calling_forms: ".*"
+        value_sets: ".*"
   - name: FindRelatedBooks
     flattening:
       groups:
@@ -548,6 +611,23 @@ interfaces:
     # TODO(michaelbausor): support %-entity notation for list elements
     #- names[1]%shelf_id=my_shelf
     #- names[1]%book_id=my_first_book
+    sample_value_sets:
+    - id: odyssey
+      title: "The Odyssey"
+      description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
+      parameters:
+      - names[0]=Odyssey
+      - shelves[0]=Classics
+    samples:
+      in_code:
+      - calling_forms: ".*"
+        value_sets: odyssey
+      standalone:
+      - calling_forms: ".*"
+        value_sets: odyssey
+      api_explorer:
+      - calling_forms: ".*"
+        value_sets: odyssey    
   - name: AddTag
     flattening:
       groups:
@@ -613,6 +693,16 @@ interfaces:
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 30000
       total_poll_timeout_millis: 86400000
+    sample_value_sets:
+    - id: wap
+      title: "GetBigBook: 'War and Peace'"
+      description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"
+      parameters:
+      - name="War and Peace"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
   - name: GetBigNothing
     flattening:
       groups:

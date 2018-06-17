@@ -14,20 +14,21 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.grpcmetadatagen.ArtifactType;
+import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 
-/** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
+/** A JavaPackageMetadataNamer provides nodejs specific names for metadata views. */
 public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   private final String packageName;
-  private final ArtifactType artifactType;
+  private final PackagingArtifactType artifactType;
 
-  public JavaPackageMetadataNamer(String packageName, ArtifactType artifactType) {
+  public JavaPackageMetadataNamer(String packageName, PackagingArtifactType artifactType) {
     this.packageName = packageName;
     this.artifactType = artifactType;
   }
 
-  private static String getMetadataIdentifier(String packageName, ArtifactType artifactType) {
+  private static String getMetadataIdentifier(
+      String packageName, PackagingArtifactType artifactType) {
     if (artifactType != null) {
       switch (artifactType) {
         case PROTOBUF:
@@ -41,12 +42,12 @@ public class JavaPackageMetadataNamer extends PackageMetadataNamer {
 
   @Override
   public String getProtoPackageName() {
-    return getMetadataIdentifier(packageName, ArtifactType.PROTOBUF);
+    return getMetadataIdentifier(packageName, PackagingArtifactType.PROTOBUF);
   }
 
   @Override
   public String getGrpcPackageName() {
-    return getMetadataIdentifier(packageName, ArtifactType.GRPC);
+    return getMetadataIdentifier(packageName, PackagingArtifactType.GRPC);
   }
 
   @Override

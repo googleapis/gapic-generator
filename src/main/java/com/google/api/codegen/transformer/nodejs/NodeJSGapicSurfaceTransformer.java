@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -22,6 +22,8 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -32,13 +34,13 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.py.NodeJSMethodViewGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
@@ -62,7 +64,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /** Responsible for producing GAPIC surface views for NodeJS */
-public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
+public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
@@ -71,7 +73,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer());
+      new DynamicLangApiMethodTransformer(
+          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.IN_CODE);
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
@@ -94,7 +97,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
@@ -238,6 +241,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
+              .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)

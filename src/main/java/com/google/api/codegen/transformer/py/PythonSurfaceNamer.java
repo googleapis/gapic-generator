@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -26,6 +25,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -101,7 +102,20 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getVersionedDirectoryNamespace() {
+    Pattern versionNamespacePattern =
+        Pattern.compile(
+            "(.+?)_"
+                + "([vV]\\d+)" // Major version eg: v1
+                + "([pP_]\\d+)?" // Point release eg: p2
+                + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
+    List<String> names = new ArrayList<>();
     String namespace = getPackageName();
+    for (String n : namespace.split("\\.")) {
+      names.add(n);
+      if (versionNamespacePattern.matcher(n).matches()) {
+        return Joiner.on(".").join(names);
+      }
+    }
     return namespace.substring(0, namespace.lastIndexOf('.'));
   }
 

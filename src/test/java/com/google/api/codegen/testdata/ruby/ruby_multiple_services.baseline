@@ -291,6 +291,43 @@ $ gem install google-example
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/multiple_services
 [Product Documentation]: https://cloud.google.com/multiple_services
 
+## Enabling Logging
+
+To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
+The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
+or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
+that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
+and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
+
+Configuring a Ruby stdlib logger:
+
+```ruby
+require "logger"
+
+module MyLogger
+  LOGGER = Logger.new $stderr, level: Logger::WARN
+  def logger
+    LOGGER
+  end
+end
+
+# Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+module GRPC
+  extend MyLogger
+end
+```
+
+## Supported Ruby Versions
+
+This library is supported on Ruby 2.0+.
+
+However, Ruby 2.3 or later is strongly recommended, as earlier releases have
+reached or are nearing end-of-life. After June 1, 2018, Google will provide
+official support only for Ruby versions that are considered current and
+supported by Ruby Core (that is, Ruby versions that are either in normal
+maintenance or in security maintenance).
+See https://www.ruby-lang.org/en/downloads/branches/ for further details.
+
 ============== file: Rakefile ==============
 # Copyright 2018 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -444,7 +481,7 @@ end
 
 Gem::Specification.new do |gem|
   gem.name          = "google-example"
-  gem.version       = "0.6.8"
+  gem.version       = "0.1.0"
 
   gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
@@ -515,6 +552,31 @@ module Google
   #
   # [Product Documentation]: https://cloud.google.com/multiple_services
   #
+  # ## Enabling Logging
+  #
+  # To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
+  # The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
+  # or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
+  # that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
+  # and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
+  #
+  # Configuring a Ruby stdlib logger:
+  #
+  # ```ruby
+  # require "logger"
+  #
+  # module MyLogger
+  #   LOGGER = Logger.new $stderr, level: Logger::WARN
+  #   def logger
+  #     LOGGER
+  #   end
+  # end
+  #
+  # # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+  # module GRPC
+  #   extend MyLogger
+  # end
+  # ```
   #
   module Example
     # rubocop:enable LineLength
@@ -629,35 +691,6 @@ module Google
   end
 end
 
-============== file: lib/google/example/credentials.rb ==============
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-require "googleauth"
-
-module Google
-  module Example
-    class Credentials < Google::Auth::Credentials
-      SCOPE = [
-      ].freeze
-      PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
-      JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
-      DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
-    end
-  end
-end
-
 ============== file: lib/google/example/v1/foo.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -704,6 +737,31 @@ module Google
   #
   # [Product Documentation]: https://cloud.google.com/multiple_services
   #
+  # ## Enabling Logging
+  #
+  # To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
+  # The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
+  # or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
+  # that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
+  # and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
+  #
+  # Configuring a Ruby stdlib logger:
+  #
+  # ```ruby
+  # require "logger"
+  #
+  # module MyLogger
+  #   LOGGER = Logger.new $stderr, level: Logger::WARN
+  #   def logger
+  #     LOGGER
+  #   end
+  # end
+  #
+  # # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+  # module GRPC
+  #   extend MyLogger
+  # end
+  # ```
   #
   module Example
     module V1
@@ -822,6 +880,39 @@ module Google
   end
 end
 
+============== file: lib/google/example/v1/foo/credentials.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "googleauth"
+
+module Google
+  module Example
+    module V1
+      module Foo
+        class Credentials < Google::Auth::Credentials
+          SCOPE = [
+          ].freeze
+          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
+          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+          DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
+        end
+      end
+    end
+  end
+end
+
 ============== file: lib/google/example/v1/foo/decrementer_service_client.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -850,7 +941,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
-require "google/example/credentials"
+require "google/example/v1/foo/credentials"
 
 module Google
   module Example
@@ -866,6 +957,9 @@ module Google
 
           # The default port of the service.
           DEFAULT_SERVICE_PORT = 443
+
+          # The default set of gRPC interceptors.
+          GRPC_INTERCEPTORS = []
 
           DEFAULT_TIMEOUT = 30
 
@@ -919,10 +1013,10 @@ module Google
             require "google/gax/grpc"
             require "multiple_services_services_pb"
 
-            credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::V1::Foo::Credentials.default
 
             if credentials.is_a?(String) || credentials.is_a?(Hash)
-              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+              updater_proc = Google::Example::V1::Foo::Credentials.new(credentials).updater_proc
             end
             if credentials.is_a?(GRPC::Core::Channel)
               channel = credentials
@@ -965,6 +1059,7 @@ module Google
             # Allow overriding the service path/port in subclasses.
             service_path = self.class::SERVICE_ADDRESS
             port = self.class::DEFAULT_SERVICE_PORT
+            interceptors = self.class::GRPC_INTERCEPTORS
             @decrementer_service_stub = Google::Gax::Grpc.create_stub(
               service_path,
               port,
@@ -972,6 +1067,7 @@ module Google
               channel: channel,
               updater_proc: updater_proc,
               scopes: scopes,
+              interceptors: interceptors,
               &Google::Cloud::Example::V1::Foo::DecrementerService::Stub.method(:new)
             )
 
@@ -1025,6 +1121,157 @@ end
   }
 }
 
+============== file: lib/google/example/v1/foo/doc/google/protobuf/empty.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  module Protobuf
+    # A generic empty message that you can re-use to avoid defining duplicated
+    # empty messages in your APIs. A typical example is to use it as the request
+    # or the response type of an API method. For instance:
+    #
+    #     service Foo {
+    #       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
+    #     }
+    #
+    # The JSON representation for +Empty+ is empty JSON object +{}+.
+    class Empty; end
+  end
+end
+============== file: lib/google/example/v1/foo/doc/multiple_services.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  module Cloud
+    module Example
+      ##
+      # # Google Example API Contents
+      #
+      # | Class | Description |
+      # | ----- | ----------- |
+      # | [IncrementerServiceClient][] |  |
+      # | [DecrementerServiceClient][] |  |
+      # | [Data Types][] | Data types for Google::Example::V1::Foo |
+      #
+      # [IncrementerServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/incrementerserviceclient
+      # [DecrementerServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/decrementerserviceclient
+      # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/datatypes
+      #
+      module V1
+        module Foo
+          class IncrementRequest; end
+
+          class DecrementRequest; end
+        end
+      end
+    end
+  end
+end
+============== file: lib/google/example/v1/foo/doc/overview.rb ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  # rubocop:disable LineLength
+
+  ##
+  # # Ruby Client for Google Example API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  #
+  # [Google Example API][Product Documentation]:
+  # This description tests descriptions that span multiple lines. This is a service
+  # that increments and decrements a counter.
+  # - [Product Documentation][]
+  #
+  # ## Quick Start
+  # In order to use this library, you first need to go through the following
+  # steps:
+  #
+  # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+  # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Installation
+  # ```
+  # $ gem install google-example
+  # ```
+  #
+  # ### Next Steps
+  # - Read the [Google Example API Product documentation][Product Documentation]
+  #   to learn more about the product and see How-to Guides.
+  # - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  #   to see the full list of Cloud APIs that we cover.
+  #
+  # [Product Documentation]: https://cloud.google.com/multiple_services
+  #
+  # ## Enabling Logging
+  #
+  # To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
+  # The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
+  # or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
+  # that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
+  # and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
+  #
+  # Configuring a Ruby stdlib logger:
+  #
+  # ```ruby
+  # require "logger"
+  #
+  # module MyLogger
+  #   LOGGER = Logger.new $stderr, level: Logger::WARN
+  #   def logger
+  #     LOGGER
+  #   end
+  # end
+  #
+  # # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+  # module GRPC
+  #   extend MyLogger
+  # end
+  # ```
+  #
+  module Example
+    module V1
+      module Foo
+      end
+    end
+  end
+end
 ============== file: lib/google/example/v1/foo/incrementer_service_client.rb ==============
 # Copyright 2018 Google LLC
 #
@@ -1053,7 +1300,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
-require "google/example/credentials"
+require "google/example/v1/foo/credentials"
 
 module Google
   module Example
@@ -1069,6 +1316,9 @@ module Google
 
           # The default port of the service.
           DEFAULT_SERVICE_PORT = 443
+
+          # The default set of gRPC interceptors.
+          GRPC_INTERCEPTORS = []
 
           DEFAULT_TIMEOUT = 30
 
@@ -1122,10 +1372,10 @@ module Google
             require "google/gax/grpc"
             require "multiple_services_services_pb"
 
-            credentials ||= Google::Example::Credentials.default
+            credentials ||= Google::Example::V1::Foo::Credentials.default
 
             if credentials.is_a?(String) || credentials.is_a?(Hash)
-              updater_proc = Google::Example::Credentials.new(credentials).updater_proc
+              updater_proc = Google::Example::V1::Foo::Credentials.new(credentials).updater_proc
             end
             if credentials.is_a?(GRPC::Core::Channel)
               channel = credentials
@@ -1168,6 +1418,7 @@ module Google
             # Allow overriding the service path/port in subclasses.
             service_path = self.class::SERVICE_ADDRESS
             port = self.class::DEFAULT_SERVICE_PORT
+            interceptors = self.class::GRPC_INTERCEPTORS
             @incrementer_service_stub = Google::Gax::Grpc.create_stub(
               service_path,
               port,
@@ -1175,6 +1426,7 @@ module Google
               channel: channel,
               updater_proc: updater_proc,
               scopes: scopes,
+              interceptors: interceptors,
               &Google::Cloud::Example::V1::Foo::IncrementerService::Stub.method(:new)
             )
 
@@ -1283,7 +1535,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockDecrementerServiceCredentials < Google::Example::Credentials
+class MockDecrementerServiceCredentials < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1313,7 +1565,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
           # Call method
@@ -1343,7 +1595,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Decrementer.new(version: :v1)
 
           # Call method
@@ -1413,7 +1665,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockIncrementerServiceCredentials < Google::Example::Credentials
+class MockIncrementerServiceCredentials < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1443,7 +1695,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
           # Call method
@@ -1473,7 +1725,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
-        Google::Example::Credentials.stub(:default, mock_credentials) do
+        Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
           client = Google::Example::Incrementer.new(version: :v1)
 
           # Call method

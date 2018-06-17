@@ -25,10 +25,6 @@
      * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
      * and updates to that file get reflected here through a refresh process.
      *
-     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
-     * even though we intend the surface to be stable, we may make backwards incompatible changes
-     * if necessary.
-     *
      * @@experimental
      */
 @end
@@ -48,10 +44,6 @@
             {@""} * {@commentLine}
         @end
     @end
-     *
-     * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
-     * even though we intend the surface to be stable, we may make backwards incompatible changes
-     * if necessary.
      *
      * This class provides the ability to make remote calls to the backing service through method
      * calls that map to API methods. Sample code to get started:
@@ -138,15 +130,18 @@
             @if xapiClass.hasDefaultServiceAddress
                 'serviceAddress' => self::SERVICE_ADDRESS . ':' . self::DEFAULT_SERVICE_PORT,
             @end
-            @if xapiClass.hasDefaultServiceScopes
-                'scopes' => self::$serviceScopes,
-            @end
-            'clientConfigPath' => __DIR__ . '{@xapiClass.clientConfigPath}',
-            'restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',
+            'clientConfig' => __DIR__ . '{@xapiClass.clientConfigPath}',
             'descriptorsConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_descriptor_config.php',
-            @if xapiClass.hasDefaultServiceAddress
-                'versionFile' => __DIR__ . '/../../VERSION'
-            @end
+            'credentialsConfig' => [
+                @if xapiClass.hasDefaultServiceScopes
+                    'scopes' => self::$serviceScopes,
+                @end
+            ],
+            'transportConfig' => [
+                'rest' => [
+                    'restClientConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_rest_client_config.php',
+                ]
+            ]
         ];
     }
 
@@ -327,18 +322,18 @@
          *           Required. The address of the API remote host. May optionally include the port,
          *           formatted as "<uri>:<port>".
      @end
-     *     @@type string|array $auth
+     *     @@type string|array|FetchAuthTokenInterface|CredentialsWrapper $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
      *           *Advanced usage*: In addition, this option can also accept a pre-constructed
-     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
-     *           object. Note that when one of these objects are provided, any settings in
-     *           $authConfig will be ignored.
-     *     @@type array $authConfig
-     *           Options used to configure auth, including auth token caching, for the client. For
-     *           a full list of supporting configuration options, see
-     *           \Google\ApiCore\AuthWrapper::build.
+     *           {@@see \Google\Auth\FetchAuthTokenInterface} object or
+     *           {@@see \Google\ApiCore\CredentialsWrapper} object. Note that when one of these
+     *           objects are provided, any settings in $credentialsConfig will be ignored.
+     *     @@type array $credentialsConfig
+     *           Options used to configure credentials, including auth token caching, for the client.
+     *           For a full list of supporting configuration options, see
+     *           {@@see \Google\ApiCore\CredentialsWrapper::build()}.
      *     @@type bool $disableRetries
      *           Determines whether or not retries defined by the client configuration should be
      *           disabled. Defaults to `false`.
@@ -347,12 +342,13 @@
      *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
      *           in the resources folder.
-     *     @@type string $transport
+     *     @@type string|TransportInterface $transport
      *           The transport used for executing network requests. May be either the string `rest`
      *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
      *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
-     *           TransportInterface object. Note that when this objects is provided, any settings in
-     *           $transportConfig, and any $serviceAddress setting, will be ignored.
+     *           {@@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+     *           object is provided, any settings in $transportConfig, and any $serviceAddress
+     *           setting, will be ignored.
      *     @@type array $transportConfig
      *           Configuration options that will be used to construct the transport. Options for
      *           each supported transport type should be passed in a key for that transport. For
@@ -361,25 +357,19 @@
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the GrpcTransport::build and RestTransport::build methods for the supported
-     *           options.
+     *           See the {@@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
+     *           supported options.
      * }
+     * @@throws ValidationException
      * @@experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
+        $clientOptions = $this->buildClientOptions($options);
+        $this->setClientOptions($clientOptions);
         @if xapiClass.hasLongRunningOperations
-            $options += self::getClientDefaults();
-            $this->setClientOptions($options);
-            $this->pluckArray([
-                'serviceName',
-                'clientConfigPath',
-                'descriptorsConfigPath'
-            ], $options);
-            $this->operationsClient = $this->pluck('operationsClient', $options, false)
-                ?: new OperationsClient($options);
-        @else
-            $this->setClientOptions($options + self::getClientDefaults());
+            $this->operationsClient = $this->createOperationsClient($clientOptions);
         @end
     }
     {@""}
@@ -491,8 +481,8 @@
       '{@headerRequestParam.fullyQualifiedName}' => $request->{@requestParamGetter(headerRequestParam.gettersChain)},
     @end
   ]);
-  $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
-      ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+  $optionalArgs['headers'] = isset($optionalArgs['headers'])
+      ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
       : $requestParams->getHeader();
 @end
 
@@ -505,10 +495,18 @@
 @private paramList(params)
     @join param : params on ", "
         @if param.defaultValue
-            ${@param.name} = {@param.defaultValue}
+            {@paramDeclaration(param)} = {@param.defaultValue}
         @else
-            ${@param.name}
+            {@paramDeclaration(param)}
         @end
+    @end
+@end
+
+@private paramDeclaration(param)
+    @if param.hasTypeHint
+        {@param.typeHint} ${@param.name}
+    @else
+        ${@param.name}
     @end
 @end
 

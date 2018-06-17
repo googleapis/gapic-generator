@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -24,6 +23,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
@@ -88,7 +88,7 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Sync,
         methodViewBuilder,
-        Arrays.asList(CallingForm.FlattenedPaging));
+        Arrays.asList(CallingForm.FlattenedPaged));
 
     return methodViewBuilder.type(ClientMethodType.PagedFlattenedMethod).build();
   }
@@ -109,7 +109,7 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Async,
         methodViewBuilder,
-        Arrays.asList(CallingForm.FlattenedAsyncPaging));
+        Arrays.asList(CallingForm.FlattenedAsyncPaged));
 
     return methodViewBuilder.type(ClientMethodType.PagedFlattenedAsyncMethod).build();
   }
@@ -159,7 +159,7 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder,
-        Arrays.asList(CallingForm.RequestAsyncPaging));
+        Arrays.asList(CallingForm.RequestAsyncPaged));
 
     return methodViewBuilder.type(ClientMethodType.AsyncPagedRequestObjectMethod).build();
   }
@@ -177,7 +177,7 @@ public class StaticLangApiMethodTransformer {
         context,
         namer.getPagedCallableName(method),
         methodViewBuilder,
-        Arrays.asList(CallingForm.CallablePaging));
+        Arrays.asList(CallingForm.CallablePaged));
 
     return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
   }
@@ -341,6 +341,11 @@ public class StaticLangApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generateCallableMethod(MethodContext context) {
+    return generateCallableMethod(context, Arrays.asList(CallingForm.Callable));
+  }
+
+  public StaticLangApiMethodView generateCallableMethod(
+      MethodContext context, List<CallingForm> callingForms) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -349,10 +354,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(namer.getCallableMethodName(method));
     methodViewBuilder.exampleName(context.getNamer().getCallableMethodExampleName(method));
     setCallableMethodFields(
-        context,
-        namer.getCallableName(method),
-        methodViewBuilder,
-        Arrays.asList(CallingForm.Callable));
+        context, namer.getCallableName(method), methodViewBuilder, callingForms);
     methodViewBuilder.responseTypeName(
         context
             .getMethodModel()
@@ -380,7 +382,7 @@ public class StaticLangApiMethodTransformer {
         namer.getCallableMethodName(method),
         Synchronicity.Sync,
         methodViewBuilder,
-        Arrays.asList(CallingForm.RequestStreaming));
+        Arrays.asList(CallingForm.RequestStreamingServer));
     setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
@@ -781,6 +783,10 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
+    String requestTypeFullName =
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
+    String requestType = context.getTypeTable().getAndSaveNicknameFor(requestTypeFullName);
+
     String genericAwareResponseTypeFullName =
         context.getNamer().getGenericAwareResponseTypeName(context);
     String genericAwareResponseType =
@@ -796,6 +802,7 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.callableMethod(
         CallableMethodDetailView.newBuilder()
+            .requestType(requestType)
             .genericAwareResponseType(genericAwareResponseType)
             .callableName(callableName)
             .interfaceTypeName(

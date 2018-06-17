@@ -6,7 +6,7 @@
 
     /**
      * @@group {@apiTest.testClass.apiName}
-     * @@group grpc
+     * @@group gapic
      */
     class {@apiTest.testClass.name} extends GeneratedTest
     {
@@ -32,6 +32,22 @@
      */
     private function createClient(array $options = [])
     {
+        $options += [
+            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+            @if testClass.hasMissingDefaultOptions
+                @if testClass.missingDefaultServiceAddress
+                    'serviceAddress' => '',
+
+                @end
+                @if testClass.missingDefaultServiceScopes
+                    'credentialsConfig' => [
+                        'scopes' => [],
+                    ],
+                @end
+            @end
+        ];
         return new {@testClass.apiClassName}($options);
     }
 @end
@@ -248,12 +264,12 @@
 
 @private createErrorStatus()
     $status = new stdClass();
-    $status->code = Grpc\STATUS_DATA_LOSS;
+    $status->code = Code::DATA_LOSS;
     $status->details = 'internal error';
 
     $expectedExceptionMessage = json_encode([
        'message' => 'internal error',
-       'code' => Grpc\STATUS_DATA_LOSS,
+       'code' => Code::DATA_LOSS,
        'status' => 'DATA_LOSS',
        'details' => [],
     ], JSON_PRETTY_PRINT);
@@ -342,7 +358,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -385,7 +400,9 @@
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -413,7 +430,6 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -447,7 +463,9 @@
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

@@ -27,6 +27,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import java.util.LinkedList;
 import java.util.List;
 
 /** Merges the language_settings property from a package into a ConfigNode. */
@@ -186,12 +187,21 @@ public class LanguageSettingsMerger {
         packageName = rule.rewrite(packageName);
       }
       List<String> names = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
-      String lastName = Iterables.getLast(names);
-      if (!VersionMatcher.isVersion(lastName)) {
-        return String.format("%s.gapic", packageName);
+      LinkedList<String> collector = new LinkedList<>();
+      boolean found = false;
+      for (String n : names) {
+        if (VersionMatcher.isVersion(n)) {
+          collector.add(String.format("%s_%s", collector.removeLast(), n));
+          collector.add("gapic");
+          found = true;
+        } else {
+          collector.add(n);
+        }
       }
-      String unversionedPackageName = Joiner.on('.').join(names.subList(0, names.size() - 1));
-      return String.format("%s_%s.gapic", unversionedPackageName, lastName);
+      if (!found) {
+        collector.add("gapic");
+      }
+      return Joiner.on('.').join(collector);
     }
   }
 }

@@ -30,24 +30,24 @@
       @if smokeTest.apiMethod.isLongRunningOperation
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, mochaCompletedCallback())})}
+            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback())})}
 
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, mochaCompletedCallback())})}
+            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback())})}
     @else
         {@smokeTestBody(smokeTest, \
             "successfully makes a call to the service", \
-            {@sampleCode(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback()))}}
+            {@incodeSamples(smokeTest.apiMethod, mochaCompletedCallback()))}}
       @end
     @case "PagedOptionalArrayMethod"
         {@smokeTestBody(smokeTest, \
           "successfully makes a call to the service using promises", \
-          {@methodCallSampleCodeForPagedResponseIterative(smokeTest.apiMethod, mochaCompletedCallback())})}
+          {@methodCallSampleCodeForPagedResponseIterative(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback())})}
 
         {@smokeTestBody(smokeTest, \
           "successfully makes a call to the service using callbacks", \
-          {@methodCallSampleCodeForPagedResponse(smokeTest.apiMethod, mochaCompletedCallback())})}
+          {@methodCallSampleCodeForPagedResponse(smokeTest.apiMethod, smokeTest.apiMethod.initCode, mochaCompletedCallback())})}
 
         {@smokeTestBody(smokeTest, \
           "successfully makes a call to the service using streaming", \

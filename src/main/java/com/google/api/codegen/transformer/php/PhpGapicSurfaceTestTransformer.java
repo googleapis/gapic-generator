@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -22,6 +21,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Responsible for producing testing related views for PHP. */
-public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
+public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String SMOKE_TEST_TEMPLATE_FILE = "php/smoke_test.snip";
   private static final String UNIT_TEST_TEMPLATE_FILE = "php/test.snip";
 
@@ -84,7 +84,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> views = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context =
@@ -283,6 +283,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addUnitTestImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\BidiStream");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ServerStream");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
@@ -291,7 +292,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\Protobuf\\Any");
     typeTable.saveNicknameFor("\\Google\\Protobuf\\GPBEmpty");
     typeTable.saveNicknameFor("\\Google\\LongRunning\\GetOperationRequest");
-    typeTable.saveNicknameFor("\\Grpc");
+    typeTable.saveNicknameFor("\\Google\\Rpc\\Code");
     typeTable.saveNicknameFor("\\stdClass");
   }
 

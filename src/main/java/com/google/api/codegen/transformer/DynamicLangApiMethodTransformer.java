@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
+import com.google.api.codegen.gapic.ServiceMessages;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -69,10 +70,63 @@ public class DynamicLangApiMethodTransformer {
     return generateMethod(context, false);
   }
 
+  public OptionalArrayMethodView generateRequestMethod(
+      GapicMethodContext context,
+      InitCodeContext initContext,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.type(ClientMethodType.OptionalArrayMethod);
+
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  public OptionalArrayMethodView generateLongRunningMethod(
+      GapicMethodContext context,
+      InitCodeContext initContext,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.longRunningView(lroTransformer.generateDetailView(context));
+    apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
+
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  public OptionalArrayMethodView generatePagedStreamingMethod(
+      GapicMethodContext context,
+      InitCodeContext initContext,
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
+    MethodModel method = context.getMethodModel();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
+
+    apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
+    apiMethod.pageStreamingView(
+        pageStreamingTransformer.generateDescriptor(context.getSurfaceInterfaceContext(), method));
+
+    generateMethodCommon(
+        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+
+    return apiMethod.build();
+  }
+
+  // For languages that don't yet call the more specific methods above.
   public OptionalArrayMethodView generateMethod(
       GapicMethodContext context, boolean packageHasMultipleServices) {
     MethodModel method = context.getMethodModel();
-    SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
     if (context.getMethodConfig().isPageStreaming()) {
@@ -86,6 +140,28 @@ public class DynamicLangApiMethodTransformer {
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }
+
+    generateMethodCommon(
+        context,
+        null,
+        packageHasMultipleServices,
+        method,
+        apiMethod,
+        Arrays.asList(CallingForm.Generic));
+
+    return apiMethod.build();
+  }
+
+  private void generateMethodCommon(
+      GapicMethodContext context,
+      InitCodeContext initContext,
+      boolean packageHasMultipleServices,
+      MethodModel method,
+      OptionalArrayMethodView.Builder apiMethod,
+      List<CallingForm> callingForms) {
+
+    SurfaceNamer namer = context.getNamer();
+
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
@@ -98,22 +174,6 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     apiMethod.localPackageName(namer.getLocalPackageName());
-
-    // TODO(vchudnov-g): Here we need to import the logic from the snippet file for
-    // selecting the proper calling form.
-    InitCodeOutputType initCodeOutputType =
-        context.getMethodModel().getRequestStreaming()
-            ? InitCodeOutputType.SingleObject
-            : InitCodeOutputType.FieldList;
-    sampleTransformer.generateSamples(
-        apiMethod,
-        context,
-        context.getMethodConfig().getRequiredFieldConfigs(),
-        initCodeOutputType,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
-        Arrays.asList(CallingForm.Generic));
 
     apiMethod.doc(generateMethodDoc(context));
 
@@ -161,7 +221,20 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.headerRequestParams(
         headerRequestParamTransformer.generateHeaderRequestParams(context));
 
-    return apiMethod.build();
+    InitCodeOutputType initCodeOutputType =
+        context.getMethodModel().getRequestStreaming()
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
+    sampleTransformer.generateSamples(
+        apiMethod,
+        context,
+        initContext,
+        context.getMethodConfig().getRequiredFieldConfigs(),
+        initCodeOutputType,
+        initCodeContext ->
+            initCodeTransformer.generateInitCode(
+                context.cloneWithEmptyTypeTable(), initCodeContext),
+        callingForms);
   }
 
   private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {

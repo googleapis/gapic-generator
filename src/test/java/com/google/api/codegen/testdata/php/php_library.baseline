@@ -44,10 +44,6 @@
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
  *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
- *
  * @experimental
  */
 
@@ -55,6 +51,8 @@ namespace Google\Example\Library\V1\Gapic;
 
 use Google\ApiCore\ApiException;
 use Google\ApiCore\Call;
+use Google\ApiCore\CredentialsWrapper;
+use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\OperationResponse;
@@ -63,7 +61,6 @@ use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\RetrySettings;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
-use Google\Auth\CredentialsLoader;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -117,8 +114,6 @@ use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
 use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
-use Grpc\Channel;
-use Grpc\ChannelCredentials;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -135,10 +130,6 @@ use Grpc\ChannelCredentials;
  * This is [not a cloud link](http://www.google.com).
  *
  * Service comment may include special characters: <>&"`'&#64;.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
@@ -203,11 +194,16 @@ class LibraryServiceGapicClient
         return [
             'serviceName' => self::SERVICE_NAME,
             'serviceAddress' => self::SERVICE_ADDRESS . ':' . self::DEFAULT_SERVICE_PORT,
-            'scopes' => self::$serviceScopes,
-            'clientConfigPath' => __DIR__ . '/../resources/library_service_client_config.json',
-            'restClientConfigPath' => __DIR__ . '/../resources/library_service_rest_client_config.php',
+            'clientConfig' => __DIR__ . '/../resources/library_service_client_config.json',
             'descriptorsConfigPath' => __DIR__ . '/../resources/library_service_descriptor_config.php',
-            'versionFile' => __DIR__ . '/../../VERSION'
+            'credentialsConfig' => [
+                'scopes' => self::$serviceScopes,
+            ],
+            'transportConfig' => [
+                'rest' => [
+                    'restClientConfigPath' => __DIR__ . '/../resources/library_service_rest_client_config.php',
+                ]
+            ]
         ];
     }
 
@@ -437,18 +433,18 @@ class LibraryServiceGapicClient
      *     @type string $serviceAddress
      *           The address of the API remote host. May optionally include the port, formatted
      *           as "<uri>:<port>". Default 'library-example.googleapis.com:443'.
-     *     @type string|array $auth
+     *     @type string|array|FetchAuthTokenInterface|CredentialsWrapper $credentials
      *           The credentials to be used by the client to authorize API calls. This option
      *           accepts either a path to a credentials file, or a decoded credentials file as a
      *           PHP array.
      *           *Advanced usage*: In addition, this option can also accept a pre-constructed
-     *           \Google\Auth\FetchAuthTokenInterface object or \Google\ApiCore\AuthWrapper
-     *           object. Note that when one of these objects are provided, any settings in
-     *           $authConfig will be ignored.
-     *     @type array $authConfig
-     *           Options used to configure auth, including auth token caching, for the client. For
-     *           a full list of supporting configuration options, see
-     *           \Google\ApiCore\AuthWrapper::build.
+     *           {@see \Google\Auth\FetchAuthTokenInterface} object or
+     *           {@see \Google\ApiCore\CredentialsWrapper} object. Note that when one of these
+     *           objects are provided, any settings in $credentialsConfig will be ignored.
+     *     @type array $credentialsConfig
+     *           Options used to configure credentials, including auth token caching, for the client.
+     *           For a full list of supporting configuration options, see
+     *           {@see \Google\ApiCore\CredentialsWrapper::build()}.
      *     @type bool $disableRetries
      *           Determines whether or not retries defined by the client configuration should be
      *           disabled. Defaults to `false`.
@@ -457,12 +453,13 @@ class LibraryServiceGapicClient
      *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
      *           in the resources folder.
-     *     @type string $transport
+     *     @type string|TransportInterface $transport
      *           The transport used for executing network requests. May be either the string `rest`
      *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
      *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
-     *           TransportInterface object. Note that when this objects is provided, any settings in
-     *           $transportConfig, and any $serviceAddress setting, will be ignored.
+     *           {@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+     *           object is provided, any settings in $transportConfig, and any $serviceAddress
+     *           setting, will be ignored.
      *     @type array $transportConfig
      *           Configuration options that will be used to construct the transport. Options for
      *           each supported transport type should be passed in a key for that transport. For
@@ -471,22 +468,18 @@ class LibraryServiceGapicClient
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the GrpcTransport::build and RestTransport::build methods for the supported
-     *           options.
+     *           See the {@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
+     *           supported options.
      * }
+     * @throws ValidationException
      * @experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
-        $options += self::getClientDefaults();
-        $this->setClientOptions($options);
-        $this->pluckArray([
-            'serviceName',
-            'clientConfigPath',
-            'descriptorsConfigPath'
-        ], $options);
-        $this->operationsClient = $this->pluck('operationsClient', $options, false)
-            ?: new OperationsClient($options);
+        $clientOptions = $this->buildClientOptions($options);
+        $this->setClientOptions($clientOptions);
+        $this->operationsClient = $this->createOperationsClient($clientOptions);
     }
 
     /**
@@ -519,7 +512,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function createShelf($shelf, $optionalArgs = [])
+    public function createShelf($shelf, array $optionalArgs = [])
     {
         $request = new CreateShelfRequest();
         $request->setShelf($shelf);
@@ -566,7 +559,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getShelf($name, $options, $optionalArgs = [])
+    public function getShelf($name, $options, array $optionalArgs = [])
     {
         $request = new GetShelfRequest();
         $request->setName($name);
@@ -631,7 +624,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listShelves($optionalArgs = [])
+    public function listShelves(array $optionalArgs = [])
     {
         $request = new ListShelvesRequest();
         if (isset($optionalArgs['pageToken'])) {
@@ -673,7 +666,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function deleteShelf($name, $optionalArgs = [])
+    public function deleteShelf($name, array $optionalArgs = [])
     {
         $request = new DeleteShelfRequest();
         $request->setName($name);
@@ -719,7 +712,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
+    public function mergeShelves($name, $otherShelfName, array $optionalArgs = [])
     {
         $request = new MergeShelvesRequest();
         $request->setName($name);
@@ -764,7 +757,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function createBook($name, $book, $optionalArgs = [])
+    public function createBook($name, $book, array $optionalArgs = [])
     {
         $request = new CreateBookRequest();
         $request->setName($name);
@@ -774,8 +767,8 @@ class LibraryServiceGapicClient
           'name' => $request->getName(),
           'book.read' => $request->getBook()->getRead(),
         ]);
-        $optionalArgs['userHeaders'] = isset($optionalArgs['userHeaders'])
-            ? array_merge($requestParams->getHeader(), $optionalArgs['userHeaders'])
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
             : $requestParams->getHeader();
 
         return $this->startCall(
@@ -825,7 +818,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
+    public function publishSeries($shelf, $books, $seriesUuid, array $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
@@ -875,7 +868,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBook($name, $optionalArgs = [])
+    public function getBook($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -941,7 +934,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listBooks($name, $optionalArgs = [])
+    public function listBooks($name, array $optionalArgs = [])
     {
         $request = new ListBooksRequest();
         $request->setName($name);
@@ -990,7 +983,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function deleteBook($name, $optionalArgs = [])
+    public function deleteBook($name, array $optionalArgs = [])
     {
         $request = new DeleteBookRequest();
         $request->setName($name);
@@ -1040,7 +1033,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function updateBook($name, $book, $optionalArgs = [])
+    public function updateBook($name, $book, array $optionalArgs = [])
     {
         $request = new UpdateBookRequest();
         $request->setName($name);
@@ -1094,7 +1087,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function moveBook($name, $otherShelfName, $optionalArgs = [])
+    public function moveBook($name, $otherShelfName, array $optionalArgs = [])
     {
         $request = new MoveBookRequest();
         $request->setName($name);
@@ -1158,7 +1151,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listStrings($optionalArgs = [])
+    public function listStrings(array $optionalArgs = [])
     {
         $request = new ListStringsRequest();
         if (isset($optionalArgs['name'])) {
@@ -1215,7 +1208,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addComments($name, $comments, $optionalArgs = [])
+    public function addComments($name, $comments, array $optionalArgs = [])
     {
         $request = new AddCommentsRequest();
         $request->setName($name);
@@ -1258,7 +1251,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromArchive($name, $optionalArgs = [])
+    public function getBookFromArchive($name, array $optionalArgs = [])
     {
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
@@ -1303,7 +1296,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
+    public function getBookFromAnywhere($name, $altBookName, array $optionalArgs = [])
     {
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
@@ -1346,7 +1339,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromAbsolutelyAnywhere($name, $optionalArgs = [])
+    public function getBookFromAbsolutelyAnywhere($name, array $optionalArgs = [])
     {
         $request = new GetBookFromAbsolutelyAnywhereRequest();
         $request->setName($name);
@@ -1391,7 +1384,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
+    public function updateBookIndex($name, $indexName, $indexMap, array $optionalArgs = [])
     {
         $request = new UpdateBookIndexRequest();
         $request->setName($name);
@@ -1436,7 +1429,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function streamShelves($optionalArgs = [])
+    public function streamShelves(array $optionalArgs = [])
     {
         $request = new StreamShelvesRequest();
 
@@ -1480,7 +1473,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function streamBooks($name, $optionalArgs = [])
+    public function streamBooks($name, array $optionalArgs = [])
     {
         $request = new StreamBooksRequest();
         $request->setName($name);
@@ -1547,7 +1540,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function discussBook($optionalArgs = [])
+    public function discussBook(array $optionalArgs = [])
     {
         return $this->startCall(
             'DiscussBook',
@@ -1599,7 +1592,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function monologAboutBook($optionalArgs = [])
+    public function monologAboutBook(array $optionalArgs = [])
     {
         return $this->startCall(
             'MonologAboutBook',
@@ -1663,7 +1656,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function findRelatedBooks($names, $shelves, $optionalArgs = [])
+    public function findRelatedBooks($names, $shelves, array $optionalArgs = [])
     {
         $request = new FindRelatedBooksRequest();
         $request->setNames($names);
@@ -1716,7 +1709,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addTag($resource, $tag, $optionalArgs = [])
+    public function addTag($resource, $tag, array $optionalArgs = [])
     {
         $request = new AddTagRequest();
         $request->setResource($resource);
@@ -1763,7 +1756,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addLabel($resource, $label, $optionalArgs = [])
+    public function addLabel($resource, $label, array $optionalArgs = [])
     {
         $request = new AddLabelRequest();
         $request->setResource($resource);
@@ -1833,7 +1826,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBigBook($name, $optionalArgs = [])
+    public function getBigBook($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -1898,7 +1891,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBigNothing($name, $optionalArgs = [])
+    public function getBigNothing($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -2027,7 +2020,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
+    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, array $optionalArgs = [])
     {
         $request = new TestOptionalRequiredFlatteningParamsRequest();
         $request->setRequiredSingularInt32($requiredSingularInt32);
@@ -2179,10 +2172,6 @@ class LibraryServiceGapicClient
  * This file was generated from the file
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * @experimental
  */
@@ -2745,7 +2734,7 @@ use Google\Protobuf\FieldMask;
 
 /**
  * @group library
- * @group grpc
+ * @group gapic
  */
 class LibraryServiceSmokeTest extends GeneratedTest
 {
@@ -2798,6 +2787,7 @@ namespace Google\Example\Library\Tests\Unit\V1;
 use Google\Example\Library\V1\LibraryServiceClient;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
+use Google\ApiCore\CredentialsWrapper;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
@@ -2847,18 +2837,18 @@ use Google\LongRunning\GetOperationRequest;
 use Google\LongRunning\Operation;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
+use Google\Rpc\Code;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
 use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
 use Google\Tagger\CustomNamespace\V1\AddTagRequest;
 use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
-use Grpc;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @group library
- * @group grpc
+ * @group gapic
  */
 class LibraryServiceClientTest extends GeneratedTest
 {
@@ -2875,6 +2865,11 @@ class LibraryServiceClientTest extends GeneratedTest
      */
     private function createClient(array $options = [])
     {
+        $options += [
+            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+        ];
         return new LibraryServiceClient($options);
     }
     /**
@@ -2926,12 +2921,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3007,12 +3002,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3081,12 +3076,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3148,12 +3143,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3229,12 +3224,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3313,12 +3308,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3398,12 +3393,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3481,12 +3476,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3561,12 +3556,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3632,12 +3627,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3715,12 +3710,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3799,12 +3794,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3873,12 +3868,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -3951,12 +3946,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4038,12 +4033,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4121,12 +4116,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4201,12 +4196,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4280,12 +4275,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4371,12 +4366,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $client = $this->createClient(['transport' => $transport]);
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4483,12 +4478,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $client = $this->createClient(['transport' => $transport]);
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4606,12 +4601,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $client = $this->createClient(['transport' => $transport]);
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4693,12 +4688,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4770,12 +4765,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4846,12 +4841,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -4883,7 +4878,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -4938,7 +4932,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigBookTest');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -4963,7 +4959,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -4982,12 +4977,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($incompleteOperation);
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -5004,7 +4999,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject->setName('operations/getBigBookTest');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -5027,7 +5024,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -5074,7 +5070,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
 
-        $response->pollUntilComplete();
+        $response->pollUntilComplete([
+            'initialPollDelayMillis' => 1,
+        ]);
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
@@ -5099,7 +5097,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'scopes' => [],
             'transport' => $operationsTransport
         ]);
         $transport = $this->createTransport();
@@ -5118,12 +5115,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($incompleteOperation);
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);
@@ -5140,7 +5137,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
 
         try {
-            $response->pollUntilComplete();
+            $response->pollUntilComplete([
+                'initialPollDelayMillis' => 1,
+            ]);
             // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -5310,12 +5309,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->code = Code::DATA_LOSS;
         $status->details = 'internal error';
 
         $expectedExceptionMessage = json_encode([
            'message' => 'internal error',
-           'code' => Grpc\STATUS_DATA_LOSS,
+           'code' => Code::DATA_LOSS,
            'status' => 'DATA_LOSS',
            'details' => [],
         ], JSON_PRETTY_PRINT);

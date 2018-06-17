@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -24,6 +23,7 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicParser;
+import com.google.api.codegen.gapic.ProtoFiles;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -46,7 +46,8 @@ import com.google.protobuf.Api;
 import java.io.File;
 import java.util.List;
 
-public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
+/* Transforms a ProtoApiModel into the documentation stubs of a GAPIC library for Ruby. */
+public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String DOC_TEMPLATE_FILENAME = "ruby/message.snip";
 
   private final GapicCodePathMapper pathMapper;
@@ -66,9 +67,9 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file : new ProtoFileView().getProtoFiles(productConfig)) {
+    for (ProtoFile file : ProtoFiles.getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
     surfaceDocs.add(generateOverview(model, productConfig));

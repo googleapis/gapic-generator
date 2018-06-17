@@ -148,6 +148,7 @@ import (
     "cloud.google.com/go/internal/version"
     "cloud.google.com/go/longrunning"
     lroauto "cloud.google.com/go/longrunning/autogen"
+    "github.com/golang/protobuf/proto"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
@@ -376,6 +377,7 @@ func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesR
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.ListShelves[0:len(c.CallOptions.ListShelves):len(c.CallOptions.ListShelves)], opts...)
     it := &ShelfIterator{}
+    req = proto.Clone(req).(*librarypb.ListShelvesRequest)
     it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
         var resp *librarypb.ListShelvesResponse
         req.PageToken = pageToken
@@ -403,6 +405,7 @@ func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesR
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -490,6 +493,7 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.ListBooks[0:len(c.CallOptions.ListBooks):len(c.CallOptions.ListBooks)], opts...)
     it := &BookIterator{}
+    req = proto.Clone(req).(*librarypb.ListBooksRequest)
     it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
         var resp *librarypb.ListBooksResponse
         req.PageToken = pageToken
@@ -517,6 +521,7 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -569,6 +574,7 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.ListStrings[0:len(c.CallOptions.ListStrings):len(c.CallOptions.ListStrings)], opts...)
     it := &StringIterator{}
+    req = proto.Clone(req).(*librarypb.ListStringsRequest)
     it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.ListStringsResponse
         req.PageToken = pageToken
@@ -596,6 +602,7 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 
@@ -744,6 +751,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.FindRelatedBooks[0:len(c.CallOptions.FindRelatedBooks):len(c.CallOptions.FindRelatedBooks)], opts...)
     it := &StringIterator{}
+    req = proto.Clone(req).(*librarypb.FindRelatedBooksRequest)
     it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.FindRelatedBooksResponse
         req.PageToken = pageToken
@@ -771,6 +779,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
         return nextPageToken, nil
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
     return it
 }
 

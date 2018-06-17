@@ -1217,76 +1217,36 @@ public final class Address implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("creationTimestamp") && creationTimestamp != null) {
-      fieldMap.put("creationTimestamp", Collections.singletonList(String.valueOf(creationTimestamp)));
-    }
-    if (fieldNames.contains("description") && description != null) {
-      fieldMap.put("description", Collections.singletonList(String.valueOf(description)));
-    }
-    if (fieldNames.contains("id") && id != null) {
-      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
-    }
-    if (fieldNames.contains("kind") && kind != null) {
-      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
-    }
-    if (fieldNames.contains("name") && name != null) {
-      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    if (fieldNames.contains("selfLink") && selfLink != null) {
-      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
-    }
-    if (fieldNames.contains("status") && status != null) {
-      fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
-    }
-    if (fieldNames.contains("users") && users != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (String item : users) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("users", stringList.build());
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("address")) {
-      return String.valueOf(address);
+      return address;
     }
     if (fieldName.equals("creationTimestamp")) {
-      return String.valueOf(creationTimestamp);
+      return creationTimestamp;
     }
     if (fieldName.equals("description")) {
-      return String.valueOf(description);
+      return description;
     }
     if (fieldName.equals("id")) {
-      return String.valueOf(id);
+      return id;
     }
     if (fieldName.equals("kind")) {
-      return String.valueOf(kind);
+      return kind;
     }
     if (fieldName.equals("name")) {
-      return String.valueOf(name);
+      return name;
     }
     if (fieldName.equals("region")) {
-      return String.valueOf(region);
+      return region;
     }
     if (fieldName.equals("selfLink")) {
-      return String.valueOf(selfLink);
+      return selfLink;
     }
     if (fieldName.equals("status")) {
-      return String.valueOf(status);
+      return status;
     }
     if (fieldName.equals("users")) {
-      return String.valueOf(users);
+      return users;
     }
     return null;
   }
@@ -1294,6 +1254,12 @@ public final class Address implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -1683,48 +1649,24 @@ public final class AddressAggregatedList implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("id") && id != null) {
-      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
-    }
-    if (fieldNames.contains("items") && items != null) {
-      fieldMap.put("items", Collections.singletonList(String.valueOf(items)));
-    }
-    if (fieldNames.contains("kind") && kind != null) {
-      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
-    }
-    if (fieldNames.contains("nextPageToken") && nextPageToken != null) {
-      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
-    }
-    if (fieldNames.contains("selfLink") && selfLink != null) {
-      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
-    }
-    if (fieldNames.contains("warning") && warning != null) {
-      fieldMap.put("warning", Collections.singletonList(String.valueOf(warning)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("id")) {
-      return String.valueOf(id);
+      return id;
     }
     if (fieldName.equals("items")) {
-      return String.valueOf(items);
+      return items;
     }
     if (fieldName.equals("kind")) {
-      return String.valueOf(kind);
+      return kind;
     }
     if (fieldName.equals("nextPageToken")) {
-      return String.valueOf(nextPageToken);
+      return nextPageToken;
     }
     if (fieldName.equals("selfLink")) {
-      return String.valueOf(selfLink);
+      return selfLink;
     }
     if (fieldName.equals("warning")) {
-      return String.valueOf(warning);
+      return warning;
     }
     return null;
   }
@@ -1732,6 +1674,12 @@ public final class AddressAggregatedList implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -2001,28 +1949,12 @@ public final class AddressesScopedList implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("addresses") && addresses != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Address item : addresses) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("addresses", stringList.build());
-    }
-    if (fieldNames.contains("warning") && warning != null) {
-      fieldMap.put("warning", Collections.singletonList(String.valueOf(warning)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("addresses")) {
-      return String.valueOf(addresses);
+      return addresses;
     }
     if (fieldName.equals("warning")) {
-      return String.valueOf(warning);
+      return warning;
     }
     return null;
   }
@@ -2030,6 +1962,12 @@ public final class AddressesScopedList implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -2223,46 +2161,21 @@ public final class AddressList implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("id") && id != null) {
-      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
-    }
-    if (fieldNames.contains("items") && items != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Address item : items) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("items", stringList.build());
-    }
-    if (fieldNames.contains("kind") && kind != null) {
-      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
-    }
-    if (fieldNames.contains("nextPageToken") && nextPageToken != null) {
-      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
-    }
-    if (fieldNames.contains("selfLink") && selfLink != null) {
-      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("id")) {
-      return String.valueOf(id);
+      return id;
     }
     if (fieldName.equals("items")) {
-      return String.valueOf(items);
+      return items;
     }
     if (fieldName.equals("kind")) {
-      return String.valueOf(kind);
+      return kind;
     }
     if (fieldName.equals("nextPageToken")) {
-      return String.valueOf(nextPageToken);
+      return nextPageToken;
     }
     if (fieldName.equals("selfLink")) {
-      return String.valueOf(selfLink);
+      return selfLink;
     }
     return null;
   }
@@ -2270,6 +2183,12 @@ public final class AddressList implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -2523,24 +2442,12 @@ public final class Data implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("value") && value != null) {
-      fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("value")) {
-      return String.valueOf(value);
+      return value;
     }
     return null;
   }
@@ -2548,6 +2455,12 @@ public final class Data implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -2717,18 +2630,9 @@ public final class DUMMYObject implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("name") && name != null) {
-      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("name")) {
-      return String.valueOf(name);
+      return name;
     }
     return null;
   }
@@ -2736,6 +2640,12 @@ public final class DUMMYObject implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -2897,42 +2807,21 @@ public final class DummyObject2 implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("floatie") && floatie != null) {
-      fieldMap.put("floatie", Collections.singletonList(String.valueOf(floatie)));
-    }
-    if (fieldNames.contains("name") && name != null) {
-      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
-    }
-    if (fieldNames.contains("precisionFloatie") && precisionFloatie != null) {
-      fieldMap.put("precisionFloatie", Collections.singletonList(String.valueOf(precisionFloatie)));
-    }
-    if (fieldNames.contains("primaryAddress") && primaryAddress != null) {
-      fieldMap.put("primaryAddress", Collections.singletonList(String.valueOf(primaryAddress)));
-    }
-    if (fieldNames.contains("secondaryAddress") && secondaryAddress != null) {
-      fieldMap.put("secondaryAddress", Collections.singletonList(String.valueOf(secondaryAddress)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("floatie")) {
-      return String.valueOf(floatie);
+      return floatie;
     }
     if (fieldName.equals("name")) {
-      return String.valueOf(name);
+      return name;
     }
     if (fieldName.equals("precisionFloatie")) {
-      return String.valueOf(precisionFloatie);
+      return precisionFloatie;
     }
     if (fieldName.equals("primaryAddress")) {
-      return String.valueOf(primaryAddress);
+      return primaryAddress;
     }
     if (fieldName.equals("secondaryAddress")) {
-      return String.valueOf(secondaryAddress);
+      return secondaryAddress;
     }
     return null;
   }
@@ -2940,6 +2829,12 @@ public final class DummyObject2 implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -3181,22 +3076,9 @@ public final class Error implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("errors") && errors != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Errors item : errors) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("errors", stringList.build());
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("errors")) {
-      return String.valueOf(errors);
+      return errors;
     }
     return null;
   }
@@ -3204,6 +3086,12 @@ public final class Error implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -3365,30 +3253,15 @@ public final class Errors implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("code") && code != null) {
-      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
-    }
-    if (fieldNames.contains("location") && location != null) {
-      fieldMap.put("location", Collections.singletonList(String.valueOf(location)));
-    }
-    if (fieldNames.contains("message") && message != null) {
-      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("code")) {
-      return String.valueOf(code);
+      return code;
     }
     if (fieldName.equals("location")) {
-      return String.valueOf(location);
+      return location;
     }
     if (fieldName.equals("message")) {
-      return String.valueOf(message);
+      return message;
     }
     return null;
   }
@@ -3396,6 +3269,12 @@ public final class Errors implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -3677,154 +3556,75 @@ public final class Operation implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("clientOperationId") && clientOperationId != null) {
-      fieldMap.put("clientOperationId", Collections.singletonList(String.valueOf(clientOperationId)));
-    }
-    if (fieldNames.contains("creationTimestamp") && creationTimestamp != null) {
-      fieldMap.put("creationTimestamp", Collections.singletonList(String.valueOf(creationTimestamp)));
-    }
-    if (fieldNames.contains("description") && description != null) {
-      fieldMap.put("description", Collections.singletonList(String.valueOf(description)));
-    }
-    if (fieldNames.contains("endTime") && endTime != null) {
-      fieldMap.put("endTime", Collections.singletonList(String.valueOf(endTime)));
-    }
-    if (fieldNames.contains("error") && error != null) {
-      fieldMap.put("error", Collections.singletonList(String.valueOf(error)));
-    }
-    if (fieldNames.contains("httpErrorMessage") && httpErrorMessage != null) {
-      fieldMap.put("httpErrorMessage", Collections.singletonList(String.valueOf(httpErrorMessage)));
-    }
-    if (fieldNames.contains("httpErrorStatusCode") && httpErrorStatusCode != null) {
-      fieldMap.put("httpErrorStatusCode", Collections.singletonList(String.valueOf(httpErrorStatusCode)));
-    }
-    if (fieldNames.contains("id") && id != null) {
-      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
-    }
-    if (fieldNames.contains("insertTime") && insertTime != null) {
-      fieldMap.put("insertTime", Collections.singletonList(String.valueOf(insertTime)));
-    }
-    if (fieldNames.contains("kind") && kind != null) {
-      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
-    }
-    if (fieldNames.contains("name") && name != null) {
-      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
-    }
-    if (fieldNames.contains("operationType") && operationType != null) {
-      fieldMap.put("operationType", Collections.singletonList(String.valueOf(operationType)));
-    }
-    if (fieldNames.contains("progress") && progress != null) {
-      fieldMap.put("progress", Collections.singletonList(String.valueOf(progress)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    if (fieldNames.contains("selfLink") && selfLink != null) {
-      fieldMap.put("selfLink", Collections.singletonList(String.valueOf(selfLink)));
-    }
-    if (fieldNames.contains("startTime") && startTime != null) {
-      fieldMap.put("startTime", Collections.singletonList(String.valueOf(startTime)));
-    }
-    if (fieldNames.contains("status") && status != null) {
-      fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
-    }
-    if (fieldNames.contains("statusMessage") && statusMessage != null) {
-      fieldMap.put("statusMessage", Collections.singletonList(String.valueOf(statusMessage)));
-    }
-    if (fieldNames.contains("targetId") && targetId != null) {
-      fieldMap.put("targetId", Collections.singletonList(String.valueOf(targetId)));
-    }
-    if (fieldNames.contains("targetLink") && targetLink != null) {
-      fieldMap.put("targetLink", Collections.singletonList(String.valueOf(targetLink)));
-    }
-    if (fieldNames.contains("user") && user != null) {
-      fieldMap.put("user", Collections.singletonList(String.valueOf(user)));
-    }
-    if (fieldNames.contains("warnings") && warnings != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Warnings item : warnings) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("warnings", stringList.build());
-    }
-    if (fieldNames.contains("zone") && zone != null) {
-      fieldMap.put("zone", Collections.singletonList(String.valueOf(zone)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("clientOperationId")) {
-      return String.valueOf(clientOperationId);
+      return clientOperationId;
     }
     if (fieldName.equals("creationTimestamp")) {
-      return String.valueOf(creationTimestamp);
+      return creationTimestamp;
     }
     if (fieldName.equals("description")) {
-      return String.valueOf(description);
+      return description;
     }
     if (fieldName.equals("endTime")) {
-      return String.valueOf(endTime);
+      return endTime;
     }
     if (fieldName.equals("error")) {
-      return String.valueOf(error);
+      return error;
     }
     if (fieldName.equals("httpErrorMessage")) {
-      return String.valueOf(httpErrorMessage);
+      return httpErrorMessage;
     }
     if (fieldName.equals("httpErrorStatusCode")) {
-      return String.valueOf(httpErrorStatusCode);
+      return httpErrorStatusCode;
     }
     if (fieldName.equals("id")) {
-      return String.valueOf(id);
+      return id;
     }
     if (fieldName.equals("insertTime")) {
-      return String.valueOf(insertTime);
+      return insertTime;
     }
     if (fieldName.equals("kind")) {
-      return String.valueOf(kind);
+      return kind;
     }
     if (fieldName.equals("name")) {
-      return String.valueOf(name);
+      return name;
     }
     if (fieldName.equals("operationType")) {
-      return String.valueOf(operationType);
+      return operationType;
     }
     if (fieldName.equals("progress")) {
-      return String.valueOf(progress);
+      return progress;
     }
     if (fieldName.equals("region")) {
-      return String.valueOf(region);
+      return region;
     }
     if (fieldName.equals("selfLink")) {
-      return String.valueOf(selfLink);
+      return selfLink;
     }
     if (fieldName.equals("startTime")) {
-      return String.valueOf(startTime);
+      return startTime;
     }
     if (fieldName.equals("status")) {
-      return String.valueOf(status);
+      return status;
     }
     if (fieldName.equals("statusMessage")) {
-      return String.valueOf(statusMessage);
+      return statusMessage;
     }
     if (fieldName.equals("targetId")) {
-      return String.valueOf(targetId);
+      return targetId;
     }
     if (fieldName.equals("targetLink")) {
-      return String.valueOf(targetLink);
+      return targetLink;
     }
     if (fieldName.equals("user")) {
-      return String.valueOf(user);
+      return user;
     }
     if (fieldName.equals("warnings")) {
-      return String.valueOf(warnings);
+      return warnings;
     }
     if (fieldName.equals("zone")) {
-      return String.valueOf(zone);
+      return zone;
     }
     return null;
   }
@@ -3832,6 +3632,12 @@ public final class Operation implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -4521,34 +4327,15 @@ public final class ProjectsGetDummyObjectResources implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("kind") && kind != null) {
-      fieldMap.put("kind", Collections.singletonList(String.valueOf(kind)));
-    }
-    if (fieldNames.contains("nextPageToken") && nextPageToken != null) {
-      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
-    }
-    if (fieldNames.contains("resources") && resources != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Address item : resources) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("resources", stringList.build());
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("kind")) {
-      return String.valueOf(kind);
+      return kind;
     }
     if (fieldName.equals("nextPageToken")) {
-      return String.valueOf(nextPageToken);
+      return nextPageToken;
     }
     if (fieldName.equals("resources")) {
-      return String.valueOf(resources);
+      return resources;
     }
     return null;
   }
@@ -4556,6 +4343,12 @@ public final class ProjectsGetDummyObjectResources implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -4765,34 +4558,15 @@ public final class Warning implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("code") && code != null) {
-      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
-    }
-    if (fieldNames.contains("data") && data != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Data item : data) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("data", stringList.build());
-    }
-    if (fieldNames.contains("message") && message != null) {
-      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("code")) {
-      return String.valueOf(code);
+      return code;
     }
     if (fieldName.equals("data")) {
-      return String.valueOf(data);
+      return data;
     }
     if (fieldName.equals("message")) {
-      return String.valueOf(message);
+      return message;
     }
     return null;
   }
@@ -4800,6 +4574,12 @@ public final class Warning implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -5009,34 +4789,15 @@ public final class Warnings implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("code") && code != null) {
-      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
-    }
-    if (fieldNames.contains("data") && data != null) {
-      ImmutableList.Builder stringList = ImmutableList.builder();
-      for (Data item : data) {
-        stringList.add(item.toString());
-      }
-      fieldMap.put("data", stringList.build());
-    }
-    if (fieldNames.contains("message") && message != null) {
-      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("code")) {
-      return String.valueOf(code);
+      return code;
     }
     if (fieldName.equals("data")) {
-      return String.valueOf(data);
+      return data;
     }
     if (fieldName.equals("message")) {
-      return String.valueOf(message);
+      return message;
     }
     return null;
   }
@@ -5044,6 +4805,12 @@ public final class Warnings implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -5289,84 +5056,42 @@ public final class AggregatedListAddressesHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("filter") && filter != null) {
-      fieldMap.put("filter", Collections.singletonList(String.valueOf(filter)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("maxResults") && maxResults != null) {
-      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
-    }
-    if (fieldNames.contains("orderBy") && orderBy != null) {
-      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
-    }
-    if (fieldNames.contains("pageToken") && pageToken != null) {
-      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("filter")) {
-      return String.valueOf(filter);
+      return filter;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("maxResults")) {
-      return String.valueOf(maxResults);
+      return maxResults;
     }
     if (fieldName.equals("orderBy")) {
-      return String.valueOf(orderBy);
+      return orderBy;
     }
     if (fieldName.equals("pageToken")) {
-      return String.valueOf(pageToken);
+      return pageToken;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("project")) {
-      return String.valueOf(project);
+      return project;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -5374,6 +5099,12 @@ public final class AggregatedListAddressesHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -5818,60 +5549,30 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("address")) {
-      return String.valueOf(address);
+      return address;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -5879,6 +5580,12 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -6227,60 +5934,30 @@ public final class DeleteDummyObjectHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("dummyObject") && dummyObject != null) {
-      fieldMap.put("dummyObject", Collections.singletonList(String.valueOf(dummyObject)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("dummyObject")) {
-      return String.valueOf(dummyObject);
+      return dummyObject;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -6288,6 +5965,12 @@ public final class DeleteDummyObjectHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -6636,60 +6319,30 @@ public final class GetAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("address")) {
-      return String.valueOf(address);
+      return address;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -6697,6 +6350,12 @@ public final class GetAddressHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -7045,60 +6704,30 @@ public final class GetResourceDummyObjectHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("resource") && resource != null) {
-      fieldMap.put("resource", Collections.singletonList(String.valueOf(resource)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("resource")) {
-      return String.valueOf(resource);
+      return resource;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -7106,6 +6735,12 @@ public final class GetResourceDummyObjectHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -7458,66 +7093,33 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("addressResource") && addressResource != null) {
-      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("addressResource")) {
-      return String.valueOf(addressResource);
+      return addressResource;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("region")) {
-      return String.valueOf(region);
+      return region;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -7526,6 +7128,12 @@ public final class InsertAddressHttpRequest implements ApiMessage {
   @Override
   public Address getApiMessageRequestBody() {
     return addressResource;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
+    return null;
   }
 
   public String getAccessToken() {
@@ -7913,84 +7521,42 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("filter") && filter != null) {
-      fieldMap.put("filter", Collections.singletonList(String.valueOf(filter)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("maxResults") && maxResults != null) {
-      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
-    }
-    if (fieldNames.contains("orderBy") && orderBy != null) {
-      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
-    }
-    if (fieldNames.contains("pageToken") && pageToken != null) {
-      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("filter")) {
-      return String.valueOf(filter);
+      return filter;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("maxResults")) {
-      return String.valueOf(maxResults);
+      return maxResults;
     }
     if (fieldName.equals("orderBy")) {
-      return String.valueOf(orderBy);
+      return orderBy;
     }
     if (fieldName.equals("pageToken")) {
-      return String.valueOf(pageToken);
+      return pageToken;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("region")) {
-      return String.valueOf(region);
+      return region;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -7998,6 +7564,12 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -8454,78 +8026,39 @@ public final class ListResourcesDummyObjectsHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("maxResults") && maxResults != null) {
-      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
-    }
-    if (fieldNames.contains("orderBy") && orderBy != null) {
-      fieldMap.put("orderBy", Collections.singletonList(String.valueOf(orderBy)));
-    }
-    if (fieldNames.contains("pageToken") && pageToken != null) {
-      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("project") && project != null) {
-      fieldMap.put("project", Collections.singletonList(String.valueOf(project)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("maxResults")) {
-      return String.valueOf(maxResults);
+      return maxResults;
     }
     if (fieldName.equals("orderBy")) {
-      return String.valueOf(orderBy);
+      return orderBy;
     }
     if (fieldName.equals("pageToken")) {
-      return String.valueOf(pageToken);
+      return pageToken;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("project")) {
-      return String.valueOf(project);
+      return project;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -8533,6 +8066,12 @@ public final class ListResourcesDummyObjectsHttpRequest implements ApiMessage {
   @Nullable
   @Override
   public ApiMessage getApiMessageRequestBody() {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
     return null;
   }
 
@@ -8915,6 +8454,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
   private final String address;
   private final Address addressResource;
   private final String callback;
+  private final List<String> fieldMask;
   private final String fields;
   private final String key;
   private final String prettyPrint;
@@ -8928,6 +8468,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     this.address = null;
     this.addressResource = null;
     this.callback = null;
+    this.fieldMask = null;
     this.fields = null;
     this.key = null;
     this.prettyPrint = null;
@@ -8943,6 +8484,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       String address,
       Address addressResource,
       String callback,
+      List<String> fieldMask,
       String fields,
       String key,
       String prettyPrint,
@@ -8955,6 +8497,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     this.address = address;
     this.addressResource = addressResource;
     this.callback = callback;
+    this.fieldMask = fieldMask;
     this.fields = fields;
     this.key = key;
     this.prettyPrint = prettyPrint;
@@ -8965,78 +8508,42 @@ public final class PatchAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("addressResource") && addressResource != null) {
-      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("region") && region != null) {
-      fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
-    }
-    if (fieldNames.contains("requestId") && requestId != null) {
-      fieldMap.put("requestId", Collections.singletonList(String.valueOf(requestId)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("address")) {
-      return String.valueOf(address);
+      return address;
     }
     if (fieldName.equals("addressResource")) {
-      return String.valueOf(addressResource);
+      return addressResource;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
+    }
+    if (fieldName.equals("fieldMask")) {
+      return fieldMask;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("region")) {
-      return String.valueOf(region);
+      return region;
     }
     if (fieldName.equals("requestId")) {
-      return String.valueOf(requestId);
+      return requestId;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -9045,6 +8552,12 @@ public final class PatchAddressHttpRequest implements ApiMessage {
   @Override
   public Address getApiMessageRequestBody() {
     return addressResource;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
+    return fieldMask;
   }
 
   public String getAccessToken() {
@@ -9062,6 +8575,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
   public String getCallback() {
     return callback;
   }
+
 
   public String getFields() {
     return fields;
@@ -9116,6 +8630,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     private String address;
     private Address addressResource;
     private String callback;
+    private List<String> fieldMask;
     private String fields;
     private String key;
     private String prettyPrint;
@@ -9139,6 +8654,9 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       }
       if (other.getCallback() != null) {
         this.callback = other.callback;
+      }
+      if (other.getFieldMask() != null) {
+        this.fieldMask = other.fieldMask;
       }
       if (other.getFields() != null) {
         this.fields = other.fields;
@@ -9169,6 +8687,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       this.address = source.address;
       this.addressResource = source.addressResource;
       this.callback = source.callback;
+      this.fieldMask = source.fieldMask;
       this.fields = source.fields;
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
@@ -9211,6 +8730,15 @@ public final class PatchAddressHttpRequest implements ApiMessage {
 
     public Builder setCallback(String callback) {
       this.callback = callback;
+      return this;
+    }
+
+    public List<String> getFieldMask() {
+      return fieldMask;
+    }
+
+    public Builder setFieldMask(List<String> fieldMask) {
+      this.fieldMask = fieldMask;
       return this;
     }
 
@@ -9284,6 +8812,9 @@ public final class PatchAddressHttpRequest implements ApiMessage {
 
 
 
+      if (fieldMask == null) {
+        missing += " fieldMask";
+      }
 
 
 
@@ -9301,6 +8832,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
         address,
         addressResource,
         callback,
+        fieldMask,
         fields,
         key,
         prettyPrint,
@@ -9317,6 +8849,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       newBuilder.setAddress(this.address);
       newBuilder.setAddressResource(this.addressResource);
       newBuilder.setCallback(this.callback);
+      newBuilder.setFieldMask(this.fieldMask);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
@@ -9335,6 +8868,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
         + "address=" + address + ", "
         + "addressResource=" + addressResource + ", "
         + "callback=" + callback + ", "
+        + "fieldMask=" + fieldMask + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
@@ -9357,6 +8891,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
           Objects.equals(this.address, that.getAddress()) &&
           Objects.equals(this.addressResource, that.getAddressResource()) &&
           Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fieldMask, that.getFieldMask()) &&
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
@@ -9376,6 +8911,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       address,
       addressResource,
       callback,
+      fieldMask,
       fields,
       key,
       prettyPrint,
@@ -9426,6 +8962,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
   private final String address;
   private final Address addressResource;
   private final String callback;
+  private final List<String> fieldMask;
   private final String fields;
   private final String key;
   private final String prettyPrint;
@@ -9438,6 +8975,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     this.address = null;
     this.addressResource = null;
     this.callback = null;
+    this.fieldMask = null;
     this.fields = null;
     this.key = null;
     this.prettyPrint = null;
@@ -9452,6 +8990,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       String address,
       Address addressResource,
       String callback,
+      List<String> fieldMask,
       String fields,
       String key,
       String prettyPrint,
@@ -9463,6 +9002,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     this.address = address;
     this.addressResource = addressResource;
     this.callback = callback;
+    this.fieldMask = fieldMask;
     this.fields = fields;
     this.key = key;
     this.prettyPrint = prettyPrint;
@@ -9472,72 +9012,39 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
   }
 
   @Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    if (fieldNames.contains("access_token") && access_token != null) {
-      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
-    }
-    if (fieldNames.contains("address") && address != null) {
-      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
-    }
-    if (fieldNames.contains("addressResource") && addressResource != null) {
-      fieldMap.put("addressResource", Collections.singletonList(String.valueOf(addressResource)));
-    }
-    if (fieldNames.contains("callback") && callback != null) {
-      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
-    }
-    if (fieldNames.contains("fields") && fields != null) {
-      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
-    }
-    if (fieldNames.contains("key") && key != null) {
-      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
-    }
-    if (fieldNames.contains("prettyPrint") && prettyPrint != null) {
-      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
-    }
-    if (fieldNames.contains("quotaUser") && quotaUser != null) {
-      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
-    }
-    if (fieldNames.contains("requestId") && requestId != null) {
-      fieldMap.put("requestId", Collections.singletonList(String.valueOf(requestId)));
-    }
-    if (fieldNames.contains("userIp") && userIp != null) {
-      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
-    }
-    return fieldMap;
-  }
-
-  @Override
-  public String getFieldStringValue(String fieldName) {
+  public Object getFieldValue(String fieldName) {
     if (fieldName.equals("access_token")) {
-      return String.valueOf(access_token);
+      return access_token;
     }
     if (fieldName.equals("address")) {
-      return String.valueOf(address);
+      return address;
     }
     if (fieldName.equals("addressResource")) {
-      return String.valueOf(addressResource);
+      return addressResource;
     }
     if (fieldName.equals("callback")) {
-      return String.valueOf(callback);
+      return callback;
+    }
+    if (fieldName.equals("fieldMask")) {
+      return fieldMask;
     }
     if (fieldName.equals("fields")) {
-      return String.valueOf(fields);
+      return fields;
     }
     if (fieldName.equals("key")) {
-      return String.valueOf(key);
+      return key;
     }
     if (fieldName.equals("prettyPrint")) {
-      return String.valueOf(prettyPrint);
+      return prettyPrint;
     }
     if (fieldName.equals("quotaUser")) {
-      return String.valueOf(quotaUser);
+      return quotaUser;
     }
     if (fieldName.equals("requestId")) {
-      return String.valueOf(requestId);
+      return requestId;
     }
     if (fieldName.equals("userIp")) {
-      return String.valueOf(userIp);
+      return userIp;
     }
     return null;
   }
@@ -9546,6 +9053,12 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
   @Override
   public Address getApiMessageRequestBody() {
     return addressResource;
+  }
+
+  @Nullable
+  @Override
+  public List<String> getFieldMask() {
+    return fieldMask;
   }
 
   public String getAccessToken() {
@@ -9563,6 +9076,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
   public String getCallback() {
     return callback;
   }
+
 
   public String getFields() {
     return fields;
@@ -9613,6 +9127,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     private String address;
     private Address addressResource;
     private String callback;
+    private List<String> fieldMask;
     private String fields;
     private String key;
     private String prettyPrint;
@@ -9635,6 +9150,9 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       }
       if (other.getCallback() != null) {
         this.callback = other.callback;
+      }
+      if (other.getFieldMask() != null) {
+        this.fieldMask = other.fieldMask;
       }
       if (other.getFields() != null) {
         this.fields = other.fields;
@@ -9662,6 +9180,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       this.address = source.address;
       this.addressResource = source.addressResource;
       this.callback = source.callback;
+      this.fieldMask = source.fieldMask;
       this.fields = source.fields;
       this.key = source.key;
       this.prettyPrint = source.prettyPrint;
@@ -9703,6 +9222,15 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
 
     public Builder setCallback(String callback) {
       this.callback = callback;
+      return this;
+    }
+
+    public List<String> getFieldMask() {
+      return fieldMask;
+    }
+
+    public Builder setFieldMask(List<String> fieldMask) {
+      this.fieldMask = fieldMask;
       return this;
     }
 
@@ -9769,6 +9297,9 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       }
 
 
+      if (fieldMask == null) {
+        missing += " fieldMask";
+      }
 
 
 
@@ -9783,6 +9314,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
         address,
         addressResource,
         callback,
+        fieldMask,
         fields,
         key,
         prettyPrint,
@@ -9798,6 +9330,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       newBuilder.setAddress(this.address);
       newBuilder.setAddressResource(this.addressResource);
       newBuilder.setCallback(this.callback);
+      newBuilder.setFieldMask(this.fieldMask);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
@@ -9815,6 +9348,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
         + "address=" + address + ", "
         + "addressResource=" + addressResource + ", "
         + "callback=" + callback + ", "
+        + "fieldMask=" + fieldMask + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
@@ -9836,6 +9370,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
           Objects.equals(this.address, that.getAddress()) &&
           Objects.equals(this.addressResource, that.getAddressResource()) &&
           Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fieldMask, that.getFieldMask()) &&
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
           Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
@@ -9854,6 +9389,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       address,
       addressResource,
       callback,
+      fieldMask,
       fields,
       key,
       prettyPrint,
@@ -12128,7 +11664,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<AggregatedListAddressesHttpRequest>newBuilder()
-                  .setRequestInstance(AggregatedListAddressesHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/aggregated/addresses"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      "filter",    "maxResults",    "orderBy",    "pageToken"
@@ -12148,7 +11683,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.DELETE)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<DeleteAddressHttpRequest>newBuilder()
-                  .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
@@ -12167,7 +11701,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<GetAddressHttpRequest>newBuilder()
-                  .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses/{address}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
@@ -12186,7 +11719,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.POST)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<InsertAddressHttpRequest>newBuilder()
-                  .setRequestInstance(InsertAddressHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
@@ -12205,7 +11737,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<ListAddressesHttpRequest>newBuilder()
-                  .setRequestInstance(ListAddressesHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      "filter",    "maxResults",    "orderBy",    "pageToken"
@@ -12225,7 +11756,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.PATCH)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<PatchAddressHttpRequest>newBuilder()
-                  .setRequestInstance(PatchAddressHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/regions/{region}/addresses"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      "address",    "requestId"
@@ -12245,7 +11775,6 @@ public class HttpJsonAddressStub extends AddressStub {
           .setHttpMethod(HttpMethods.PUT)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<UpdateAddressHttpRequest>newBuilder()
-                  .setRequestInstance(UpdateAddressHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/global/addresses/{address}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      "requestId"
@@ -13945,7 +13474,6 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<ListResourcesDummyObjectsHttpRequest>newBuilder()
-                  .setRequestInstance(ListResourcesDummyObjectsHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/dummyObjects"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      "maxResults",    "orderBy",    "pageToken"
@@ -13965,7 +13493,6 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<GetResourceDummyObjectHttpRequest>newBuilder()
-                  .setRequestInstance(GetResourceDummyObjectHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{resource}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))
@@ -13980,7 +13507,6 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
           .setHttpMethod(HttpMethods.DELETE)
           .setRequestFormatter(
               ApiMessageHttpRequestFormatter.<DeleteDummyObjectHttpRequest>newBuilder()
-                  .setRequestInstance(DeleteDummyObjectHttpRequest.getDefaultInstance())
                   .setPathTemplate(PathTemplate.create("{project}/dummyObjects/{dummyObject}"))
                   .setQueryParams(Sets.<String>newHashSet(
                                      ))

@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -37,7 +37,7 @@ public interface InterfaceConfig {
 
   ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
-  ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
+  ImmutableMap<String, RetryParamsDefinitionProto> getRetrySettingsDefinition();
 
   ImmutableList<String> getRequiredConstructorParams();
 
@@ -60,6 +60,8 @@ public interface InterfaceConfig {
   boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType);
 
   boolean hasDefaultInstance();
+
+  boolean hasReroutedInterfaceMethods();
 
   ImmutableList<? extends FieldModel> getIamResources();
 

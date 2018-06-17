@@ -15,7 +15,6 @@
 package com.google.api.codegen.util.php;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,27 +52,39 @@ public class PhpPackageUtil {
 
   /**
    * Remove the base package name, returning a package name which begins with the version. If no
-   * version is present in the input packageName, returns null.
+   * version is present in the input packageName, the returned package name will begin with 'Gapic',
+   * which is excluded from the base package name. If the input contains neither a version nor
+   * 'Gapic', returns null.
    */
   public static String removeBasePackageName(String packageName) {
     ArrayList<String> packageComponents = new ArrayList<>();
     List<String> pieces = Arrays.asList(PhpPackageUtil.splitPackageName(packageName));
-    for (String packageElement : Lists.reverse(pieces)) {
-      packageComponents.add(packageElement);
-      if (isPackageVersion(packageElement)) {
-        return buildPackageName(Lists.reverse(packageComponents));
+    boolean foundVersionOrGapic = false;
+    for (String packageElement : pieces) {
+      if (isPackageVersion(packageElement) || packageElement.equals("Gapic")) {
+        foundVersionOrGapic = true;
+      }
+      if (foundVersionOrGapic) {
+        packageComponents.add(packageElement);
       }
     }
-    // If we did not find a version, then the whole package name is considered
-    // the base package name, and we return null.
-    return null;
+    if (foundVersionOrGapic) {
+      return buildPackageName(packageComponents);
+    } else {
+      // If we did not find a version or 'Gapic', then the whole package name is
+      // considered the base package name, and we return null.
+      return null;
+    }
   }
 
-  /** Get the base package name, which includes everything before the version. */
+  /**
+   * Get the base package name, which includes everything before either the version or the 'Gapic'
+   * package.
+   */
   public static String getBasePackageName(String packageName) {
     ArrayList<String> packageComponents = new ArrayList<>();
     for (String packageElement : PhpPackageUtil.splitPackageName(packageName)) {
-      if (isPackageVersion(packageElement)) {
+      if (isPackageVersion(packageElement) || packageElement.equals("Gapic")) {
         break;
       }
       packageComponents.add(packageElement);

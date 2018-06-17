@@ -185,6 +185,7 @@
         return {@settings.memberName};
       }
     @case "OperationApiCallable"
+      @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
       public OperationCallSettings<{@settings.requestTypeName}, \
             {@settings.operationMethod.operationPayloadTypeName}, \
             {@settings.operationMethod.metadataTypeName}> \
@@ -439,13 +440,13 @@
     RetrySettings settings = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
       settings = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.toMillis}L))
-          .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
-          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.toMillis}L))
-          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.toMillis}L))
-          .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.toMillis}L))
-          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.toMillis}L))
+          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.params.getInitialRetryDelayMillis}L))
+          .setRetryDelayMultiplier({@retryParamsDef.params.getRetryDelayMultiplier})
+          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.params.getMaxRetryDelayMillis}L))
+          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getInitialRpcTimeoutMillis}L))
+          .setRpcTimeoutMultiplier({@retryParamsDef.params.getRpcTimeoutMultiplier})
+          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getMaxRpcTimeoutMillis}L))
+          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.params.getTotalTimeoutMillis}L))
           .build();
       definitions.put("{@retryParamsDef.key}", settings);
     @end
@@ -612,6 +613,7 @@
         return {@settings.memberName};
       }
     @case "OperationApiCallable"
+      @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
       public OperationCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.operationMethod.operationPayloadTypeName}, \
           {@settings.operationMethod.metadataTypeName}> \

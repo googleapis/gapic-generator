@@ -17,11 +17,12 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -68,7 +69,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   static DiscoGapicInterfaceConfig createInterfaceConfig(
       DiscoApiModel model,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
@@ -77,9 +78,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             model.getDiagCollector(), interfaceConfigProto);
-    ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        RetryDefinitionsTransformer.createRetrySettingsDefinition(
-            model.getDiagCollector(), interfaceConfigProto);
+    ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
@@ -146,7 +146,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
+    String manualDoc =
+        Strings.nullToEmpty(
+                interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
+            .trim();
 
     String interfaceName =
         interfaceNameOverride != null
@@ -182,7 +185,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(
       DiscoApiModel model,
-      String language,
+      TargetLanguage language,
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -276,6 +279,16 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType) {
+    return false;
+  }
+
+  @Override
+  public boolean hasReroutedInterfaceMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (!Strings.isNullOrEmpty(methodConfig.getRerouteToGrpcInterface())) {
+        return true;
+      }
+    }
     return false;
   }
 

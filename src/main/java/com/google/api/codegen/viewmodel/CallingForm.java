@@ -20,24 +20,42 @@ package com.google.api.codegen.viewmodel;
  * language.
  */
 public enum CallingForm {
-  Request,
-  RequestAsync,
-  RequestStreaming,
-  RequestPaged,
-  RequestAsyncPaging,
-  Flattened,
-  FlattenedPaging,
-  FlattenedAsync,
-  FlattenedAsyncPaging,
-  Callable,
-  CallableList,
-  CallablePaging,
 
-  LongRunningRequest,
-  LongRunningRequestAsync,
+  // By convention, the names of these enum values should be
+  // concatenations of the following descriptive parts (some of which may
+  // be empty), in order:
+  //
+  // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
+
+  Request, // used by: java nodejs py
+  RequestAsync,
+  RequestAsyncPaged, // used by: nodejs
+  RequestAsyncPagedAll, // used by: nodejs
+  RequestPaged, // used by: java py
+  RequestPagedAll, // used by: py
+  RequestStreamingBidi, // used by: nodejs py
+  RequestStreamingClient, // used by: nodejs py
+  RequestStreamingServer, // used by: nodejs py
+
+  Flattened, // used by: java
+  FlattenedPaged, // used by: java
+  FlattenedAsync,
+  FlattenedAsyncPaged,
+
+  Callable, // used by: java
+  CallableList, // used by: java
+  CallablePaged, // used by: java
+  CallableStreamingBidi, // used by: java
+  CallableStreamingClient, // used by: java
+  CallableStreamingServer, // used by: java
+
+  LongRunningCallable, // used by: java
+  LongRunningEventEmitter, // used by: nodejs
   LongRunningFlattened,
-  LongRunningFlattenedAsync,
-  LongRunningCallable,
+  LongRunningFlattenedAsync, // used by: java
+  LongRunningPromise, // used by: nodejs py
+  LongRunningRequest,
+  LongRunningRequestAsync, // used by: java
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

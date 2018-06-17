@@ -22,6 +22,8 @@ public abstract class CallableMethodDetailView {
 
   public abstract String interfaceTypeName();
 
+  public abstract String requestType();
+
   public abstract String genericAwareResponseType();
 
   public static Builder newBuilder() {
@@ -33,6 +35,8 @@ public abstract class CallableMethodDetailView {
     public abstract Builder callableName(String name);
 
     public abstract Builder interfaceTypeName(String name);
+
+    public abstract Builder requestType(String name);
 
     public abstract Builder genericAwareResponseType(String name);
 

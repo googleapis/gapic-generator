@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.ModelTypeTable;

@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -31,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for PHP */
-public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
+public class PhpPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String PACKAGE_FILE = "php/composer.snip";
 
   private PackageMetadataConfig packageConfig;
@@ -47,7 +48,7 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<>();
     PhpPackageMetadataNamer metadataNamer =
         new PhpPackageMetadataNamer(

@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -52,7 +53,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /** Responsible for producing package metadata related views for Ruby */
-public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
+public class RubyPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String GEMSPEC_FILE = "ruby/gemspec.snip";
   private static final String README_FILE = "ruby/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
@@ -102,7 +103,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
         .add(generateGemspecView(model, namer))
@@ -119,13 +120,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .shortName(packageConfig.shortName())
         .fullName(model.getTitle())
         .apiSummary(model.getDocumentationSummary())
-        .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.RUBY))
+        .gapicPackageName("gapic-" + packageConfig.packageName())
         .majorVersion(packageConfig.apiVersion())
         .hasMultipleServices(false)
         .developmentStatusTitle(
             namer.getReleaseAnnotation(
-                metadataTransformer.getMergedReleaseLevel(
-                    packageConfig, productConfig, TargetLanguage.RUBY)))
+                metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
         .targetLanguage("Ruby")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink("")

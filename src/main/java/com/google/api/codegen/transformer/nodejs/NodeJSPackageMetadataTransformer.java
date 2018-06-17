@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -22,6 +22,8 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -38,7 +40,6 @@ import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
@@ -49,7 +50,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 /** Responsible for producing package metadata related views for NodeJS */
-public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
+public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String README_FILE = "nodejs/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES = ImmutableList.of("nodejs/package.json.snip");
@@ -82,7 +83,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
@@ -114,12 +115,11 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 .fullName(model.getTitle())
                 .apiSummary(model.getDocumentationSummary())
                 .hasMultipleServices(model.hasMultipleServices())
-                .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.NODEJS))
+                .gapicPackageName("gapic-" + packageConfig.packageName())
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     namer.getReleaseAnnotation(
-                        metadataTransformer.getMergedReleaseLevel(
-                            packageConfig, productConfig, TargetLanguage.NODEJS)))
+                        metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
                 .targetLanguage("Node.js")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(
@@ -155,19 +155,17 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
 
   private OptionalArrayMethodView createExampleApiMethodView(
       GapicMethodContext context, boolean packageHasMultipleServices) {
-    OptionalArrayMethodView initialApiMethodView =
-        new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
-            .generateMethod(context, packageHasMultipleServices);
-
-    OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
-
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
-            context, testCaseTransformer.createSmokeTestInitContext(context));
-    apiMethodView.initCode(initCodeView);
-
-    return apiMethodView.build();
+    OptionalArrayMethodView apiMethodView =
+        new NodeJSMethodViewGenerator(
+                new DynamicLangApiMethodTransformer(
+                    new NodeJSApiMethodParamTransformer(),
+                    new InitCodeTransformer(),
+                    SampleType.IN_CODE))
+            .generateOneApiMethod(
+                context,
+                testCaseTransformer.createSmokeTestInitContext(context),
+                packageHasMultipleServices);
+    return apiMethodView;
   }
 
   private List<ViewModel> generateMetadataViews(

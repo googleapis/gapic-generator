@@ -24,28 +24,50 @@
     {@coreSampleCode}
 @end
 
-@snippet sampleCode(apiMethod)
-    {@sampleCode(apiMethod, apiMethod.initCode)}
+@snippet empty()
 @end
 
-@snippet sampleCode(apiMethod, init)
-    {@sampleCode(apiMethod, init, empty())}
-@end
-
-@private empty()
-@end
-
-@snippet sampleCode(apiMethod, init, additionalCallback)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
-    @case "LongRunningOptionalArrayMethod"
-        {@lroSampleCode(apiMethod, init, additionalCallback)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod, init, additionalCallback)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
+@snippet incodeSamples(apiMethod, additionalCallback)
+    @join sample : apiMethod.samples on BREAK.add(BREAK)
+      {@oneIncodeSample(apiMethod, sample, additionalCallback)}
     @end
+@end
+
+
+# The structure of this should be parallel to that of standalone_sample.snip:@standaloneSample
+@snippet oneIncodeSample(apiMethod, sample, additionalCallback)
+  @switch sample.callingForm
+  @case "Request"
+    @if apiMethod.hasReturnValue
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.initCode, additionalCallback)}
+    @else
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.initCode, additionalCallback)}
+    @end
+  @case "RequestAsyncPaged"
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestAsyncPagedAll"
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingBidi"
+    {@bidiStreamingSampleCode(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingClient"
+    {@clientStreamingSampleCode(apiMethod, sample.initCode, additionalCallback)}
+  @case "RequestStreamingServer"
+    {@initCode(apiMethod, sample.initCode)}
+    {@methodCallSampleCode(apiMethod, sample.initCode)}.on('data', response => {
+      @if additionalCallback
+        console.log(response);
+        {@additionalCallback}();
+      @else
+        // doThingsWith(response)
+      @end
+    });
+  @case "LongRunningEventEmitter"
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.initCode, additionalCallback)}
+  @case "LongRunningPromise"
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.initCode, additionalCallback)}
+  @default
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$    
+  @end
 @end
 
 @snippet sampleCodePageStreaming(apiMethod, init)
@@ -70,7 +92,7 @@
       @end
 @end
 
-@private clientStreamingSampleCode(apiMethod, init, additionalCallback)
+@snippet clientStreamingSampleCode(apiMethod, init, additionalCallback)
     var stream = client.{@apiMethod.name}((err, response) => {
       @if additionalCallback
         if (err) {
@@ -91,7 +113,7 @@
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@private bidiStreamingSampleCode(apiMethod, init, additionalCallback)
+@snippet bidiStreamingSampleCode(apiMethod, init, additionalCallback)
     var stream = client.{@apiMethod.name}().on('data', response => {
       @if additionalCallback
         console.log(response);
@@ -140,7 +162,7 @@
     {@methodCallSampleCodeForPagedResponse(apiMethod, init, additionalCallback)}
 @end
 
-@private methodCallSampleCode(apiMethod, init)
+@snippet methodCallSampleCode(apiMethod, init)
     client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod, init)})
 @end
@@ -214,7 +236,7 @@
   @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod, init, additionalCallback)
+@snippet methodCallSampleCodeWithReturnValue(apiMethod, init, additionalCallback)
   {@initCode(apiMethod, init)}
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
@@ -307,7 +329,7 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@private methodCallSampleCodeWithoutReturnValue(apiMethod, init, additionalCallback)
+@snippet methodCallSampleCodeWithoutReturnValue(apiMethod, init, additionalCallback)
     {@initCode(apiMethod, init)}
     @if additionalCallback
       {@methodCallSampleCodePrefix(apiMethod, init)}
@@ -321,7 +343,7 @@
     @end
 @end
 
-@private initCode(apiMethod, init)
+@snippet initCode(apiMethod, init)
   {@initCodeLines(init)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}

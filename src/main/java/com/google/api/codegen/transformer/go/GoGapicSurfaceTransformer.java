@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -22,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -53,9 +55,9 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import java.io.File;
@@ -70,7 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
+public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String API_TEMPLATE_FILENAME = "go/main.snip";
   private static final String SAMPLE_TEMPLATE_FILENAME = "go/example.snip";
@@ -102,7 +104,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     for (InterfaceModel apiInterface : model.getInterfaces()) {
@@ -293,7 +295,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
     Map<String, ImmutableSet<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
-    Map<String, RetrySettings> retryParamsDef =
+    ImmutableMap<String, RetryParamsDefinitionProto> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
       ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());
@@ -394,7 +396,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .put(
                   ImportContext.CLIENT,
                   ImportKind.PAGE_STREAM,
-                  ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;"))
+                  ImmutableList.<String>of(
+                      "math;;;",
+                      "google.golang.org/api/iterator;;;",
+                      "github.com/golang/protobuf/proto;;;"))
               .put(
                   ImportContext.EXAMPLE,
                   ImportKind.PAGE_STREAM,

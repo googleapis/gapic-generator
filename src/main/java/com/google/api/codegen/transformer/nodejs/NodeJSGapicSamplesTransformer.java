@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -28,7 +28,6 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.py.NodeJSMethodViewGenerator;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
@@ -40,18 +39,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A transformer to generate Python standalone samples for each method in the GAPIC surface
+ * A transformer to generate NodeJS standalone samples for each method in the GAPIC surface
  * generated from the same ApiModel.
  */
-public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer {
+public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
-  private static final SampleType sampleType = SampleType.STANDALONE;
 
   private final GapicCodePathMapper pathMapper;
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), sampleType);
+          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final PackageMetadataConfig packageConfig;
@@ -68,7 +66,7 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateSampleClassesForModel(model, productConfig));
@@ -109,8 +107,7 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer {
                 .outputPath(sampleOutputPath)
                 .className(className)
                 .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
-                .gapicPackageName(
-                    namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.NODEJS)))
+                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }
     }

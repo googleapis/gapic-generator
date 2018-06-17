@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.ProtoFileView;
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.gapic.ProtoFiles;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -29,13 +28,13 @@ import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.GrpcDocView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer {
+/* Transforms a ProtoApiModel into the documentation stubs of a GAPIC library for NodeJS. */
+public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String DOC_TEMPLATE_FILENAME = "nodejs/message.snip";
 
   private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer(null);
@@ -48,10 +47,9 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel apiModel, GapicProductConfig productConfig) {
-    Model model = ((ProtoApiModel) apiModel).getProtoModel();
+  public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
-    for (ProtoFile file : new ProtoFileView().getProtoFiles(productConfig)) {
+    for (ProtoFile file : ProtoFiles.getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
     return surfaceDocs.build();

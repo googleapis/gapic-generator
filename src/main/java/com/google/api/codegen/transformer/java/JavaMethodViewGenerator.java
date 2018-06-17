@@ -24,8 +24,10 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,22 +78,27 @@ public class JavaMethodViewGenerator {
         apiMethods.add(
             clientMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
       } else if (methodConfig.isGrpcStreaming()) {
+        List<CallingForm> callingForms;
         ImportTypeTable typeTable = context.getImportTypeTable();
         switch (methodConfig.getGrpcStreamingType()) {
           case BidiStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingBidi);
             break;
           case ClientStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingClient);
             break;
           case ServerStreaming:
             typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+            callingForms = Collections.singletonList(CallingForm.CallableStreamingServer);
             break;
           default:
             throw new IllegalArgumentException(
                 "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
         }
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+        apiMethods.add(
+            clientMethodTransformer.generateCallableMethod(requestMethodContext, callingForms));
       } else if (methodConfig.isLongRunningOperation()) {
         context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
         if (methodConfig.isFlattening()) {

@@ -15,11 +15,15 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.codegen.common.CodeGenerator;
+import com.google.api.codegen.common.GeneratedResult;
+import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.ApiDefaultsConfig;
+import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicGeneratorConfig;
-import com.google.api.codegen.gapic.GapicProvider;
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
+import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.gapic.GapicGeneratorFactory;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -27,11 +31,6 @@ import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +44,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   // Wiring
   // ======
 
-  private final String idForFactory;
+  private final TargetLanguage language;
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
   private final ImmutableList<String> snippetNames;
@@ -54,12 +53,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String baselineFile;
 
   public GapicTestBase2(
-      String idForFactory,
+      TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetNames,
       String baselineFile) {
-    this.idForFactory = idForFactory;
+    this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
@@ -81,11 +80,16 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
-        URI packageConfigUrl = getTestDataLocator().findTestData(packageConfigFileName).toURI();
-        String contents =
-            new String(Files.readAllBytes(Paths.get(packageConfigUrl)), StandardCharsets.UTF_8);
-        packageConfig = PackageMetadataConfig.createFromString(contents);
-      } catch (IOException | URISyntaxException e) {
+        ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+        DependenciesConfig dependenciesConfig =
+            DependenciesConfig.loadFromURL(
+                getTestDataLocator().findTestData("frozen_dependencies.yaml"));
+        PackagingConfig packagingConfig =
+            PackagingConfig.loadFromURL(getTestDataLocator().findTestData(packageConfigFileName));
+        packageConfig =
+            PackageMetadataConfig.createFromPackaging(
+                apiDefaultsConfig, dependenciesConfig, packagingConfig);
+      } catch (IOException e) {
         throw new IllegalArgumentException("Problem creating packageConfig");
       }
     }
@@ -106,13 +110,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
   /**
    * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
-   * methods. The idForFactory String is passed to GapicProviderFactory to get the GapicProviders
-   * provided by that id, and then the snippet file names are scraped from those providers, and a
-   * set of arguments is created for each combination of GapicProvider x snippet that
-   * GapicProviderFactory returns.
+   * methods. The idForFactory String is passed to GapicGeneratorFactory to get the GapicGenerators
+   * provided by that id, and then the snippet file names are scraped from those generators, and a
+   * set of arguments is created for each combination of CodeGenerator x snippet that
+   * GapicGeneratorFactory returns.
    */
   public static Object[] createTestConfig(
-      String idForFactory,
+      TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName) {
@@ -120,24 +124,23 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
 
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(idForFactory)
-            .enabledArtifacts(Arrays.asList("surface", "test"))
-            .build();
-    List<GapicProvider<?>> providers =
-        MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+    List<CodeGenerator<?>> generators =
+        GapicGeneratorFactory.create(
+            language,
+            model,
+            productConfig,
+            packageConfig,
+            Arrays.asList("surface", "test", "samples"));
 
     List<String> snippetNames = new ArrayList<>();
-    for (GapicProvider<?> provider : providers) {
-      snippetNames.addAll(provider.getInputFileNames());
+    for (CodeGenerator<?> generator : generators) {
+      snippetNames.addAll(generator.getInputFileNames());
     }
 
-    String baseline = idForFactory + "_" + apiName + ".baseline";
+    String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
 
     return new Object[] {
-      idForFactory, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
+      language, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
     };
   }
 
@@ -156,7 +159,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
@@ -166,29 +169,24 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test"));
+      enabledArtifacts.addAll(Arrays.asList("surface", "test", "samples"));
     }
 
-    GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(idForFactory)
-            .enabledArtifacts(enabledArtifacts)
-            .build();
-    List<GapicProvider<?>> providers =
-        MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+    List<CodeGenerator<?>> generators =
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, enabledArtifacts);
 
-    // Don't run any providers we're not testing.
-    ArrayList<GapicProvider<?>> testedProviders = new ArrayList<>();
-    for (GapicProvider<?> provider : providers) {
-      if (!Collections.disjoint(provider.getInputFileNames(), snippetNames)) {
-        testedProviders.add(provider);
+    // Don't run any generators we're not testing.
+    ArrayList<CodeGenerator<?>> testedGenerators = new ArrayList<>();
+    for (CodeGenerator<?> generator : generators) {
+      if (!Collections.disjoint(generator.getInputFileNames(), snippetNames)) {
+        testedGenerators.add(generator);
       }
     }
 
     Map<String, Object> output = new TreeMap<>();
-    for (GapicProvider<?> provider : testedProviders) {
-      Map<String, ? extends GeneratedResult<?>> out = provider.generate();
+    for (CodeGenerator<?> generator : testedGenerators) {
+      Map<String, ? extends GeneratedResult<?>> out = generator.generate();
 
       if (!Collections.disjoint(out.keySet(), output.keySet())) {
         throw new IllegalStateException("file conflict");

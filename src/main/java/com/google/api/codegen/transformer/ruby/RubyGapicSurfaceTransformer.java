@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -66,7 +67,7 @@ import java.util.List;
 import java.util.Set;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Ruby. */
-public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
+public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String VERSION_INDEX_TEMPLATE_FILE = "ruby/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
   private static final String CREDENTIALS_CLASS_TEMPLATE_FILE = "ruby/credentials.snip";
@@ -103,7 +104,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.add(generateVersionIndexView(model, productConfig));
     if (RubyUtil.hasMajorVersion(productConfig.getPackageName())) {
@@ -234,10 +235,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (type instanceof ProtoTypeRef) {
         ProtoTypeRef t = (ProtoTypeRef) type;
         String name =
-            namer.getVersionIndexFileImportName()
-                + "/"
-                + namer.getProtoFileImportName(
-                    t.getProtoType().getMessageType().getFile().getSimpleName());
+            namer.getProtoFileImportName(
+                t.getProtoType().getMessageType().getFile().getSimpleName());
         requireTypes.add(name);
       }
     }
@@ -269,9 +268,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
                         .types(ImmutableList.<ImportTypeView>of())
                         .build()))
             .build();
-    List<String> modules = namer.getTopLevelApiModules();
+    List<String> modules = namer.getApiModules();
+    GapicInterfaceContext context = createContext(model.getInterfaces().get(0), productConfig);
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     return CredentialsClassFileView.newBuilder()
-        .outputPath("lib" + File.separator + namer.getCredentialsClassImportName() + ".rb")
+        .outputPath(namer.getSourceFilePath(subPath, "Credentials"))
         .templateFileName(CREDENTIALS_CLASS_TEMPLATE_FILE)
         .credentialsClass(credentialsClass)
         .fileHeader(

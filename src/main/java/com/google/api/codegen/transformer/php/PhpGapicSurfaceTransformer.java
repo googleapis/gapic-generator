@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.HttpRule;
 import com.google.api.Service;
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -25,6 +24,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -68,7 +68,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
-public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
+public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private Model serviceModel;
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
@@ -106,7 +106,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       ModelTypeTable modelTypeTable =
@@ -243,6 +243,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
+              .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
@@ -436,20 +437,23 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ApiException");
-    typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
+    typeTable.saveNicknameFor("\\Google\\ApiCore\\FetchAuthTokenInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RetrySettings");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Transport\\TransportInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
-    typeTable.saveNicknameFor("\\Google\\Auth\\CredentialsLoader");
-    typeTable.saveNicknameFor("\\Grpc\\Channel");
-    typeTable.saveNicknameFor("\\Grpc\\ChannelCredentials");
 
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
       typeTable.saveNicknameFor("\\Google\\ApiCore\\OperationResponse");
+    }
+
+    if (interfaceConfig.hasGrpcStreamingMethods()
+        || interfaceConfig.hasReroutedInterfaceMethods()) {
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
     }
   }
 

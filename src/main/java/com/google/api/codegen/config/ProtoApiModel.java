@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
@@ -103,8 +103,7 @@ public class ProtoApiModel implements ApiModel {
   public List<ProtoInterfaceModel> getInterfaces() {
     if (interfaceModels == null) {
       interfaceModels =
-          new InterfaceView()
-              .getElements(protoModel)
+          ProtoModels.getInterfaces(protoModel)
               .stream()
               .map(ProtoInterfaceModel::new)
               .collect(ImmutableList.toImmutableList());

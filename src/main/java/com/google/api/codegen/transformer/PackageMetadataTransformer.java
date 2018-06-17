@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -89,8 +89,8 @@ public class PackageMetadataTransformer {
                 packageConfig.protoPackageTestDependencies(language),
                 whitelistedDependencies))
         .authVersionBound(packageConfig.authVersionBound(language))
-        .protoPackageName("proto-" + packageConfig.packageName(language))
-        .gapicPackageName("gapic-" + packageConfig.packageName(language))
+        .protoPackageName("proto-" + packageConfig.packageName())
+        .gapicPackageName("gapic-" + packageConfig.packageName())
         .majorVersion(packageConfig.apiVersion())
         .author(packageConfig.author())
         .email(packageConfig.email())
@@ -107,15 +107,9 @@ public class PackageMetadataTransformer {
    * GapicProductConfig always overrides the PackageMetadataConfig if its release level is set.
    */
   public ReleaseLevel getMergedReleaseLevel(
-      PackageMetadataConfig packageConfig,
-      GapicProductConfig productConfig,
-      TargetLanguage language) {
-    ReleaseLevel releaseLevel = productConfig.getReleaseLevel();
-    if (releaseLevel == ReleaseLevel.UNSET_RELEASE_LEVEL) {
-      releaseLevel = packageConfig.releaseLevel(TargetLanguage.RUBY);
-    }
+      PackageMetadataConfig packageConfig, GapicProductConfig productConfig) {
     return productConfig.getReleaseLevel() == ReleaseLevel.UNSET_RELEASE_LEVEL
-        ? packageConfig.releaseLevel(language)
+        ? packageConfig.releaseLevel()
         : productConfig.getReleaseLevel();
   }
 
