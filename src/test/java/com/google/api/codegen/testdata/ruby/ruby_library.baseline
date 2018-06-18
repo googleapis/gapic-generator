@@ -333,14 +333,14 @@ end
 
 ## Supported Ruby Versions
 
-This library is supported on Ruby 2.0+.
+This library is supported on Ruby 2.3+.
 
-However, Ruby 2.3 or later is strongly recommended, as earlier releases have
-reached or are nearing end-of-life. After June 1, 2018, Google will provide
-official support only for Ruby versions that are considered current and
-supported by Ruby Core (that is, Ruby versions that are either in normal
-maintenance or in security maintenance).
-See https://www.ruby-lang.org/en/downloads/branches/ for further details.
+Google provides official support for Ruby versions that are actively supported
+by Ruby Core—that is, Ruby versions that are either in normal maintenance or
+in security maintenance, and not end of life. Currently, this means Ruby 2.3
+and later. Older versions of Ruby _may_ still work, but are unsupported and not
+recommended. See https://www.ruby-lang.org/en/downloads/branches/ for details
+about the Ruby support schedule.
 
 ============== file: Rakefile ==============
 # Copyright 2018 Google LLC
@@ -426,7 +426,7 @@ task :acceptance, :project, :keyfile do |t, args|
   if project.nil? || keyfile.nil?
     fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
   end
-  require "library/credentials"
+  require "library/v1/credentials"
   (Library::V1::Credentials::PATH_ENV_VARS +
    Library::V1::Credentials::JSON_ENV_VARS).each do |path|
     ENV[path] = nil
@@ -2745,7 +2745,7 @@ require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
-require "library/credentials"
+require "library/v1/credentials"
 
 module Library
   module V1
@@ -4923,7 +4923,7 @@ describe Library::V1::LibraryServiceClient do
           client.create_shelf(shelf) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5005,7 +5005,7 @@ describe Library::V1::LibraryServiceClient do
           client.get_shelf(formatted_name, options_) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5138,7 +5138,7 @@ describe Library::V1::LibraryServiceClient do
           client.delete_shelf(formatted_name) do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5220,7 +5220,7 @@ describe Library::V1::LibraryServiceClient do
           client.merge_shelves(formatted_name, formatted_other_shelf_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5306,7 +5306,7 @@ describe Library::V1::LibraryServiceClient do
           client.create_book(formatted_name, book) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5399,7 +5399,7 @@ describe Library::V1::LibraryServiceClient do
           ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5493,7 +5493,7 @@ describe Library::V1::LibraryServiceClient do
           client.get_book(formatted_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5636,7 +5636,7 @@ describe Library::V1::LibraryServiceClient do
           client.delete_book(formatted_name) do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5720,7 +5720,7 @@ describe Library::V1::LibraryServiceClient do
           client.update_book(formatted_name, book) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5806,7 +5806,7 @@ describe Library::V1::LibraryServiceClient do
           client.move_book(formatted_name, formatted_other_shelf_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -5952,7 +5952,7 @@ describe Library::V1::LibraryServiceClient do
           client.add_comments(formatted_name, comments) do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6047,7 +6047,7 @@ describe Library::V1::LibraryServiceClient do
           client.get_book_from_archive(formatted_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6131,7 +6131,7 @@ describe Library::V1::LibraryServiceClient do
           client.get_book_from_anywhere(formatted_name, formatted_alt_book_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6215,7 +6215,7 @@ describe Library::V1::LibraryServiceClient do
           client.get_book_from_absolutely_anywhere(formatted_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6297,7 +6297,7 @@ describe Library::V1::LibraryServiceClient do
           ) do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6739,7 +6739,7 @@ describe Library::V1::LibraryServiceClient do
           client.add_tag(formatted_resource, tag) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -6816,7 +6816,7 @@ describe Library::V1::LibraryServiceClient do
           client.add_label(formatted_resource, label) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -7243,7 +7243,7 @@ describe Library::V1::LibraryServiceClient do
           ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end

@@ -23,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -71,7 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
+public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String API_TEMPLATE_FILENAME = "go/main.snip";
   private static final String SAMPLE_TEMPLATE_FILENAME = "go/example.snip";
@@ -103,7 +104,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     for (InterfaceModel apiInterface : model.getInterfaces()) {

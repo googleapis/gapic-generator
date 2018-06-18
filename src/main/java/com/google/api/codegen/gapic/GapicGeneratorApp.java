@@ -155,14 +155,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
     }
 
     String outputPath = options.get(OUTPUT_FILE);
-    List<CodeGenerator<?>> providers =
-        GapicProviderFactory.create(
+    List<CodeGenerator<?>> generators =
+        GapicGeneratorFactory.create(
             language, model, productConfig, packageConfig, options.get(ENABLED_ARTIFACTS));
     ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
     ImmutableSet.Builder<String> executables = ImmutableSet.builder();
-    for (CodeGenerator<?> provider : providers) {
-      Map<String, ? extends GeneratedResult<?>> providerResult = provider.generate();
-      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : providerResult.entrySet()) {
+    for (CodeGenerator<?> generator : generators) {
+      Map<String, ? extends GeneratedResult<?>> generatorResult = generator.generate();
+      for (Map.Entry<String, ? extends GeneratedResult<?>> entry : generatorResult.entrySet()) {
         outputFiles.put(entry.getKey(), entry.getValue().getBody());
         if (entry.getValue().isExecutable()) {
           executables.add(entry.getKey());

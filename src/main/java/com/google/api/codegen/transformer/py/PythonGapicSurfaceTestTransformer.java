@@ -23,6 +23,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -60,10 +61,10 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Transforms the model into API tests for Python. Responsible for producing a list of
+ * Transforms the ProtoApiModel into API tests for Python. Responsible for producing a list of
  * ClientTestFileViews for unit tests and a SmokeTestClassViews for smoke tests.
  */
-public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer {
+public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String SMOKE_TEST_TEMPLATE_FILE = "py/smoke_test.snip";
   private static final String TEST_TEMPLATE_FILE = "py/test.snip";
 
@@ -91,7 +92,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(createUnitTestViews(model, productConfig));
     models.addAll(createSmokeTestViews(model, productConfig));
