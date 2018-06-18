@@ -178,26 +178,25 @@ type checkConfig struct {
 
 // deleteFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
 func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) error {
-	var callingForm, valueSet string
+	foundForm := checkConfig{
+		lang: lang,
+	}
 
-	// del deletes the form specified in callingForm, valueSet, and lang from forms
+	// removeForm deletes the form specified in callingForm, valueSet, and lang from forms
 	// and resets callingForm and valueSet.
 	// We call this at the end of every logical file.
-	del := func() {
-		delete(forms, checkConfig{
-			id:   valueSet,
-			form: callingForm,
+	removeForm := func() {
+		delete(forms, foundForm)
+		foundForm = checkConfig{
 			lang: lang,
-		})
-		callingForm = ""
-		valueSet = ""
+		}
 	}
 
 	br := bufio.NewReader(r)
 	for {
 		line, err := br.ReadString('\n')
 		if err == io.EOF {
-			del()
+			removeForm()
 			return nil
 		}
 		if err != nil {
@@ -205,7 +204,8 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		}
 
 		if strings.HasPrefix(line, "============== file:") {
-			del()
+			// Handle the end of the file currently being processed
+			removeForm()
 			continue
 		}
 
@@ -227,10 +227,10 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		)
 		switch {
 		case strings.HasPrefix(line, formPrefix):
-			set = &callingForm
+			set = &foundForm.form
 			line = line[len(formPrefix):]
 		case strings.HasPrefix(line, setPrefix):
-			set = &valueSet
+			set = &foundForm.id
 			line = line[len(setPrefix):]
 		default:
 			continue
