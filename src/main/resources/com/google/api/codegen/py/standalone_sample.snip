@@ -67,9 +67,9 @@
 
 @private printResponse(outs)
   @join out : outs
-    @switch out.getStmtCase
+    @switch out.kind
     @case "PRINT"
-      print('{@out.getPrint.getSpec}'{@responseArgs(out.getPrint.getArgsElemsList)})
+      print('{@out.print.printSpec}'.format({@responseArgs(out.print.printArgs)}))
     @default
       $unhandledResponseForm: {@outs}
     @end
@@ -77,13 +77,13 @@
 @end
 
 @private responseArgs(args)
-  @join arg : args on ""
-    , {@arg.getVariable}{@accessor(arg.getFieldsList)}
+  @join arg : args on ", "
+    {@arg.variable}{@accessor(arg.accessors)}
   @end
 @end
 
-@private accessor(fields)
-  @join field : fields on ""
+@private accessor(accessors)
+  @join field : accessors on ""
     .{@field}
   @end
 @end

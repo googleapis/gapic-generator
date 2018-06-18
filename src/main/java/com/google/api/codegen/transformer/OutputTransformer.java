@@ -14,15 +14,15 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.Accessor;
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
@@ -37,56 +37,54 @@ class OutputTransformer {
             .build());
   }
 
-  static OutputSpec toLanguage(OutputSpec config, MethodContext context) {
-    OutputSpec.Builder lang = OutputSpec.newBuilder();
+  static OutputView toView(OutputSpec config, MethodContext context) {
+    OutputView.Builder view = OutputView.newBuilder();
     switch (config.getStmtCase()) {
       case LOOP:
         throw new UnsupportedOperationException("loop not implemented yet");
       case PRINT:
-        lang.setPrint(toLanguage(config.getPrint(), context));
+        view.print(toView(config.getPrint(), context)).kind(OutputView.Kind.PRINT);
         break;
     }
-    return lang.build();
+    return view.build();
   }
 
-  private static OutputSpec.PrintStmt toLanguage(
-      OutputSpec.PrintStmt config, MethodContext context) {
-    return OutputSpec.PrintStmt.newBuilder()
-        .setSpec(context.getNamer().getPrintSpec(config.getSpec()))
-        .addAllArgsElems(
+  private static OutputView.PrintView toView(OutputSpec.PrintStmt config, MethodContext context) {
+    return OutputView.PrintView.newBuilder()
+        .printSpec(context.getNamer().getPrintSpec(config.getSpec()))
+        .printArgs(
             config
                 .getArgsList()
                 .stream()
                 .map(a -> accessor(a, context))
-                .collect(Collectors.toList()))
+                .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
-  private static Accessor accessor(String config, MethodContext context) {
+  private static OutputView.PrintArgView accessor(String config, MethodContext context) {
     String[] configElems = config.split("\\.");
-    if (configElems.length == 0) {
-      return Accessor.getDefaultInstance();
-    }
+    Preconditions.checkArgument(configElems.length != 0, "field string cannot be empty");
 
-    Accessor.Builder accessor = Accessor.newBuilder();
+    OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
     TypeModel type;
     if (configElems[0].equals(RESPONSE_PLACEHOLDER)) {
-      accessor.setVariable(context.getNamer().getSampleResponseVarName());
+      view.variable(context.getNamer().getSampleResponseVarName());
       type = context.getMethodModel().getOutputType();
     } else {
       throw new UnsupportedOperationException("local variable not implemented yet");
     }
 
+    ImmutableList.Builder<String> accessors = ImmutableList.builder();
     for (int i = 1; i < configElems.length; i++) {
       String fieldName = configElems[i];
       FieldModel field =
           Preconditions.checkNotNull(
-              type.getField(configElems[i]), "type %s does not have field %s", type, fieldName);
+              type.getField(fieldName), "type %s does not have field %s", type, fieldName);
       Preconditions.checkArgument(
           !field.isRepeated() && !field.isMap(), "%s.%s is not scalar", type, fieldName);
       type = field.getType();
-      accessor.addFields(context.getNamer().getFieldGetFunctionName(field));
+      accessors.add(context.getNamer().getFieldGetFunctionName(field));
     }
-    return accessor.build();
+    return view.accessors(accessors.build()).build();
   }
 }
