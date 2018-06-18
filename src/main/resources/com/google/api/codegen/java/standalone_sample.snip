@@ -19,16 +19,17 @@
     //       {@sample.valueSet.parameters}
     //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
 
-    // [START core_sample]
-
     // FIXME: Insert here code to prepare the request fields, make the call, process the response.
-       
-    /*
-    @let coreSampleCode = generateSample(apiMethod, sample.callingForm, sample.initCode)
-      {@methodDoc(coreSampleCode)}
-    @end
-    */
-    // [END core_sample]
+
+    public class {@sampleFile.classView.name} {
+      public static void main(String[] args) {
+        // [START core_sample]
+        @let coreSampleCode = generateSample(apiMethod, sample.callingForm, sample.initCode)
+          {@methodLines(coreSampleCode)}
+        @end
+        // [END core_sample]
+      }
+    }
 
     // FIXME: Insert here clean-up code.
 
@@ -72,8 +73,8 @@
 @end
 
 # copied & modified from main.snip
-@private methodDoc(methodSampleCode)
-  @join sampleLine : util.getDocLines(methodSampleCode)
+@private methodLines(methodSampleCode)
+  @join sampleLine : util.splitLines(methodSampleCode)
     {@sampleLine}
   @end
 @end

@@ -7281,24 +7281,25 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 //       [name=BASIC]
 //     apiMethod "discussBookCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
-    libraryClient.discussBookCallable().call();
+public class DiscussBookCallableSampleCallableStreamingBidiProg {
+  public static void main(String[] args) {
+    // [START core_sample]
+    BidiStream<DiscussBookRequest, Comment> bidiStream =
+        libraryClient.discussBookCallable().call();
 
-String name = "BASIC";
-DiscussBookRequest request = DiscussBookRequest.newBuilder()
-  .setName(name)
-  .build();
-bidiStream.send(request);
-for (Comment response : bidiStream) {
-  // Do something when receive a response
+    String name = "BASIC";
+    DiscussBookRequest request = DiscussBookRequest.newBuilder()
+      .setName(name)
+      .build();
+    bidiStream.send(request);
+    for (Comment response : bidiStream) {
+      // Do something when receive a response
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7319,22 +7320,23 @@ for (Comment response : bidiStream) {
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooks" of type "PagedFlattenedMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-List&lt;ShelfName&gt; shelves = Arrays.asList(shelvesElement);
-ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooks().futureCall(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves));
-// Do something
-for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-  // doThingsWith(element);
+public class FindRelatedBooksSampleFlattenedPagedOdyssey {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves));
+    // Do something
+    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
+      // doThingsWith(element);
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7355,24 +7357,25 @@ for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooks" of type "PagedRequestObjectMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-List&lt;ShelfName&gt; shelves = Arrays.asList(shelvesElement);
-FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-  .addAllNames(ShelfBookName.toStringList(names))
-  .addAllShelves(ShelfName.toStringList(shelves))
-  .build();
-for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-  // doThingsWith(element);
+public class FindRelatedBooksSampleRequestPagedOdyssey {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
+      .build();
+    for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+      // doThingsWith(element);
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7393,33 +7396,34 @@ for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllA
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooksCallable" of type "UnpagedListCallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-List&lt;ShelfName&gt; shelves = Arrays.asList(shelvesElement);
-FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-  .addAllNames(ShelfBookName.toStringList(names))
-  .addAllShelves(ShelfName.toStringList(shelves))
-  .build();
-while (true) {
-  FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-  for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
-    // doThingsWith(element);
-  }
-  String nextPageToken = response.getNextPageToken();
-  if (!Strings.isNullOrEmpty(nextPageToken)) {
-    request = request.toBuilder().setPageToken(nextPageToken).build();
-  } else {
-    break;
+public class FindRelatedBooksCallableSampleCallableListOdyssey {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
+      .build();
+    while (true) {
+      FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
+      for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
+        // doThingsWith(element);
+      }
+      String nextPageToken = response.getNextPageToken();
+      if (!Strings.isNullOrEmpty(nextPageToken)) {
+        request = request.toBuilder().setPageToken(nextPageToken).build();
+      } else {
+        break;
+      }
+    }
+    // [END core_sample]
   }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7440,26 +7444,27 @@ while (true) {
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooksPagedCallable" of type "PagedCallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-List&lt;ShelfName&gt; shelves = Arrays.asList(shelvesElement);
-FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-  .addAllNames(ShelfBookName.toStringList(names))
-  .addAllShelves(ShelfName.toStringList(shelves))
-  .build();
-ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
-// Do something
-for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-  // doThingsWith(element);
+public class FindRelatedBooksPagedCallableSampleCallablePagedOdyssey {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
+      .build();
+    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+    // Do something
+    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
+      // doThingsWith(element);
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7480,15 +7485,16 @@ for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
 //       [name="War and Peace"]
 //     apiMethod "getBigBookAsync" of type "AsyncOperationFlattenedMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-Book response = libraryClient.getBigBookAsync(name.toString()).get();
-*/
-// [END core_sample]
+public class GetBigBookAsyncSampleLongRunningFlattenedAsyncWap {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    Book response = libraryClient.getBigBookAsync(name.toString()).get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7509,18 +7515,19 @@ Book response = libraryClient.getBigBookAsync(name.toString()).get();
 //       [name="War and Peace"]
 //     apiMethod "getBigBookAsync" of type "AsyncOperationRequestObjectMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-GetBookRequest request = GetBookRequest.newBuilder()
-  .setName(name.toString())
-  .build();
-Book response = libraryClient.getBigBookAsync(request).get();
-*/
-// [END core_sample]
+public class GetBigBookAsyncSampleLongRunningRequestAsyncWap {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    GetBookRequest request = GetBookRequest.newBuilder()
+      .setName(name.toString())
+      .build();
+    Book response = libraryClient.getBigBookAsync(request).get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7541,20 +7548,21 @@ Book response = libraryClient.getBigBookAsync(request).get();
 //       [name="War and Peace"]
 //     apiMethod "getBigBookCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-GetBookRequest request = GetBookRequest.newBuilder()
-  .setName(name.toString())
-  .build();
-ApiFuture&lt;Operation&gt; future = libraryClient.getBigBookCallable().futureCall(request);
-// Do something
-Operation response = future.get();
-*/
-// [END core_sample]
+public class GetBigBookCallableSampleCallableWap {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    GetBookRequest request = GetBookRequest.newBuilder()
+      .setName(name.toString())
+      .build();
+    ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+    // Do something
+    Operation response = future.get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7575,20 +7583,21 @@ Operation response = future.get();
 //       [name="War and Peace"]
 //     apiMethod "getBigBookOperationCallable" of type "OperationCallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-GetBookRequest request = GetBookRequest.newBuilder()
-  .setName(name.toString())
-  .build();
-OperationFuture&lt;Operation&gt; future = libraryClient.getBigBookOperationCallable().futureCall(request);
-// Do something
-Book response = future.get();
-*/
-// [END core_sample]
+public class GetBigBookOperationCallableSampleLongRunningCallableWap {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    GetBookRequest request = GetBookRequest.newBuilder()
+      .setName(name.toString())
+      .build();
+    OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+    // Do something
+    Book response = future.get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7609,38 +7618,39 @@ Book response = future.get();
 //       [name=BASIC]
 //     apiMethod "monologAboutBookCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-ApiStreamObserver&lt;Comment&gt; responseObserver =
-    new ApiStreamObserver&lt;Comment&gt;() {
-      {@literal @}Override
-      public void onNext(Comment response) {
-        // Do something when receive a response
-      }
+public class MonologAboutBookCallableSampleCallableStreamingClientProg {
+  public static void main(String[] args) {
+    // [START core_sample]
+    ApiStreamObserver<Comment> responseObserver =
+        new ApiStreamObserver<Comment>() {
+          @Override
+          public void onNext(Comment response) {
+            // Do something when receive a response
+          }
 
-      {@literal @}Override
-      public void onError(Throwable t) {
-        // Add error-handling
-      }
+          @Override
+          public void onError(Throwable t) {
+            // Add error-handling
+          }
 
-      {@literal @}Override
-      public void onCompleted() {
-        // Do something when complete.
-      }
-    };
-ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
-    libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+          @Override
+          public void onCompleted() {
+            // Do something when complete.
+          }
+        };
+    ApiStreamObserver<DiscussBookRequest> requestObserver =
+        libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
-String name = "BASIC";
-DiscussBookRequest request = DiscussBookRequest.newBuilder()
-  .setName(name)
-  .build();
-requestObserver.onNext(request);
-*/
-// [END core_sample]
+    String name = "BASIC";
+    DiscussBookRequest request = DiscussBookRequest.newBuilder()
+      .setName(name)
+      .build();
+    requestObserver.onNext(request);
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7661,24 +7671,25 @@ requestObserver.onNext(request);
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeries" of type "FlattenedMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-String name = "Math";
-Shelf shelf = Shelf.newBuilder()
-  .setName(name)
-  .build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-int edition = 0;
-String seriesString = "xyz3141592654";
-SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-  .setSeriesString(seriesString)
-  .build();
-PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-*/
-// [END core_sample]
+public class PublishSeriesSampleFlattenedPiVersion {
+  public static void main(String[] args) {
+    // [START core_sample]
+    String name = "Math";
+    Shelf shelf = Shelf.newBuilder()
+      .setName(name)
+      .build();
+    List<Book> books = new ArrayList<>();
+    int edition = 0;
+    String seriesString = "xyz3141592654";
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+      .setSeriesString(seriesString)
+      .build();
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7699,18 +7710,19 @@ PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, editi
 //       [edition=2]
 //     apiMethod "publishSeries" of type "FlattenedMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-Shelf shelf = Shelf.newBuilder().build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-int edition = 2;
-SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-*/
-// [END core_sample]
+public class PublishSeriesSampleFlattenedSecondEdition {
+  public static void main(String[] args) {
+    // [START core_sample]
+    Shelf shelf = Shelf.newBuilder().build();
+    List<Book> books = new ArrayList<>();
+    int edition = 2;
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7731,28 +7743,29 @@ PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, editi
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeries" of type "RequestObjectMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-String name = "Math";
-Shelf shelf = Shelf.newBuilder()
-  .setName(name)
-  .build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-String seriesString = "xyz3141592654";
-SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-  .setSeriesString(seriesString)
-  .build();
-PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-  .setShelf(shelf)
-  .addAllBooks(books)
-  .setSeriesUuid(seriesUuid)
-  .build();
-PublishSeriesResponse response = libraryClient.publishSeries(request);
-*/
-// [END core_sample]
+public class PublishSeriesSampleRequestPiVersion {
+  public static void main(String[] args) {
+    // [START core_sample]
+    String name = "Math";
+    Shelf shelf = Shelf.newBuilder()
+      .setName(name)
+      .build();
+    List<Book> books = new ArrayList<>();
+    String seriesString = "xyz3141592654";
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+      .setSeriesString(seriesString)
+      .build();
+    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+      .setShelf(shelf)
+      .addAllBooks(books)
+      .setSeriesUuid(seriesUuid)
+      .build();
+    PublishSeriesResponse response = libraryClient.publishSeries(request);
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7773,24 +7786,25 @@ PublishSeriesResponse response = libraryClient.publishSeries(request);
 //       [edition=2]
 //     apiMethod "publishSeries" of type "RequestObjectMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-Shelf shelf = Shelf.newBuilder().build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-int edition = 2;
-PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-  .setShelf(shelf)
-  .addAllBooks(books)
-  .setSeriesUuid(seriesUuid)
-  .setEdition(edition)
-  .build();
-PublishSeriesResponse response = libraryClient.publishSeries(request);
-*/
-// [END core_sample]
+public class PublishSeriesSampleRequestSecondEdition {
+  public static void main(String[] args) {
+    // [START core_sample]
+    Shelf shelf = Shelf.newBuilder().build();
+    List<Book> books = new ArrayList<>();
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+    int edition = 2;
+    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+      .setShelf(shelf)
+      .addAllBooks(books)
+      .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
+      .build();
+    PublishSeriesResponse response = libraryClient.publishSeries(request);
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7811,30 +7825,31 @@ PublishSeriesResponse response = libraryClient.publishSeries(request);
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeriesCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-String name = "Math";
-Shelf shelf = Shelf.newBuilder()
-  .setName(name)
-  .build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-String seriesString = "xyz3141592654";
-SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-  .setSeriesString(seriesString)
-  .build();
-PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-  .setShelf(shelf)
-  .addAllBooks(books)
-  .setSeriesUuid(seriesUuid)
-  .build();
-ApiFuture&lt;PublishSeriesResponse&gt; future = libraryClient.publishSeriesCallable().futureCall(request);
-// Do something
-PublishSeriesResponse response = future.get();
-*/
-// [END core_sample]
+public class PublishSeriesCallableSampleCallablePiVersion {
+  public static void main(String[] args) {
+    // [START core_sample]
+    String name = "Math";
+    Shelf shelf = Shelf.newBuilder()
+      .setName(name)
+      .build();
+    List<Book> books = new ArrayList<>();
+    String seriesString = "xyz3141592654";
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+      .setSeriesString(seriesString)
+      .build();
+    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+      .setShelf(shelf)
+      .addAllBooks(books)
+      .setSeriesUuid(seriesUuid)
+      .build();
+    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    // Do something
+    PublishSeriesResponse response = future.get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7855,26 +7870,27 @@ PublishSeriesResponse response = future.get();
 //       [edition=2]
 //     apiMethod "publishSeriesCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-Shelf shelf = Shelf.newBuilder().build();
-List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-int edition = 2;
-PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-  .setShelf(shelf)
-  .addAllBooks(books)
-  .setSeriesUuid(seriesUuid)
-  .setEdition(edition)
-  .build();
-ApiFuture&lt;PublishSeriesResponse&gt; future = libraryClient.publishSeriesCallable().futureCall(request);
-// Do something
-PublishSeriesResponse response = future.get();
-*/
-// [END core_sample]
+public class PublishSeriesCallableSampleCallableSecondEdition {
+  public static void main(String[] args) {
+    // [START core_sample]
+    Shelf shelf = Shelf.newBuilder().build();
+    List<Book> books = new ArrayList<>();
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+    int edition = 2;
+    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+      .setShelf(shelf)
+      .addAllBooks(books)
+      .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
+      .build();
+    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    // Do something
+    PublishSeriesResponse response = future.get();
+    // [END core_sample]
+  }
+}
 
 // FIXME: Insert here clean-up code.
 
@@ -7895,22 +7911,23 @@ PublishSeriesResponse response = future.get();
 //       [name=BASIC]
 //     apiMethod "streamBooksCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-String name = "BASIC";
-StreamBooksRequest request = StreamBooksRequest.newBuilder()
-  .setName(name)
-  .build();
+public class StreamBooksCallableSampleCallableStreamingServerProg {
+  public static void main(String[] args) {
+    // [START core_sample]
+    String name = "BASIC";
+    StreamBooksRequest request = StreamBooksRequest.newBuilder()
+      .setName(name)
+      .build();
 
-ServerStream&lt;Book&gt; stream = libraryClient.streamBooksCallable().call(request);
-for (Book response : stream) {
-  // Do something when receive a response
+    ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
+    for (Book response : stream) {
+      // Do something when receive a response
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
@@ -7931,19 +7948,20 @@ for (Book response : stream) {
 //       []
 //     apiMethod "streamShelvesCallable" of type "CallableMethod"
 
-// [START core_sample]
-
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-/*
-StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+public class StreamShelvesCallableSampleCallableStreamingServerEmpty {
+  public static void main(String[] args) {
+    // [START core_sample]
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
-ServerStream&lt;StreamShelvesResponse&gt; stream = libraryClient.streamShelvesCallable().call(request);
-for (StreamShelvesResponse response : stream) {
-  // Do something when receive a response
+    ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
+    for (StreamShelvesResponse response : stream) {
+      // Do something when receive a response
+    }
+    // [END core_sample]
+  }
 }
-*/
-// [END core_sample]
 
 // FIXME: Insert here clean-up code.
 
