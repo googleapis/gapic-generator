@@ -426,7 +426,7 @@ task :acceptance, :project, :keyfile do |t, args|
   if project.nil? || keyfile.nil?
     fail "You must provide a project and keyfile. e.g. rake acceptance[test123, /path/to/keyfile.json] or LIBRARY_TEST_PROJECT=test123 LIBRARY_TEST_KEYFILE=/path/to/keyfile.json rake acceptance"
   end
-  require "library/credentials"
+  require "library/v1/credentials"
   (Library::V1::Credentials::PATH_ENV_VARS +
    Library::V1::Credentials::JSON_ENV_VARS).each do |path|
     ENV[path] = nil
@@ -2745,7 +2745,7 @@ require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
-require "library/credentials"
+require "library/v1/credentials"
 
 module Library
   module V1

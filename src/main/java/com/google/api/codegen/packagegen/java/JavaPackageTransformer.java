@@ -33,7 +33,7 @@ public class JavaPackageTransformer {
   // TODO determine if an API uses resource names from GAPIC config
   // https://github.com/googleapis/toolkit/issues/1668
   private ImmutableSet<String> SERVICES_WITH_NO_RESOURCE_NAMES =
-      ImmutableSet.of("common-protos", "language", "speech", "video-intelligence", "vision");
+      ImmutableSet.of("common-protos", "language", "speech", "video-intelligence");
 
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final Map<String, String> snippetsOutput;

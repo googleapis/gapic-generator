@@ -20,8 +20,8 @@ import com.google.api.tools.framework.model.Model;
 import java.io.IOException;
 import java.util.Map;
 
-/** A PackageProvider performs package generation. */
-public interface PackageProvider<T> {
+/** Generates package metadata. */
+public interface PackageGenerator<T> {
   Map<String, GeneratedResult<T>> generate(Model model, PackageMetadataConfig config)
       throws IOException;
 }

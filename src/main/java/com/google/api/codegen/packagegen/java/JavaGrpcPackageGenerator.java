@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Map;
 
 /** Performs grpc package generation for Java */
-public class JavaGrpcPackageProvider implements CodeGenerator<Doc> {
+public class JavaGrpcPackageGenerator implements CodeGenerator<Doc> {
 
   private final JavaPackageTransformer transformer;
   private final Model model;
   private final PackageMetadataConfig config;
 
-  public JavaGrpcPackageProvider(
+  public JavaGrpcPackageGenerator(
       JavaPackageTransformer transformer, Model model, PackageMetadataConfig config) {
     this.transformer = transformer;
     this.model = model;
