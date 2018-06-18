@@ -14,20 +14,9 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -39,13 +28,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /* Creates the import sections of GAPIC generated code for Python. */
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
@@ -93,9 +76,22 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   public ImportSectionView generateGrpcTransportImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(ImmutableList.of())
-        .externalImports(ImmutableList.of())
-        .appImports(ImmutableList.of())
+        .externalImports(ImmutableList.of(createImport("google.api_core.grpc_helpers")))
+        .appImports(generateGrpcTransportAppImports(context))
         .build();
+  }
+
+  private List<ImportFileView> generateGrpcTransportAppImports(GapicInterfaceContext context) {
+    Map<String, InterfaceModel> interfaces = new TreeMap<>();
+    for (MethodModel method : context.getSupportedMethods()) {
+      InterfaceModel targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+      interfaces.put(targetInterface.getFullName(), targetInterface);
+    }
+    ModelTypeTable typeTable = context.getImportTypeTable().cloneEmpty();
+    for (InterfaceModel targetInterface : interfaces.values()) {
+      context.getNamer().getAndSaveNicknameForGrpcClientTypeName(typeTable, targetInterface);
+    }
+    return generateFileHeaderAppImports(typeTable.getImports());
   }
 
   private List<ImportFileView> generateFileHeaderStandardImports(InterfaceContext context) {
@@ -165,7 +161,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
             namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
     imports.add(
         createImport(
-            namer.getPackageName(),
+            namer.getPackageName() + ".transports",
             namer.getGrpcTransportImportName(context.getInterfaceConfig())));
     Collections.sort(imports, importFileViewComparator());
     return imports;

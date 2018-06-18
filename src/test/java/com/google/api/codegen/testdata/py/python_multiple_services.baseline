@@ -836,7 +836,7 @@ import google.api_core.grpc_helpers
 import grpc
 
 from google.cloud.example_v1.gapic.foo import decrementer_service_client_config
-from google.cloud.example_v1.gapic.foo import decrementer_service_grpc_transport
+from google.cloud.example_v1.gapic.foo.transports import decrementer_service_grpc
 from google.cloud.example_v1.proto.foo import multiple_services_pb2
 from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
@@ -852,16 +852,9 @@ class DecrementerServiceClient(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com:443'
     """The default address of the service."""
 
-    # The scopes needed to make gRPC calls to all of the methods defined in
-    # this service
-    _DEFAULT_SCOPES = (
-    )
-
-    # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary.
+    # The name of the interface for this client. This is the key used to
+    # find the method configuration in the client_config dictionary.
     _INTERFACE_NAME = 'google.cloud.example.v1.foo.DecrementerService'
-
-    _TRANSPORT = decrementer_service_grpc_transport.DecrementerServiceGrpcTransport()
 
     def __init__(self, channel=None, credentials=None,
             client_config=decrementer_service_client_config.config,
@@ -885,27 +878,14 @@ class DecrementerServiceClient(object):
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
-        # If both `channel` and `credentials` are specified, raise an
-        # exception (channels come with credentials baked in already).
-        if channel is not None and credentials is not None:
-            raise ValueError(
-                'The `channel` and `credentials` arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__),
-            )
-
-        # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = google.api_core.grpc_helpers.create_channel(
-                self.SERVICE_ADDRESS,
-                credentials=credentials,
-                scopes=self._DEFAULT_SCOPES,
-            )
-
-        # Create the gRPC stubs.
-        self._decrementer_service_stub = (
-            multiple_services_pb2_grpc.DecrementerServiceStub(self.channel))
-
+        # Instantiate the transport.
+        # The transport is responsible for handling serialization and
+        # deserialization and actually sending data to the service.
+        self.transport = decrementer_service_grpc.DecrementerServiceGrpc(
+            address=self.SERVICE_ADDRESS,
+            channel=channel,
+            credentials=credentials,
+        )
 
         if client_info is None:
             client_info = (
@@ -921,26 +901,11 @@ class DecrementerServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
+        # Save a dictionary of cached API call functions.
+        # These are the actual callables which invoke the proper
+        # transport methods, wrapped with `wrap_method` to add retry,
+        # timeout, and the like.
         self._inner_api_calls = {}
-
-    def _intercept_channel(self, *interceptors):
-        """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-        Args:
-            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-              Zero or more gRPC interceptors. Interceptors are given control in the order
-              they are listed.
-        Raises:
-            TypeError: If interceptor does not derive from any of
-              UnaryUnaryClientInterceptor,
-              UnaryStreamClientInterceptor,
-              StreamUnaryClientInterceptor, or
-              StreamStreamClientInterceptor.
-        """
-        self.channel = grpc.intercept_channel(self.channel, *interceptors)
-        self._decrementer_service_stub = (
-            multiple_services_pb2_grpc.DecrementerServiceStub(self.channel))
-        self._inner_api_calls.clear()
 
     # Service calls
     def decrement(
@@ -974,16 +939,23 @@ class DecrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if 'decrement' not in self._inner_api_calls:
-            self._inner_api_calls['decrement'] = google.api_core.gapic_v1.method.wrap_method(
-                self._decrementer_service_stub.Decrement,
+        # Wrap the transport method to add retry and timeout logic.
+        #
+        # Note: We use the hash of the original transport method
+        # in order to automatically invalidate the lookup if the
+        # transport method changes in-place (this can happen because
+        # the stubs must be regenerated if interceptors are added.)
+        cache_key = hash(self.transport.decrement)
+        if cache_key not in self._inner_api_calls:
+            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.decrement,
                 default_retry=self._method_configs['Decrement'].retry,
                 default_timeout=self._method_configs['Decrement'].timeout,
                 client_info=self._client_info,
             )
 
         request = multiple_services_pb2.DecrementRequest()
-        self._inner_api_calls['decrement'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls[cache_key](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example_v1/gapic/foo/decrementer_service_client_config.py ==============
 config = {
@@ -1000,25 +972,6 @@ config = {
   }
 }
 
-============== file: google/cloud/example_v1/gapic/foo/decrementer_service_grpc_transport.py ==============
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
-
-class DecrementerServiceGrpcTransport():
-    pass
 ============== file: google/cloud/example_v1/gapic/foo/incrementer_service_client.py ==============
 # Copyright 2018 Google LLC
 #
@@ -1045,7 +998,7 @@ import google.api_core.grpc_helpers
 import grpc
 
 from google.cloud.example_v1.gapic.foo import incrementer_service_client_config
-from google.cloud.example_v1.gapic.foo import incrementer_service_grpc_transport
+from google.cloud.example_v1.gapic.foo.transports import incrementer_service_grpc
 from google.cloud.example_v1.proto.foo import multiple_services_pb2
 from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 from google.protobuf import empty_pb2
@@ -1061,16 +1014,9 @@ class IncrementerServiceClient(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com:443'
     """The default address of the service."""
 
-    # The scopes needed to make gRPC calls to all of the methods defined in
-    # this service
-    _DEFAULT_SCOPES = (
-    )
-
-    # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary.
+    # The name of the interface for this client. This is the key used to
+    # find the method configuration in the client_config dictionary.
     _INTERFACE_NAME = 'google.cloud.example.v1.foo.IncrementerService'
-
-    _TRANSPORT = incrementer_service_grpc_transport.IncrementerServiceGrpcTransport()
 
     def __init__(self, channel=None, credentials=None,
             client_config=incrementer_service_client_config.config,
@@ -1094,27 +1040,14 @@ class IncrementerServiceClient(object):
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
-        # If both `channel` and `credentials` are specified, raise an
-        # exception (channels come with credentials baked in already).
-        if channel is not None and credentials is not None:
-            raise ValueError(
-                'The `channel` and `credentials` arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__),
-            )
-
-        # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = google.api_core.grpc_helpers.create_channel(
-                self.SERVICE_ADDRESS,
-                credentials=credentials,
-                scopes=self._DEFAULT_SCOPES,
-            )
-
-        # Create the gRPC stubs.
-        self._incrementer_service_stub = (
-            multiple_services_pb2_grpc.IncrementerServiceStub(self.channel))
-
+        # Instantiate the transport.
+        # The transport is responsible for handling serialization and
+        # deserialization and actually sending data to the service.
+        self.transport = incrementer_service_grpc.IncrementerServiceGrpc(
+            address=self.SERVICE_ADDRESS,
+            channel=channel,
+            credentials=credentials,
+        )
 
         if client_info is None:
             client_info = (
@@ -1130,26 +1063,11 @@ class IncrementerServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
+        # Save a dictionary of cached API call functions.
+        # These are the actual callables which invoke the proper
+        # transport methods, wrapped with `wrap_method` to add retry,
+        # timeout, and the like.
         self._inner_api_calls = {}
-
-    def _intercept_channel(self, *interceptors):
-        """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-        Args:
-            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-              Zero or more gRPC interceptors. Interceptors are given control in the order
-              they are listed.
-        Raises:
-            TypeError: If interceptor does not derive from any of
-              UnaryUnaryClientInterceptor,
-              UnaryStreamClientInterceptor,
-              StreamUnaryClientInterceptor, or
-              StreamStreamClientInterceptor.
-        """
-        self.channel = grpc.intercept_channel(self.channel, *interceptors)
-        self._incrementer_service_stub = (
-            multiple_services_pb2_grpc.IncrementerServiceStub(self.channel))
-        self._inner_api_calls.clear()
 
     # Service calls
     def increment(
@@ -1183,16 +1101,23 @@ class IncrementerServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if 'increment' not in self._inner_api_calls:
-            self._inner_api_calls['increment'] = google.api_core.gapic_v1.method.wrap_method(
-                self._incrementer_service_stub.Increment,
+        # Wrap the transport method to add retry and timeout logic.
+        #
+        # Note: We use the hash of the original transport method
+        # in order to automatically invalidate the lookup if the
+        # transport method changes in-place (this can happen because
+        # the stubs must be regenerated if interceptors are added.)
+        cache_key = hash(self.transport.increment)
+        if cache_key not in self._inner_api_calls:
+            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.increment,
                 default_retry=self._method_configs['Increment'].retry,
                 default_timeout=self._method_configs['Increment'].timeout,
                 client_info=self._client_info,
             )
 
         request = multiple_services_pb2.IncrementRequest()
-        self._inner_api_calls['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls[cache_key](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example_v1/gapic/foo/incrementer_service_client_config.py ==============
 config = {
@@ -1209,7 +1134,7 @@ config = {
   }
 }
 
-============== file: google/cloud/example_v1/gapic/foo/incrementer_service_grpc_transport.py ==============
+============== file: google/cloud/example_v1/gapic/foo/transports/decrementer_service_grpc.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1225,9 +1150,220 @@ config = {
 # limitations under the License.
 
 
+import google.api_core.grpc_helpers
 
-class IncrementerServiceGrpcTransport():
-    pass
+from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
+
+
+class DecrementerServiceGrpc(object):
+    """gRPC transport class providing stubs for
+    google.cloud.example.v1.foo DecrementerService API.
+
+    The transport provides access to the raw gRPC stubs,
+    which can be used to take advantage of advanced
+    features of gRPC.
+    """
+    # The scopes needed to make gRPC calls to all of the methods defined
+    # in this service.
+    _OAUTH_SCOPES = (
+    )
+
+    def __init__(self, channel=None, credentials=None,
+                 address='no-path-templates.googleapis.com:443'):
+        """Instantiate the transport class.
+
+        Args:
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
+            address (str): The address where the service is hosted.
+        """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'The `channel` and `credentials` arguments are mutually '
+                'exclusive.',
+            )
+
+        # Create the channel.
+        self.channel = channel
+        if self.channel is None:
+            self.channel = google.api_core.grpc_helpers.create_channel(
+                address,
+                credentials=credentials,
+                scopes=self._OAUTH_SCOPES,
+            )
+
+    @property
+    def decrement(self):
+        """Return the gRPC stub for {$apiMethod.name}.
+
+        Decrement.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['decrementer_service_stub'].Decrement
+
+
+    @property
+    def _stubs(self):
+        if '_stubs' not in self.__dict__:
+            self.__dict__['_stubs'] = {
+                'decrementer_service_stub': multiple_services_pb2_grpc.DecrementerServiceStub(self.channel),
+            }
+        return self.__dict__['_stubs']
+
+    def _clear_cache(self):
+        """Clear any cached objects on this transport instance."""
+        # Clear out any stubs already generated.
+        self.__dict__.pop('_stubs', None)
+
+    def _intercept_channel(self, *interceptors):
+        """Experimental. Bind gRPC interceptors to the gRPC channel.
+
+        Args:
+            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+              Zero or more gRPC interceptors. Interceptors are given control in the order
+              they are listed.
+        Raises:
+            TypeError: If interceptor does not derive from any of
+              UnaryUnaryClientInterceptor,
+              UnaryStreamClientInterceptor,
+              StreamUnaryClientInterceptor, or
+              StreamStreamClientInterceptor.
+        """
+        # Set the new channel with the provided interceptors.
+        self.channel = grpc.intercept_channel(self.channel, *interceptors)
+
+        # Clear out the instance's cache of dependent objects.
+        # These generally have the channel passed to them, and they
+        # will hang on to an old reference since the channel has changed.
+        self._clear_cache()
+
+============== file: google/cloud/example_v1/gapic/foo/transports/incrementer_service_grpc.py ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+import google.api_core.grpc_helpers
+
+from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
+
+
+class IncrementerServiceGrpc(object):
+    """gRPC transport class providing stubs for
+    google.cloud.example.v1.foo IncrementerService API.
+
+    The transport provides access to the raw gRPC stubs,
+    which can be used to take advantage of advanced
+    features of gRPC.
+    """
+    # The scopes needed to make gRPC calls to all of the methods defined
+    # in this service.
+    _OAUTH_SCOPES = (
+    )
+
+    def __init__(self, channel=None, credentials=None,
+                 address='no-path-templates.googleapis.com:443'):
+        """Instantiate the transport class.
+
+        Args:
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
+            address (str): The address where the service is hosted.
+        """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'The `channel` and `credentials` arguments are mutually '
+                'exclusive.',
+            )
+
+        # Create the channel.
+        self.channel = channel
+        if self.channel is None:
+            self.channel = google.api_core.grpc_helpers.create_channel(
+                address,
+                credentials=credentials,
+                scopes=self._OAUTH_SCOPES,
+            )
+
+    @property
+    def increment(self):
+        """Return the gRPC stub for {$apiMethod.name}.
+
+        Increment.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['incrementer_service_stub'].Increment
+
+
+    @property
+    def _stubs(self):
+        if '_stubs' not in self.__dict__:
+            self.__dict__['_stubs'] = {
+                'incrementer_service_stub': multiple_services_pb2_grpc.IncrementerServiceStub(self.channel),
+            }
+        return self.__dict__['_stubs']
+
+    def _clear_cache(self):
+        """Clear any cached objects on this transport instance."""
+        # Clear out any stubs already generated.
+        self.__dict__.pop('_stubs', None)
+
+    def _intercept_channel(self, *interceptors):
+        """Experimental. Bind gRPC interceptors to the gRPC channel.
+
+        Args:
+            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+              Zero or more gRPC interceptors. Interceptors are given control in the order
+              they are listed.
+        Raises:
+            TypeError: If interceptor does not derive from any of
+              UnaryUnaryClientInterceptor,
+              UnaryStreamClientInterceptor,
+              StreamUnaryClientInterceptor, or
+              StreamStreamClientInterceptor.
+        """
+        # Set the new channel with the provided interceptors.
+        self.channel = grpc.intercept_channel(self.channel, *interceptors)
+
+        # Clear out the instance's cache of dependent objects.
+        # These generally have the channel passed to them, and they
+        # will hang on to an old reference since the channel has changed.
+        self._clear_cache()
+
 ============== file: google/cloud/example_v1/types.py ==============
 # Copyright 2018 Google LLC
 #

@@ -785,7 +785,7 @@ import google.api_core.grpc_helpers
 import grpc
 
 from example.gapic import no_templates_api_service_client_config
-from example.gapic import no_templates_api_service_grpc_transport
+from example.gapic.transports import no_templates_api_service_grpc
 from example.proto import no_path_templates_messages_pb2
 from example.proto import no_path_templates_pb2_grpc
 from google.protobuf import empty_pb2
@@ -801,16 +801,9 @@ class NoTemplatesAPIServiceClient(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com:443'
     """The default address of the service."""
 
-    # The scopes needed to make gRPC calls to all of the methods defined in
-    # this service
-    _DEFAULT_SCOPES = (
-    )
-
-    # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary.
+    # The name of the interface for this client. This is the key used to
+    # find the method configuration in the client_config dictionary.
     _INTERFACE_NAME = 'google.cloud.example.v1.NoTemplatesAPIService'
-
-    _TRANSPORT = no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport()
 
     def __init__(self, channel=None, credentials=None,
             client_config=no_templates_api_service_client_config.config,
@@ -834,27 +827,14 @@ class NoTemplatesAPIServiceClient(object):
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
-        # If both `channel` and `credentials` are specified, raise an
-        # exception (channels come with credentials baked in already).
-        if channel is not None and credentials is not None:
-            raise ValueError(
-                'The `channel` and `credentials` arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__),
-            )
-
-        # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = google.api_core.grpc_helpers.create_channel(
-                self.SERVICE_ADDRESS,
-                credentials=credentials,
-                scopes=self._DEFAULT_SCOPES,
-            )
-
-        # Create the gRPC stubs.
-        self._no_templates_api_service_stub = (
-            no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel))
-
+        # Instantiate the transport.
+        # The transport is responsible for handling serialization and
+        # deserialization and actually sending data to the service.
+        self.transport = no_templates_api_service_grpc.NoTemplatesApiServiceGrpc(
+            address=self.SERVICE_ADDRESS,
+            channel=channel,
+            credentials=credentials,
+        )
 
         if client_info is None:
             client_info = (
@@ -870,26 +850,11 @@ class NoTemplatesAPIServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
+        # Save a dictionary of cached API call functions.
+        # These are the actual callables which invoke the proper
+        # transport methods, wrapped with `wrap_method` to add retry,
+        # timeout, and the like.
         self._inner_api_calls = {}
-
-    def _intercept_channel(self, *interceptors):
-        """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-        Args:
-            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-              Zero or more gRPC interceptors. Interceptors are given control in the order
-              they are listed.
-        Raises:
-            TypeError: If interceptor does not derive from any of
-              UnaryUnaryClientInterceptor,
-              UnaryStreamClientInterceptor,
-              StreamUnaryClientInterceptor, or
-              StreamStreamClientInterceptor.
-        """
-        self.channel = grpc.intercept_channel(self.channel, *interceptors)
-        self._no_templates_api_service_stub = (
-            no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel))
-        self._inner_api_calls.clear()
 
     # Service calls
     def increment(
@@ -928,16 +893,23 @@ class NoTemplatesAPIServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
-        if 'increment' not in self._inner_api_calls:
-            self._inner_api_calls['increment'] = google.api_core.gapic_v1.method.wrap_method(
-                self._no_templates_api_service_stub.Increment,
+        # Wrap the transport method to add retry and timeout logic.
+        #
+        # Note: We use the hash of the original transport method
+        # in order to automatically invalidate the lookup if the
+        # transport method changes in-place (this can happen because
+        # the stubs must be regenerated if interceptors are added.)
+        cache_key = hash(self.transport.increment)
+        if cache_key not in self._inner_api_calls:
+            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.increment,
                 default_retry=self._method_configs['Increment'].retry,
                 default_timeout=self._method_configs['Increment'].timeout,
                 client_info=self._client_info,
             )
 
         request = no_path_templates_messages_pb2.IncrementRequest()
-        self._inner_api_calls['increment'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls[cache_key](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: example/gapic/no_templates_api_service_client_config.py ==============
 config = {
@@ -954,7 +926,7 @@ config = {
   }
 }
 
-============== file: example/gapic/no_templates_api_service_grpc_transport.py ==============
+============== file: example/gapic/transports/no_templates_api_service_grpc.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -970,9 +942,110 @@ config = {
 # limitations under the License.
 
 
+import google.api_core.grpc_helpers
 
-class NoTemplatesApiServiceGrpcTransport():
-    pass
+from example.proto import no_path_templates_pb2_grpc
+
+
+class NoTemplatesApiServiceGrpc(object):
+    """gRPC transport class providing stubs for
+    google.cloud.example.v1 NoTemplatesAPIService API.
+
+    The transport provides access to the raw gRPC stubs,
+    which can be used to take advantage of advanced
+    features of gRPC.
+    """
+    # The scopes needed to make gRPC calls to all of the methods defined
+    # in this service.
+    _OAUTH_SCOPES = (
+    )
+
+    def __init__(self, channel=None, credentials=None,
+                 address='no-path-templates.googleapis.com:443'):
+        """Instantiate the transport class.
+
+        Args:
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
+            address (str): The address where the service is hosted.
+        """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'The `channel` and `credentials` arguments are mutually '
+                'exclusive.',
+            )
+
+        # Create the channel.
+        self.channel = channel
+        if self.channel is None:
+            self.channel = google.api_core.grpc_helpers.create_channel(
+                address,
+                credentials=credentials,
+                scopes=self._OAUTH_SCOPES,
+            )
+
+    @property
+    def increment(self):
+        """Return the gRPC stub for {$apiMethod.name}.
+
+        Increments something.
+        Sometimes the comments are indented, but Sphinx doesn't like that. So
+        in Python we trim all
+        leading
+        and trailing
+        whitespace.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['no_templates_api_service_stub'].Increment
+
+
+    @property
+    def _stubs(self):
+        if '_stubs' not in self.__dict__:
+            self.__dict__['_stubs'] = {
+                'no_templates_api_service_stub': no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel),
+            }
+        return self.__dict__['_stubs']
+
+    def _clear_cache(self):
+        """Clear any cached objects on this transport instance."""
+        # Clear out any stubs already generated.
+        self.__dict__.pop('_stubs', None)
+
+    def _intercept_channel(self, *interceptors):
+        """Experimental. Bind gRPC interceptors to the gRPC channel.
+
+        Args:
+            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
+              Zero or more gRPC interceptors. Interceptors are given control in the order
+              they are listed.
+        Raises:
+            TypeError: If interceptor does not derive from any of
+              UnaryUnaryClientInterceptor,
+              UnaryStreamClientInterceptor,
+              StreamUnaryClientInterceptor, or
+              StreamStreamClientInterceptor.
+        """
+        # Set the new channel with the provided interceptors.
+        self.channel = grpc.intercept_channel(self.channel, *interceptors)
+
+        # Clear out the instance's cache of dependent objects.
+        # These generally have the channel passed to them, and they
+        # will hang on to an old reference since the channel has changed.
+        self._clear_cache()
+
 ============== file: example/types.py ==============
 # Copyright 2018 Google LLC
 #

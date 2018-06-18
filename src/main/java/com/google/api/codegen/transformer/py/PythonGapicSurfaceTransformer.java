@@ -158,7 +158,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       grpcTransportClass.templateFileName(TRANSPORT_TEMPLATE_FILENAME);
       grpcTransportClass.outputPath(
           namer.getSourceFilePath(
-              subPath, namer.getGrpcTransportClassName(context.getInterfaceConfig())));
+              subPath + "/transports",
+              namer.getGrpcTransportClassName(context.getInterfaceConfig())));
       ImportSectionView grpcTransportImportSection =
           importSectionTransformer.generateGrpcTransportImportSection(context);
       grpcTransportClass.fileHeader(
