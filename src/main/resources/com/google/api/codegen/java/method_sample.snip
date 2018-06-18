@@ -99,27 +99,30 @@
 @end
 
 @snippet bidiStreamingCallableSampleCode(apiMethod, initCode)
-  {@responseObserver(apiMethod)}
-  ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
-      {@apiMethod.apiVariableName}.{@apiMethod.name}().bidiStreamingCall(responseObserver));
+  BidiStream<{@apiMethod.callableMethod.requestType}, {@apiMethod.callableMethod.genericAwareResponseType}> bidiStream =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().call();
 
   {@initCode(initCode)}
-  requestObserver.onNext(request);
+  bidiStream.send(request);
+  for ({@apiMethod.callableMethod.genericAwareResponseType} response : bidiStream) {
+    // Do something when receive a response
+  }
 @end
 
 @snippet serverStreamingCallableSampleCode(apiMethod, initCode)
-  {@responseObserver(apiMethod)}
-
   {@initCode(initCode)}
 
-  {@apiMethod.apiVariableName}.{@apiMethod.name}().serverStreamingCall(\
-      {@sampleMethodCallArgList(initCode.fieldSettings)}, responseObserver));
+  ServerStream<{@apiMethod.callableMethod.genericAwareResponseType}> stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+      {@sampleMethodCallArgList(initCode.fieldSettings)});
+  for ({@apiMethod.callableMethod.genericAwareResponseType} response : stream) {
+    // Do something when receive a response
+  }
 @end
 
 @snippet clientStreamingCallableSampleCode(apiMethod, initCode)
   {@responseObserver(apiMethod)}
-  ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
-      {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver));
+  ApiStreamObserver<{@apiMethod.callableMethod.requestType}> requestObserver =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver);
 
   {@initCode(initCode)}
   requestObserver.onNext(request);
