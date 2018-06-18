@@ -125,7 +125,16 @@ public class MethodMerger {
     ConfigNode prevNode = generateField(nameNode, method);
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
-    prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
+    ConfigNode fieldNamePatternsNode =
+        generateFieldNamePatterns(prevNode, method, collectionNameMap);
+    if (fieldNamePatternsNode != prevNode) {
+      prevNode = fieldNamePatternsNode;
+      ConfigNode resourceNameTreatmentNode =
+          FieldConfigNode.createStringPair(
+              NodeFinder.getNextLine(prevNode), "resource_name_treatment", "STATIC_TYPES");
+      prevNode.insertNext(resourceNameTreatmentNode);
+    }
+    prevNode = fieldNamePatternsNode;
     generateTimeout(prevNode, method);
     return methodNode;
   }

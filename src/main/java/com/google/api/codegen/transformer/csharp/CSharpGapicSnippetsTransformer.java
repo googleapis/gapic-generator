@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -22,6 +21,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -50,7 +50,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
+/* Transforms a ProtoApiModel into the standalone C# code snippets of an API. */
+public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
   private static final String SNIPPETS_CSPROJ_TEMPLATE_FILENAME =
@@ -72,7 +73,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 

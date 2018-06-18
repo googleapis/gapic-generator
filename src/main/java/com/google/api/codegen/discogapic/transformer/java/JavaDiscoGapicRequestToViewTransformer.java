@@ -29,7 +29,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -37,6 +36,7 @@ import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -65,7 +65,8 @@ import java.util.Map;
 import java.util.Set;
 
 /* Creates the ViewModel for a Discovery Doc request object Java class. */
-public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTransformer {
+public class JavaDiscoGapicRequestToViewTransformer
+    implements ModelToViewTransformer<DiscoApiModel> {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -286,7 +287,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       fieldMaskView.name(nameFormatter.localVarName(fieldMaskName));
       fieldMaskView.typeName("List<String>");
       fieldMaskView.innerTypeName("List<String>");
-      fieldMaskView.isRequired(false);
+      fieldMaskView.isRequired(true);
       fieldMaskView.canRepeat(false);
       fieldMaskView.fieldGetFunction(
           context

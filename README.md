@@ -171,7 +171,8 @@ Run the following command to generate the client config:
 
 ```
 cd ${GAPIC_GENERATOR_DIR}
-java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.configgen.ConfigGeneratorTool \
+java -cp build/libs/gapic-generator-*-fatjar.jar \
+  com.google.api.codegen.GeneratorMain GAPIC_CONFIG \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
   -o=${YOUR_CLIENT_CONFIG}
 ```
@@ -216,17 +217,16 @@ proto_path: ${PROTO_PATH}
 
 You need to locate/decide on the following before you call code generation:
 
-1. The language-specific generator config for your desired output language. Given a language where
-   `${language}` is one of `java`, `go`, `php`, `ruby`, `nodejs`, `py`, or `csharp`, the file is located at
-   `src/main/resources/com/google/api/codegen/${language}/${language}_gapic.yaml` (exception: the Python file is named
-   `python_gapic.yaml`). Hereafter, this will be referenced as `${LANGUAGE_CONFIG}`.
-2. The output directory for your generated client classes. Hereafter, this will be
-   referenced as `${GENERATED_CLIENT_DIR}`.
+1. Your target language, which can be one of `java`, `go`, `php`, `ruby`, `nodejs`, `python`, or `csharp`.
+   Hereafter, this will be referenced as `${LANGUAGE}`.
+2. The output directory for your generated client classes. Hereafter, this will be referenced
+   as `${GENERATED_CLIENT_DIR}`.
 
 ```
-java -cp build/libs/gapic-generator-*-fatjar.jar com.google.api.codegen.CodeGeneratorTool \
+java -cp build/libs/gapic-generator-*-fatjar.jar  \
+  com.google.api.codegen.GeneratorMain LEGACY_GAPIC_AND_PACKAGE \
   --descriptor_set=${YOUR_DESCRIPTOR_FILE} --service_yaml=${YOUR_SERVICE_YAML} \
-  --gapic_yaml=${YOUR_CLIENT_CONFIG} --gapic_yaml=${LANGUAGE_CONFIG} \
+  --gapic_yaml=${YOUR_CLIENT_CONFIG} --language=${LANGUAGE} \
   --package_yaml2=${PACKAGING_CONFIG} --o=${GENERATED_CLIENT_DIR}
 ```
 

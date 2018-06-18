@@ -783,6 +783,10 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
+    String requestTypeFullName =
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
+    String requestType = context.getTypeTable().getAndSaveNicknameFor(requestTypeFullName);
+
     String genericAwareResponseTypeFullName =
         context.getNamer().getGenericAwareResponseTypeName(context);
     String genericAwareResponseType =
@@ -798,6 +802,7 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.callableMethod(
         CallableMethodDetailView.newBuilder()
+            .requestType(requestType)
             .genericAwareResponseType(genericAwareResponseType)
             .callableName(callableName)
             .interfaceTypeName(

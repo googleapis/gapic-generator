@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -49,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for NodeJS */
-public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
+public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String README_FILE = "nodejs/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES = ImmutableList.of("nodejs/package.json.snip");
@@ -82,7 +83,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
+  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(

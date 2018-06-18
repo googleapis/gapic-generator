@@ -409,7 +409,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public String getCredentialsClassImportName() {
     // Place credentials in top-level namespace.
     List<String> paths = new ArrayList<>();
-    for (String part : getTopLevelApiModules()) {
+    for (String part : getApiModules()) {
       paths.add(packageFilePathPiece(Name.upperCamel(part)));
     }
     paths.add("credentials");

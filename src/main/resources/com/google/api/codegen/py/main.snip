@@ -165,7 +165,7 @@
                     EXPERIMENTAL: This method interface might change in the future.
 
                 @end
-                {@exampleCode(apiMethod, apiMethod.initCode)}
+                {@exampleInCode(apiMethod)}
 
                 Args:
                     @join paramDoc : apiMethod.doc.paramDocs
@@ -236,11 +236,16 @@
                     @end
 
                     @if apiMethod.headerRequestParams
-
-                        routing_header = google.api_core.gapic_v1.routing_header(
-                            [{@routingHeader(apiMethod.headerRequestParams)}],
-                        )
-                        metadata.append(routing_header)
+                        if metadata is None:
+                            metadata = []
+                        metadata = list(metadata)
+                        try:
+                            routing_header = [{@routingHeader(apiMethod.headerRequestParams)}]
+                        except AttributeError:
+                            pass
+                        else:
+                            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+                            metadata.append(routing_metadata)
 
                     @end
                 @end

@@ -44,10 +44,6 @@
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
  *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
- *
  * @experimental
  */
 
@@ -134,10 +130,6 @@ use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
  * This is [not a cloud link](http://www.google.com).
  *
  * Service comment may include special characters: <>&"`'&#64;.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
@@ -476,14 +468,14 @@ class LibraryServiceGapicClient
      *               'grpc' => [...],
      *               'rest' => [...]
      *           ];
-     *           See the {@see \Google\Cloud\ApiCore\Transport\GrpcTransport::build()} and
-     *           {@see \Google\Cloud\ApiCore\Transport\RestTransport::build()} methods for the
+     *           See the {@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+     *           {@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
      *           supported options.
      * }
      * @throws ValidationException
      * @experimental
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $clientOptions = $this->buildClientOptions($options);
         $this->setClientOptions($clientOptions);
@@ -520,7 +512,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function createShelf($shelf, $optionalArgs = [])
+    public function createShelf($shelf, array $optionalArgs = [])
     {
         $request = new CreateShelfRequest();
         $request->setShelf($shelf);
@@ -567,7 +559,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getShelf($name, $options, $optionalArgs = [])
+    public function getShelf($name, $options, array $optionalArgs = [])
     {
         $request = new GetShelfRequest();
         $request->setName($name);
@@ -632,7 +624,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listShelves($optionalArgs = [])
+    public function listShelves(array $optionalArgs = [])
     {
         $request = new ListShelvesRequest();
         if (isset($optionalArgs['pageToken'])) {
@@ -674,7 +666,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function deleteShelf($name, $optionalArgs = [])
+    public function deleteShelf($name, array $optionalArgs = [])
     {
         $request = new DeleteShelfRequest();
         $request->setName($name);
@@ -720,7 +712,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
+    public function mergeShelves($name, $otherShelfName, array $optionalArgs = [])
     {
         $request = new MergeShelvesRequest();
         $request->setName($name);
@@ -765,7 +757,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function createBook($name, $book, $optionalArgs = [])
+    public function createBook($name, $book, array $optionalArgs = [])
     {
         $request = new CreateBookRequest();
         $request->setName($name);
@@ -826,7 +818,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
+    public function publishSeries($shelf, $books, $seriesUuid, array $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
@@ -876,7 +868,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBook($name, $optionalArgs = [])
+    public function getBook($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -942,7 +934,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listBooks($name, $optionalArgs = [])
+    public function listBooks($name, array $optionalArgs = [])
     {
         $request = new ListBooksRequest();
         $request->setName($name);
@@ -991,7 +983,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function deleteBook($name, $optionalArgs = [])
+    public function deleteBook($name, array $optionalArgs = [])
     {
         $request = new DeleteBookRequest();
         $request->setName($name);
@@ -1041,7 +1033,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function updateBook($name, $book, $optionalArgs = [])
+    public function updateBook($name, $book, array $optionalArgs = [])
     {
         $request = new UpdateBookRequest();
         $request->setName($name);
@@ -1095,7 +1087,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function moveBook($name, $otherShelfName, $optionalArgs = [])
+    public function moveBook($name, $otherShelfName, array $optionalArgs = [])
     {
         $request = new MoveBookRequest();
         $request->setName($name);
@@ -1159,7 +1151,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function listStrings($optionalArgs = [])
+    public function listStrings(array $optionalArgs = [])
     {
         $request = new ListStringsRequest();
         if (isset($optionalArgs['name'])) {
@@ -1216,7 +1208,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addComments($name, $comments, $optionalArgs = [])
+    public function addComments($name, $comments, array $optionalArgs = [])
     {
         $request = new AddCommentsRequest();
         $request->setName($name);
@@ -1259,7 +1251,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromArchive($name, $optionalArgs = [])
+    public function getBookFromArchive($name, array $optionalArgs = [])
     {
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
@@ -1304,7 +1296,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
+    public function getBookFromAnywhere($name, $altBookName, array $optionalArgs = [])
     {
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
@@ -1347,7 +1339,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromAbsolutelyAnywhere($name, $optionalArgs = [])
+    public function getBookFromAbsolutelyAnywhere($name, array $optionalArgs = [])
     {
         $request = new GetBookFromAbsolutelyAnywhereRequest();
         $request->setName($name);
@@ -1392,7 +1384,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
+    public function updateBookIndex($name, $indexName, $indexMap, array $optionalArgs = [])
     {
         $request = new UpdateBookIndexRequest();
         $request->setName($name);
@@ -1437,7 +1429,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function streamShelves($optionalArgs = [])
+    public function streamShelves(array $optionalArgs = [])
     {
         $request = new StreamShelvesRequest();
 
@@ -1481,7 +1473,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function streamBooks($name, $optionalArgs = [])
+    public function streamBooks($name, array $optionalArgs = [])
     {
         $request = new StreamBooksRequest();
         $request->setName($name);
@@ -1548,7 +1540,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function discussBook($optionalArgs = [])
+    public function discussBook(array $optionalArgs = [])
     {
         return $this->startCall(
             'DiscussBook',
@@ -1600,7 +1592,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function monologAboutBook($optionalArgs = [])
+    public function monologAboutBook(array $optionalArgs = [])
     {
         return $this->startCall(
             'MonologAboutBook',
@@ -1664,7 +1656,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function findRelatedBooks($names, $shelves, $optionalArgs = [])
+    public function findRelatedBooks($names, $shelves, array $optionalArgs = [])
     {
         $request = new FindRelatedBooksRequest();
         $request->setNames($names);
@@ -1717,7 +1709,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addTag($resource, $tag, $optionalArgs = [])
+    public function addTag($resource, $tag, array $optionalArgs = [])
     {
         $request = new AddTagRequest();
         $request->setResource($resource);
@@ -1764,7 +1756,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function addLabel($resource, $label, $optionalArgs = [])
+    public function addLabel($resource, $label, array $optionalArgs = [])
     {
         $request = new AddLabelRequest();
         $request->setResource($resource);
@@ -1834,7 +1826,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBigBook($name, $optionalArgs = [])
+    public function getBigBook($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -1899,7 +1891,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBigNothing($name, $optionalArgs = [])
+    public function getBigNothing($name, array $optionalArgs = [])
     {
         $request = new GetBookRequest();
         $request->setName($name);
@@ -2028,7 +2020,7 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
+    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, array $optionalArgs = [])
     {
         $request = new TestOptionalRequiredFlatteningParamsRequest();
         $request->setRequiredSingularInt32($requiredSingularInt32);
@@ -2180,10 +2172,6 @@ class LibraryServiceGapicClient
  * This file was generated from the file
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
- *
- * EXPERIMENTAL: This client library class has not yet been declared GA (1.0). This means that
- * even though we intend the surface to be stable, we may make backwards incompatible changes
- * if necessary.
  *
  * @experimental
  */
@@ -2746,7 +2734,7 @@ use Google\Protobuf\FieldMask;
 
 /**
  * @group library
- * @group grpc
+ * @group gapic
  */
 class LibraryServiceSmokeTest extends GeneratedTest
 {
@@ -2860,7 +2848,7 @@ use stdClass;
 
 /**
  * @group library
- * @group grpc
+ * @group gapic
  */
 class LibraryServiceClientTest extends GeneratedTest
 {

@@ -51,6 +51,9 @@ public class CodegenTestUtil {
       URL gapicConfigUrl = testDataLocator.findTestData(gapicConfigFileName);
       File gapicConfigFile = null;
       try {
+        if (gapicConfigUrl == null) {
+          throw new IllegalArgumentException("File not found: " + gapicConfigFileName);
+        }
         gapicConfigFile = new File(gapicConfigUrl.toURI());
       } catch (URISyntaxException e) {
         continue;
