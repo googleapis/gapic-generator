@@ -53,7 +53,7 @@ import java.util.TreeSet;
 /* Creates the import sections of GAPIC generated code for Python. */
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
 
-  private enum IMPORT_TYPE {
+  private enum ImportType {
     LOCAL,
     SHARED
   }
@@ -358,7 +358,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
     // All imports.
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
-    Map<String, IMPORT_TYPE> importNamesAndTypes = new HashMap<>();
+    Map<String, ImportType> importNamesAndTypes = new HashMap<>();
 
     List<ProtoElement> elements = Lists.newArrayList(model.getRoots());
     String serviceFullName = elements.get(0).getFullName();
@@ -405,7 +405,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private void populateTypeTables(
       List<ProtoFile> protoFileDependencies,
       ModelTypeTable allTypeTable,
-      Map<String, IMPORT_TYPE> importViews,
+      Map<String, ImportType> importViews,
       String packageName) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
@@ -416,9 +416,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         allTypeTable.getAndSaveNicknameFor(typeRef);
 
         if (protoFile.getFullName().equals(packageName)) {
-          importViews.put(allTypeTable.getFullNameFor(typeRef), IMPORT_TYPE.LOCAL);
+          importViews.put(allTypeTable.getFullNameFor(typeRef), ImportType.LOCAL);
         } else {
-          importViews.put(allTypeTable.getFullNameFor(typeRef), IMPORT_TYPE.SHARED);
+          importViews.put(allTypeTable.getFullNameFor(typeRef), ImportType.SHARED);
         }
       }
     }
