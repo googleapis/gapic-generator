@@ -378,9 +378,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
           break;
       }
     }
-    importView.localImports(ImmutableList.<ImportFileView>builder().addAll(localImports).build());
-    importView.sharedImports(ImmutableList.<ImportFileView>builder().addAll(sharedImports).build());
-    importView.appImports(ImmutableList.<ImportFileView>builder().addAll(appImports).build());
+    importView.localImports(ImmutableList.copyOf(localImports));
+    importView.sharedImports(ImmutableList.copyOf(sharedImports));
+    importView.appImports(ImmutableList.copyOf(appImports));
 
     return importView;
   }
