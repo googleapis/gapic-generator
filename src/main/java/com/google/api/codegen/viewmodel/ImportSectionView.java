@@ -28,11 +28,17 @@ public abstract class ImportSectionView {
   /** This is a superset of the union of localImports() and sharedImports(). */
   public abstract List<ImportFileView> appImports();
 
-  /** Used in Python. */
+  /**
+   * Used in Python. A list of imports that are specifically compiled for the generated client, e.g.
+   * the proto-compiled classes.
+   */
   @Nullable
   public abstract List<ImportFileView> localImports();
 
-  /** Used in Python. */
+  /**
+   * Used in Python. A list of imports that are not solely specific to the generated client, e.g.
+   * the language protobuf library.
+   */
   @Nullable
   public abstract List<ImportFileView> sharedImports();
 
