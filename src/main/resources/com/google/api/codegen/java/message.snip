@@ -55,15 +55,14 @@
     }
   @end
 
-  @@Nullable
-  @@Override
-  public List<String> getFieldMask() {
-    @if schema.hasFieldMask
-      return fieldMask;
-    @else
+  @if schema.hasFieldMask
+  @else
+    @@Nullable
+    @@Override
+    public List<String> getFieldMask() {
       return null;
-    @end
-  }
+    }
+  @end
 @end
 
 @private members(schema)
