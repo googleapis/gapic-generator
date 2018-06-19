@@ -368,13 +368,14 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     // Get disambiguated imports.
     for (Map.Entry<String, TypeAlias> entry : allTypeTable.getImports().entrySet()) {
       String importFullName = entry.getKey();
-      appImports.add(generateAppImport(importFullName, entry.getValue().getNickname()));
+      String nickName = entry.getValue().getNickname();
+      appImports.add(generateAppImport(importFullName, nickName));
       switch (importNamesAndTypes.get(importFullName)) {
         case LOCAL:
-          localImports.add(generateAppImport(importFullName, entry.getValue().getNickname()));
+          localImports.add(generateAppImport(importFullName, nickName));
           break;
         case SHARED:
-          sharedImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+          sharedImports.add(generateAppImport(importFullName, nickName));
           break;
       }
     }
