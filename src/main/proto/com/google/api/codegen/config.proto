@@ -346,7 +346,7 @@ message SampleValueSet {
   //   several placeholders.
   repeated string parameters = 4;
 
-  repeated OutputSpec outputs = 5;
+  repeated OutputSpec output_specs = 5;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"
@@ -660,26 +660,18 @@ message LongRunningConfigProto {
 }
 
 message OutputSpec {
-  message LoopStmt {
+  message LoopStatement {
     string collection = 1;
-    string var = 2;
+    string variable = 2;
     repeated OutputSpec body = 3;
   }
-  message PrintStmt {
-    string spec = 1;
-    repeated string args = 2;
 
-    // Internally used by gapic generator. Do not set this in configuration.
-    repeated Accessor argsElems = 100;
-  }
+  // Exactly one of the following should be set.
 
-  oneof stmt {
-    LoopStmt loop = 1;
-    PrintStmt print = 2;
-  }
-}
+  LoopStatement loop = 1;
 
-message Accessor {
-  string variable = 1;
-  repeated string fields = 2;
+  // example ["%s=%s", thing.variable, thing.value]
+  // field name is singular because the array
+  // represents one print statement.
+  repeated string print = 2;
 }

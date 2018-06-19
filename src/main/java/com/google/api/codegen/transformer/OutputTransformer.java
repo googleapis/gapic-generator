@@ -32,29 +32,42 @@ class OutputTransformer {
       return Collections.emptyList();
     }
     return Collections.singletonList(
-        OutputSpec.newBuilder()
-            .setPrint(OutputSpec.PrintStmt.newBuilder().setSpec("%s").addArgs(RESPONSE_PLACEHOLDER))
-            .build());
+        OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
   static OutputView toView(OutputSpec config, MethodContext context) {
+    Runnable once =
+        new Runnable() {
+          boolean ran;
+
+          @Override
+          public void run() {
+            if (ran) {
+              throw new IllegalArgumentException("only one field of OutputSpec may be set");
+            }
+            ran = true;
+          }
+        };
+
     OutputView.Builder view = OutputView.newBuilder();
-    switch (config.getStmtCase()) {
-      case LOOP:
-        throw new UnsupportedOperationException("loop not implemented yet");
-      case PRINT:
-        view.print(toView(config.getPrint(), context)).kind(OutputView.Kind.PRINT);
-        break;
+    if (config.hasLoop()) {
+      once.run();
+      throw new UnsupportedOperationException("loop not implemented yet");
+    }
+    if (config.getPrintCount() > 0) {
+      once.run();
+      view.print(toView(config.getPrintList(), context)).kind(OutputView.Kind.PRINT);
     }
     return view.build();
   }
 
-  private static OutputView.PrintView toView(OutputSpec.PrintStmt config, MethodContext context) {
+  private static OutputView.PrintView toView(List<String> config, MethodContext context) {
+    Preconditions.checkArgument(!config.isEmpty(), "print spec cannot be empty");
     return OutputView.PrintView.newBuilder()
-        .printSpec(context.getNamer().getPrintSpec(config.getSpec()))
+        .printSpec(context.getNamer().getPrintSpec(config.get(0)))
         .printArgs(
             config
-                .getArgsList()
+                .subList(1, config.size())
                 .stream()
                 .map(a -> accessor(a, context))
                 .collect(ImmutableList.toImmutableList()))

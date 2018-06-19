@@ -211,7 +211,7 @@ public class SampleTransformer {
                     ? initContext
                     : createInitCodeContext(
                         context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
-        List<OutputSpec> outputs = valueSet.getOutputsList();
+        List<OutputSpec> outputs = valueSet.getOutputSpecsList();
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
