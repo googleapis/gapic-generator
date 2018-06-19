@@ -704,6 +704,9 @@ public class StaticLangApiMethodTransformer {
     for (FieldConfig fieldConfig : fieldConfigs) {
       params.add(resourceObjectTransformer.generateRequestObjectParam(context, fieldConfig));
     }
+//    if (method.hasExtraFieldMask()) {
+//      params.add(resourceObjectTransformer.generateFieldMaskParam(context.getNamer()));
+//    }
     methodViewBuilder.forwardingMethodParams(params);
     List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
     nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
@@ -759,9 +762,9 @@ public class StaticLangApiMethodTransformer {
                 context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
-    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
+    methodViewBuilder.methodParams(new ArrayList<>());
+    methodViewBuilder.requestObjectParams(new ArrayList<>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<>());
 
     RequestObjectMethodDetailView.Builder detailBuilder =
         RequestObjectMethodDetailView.newBuilder();
@@ -798,9 +801,9 @@ public class StaticLangApiMethodTransformer {
                 context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
-    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
+    methodViewBuilder.methodParams(new ArrayList<>());
+    methodViewBuilder.requestObjectParams(new ArrayList<>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<>());
 
     String requestTypeFullName =
         context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();

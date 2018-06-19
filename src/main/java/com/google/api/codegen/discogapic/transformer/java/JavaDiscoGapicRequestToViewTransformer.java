@@ -100,7 +100,6 @@ public class JavaDiscoGapicRequestToViewTransformer
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
-    reservedKeywords.add("fieldMask");
   }
 
   private static final String REQUEST_TEMPLATE_FILENAME = "java/message.snip";
@@ -277,36 +276,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     paramView.properties(new LinkedList<>());
     properties.add(paramView.build());
 
-    String httpMethod = discoMethod.httpMethod().toUpperCase().trim();
-    if (httpMethod.equals("PATCH") || httpMethod.equals("PUT")) {
-      Name fieldMaskName = Name.anyCamel("fieldMask");
-      requestView.hasFieldMask(true);
-      StaticLangApiMessageView.Builder fieldMaskView = StaticLangApiMessageView.newBuilder();
-      fieldMaskView.isSerializable(false);
-      fieldMaskView.description("The mask to control which fields get updated.");
-      fieldMaskView.name(nameFormatter.localVarName(fieldMaskName));
-      fieldMaskView.typeName("List<String>");
-      fieldMaskView.innerTypeName("List<String>");
-      fieldMaskView.isRequired(true);
-      fieldMaskView.canRepeat(false);
-      fieldMaskView.fieldGetFunction(
-          context
-              .getNamer()
-              .getFieldGetFunctionName(
-                  fieldMaskName,
-                  SurfaceNamer.MapType.NOT_MAP,
-                  SurfaceNamer.Cardinality.NOT_REPEATED));
-      fieldMaskView.fieldSetFunction(
-          context
-              .getNamer()
-              .getFieldSetFunctionName(
-                  fieldMaskName,
-                  SurfaceNamer.MapType.NOT_MAP,
-                  SurfaceNamer.Cardinality.NOT_REPEATED));
-      fieldMaskView.properties(new LinkedList<>());
-      properties.add(fieldMaskView.build());
-    }
-
+    requestView.hasFieldMask(method.hasExtraFieldMask());
     Collections.sort(properties);
 
     requestView.canRepeat(false);

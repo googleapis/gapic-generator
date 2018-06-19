@@ -8554,11 +8554,6 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     return addressResource;
   }
 
-  @Nullable
-  @Override
-  public List<String> getFieldMask() {
-    return fieldMask;
-  }
 
   public String getAccessToken() {
     return access_token;
@@ -8576,6 +8571,9 @@ public final class PatchAddressHttpRequest implements ApiMessage {
     return callback;
   }
 
+  public List<String> getFieldMask() {
+    return fieldMask;
+  }
 
   public String getFields() {
     return fields;
@@ -9055,11 +9053,6 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     return addressResource;
   }
 
-  @Nullable
-  @Override
-  public List<String> getFieldMask() {
-    return fieldMask;
-  }
 
   public String getAccessToken() {
     return access_token;
@@ -9077,6 +9070,9 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
     return callback;
   }
 
+  public List<String> getFieldMask() {
+    return fieldMask;
+  }
 
   public String getFields() {
     return fields;
@@ -10140,32 +10136,27 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
-   *   String requestId = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.patchAddress(address, requestId, region, addressResource);
+   *   Operation response = addressClient.patchAddress(address, region, addressResource, fieldMask);
    * }
    * </code></pre>
    *
    * @param address Name of the address to patch.
-   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
-   *
-   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
-   *
-   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
    * @param region Name of the region for this request.
    * @param addressResource A reserved address resource.
+   * @param fieldMask
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(String address, String requestId, ProjectRegionName region, Address addressResource) {
+  public final Operation patchAddress(String address, ProjectRegionName region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
         .setAddress(address)
-        .setRequestId(requestId)
         .setRegion(region == null ? null : region.toString())
         .setAddressResource(addressResource)
+        .addAllFieldMask(fieldMask)
         .build();
     return patchAddress(request);
   }
@@ -10178,32 +10169,28 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
-   *   String requestId = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.patchAddress(address, requestId, region.toString(), addressResource);
+   *   String fieldMask = String.newBuilder().build();
+   *   Operation response = addressClient.patchAddress(address, region.toString(), addressResource, fieldMask);
    * }
    * </code></pre>
    *
    * @param address Name of the address to patch.
-   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
-   *
-   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
-   *
-   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
    * @param region Name of the region for this request.
    * @param addressResource A reserved address resource.
+   * @param fieldMask
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(String address, String requestId, String region, Address addressResource) {
+  public final Operation patchAddress(String address, String region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
         .setAddress(address)
-        .setRequestId(requestId)
         .setRegion(region)
         .setAddressResource(addressResource)
+        .addAllFieldMask(fieldMask)
         .build();
     return patchAddress(request);
   }
@@ -10216,14 +10203,13 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
-   *   String requestId = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
-   *     .setRequestId(requestId)
    *     .setRegion(region.toString())
    *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
    *     .build();
    *   Operation response = addressClient.patchAddress(request);
    * }
@@ -10245,14 +10231,13 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   String address = "";
-   *   String requestId = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
-   *     .setRequestId(requestId)
    *     .setRegion(region.toString())
    *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.patchAddressCallable().futureCall(request);
    *   // Do something
@@ -10273,29 +10258,24 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-   *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.updateAddress(address, requestId, addressResource);
+   *   Operation response = addressClient.updateAddress(address, addressResource, fieldMask);
    * }
    * </code></pre>
    *
    * @param address Name of the Address resource to update.
-   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
-   *
-   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
-   *
-   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
    * @param addressResource A reserved address resource.
+   * @param fieldMask
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation updateAddress(ProjectGlobalAddressName address, String requestId, Address addressResource) {
+  public final Operation updateAddress(ProjectGlobalAddressName address, Address addressResource, List<String> fieldMask) {
 
     UpdateAddressHttpRequest request =
         UpdateAddressHttpRequest.newBuilder()
         .setAddress(address == null ? null : address.toString())
-        .setRequestId(requestId)
         .setAddressResource(addressResource)
+        .addAllFieldMask(fieldMask)
         .build();
     return updateAddress(request);
   }
@@ -10308,29 +10288,24 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-   *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.updateAddress(address.toString(), requestId, addressResource);
+   *   Operation response = addressClient.updateAddress(address.toString(), addressResource, fieldMask);
    * }
    * </code></pre>
    *
    * @param address Name of the Address resource to update.
-   * @param requestId An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed.
-   *
-   * For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments.
-   *
-   * The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).
    * @param addressResource A reserved address resource.
+   * @param fieldMask
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation updateAddress(String address, String requestId, Address addressResource) {
+  public final Operation updateAddress(String address, Address addressResource, List<String> fieldMask) {
 
     UpdateAddressHttpRequest request =
         UpdateAddressHttpRequest.newBuilder()
         .setAddress(address)
-        .setRequestId(requestId)
         .setAddressResource(addressResource)
+        .addAllFieldMask(fieldMask)
         .build();
     return updateAddress(request);
   }
@@ -10343,12 +10318,11 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-   *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
-   *     .setRequestId(requestId)
    *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
    *     .build();
    *   Operation response = addressClient.updateAddress(request);
    * }
@@ -10370,12 +10344,11 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-   *   String requestId = "";
    *   Address addressResource = Address.newBuilder().build();
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
-   *     .setRequestId(requestId)
    *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.updateAddressCallable().futureCall(request);
    *   // Do something
@@ -14303,12 +14276,11 @@ public class AddressClientTest {
     mockService.addResponse(expectedResponse);
 
     String address = "address-1147692044";
-    String requestId = "requestId37109963";
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
-        client.patchAddress(address, requestId, region, addressResource);
+        client.patchAddress(address, region, addressResource, fieldMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -14328,11 +14300,10 @@ public class AddressClientTest {
 
     try {
       String address = "address-1147692044";
-      String requestId = "requestId37109963";
       ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
       Address addressResource = Address.newBuilder().build();
 
-      client.patchAddress(address, requestId, region, addressResource);
+      client.patchAddress(address, region, addressResource, fieldMask);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -14389,11 +14360,10 @@ public class AddressClientTest {
     mockService.addResponse(expectedResponse);
 
     ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-    String requestId = "requestId37109963";
     Address addressResource = Address.newBuilder().build();
 
     Operation actualResponse =
-        client.updateAddress(address, requestId, addressResource);
+        client.updateAddress(address, addressResource, fieldMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -14413,10 +14383,9 @@ public class AddressClientTest {
 
     try {
       ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
-      String requestId = "requestId37109963";
       Address addressResource = Address.newBuilder().build();
 
-      client.updateAddress(address, requestId, addressResource);
+      client.updateAddress(address, addressResource, fieldMask);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
