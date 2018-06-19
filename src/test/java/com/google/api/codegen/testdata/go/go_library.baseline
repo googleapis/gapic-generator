@@ -2610,7 +2610,13 @@ func TestLibraryServicePublishSeries(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    &librarypb.PublishSeriesRequest{}
+    &librarypb.PublishSeriesRequest{
+SeriesUuid: &librarypb.SeriesUuid{
+Source: &librarypb.SeriesUuid_SeriesString{
+SeriesString: "foobar"
+},
+},
+}
     */
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
@@ -2763,7 +2769,9 @@ func TestLibraryServiceListBooks(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    &librarypb.ListBooksRequest{}
+    &librarypb.ListBooksRequest{
+Filter: "book-filter-string",
+}
     */
 
     var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
@@ -3109,7 +3117,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    &librarypb.AddCommentsRequest{}
+    failed to generate init code: field type not supported: Protobuf FieldModel: {google.example.library.v1.Comment.Stage google.example.library.v1.Comment.stage}
     */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
@@ -3396,7 +3404,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    &librarypb.UpdateBookIndexRequest{}
+    failed to generate init code: expected '[N]': {"default_key"}
     */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
@@ -3773,7 +3781,11 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    &librarypb.FindRelatedBooksRequest{}
+    &librarypb.FindRelatedBooksRequest{
+Names: []string{
+0: SOMETHING,
+},
+}
     */
 
     var namesElement string = "namesElement-249113339"

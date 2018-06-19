@@ -22,6 +22,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -62,7 +63,7 @@ public abstract class InitCodeContext {
 
   /** Returns init config strings. */
   @Nullable
-  public abstract Iterable<String> initFieldConfigStrings();
+  public abstract List<String> initFieldConfigStrings();
 
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
@@ -99,7 +100,7 @@ public abstract class InitCodeContext {
 
     public abstract Builder valueGenerator(TestValueGenerator generator);
 
-    public abstract Builder initFieldConfigStrings(Iterable<String> configStrings);
+    public abstract Builder initFieldConfigStrings(List<String> configStrings);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
 

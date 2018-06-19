@@ -14,57 +14,188 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.go.GoModelTypeNameConverter;
 import com.google.api.codegen.util.go.GoTypeTable;
-
-/*
-InitCodeContext{
-  initObjectType=Protobuf FieldModel (google.example.library.v1.CreateShelfRequest): {null},
-  suggestedName=com.google.api.codegen.util.Name@414ef28f,
-  symbolTable=com.google.api.codegen.util.SymbolTable@3feaf7cb,
-  initFields=[
-    Protobuf FieldModel: {
-      google.example.library.v1.Shelf
-      google.example.library.v1.CreateShelfRequest.shelf
-      }
-  ],
-  outputType=SingleObject,
-  valueGenerator=com.google.api.codegen.util.testing.TestValueGenerator@5c9dd20f,
-  initFieldConfigStrings=[],
-  additionalInitCodeNodes=null,
-  initValueConfigMap={},
-  fieldConfigMap={
-    google.example.library.v1.CreateShelfRequest.shelf=FieldConfig{
-      field=Protobuf FieldModel: {google.example.library.v1.Shelf google.example.library.v1.CreateShelfRequest.shelf},
-      resourceNameTreatment=NONE,
-      resourceNameConfig=null,
-      messageResourceNameConfig=null
-    }
-  }
-}
-*/
+import com.google.common.base.Preconditions;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GoInitCodeTransformer {
+
+  ModelTypeTable typeTable = new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
+
   public String generateInitCode(MethodContext methodContext, InitCodeContext initCodeContext) {
-    InitWriter writer = new InitWriter();
-    writer.struct(methodContext.getMethodModel().getInputType());
-    return writer.sb.toString();
+    try {
+      MessageInitWriter writer =
+          new MessageInitWriter(methodContext.getMethodModel().getInputType());
+      for (String spec : initCodeContext.initFieldConfigStrings()) {
+        writer.addInit(spec);
+      }
+      StringBuilder sb = new StringBuilder();
+      writer.writeInit(methodContext.getNamer(), sb);
+      return sb.toString();
+    } catch (Exception e) {
+      return "failed to generate init code: " + e.getMessage();
+    }
   }
 
-  private static class InitWriter {
-    StringBuilder sb = new StringBuilder();
-    ModelTypeTable typeTable =
-        new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
+  private interface InitWriter {
+    void addInit(String spec);
 
-    void struct(TypeModel type) {
-      typeInit(type).append("{}");
+    void writeInit(SurfaceNamer namer, StringBuilder sb);
+  }
+
+  private class MessageInitWriter implements InitWriter {
+    private final TypeModel type;
+    private final LinkedHashMap<FieldModel, InitWriter> fields = new LinkedHashMap<>();
+
+    MessageInitWriter(TypeModel type) {
+      this.type = Preconditions.checkNotNull(type);
     }
 
-    private StringBuilder typeInit(TypeModel type) {
+    @Override
+    public void addInit(String spec) {
+      if (spec.isEmpty()) {
+        return;
+      }
+      if (spec.startsWith(".")) {
+        spec = spec.substring(1);
+      }
+      int p = spec.length();
+      for (int i = 0; i < spec.length(); i++) {
+        char c = spec.charAt(i);
+        if (!Character.isLetterOrDigit(c) && c != '_') {
+          p = i;
+          break;
+        }
+      }
+      Preconditions.checkArgument(p > 0, "empty field name not allowed: %s", spec);
+      FieldModel field = type.getField(spec.substring(0, p));
+      InitWriter next =
+          fields.computeIfAbsent(
+              field,
+              f -> {
+                if (f.getType().isRepeated()) {
+                  return new ArrayInitWriter(f.getType());
+                }
+                if (f.getType().isMessage()) {
+                  return new MessageInitWriter(f.getType());
+                }
+                if (f.getType().isPrimitive()) {
+                  return new ValueInitWriter(f.getType());
+                }
+                throw new UnsupportedOperationException(
+                    String.format("field type not supported: %s", f));
+              });
+      next.addInit(spec.substring(p));
+    }
+
+    @Override
+    public void writeInit(SurfaceNamer namer, StringBuilder sb) {
       // The type name is "*T", but we need "&T" to init.
-      return sb.append('&').append(typeTable.getAndSaveNicknameFor(type).substring(1));
+      sb.append('&').append(typeTable.getAndSaveNicknameFor(type).substring(1)).append("{");
+      if (!fields.isEmpty()) {
+        sb.append('\n');
+      }
+      for (Map.Entry<FieldModel, InitWriter> entry : fields.entrySet()) {
+        FieldModel field = entry.getKey();
+        OneofConfig oneof = type.getOneOfConfig(field.getSimpleName());
+        if (oneof != null) {
+          sb.append(namer.publicFieldName(oneof.groupName()))
+              .append(": &")
+              .append(namer.getOneofVariantTypeName(oneof))
+              .append("{\n");
+        }
+        sb.append(namer.getFieldGetFunctionName(field)).append(": ");
+        entry.getValue().writeInit(namer, sb);
+        if (oneof != null) {
+          sb.append("\n}");
+        }
+        sb.append(",\n");
+      }
+      sb.append("}");
+    }
+  }
+
+  private class ValueInitWriter implements InitWriter {
+    private final TypeModel type;
+    private String value; // TODO(pongad): If null, we should print default.
+
+    ValueInitWriter(TypeModel type) {
+      this.type = Preconditions.checkNotNull(type);
+    }
+
+    @Override
+    public void addInit(String spec) {
+      if (spec.isEmpty()) {
+        return;
+      }
+      Preconditions.checkArgument(spec.startsWith("="), "expected '=value': %s", spec);
+      spec = spec.substring(1);
+
+      // GAPIC YAML seems inconsistent about whether strings should be quoted.
+      // Just normalize and never quote.
+      if (spec.startsWith("\"")) {
+        spec = spec.substring(1, spec.length() - 1);
+      }
+      value = spec;
+    }
+
+    @Override
+    public void writeInit(SurfaceNamer namer, StringBuilder sb) {
+      if (type.isStringType()) {
+        sb.append('"').append(value).append('"');
+      } else if (type.isBytesType()) {
+        sb.append("[]byte(\"").append(value).append("\")");
+      } else {
+        sb.append(value);
+      }
+    }
+  }
+
+  private class ArrayInitWriter implements InitWriter {
+    private final TypeModel type;
+    private final TypeModel innerType;
+    private final TreeMap<Integer, InitWriter> elements = new TreeMap<>();
+
+    ArrayInitWriter(TypeModel type) {
+      this.type = Preconditions.checkNotNull(type);
+      if (type instanceof ProtoTypeRef) {
+        ProtoTypeRef typeRef = (ProtoTypeRef) type;
+        this.innerType = new ProtoTypeRef(typeRef.getProtoType().makeOptional());
+      } else {
+        throw new IllegalArgumentException("can't un-repeat type: " + type);
+      }
+    }
+
+    @Override
+    public void addInit(String spec) {
+      if (spec.isEmpty()) {
+        return;
+      }
+      Preconditions.checkArgument(spec.startsWith("["), "expected '[N]': %s", spec);
+
+      int p = spec.indexOf("]");
+      Preconditions.checkArgument(p > 0, "array index not closed: %s", spec);
+
+      Integer index = Integer.parseInt(spec.substring(1, p));
+      InitWriter inner = elements.computeIfAbsent(index, i -> new MessageInitWriter(type));
+      inner.addInit(spec.substring(p + 1));
+    }
+
+    @Override
+    public void writeInit(SurfaceNamer namer, StringBuilder sb) {
+      sb.append(typeTable.getAndSaveNicknameFor(type)).append("{\n");
+      for (Map.Entry<Integer, InitWriter> element : elements.entrySet()) {
+        sb.append(element.getKey()).append(": ").append("SOMETHING").append(",\n");
+      }
+      sb.append("}");
     }
   }
 }
