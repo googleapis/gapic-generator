@@ -35,12 +35,10 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -360,8 +358,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
     Map<String, ImportType> importNamesAndTypes = new HashMap<>();
 
-    List<ProtoElement> elements = Lists.newArrayList(model.getRoots());
-    String serviceFullName = elements.get(0).getFullName();
+    String serviceFullName = model.getRoots().iterator().next().getFullName();
     String packageName = serviceFullName.substring(0, serviceFullName.lastIndexOf("."));
 
     // Save proto file import names to the type table for disambiguation.
