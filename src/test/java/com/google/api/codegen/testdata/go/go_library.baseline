@@ -3117,7 +3117,15 @@ func TestLibraryServiceAddComments(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     /*
-    failed to generate init code: field type not supported: Protobuf FieldModel: {google.example.library.v1.Comment.Stage google.example.library.v1.Comment.stage}
+    &librarypb.AddCommentsRequest{
+Comments: []*librarypb.Comment{
+&librarypb.Comment{
+Comment: []byte(""),
+Stage: librarypb.Comment_UNSET,
+Alignment: librarypb.SomeMessage2_SomeMessage3_CHAR,
+},
+},
+}
     */
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
@@ -3783,7 +3791,7 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     /*
     &librarypb.FindRelatedBooksRequest{
 Names: []string{
-0: SOMETHING,
+"",
 },
 }
     */

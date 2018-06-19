@@ -21,6 +21,7 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.go.GoModelTypeNameConverter;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Preconditions;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -77,22 +78,7 @@ public class GoInitCodeTransformer {
       }
       Preconditions.checkArgument(p > 0, "empty field name not allowed: %s", spec);
       FieldModel field = type.getField(spec.substring(0, p));
-      InitWriter next =
-          fields.computeIfAbsent(
-              field,
-              f -> {
-                if (f.getType().isRepeated()) {
-                  return new ArrayInitWriter(f.getType());
-                }
-                if (f.getType().isMessage()) {
-                  return new MessageInitWriter(f.getType());
-                }
-                if (f.getType().isPrimitive()) {
-                  return new ValueInitWriter(f.getType());
-                }
-                throw new UnsupportedOperationException(
-                    String.format("field type not supported: %s", f));
-              });
+      InitWriter next = fields.computeIfAbsent(field, f -> newWriter(f.getType()));
       next.addInit(spec.substring(p));
     }
 
@@ -125,10 +111,17 @@ public class GoInitCodeTransformer {
 
   private class ValueInitWriter implements InitWriter {
     private final TypeModel type;
-    private String value; // TODO(pongad): If null, we should print default.
+    private String value;
 
     ValueInitWriter(TypeModel type) {
       this.type = Preconditions.checkNotNull(type);
+      if (type.isMessage() || type.isRepeated()) {
+        value = "nil";
+      } else if (type.isStringType() || type.isBytesType()) {
+        value = "";
+      } else {
+        value = "0";
+      }
     }
 
     @Override
@@ -159,6 +152,34 @@ public class GoInitCodeTransformer {
     }
   }
 
+  private class EnumInitWriter implements InitWriter {
+    private final TypeRef type;
+    private String value;
+
+    EnumInitWriter(TypeModel type) {
+      if (type instanceof ProtoTypeRef) {
+        this.type = ((ProtoTypeRef) type).getProtoType();
+      } else {
+        throw new IllegalArgumentException("can't get enum type: " + type);
+      }
+      value = this.type.getEnumType().getValues().get(0).getSimpleName();
+    }
+
+    @Override
+    public void addInit(String spec) {
+      if (spec.isEmpty()) {
+        return;
+      }
+      Preconditions.checkArgument(spec.startsWith("="), "expected '=value': %s", spec);
+      value = spec.substring(1);
+    }
+
+    @Override
+    public void writeInit(SurfaceNamer namer, StringBuilder sb) {
+      sb.append(typeTable.getEnumValue(type, value));
+    }
+  }
+
   private class ArrayInitWriter implements InitWriter {
     private final TypeModel type;
     private final TypeModel innerType;
@@ -185,17 +206,39 @@ public class GoInitCodeTransformer {
       Preconditions.checkArgument(p > 0, "array index not closed: %s", spec);
 
       Integer index = Integer.parseInt(spec.substring(1, p));
-      InitWriter inner = elements.computeIfAbsent(index, i -> new MessageInitWriter(type));
+      InitWriter inner = elements.computeIfAbsent(index, i -> newWriter(innerType));
       inner.addInit(spec.substring(p + 1));
     }
 
     @Override
     public void writeInit(SurfaceNamer namer, StringBuilder sb) {
+      boolean needIndex = (elements.lastKey() != elements.size() - 1);
+
       sb.append(typeTable.getAndSaveNicknameFor(type)).append("{\n");
       for (Map.Entry<Integer, InitWriter> element : elements.entrySet()) {
-        sb.append(element.getKey()).append(": ").append("SOMETHING").append(",\n");
+        if (needIndex) {
+          sb.append(element.getKey()).append(": ");
+        }
+        element.getValue().writeInit(namer, sb);
+        sb.append(",\n");
       }
       sb.append("}");
     }
+  }
+
+  private InitWriter newWriter(TypeModel type) {
+    if (type.isRepeated()) {
+      return new ArrayInitWriter(type);
+    }
+    if (type.isMessage()) {
+      return new MessageInitWriter(type);
+    }
+    if (type.isPrimitive()) {
+      return new ValueInitWriter(type);
+    }
+    if (type.isEnum()) {
+      return new EnumInitWriter(type);
+    }
+    throw new UnsupportedOperationException(String.format("field type not supported: %s", type));
   }
 }
