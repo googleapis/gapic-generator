@@ -339,8 +339,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       Model model, GapicProductConfig productConfig) {
     ImportSectionView.Builder importView = ImportSectionView.newBuilder();
 
-    ModelTypeTable localTypeTable = emptyTypeTable(productConfig);
-    ModelTypeTable sharedTypeTable = emptyTypeTable(productConfig);
     ModelTypeTable allTypeTable = emptyTypeTable(productConfig);
 
     // Imports from the same API client library package.
@@ -359,7 +357,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
     // Save proto file import names to the type table for disambiguation.
     List<ProtoFile> protoFileDependencies = model.getFiles();
-    populateTypeTables(
+    populateTypeTable(
         protoFileDependencies, allTypeTable, localImportNames, sharedImportNames, packageName);
 
     // Get disambiguated imports.
@@ -399,7 +397,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
    * then put it in the given localImportNames, otherwise if it is a shared import, but it in the
    * given sharedImportNames.
    */
-  private void populateTypeTables(
+  private void populateTypeTable(
       List<ProtoFile> protoFileDependencies,
       ModelTypeTable allTypeTable,
       Set<String> localImportNames,
