@@ -42,6 +42,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +50,7 @@ import java.util.TreeSet;
 
 /* Creates the import sections of GAPIC generated code for Python. */
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
+
   @Override
   public ImportSectionView generateImportSection(TransformationContext context, String className) {
     InterfaceContext interfaceContext = (InterfaceContext) context;
@@ -67,12 +69,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
-  public ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
-    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.appImports(generateFileHeaderAppImports(typeImports));
-    return importSection.build();
-  }
-
   public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(generateTestStandardImports())
@@ -85,7 +81,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       GapicInterfaceContext context, boolean requireProjectId) {
     return ImportSectionView.newBuilder()
         .standardImports(generateSmokeTestStandardImports(requireProjectId))
-        .externalImports(ImmutableList.<ImportFileView>of())
+        .externalImports(ImmutableList.of())
         .appImports(generateTestAppImports(context))
         .build();
   }
@@ -332,27 +328,54 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   public ImportSectionView generateTypesImportSection(
       Model model, GapicProductConfig productConfig) {
-    return ImportSectionView.newBuilder()
-        .appImports(generateTypesProtoImports(model, productConfig))
+    ImportSectionView.Builder importView = generateTypesProtoImports(model, productConfig);
+    return importView
         .externalImports(generateTypesExternalImports())
         .standardImports(generateTypesStandardImports())
         .build();
   }
 
-  private List<ImportFileView> generateTypesProtoImports(
+  private ImportSectionView.Builder generateTypesProtoImports(
       Model model, GapicProductConfig productConfig) {
-    ModelTypeTable typeTable = emptyTypeTable(productConfig);
-    Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+    ImportSectionView.Builder importView = ImportSectionView.newBuilder();
+
+    ModelTypeTable allTypeTable = emptyTypeTable(productConfig);
+
+    // Imports from the same API client library package.
+    Set<ImportFileView> localImports = new TreeSet<>(importFileViewComparator());
+
+    // Shared imports, e.g. protobuf imports.
+    Set<ImportFileView> sharedImports = new TreeSet<>(importFileViewComparator());
+
+    // All imports.
+    Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
+    Set<String> localImportNames = new HashSet<>();
+    Set<String> sharedImportNames = new HashSet<>();
+
+    String serviceFullName = model.getRoots().iterator().next().getFullName();
+    String packageName = serviceFullName.substring(0, serviceFullName.lastIndexOf("."));
 
     // Save proto file import names to the type table for disambiguation.
     List<ProtoFile> protoFileDependencies = model.getFiles();
-    populateTypeTable(protoFileDependencies, typeTable);
+    populateTypeTable(
+        protoFileDependencies, allTypeTable, localImportNames, sharedImportNames, packageName);
 
     // Get disambiguated imports.
-    for (Map.Entry<String, TypeAlias> entry : typeTable.getImports().entrySet()) {
-      imports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    for (Map.Entry<String, TypeAlias> entry : allTypeTable.getImports().entrySet()) {
+      String importFullName = entry.getKey();
+      String nickName = entry.getValue().getNickname();
+      appImports.add(generateAppImport(importFullName, nickName));
+      if (localImportNames.contains(importFullName)) {
+        localImports.add(generateAppImport(importFullName, nickName));
+      } else if (sharedImportNames.contains(importFullName)) {
+        sharedImports.add(generateAppImport(importFullName, nickName));
+      }
     }
-    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+    importView.localImports(ImmutableList.copyOf(localImports));
+    importView.sharedImports(ImmutableList.copyOf(sharedImports));
+    importView.appImports(ImmutableList.copyOf(appImports));
+
+    return importView;
   }
 
   private ModelTypeTable emptyTypeTable(GapicProductConfig productConfig) {
@@ -369,13 +392,30 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.of(createImport("__future__", "absolute_import"), createImport("sys"));
   }
 
-  private void populateTypeTable(List<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
+  /**
+   * For each ProtoFile dependency, put its TypeAlias in allTypeTable; and if it is a local import,
+   * then put it in the given localImportNames, otherwise if it is a shared import, but it in the
+   * given sharedImportNames.
+   */
+  private void populateTypeTable(
+      List<ProtoFile> protoFileDependencies,
+      ModelTypeTable allTypeTable,
+      Set<String> localImportNames,
+      Set<String> sharedImportNames,
+      String packageName) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
       ImmutableList<MessageType> messages = protoFile.getMessages();
       if (!messages.isEmpty()) {
-        typeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+        TypeRef typeRef = TypeRef.of(messages.get(0));
+        allTypeTable.getAndSaveNicknameFor(typeRef);
+
+        if (protoFile.getFullName().equals(packageName)) {
+          localImportNames.add(allTypeTable.getFullNameFor(typeRef));
+        } else {
+          sharedImportNames.add(allTypeTable.getFullNameFor(typeRef));
+        }
       }
     }
   }

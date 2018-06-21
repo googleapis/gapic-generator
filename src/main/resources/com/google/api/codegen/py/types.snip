@@ -13,12 +13,25 @@
 @end
 
 @private body(view)
+  _shared_modules = [
+      {@importedModules(view.fileHeader.importSection.sharedImports)}
+  ]
+
+  _local_modules = [
+      {@importedModules(view.fileHeader.importSection.localImports)}
+  ]
+
   names = []
-  for module in ({@importedModules(view.fileHeader.importSection.appImports)}):
+
+  for module in _shared_modules:
       for name, message in get_messages(module).items():
-          message.__module__ = '{@view.namespace}.types'
           setattr(sys.modules[__name__], name, message)
           names.append(name)
+  for module in _local_modules:
+        for name, message in get_messages(module).items():
+            message.__module__ = '{@view.namespace}.types'
+            setattr(sys.modules[__name__], name, message)
+            names.append(name)
 
 
   __all__ = tuple(sorted(names))
