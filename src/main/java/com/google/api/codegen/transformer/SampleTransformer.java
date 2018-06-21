@@ -218,7 +218,7 @@ public class SampleTransformer {
         List<OutputView> outputViews =
             outputs
                 .stream()
-                .map(s -> OutputTransformer.toView(s, context))
+                .map(s -> OutputTransformer.toView(s, context, valueSet))
                 .collect(Collectors.toList());
         methodSampleViews.add(
             MethodSampleView.newBuilder()

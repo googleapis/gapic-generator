@@ -456,7 +456,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPrintSpec(String spec) {
-    // Escaers don't work here. They only map from characters to strings.
+    // com.google.common.escape.Escaper don't work here. They only map from characters to strings.
     StringBuilder sb = new StringBuilder();
     int cursor = 0;
     while (true) {

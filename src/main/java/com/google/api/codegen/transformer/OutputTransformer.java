@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
+import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
@@ -35,16 +36,18 @@ class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static OutputView toView(OutputSpec config, MethodContext context) {
+  static OutputView toView(OutputSpec config, MethodContext context, SampleValueSet valueSet) {
     Runnable once =
         new Runnable() {
           boolean ran;
 
           @Override
           public void run() {
-            if (ran) {
-              throw new IllegalArgumentException("only one field of OutputSpec may be set");
-            }
+            Preconditions.checkArgument(
+                !ran,
+                "%s:%s: only one field of OutputSpec may be set",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId());
             ran = true;
           }
         };
@@ -56,27 +59,38 @@ class OutputTransformer {
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view.print(toView(config.getPrintList(), context)).kind(OutputView.Kind.PRINT);
+      view.print(toView(config.getPrintList(), context, valueSet)).kind(OutputView.Kind.PRINT);
     }
     return view.build();
   }
 
-  private static OutputView.PrintView toView(List<String> config, MethodContext context) {
-    Preconditions.checkArgument(!config.isEmpty(), "print spec cannot be empty");
+  private static OutputView.PrintView toView(
+      List<String> config, MethodContext context, SampleValueSet valueSet) {
+    Preconditions.checkArgument(
+        !config.isEmpty(),
+        "%s:%s: print spec cannot be empty",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId());
+
     return OutputView.PrintView.newBuilder()
-        .printSpec(context.getNamer().getPrintSpec(config.get(0)))
+        .printSpec(context.getNamer().getPrintSpec(config.get(0), numSub))
         .printArgs(
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(a, context))
+                .map(a -> accessor(a, context, valueSet))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
-  private static OutputView.PrintArgView accessor(String config, MethodContext context) {
+  private static OutputView.PrintArgView accessor(
+      String config, MethodContext context, SampleValueSet valueSet) {
     String[] configElems = config.split("\\.");
-    Preconditions.checkArgument(configElems.length != 0, "field string cannot be empty");
+    Preconditions.checkArgument(
+        configElems.length != 0,
+        "%s:%s: field string cannot be empty",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId());
 
     OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
     TypeModel type;
@@ -92,9 +106,19 @@ class OutputTransformer {
       String fieldName = configElems[i];
       FieldModel field =
           Preconditions.checkNotNull(
-              type.getField(fieldName), "type %s does not have field %s", type, fieldName);
+              type.getField(fieldName),
+              "%s:%s: type %s does not have field %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              type,
+              fieldName);
       Preconditions.checkArgument(
-          !field.isRepeated() && !field.isMap(), "%s.%s is not scalar", type, fieldName);
+          !field.isRepeated() && !field.isMap(),
+          "%s:%s: %s.%s is not scalar",
+          context.getMethodModel().getSimpleName(),
+          valueSet.getId(),
+          type,
+          fieldName);
       type = field.getType();
       accessors.add(context.getNamer().getFieldGetFunctionName(field));
     }
