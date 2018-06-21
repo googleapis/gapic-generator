@@ -704,9 +704,6 @@ public class StaticLangApiMethodTransformer {
     for (FieldConfig fieldConfig : fieldConfigs) {
       params.add(resourceObjectTransformer.generateRequestObjectParam(context, fieldConfig));
     }
-    //    if (method.hasExtraFieldMask()) {
-    //      params.add(resourceObjectTransformer.generateFieldMaskParam(context.getNamer()));
-    //    }
     methodViewBuilder.forwardingMethodParams(params);
     List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
     nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
