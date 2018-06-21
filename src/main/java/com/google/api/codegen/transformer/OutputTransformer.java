@@ -33,7 +33,10 @@ class OutputTransformer {
       return Collections.emptyList();
     }
     return Collections.singletonList(
-        OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
+        OutputSpec.newBuilder()
+            .addPrint("") // empty string means just the first placeholder, unformatted
+            .addPrint(RESPONSE_PLACEHOLDER)
+            .build());
   }
 
   static OutputView toView(OutputSpec config, MethodContext context, SampleValueSet valueSet) {
