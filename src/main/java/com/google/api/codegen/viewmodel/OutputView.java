@@ -17,36 +17,24 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
-@AutoValue
-public abstract class OutputView {
+public interface OutputView {
 
   public enum Kind {
     PRINT
   }
 
-  public abstract Kind kind();
-
-  public abstract PrintView print();
-
-  public static Builder newBuilder() {
-    return new AutoValue_OutputView.Builder();
-  }
-
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder kind(Kind val);
-
-    public abstract Builder print(PrintView val);
-
-    public abstract OutputView build();
-  }
+  Kind kind();
 
   @AutoValue
-  public abstract static class PrintView {
+  abstract class PrintView implements OutputView {
 
     public abstract String printSpec();
 
     public abstract ImmutableList<PrintArgView> printArgs();
+
+    public Kind kind() {
+      return Kind.PRINT;
+    }
 
     public static Builder newBuilder() {
       return new AutoValue_OutputView_PrintView.Builder();
@@ -63,7 +51,7 @@ public abstract class OutputView {
   }
 
   @AutoValue
-  public abstract static class PrintArgView {
+  abstract class PrintArgView {
 
     public abstract String variable();
 

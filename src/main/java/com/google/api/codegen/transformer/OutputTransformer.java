@@ -52,19 +52,24 @@ class OutputTransformer {
           }
         };
 
-    OutputView.Builder view = OutputView.newBuilder();
+    OutputView view = null;
     if (config.hasLoop()) {
       once.run();
       throw new UnsupportedOperationException("loop not implemented yet");
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view.print(toView(config.getPrintList(), context, valueSet)).kind(OutputView.Kind.PRINT);
+      view = printView(config.getPrintList(), context, valueSet);
     }
-    return view.build();
+
+    return Preconditions.checkNotNull(
+        view,
+        "%s:%s: one field of OutputSpec must be set",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId());
   }
 
-  private static OutputView.PrintView toView(
+  private static OutputView.PrintView printView(
       List<String> config, MethodContext context, SampleValueSet valueSet) {
     Preconditions.checkArgument(
         !config.isEmpty(),
