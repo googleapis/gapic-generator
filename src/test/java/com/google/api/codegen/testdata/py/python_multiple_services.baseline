@@ -1213,17 +1213,29 @@ from google.protobuf import descriptor_pb2
 from google.protobuf import empty_pb2
 
 
+_shared_modules = [
+    http_pb2,
+    other_shared_type_pb2,
+    different_submodule_pb2,
+    descriptor_pb2,
+    empty_pb2,
+]
+
+_local_modules = [
+    multiple_services_pb2,
+]
+
 names = []
-for module in (http_pb2,
-               other_shared_type_pb2,
-               different_submodule_pb2,
-               multiple_services_pb2,
-               descriptor_pb2,
-               empty_pb2,):
+
+for module in _shared_modules:
     for name, message in get_messages(module).items():
-        message.__module__ = 'google.cloud.example_v1.types'
         setattr(sys.modules[__name__], name, message)
         names.append(name)
+for module in _local_modules:
+      for name, message in get_messages(module).items():
+          message.__module__ = 'google.cloud.example_v1.types'
+          setattr(sys.modules[__name__], name, message)
+          names.append(name)
 
 
 __all__ = tuple(sorted(names))
