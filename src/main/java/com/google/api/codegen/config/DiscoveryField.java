@@ -234,10 +234,12 @@ public class DiscoveryField implements FieldModel, TypeModel {
       parentName = "";
     }
 
-    String namespace = apiModel == null ? StandardSchemaGenerator.PARENT_PACKAGE : apiModel.getDefaultPackageName();
+    String namespace =
+        apiModel == null
+            ? StandardSchemaGenerator.PARENT_PACKAGE
+            : apiModel.getDefaultPackageName();
 
-    return ResourceNameMessageConfig.getFullyQualifiedMessageName(
-        namespace, parentName);
+    return ResourceNameMessageConfig.getFullyQualifiedMessageName(namespace, parentName);
   }
 
   @Override
