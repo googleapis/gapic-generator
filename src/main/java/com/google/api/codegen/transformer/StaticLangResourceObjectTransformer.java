@@ -25,7 +25,7 @@ import java.util.List;
 
 /** Transforms request objects to ViewModels form. */
 public class StaticLangResourceObjectTransformer {
-  public final static Name FIELD_MASK_NAME = Name.anyCamel("fieldMask");
+  public static final Name FIELD_MASK_NAME = Name.anyCamel("fieldMask");
 
   public RequestObjectParamView generateRequestObjectParam(
       MethodContext context, FieldConfig fieldConfig) {
@@ -125,23 +125,23 @@ public class StaticLangResourceObjectTransformer {
     return param.build();
   }
 
-//  public RequestObjectParamView generateFieldMaskParam(SurfaceNamer namer) {
-//    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
-//
-//    param.name(namer.getNameFormatter().localVarName(FIELD_MASK_NAME));
-//    param.keyName(namer.getNameFormatter().localVarName(FIELD_MASK_NAME));
-//    param.typeName("List");
-//    param.elementTypeName("String");
-//    param.setCallName(namer.getFieldSetFunctionName(
-//        FIELD_MASK_NAME, SurfaceNamer.MapType.NOT_MAP, SurfaceNamer.Cardinality.IS_REPEATED));
-//    param.addCallName("not implemented");
-//    param.getCallName(namer.getFieldGetFunctionName(
-//        FIELD_MASK_NAME, SurfaceNamer.MapType.NOT_MAP, SurfaceNamer.Cardinality.IS_REPEATED));
-//    param.isMap(false);
-//    param.isArray(true);
-//    param.isPrimitive(false);
-//    param.isOptional(false);
-//
-//    return param.build();
-//  }
+  //  public RequestObjectParamView generateFieldMaskParam(SurfaceNamer namer) {
+  //    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
+  //
+  //    param.name(namer.getNameFormatter().localVarName(FIELD_MASK_NAME));
+  //    param.keyName(namer.getNameFormatter().localVarName(FIELD_MASK_NAME));
+  //    param.typeName("List");
+  //    param.elementTypeName("String");
+  //    param.setCallName(namer.getFieldSetFunctionName(
+  //        FIELD_MASK_NAME, SurfaceNamer.MapType.NOT_MAP, SurfaceNamer.Cardinality.IS_REPEATED));
+  //    param.addCallName("not implemented");
+  //    param.getCallName(namer.getFieldGetFunctionName(
+  //        FIELD_MASK_NAME, SurfaceNamer.MapType.NOT_MAP, SurfaceNamer.Cardinality.IS_REPEATED));
+  //    param.isMap(false);
+  //    param.isArray(true);
+  //    param.isPrimitive(false);
+  //    param.isOptional(false);
+  //
+  //    return param.build();
+  //  }
 }

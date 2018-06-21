@@ -263,10 +263,10 @@ public final class DiscoveryMethodModel implements MethodModel {
   private DiscoveryField createFieldMaskField() {
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(
-            StandardSchemaGenerator.createStringSchema(
-                "", SurfaceNamer.Cardinality.NOT_REPEATED),
-            "fieldMask", SurfaceNamer.Cardinality.IS_REPEATED), StandardSchemaGenerator.PARENT_PACKAGE
-    );
+            StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
+            "fieldMask",
+            SurfaceNamer.Cardinality.IS_REPEATED),
+        StandardSchemaGenerator.PARENT_PACKAGE);
   }
 
   /**
