@@ -73,7 +73,7 @@ class OutputTransformer {
         valueSet.getId());
 
     return OutputView.PrintView.newBuilder()
-        .printSpec(context.getNamer().getPrintSpec(config.get(0), numSub))
+        .printSpec(context.getNamer().getPrintSpec(config.get(0)))
         .printArgs(
             config
                 .subList(1, config.size())
