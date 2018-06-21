@@ -92,7 +92,7 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^0.14.0",
+    "google-gax": "^0.17.1",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.merge": "^4.6.0",
     "protobufjs": "^6.8.0"
@@ -130,10 +130,10 @@ $ npm install --save @google-cloud/library
 'use strict';
 
 describe('LibraryServiceSmokeTest', () => {
-  if (!process.env.SMOKE_TEST_PROJECT) {
-    throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+  if (!process.env.GCLOUD_PROJECT) {
+    throw new Error("Usage: GCLOUD_PROJECT=<project_id> node #{$0}");
   }
-  var projectId = process.env.SMOKE_TEST_PROJECT;
+  var projectId = process.env.GCLOUD_PROJECT;
 
   it('successfully makes a call to the service', done => {
     const library = require('../src');
@@ -3144,7 +3144,7 @@ class LibraryServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = gax.grpc(opts);
+    var gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
@@ -3228,7 +3228,7 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
-    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+    var protoFilesRoot = new gax.GoogleProtoFilesRoot();
     protoFilesRoot = protobuf.loadSync(
       path.join(__dirname, '..', '..', 'protos', 'library.proto'),
       protoFilesRoot
