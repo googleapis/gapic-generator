@@ -56,6 +56,8 @@ import java.util.stream.Collectors;
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String GEMSPEC_FILE = "ruby/gemspec.snip";
   private static final String README_FILE = "ruby/README.md.snip";
+  private static final String CHANGELOG_FILE = "ruby/CHANGELOG.md.snip";
+  private static final String CHANGELOG_OUTPUT_FILE = "CHANGELOG.md";
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES =
       ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "LICENSE.snip");
@@ -97,6 +99,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
     return ImmutableList.<String>builder()
         .add(GEMSPEC_FILE)
         .add(README_FILE)
+        .add(CHANGELOG_FILE)
         .addAll(TOP_LEVEL_FILES)
         .addAll(TOP_LEVEL_DOT_FILES)
         .build();
@@ -108,6 +111,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
     return ImmutableList.<ViewModel>builder()
         .add(generateGemspecView(model, namer))
         .add(generateReadmeView(model, productConfig, namer))
+        .add(generateChangelogView(model, namer))
         .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
         .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
@@ -196,6 +200,20 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
                         + String.format(
                             LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
                 .build())
+        .build();
+  }
+
+  private ViewModel generateChangelogView(ApiModel model, RubyPackageMetadataNamer namer) {
+    return metadataTransformer
+        .generateMetadataView(
+            namer,
+            packageConfig,
+            model,
+            CHANGELOG_FILE,
+            CHANGELOG_OUTPUT_FILE,
+            TargetLanguage.RUBY,
+            ImmutableSet.of())
+        .identifier(namer.getMetadataIdentifier())
         .build();
   }
 
