@@ -284,7 +284,10 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (field.isMap()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
     }
-    if (schema.type() == Type.OBJECT || schema.type() == Type.ARRAY) {
+    if (field.isRepeated()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
+    }
+    if (schema.type() == Type.OBJECT) {
       return TypedValue.create(getTypeNameForElementType(field), "%s.newBuilder().build()");
     }
     return TypedValue.create(getTypeName(field), "null");
@@ -298,6 +301,9 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(TypeModel typeModel) {
+    if (typeModel instanceof DiscoveryField) {
+      return getSnippetZeroValue((DiscoveryField) typeModel);
+    }
     if (typeModel.isStringType()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.lang.String"), "\"\"");
     }

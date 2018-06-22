@@ -195,7 +195,6 @@ public class JavaDiscoGapicSchemaToViewTransformer
         hasRequiredProperties = true;
       }
     }
-
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 

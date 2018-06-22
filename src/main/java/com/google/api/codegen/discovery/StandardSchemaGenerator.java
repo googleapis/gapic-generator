@@ -63,28 +63,6 @@ public class StandardSchemaGenerator {
         Schema.Type.ARRAY);
   }
 
-  public static Schema createOptionalSchema(Schema schema) {
-    if (schema.type().equals(Schema.Type.ARRAY)) {
-      return new AutoValue_Schema(
-          schema.additionalProperties(),
-          schema.defaultValue(),
-          schema.description(),
-          schema.format(),
-          schema.id(),
-          schema.isEnum(),
-          schema.items(),
-          schema.id(),
-          schema.location(),
-          schema.pattern(),
-          schema.properties(),
-          null,
-          schema.repeated(),
-          schema.required(),
-          schema.isMap(),
-          Schema.Type.EMPTY);
-    } else return schema;
-  }
-
   public static DiscoveryField createFieldMaskField() {
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(

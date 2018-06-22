@@ -276,9 +276,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     paramView.properties(new LinkedList<>());
     properties.add(paramView.build());
 
-    if (method.hasExtraFieldMask()) {
-      requestView.hasFieldMask(true);
-    }
+    requestView.hasFieldMask(method.hasExtraFieldMask());
 
     Collections.sort(properties);
 
