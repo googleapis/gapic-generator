@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 /** A view model for methods samples. */
 @AutoValue
@@ -29,6 +30,9 @@ public abstract class MethodSampleView {
   /** The initialization code constructed from this samples value set and calling form. */
   public abstract InitCodeView initCode();
 
+  /** The response printing code. */
+  public abstract List<OutputView> outputs();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -40,6 +44,8 @@ public abstract class MethodSampleView {
     public abstract Builder callingForm(CallingForm val);
 
     public abstract Builder initCode(InitCodeView val);
+
+    public abstract Builder outputs(List<OutputView> val);
 
     public abstract MethodSampleView build();
   }
