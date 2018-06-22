@@ -311,6 +311,7 @@ public class JavaDiscoGapicRequestToViewTransformer
       EscapeName escapeName) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
+    String innerTypeName = context.getSchemaTypeTable().getAndSaveNicknameForElementType(schema);
     paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     String fieldName = name;
@@ -319,7 +320,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     }
     paramView.name(fieldName);
     paramView.typeName(typeName);
-    paramView.innerTypeName(typeName);
+    paramView.innerTypeName(innerTypeName);
     paramView.isRequired(schema.isRequired());
     paramView.canRepeat(schema.isRepeated());
     paramView.fieldGetFunction(
