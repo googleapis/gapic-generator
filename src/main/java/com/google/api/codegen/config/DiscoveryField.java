@@ -342,6 +342,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public TypeModel makeOptional() {
+    // Make a copy of this object, without the ARRAY-ness.
     if (schema.items() != null && schema.type().equals(Type.ARRAY)) {
       return DiscoveryField.create(schema.items(), apiModel);
     }
