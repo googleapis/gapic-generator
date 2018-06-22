@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.discovery.StandardSchemaGenerator;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.StaticLangMemberView;
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ import java.util.List;
 
 /** Transforms request objects to ViewModels form. */
 public class StaticLangResourceObjectTransformer {
-  private Name FIELD_MASK_NAME = Name.anyCamel("fieldMask");
 
   public RequestObjectParamView generateRequestObjectParam(
       MethodContext context, FieldConfig fieldConfig) {
