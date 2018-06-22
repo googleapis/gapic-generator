@@ -33,11 +33,10 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
 import org.threeten.bp.Duration;
 
 /**
@@ -175,8 +174,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, requiredFieldsList));
+            getRequiredFields(diagCollector, methodModel, requiredFieldsList));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
