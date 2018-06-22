@@ -88,18 +88,28 @@ class OutputTransformer {
         .build();
   }
 
+  // accessor:
+  //   identifier
+  //   accessor '[' number ']'
+  //   accessor '.' identifier
   private static OutputView.PrintArgView accessor(
       String config, MethodContext context, SampleValueSet valueSet) {
-    String[] configElems = config.split("\\.");
-    Preconditions.checkArgument(
-        configElems.length != 0,
-        "%s:%s: field string cannot be empty",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId());
 
     OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
+
+    int cursor = 0;
+    int end = config.length();
+    for (int p = cursor; p < config.length(); p++) {
+      char c = config.charAt(p);
+      if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
+        end = p;
+        break;
+      }
+    }
+
+    String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
-    if (configElems[0].equals(RESPONSE_PLACEHOLDER)) {
+    if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName());
       type = context.getMethodModel().getOutputType();
     } else {
@@ -107,25 +117,49 @@ class OutputTransformer {
     }
 
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
-    for (int i = 1; i < configElems.length; i++) {
-      String fieldName = configElems[i];
-      FieldModel field =
-          Preconditions.checkNotNull(
-              type.getField(fieldName),
-              "%s:%s: type %s does not have field %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
-              type,
-              fieldName);
-      Preconditions.checkArgument(
-          !field.isRepeated() && !field.isMap(),
-          "%s:%s: %s.%s is not scalar",
-          context.getMethodModel().getSimpleName(),
-          valueSet.getId(),
-          type,
-          fieldName);
-      type = field.getType();
-      accessors.add(context.getNamer().getFieldGetFunctionName(field));
+    while (end < config.length()) {
+      if (config.charAt(end) == '.') {
+        Preconditions.checkArgument(
+            !type.isRepeated() && !type.isMap(),
+            "%s:%s: %s is not scalar",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.substring(0, end));
+
+        cursor = end + 1;
+        end = config.length();
+        for (int p = cursor; p < config.length(); p++) {
+          char c = config.charAt(p);
+          if (!Character.isLetterOrDigit(c) && c != '_') {
+            end = p;
+            break;
+          }
+        }
+
+        String fieldName = config.substring(cursor, end);
+        FieldModel field =
+            Preconditions.checkNotNull(
+                type.getField(fieldName),
+                "%s:%s: type %s does not have field %s",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId(),
+                type,
+                fieldName);
+
+        type = field.getType();
+        accessors.add(context.getNamer().getFieldGetFunctionName(field));
+      } else if (config.charAt(end) == '[') {
+        Preconditions.checkArgument(
+            type.isRepeated() && !type.isMap(),
+            "%s:%s: %s is not a repeated field",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.substring(0, end));
+        throw new UnsupportedOperationException("array indexing not supported yet");
+      } else {
+        throw new IllegalArgumentException(
+            String.format("unexpected character: %c (%s)", config.charAt(end), config));
+      }
     }
     return view.accessors(accessors.build()).build();
   }
