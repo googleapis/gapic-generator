@@ -278,7 +278,6 @@ public class JavaDiscoGapicRequestToViewTransformer
 
     if (method.hasExtraFieldMask()) {
       requestView.hasFieldMask(true);
-
     }
 
     Collections.sort(properties);

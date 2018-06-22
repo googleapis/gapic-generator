@@ -8735,8 +8735,16 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       return fieldMask;
     }
 
-    public Builder setFieldMask(List<String> fieldMask) {
-      this.fieldMask = fieldMask;
+    public Builder addAllFieldMask(List<String> fieldMask) {
+      if (this.fieldMask == null) {
+        this.fieldMask = new ArrayList<>(fieldMask.size());
+      }
+      this.fieldMask.addAll(fieldMask);
+      return this;
+    }
+
+    public Builder addFieldMask(List<String> fieldMask) {
+      this.fieldMask.add(fieldMask);
       return this;
     }
 
@@ -8847,7 +8855,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
       newBuilder.setAddress(this.address);
       newBuilder.setAddressResource(this.addressResource);
       newBuilder.setCallback(this.callback);
-      newBuilder.setFieldMask(this.fieldMask);
+      newBuilder.addAllFieldMask(this.fieldMask);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
@@ -9225,8 +9233,16 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       return fieldMask;
     }
 
-    public Builder setFieldMask(List<String> fieldMask) {
-      this.fieldMask = fieldMask;
+    public Builder addAllFieldMask(List<String> fieldMask) {
+      if (this.fieldMask == null) {
+        this.fieldMask = new ArrayList<>(fieldMask.size());
+      }
+      this.fieldMask.addAll(fieldMask);
+      return this;
+    }
+
+    public Builder addFieldMask(List<String> fieldMask) {
+      this.fieldMask.add(fieldMask);
       return this;
     }
 
@@ -9326,7 +9342,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
       newBuilder.setAddress(this.address);
       newBuilder.setAddressResource(this.addressResource);
       newBuilder.setCallback(this.callback);
-      newBuilder.setFieldMask(this.fieldMask);
+      newBuilder.addAllFieldMask(this.fieldMask);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
       newBuilder.setPrettyPrint(this.prettyPrint);
@@ -10138,6 +10154,8 @@ public class AddressClient implements BackgroundResource {
    *   String address = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   Operation response = addressClient.patchAddress(address, region, addressResource, fieldMask);
    * }
    * </code></pre>
@@ -10171,7 +10189,8 @@ public class AddressClient implements BackgroundResource {
    *   String address = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
-   *   String fieldMask = String.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   Operation response = addressClient.patchAddress(address, region.toString(), addressResource, fieldMask);
    * }
    * </code></pre>
@@ -10205,6 +10224,8 @@ public class AddressClient implements BackgroundResource {
    *   String address = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
    *     .setRegion(region.toString())
@@ -10233,6 +10254,8 @@ public class AddressClient implements BackgroundResource {
    *   String address = "";
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
    *     .setAddress(address)
    *     .setRegion(region.toString())
@@ -10259,6 +10282,8 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   Operation response = addressClient.updateAddress(address, addressResource, fieldMask);
    * }
    * </code></pre>
@@ -10289,6 +10314,8 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   Operation response = addressClient.updateAddress(address.toString(), addressResource, fieldMask);
    * }
    * </code></pre>
@@ -10319,6 +10346,8 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .setAddressResource(addressResource)
@@ -10345,6 +10374,8 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
+   *   String fieldMaskElement = "";
+   *   List&lt;String&gt; fieldMask = Arrays.asList(fieldMaskElement);
    *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .setAddressResource(addressResource)
@@ -14279,6 +14310,8 @@ public class AddressClientTest {
     String address = "address-1147692044";
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
+    String fieldMaskElement = "fieldMaskElement-1669214258";
+    List<String> fieldMask = Arrays.asList(fieldMaskElement);
 
     Operation actualResponse =
         client.patchAddress(address, region, addressResource, fieldMask);
@@ -14303,6 +14336,8 @@ public class AddressClientTest {
       String address = "address-1147692044";
       ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
       Address addressResource = Address.newBuilder().build();
+      String fieldMaskElement = "fieldMaskElement-1669214258";
+      List<String> fieldMask = Arrays.asList(fieldMaskElement);
 
       client.patchAddress(address, region, addressResource, fieldMask);
       Assert.fail("No exception raised");
@@ -14362,6 +14397,8 @@ public class AddressClientTest {
 
     ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
     Address addressResource = Address.newBuilder().build();
+    String fieldMaskElement = "fieldMaskElement-1669214258";
+    List<String> fieldMask = Arrays.asList(fieldMaskElement);
 
     Operation actualResponse =
         client.updateAddress(address, addressResource, fieldMask);
@@ -14385,6 +14422,8 @@ public class AddressClientTest {
     try {
       ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
       Address addressResource = Address.newBuilder().build();
+      String fieldMaskElement = "fieldMaskElement-1669214258";
+      List<String> fieldMask = Arrays.asList(fieldMaskElement);
 
       client.updateAddress(address, addressResource, fieldMask);
       Assert.fail("No exception raised");

@@ -233,7 +233,11 @@ public class InitCodeNode {
         String nameString = field.getNameAsParameter();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
-          newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
+          if (field.isRepeated()) {
+            newSubTrees.add(InitCodeNode.createSingletonList(field.getNameAsParameter()));
+          } else {
+            newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
+          }
         } else {
           newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }

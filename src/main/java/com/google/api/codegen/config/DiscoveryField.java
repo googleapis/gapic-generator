@@ -380,8 +380,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  // Schemas are immutable, so this is just the identity function.
   public TypeModel makeOptional() {
+    if (schema.items() != null && apiModel == null) {
+      return DiscoveryField.create(schema.items(), namespace);
+    }
     return this;
   }
 
