@@ -23,7 +23,9 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -51,7 +53,11 @@ public abstract class FlatteningConfig {
     boolean missing = false;
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
-    for (String parameter : flatteningGroup.getParametersList()) {
+    List<String> flattenedParams = Lists.newArrayList(flatteningGroup.getParametersList());
+    if (method.hasExtraFieldMask()) {
+      flattenedParams.add("fieldMask");
+    }
+    for (String parameter : flattenedParams) {
 
       FieldModel parameterField = method.getInputField(parameter);
       if (parameterField == null) {

@@ -759,9 +759,9 @@ public class StaticLangApiMethodTransformer {
                 context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
-    methodViewBuilder.methodParams(new ArrayList<>());
-    methodViewBuilder.requestObjectParams(new ArrayList<>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<>());
+    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     RequestObjectMethodDetailView.Builder detailBuilder =
         RequestObjectMethodDetailView.newBuilder();
@@ -798,9 +798,9 @@ public class StaticLangApiMethodTransformer {
                 context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
-    methodViewBuilder.methodParams(new ArrayList<>());
-    methodViewBuilder.requestObjectParams(new ArrayList<>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<>());
+    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     String requestTypeFullName =
         context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
