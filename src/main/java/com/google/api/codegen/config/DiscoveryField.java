@@ -234,7 +234,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isPrimitive() {
-    return schema.items() == null && schema.type() != Type.OBJECT;
+    return (schema.properties() == null || schema.properties().isEmpty())
+        && schema.type() != Type.OBJECT;
   }
 
   @Override
