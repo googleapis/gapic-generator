@@ -21,7 +21,6 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
-import com.google.api.codegen.discovery.StandardSchemaGenerator;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -42,8 +41,9 @@ import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
-  private final List<DiscoveryField> properties;
+  public static final String DEFAULT_NAMESPACE = "com.google.api.codegen.discovery";
 
+  private final List<DiscoveryField> properties;
   private final DiscoApiModel apiModel;
   private final String namespace;
   // Dereferenced schema to use for rendering type names and determining properties, type, and format.
@@ -52,7 +52,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private final Schema originalSchema;
 
   // Unformatted type name for this Field.
-  // For message-type Fields, this will be unique per namespace.
+  // For message-type Fields, this will be unique per namespace, as defined by apiModel.
   private final String typeName;
 
   // Comparator for Schemas that have children schemas.
@@ -77,8 +77,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.apiModel = apiModel;
 
     String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
-    this.namespace = apiModel.getDefaultPackageName();
-    if (isTopLevelSchema(schema)) {
+    this.namespace = apiModel == null ? DEFAULT_NAMESPACE : apiModel.getDefaultPackageName();
+    if (isTopLevelSchema(schema) && apiModel != null) {
       // Within this namespace, get a unique name for this message-type schema.
       SchemaNamer messageNamer =
           namespaceToSchemaNamer.computeIfAbsent(namespace, k -> new SchemaNamer());
@@ -93,49 +93,14 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.properties = propertiesBuilder.build();
   }
 
-  /**
-   * Create a FieldModel object from a non-null Schema object, and internally dereference the input
-   * schema.
-   */
-  private DiscoveryField(Schema refSchema, String namespace) {
-    Preconditions.checkNotNull(refSchema);
-    this.originalSchema = refSchema;
-    this.schema = refSchema;
-    this.namespace = namespace;
-    this.apiModel = null;
-
-    String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
-    if (isTopLevelSchema(schema)) {
-      // Within this namespace, get a unique name for this message-type schema.
-      SchemaNamer messageNamer =
-          namespaceToSchemaNamer.computeIfAbsent(namespace, k -> new SchemaNamer());
-      simpleName = messageNamer.getSchemaName(schema, simpleName);
-    }
-    this.typeName = simpleName;
-
-    ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
-    for (Schema child : this.schema.properties().values()) {
-      propertiesBuilder.add(DiscoveryField.create(child, namespace));
-    }
-    this.properties = propertiesBuilder.build();
-  }
-
   /** Create a FieldModel object from a non-null Schema object. */
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
-    if (rootApiModel == null) {
-      return create(schema, StandardSchemaGenerator.PARENT_PACKAGE);
-    }
-    if (!Strings.isNullOrEmpty(schema.reference())) {
+    if (!Strings.isNullOrEmpty(schema.reference()) && rootApiModel != null) {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
     DiscoveryField field = new DiscoveryField(schema, rootApiModel);
     return field;
-  }
-
-  /** Create a FieldModel object from a non-null Schema object. */
-  public static synchronized DiscoveryField create(Schema schema, String namespace) {
-    return new DiscoveryField(schema, namespace);
   }
 
   /** @return the underlying dereferenced Discovery Schema. */
@@ -233,11 +198,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
     } else {
       parentName = "";
     }
-
-    String namespace =
-        apiModel == null
-            ? StandardSchemaGenerator.PARENT_PACKAGE
-            : apiModel.getDefaultPackageName();
 
     return ResourceNameMessageConfig.getFullyQualifiedMessageName(namespace, parentName);
   }
@@ -381,8 +341,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public TypeModel makeOptional() {
-    if (schema.items() != null && apiModel == null) {
-      return DiscoveryField.create(schema.items(), namespace);
+    if (schema.items() != null && schema.type().equals(Type.ARRAY)) {
+      return DiscoveryField.create(schema.items(), apiModel);
     }
     return this;
   }

@@ -49,7 +49,7 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   public boolean isIgnoredParameter(FieldModel parameter) {
     Schema f = ((DiscoveryField) parameter).getDiscoveryField();
     // TODO(don't hardcode this here)
-    if (parameter.getSimpleName().equals("fieldMask")) {
+    if (parameter.getSimpleName().equals("fieldMask") && ((DiscoveryField) parameter).getDiscoApiModel() == null) {
       // TODO: more checks, e.g. for package name
       return true;
     }
