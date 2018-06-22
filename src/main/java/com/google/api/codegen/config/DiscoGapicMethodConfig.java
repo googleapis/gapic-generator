@@ -24,6 +24,7 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
@@ -165,7 +166,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     List<String> requiredFieldsList = Lists.newArrayList(methodConfigProto.getRequiredFieldsList());
     if (methodModel.hasExtraFieldMask()) {
-      requiredFieldsList.add("fieldMask");
+      requiredFieldsList.add(DiscoveryMethodTransformer.FIELDMASK_STRING);
     }
     Iterable<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(

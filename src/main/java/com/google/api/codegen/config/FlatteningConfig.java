@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Oneof;
@@ -55,7 +56,7 @@ public abstract class FlatteningConfig {
     Set<String> oneofNames = new HashSet<>();
     List<String> flattenedParams = Lists.newArrayList(flatteningGroup.getParametersList());
     if (method.hasExtraFieldMask()) {
-      flattenedParams.add("fieldMask");
+      flattenedParams.add(DiscoveryMethodTransformer.FIELDMASK_STRING);
     }
     for (String parameter : flattenedParams) {
 

@@ -17,11 +17,11 @@ package com.google.api.codegen.discovery;
 import static com.google.api.codegen.discovery.Schema.Format.BYTE;
 
 import com.google.api.codegen.config.DiscoveryField;
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import java.util.HashMap;
 
 public class StandardSchemaGenerator {
-
 
   public static Schema createStringSchema(String name, SurfaceNamer.Cardinality cardinality) {
     return new AutoValue_Schema(
@@ -82,15 +82,14 @@ public class StandardSchemaGenerator {
           schema.required(),
           schema.isMap(),
           Schema.Type.EMPTY);
-    }
-    else return schema;
+    } else return schema;
   }
 
   public static DiscoveryField createFieldMaskField() {
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(
             StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
-            "fieldMask"),
+            DiscoveryMethodTransformer.FIELDMASK_STRING),
         null);
   }
 }

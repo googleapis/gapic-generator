@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
@@ -82,7 +83,7 @@ public final class DiscoveryMethodModel implements MethodModel {
         && DiscoGapicParser.getMethodInputName(method).toLowerCamel().equals(fieldName)) {
       return DiscoveryField.create(method.request(), apiModel);
     }
-    if (hasExtraFieldMask() && "fieldMask".equals(fieldName)) {
+    if (hasExtraFieldMask() && DiscoveryMethodTransformer.FIELDMASK_STRING.equals(fieldName)) {
       if (fieldMaskField == null) {
         fieldMaskField = createFieldMaskField();
       }
@@ -264,7 +265,8 @@ public final class DiscoveryMethodModel implements MethodModel {
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(
             StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
-            "fieldMask"), null);
+            DiscoveryMethodTransformer.FIELDMASK_STRING),
+        null);
   }
 
   /**
