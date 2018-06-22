@@ -77,7 +77,12 @@ public class MethodTransformer {
 
     List<String> parameters = filteredInputFields(method, fieldList);
 
-    if (parameters.size() > 0 && parameters.size() <= FLATTENING_THRESHOLD) {
+    int numParams = parameters.size();
+    if (method.hasExtraFieldMask()) {
+      numParams += 1;
+    }
+
+    if (numParams > 0 && numParams <= FLATTENING_THRESHOLD) {
       methodView.flattening(generateFlattening(parameters));
     }
 

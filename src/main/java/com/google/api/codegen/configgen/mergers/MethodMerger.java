@@ -148,7 +148,12 @@ public class MethodMerger {
       }
     }
 
-    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
+    int numParams = parameterList.size();
+    if (method.hasExtraFieldMask()) {
+      numParams += 1;
+    }
+
+    if (numParams > 0 && numParams <= FLATTENING_THRESHOLD) {
       prevNode = generateFlatteningNode(prevNode, parameterList);
     }
 
