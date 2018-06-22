@@ -36,6 +36,8 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
 import org.threeten.bp.Duration;
 
 /**
@@ -162,6 +164,10 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
+    List<String> requiredFieldsList = Lists.newArrayList(methodConfigProto.getRequiredFieldsList());
+    if (methodModel.hasExtraFieldMask()) {
+      requiredFieldsList.add("fieldMask");
+    }
     Iterable<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
@@ -170,7 +176,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             fieldNamePatterns,
             resourceNameConfigs,
             getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+                diagCollector, methodModel, requiredFieldsList));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -179,7 +185,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+            getOptionalFields(methodModel, requiredFieldsList));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
