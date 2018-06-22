@@ -83,15 +83,15 @@ public class ProtoDocumentLinkTest {
 
     // Cloud link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
-        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link>`_");
+        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link>`__");
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
-        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link$>`_");
+        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link$>`__");
 
     // Absolute link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
-        .isEqualTo("`not a cloud link <http://www.google.com>`_");
+        .isEqualTo("`not a cloud link <http://www.google.com>`__");
     Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
-        .isEqualTo("`not a cloud link <http://www.google.com$>`_");
+        .isEqualTo("`not a cloud link <http://www.google.com$>`__");
   }
 
   @Test

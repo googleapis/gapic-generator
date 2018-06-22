@@ -14,54 +14,69 @@
  */
 package com.google.api.codegen.util.py;
 
-import com.google.api.codegen.util.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LinkPattern;
-import com.google.common.base.Splitter;
+import com.google.common.io.CharStreams;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
+/** Reformats a proto markdown comment to the Python reST format. */
 public class PythonCommentReformatter implements CommentReformatter {
 
-  private CommentTransformer transformer =
+  private static final CommentTransformer TRANSFORMER =
       CommentTransformer.newBuilder()
-          .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
-          .transform(LinkPattern.PROTO.toFormat("``$TITLE``"))
-          .transform(LinkPattern.ABSOLUTE.toFormat("`$TITLE <$URL>`_"))
+          .transform(LinkPattern.PROTO.toFormat("`$TITLE`"))
           .transform(
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
-                  .toFormat("`$TITLE <$URL>`_"))
+                  .toFormat("[$TITLE]($URL)"))
           .build();
 
   @Override
   public String reformat(String comment) {
-    boolean inCodeBlock = false;
-    boolean first = true;
-    Iterable<String> lines = Splitter.on("\n").split(comment);
-    StringBuffer sb = new StringBuffer();
-    for (String line : lines) {
-      if (inCodeBlock) {
-        // Code blocks are either empty or indented
-        if (!(line.trim().isEmpty()
-            || CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches())) {
-          inCodeBlock = false;
-          line = transformer.transform(line);
-        }
-
-      } else if (CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches()) {
-        inCodeBlock = true;
-        line = "::\n\n" + line;
-
-      } else {
-        line = transformer.transform(line);
+    String transformedComment = TRANSFORMER.transform(comment);
+    ProcessBuilder builder = new ProcessBuilder("pandoc", "-f", "markdown", "-t", "rst");
+    builder.redirectErrorStream(true);
+    try {
+      Process process = builder.start();
+      redirectFromString(process.getOutputStream(), transformedComment);
+      String output = redirectToString(process.getInputStream());
+      int status = process.waitFor();
+      if (status != 0) {
+        throw new RuntimeException(
+            String.format("pandoc failed with status code %s and error%n\"%s\"", status, output));
       }
 
-      if (!first) {
-        sb.append("\n");
-      }
-      first = false;
-      sb.append(line.replace("\"", "\\\""));
+      return output.trim();
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Could not execute pandoc", e);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Could not execute pandoc. Check if pandoc is in PATH.", e);
     }
-    return sb.toString().trim();
+  }
+
+  private void redirectFromString(OutputStream outputStream, String input) {
+    try (Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
+      writer.write(input);
+      writer.flush();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Could not execute pandoc", e);
+    }
+  }
+
+  private String redirectToString(InputStream inputStream) {
+    try (Reader reader = new InputStreamReader(inputStream)) {
+      return CharStreams.toString(reader);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Could not execute pandoc", e);
+    }
   }
 }
