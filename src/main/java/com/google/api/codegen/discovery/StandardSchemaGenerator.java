@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery;
 
 import static com.google.api.codegen.discovery.Schema.Format.BYTE;
 
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import java.util.HashMap;
 
@@ -42,8 +43,7 @@ public class StandardSchemaGenerator {
         Schema.Type.STRING);
   }
 
-  public static Schema createListSchema(
-      Schema items, String id, SurfaceNamer.Cardinality cardinality) {
+  public static Schema createListSchema(Schema items, String id) {
     return new AutoValue_Schema(
         null,
         "",
@@ -57,9 +57,17 @@ public class StandardSchemaGenerator {
         "",
         new HashMap<>(),
         "",
-        cardinality == SurfaceNamer.Cardinality.IS_REPEATED,
+        false,
         true,
         false,
         Schema.Type.ARRAY);
+  }
+
+  public static DiscoveryField createFieldMaskField() {
+    return DiscoveryField.create(
+        StandardSchemaGenerator.createListSchema(
+            StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
+            "fieldMask"),
+        StandardSchemaGenerator.PARENT_PACKAGE);
   }
 }
