@@ -680,6 +680,7 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     Iterable<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
+
     sampleTransformer.generateSamples(
         methodViewBuilder,
         context,
