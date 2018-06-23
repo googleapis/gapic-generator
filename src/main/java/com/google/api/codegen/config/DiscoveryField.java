@@ -14,14 +14,15 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.StringTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.discovery.StandardSchemaGenerator;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -152,7 +153,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public TypeModel getMapKeyType() {
     if (isMap()) {
       // Assume that the schema's additionalProperties map keys are Strings.
-      return StringTypeModel.getInstance();
+      return DiscoveryField.create(
+          StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
+          null);
     }
     return null;
   }
