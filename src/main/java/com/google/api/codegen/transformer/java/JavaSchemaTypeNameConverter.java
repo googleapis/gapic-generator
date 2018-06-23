@@ -301,13 +301,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(TypeModel typeModel) {
-    if (typeModel instanceof DiscoveryField) {
-      return getSnippetZeroValue((DiscoveryField) typeModel);
-    }
-    if (typeModel.isStringType()) {
-      return TypedValue.create(typeNameConverter.getTypeName("java.lang.String"), "\"\"");
-    }
-
     if (typeModel.isEmptyType()) {
       return TypedValue.create(getTypeName((DiscoveryField) null), "null");
     }

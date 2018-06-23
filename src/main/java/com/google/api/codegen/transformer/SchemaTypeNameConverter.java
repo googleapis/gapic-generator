@@ -106,10 +106,10 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
       Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
       return getDiscoGapicNamer().getRequestTypeName(method, getNamer());
     }
-    if (type instanceof DiscoveryField) {
-      return getTypeName((DiscoveryField) type);
+    if (type.isEmptyType()) {
+      return getTypeNameForElementType(type);
     }
-    return getTypeNameForElementType(type);
+    return getTypeName((DiscoveryField) type);
   }
 
   @Override
