@@ -102,5 +102,9 @@ public interface MethodModel {
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
 
+  /**
+   * If this method has a field mask parameter that isn't explicitly included in the API definition
+   * or config.
+   */
   boolean hasExtraFieldMask();
 }
