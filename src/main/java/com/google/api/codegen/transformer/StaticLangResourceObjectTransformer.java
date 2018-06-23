@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.discovery.StandardSchemaGenerator;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.StaticLangMemberView;
 import java.util.ArrayList;
@@ -120,26 +119,6 @@ public class StaticLangResourceObjectTransformer {
     }
     Collections.sort(fieldViews);
     param.fieldCopyMethods(fieldViews);
-
-    return param.build();
-  }
-
-  public RequestObjectParamView generateFieldMaskParam(MethodContext context) {
-    SurfaceNamer namer = context.getNamer();
-    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
-    FieldModel fieldMaskField = StandardSchemaGenerator.createFieldMaskField();
-    param.name(namer.getVariableName(fieldMaskField));
-    param.keyName(namer.getFieldKey(fieldMaskField));
-    param.nameAsMethodName(namer.getFieldGetFunctionName(fieldMaskField));
-    param.typeName(context.getTypeTable().getAndSaveNicknameFor(fieldMaskField));
-    param.elementTypeName(context.getTypeTable().getAndSaveNicknameForElementType(fieldMaskField));
-    param.setCallName(namer.getFieldSetFunctionName(fieldMaskField));
-    param.addCallName(namer.getFieldSetFunctionName(fieldMaskField));
-    param.getCallName(namer.getFieldGetFunctionName(fieldMaskField));
-    param.isMap(false);
-    param.isArray(true);
-    param.isPrimitive(true);
-    param.isOptional(false);
 
     return param.build();
   }
