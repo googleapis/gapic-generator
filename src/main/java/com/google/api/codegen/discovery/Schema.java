@@ -172,23 +172,24 @@ public abstract class Schema implements Node {
     boolean isMap = additionalProperties != null;
 
     Schema thisSchema =
-        new AutoValue_Schema(
-            additionalProperties,
-            defaultValue,
-            description,
-            format,
-            id,
-            isEnum,
-            items,
-            key,
-            location,
-            pattern,
-            properties,
-            reference,
-            repeated,
-            required,
-            isMap,
-            type);
+        Schema.newBuilder()
+            .setAdditionalProperties(additionalProperties)
+            .setDefaultValue(defaultValue)
+            .setDescription(description)
+            .setFormat(format)
+            .setId(id)
+            .setIsEnum(isEnum)
+            .setIsMap(isMap)
+            .setItems(items)
+            .setKey(key)
+            .setLocation(location)
+            .setPattern(pattern)
+            .setProperties(properties)
+            .setReference(reference)
+            .setRepeated(repeated)
+            .setRequired(required)
+            .setType(type)
+            .build();
     thisSchema.parent = parent;
     if (items != null) {
       items.setParent(thisSchema);
@@ -209,23 +210,16 @@ public abstract class Schema implements Node {
   }
 
   public static Schema empty() {
-    return new AutoValue_Schema(
-        null,
-        "",
-        "",
-        Format.EMPTY,
-        "",
-        false,
-        null,
-        "",
-        "",
-        "",
-        new HashMap<String, Schema>(),
-        "",
-        false,
-        false,
-        false,
-        Type.EMPTY);
+    return Schema.newBuilder()
+        .setFormat(Format.EMPTY)
+        .setType(Type.EMPTY)
+        .setId("")
+        .setKey("")
+        .setIsEnum(false)
+        .setRequired(false)
+        .setRepeated(false)
+        .setIsMap(false)
+        .build();
   }
 
   @JsonIgnore @Nullable private Node parent;
@@ -425,5 +419,52 @@ public abstract class Schema implements Node {
         && Objects.equals(repeated(), schema2.repeated())
         && Objects.equals(required(), schema2.required())
         && Objects.equals(type(), schema2.type());
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_Schema.Builder()
+        .setDefaultValue("")
+        .setDescription("")
+        .setLocation("")
+        .setPattern("")
+        .setProperties(new HashMap<>())
+        .setReference("");
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setAdditionalProperties(Schema val);
+
+    public abstract Builder setDefaultValue(String val);
+
+    public abstract Builder setDescription(String val);
+
+    public abstract Builder setFormat(Format val);
+
+    public abstract Builder setId(String val);
+
+    public abstract Builder setIsEnum(boolean val);
+
+    public abstract Builder setIsMap(boolean val);
+
+    public abstract Builder setItems(Schema val);
+
+    public abstract Builder setKey(String val);
+
+    public abstract Builder setLocation(String val);
+
+    public abstract Builder setPattern(String val);
+
+    public abstract Builder setProperties(Map<String, Schema> val);
+
+    public abstract Builder setReference(String val);
+
+    public abstract Builder setRepeated(boolean val);
+
+    public abstract Builder setRequired(boolean val);
+
+    public abstract Builder setType(Type val);
+
+    public abstract Schema build();
   }
 }

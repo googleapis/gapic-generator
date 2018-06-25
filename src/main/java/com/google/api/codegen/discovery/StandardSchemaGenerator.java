@@ -15,49 +15,37 @@
 package com.google.api.codegen.discovery;
 
 import static com.google.api.codegen.discovery.Schema.Format.BYTE;
+import static com.google.api.codegen.discovery.Schema.Format.EMPTY;
 
 import com.google.api.codegen.transformer.SurfaceNamer;
-import java.util.HashMap;
 
 public class StandardSchemaGenerator {
 
-  public static Schema createStringSchema(String name, SurfaceNamer.Cardinality cardinality) {
-    return new AutoValue_Schema(
-        null,
-        "",
-        "",
-        BYTE,
-        name,
-        false,
-        null,
-        name,
-        "",
-        "",
-        new HashMap<>(),
-        "",
-        cardinality == SurfaceNamer.Cardinality.IS_REPEATED,
-        true,
-        false,
-        Schema.Type.STRING);
+  public static Schema createStringSchema(
+      String name, SurfaceNamer.Cardinality cardinality, boolean isRequired) {
+    return Schema.newBuilder()
+        .setFormat(BYTE)
+        .setId(name)
+        .setKey(name)
+        .setRepeated(cardinality == SurfaceNamer.Cardinality.IS_REPEATED)
+        .setRequired(isRequired)
+        .setType(Schema.Type.STRING)
+        .setIsEnum(false)
+        .setIsMap(false)
+        .build();
   }
 
-  public static Schema createListSchema(Schema items, String id) {
-    return new AutoValue_Schema(
-        null,
-        "",
-        "",
-        Schema.Format.EMPTY,
-        id,
-        false,
-        items,
-        id,
-        "",
-        "",
-        new HashMap<>(),
-        "",
-        false,
-        true,
-        false,
-        Schema.Type.ARRAY);
+  public static Schema createListSchema(Schema items, String id, boolean isRequired) {
+    return Schema.newBuilder()
+        .setFormat(EMPTY)
+        .setId(id)
+        .setKey(id)
+        .setRepeated(false)
+        .setRequired(isRequired)
+        .setType(Schema.Type.ARRAY)
+        .setItems(items)
+        .setIsEnum(false)
+        .setIsMap(false)
+        .build();
   }
 }
