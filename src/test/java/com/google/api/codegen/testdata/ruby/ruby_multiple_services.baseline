@@ -40,6 +40,9 @@ Style/MethodDefParentheses:
 -
 README.md
 
+============== file: CHANGELOG.md ==============
+# Release History
+
 ============== file: Gemfile ==============
 source "https://rubygems.org"
 
@@ -904,8 +907,16 @@ module Google
         class Credentials < Google::Auth::Credentials
           SCOPE = [
           ].freeze
-          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
-          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE
+                             MULTIPLE_SERVICES_CREDENTIALS
+                             GOOGLE_CLOUD_CREDENTIALS
+                             GOOGLE_CLOUD_KEYFILE
+                             GCLOUD_KEYFILE)
+          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON
+                             MULTIPLE_SERVICES_CREDENTIALS_JSON
+                             GOOGLE_CLOUD_CREDENTIALS_JSON
+                             GOOGLE_CLOUD_KEYFILE_JSON
+                             GCLOUD_KEYFILE_JSON)
           DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
         end
       end
@@ -1090,9 +1101,9 @@ module Google
           # @yieldparam operation [GRPC::ActiveCall::Operation]
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           # @example
-          #   require "google/example/v1/foo"
+          #   require "google/example"
           #
-          #   decrementer_service_client = Google::Example::V1::Foo::Decrementer.new
+          #   decrementer_service_client = Google::Example::Decrementer.new(version: :V1)
           #   decrementer_service_client.decrement
 
           def decrement options: nil, &block
@@ -1449,9 +1460,9 @@ module Google
           # @yieldparam operation [GRPC::ActiveCall::Operation]
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           # @example
-          #   require "google/example/v1/foo"
+          #   require "google/example"
           #
-          #   incrementer_service_client = Google::Example::V1::Foo::Incrementer.new
+          #   incrementer_service_client = Google::Example::Incrementer.new(version: :V1)
           #   incrementer_service_client.increment
 
           def increment options: nil, &block

@@ -48,8 +48,8 @@ public final class ProtoMethodModel implements MethodModel {
   public ProtoMethodModel(Method method) {
     Preconditions.checkNotNull(method);
     this.method = method;
-    this.inputType = new ProtoTypeRef(method.getInputType());
-    this.outputType = new ProtoTypeRef(method.getOutputType());
+    this.inputType = ProtoTypeRef.create(method.getInputType());
+    this.outputType = ProtoTypeRef.create(method.getOutputType());
   }
 
   @Override
