@@ -248,9 +248,13 @@ interfaces:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
       output_specs:
-      - print:
-        - "book names %s"
-        - $resp.book_names
+      - loop:
+          variable: book_name
+          collection: $resp.book_names
+          body:
+            print:
+              - "book name: %s"
+              - book_name
       # callingFormCheck: second_edition java: Flattened Request Callable
       # callingFormCheck: second_edition nodejs: Request
       # callingFormCheck: second_edition py: Request

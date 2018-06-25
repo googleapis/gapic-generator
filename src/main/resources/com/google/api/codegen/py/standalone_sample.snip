@@ -84,8 +84,11 @@
         {@processLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "LOOP"
+        for {@view.variable} in {@fullArg(view.collection)}:
+          {@processOutputViews(view.body)}
       @default
-        $unhandledResponseForm: {@outs}
+        $unhandledResponseForm: {@view}
     @end
   @end
 @end
@@ -99,7 +102,7 @@
       print({@variableField(view.args.get(0))})
     @else
       print('{@view.format}'.format({@concatenatedArgs(view.args)}))
-    @end    
+    @end
   @end
 @end
 
@@ -108,7 +111,7 @@
 @end
 
 @private processLoopView(view)
-  for ({@view.variable} in {@variableField(view.collection)}):
+  for {@view.variableName} in {@variableField(view.collection)}:
     {@processOutputViews(view.body)}
 @end
 
