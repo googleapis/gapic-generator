@@ -45,13 +45,23 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
   private final DiscoApiModel apiModel;
-  private DiscoveryField fieldMaskField;
+  private final boolean hasExtraFieldMask;
+  private final DiscoveryField fieldMaskField;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(method);
     this.method = method;
     this.apiModel = apiModel;
+
+    String httpMethod = method.httpMethod().toUpperCase().trim();
+    hasExtraFieldMask = httpMethod.equals("PATCH") || httpMethod.equals("PUT");
+    if (hasExtraFieldMask) {
+      fieldMaskField = createFieldMaskField();
+    } else {
+      fieldMaskField = null;
+    }
+
     this.inputType = DiscoveryRequestType.create(this);
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
@@ -83,10 +93,7 @@ public final class DiscoveryMethodModel implements MethodModel {
         && DiscoGapicParser.getMethodInputName(method).toLowerCamel().equals(fieldName)) {
       return DiscoveryField.create(method.request(), apiModel);
     }
-    if (hasExtraFieldMask() && DiscoveryMethodTransformer.FIELDMASK_STRING.equals(fieldName)) {
-      if (fieldMaskField == null) {
-        fieldMaskField = createFieldMaskField();
-      }
+    if (hasExtraFieldMask && DiscoveryMethodTransformer.FIELDMASK_STRING.equals(fieldName)) {
       return fieldMaskField;
     }
 
@@ -250,10 +257,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       fieldsBuilder.add(DiscoveryField.create(method.request(), apiModel));
     }
 
-    if (hasExtraFieldMask()) {
-      if (fieldMaskField == null) {
-        fieldMaskField = createFieldMaskField();
-      }
+    if (hasExtraFieldMask) {
       fieldsBuilder.add(fieldMaskField);
     }
 
@@ -324,7 +328,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean hasExtraFieldMask() {
-    String httpMethod = method.httpMethod().toUpperCase().trim();
-    return httpMethod.equals("PATCH") || httpMethod.equals("PUT");
+    return hasExtraFieldMask;
   }
 }
