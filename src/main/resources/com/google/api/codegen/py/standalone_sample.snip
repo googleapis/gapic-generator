@@ -27,8 +27,7 @@
       @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
       {@standaloneSample(apiMethod, sample)}
-      # TODO(pongad): Make this work on non-unary too.
-      print(response)
+      {@processResponse(sample)}
 
       @# [END core_sample]
 
@@ -47,7 +46,6 @@
   @switch sample.callingForm
   @case "Request"
     {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-    {@printResponse(sample.outputs)}
   @case "RequestPaged"
     {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
   @case "RequestPagedAll"
@@ -65,21 +63,48 @@
   @end
 @end
 
-@private printResponse(outs)
-  @join out : outs
-    @switch out.kind
-    @case "PRINT"
-      print('{@out.printSpec}'.format({@responseArgs(out.printArgs)}))
-    @default
-      $unhandledResponseForm: {@outs}
+
+
+@private processResponse(sample)
+  @if sample.outputs.size == 0
+    print(response)
+  @else
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private processOutputViews(outputViews)
+  @join view : outputViews on BREAK
+    @switch view.kind
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@outs}
     @end
   @end
 @end
 
-@private responseArgs(args)
-  @join arg : args on ", "
-    {@arg.variable}{@accessor(arg.accessors)}
+@private processPrintView(printView)
+  # Since numeric comparison seems to not work, we use explicit zero tests
+  @if not(printView.printArgs.size)
+    print('{@printView.printSpec}')
+  @else
+    @if printView.printSpec== "{}"
+      print({@fullArg(printView.printArgs.get(0))})
+    @else
+      print('{@printView.printSpec}'.format({@concatenatedArgs(printView.printArgs)}))
+    @end    
   @end
+@end
+
+@private concatenatedArgs(args)
+  @join arg : args on ", "
+    {@fullArg(arg)}
+  @end
+@end
+
+@private fullArg(arg)
+  {@arg.variable}{@accessor(arg.accessors)}
 @end
 
 @private accessor(accessors)
