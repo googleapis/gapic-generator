@@ -62,12 +62,4 @@ public class StandardSchemaGenerator {
         false,
         Schema.Type.ARRAY);
   }
-
-  public static DiscoveryField createFieldMaskField() {
-    return DiscoveryField.create(
-        StandardSchemaGenerator.createListSchema(
-            StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
-            DiscoveryMethodTransformer.FIELDMASK_STRING),
-        null);
-  }
 }
