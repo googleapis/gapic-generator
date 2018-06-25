@@ -40,7 +40,7 @@ public class ProtoField implements FieldModel {
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
-    this.protoTypeRef = new ProtoTypeRef(protoField.getType());
+    this.protoTypeRef = ProtoTypeRef.create(protoField.getType());
   }
 
   @Override

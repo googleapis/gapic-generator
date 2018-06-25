@@ -21,66 +21,62 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Preconditions;
+import com.google.auto.value.AutoValue;
+import com.google.auto.value.extension.memoized.Memoized;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** A type declaration wrapper around TypeRef. */
-public class ProtoTypeRef implements TypeModel {
-  private final TypeRef typeRef;
-  private List<ProtoField> fields;
+@AutoValue
+public abstract class ProtoTypeRef implements TypeModel {
+
+  public abstract TypeRef getProtoType();
 
   /* Create a MethodModel object from a non-null Method object. */
-  public ProtoTypeRef(TypeRef typeRef) {
-    Preconditions.checkNotNull(typeRef);
-    this.typeRef = typeRef;
-  }
-
-  public TypeRef getProtoType() {
-    return typeRef;
+  public static ProtoTypeRef create(TypeRef typeRef) {
+    return new AutoValue_ProtoTypeRef(typeRef);
   }
 
   @Override
   public boolean isMap() {
-    return typeRef.isMap();
+    return getProtoType().isMap();
   }
 
   @Override
   public TypeModel getMapKeyType() {
-    return new ProtoTypeRef(typeRef.getMapKeyField().getType());
+    return create(getProtoType().getMapKeyField().getType());
   }
 
   @Override
   public TypeModel getMapValueType() {
-    return new ProtoTypeRef(typeRef.getMapValueField().getType());
+    return create(getProtoType().getMapValueField().getType());
   }
 
   @Override
   public boolean isMessage() {
-    return typeRef.isMessage();
+    return getProtoType().isMessage();
   }
 
   @Override
   public boolean isRepeated() {
-    return typeRef.isRepeated();
+    return getProtoType().isRepeated();
   }
 
   @Override
   public boolean isEnum() {
-    return typeRef.isEnum();
+    return getProtoType().isEnum();
   }
 
   @Override
   public boolean isPrimitive() {
-    return typeRef.isPrimitive();
+    return getProtoType().isPrimitive();
   }
 
   @Override
   public boolean isEmptyType() {
-    return ServiceMessages.s_isEmptyType(typeRef);
+    return ServiceMessages.s_isEmptyType(getProtoType());
   }
 
   /**
@@ -88,18 +84,16 @@ public class ProtoTypeRef implements TypeModel {
    * if the provided type is not supported or doesn't match the value.
    */
   public void validateValue(String value) {
-    DescriptorProtos.FieldDescriptorProto.Type descType = typeRef.getKind();
-    switch (descType) {
+    switch (getProtoType().getKind()) {
       case TYPE_ENUM:
-        for (EnumValue enumValue : typeRef.getEnumType().getValues()) {
+        for (EnumValue enumValue : getProtoType().getEnumType().getValues()) {
           if (enumValue.getSimpleName().equals(value)) {
             return;
           }
         }
         break;
       case TYPE_BOOL:
-        String lowerCaseValue = value.toLowerCase();
-        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
+        if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
           return;
         }
         break;
@@ -125,31 +119,28 @@ public class ProtoTypeRef implements TypeModel {
         break;
       case TYPE_STRING:
       case TYPE_BYTES:
-        Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
-        if (matcher.matches()) {
+        if (!value.contains("\\") && !value.contains("\"") && !value.contains("'")) {
           return;
         }
         break;
       default:
         // Throw an exception if a value is unsupported for the given type.
         throw new IllegalArgumentException(
-            "Tried to assign value for unsupported type " + typeRef + "; value " + value);
+            "Tried to assign value for unsupported type " + getProtoType() + "; value " + value);
     }
-    throw new IllegalArgumentException("Could not assign value '" + value + "' to type " + typeRef);
+    throw new IllegalArgumentException(
+        "Could not assign value '" + value + "' to type " + getProtoType());
   }
 
   @Override
+  @Memoized
   public List<? extends FieldModel> getFields() {
-    if (this.fields != null) {
-      return this.fields;
-    }
-    ImmutableList.Builder<ProtoField> fields = ImmutableList.builder();
-    for (Field field : typeRef.getMessageType().getFields()) {
-      fields.add(new ProtoField(field));
-    }
-
-    this.fields = fields.build();
-    return this.fields;
+    return getProtoType()
+        .getMessageType()
+        .getFields()
+        .stream()
+        .map(ProtoField::new)
+        .collect(ImmutableList.toImmutableList());
   }
 
   @Override
@@ -164,42 +155,42 @@ public class ProtoTypeRef implements TypeModel {
 
   @Override
   public TypeModel makeOptional() {
-    return new ProtoTypeRef(typeRef.makeOptional());
+    return create(getProtoType().makeOptional());
   }
 
   @Override
   public String getPrimitiveTypeName() {
-    return typeRef.getPrimitiveTypeName();
+    return getProtoType().getPrimitiveTypeName();
   }
 
   @Override
   public boolean isBooleanType() {
-    return typeRef.getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_BOOL;
+    return getProtoType().getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_BOOL;
   }
 
   @Override
   public boolean isStringType() {
-    return typeRef.getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
+    return getProtoType().getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
   }
 
   @Override
   public boolean isFloatType() {
-    return typeRef.getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_FLOAT;
+    return getProtoType().getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_FLOAT;
   }
 
   @Override
   public boolean isBytesType() {
-    return typeRef.getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
+    return getProtoType().getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
   }
 
   @Override
   public boolean isDoubleType() {
-    return typeRef.getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_DOUBLE;
+    return getProtoType().getKind() == DescriptorProtos.FieldDescriptorProto.Type.TYPE_DOUBLE;
   }
 
   @Override
   public String getTypeName() {
-    return typeRef.getKind().toString();
+    return getProtoType().getKind().toString();
   }
 
   /**
@@ -217,20 +208,5 @@ public class ProtoTypeRef implements TypeModel {
       }
     }
     return null;
-  }
-
-  @Override
-  public int hashCode() {
-    return 5 + 31 * typeRef.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", typeRef, fields);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o != null && o instanceof ProtoField && ((ProtoTypeRef) o).typeRef.equals(this.typeRef);
   }
 }

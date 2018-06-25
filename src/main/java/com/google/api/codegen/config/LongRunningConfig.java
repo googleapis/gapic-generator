@@ -144,8 +144,8 @@ public abstract class LongRunningConfig {
       return null;
     } else {
       return new AutoValue_LongRunningConfig(
-          new ProtoTypeRef(returnType),
-          new ProtoTypeRef(metadataType),
+          ProtoTypeRef.create(returnType),
+          ProtoTypeRef.create(metadataType),
           longRunningConfigProto.getImplementsDelete(),
           longRunningConfigProto.getImplementsCancel(),
           initialPollDelay,
