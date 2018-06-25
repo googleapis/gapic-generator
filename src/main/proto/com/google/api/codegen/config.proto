@@ -332,6 +332,8 @@ message SampleValueSet {
   //   a specially formatted string using `FIELD` as one of possibly
   //   several placeholders.
   repeated string parameters = 4;
+
+  repeated OutputSpec output_specs = 5;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"
@@ -642,4 +644,21 @@ message LongRunningConfigProto {
 
   // Total polling timeout.
   uint64 total_poll_timeout_millis = 8;
+}
+
+message OutputSpec {
+  message LoopStatement {
+    string collection = 1;
+    string variable = 2;
+    repeated OutputSpec body = 3;
+  }
+
+  // Exactly one of the following should be set.
+
+  LoopStatement loop = 1;
+
+  // example ["%s=%s", thing.variable, thing.value]
+  // field name is singular because the array
+  // represents one print statement.
+  repeated string print = 2;
 }

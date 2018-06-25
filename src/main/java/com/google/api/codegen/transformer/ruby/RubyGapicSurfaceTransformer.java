@@ -73,9 +73,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   private static final String CREDENTIALS_CLASS_TEMPLATE_FILE = "ruby/credentials.snip";
   // This assumes the api is a google-cloud api.
   private static final List<String> DEFAULT_PATH_ENV_VARS =
-      ImmutableList.of("GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
+      ImmutableList.of("GOOGLE_CLOUD_CREDENTIALS", "GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
   private static final List<String> DEFAULT_JSON_ENV_VARS =
-      ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
+      ImmutableList.of(
+          "GOOGLE_CLOUD_CREDENTIALS_JSON", "GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
   private static final List<String> DEFAULT_PATHS =
       ImmutableList.of("~/.config/gcloud/application_default_credentials.json");
 
@@ -289,20 +290,27 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
 
     String sanitizedShortName = packageConfig.shortName().replaceAll("[^A-Za-z0-9]", " ");
     Name.lowerCamel(sanitizedShortName.split(" "));
-    String apiSpecificPathEnvVar =
-        namer.inittedConstantName(Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile"));
-    String apiSpecificJsonEnvVar =
-        namer.inittedConstantName(
-            Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json"));
+    List<String> apiSpecificPathEnvVars =
+        ImmutableList.of(
+            namer.inittedConstantName(
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile")),
+            namer.inittedConstantName(
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials")));
+    List<String> apiSpecificJsonEnvVars =
+        ImmutableList.of(
+            namer.inittedConstantName(
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json")),
+            namer.inittedConstantName(
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials").join("json")));
 
     List<String> pathEnvVars =
         ImmutableList.<String>builder()
-            .add(apiSpecificPathEnvVar)
+            .addAll(apiSpecificPathEnvVars)
             .addAll(DEFAULT_PATH_ENV_VARS)
             .build();
     List<String> jsonEnvVars =
         ImmutableList.<String>builder()
-            .add(apiSpecificJsonEnvVar)
+            .addAll(apiSpecificJsonEnvVars)
             .addAll(DEFAULT_JSON_ENV_VARS)
             .build();
 

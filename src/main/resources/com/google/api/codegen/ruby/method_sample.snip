@@ -10,7 +10,7 @@
 @end
 
 @snippet sampleCodeWithVersionImport(apiMethod)
-  require "{@apiMethod.initCode.versionIndexFileImportName}"
+  require "{@apiMethod.initCode.topLevelIndexFileImportName}"
 
   {@versionedClientSampleCode(apiMethod)}
 @end
@@ -22,7 +22,13 @@
 @end
 
 @snippet versionedClientSampleCode(apiMethod)
-  {@apiMethod.apiVariableName} = {@apiMethod.versionAliasedApiClassName}.new
+  @switch apiMethod.apiVersion
+  @case "Longrunning"
+    {@apiMethod.apiVariableName} = {@apiMethod.versionAliasedApiClassName}.new
+  @default
+    {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new(version: :{@apiMethod.apiVersion})
+  @end
+
   {@sampleCodeCore(apiMethod)}
 @end
 

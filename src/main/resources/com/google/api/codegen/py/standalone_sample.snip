@@ -9,7 +9,7 @@
 
   @# To run with the published packaged, execute the following before running this code:
   @#   pip install {@sampleFile.gapicPackageName}
-   
+
   @# [START full_sample]
 
   @# FIXME: Insert here boilerplate code not directly related to the method call itself.
@@ -21,19 +21,19 @@
       @##       description: "{@sample.valueSet.description}"
       @##       {@sample.valueSet.parameters}
       @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-      
+
       @# [START core_sample]
 
       @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
-       
+
       {@standaloneSample(apiMethod, sample)}
       # TODO(pongad): Make this work on non-unary too.
       print(response)
-      
+
       @# [END core_sample]
 
       @# FIXME: Insert here clean-up code.
-      
+
     @end
   @end
   @# [END full_sample]
@@ -47,6 +47,7 @@
   @switch sample.callingForm
   @case "Request"
     {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+    {@printResponse(sample.outputs)}
   @case "RequestPaged"
     {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
   @case "RequestPagedAll"
@@ -61,5 +62,28 @@
     {@lroSampleCode(apiMethod, sample.initCode)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @end
+@end
+
+@private printResponse(outs)
+  @join out : outs
+    @switch out.kind
+    @case "PRINT"
+      print('{@out.printSpec}'.format({@responseArgs(out.printArgs)}))
+    @default
+      $unhandledResponseForm: {@outs}
+    @end
+  @end
+@end
+
+@private responseArgs(args)
+  @join arg : args on ", "
+    {@arg.variable}{@accessor(arg.accessors)}
+  @end
+@end
+
+@private accessor(accessors)
+  @join field : accessors on ""
+    .{@field}
   @end
 @end
