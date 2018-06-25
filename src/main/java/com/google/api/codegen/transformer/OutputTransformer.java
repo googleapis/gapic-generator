@@ -98,14 +98,7 @@ class OutputTransformer {
     OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
 
     int cursor = 0;
-    int end = config.length();
-    for (int p = cursor; p < config.length(); p++) {
-      char c = config.charAt(p);
-      if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
-        end = p;
-        break;
-      }
-    }
+    int end = identifier(config, cursor);
 
     String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
@@ -127,14 +120,7 @@ class OutputTransformer {
             config.substring(0, end));
 
         cursor = end + 1;
-        end = config.length();
-        for (int p = cursor; p < config.length(); p++) {
-          char c = config.charAt(p);
-          if (!Character.isLetterOrDigit(c) && c != '_') {
-            end = p;
-            break;
-          }
-        }
+        end = identifier(config, cursor);
 
         String fieldName = config.substring(cursor, end);
         FieldModel field =
@@ -162,5 +148,16 @@ class OutputTransformer {
       }
     }
     return view.accessors(accessors.build()).build();
+  }
+
+  /** Returns the largest p such that s.substring(startsFrom, p) is an identifier. */
+  private static int identifier(String s, int startFrom) {
+    for (int p = startFrom; p < s.length(); p++) {
+      char c = s.charAt(p);
+      if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
+        return p;
+      }
+    }
+    return s.length();
   }
 }
