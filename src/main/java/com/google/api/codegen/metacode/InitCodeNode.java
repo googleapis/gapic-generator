@@ -37,7 +37,7 @@ import java.util.Set;
  * Represents a node in an tree of objects to be initialized.
  */
 public class InitCodeNode {
-  private static final TypeModel INT_TYPE = new ProtoTypeRef(TypeRef.of(Type.TYPE_UINT64));
+  private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
 
   private String key;
   private InitCodeLineType lineType;
