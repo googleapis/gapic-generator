@@ -161,7 +161,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
     if (isMap()) {
       // Assume that the schema's additionalProperties map keys are Strings.
       return DiscoveryField.create(
-          StandardSchemaGenerator.createStringSchema("", SurfaceNamer.Cardinality.NOT_REPEATED),
+          StandardSchemaGenerator.createStringSchema(
+              "", SurfaceNamer.Cardinality.NOT_REPEATED, false),
           null);
     }
     return null;
