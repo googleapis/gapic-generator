@@ -70,6 +70,13 @@ public class DiscoveryField implements FieldModel, TypeModel {
   /**
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
+   *
+   * @param refSchema The raw schema to be wrapped in a DiscoveryField instance.
+   * @param apiModel The Discovery API model that the new DiscoveryField comes from. This defines
+   *     the namespace and allows for dereferencing of the internal schema against a Discovery
+   *     document. This param can be null if there is no Discovery API backing this DiscoveryField;
+   *     the namespace will be a default namespace, and dereferencing the schema will not be
+   *     possible.
    */
   private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(refSchema);

@@ -16,8 +16,6 @@ package com.google.api.codegen.discovery;
 
 import static com.google.api.codegen.discovery.Schema.Format.BYTE;
 
-import com.google.api.codegen.config.DiscoveryField;
-import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import java.util.HashMap;
 
