@@ -20,17 +20,100 @@ import com.google.common.collect.ImmutableList;
 public interface OutputView {
 
   public enum Kind {
+    ASSIGNMENT,
+    COMMENT,
+    LOOP,
     PRINT
   }
 
   Kind kind();
 
   @AutoValue
+  abstract class AssignmentView implements OutputView {
+    public abstract String variableType(); // TODO: Replace with appropriate type type
+
+    public abstract String variableName();
+
+    public abstract VariableView reference();
+
+    public Kind kind() {
+      return Kind.ASSIGNMENT;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_AssignmentView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder variableType(String val);
+
+      public abstract Builder variableName(String val);
+
+      public abstract Builder reference(VariableView val);
+
+      public abstract AssignmentView build();
+    }
+  }
+
+  @AutoValue
+  abstract class CommentView implements OutputView {
+    public abstract ImmutableList<String> lines();
+
+    public Kind kind() {
+      return Kind.COMMENT;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_CommentView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder lines(ImmutableList<String> val);
+
+      public abstract CommentView build();
+    }
+  }
+
+  @AutoValue
+  abstract class LoopView implements OutputView {
+    public abstract String variableType(); // TODO: Replace with appropriate type type
+
+    public abstract String variableName();
+
+    public abstract VariableView collection();
+
+    public abstract ImmutableList<OutputView> body();
+
+    public Kind kind() {
+      return Kind.LOOP;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_LoopView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder variableType(String val);
+
+      public abstract Builder variableName(String val);
+
+      public abstract Builder collection(VariableView val);
+
+      public abstract Builder body(ImmutableList<OutputView> val);
+
+      public abstract LoopView build();
+    }
+  }
+
+  @AutoValue
   abstract class PrintView implements OutputView {
 
-    public abstract String printSpec();
+    public abstract String format();
 
-    public abstract ImmutableList<PrintArgView> printArgs();
+    public abstract ImmutableList<VariableView> args();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -42,23 +125,23 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder printSpec(String val);
+      public abstract Builder format(String val);
 
-      public abstract Builder printArgs(ImmutableList<PrintArgView> val);
+      public abstract Builder args(ImmutableList<VariableView> val);
 
       public abstract PrintView build();
     }
   }
 
   @AutoValue
-  abstract class PrintArgView {
+  abstract class VariableView {
 
     public abstract String variable();
 
     public abstract ImmutableList<String> accessors();
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_PrintArgView.Builder();
+      return new AutoValue_OutputView_VariableView.Builder();
     }
 
     @AutoValue.Builder
@@ -67,7 +150,7 @@ public interface OutputView {
 
       public abstract Builder accessors(ImmutableList<String> val);
 
-      public abstract PrintArgView build();
+      public abstract VariableView build();
     }
   }
 }

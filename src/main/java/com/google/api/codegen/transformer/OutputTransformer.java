@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.OutputView.VariableView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
@@ -78,8 +79,8 @@ class OutputTransformer {
         valueSet.getId());
 
     return OutputView.PrintView.newBuilder()
-        .printSpec(context.getNamer().getPrintSpec(config.get(0)))
-        .printArgs(
+        .format(context.getNamer().getPrintSpec(config.get(0)))
+        .args(
             config
                 .subList(1, config.size())
                 .stream()
@@ -88,7 +89,7 @@ class OutputTransformer {
         .build();
   }
 
-  private static OutputView.PrintArgView accessor(
+  private static VariableView accessor(
       String config, MethodContext context, SampleValueSet valueSet) {
     String[] configElems = config.split("\\.");
     Preconditions.checkArgument(
@@ -97,7 +98,7 @@ class OutputTransformer {
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
 
-    OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
+    VariableView.Builder view = VariableView.newBuilder();
     TypeModel type;
     if (configElems[0].equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName());
