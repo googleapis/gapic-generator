@@ -76,6 +76,12 @@
 @private processOutputViews(outputViews)
   @join view : outputViews on BREAK
     @switch view.kind
+      @case "ASSIGNMENT"
+        {@processAssignmentView}
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "LOOP"
+        {@processLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
       @default
@@ -84,26 +90,40 @@
   @end
 @end
 
-@private processPrintView(printView)
+@private processPrintView(view)
   # Since numeric comparison seems to not work, we use explicit zero tests
-  @if not(printView.printArgs.size)
-    print('{@printView.printSpec}')
+  @if not(view.args.size)
+    print('{@view.format}')
   @else
-    @if printView.printSpec== "{}"
-      print({@fullArg(printView.printArgs.get(0))})
+    @if view.format == "{}"
+      print({@variableField(view.args.get(0))})
     @else
-      print('{@printView.printSpec}'.format({@concatenatedArgs(printView.printArgs)}))
+      print('{@view.format}'.format({@concatenatedArgs(view.args)}))
     @end    
   @end
 @end
 
+@private processCommentView(view)
+  {@toComments(view.lines)}
+@end
+
+@private processLoopView(view)
+  for ({@view.variable} in {@variableField(view.collection)}):
+    {@processOutputViews(view.body)}
+@end
+
+@private processAssignmentView(view)
+  {@view.variable} = {@variableField(view.reference)}
+@end
+
+
 @private concatenatedArgs(args)
   @join arg : args on ", "
-    {@fullArg(arg)}
+    {@variableField(arg)}
   @end
 @end
 
-@private fullArg(arg)
+@private variableField(arg)
   {@arg.variable}{@accessor(arg.accessors)}
 @end
 
