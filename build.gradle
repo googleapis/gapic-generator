@@ -452,3 +452,20 @@ tasks.verifyGoogleJavaFormat {
   exclude 'bazel-*'
 }
 test.dependsOn verifyGoogleJavaFormat
+
+
+// Task to run GapicGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//
+// This task is deprecated - invoke GeneratorMain directly instead.
+task runCodeGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.GeneratorMain'
+  args = ['LEGACY_GAPIC_AND_PACKAGE']
+  if (project.hasProperty('clargs')) {
+    args += clargs.split(',').toList()
+  }
+}

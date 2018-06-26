@@ -475,6 +475,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
       MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         // Only for protobuf-based APIs.
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {

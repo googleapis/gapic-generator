@@ -8928,6 +8928,28 @@ namespace Google.Example.Library.V1
         /// Test server streaming, non-paged responses.
         /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
+        /// <param name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual Book StreamBooks(
+            string name,
+            gaxgrpc::CallSettings callSettings = null) => StreamBooks(
+                new StreamBooksRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test server streaming, non-paged responses.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
         /// </param>
