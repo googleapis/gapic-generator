@@ -543,7 +543,11 @@
 @private method(api, method, isImpl)
     @switch method.type.toString
     @case "FlattenedMethod"
-        {@flattenedMethodSync(method, isImpl)}
+        @if method.isStreaming
+            {@streamingFlattenedMethod(method, isImpl)}
+        @else
+            {@flattenedMethodSync(method, isImpl)}
+        @end
     @case "FlattenedAsyncCallSettingsMethod"
         {@flattenedMethodAsyncCallSettings(method, isImpl)}
     @case "FlattenedAsyncCancellationTokenMethod"
@@ -660,6 +664,26 @@
         {
             throw new sys::NotImplementedException();
         }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImp: boolean
+@private streamingFlattenedMethod(method, isImpl)
+    @switch method.grpcStreamingType
+    @case "ServerStreaming"
+        {@streamingFlattenedMethodServer(method, isImpl)}
+    @default
+        *** ERROR: Cannot handle streaming type '{@method.grpcStreamingType.toString}' ***
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImp: boolean
+@private streamingFlattenedMethodServer(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected streamingFlattenedMethodServer implementation ***
+    @else
+        public virtual {@method.name}Stream {@method.name}(
+        {@flattenedBody(method, FALSE)}
     @end
 @end
 

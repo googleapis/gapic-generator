@@ -480,7 +480,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
-                apiMethodTransformer.generateFlattenedMethod(
+                apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
