@@ -267,6 +267,22 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
   }
 
+  /**
+   * The type name of the Grpc container class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  public String getGrpcContainerTypeName(InterfaceModel apiInterface) {
+    String fullName =
+        JavaModelTypeNameConverter.getGrpcTypeName(
+                ((ProtoInterfaceModel) apiInterface).getInterface())
+            .getFullName();
+
+    NamePath namePath = getTypeNameConverter().getNamePath(fullName);
+    String publicClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    return qualifiedName(namePath.withHead(publicClassName));
+  }
+
   @Override
   public String getAndSaveResourceTypeFactoryName(
       ImportTypeTable typeTable, FieldConfig fieldConfig) {
