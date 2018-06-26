@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.OutputView.VariableView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
@@ -78,8 +79,8 @@ class OutputTransformer {
         valueSet.getId());
 
     return OutputView.PrintView.newBuilder()
-        .printSpec(context.getNamer().getPrintSpec(config.get(0)))
-        .printArgs(
+        .format(context.getNamer().getPrintSpec(config.get(0)))
+        .args(
             config
                 .subList(1, config.size())
                 .stream()
@@ -92,10 +93,10 @@ class OutputTransformer {
   //   identifier
   //   accessor '[' number ']'
   //   accessor '.' identifier
-  private static OutputView.PrintArgView accessor(
+  private static OutputView.VariableView accessor(
       String config, MethodContext context, SampleValueSet valueSet) {
 
-    OutputView.PrintArgView.Builder view = OutputView.PrintArgView.newBuilder();
+    OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
     int cursor = 0;
     int end = identifier(config, cursor);
