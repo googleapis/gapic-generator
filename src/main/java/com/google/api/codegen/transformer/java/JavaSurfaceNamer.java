@@ -21,6 +21,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.TransportProtocol;
@@ -35,6 +36,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Inflector;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
@@ -244,6 +246,41 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getFullyQualifiedRpcStubType(
       InterfaceModel interfaceModel, TransportProtocol transportProtocol) {
     return getStubPackageName() + "." + getApiRpcStubClassName(interfaceModel, transportProtocol);
+  }
+
+  /**
+   * The type name of the Grpc service class This needs to match what Grpc generates for the
+   * particular language.
+   */
+  @Override
+  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
+    String fullName =
+        JavaModelTypeNameConverter.getGrpcTypeName(
+                ((ProtoInterfaceModel) apiInterface).getInterface())
+            .getFullName();
+
+    NamePath namePath = getTypeNameConverter().getNamePath(fullName);
+    String grpcContainerName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    String serviceClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName(), "ImplBase"));
+    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
+  }
+
+  /**
+   * The type name of the Grpc container class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  public String getGrpcContainerTypeName(InterfaceModel apiInterface) {
+    String fullName =
+        JavaModelTypeNameConverter.getGrpcTypeName(
+                ((ProtoInterfaceModel) apiInterface).getInterface())
+            .getFullName();
+
+    NamePath namePath = getTypeNameConverter().getNamePath(fullName);
+    String publicClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    return qualifiedName(namePath.withHead(publicClassName));
   }
 
   @Override
