@@ -62,7 +62,7 @@ public class SampleInitCodeTest {
   private InitCodeContext.Builder getContextBuilder() {
     return InitCodeContext.newBuilder()
         .symbolTable(new SymbolTable())
-        .initObjectType(new ProtoTypeRef(method.getInputType()))
+        .initObjectType(ProtoTypeRef.create(method.getInputType()))
         .suggestedName(Name.from("request"));
   }
 

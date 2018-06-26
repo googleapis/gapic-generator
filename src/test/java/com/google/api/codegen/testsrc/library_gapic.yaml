@@ -247,6 +247,10 @@ interfaces:
       parameters:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
+      output_specs:
+      - print:
+        - "book names %s"
+        - $resp.book_names
       # callingFormCheck: second_edition java: Flattened Request Callable
       # callingFormCheck: second_edition nodejs: Request
       # callingFormCheck: second_edition py: Request
@@ -638,6 +642,12 @@ interfaces:
       parameters:
       - names[0]=Odyssey
       - shelves[0]=Classics
+      output_specs:
+        - print:
+          - 'Here''s the list of related books:\n %s'
+          - $resp
+        - print:
+          - 'That''s all!'
     samples:
       in_code:
       - calling_forms: ".*"

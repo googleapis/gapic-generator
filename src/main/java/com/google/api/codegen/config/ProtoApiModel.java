@@ -115,7 +115,7 @@ public class ProtoApiModel implements ApiModel {
   public List<ProtoTypeRef> getAdditionalTypes() {
     return getTypes(protoModel)
         .stream()
-        .map(ProtoTypeRef::new)
+        .map(ProtoTypeRef::create)
         .collect(ImmutableList.toImmutableList());
   }
 
