@@ -84,9 +84,6 @@
         {@processLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
-      @case "LOOP"
-        for {@view.variable} in {@fullArg(view.collection)}:
-          {@processOutputViews(view.body)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -116,7 +113,7 @@
 @end
 
 @private processAssignmentView(view)
-  {@view.variable} = {@variableField(view.reference)}
+  {@view.variableName} = {@variableField(view.reference)}
 @end
 
 
