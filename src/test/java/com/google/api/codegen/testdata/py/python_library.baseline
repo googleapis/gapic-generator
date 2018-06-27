@@ -1104,31 +1104,63 @@ class LibraryServiceClient(object):
             book_id=book_id,
         )
 
-    def __init__(self, channel=None, credentials=None,
+    def __init__(self, transport=None, channel=None, credentials=None,
             client_config=library_service_client_config.config,
             client_info=None):
         """Constructor.
 
         Args:
-            channel (grpc.Channel): A ``Channel`` instance through
-                which to make calls. This argument is mutually exclusive
+            transport (Union[~.LibraryServiceGrpc,
+                    Callable[[~.Credentials, type], ~.LibraryServiceGrpc]): A transport
+                instance, responsible for actually making the API calls.
+                The default transport uses the gRPC protocol.
+                This argument may also be a callable which returns a
+                transport instance. Callables will be sent the credentials
+                as the first argument and the default transport class as
+                the second argument.
+            channel (grpc.Channel): DEPRECATED. A ``Channel`` instance
+                through which to make calls. This argument is mutually exclusive
                 with ``credentials``; providing both will raise an exception.
             credentials (google.auth.credentials.Credentials): The
                 authorization credentials to attach to requests. These
                 credentials identify this application to the service. If none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
-            client_config (dict): A dictionary of call options for each
-                method. If not specified, the default configuration is used.
+                This argument is mutually exclusive with providing a
+                transport instance to ``transport``; doing so will raise
+                an exception.
+            client_config (dict): DEPRECATED. A dictionary of call options for
+                each method. If not specified, the default configuration is used.
             client_info (google.api_core.gapic_v1.client_info.ClientInfo):
                 The client info used to send a user-agent string along with
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
+        # Raise deprecation warnings for things we want to go away.
+        if client_config:
+            warnings.warn('The `client_config` argument is deprecated.',
+                          PendingDeprecationWarning)
+        if channel:
+            warnings.warn('The `channel` argument is deprecated; use '
+                          '`transport` instead.', PendingDeprecationWarning)
+
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
         # deserialization and actually sending data to the service.
+        if transport:
+            if callable(transport):
+                self.transport = transport(
+                    credentials=credentials,
+                    default_class=library_service_grpc.LibraryServiceGrpc,
+                )
+            else:
+                if credentials:
+                    raise ValueError(
+                        'Received both a transport instance and '
+                        'credentials; these are mutually exclusive.'
+                    )
+                self.transport = transport
         self.transport = library_service_grpc.LibraryServiceGrpc(
             address=self.SERVICE_ADDRESS,
             channel=channel,
@@ -1200,14 +1232,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.create_shelf)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'create_shelf' not in self._inner_api_calls:
+            self._inner_api_calls['create_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.create_shelf,
                 default_retry=self._method_configs['CreateShelf'].retry,
                 default_timeout=self._method_configs['CreateShelf'].timeout,
@@ -1271,14 +1297,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_shelf)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_shelf' not in self._inner_api_calls:
+            self._inner_api_calls['get_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_shelf,
                 default_retry=self._method_configs['GetShelf'].retry,
                 default_timeout=self._method_configs['GetShelf'].timeout,
@@ -1343,14 +1363,8 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.list_shelves)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_shelves' not in self._inner_api_calls:
+            self._inner_api_calls['list_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.list_shelves,
                 default_retry=self._method_configs['ListShelves'].retry,
                 default_timeout=self._method_configs['ListShelves'].timeout,
@@ -1405,14 +1419,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.delete_shelf)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'delete_shelf' not in self._inner_api_calls:
+            self._inner_api_calls['delete_shelf'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.delete_shelf,
                 default_retry=self._method_configs['DeleteShelf'].retry,
                 default_timeout=self._method_configs['DeleteShelf'].timeout,
@@ -1469,14 +1477,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.merge_shelves)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'merge_shelves' not in self._inner_api_calls:
+            self._inner_api_calls['merge_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.merge_shelves,
                 default_retry=self._method_configs['MergeShelves'].retry,
                 default_timeout=self._method_configs['MergeShelves'].timeout,
@@ -1536,14 +1538,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.create_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'create_book' not in self._inner_api_calls:
+            self._inner_api_calls['create_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.create_book,
                 default_retry=self._method_configs['CreateBook'].retry,
                 default_timeout=self._method_configs['CreateBook'].timeout,
@@ -1627,14 +1623,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.publish_series)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'publish_series' not in self._inner_api_calls:
+            self._inner_api_calls['publish_series'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.publish_series,
                 default_retry=self._method_configs['PublishSeries'].retry,
                 default_timeout=self._method_configs['PublishSeries'].timeout,
@@ -1697,14 +1687,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book' not in self._inner_api_calls:
+            self._inner_api_calls['get_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_book,
                 default_retry=self._method_configs['GetBook'].retry,
                 default_timeout=self._method_configs['GetBook'].timeout,
@@ -1780,14 +1764,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.list_books)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_books' not in self._inner_api_calls:
+            self._inner_api_calls['list_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.list_books,
                 default_retry=self._method_configs['ListBooks'].retry,
                 default_timeout=self._method_configs['ListBooks'].timeout,
@@ -1846,14 +1824,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.delete_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'delete_book' not in self._inner_api_calls:
+            self._inner_api_calls['delete_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.delete_book,
                 default_retry=self._method_configs['DeleteBook'].retry,
                 default_timeout=self._method_configs['DeleteBook'].timeout,
@@ -1922,14 +1894,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.update_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'update_book' not in self._inner_api_calls:
+            self._inner_api_calls['update_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.update_book,
                 default_retry=self._method_configs['UpdateBook'].retry,
                 default_timeout=self._method_configs['UpdateBook'].timeout,
@@ -1988,14 +1954,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.move_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'move_book' not in self._inner_api_calls:
+            self._inner_api_calls['move_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.move_book,
                 default_retry=self._method_configs['MoveBook'].retry,
                 default_timeout=self._method_configs['MoveBook'].timeout,
@@ -2067,14 +2027,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.list_strings)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'list_strings' not in self._inner_api_calls:
+            self._inner_api_calls['list_strings'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.list_strings,
                 default_retry=self._method_configs['ListStrings'].retry,
                 default_timeout=self._method_configs['ListStrings'].timeout,
@@ -2141,14 +2095,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.add_comments)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_comments' not in self._inner_api_calls:
+            self._inner_api_calls['add_comments'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.add_comments,
                 default_retry=self._method_configs['AddComments'].retry,
                 default_timeout=self._method_configs['AddComments'].timeout,
@@ -2201,14 +2149,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_book_from_archive)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_archive' not in self._inner_api_calls:
+            self._inner_api_calls['get_book_from_archive'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_book_from_archive,
                 default_retry=self._method_configs['GetBookFromArchive'].retry,
                 default_timeout=self._method_configs['GetBookFromArchive'].timeout,
@@ -2264,14 +2206,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_book_from_anywhere)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_anywhere' not in self._inner_api_calls:
+            self._inner_api_calls['get_book_from_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_book_from_anywhere,
                 default_retry=self._method_configs['GetBookFromAnywhere'].retry,
                 default_timeout=self._method_configs['GetBookFromAnywhere'].timeout,
@@ -2324,14 +2260,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_book_from_absolutely_anywhere)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_book_from_absolutely_anywhere' not in self._inner_api_calls:
+            self._inner_api_calls['get_book_from_absolutely_anywhere'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_book_from_absolutely_anywhere,
                 default_retry=self._method_configs['GetBookFromAbsolutelyAnywhere'].retry,
                 default_timeout=self._method_configs['GetBookFromAbsolutelyAnywhere'].timeout,
@@ -2389,14 +2319,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.update_book_index)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'update_book_index' not in self._inner_api_calls:
+            self._inner_api_calls['update_book_index'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.update_book_index,
                 default_retry=self._method_configs['UpdateBookIndex'].retry,
                 default_timeout=self._method_configs['UpdateBookIndex'].timeout,
@@ -2448,14 +2372,8 @@ class LibraryServiceClient(object):
                     to a retryable error and retry attempts failed.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.stream_shelves)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'stream_shelves' not in self._inner_api_calls:
+            self._inner_api_calls['stream_shelves'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.stream_shelves,
                 default_retry=self._method_configs['StreamShelves'].retry,
                 default_timeout=self._method_configs['StreamShelves'].timeout,
@@ -2509,14 +2427,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.stream_books)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'stream_books' not in self._inner_api_calls:
+            self._inner_api_calls['stream_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.stream_books,
                 default_retry=self._method_configs['StreamBooks'].retry,
                 default_timeout=self._method_configs['StreamBooks'].timeout,
@@ -2577,14 +2489,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.discuss_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'discuss_book' not in self._inner_api_calls:
+            self._inner_api_calls['discuss_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.discuss_book,
                 default_retry=self._method_configs['DiscussBook'].retry,
                 default_timeout=self._method_configs['DiscussBook'].timeout,
@@ -2640,14 +2546,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.monolog_about_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'monolog_about_book' not in self._inner_api_calls:
+            self._inner_api_calls['monolog_about_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.monolog_about_book,
                 default_retry=self._method_configs['MonologAboutBook'].retry,
                 default_timeout=self._method_configs['MonologAboutBook'].timeout,
@@ -2723,14 +2623,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.find_related_books)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'find_related_books' not in self._inner_api_calls:
+            self._inner_api_calls['find_related_books'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.find_related_books,
                 default_retry=self._method_configs['FindRelatedBooks'].retry,
                 default_timeout=self._method_configs['FindRelatedBooks'].timeout,
@@ -2799,14 +2693,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.add_tag)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_tag' not in self._inner_api_calls:
+            self._inner_api_calls['add_tag'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.add_tag,
                 default_retry=self._method_configs['AddTag'].retry,
                 default_timeout=self._method_configs['AddTag'].timeout,
@@ -2866,14 +2754,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.add_label)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'add_label' not in self._inner_api_calls:
+            self._inner_api_calls['add_label'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.add_label,
                 default_retry=self._method_configs['AddLabel'].retry,
                 default_timeout=self._method_configs['AddLabel'].timeout,
@@ -2935,14 +2817,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_big_book)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_big_book' not in self._inner_api_calls:
+            self._inner_api_calls['get_big_book'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_big_book,
                 default_retry=self._method_configs['GetBigBook'].retry,
                 default_timeout=self._method_configs['GetBigBook'].timeout,
@@ -3009,14 +2885,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.get_big_nothing)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'get_big_nothing' not in self._inner_api_calls:
+            self._inner_api_calls['get_big_nothing'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.get_big_nothing,
                 default_retry=self._method_configs['GetBigNothing'].retry,
                 default_timeout=self._method_configs['GetBigNothing'].timeout,
@@ -3278,14 +3148,8 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        #
-        # Note: We use the hash of the original transport method
-        # in order to automatically invalidate the lookup if the
-        # transport method changes in-place (this can happen because
-        # the stubs must be regenerated if interceptors are added.)
-        cache_key = hash(self.transport.test_optional_required_flattening_params)
-        if cache_key not in self._inner_api_calls:
-            self._inner_api_calls[cache_key] = google.api_core.gapic_v1.method.wrap_method(
+        if 'test_optional_required_flattening_params' not in self._inner_api_calls:
+            self._inner_api_calls['test_optional_required_flattening_params'] = google.api_core.gapic_v1.method.wrap_method(
                 self.transport.test_optional_required_flattening_params,
                 default_retry=self._method_configs['TestOptionalRequiredFlatteningParams'].retry,
                 default_timeout=self._method_configs['TestOptionalRequiredFlatteningParams'].timeout,
@@ -3597,11 +3461,31 @@ class LibraryServiceGrpc(object):
         # Create the channel.
         self.channel = channel
         if self.channel is None:
-            self.channel = google.api_core.grpc_helpers.create_channel(
-                address,
-                credentials=credentials,
-                scopes=self._OAUTH_SCOPES,
-            )
+            self.channel = self.create_channel()
+
+    @classmethod
+    def create_channel(
+                cls,
+                address='library-example.googleapis.com:443',
+                credentials=None):
+        """Create and return a gRPC channel object.
+
+        Args:
+            address (str): The host for the channel to use.
+            credentials (~.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If
+                none are specified, the client will attempt to ascertain
+                the credentials from the environment.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return google.api_core.grpc_helpers.create_channel(
+            address,
+            credentials=credentials,
+            scopes=cls._OAUTH_SCOPES,
+        )
 
     @property
     def create_shelf(self):
@@ -3989,36 +3873,6 @@ class LibraryServiceGrpc(object):
                 'labeler_stub': tagger_pb2_grpc.LabelerStub(self.channel),
             }
         return self.__dict__['_stubs']
-
-    def _clear_cache(self):
-        """Clear any cached objects on this transport instance."""
-        # Clear out the LRO client.
-        self.__dict__.pop('_lro', None)
-
-        # Clear out any stubs already generated.
-        self.__dict__.pop('_stubs', None)
-
-    def _intercept_channel(self, *interceptors):
-        """Experimental. Bind gRPC interceptors to the gRPC channel.
-
-        Args:
-            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-              Zero or more gRPC interceptors. Interceptors are given control in the order
-              they are listed.
-        Raises:
-            TypeError: If interceptor does not derive from any of
-              UnaryUnaryClientInterceptor,
-              UnaryStreamClientInterceptor,
-              StreamUnaryClientInterceptor, or
-              StreamStreamClientInterceptor.
-        """
-        # Set the new channel with the provided interceptors.
-        self.channel = grpc.intercept_channel(self.channel, *interceptors)
-
-        # Clear out the instance's cache of dependent objects.
-        # These generally have the channel passed to them, and they
-        # will hang on to an old reference since the channel has changed.
-        self._clear_cache()
 
 ============== file: google/cloud/example/library_v1/types.py ==============
 # Copyright 2018 Google LLC
