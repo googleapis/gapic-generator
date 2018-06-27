@@ -25,7 +25,6 @@ import com.google.api.codegen.viewmodel.OutputView.VariableView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -41,11 +40,7 @@ class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static OutputView toView(OutputSpec config, MethodContext context, SampleValueSet valueSet) {
-    return toView(config, context, valueSet, new HashMap<>());
-  }
-
-  private static OutputView toView(
+  static OutputView toView(
       OutputSpec config,
       MethodContext context,
       SampleValueSet valueSet,
@@ -73,6 +68,10 @@ class OutputTransformer {
     if (config.getPrintCount() > 0) {
       once.run();
       view = printView(config.getPrintList(), context, valueSet, localVars);
+    }
+    if (!config.getAssign().isEmpty()) {
+      once.run();
+      view = assignmentView(config.getAssign(), context, valueSet, localVars);
     }
 
     return Preconditions.checkNotNull(
@@ -200,6 +199,8 @@ class OutputTransformer {
     for (int p = startFrom; p < s.length(); p++) {
       char c = s.charAt(p);
       if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
+        Preconditions.checkArgument(
+            p != startFrom, "not an identifier: %s", s.substring(startFrom));
         return p;
       }
     }
@@ -232,5 +233,29 @@ class OutputTransformer {
     // The variable is only visible within the loop, delete it from the table before we return.
     localVars.remove(loop.getVariable());
     return ret;
+  }
+
+  private static OutputView.AssignmentView assignmentView(
+      String assign,
+      MethodContext context,
+      SampleValueSet valueSet,
+      Map<String, TypeModel> localVars) {
+
+    int p = identifier(assign, 0);
+    String ident = assign.substring(0, p);
+    Preconditions.checkArgument(
+        assign.startsWith("=", p),
+        "%s:%s invalid assign, expecting '=': %s",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        assign);
+    OutputView.VariableView reference =
+        accessor(assign.substring(p + 1), context, valueSet, localVars, ident);
+    return OutputView.AssignmentView.newBuilder()
+        .variableType(
+            context.getNamer().getAndSaveTypeName(context.getTypeTable(), localVars.get(ident)))
+        .variableName(context.getNamer().localVarName(Name.from(ident)))
+        .reference(reference)
+        .build();
   }
 }
