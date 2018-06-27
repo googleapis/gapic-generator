@@ -207,7 +207,6 @@ public class SampleTransformer {
                     .build());
       }
 
-      Map<String, TypeModel> variableTable = new HashMap<>();
       for (SampleValueSet valueSet : matchingValueSets) {
         InitCodeView initCodeView =
             sampleGenerator.generate(
@@ -219,6 +218,7 @@ public class SampleTransformer {
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
+        Map<String, TypeModel> variableTable = new HashMap<>();
         List<OutputView> outputViews =
             outputs
                 .stream()
