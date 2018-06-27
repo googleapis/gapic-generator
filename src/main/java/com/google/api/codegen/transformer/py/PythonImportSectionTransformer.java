@@ -76,9 +76,19 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   public ImportSectionView generateGrpcTransportImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(ImmutableList.of())
-        .externalImports(ImmutableList.of(createImport("google.api_core.grpc_helpers")))
+        .externalImports(generateGrpctransportExternalImports(context))
         .appImports(generateGrpcTransportAppImports(context))
         .build();
+  }
+
+  private List<ImportFileView> generateGrpctransportExternalImports(GapicInterfaceContext context) {
+    ImmutableList.Builder<ImportFileView> externalImports = ImmutableList.builder();
+    externalImports.add(createImport("google.api_core.grpc_helpers"));
+
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      externalImports.add(createImport("google.api_core.operations_v1"));
+    }
+    return externalImports.build();
   }
 
   private List<ImportFileView> generateGrpcTransportAppImports(GapicInterfaceContext context) {
