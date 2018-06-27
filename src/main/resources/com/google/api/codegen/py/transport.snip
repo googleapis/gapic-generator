@@ -48,11 +48,31 @@
             @# Create the channel.
             self.channel = channel
             if self.channel is None:
-                self.channel = google.api_core.grpc_helpers.create_channel(
-                    address,
-                    credentials=credentials,
-                    scopes=self._OAUTH_SCOPES,
-                )
+                self.channel = self.create_channel()
+
+        @@classmethod
+        def create_channel(
+                    cls,
+                    address='{@api.serviceAddress}:{@api.servicePort}',
+                    credentials=None):
+            """Create and return a gRPC channel object.
+
+            Args:
+                address (str): The host for the channel to use.
+                credentials (~.Credentials): The
+                    authorization credentials to attach to requests. These
+                    credentials identify this application to the service. If
+                    none are specified, the client will attempt to ascertain
+                    the credentials from the environment.
+
+            Returns:
+                grpc.Channel: A gRPC channel object.
+            """
+            return google.api_core.grpc_helpers.create_channel(
+                address,
+                credentials=credentials,
+                scopes=cls._OAUTH_SCOPES,
+            )
 
         # ----- RPC CALLS -----
         @join apiMethod : api.apiMethods on BREAK.add(BREAK)
@@ -92,37 +112,5 @@
                     @end
                 }
             return self.__dict__['_stubs']
-
-        def _clear_cache(self):
-            """Clear any cached objects on this transport instance."""
-            @if api.hasLongRunningOperations
-            @# Clear out the LRO client.
-            self.__dict__.pop('_lro', None)
-
-            @end
-            @# Clear out any stubs already generated.
-            self.__dict__.pop('_stubs', None)
-
-        def _intercept_channel(self, *interceptors):
-            """Experimental. Bind gRPC interceptors to the gRPC channel.
-
-            Args:
-                interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-                  Zero or more gRPC interceptors. Interceptors are given control in the order
-                  they are listed.
-            Raises:
-                TypeError: If interceptor does not derive from any of
-                  UnaryUnaryClientInterceptor,
-                  UnaryStreamClientInterceptor,
-                  StreamUnaryClientInterceptor, or
-                  StreamStreamClientInterceptor.
-            """
-            @# Set the new channel with the provided interceptors.
-            self.channel = grpc.intercept_channel(self.channel, *interceptors)
-
-            @# Clear out the instance's cache of dependent objects.
-            @# These generally have the channel passed to them, and they
-            @# will hang on to an old reference since the channel has changed.
-            self._clear_cache()
 
 @end
