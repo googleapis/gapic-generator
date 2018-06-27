@@ -85,7 +85,7 @@
       @case "PRINT"
         {@processPrintView(view)}
       @default
-        $unhandledResponseForm: {@outs}
+        $unhandledResponseForm: {@view}
     @end
   @end
 @end
@@ -99,7 +99,7 @@
       print({@variableField(view.args.get(0))})
     @else
       print('{@view.format}'.format({@concatenatedArgs(view.args)}))
-    @end    
+    @end
   @end
 @end
 
@@ -108,12 +108,12 @@
 @end
 
 @private processLoopView(view)
-  for ({@view.variable} in {@variableField(view.collection)}):
+  for {@view.variableName} in {@variableField(view.collection)}:
     {@processOutputViews(view.body)}
 @end
 
 @private processAssignmentView(view)
-  {@view.variable} = {@variableField(view.reference)}
+  {@view.variableName} = {@variableField(view.reference)}
 @end
 
 
