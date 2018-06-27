@@ -100,6 +100,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("functools"));
     }
     imports.add(createImport("pkg_resources"));
+    imports.add(createImport("warnings"));
     return imports.build();
   }
 
