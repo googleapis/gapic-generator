@@ -80,7 +80,7 @@ class OutputTransformer {
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = definitionView(config.getDefine(), context, valueSet, localVars);
+      view = defineView(config.getDefine(), context, valueSet, localVars);
     }
 
     return Preconditions.checkNotNull(
@@ -109,15 +109,58 @@ class OutputTransformer {
         .build();
   }
 
+  private static OutputView.LoopView loopView(
+      OutputSpec.LoopStatement loop,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars) {
+
+    ScopeTable scope = localVars.newChild();
+    OutputView.VariableView accessor =
+        accessorNewVariable(loop.getCollection(), context, valueSet, scope, loop.getVariable());
+    OutputView.LoopView ret =
+        OutputView.LoopView.newBuilder()
+            .variableType(
+                context
+                    .getNamer()
+                    .getAndSaveTypeName(context.getTypeTable(), scope.get(loop.getVariable())))
+            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
+            .collection(accessor)
+            .body(
+                loop.getBodyList()
+                    .stream()
+                    .map(body -> toView(body, context, valueSet, scope))
+                    .collect(ImmutableList.toImmutableList()))
+            .build();
+    return ret;
+  }
+
+  private static OutputView.DefineView defineView(
+      String definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+    int p = identifierEnd(definition, 0);
+    String identifier = definition.substring(0, p);
+    Preconditions.checkArgument(
+        definition.startsWith("=", p),
+        "%s:%s invalid definition, expecting '=': %s",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        definition);
+    OutputView.VariableView reference =
+        accessorNewVariable(definition.substring(p + 1), context, valueSet, localVars, identifier);
+    return OutputView.DefineView.newBuilder()
+        .variableType(
+            context
+                .getNamer()
+                .getAndSaveTypeName(context.getTypeTable(), localVars.get(identifier)))
+        .variableName(context.getNamer().localVarName(Name.from(identifier)))
+        .reference(reference)
+        .build();
+  }
+
   private static OutputView.VariableView accessor(
       String config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     return accessorNewVariable(config, context, valueSet, localVars, null);
   }
-
-  // accessor:
-  //   identifier
-  //   accessor '[' number ']'
-  //   accessor '.' identifier
 
   /**
    * Parses config and returns accessor the config describes.
@@ -125,6 +168,14 @@ class OutputTransformer {
    * <p>The config is type-checked. For example, indexing into a scalar field is not allowed. If
    * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
    * newVar} is not null, it is registered into {@code localVars}.
+   *
+   * <pre><code>
+   * Syntax:
+   * accessor:
+   *   identifier
+   *   accessor '[' number ']'
+   *   accessor '.' identifier
+   * </code></pre>
    */
   private static OutputView.VariableView accessorNewVariable(
       String config,
@@ -218,64 +269,16 @@ class OutputTransformer {
     return s.length();
   }
 
-  private static OutputView.LoopView loopView(
-      OutputSpec.LoopStatement loop,
-      MethodContext context,
-      SampleValueSet valueSet,
-      ScopeTable localVars) {
-
-    ScopeTable scope = localVars.newChild();
-    OutputView.VariableView accessor =
-        accessorNewVariable(loop.getCollection(), context, valueSet, scope, loop.getVariable());
-    OutputView.LoopView ret =
-        OutputView.LoopView.newBuilder()
-            .variableType(
-                context
-                    .getNamer()
-                    .getAndSaveTypeName(context.getTypeTable(), scope.get(loop.getVariable())))
-            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
-            .collection(accessor)
-            .body(
-                loop.getBodyList()
-                    .stream()
-                    .map(body -> toView(body, context, valueSet, scope))
-                    .collect(ImmutableList.toImmutableList()))
-            .build();
-
-    // The variable is only visible within the loop, delete it from the table before we return.
-    return ret;
-  }
-
-  private static OutputView.DefinitionView definitionView(
-      String definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
-    int p = identifierEnd(definition, 0);
-    String ident = definition.substring(0, p);
-    Preconditions.checkArgument(
-        definition.startsWith("=", p),
-        "%s:%s invalid definition, expecting '=': %s",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
-        definition);
-    OutputView.VariableView reference =
-        accessorNewVariable(definition.substring(p + 1), context, valueSet, localVars, ident);
-    return OutputView.DefinitionView.newBuilder()
-        .variableType(
-            context.getNamer().getAndSaveTypeName(context.getTypeTable(), localVars.get(ident)))
-        .variableName(context.getNamer().localVarName(Name.from(ident)))
-        .reference(reference)
-        .build();
-  }
-
   /**
    * We track two scopes: universe and local.
    *
    * <p>Universe keeps track of all variable declared by the output specs. We need this because
    * variables are function-scoped in many dynamic languages, and we should error if the spec
-   * declares variable with the same name twice.
+   * declares a variable with the same name twice.
    *
-   * <p>Local keeps track of variable in the current block. We need this because variables are
+   * <p>Local keeps track of variables in the current block. We need this because variables are
    * block-scoped in many static languages, and we should error if the spec uses a variable not in
-   * the current block or its transitive parents.
+   * the nested blocks currently in scope.
    */
   private static class ScopeTable {
     private final Set<String> universe;
