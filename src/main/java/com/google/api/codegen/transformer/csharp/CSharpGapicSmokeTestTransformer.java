@@ -50,8 +50,6 @@ import java.util.List;
 public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String SMOKETEST_SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_smoketest.snip";
-  private static final String SMOKETEST_CSPROJ_TEMPLATE_FILENAME =
-      "csharp/gapic_smoketest_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
@@ -85,7 +83,6 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       SmokeTestClassView smokeTests = generateSmokeTest(context);
       if (smokeTests != null) {
         surfaceDocs.add(smokeTests);
-        surfaceDocs.add(generateSmokeTestCsproj(context));
       }
     }
 
@@ -94,7 +91,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(SMOKETEST_SNIPPETS_TEMPLATE_FILENAME, SMOKETEST_CSPROJ_TEMPLATE_FILENAME);
+    return Arrays.asList(SMOKETEST_SNIPPETS_TEMPLATE_FILENAME);
   }
 
   private SmokeTestClassView generateSmokeTest(GapicInterfaceContext context) {
@@ -108,17 +105,6 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
     String outputPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     builder.outputPath(outputPath + File.separator + name + ".g.cs");
-    return builder.build();
-  }
-
-  private SmokeTestClassView generateSmokeTestCsproj(GapicInterfaceContext context) {
-    SmokeTestClassView.Builder builder = generateSmokeTestViewBuilder(context);
-    GapicProductConfig productConfig = context.getProductConfig();
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), productConfig);
-    builder.outputPath(
-        outputPath + File.separator + productConfig.getPackageName() + ".SmokeTests.csproj");
-    builder.templateFileName(SMOKETEST_CSPROJ_TEMPLATE_FILENAME);
     return builder.build();
   }
 

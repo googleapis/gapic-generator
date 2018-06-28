@@ -25,9 +25,9 @@ import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestT
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
+import com.google.api.codegen.gapic.ArtifactFlags;
 import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.gapic.GapicGeneratorFactory;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
@@ -47,13 +47,13 @@ public class DiscoGapicGeneratorFactory {
       DiscoApiModel model,
       GapicProductConfig productConfig,
       PackageMetadataConfig packageConfig,
-      List<String> enabledArtifacts) {
+      ArtifactFlags artifactFlags) {
 
     ArrayList<CodeGenerator<?>> generators = new ArrayList<>();
 
     // Please keep the following IDs in alphabetical order
     if (language.equals(JAVA)) {
-      if (GapicGeneratorFactory.enableSurfaceGenerator(enabledArtifacts)) {
+      if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper javaPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/main/java")
@@ -86,7 +86,7 @@ public class DiscoGapicGeneratorFactory {
         generators.add(metadataGenerator);
       }
 
-      if (GapicGeneratorFactory.enableTestGenerator(enabledArtifacts)) {
+      if (artifactFlags.testGeneratorEnabled()) {
         GapicCodePathMapper javaTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/test/java")

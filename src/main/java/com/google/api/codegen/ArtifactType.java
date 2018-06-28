@@ -18,6 +18,14 @@ public enum ArtifactType {
   GAPIC_CONFIG,
   DISCOGAPIC_CONFIG,
 
+  // Generates only the code for the client
+  // Only supported by a subset of languages so far
+  GAPIC_CODE,
+
+  // Generates only the packaging files for the client
+  // Only supported by a subset of languages so far
+  GAPIC_PACKAGE,
+
   // This will be split into GAPIC and GAPIC_PACKAGE
   LEGACY_GAPIC_AND_PACKAGE,
   // This will be split into DISCOGAPIC and DISCOGAPIC_PACKAGE
