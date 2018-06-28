@@ -25,8 +25,11 @@ import com.google.api.codegen.viewmodel.OutputView.VariableView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 class OutputTransformer {
@@ -40,11 +43,17 @@ class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static OutputView toView(
-      OutputSpec config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+  static List<OutputView> toViews(
+      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
+    ScopeTable localVars = new ScopeTable();
+    return configs
+        .stream()
+        .map(s -> OutputTransformer.toView(s, context, valueSet, localVars))
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private static OutputView toView(
+      OutputSpec config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -69,9 +78,9 @@ class OutputTransformer {
       once.run();
       view = printView(config.getPrintList(), context, valueSet, localVars);
     }
-    if (!config.getAssign().isEmpty()) {
+    if (!config.getDefine().isEmpty()) {
       once.run();
-      view = assignmentView(config.getAssign(), context, valueSet, localVars);
+      view = definitionView(config.getDefine(), context, valueSet, localVars);
     }
 
     return Preconditions.checkNotNull(
@@ -82,10 +91,7 @@ class OutputTransformer {
   }
 
   private static OutputView.PrintView printView(
-      List<String> config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+      List<String> config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
@@ -98,9 +104,14 @@ class OutputTransformer {
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(a, context, valueSet, localVars, null))
+                .map(a -> accessor(a, context, valueSet, localVars))
                 .collect(ImmutableList.toImmutableList()))
         .build();
+  }
+
+  private static OutputView.VariableView accessor(
+      String config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+    return accessorNewVariable(config, context, valueSet, localVars, null);
   }
 
   // accessor:
@@ -115,17 +126,17 @@ class OutputTransformer {
    * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
    * newVar} is not null, it is registered into {@code localVars}.
    */
-  private static OutputView.VariableView accessor(
+  private static OutputView.VariableView accessorNewVariable(
       String config,
       MethodContext context,
       SampleValueSet valueSet,
-      Map<String, TypeModel> localVars,
+      ScopeTable localVars,
       @Nullable String newVar) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
     int cursor = 0;
-    int end = identifier(config, cursor);
+    int end = identifierEnd(config, cursor);
 
     String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
@@ -154,7 +165,7 @@ class OutputTransformer {
             config.substring(0, end));
 
         cursor = end + 1;
-        end = identifier(config, cursor);
+        end = identifierEnd(config, cursor);
 
         String fieldName = config.substring(cursor, end);
         FieldModel field =
@@ -183,7 +194,7 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
-      if (localVars.putIfAbsent(newVar, type) != null) {
+      if (!localVars.put(newVar, type)) {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: duplicated variable declaration not allowed: %s",
@@ -195,7 +206,7 @@ class OutputTransformer {
   }
 
   /** Returns the largest p such that s.substring(startsFrom, p) is an identifier. */
-  private static int identifier(String s, int startFrom) {
+  private static int identifierEnd(String s, int startFrom) {
     for (int p = startFrom; p < s.length(); p++) {
       char c = s.charAt(p);
       if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
@@ -211,51 +222,104 @@ class OutputTransformer {
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+      ScopeTable localVars) {
 
+    ScopeTable scope = localVars.newChild();
     OutputView.VariableView accessor =
-        accessor(loop.getCollection(), context, valueSet, localVars, loop.getVariable());
+        accessorNewVariable(loop.getCollection(), context, valueSet, scope, loop.getVariable());
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(
                 context
                     .getNamer()
-                    .getAndSaveTypeName(context.getTypeTable(), localVars.get(loop.getVariable())))
+                    .getAndSaveTypeName(context.getTypeTable(), scope.get(loop.getVariable())))
             .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
             .collection(accessor)
             .body(
                 loop.getBodyList()
                     .stream()
-                    .map(body -> toView(body, context, valueSet, localVars))
+                    .map(body -> toView(body, context, valueSet, scope))
                     .collect(ImmutableList.toImmutableList()))
             .build();
 
     // The variable is only visible within the loop, delete it from the table before we return.
-    localVars.remove(loop.getVariable());
     return ret;
   }
 
-  private static OutputView.AssignmentView assignmentView(
-      String assign,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
-
-    int p = identifier(assign, 0);
-    String ident = assign.substring(0, p);
+  private static OutputView.DefinitionView definitionView(
+      String definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+    int p = identifierEnd(definition, 0);
+    String ident = definition.substring(0, p);
     Preconditions.checkArgument(
-        assign.startsWith("=", p),
-        "%s:%s invalid assign, expecting '=': %s",
+        definition.startsWith("=", p),
+        "%s:%s invalid definition, expecting '=': %s",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
-        assign);
+        definition);
     OutputView.VariableView reference =
-        accessor(assign.substring(p + 1), context, valueSet, localVars, ident);
-    return OutputView.AssignmentView.newBuilder()
+        accessorNewVariable(definition.substring(p + 1), context, valueSet, localVars, ident);
+    return OutputView.DefinitionView.newBuilder()
         .variableType(
             context.getNamer().getAndSaveTypeName(context.getTypeTable(), localVars.get(ident)))
         .variableName(context.getNamer().localVarName(Name.from(ident)))
         .reference(reference)
         .build();
+  }
+
+  /**
+   * We track two scopes: universe and local.
+   *
+   * <p>Universe keeps track of all variable declared by the output specs. We need this because
+   * variables are function-scoped in many dynamic languages, and we should error if the spec
+   * declares variable with the same name twice.
+   *
+   * <p>Local keeps track of variable in the current block. We need this because variables are
+   * block-scoped in many static languages, and we should error if the spec uses a variable not in
+   * the current block or its transitive parents.
+   */
+  private static class ScopeTable {
+    private final Set<String> universe;
+    @Nullable private final ScopeTable parent;
+    private final Map<String, TypeModel> scope = new HashMap<>();
+
+    private ScopeTable() {
+      universe = new HashSet<>();
+      parent = null;
+    }
+
+    private ScopeTable(ScopeTable parent) {
+      Preconditions.checkNotNull(parent);
+      universe = parent.universe;
+      this.parent = parent;
+    }
+
+    /** Gets the type of the variable. Returns null if the variable is not found. */
+    private TypeModel get(String name) {
+      ScopeTable table = this;
+      while (table != null) {
+        TypeModel type = table.scope.get(name);
+        if (type != null) {
+          return type;
+        }
+        table = table.parent;
+      }
+      return null;
+    }
+
+    /**
+     * Associates a variable with a type in the current scope. Returns whether the insertion was
+     * successful.
+     */
+    private boolean put(String name, TypeModel type) {
+      if (!universe.add(name)) {
+        return false;
+      }
+      scope.put(name, type);
+      return true;
+    }
+
+    private ScopeTable newChild() {
+      return new ScopeTable(this);
+    }
   }
 }

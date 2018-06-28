@@ -19,7 +19,6 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
-import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -27,14 +26,10 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * A class that performs the transformations needed to generate the MethodSampleView for the
@@ -218,18 +213,12 @@ public class SampleTransformer {
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
-        Map<String, TypeModel> variableTable = new HashMap<>();
-        List<OutputView> outputViews =
-            outputs
-                .stream()
-                .map(s -> OutputTransformer.toView(s, context, valueSet, variableTable))
-                .collect(Collectors.toList());
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(outputViews)
+                .outputs(OutputTransformer.toViews(outputs, context, valueSet))
                 .build());
       }
     }

@@ -20,8 +20,8 @@ import com.google.common.collect.ImmutableList;
 public interface OutputView {
 
   public enum Kind {
-    ASSIGNMENT,
     COMMENT,
+    DEFINITION,
     LOOP,
     PRINT
   }
@@ -29,7 +29,7 @@ public interface OutputView {
   Kind kind();
 
   @AutoValue
-  abstract class AssignmentView implements OutputView {
+  abstract class DefinitionView implements OutputView {
     public abstract String variableType(); // TODO: Replace with appropriate type type
 
     public abstract String variableName();
@@ -37,11 +37,11 @@ public interface OutputView {
     public abstract VariableView reference();
 
     public Kind kind() {
-      return Kind.ASSIGNMENT;
+      return Kind.DEFINITION;
     }
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_AssignmentView.Builder();
+      return new AutoValue_OutputView_DefinitionView.Builder();
     }
 
     @AutoValue.Builder
@@ -52,7 +52,7 @@ public interface OutputView {
 
       public abstract Builder reference(VariableView val);
 
-      public abstract AssignmentView build();
+      public abstract DefinitionView build();
     }
   }
 
