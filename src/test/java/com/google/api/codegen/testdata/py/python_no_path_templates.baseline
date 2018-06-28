@@ -1013,9 +1013,18 @@ class NoTemplatesApiServiceGrpc(object):
             )
 
         # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = self.create_channel()
+        if channel is None:
+            channel = self.create_channel(
+                address=address,
+                credentials=credentials,
+            )
+
+        # gRPC uses objects called "stubs" that are bound to the
+        # channel and provide a basic method for each RPC.
+        self._stubs = {
+            'no_templates_api_service_stub': no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(channel),
+        }
+
 
     @classmethod
     def create_channel(
@@ -1058,16 +1067,6 @@ class NoTemplatesApiServiceGrpc(object):
                 deserialized response object.
         """
         return self._stubs['no_templates_api_service_stub'].Increment
-
-
-    @property
-    def _stubs(self):
-        if '_stubs' not in self.__dict__:
-            self.__dict__['_stubs'] = {
-                'no_templates_api_service_stub': no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel),
-            }
-        return self.__dict__['_stubs']
-
 ============== file: example/types.py ==============
 # Copyright 2018 Google LLC
 #

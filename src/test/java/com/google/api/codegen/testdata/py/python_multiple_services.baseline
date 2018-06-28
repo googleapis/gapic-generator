@@ -1248,9 +1248,18 @@ class DecrementerServiceGrpc(object):
             )
 
         # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = self.create_channel()
+        if channel is None:
+            channel = self.create_channel(
+                address=address,
+                credentials=credentials,
+            )
+
+        # gRPC uses objects called "stubs" that are bound to the
+        # channel and provide a basic method for each RPC.
+        self._stubs = {
+            'decrementer_service_stub': multiple_services_pb2_grpc.DecrementerServiceStub(channel),
+        }
+
 
     @classmethod
     def create_channel(
@@ -1288,16 +1297,6 @@ class DecrementerServiceGrpc(object):
                 deserialized response object.
         """
         return self._stubs['decrementer_service_stub'].Decrement
-
-
-    @property
-    def _stubs(self):
-        if '_stubs' not in self.__dict__:
-            self.__dict__['_stubs'] = {
-                'decrementer_service_stub': multiple_services_pb2_grpc.DecrementerServiceStub(self.channel),
-            }
-        return self.__dict__['_stubs']
-
 ============== file: google/cloud/example_v1/gapic/foo/transports/incrementer_service_grpc.py ==============
 # Copyright 2018 Google LLC
 #
@@ -1356,9 +1355,18 @@ class IncrementerServiceGrpc(object):
             )
 
         # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = self.create_channel()
+        if channel is None:
+            channel = self.create_channel(
+                address=address,
+                credentials=credentials,
+            )
+
+        # gRPC uses objects called "stubs" that are bound to the
+        # channel and provide a basic method for each RPC.
+        self._stubs = {
+            'incrementer_service_stub': multiple_services_pb2_grpc.IncrementerServiceStub(channel),
+        }
+
 
     @classmethod
     def create_channel(
@@ -1396,16 +1404,6 @@ class IncrementerServiceGrpc(object):
                 deserialized response object.
         """
         return self._stubs['incrementer_service_stub'].Increment
-
-
-    @property
-    def _stubs(self):
-        if '_stubs' not in self.__dict__:
-            self.__dict__['_stubs'] = {
-                'incrementer_service_stub': multiple_services_pb2_grpc.IncrementerServiceStub(self.channel),
-            }
-        return self.__dict__['_stubs']
-
 ============== file: google/cloud/example_v1/types.py ==============
 # Copyright 2018 Google LLC
 #

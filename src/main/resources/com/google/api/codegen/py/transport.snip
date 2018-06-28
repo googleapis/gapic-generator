@@ -46,9 +46,27 @@
                 )
 
             @# Create the channel.
-            self.channel = channel
-            if self.channel is None:
-                self.channel = self.create_channel()
+            if channel is None:
+                channel = self.create_channel(
+                    address=address,
+                    credentials=credentials,
+                )
+
+            @# gRPC uses objects called "stubs" that are bound to the
+            @# channel and provide a basic method for each RPC.
+            self._stubs = {
+                @join stub : api.stubs on BREAK
+                '{@stub.name}': {@stub.grpcClientTypeName}(channel),
+                @end
+            }
+
+            # ----- SUPPORT METHODS -----
+            @if api.hasLongRunningOperations
+                @# Because this API includes a method that returns a
+                @# long-running operation (proto: google.longrunning.Operation),
+                @# instantiate an LRO client.
+                self._operations_client = operations_v1.OperationsClient(channel)
+            @end
 
         @@classmethod
         def create_channel(
@@ -91,26 +109,4 @@
                 """
                 return self._stubs['{@apiMethod.stubName}'].{@apiMethod.grpcMethodName}
         @end
-
-        # ----- SUPPORT METHODS -----
-        @if api.hasLongRunningOperations
-        @@property
-        def operations_client(self):
-            if '_lro' not in self.__dict__:
-                self.__dict__['_lro'] = operations_v1.OperationsClient(
-                    self.channel,
-                )
-            return self.__dict__['_lro']
-        @end
-
-        @@property
-        def _stubs(self):
-            if '_stubs' not in self.__dict__:
-                self.__dict__['_stubs'] = {
-                    @join stub : api.stubs on BREAK
-                    '{@stub.name}': {@stub.grpcClientTypeName}(self.channel),
-                    @end
-                }
-            return self.__dict__['_stubs']
-
 @end

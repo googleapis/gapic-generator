@@ -2831,7 +2831,7 @@ class LibraryServiceClient(object):
         operation = self._inner_api_calls['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
-            self.transport.operations_client,
+            self.transport._operations_client,
             library_pb2.Book,
             metadata_type=library_pb2.GetBigBookMetadata,
         )
@@ -2899,7 +2899,7 @@ class LibraryServiceClient(object):
         operation = self._inner_api_calls['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
-            self.transport.operations_client,
+            self.transport._operations_client,
             empty_pb2.Empty,
             metadata_type=library_pb2.GetBigBookMetadata,
         )
@@ -3462,9 +3462,23 @@ class LibraryServiceGrpc(object):
             )
 
         # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = self.create_channel()
+        if channel is None:
+            channel = self.create_channel(
+                address=address,
+                credentials=credentials,
+            )
+
+        # gRPC uses objects called "stubs" that are bound to the
+        # channel and provide a basic method for each RPC.
+        self._stubs = {
+            'library_service_stub': library_pb2_grpc.LibraryServiceStub(channel),
+            'labeler_stub': tagger_pb2_grpc.LabelerStub(channel),
+        }
+
+        # Because this API includes a method that returns a
+        # long-running operation (proto: google.longrunning.Operation),
+        # instantiate an LRO client.
+        self._operations_client = operations_v1.OperationsClient(channel)
 
     @classmethod
     def create_channel(
@@ -3859,24 +3873,6 @@ class LibraryServiceGrpc(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
-
-    @property
-    def operations_client(self):
-        if '_lro' not in self.__dict__:
-            self.__dict__['_lro'] = operations_v1.OperationsClient(
-                self.channel,
-            )
-        return self.__dict__['_lro']
-
-    @property
-    def _stubs(self):
-        if '_stubs' not in self.__dict__:
-            self.__dict__['_stubs'] = {
-                'library_service_stub': library_pb2_grpc.LibraryServiceStub(self.channel),
-                'labeler_stub': tagger_pb2_grpc.LabelerStub(self.channel),
-            }
-        return self.__dict__['_stubs']
-
 ============== file: google/cloud/example/library_v1/types.py ==============
 # Copyright 2018 Google LLC
 #
