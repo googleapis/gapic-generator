@@ -18,7 +18,6 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
@@ -98,9 +97,9 @@ public abstract class PackagingConfig {
     abstract PackagingConfig build();
   }
 
-  @SuppressWarnings("unchecked")
   private static PackagingConfig createFromString(String yamlContents) {
     Yaml yaml = new Yaml();
+    @SuppressWarnings("unchecked")
     Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
 
     Builder builder =
@@ -108,14 +107,15 @@ public abstract class PackagingConfig {
             .apiName((String) configMap.get("api_name"))
             .apiVersion(Strings.nullToEmpty((String) configMap.get("api_version")))
             .organizationName((String) configMap.get("organization_name"))
-            .protoPackageDependencies(
-                MoreObjects.firstNonNull(
-                    (List<String>) configMap.get("proto_deps"), ImmutableList.of()))
+            .protoPackageDependencies(getProtoDeps(configMap, "proto_deps"))
             .releaseLevel(Configs.parseReleaseLevel((String) configMap.get("release_level")))
             .artifactType(PackagingArtifactType.of((String) configMap.get("artifact_type")))
             .protoPath((String) configMap.get("proto_path"));
-    if (configMap.containsKey("proto_test_deps")) {
-      builder.protoPackageTestDependencies((List<String>) configMap.get("proto_test_deps"));
+    if (configMap.containsKey("test_proto_deps")) {
+      builder.protoPackageTestDependencies(getProtoDeps(configMap, "test_proto_deps"));
+    } else if (configMap.containsKey("proto_test_deps")) {
+      // TODO delete this branch once artman always passes in test_proto_deps
+      builder.protoPackageTestDependencies(getProtoDeps(configMap, "proto_test_deps"));
     }
 
     return builder.build();
@@ -129,5 +129,23 @@ public abstract class PackagingConfig {
   public static PackagingConfig loadFromURL(URL url) throws IOException {
     String contents = Resources.toString(url, StandardCharsets.UTF_8);
     return createFromString(contents);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<String> getProtoDeps(Map<String, Object> configMap, String key) {
+    List<?> deps = (List<?>) configMap.get(key);
+    if (deps == null || deps.size() == 0) {
+      return ImmutableList.of();
+    }
+    if (deps.get(0) instanceof String) {
+      // TODO delete this branch once artman always passes in the structure instead of just names
+      return (List<String>) deps;
+    } else {
+      ImmutableList.Builder<String> depStrings = ImmutableList.builder();
+      for (Map<String, Object> packageData : (List<Map<String, Object>>) deps) {
+        depStrings.add((String) packageData.get("name"));
+      }
+      return depStrings.build();
+    }
   }
 }

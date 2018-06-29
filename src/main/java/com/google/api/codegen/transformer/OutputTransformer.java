@@ -19,12 +19,16 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.OutputView.VariableView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.Nullable;
 
 class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
@@ -38,6 +42,14 @@ class OutputTransformer {
   }
 
   static OutputView toView(OutputSpec config, MethodContext context, SampleValueSet valueSet) {
+    return toView(config, context, valueSet, new HashMap<>());
+  }
+
+  private static OutputView toView(
+      OutputSpec config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      Map<String, TypeModel> localVars) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -56,11 +68,11 @@ class OutputTransformer {
     OutputView view = null;
     if (config.hasLoop()) {
       once.run();
-      throw new UnsupportedOperationException("loop not implemented yet");
+      view = loopView(config.getLoop(), context, valueSet, localVars);
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view = printView(config.getPrintList(), context, valueSet);
+      view = printView(config.getPrintList(), context, valueSet, localVars);
     }
 
     return Preconditions.checkNotNull(
@@ -71,7 +83,10 @@ class OutputTransformer {
   }
 
   private static OutputView.PrintView printView(
-      List<String> config, MethodContext context, SampleValueSet valueSet) {
+      List<String> config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      Map<String, TypeModel> localVars) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
@@ -84,7 +99,7 @@ class OutputTransformer {
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(a, context, valueSet))
+                .map(a -> accessor(a, context, valueSet, localVars, null))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
@@ -93,8 +108,20 @@ class OutputTransformer {
   //   identifier
   //   accessor '[' number ']'
   //   accessor '.' identifier
+
+  /**
+   * Parses config and returns accessor the config describes.
+   *
+   * <p>The config is type-checked. For example, indexing into a scalar field is not allowed. If
+   * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
+   * newVar} is not null, it is registered into {@code localVars}.
+   */
   private static OutputView.VariableView accessor(
-      String config, MethodContext context, SampleValueSet valueSet) {
+      String config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      Map<String, TypeModel> localVars,
+      @Nullable String newVar) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
@@ -107,7 +134,14 @@ class OutputTransformer {
       view.variable(context.getNamer().getSampleResponseVarName());
       type = context.getMethodModel().getOutputType();
     } else {
-      throw new UnsupportedOperationException("local variable not implemented yet");
+      view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
+      type =
+          Preconditions.checkNotNull(
+              localVars.get(baseIdentifier),
+              "%s:%s: variable not defined: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              baseIdentifier);
     }
 
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
@@ -148,6 +182,16 @@ class OutputTransformer {
             String.format("unexpected character: %c (%s)", config.charAt(end), config));
       }
     }
+
+    if (newVar != null) {
+      if (localVars.putIfAbsent(newVar, type) != null) {
+        throw new IllegalStateException(
+            String.format(
+                "%s:%s: duplicated variable declaration not allowed: %s",
+                context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
+      }
+    }
+
     return view.accessors(accessors.build()).build();
   }
 
@@ -160,5 +204,33 @@ class OutputTransformer {
       }
     }
     return s.length();
+  }
+
+  private static OutputView.LoopView loopView(
+      OutputSpec.LoopStatement loop,
+      MethodContext context,
+      SampleValueSet valueSet,
+      Map<String, TypeModel> localVars) {
+
+    OutputView.VariableView accessor =
+        accessor(loop.getCollection(), context, valueSet, localVars, loop.getVariable());
+    OutputView.LoopView ret =
+        OutputView.LoopView.newBuilder()
+            .variableType(
+                context
+                    .getNamer()
+                    .getAndSaveTypeName(context.getTypeTable(), localVars.get(loop.getVariable())))
+            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
+            .collection(accessor)
+            .body(
+                loop.getBodyList()
+                    .stream()
+                    .map(body -> toView(body, context, valueSet, localVars))
+                    .collect(ImmutableList.toImmutableList()))
+            .build();
+
+    // The variable is only visible within the loop, delete it from the table before we return.
+    localVars.remove(loop.getVariable());
+    return ret;
   }
 }
