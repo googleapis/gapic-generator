@@ -455,6 +455,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
+    return packageFilePathPiece(Name.anyCamel(getInterfaceName(interfaceConfig), "Grpc"));
+  }
+
   public String getPrintSpec(String spec) {
     // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
     StringBuilder sb = new StringBuilder();
