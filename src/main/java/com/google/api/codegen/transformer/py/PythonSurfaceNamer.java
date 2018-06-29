@@ -456,7 +456,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
-    return packageFilePathPiece(Name.anyCamel(getInterfaceName(interfaceConfig), "Grpc"));
+    return packageFilePathPiece(Name.anyCamel(getGrpcTransportClassName(interfaceConfig)));
   }
 
   public String getPrintSpec(String spec) {
