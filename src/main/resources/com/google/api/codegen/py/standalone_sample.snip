@@ -9,7 +9,7 @@
 
   @# To run with the published packaged, execute the following before running this code:
   @#   pip install {@sampleFile.gapicPackageName}
-   
+
   @# [START full_sample]
 
   @# FIXME: Insert here boilerplate code not directly related to the method call itself.
@@ -21,19 +21,18 @@
       @##       description: "{@sample.valueSet.description}"
       @##       {@sample.valueSet.parameters}
       @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-      
+
       @# [START core_sample]
 
       @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
-       
+
       {@standaloneSample(apiMethod, sample)}
-      # TODO(pongad): Make this work on non-unary too.
-      print(response)
-      
+      {@processResponse(sample)}
+
       @# [END core_sample]
 
       @# FIXME: Insert here clean-up code.
-      
+
     @end
   @end
   @# [END full_sample]
@@ -61,5 +60,75 @@
     {@lroSampleCode(apiMethod, sample.initCode)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @end
+@end
+
+
+
+@private processResponse(sample)
+  @if sample.outputs.size == 0
+    print(response)
+  @else
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private processOutputViews(outputViews)
+  @join view : outputViews on BREAK
+    @switch view.kind
+      @case "ASSIGNMENT"
+        {@processAssignmentView}
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "LOOP"
+        {@processLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
+    @end
+  @end
+@end
+
+@private processPrintView(view)
+  # Since numeric comparison seems to not work, we use explicit zero tests
+  @if not(view.args.size)
+    print('{@view.format}')
+  @else
+    @if view.format == "{}"
+      print({@variableField(view.args.get(0))})
+    @else
+      print('{@view.format}'.format({@concatenatedArgs(view.args)}))
+    @end
+  @end
+@end
+
+@private processCommentView(view)
+  {@toComments(view.lines)}
+@end
+
+@private processLoopView(view)
+  for {@view.variableName} in {@variableField(view.collection)}:
+    {@processOutputViews(view.body)}
+@end
+
+@private processAssignmentView(view)
+  {@view.variableName} = {@variableField(view.reference)}
+@end
+
+
+@private concatenatedArgs(args)
+  @join arg : args on ", "
+    {@variableField(arg)}
+  @end
+@end
+
+@private variableField(arg)
+  {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+  @join field : accessors on ""
+    .{@field}
   @end
 @end

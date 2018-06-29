@@ -458,4 +458,26 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
     return packageFilePathPiece(Name.anyCamel(getInterfaceName(interfaceConfig), "Grpc"));
   }
+
+  public String getPrintSpec(String spec) {
+    // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
+    StringBuilder sb = new StringBuilder();
+    int cursor = 0;
+    while (true) {
+      int p = spec.indexOf('%', cursor);
+      if (p < 0) {
+        return sb.append(spec, cursor, spec.length()).toString().replace("'", "\\'");
+      }
+      sb.append(spec, cursor, p);
+
+      if (spec.startsWith("%%", p)) {
+        sb.append('%');
+      } else if (spec.startsWith("%s", p)) {
+        sb.append("{}");
+      } else {
+        throw new IllegalArgumentException(String.format("bad format verb: %s", spec));
+      }
+      cursor = p + 2;
+    }
+  }
 }

@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ImportSectionView {
@@ -24,7 +25,22 @@ public abstract class ImportSectionView {
 
   public abstract List<ImportFileView> externalImports();
 
+  /** This is a superset of the union of localImports() and sharedImports(). */
   public abstract List<ImportFileView> appImports();
+
+  /**
+   * Used in Python. A list of imports that are specifically compiled for the generated client, e.g.
+   * the proto-compiled classes.
+   */
+  @Nullable
+  public abstract List<ImportFileView> localImports();
+
+  /**
+   * Used in Python. A list of imports that are not solely specific to the generated client, e.g.
+   * the language protobuf library.
+   */
+  @Nullable
+  public abstract List<ImportFileView> sharedImports();
 
   public abstract List<ImportFileView> serviceImports();
 
@@ -43,6 +59,10 @@ public abstract class ImportSectionView {
     public abstract Builder externalImports(List<ImportFileView> val);
 
     public abstract Builder appImports(List<ImportFileView> val);
+
+    public abstract Builder localImports(List<ImportFileView> val);
+
+    public abstract Builder sharedImports(List<ImportFileView> val);
 
     public abstract Builder serviceImports(List<ImportFileView> val);
 

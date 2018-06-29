@@ -1592,6 +1592,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
+  /** Translate C-printf-spec into one expected by the language's format utilities. */
+  public String getPrintSpec(String spec) {
+    return getNotImplementedString("SurfaceNamer.getPrintSpec");
+  }
+
+  public String getSampleResponseVarName() {
+    return "response";
+  }
+
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////
 
   public Name getTransportProtocolName(TransportProtocol protocol) {

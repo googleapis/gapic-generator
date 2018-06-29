@@ -239,15 +239,23 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     SurfaceNamer namer = context.getNamer();
     ResourceNameMessageConfigs resourceConfigs =
         context.getProductConfig().getResourceNameMessageConfigs();
-    String packageName = context.getProductConfig().getPackageName();
+    String csharpDefaultNamespace = context.getProductConfig().getPackageName();
     ListMultimap<String, FieldModel> fieldsByMessage =
         resourceConfigs.getFieldsWithResourceNamesByMessage();
     Map<String, FieldConfig> fieldConfigMap =
         context.getProductConfig().getDefaultResourceNameFieldConfigMap();
     List<ResourceProtoView> protos = new ArrayList<>();
+    // Get the default proto package name for this interface.
+    String defaultPackageName = context.getInterfaceModel().getParentFullName();
     for (Entry<String, Collection<FieldModel>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
-      msgName = packageName + msgName.substring(msgName.lastIndexOf('.'));
+      if (!msgName.startsWith(defaultPackageName)) {
+        // If the proto is not in this package, don't generate a partial class for it.
+        continue;
+      }
+      // msgName is the "<proto package name>.<C# proto class name>".
+      // Remove the proto package name, and prepend the C# namespace
+      msgName = csharpDefaultNamespace + msgName.substring(msgName.lastIndexOf('.'));
       Collection<FieldModel> fields = new ArrayList<>(entry.getValue());
       ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
       protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
@@ -298,6 +306,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
       protoBuilder.fields(fieldViews);
       protos.add(protoBuilder.build());
     }
+    // Sort alphabetically, to make generated code deterministic.
     Collections.sort(
         protos,
         new Comparator<ResourceProtoView>() {
@@ -475,6 +484,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
       MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         // Only for protobuf-based APIs.
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {

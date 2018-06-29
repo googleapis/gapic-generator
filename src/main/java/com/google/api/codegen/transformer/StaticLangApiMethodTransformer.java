@@ -370,13 +370,9 @@ public class StaticLangApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(
-        namer.getGrpcStreamingApiMethodName(
-            context.getMethodModel(), context.getMethodConfig().getVisibility()));
+        namer.getGrpcStreamingApiMethodName(method, context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        context
-            .getNamer()
-            .getGrpcStreamingApiMethodExampleName(
-                context.getInterfaceConfig(), context.getMethodModel()));
+        namer.getGrpcStreamingApiMethodExampleName(context.getInterfaceConfig(), method));
     setRequestObjectMethodFields(
         context,
         namer.getCallableMethodName(method),
@@ -386,6 +382,29 @@ public class StaticLangApiMethodTransformer {
     setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
+  }
+
+  public StaticLangApiMethodView generateGrpcStreamingFlattenedMethod(
+      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getGrpcStreamingApiMethodName(method, context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getGrpcStreamingApiMethodExampleName(context.getInterfaceConfig(), method));
+    methodViewBuilder.callableName(namer.getCallableName(method));
+    setFlattenedMethodFields(
+        context,
+        additionalParams,
+        Synchronicity.Sync,
+        methodViewBuilder,
+        Arrays.asList(CallingForm.Flattened));
+    setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.FlattenedMethod).build();
   }
 
   public StaticLangApiMethodView generateOperationRequestObjectMethod(MethodContext context) {
@@ -783,6 +802,10 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
+    String requestTypeFullName =
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
+    String requestType = context.getTypeTable().getAndSaveNicknameFor(requestTypeFullName);
+
     String genericAwareResponseTypeFullName =
         context.getNamer().getGenericAwareResponseTypeName(context);
     String genericAwareResponseType =
@@ -798,6 +821,7 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.callableMethod(
         CallableMethodDetailView.newBuilder()
+            .requestType(requestType)
             .genericAwareResponseType(genericAwareResponseType)
             .callableName(callableName)
             .interfaceTypeName(

@@ -221,6 +221,14 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     return new TypeName(longName, shortName);
   }
 
+  public static TypeName getGrpcTypeName(ProtoElement elem) {
+    String packageName = getJavaPackage(elem.getFile());
+    String shortName = getShortName(elem);
+    String longName = packageName + "." + shortName;
+
+    return new TypeName(longName, shortName);
+  }
+
   private TypeName getTypeNameForTypedResourceName(
       ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
 

@@ -21,11 +21,19 @@ import java.util.List;
 /** Utility class for Java to process text in the templates. */
 public class JavaRenderingUtil {
   /**
-   * Splits given text into lines and returns an list of strings, each one representing a line.
-   * Performs escaping of certain html characters.
+   * Splits given text into lines and returns a list of strings, each one representing a line.
+   * Performs escaping of certain HTML characters.
    */
   public static List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(new JavaCommentReformatter().reformat(text));
+  }
+
+  /**
+   * Splits given text into lines and returns a list of strings, each one representing a line,
+   * without escaping HTML characters.
+   */
+  public static List<String> splitLines(String text) {
+    return CommonRenderingUtil.getDocLines(text);
   }
 
   public List<String> getMultilineHeading(String heading) {

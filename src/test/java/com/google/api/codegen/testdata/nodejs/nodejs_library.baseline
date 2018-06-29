@@ -92,7 +92,7 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^0.14.0",
+    "google-gax": "^0.17.1",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.merge": "^4.6.0",
     "protobufjs": "^6.8.0"
@@ -130,10 +130,10 @@ $ npm install --save @google-cloud/library
 'use strict';
 
 describe('LibraryServiceSmokeTest', () => {
-  if (!process.env.SMOKE_TEST_PROJECT) {
-    throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+  if (!process.env.GCLOUD_PROJECT) {
+    throw new Error("Usage: GCLOUD_PROJECT=<project_id> node #{$0}");
   }
-  var projectId = process.env.SMOKE_TEST_PROJECT;
+  var projectId = process.env.GCLOUD_PROJECT;
 
   it('successfully makes a call to the service', done => {
     const library = require('../src');
@@ -260,7 +260,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 //     calling form "RequestStreamingBidi"
 //     valueSet "prog" ("Programming Books")
-//       description: "Testing calling forms: {Java:[CallableStreamingBidi], NodeJS:[RequestStreamingBidi], Python:[RequestStreamingBidi]}"
+//       description: "Testing calling forms"
 //       [name=BASIC]
 //     apiMethod "discussBook" of type "OptionalArrayMethod"
 
@@ -296,7 +296,7 @@ stream.write(request);
 
 //     calling form "RequestAsyncPagedAll"
 //     valueSet "odyssey" ("The Odyssey")
-//       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
+//       description: "Testing calling forms"
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooks" of type "PagedOptionalArrayMethod"
 
@@ -343,7 +343,7 @@ client.findRelatedBooks(request)
 
 //     calling form "RequestAsyncPaged"
 //     valueSet "odyssey" ("The Odyssey")
-//       description: "Testing calling forms: {Java:[FlattenedPaged, RequestPaged, CallableList, CallablePaged], NodeJS:[RequestAsyncPaged, RequestAsyncPagedAll], Python:[RequestPaged, RequestPagedAll]}"
+//       description: "Testing calling forms"
 //       [names[0]=Odyssey, shelves[0]=Classics]
 //     apiMethod "findRelatedBooks" of type "PagedOptionalArrayMethod"
 
@@ -402,7 +402,7 @@ client.findRelatedBooks(request, options)
 
 //     calling form "LongRunningEventEmitter"
 //     valueSet "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"
+//       description: "Testing calling forms"
 //       [name="War and Peace"]
 //     apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
@@ -457,7 +457,7 @@ client.getBigBook({name: formattedName})
 
 //     calling form "LongRunningPromise"
 //     valueSet "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms: {Java:[LongRunningFlattenedAsync, LongRunningRequestAsync, Callable, LongRunningCallable], NodeJS:[LongRunningEventEmitter, LongRunningPromise], Python:[LongRunningPromise]}"
+//       description: "Testing calling forms"
 //       [name="War and Peace"]
 //     apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
@@ -508,7 +508,7 @@ client.getBigBook({name: formattedName})
 
 //     calling form "RequestStreamingClient"
 //     valueSet "prog" ("Programming Books")
-//       description: "Testing calling forms: {Java:[CallableStreamingClient], NodeJS:[RequestStreamingClient], Python:[RequestStreamingClient]}"
+//       description: "Testing calling forms"
 //       [name=BASIC]
 //     apiMethod "monologAboutBook" of type "OptionalArrayMethod"
 
@@ -548,7 +548,7 @@ stream.write(request);
 
 //     calling form "Request"
 //     valueSet "pi_version" ("Pi version")
-//       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
+//       description: "Testing calling forms"
 //       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //     apiMethod "publishSeries" of type "OptionalArrayMethod"
 
@@ -597,7 +597,7 @@ client.publishSeries(request)
 
 //     calling form "Request"
 //     valueSet "second_edition" ("Second edition")
-//       description: "Testing calling forms: {Java:[Flattened, Request, Callable], NodeJS:[Request], Python:[Request]}"
+//       description: "Testing calling forms"
 //       [edition=2]
 //     apiMethod "publishSeries" of type "OptionalArrayMethod"
 
@@ -642,7 +642,7 @@ client.publishSeries(request)
 
 //     calling form "RequestStreamingServer"
 //     valueSet "prog" ("Programming Books")
-//       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
+//       description: "Testing calling forms"
 //       [name=BASIC]
 //     apiMethod "streamBooks" of type "OptionalArrayMethod"
 
@@ -673,7 +673,7 @@ var name = 'BASIC';
 
 //     calling form "RequestStreamingServer"
 //     valueSet "empty" ("Server streaming")
-//       description: "Testing calling forms: {Java:[CallableStreamingServer], NodeJS:[RequestStreamingServer], Python:[RequestStreamingServer]}"
+//       description: "Testing calling forms"
 //       []
 //     apiMethod "streamShelves" of type "OptionalArrayMethod"
 
@@ -3144,7 +3144,7 @@ class LibraryServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = gax.grpc(opts);
+    var gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
@@ -3228,7 +3228,7 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
-    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+    var protoFilesRoot = new gax.GoogleProtoFilesRoot();
     protoFilesRoot = protobuf.loadSync(
       path.join(__dirname, '..', '..', 'protos', 'library.proto'),
       protoFilesRoot

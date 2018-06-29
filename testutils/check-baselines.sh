@@ -18,13 +18,20 @@ set -e
 
 # TODO: Do this as part of GapicGeneratorTest so this check can be run with Gradle check command.
 
-## Check for unhandled cases.
-unhandledStr='$unhandledCallingForm'
-if grep --include='*.baseline' -r -l -F $unhandledStr src/; then
-	cat 1>&2 <<EOF
-Above baseline files contain string "$unhandledStr";
+exit_status=0
+
+check() {
+	if grep --include='*.baseline' -r -l -F $1 src/; then
+		cat 1>&2 <<EOF
+Above baseline files contain string "$1";
 some sample code won't render properly.
 
 EOF
-	exit 1
-fi
+		exit_status=1
+	fi
+}
+
+check '$unhandledCallingForm'
+check '$unhandledResponseForm'
+
+exit $exit_status

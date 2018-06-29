@@ -40,6 +40,9 @@ Style/MethodDefParentheses:
 -
 README.md
 
+============== file: CHANGELOG.md ==============
+# Release History
+
 ============== file: Gemfile ==============
 source "https://rubygems.org"
 
@@ -319,14 +322,14 @@ end
 
 ## Supported Ruby Versions
 
-This library is supported on Ruby 2.0+.
+This library is supported on Ruby 2.3+.
 
-However, Ruby 2.3 or later is strongly recommended, as earlier releases have
-reached or are nearing end-of-life. After June 1, 2018, Google will provide
-official support only for Ruby versions that are considered current and
-supported by Ruby Core (that is, Ruby versions that are either in normal
-maintenance or in security maintenance).
-See https://www.ruby-lang.org/en/downloads/branches/ for further details.
+Google provides official support for Ruby versions that are actively supported
+by Ruby Core—that is, Ruby versions that are either in normal maintenance or
+in security maintenance, and not end of life. Currently, this means Ruby 2.3
+and later. Older versions of Ruby _may_ still work, but are unsupported and not
+recommended. See https://www.ruby-lang.org/en/downloads/branches/ for details
+about the Ruby support schedule.
 
 ============== file: Rakefile ==============
 # Copyright 2018 Google LLC
@@ -904,8 +907,16 @@ module Google
         class Credentials < Google::Auth::Credentials
           SCOPE = [
           ].freeze
-          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE GOOGLE_CLOUD_KEYFILE GCLOUD_KEYFILE)
-          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON GOOGLE_CLOUD_KEYFILE_JSON GCLOUD_KEYFILE_JSON)
+          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE
+                             MULTIPLE_SERVICES_CREDENTIALS
+                             GOOGLE_CLOUD_CREDENTIALS
+                             GOOGLE_CLOUD_KEYFILE
+                             GCLOUD_KEYFILE)
+          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON
+                             MULTIPLE_SERVICES_CREDENTIALS_JSON
+                             GOOGLE_CLOUD_CREDENTIALS_JSON
+                             GOOGLE_CLOUD_KEYFILE_JSON
+                             GCLOUD_KEYFILE_JSON)
           DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
         end
       end
@@ -941,7 +952,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
-require "google/example/credentials"
+require "google/example/v1/foo/credentials"
 
 module Google
   module Example
@@ -1090,9 +1101,9 @@ module Google
           # @yieldparam operation [GRPC::ActiveCall::Operation]
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           # @example
-          #   require "google/example/v1/foo"
+          #   require "google/example"
           #
-          #   decrementer_service_client = Google::Example::V1::Foo::Decrementer.new
+          #   decrementer_service_client = Google::Example::Decrementer.new(version: :V1)
           #   decrementer_service_client.decrement
 
           def decrement options: nil, &block
@@ -1300,7 +1311,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
-require "google/example/credentials"
+require "google/example/v1/foo/credentials"
 
 module Google
   module Example
@@ -1449,9 +1460,9 @@ module Google
           # @yieldparam operation [GRPC::ActiveCall::Operation]
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           # @example
-          #   require "google/example/v1/foo"
+          #   require "google/example"
           #
-          #   incrementer_service_client = Google::Example::V1::Foo::Incrementer.new
+          #   incrementer_service_client = Google::Example::Incrementer.new(version: :V1)
           #   incrementer_service_client.increment
 
           def increment options: nil, &block
@@ -1578,7 +1589,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
           client.decrement do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end
@@ -1708,7 +1719,7 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
           client.increment do |response, operation|
             # Verify the response
             assert_nil(response)
-            assert_not_nil(operation)
+            refute_nil(operation)
           end
         end
       end

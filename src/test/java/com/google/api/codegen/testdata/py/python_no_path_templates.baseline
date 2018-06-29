@@ -1094,15 +1094,27 @@ from google.protobuf import descriptor_pb2
 from google.protobuf import empty_pb2
 
 
+_shared_modules = [
+    http_pb2,
+    descriptor_pb2,
+    empty_pb2,
+]
+
+_local_modules = [
+    no_path_templates_messages_pb2,
+]
+
 names = []
-for module in (no_path_templates_messages_pb2,
-               http_pb2,
-               descriptor_pb2,
-               empty_pb2,):
+
+for module in _shared_modules:
     for name, message in get_messages(module).items():
-        message.__module__ = 'example.types'
         setattr(sys.modules[__name__], name, message)
         names.append(name)
+for module in _local_modules:
+      for name, message in get_messages(module).items():
+          message.__module__ = 'example.types'
+          setattr(sys.modules[__name__], name, message)
+          names.append(name)
 
 
 __all__ = tuple(sorted(names))
@@ -1220,7 +1232,7 @@ setuptools.setup(
     description=description,
     long_description=readme,
     author='Google LLC',
-    author_email='googleapis-packages@oogle.com',
+    author_email='googleapis-packages@google.com',
     license='Apache 2.0',
     url='https://github.com/GoogleCloudPlatform/google-cloud-python',
     classifiers=[
