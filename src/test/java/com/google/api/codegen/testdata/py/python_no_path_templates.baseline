@@ -786,7 +786,7 @@ import google.api_core.grpc_helpers
 import grpc
 
 from example.gapic import no_templates_api_service_client_config
-from example.gapic.transports import no_templates_api_service_grpc
+from example.gapic.transports import no_templates_api_service_grpc_transport
 from example.proto import no_path_templates_messages_pb2
 from example.proto import no_path_templates_pb2_grpc
 from google.protobuf import empty_pb2
@@ -854,7 +854,7 @@ class NoTemplatesAPIServiceClient(object):
             if callable(transport):
                 self.transport = transport(
                     credentials=credentials,
-                    default_class=no_templates_api_service_grpc.NoTemplatesApiServiceGrpcTransport,
+                    default_class=no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport,
                 )
             else:
                 if credentials:
@@ -863,7 +863,7 @@ class NoTemplatesAPIServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = no_templates_api_service_grpc.NoTemplatesApiServiceGrpcTransport(
+        self.transport = no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport(
             address=self.SERVICE_ADDRESS,
             channel=channel,
             credentials=credentials,
