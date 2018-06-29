@@ -270,9 +270,9 @@ class OutputTransformer {
   }
 
   /**
-   * We track two scopes: universe and local.
+   * Tracks the variables that were defined for this sample and the subset that is currently in scope. We do this by maintaining two scopes: sample and local.
    *
-   * <p>Universe keeps track of all variable declared by the output specs. We need this because
+   * <p>Sample keeps track of all variable declared by the output specs. We need this because
    * variables are function-scoped in many dynamic languages, and we should error if the spec
    * declares a variable with the same name twice.
    *
@@ -281,18 +281,18 @@ class OutputTransformer {
    * the nested blocks currently in scope.
    */
   private static class ScopeTable {
-    private final Set<String> universe;
+    private final Set<String> sample;
     @Nullable private final ScopeTable parent;
     private final Map<String, TypeModel> scope = new HashMap<>();
 
     private ScopeTable() {
-      universe = new HashSet<>();
+      sample = new HashSet<>();
       parent = null;
     }
 
     private ScopeTable(ScopeTable parent) {
       Preconditions.checkNotNull(parent);
-      universe = parent.universe;
+      sample = parent.sample;
       this.parent = parent;
     }
 
@@ -314,7 +314,7 @@ class OutputTransformer {
      * successful.
      */
     private boolean put(String name, TypeModel type) {
-      if (!universe.add(name)) {
+      if (!sample.add(name)) {
         return false;
       }
       scope.put(name, type);
