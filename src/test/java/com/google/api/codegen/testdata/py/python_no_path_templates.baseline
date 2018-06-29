@@ -812,8 +812,8 @@ class NoTemplatesAPIServiceClient(object):
         """Constructor.
 
         Args:
-            transport (Union[~.NoTemplatesApiServiceGrpc,
-                    Callable[[~.Credentials, type], ~.NoTemplatesApiServiceGrpc]): A transport
+            transport (Union[~.NoTemplatesApiServiceGrpcTransport,
+                    Callable[[~.Credentials, type], ~.NoTemplatesApiServiceGrpcTransport]): A transport
                 instance, responsible for actually making the API calls.
                 The default transport uses the gRPC protocol.
                 This argument may also be a callable which returns a
@@ -854,7 +854,7 @@ class NoTemplatesAPIServiceClient(object):
             if callable(transport):
                 self.transport = transport(
                     credentials=credentials,
-                    default_class=no_templates_api_service_grpc.NoTemplatesApiServiceGrpc,
+                    default_class=no_templates_api_service_grpc.NoTemplatesApiServiceGrpcTransport,
                 )
             else:
                 if credentials:
@@ -863,7 +863,7 @@ class NoTemplatesAPIServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = no_templates_api_service_grpc.NoTemplatesApiServiceGrpc(
+        self.transport = no_templates_api_service_grpc.NoTemplatesApiServiceGrpcTransport(
             address=self.SERVICE_ADDRESS,
             channel=channel,
             credentials=credentials,
@@ -955,7 +955,7 @@ config = {
 
 ============== file: example/gapic/transports/__init__.py ==============
 
-============== file: example/gapic/transports/no_templates_api_service_grpc.py ==============
+============== file: example/gapic/transports/no_templates_api_service_grpc_transport.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -976,7 +976,7 @@ import google.api_core.grpc_helpers
 from example.proto import no_path_templates_pb2_grpc
 
 
-class NoTemplatesApiServiceGrpc(object):
+class NoTemplatesApiServiceGrpcTransport(object):
     """gRPC transport class providing stubs for
     google.cloud.example.v1 NoTemplatesAPIService API.
 

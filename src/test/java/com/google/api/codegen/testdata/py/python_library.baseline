@@ -1110,8 +1110,8 @@ class LibraryServiceClient(object):
         """Constructor.
 
         Args:
-            transport (Union[~.LibraryServiceGrpc,
-                    Callable[[~.Credentials, type], ~.LibraryServiceGrpc]): A transport
+            transport (Union[~.LibraryServiceGrpcTransport,
+                    Callable[[~.Credentials, type], ~.LibraryServiceGrpcTransport]): A transport
                 instance, responsible for actually making the API calls.
                 The default transport uses the gRPC protocol.
                 This argument may also be a callable which returns a
@@ -1152,7 +1152,7 @@ class LibraryServiceClient(object):
             if callable(transport):
                 self.transport = transport(
                     credentials=credentials,
-                    default_class=library_service_grpc.LibraryServiceGrpc,
+                    default_class=library_service_grpc.LibraryServiceGrpcTransport,
                 )
             else:
                 if credentials:
@@ -1161,7 +1161,7 @@ class LibraryServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = library_service_grpc.LibraryServiceGrpc(
+        self.transport = library_service_grpc.LibraryServiceGrpcTransport(
             address=self.SERVICE_ADDRESS,
             channel=channel,
             credentials=credentials,
@@ -3400,7 +3400,7 @@ config = {
 
 ============== file: google/cloud/example/library_v1/gapic/transports/__init__.py ==============
 
-============== file: google/cloud/example/library_v1/gapic/transports/library_service_grpc.py ==============
+============== file: google/cloud/example/library_v1/gapic/transports/library_service_grpc_transport.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -3423,7 +3423,7 @@ from google.cloud.example.library_v1.proto import library_pb2_grpc
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 
 
-class LibraryServiceGrpc(object):
+class LibraryServiceGrpcTransport(object):
     """gRPC transport class providing stubs for
     google.example.library.v1 LibraryService API.
 

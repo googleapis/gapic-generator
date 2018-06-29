@@ -863,8 +863,8 @@ class DecrementerServiceClient(object):
         """Constructor.
 
         Args:
-            transport (Union[~.DecrementerServiceGrpc,
-                    Callable[[~.Credentials, type], ~.DecrementerServiceGrpc]): A transport
+            transport (Union[~.DecrementerServiceGrpcTransport,
+                    Callable[[~.Credentials, type], ~.DecrementerServiceGrpcTransport]): A transport
                 instance, responsible for actually making the API calls.
                 The default transport uses the gRPC protocol.
                 This argument may also be a callable which returns a
@@ -905,7 +905,7 @@ class DecrementerServiceClient(object):
             if callable(transport):
                 self.transport = transport(
                     credentials=credentials,
-                    default_class=decrementer_service_grpc.DecrementerServiceGrpc,
+                    default_class=decrementer_service_grpc.DecrementerServiceGrpcTransport,
                 )
             else:
                 if credentials:
@@ -914,7 +914,7 @@ class DecrementerServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = decrementer_service_grpc.DecrementerServiceGrpc(
+        self.transport = decrementer_service_grpc.DecrementerServiceGrpcTransport(
             address=self.SERVICE_ADDRESS,
             channel=channel,
             credentials=credentials,
@@ -1052,8 +1052,8 @@ class IncrementerServiceClient(object):
         """Constructor.
 
         Args:
-            transport (Union[~.IncrementerServiceGrpc,
-                    Callable[[~.Credentials, type], ~.IncrementerServiceGrpc]): A transport
+            transport (Union[~.IncrementerServiceGrpcTransport,
+                    Callable[[~.Credentials, type], ~.IncrementerServiceGrpcTransport]): A transport
                 instance, responsible for actually making the API calls.
                 The default transport uses the gRPC protocol.
                 This argument may also be a callable which returns a
@@ -1094,7 +1094,7 @@ class IncrementerServiceClient(object):
             if callable(transport):
                 self.transport = transport(
                     credentials=credentials,
-                    default_class=incrementer_service_grpc.IncrementerServiceGrpc,
+                    default_class=incrementer_service_grpc.IncrementerServiceGrpcTransport,
                 )
             else:
                 if credentials:
@@ -1103,7 +1103,7 @@ class IncrementerServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = incrementer_service_grpc.IncrementerServiceGrpc(
+        self.transport = incrementer_service_grpc.IncrementerServiceGrpcTransport(
             address=self.SERVICE_ADDRESS,
             channel=channel,
             credentials=credentials,
@@ -1190,7 +1190,7 @@ config = {
 
 ============== file: google/cloud/example_v1/gapic/foo/transports/__init__.py ==============
 
-============== file: google/cloud/example_v1/gapic/foo/transports/decrementer_service_grpc.py ==============
+============== file: google/cloud/example_v1/gapic/foo/transports/decrementer_service_grpc_transport.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1211,7 +1211,7 @@ import google.api_core.grpc_helpers
 from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 
 
-class DecrementerServiceGrpc(object):
+class DecrementerServiceGrpcTransport(object):
     """gRPC transport class providing stubs for
     google.cloud.example.v1.foo DecrementerService API.
 
@@ -1297,7 +1297,7 @@ class DecrementerServiceGrpc(object):
                 deserialized response object.
         """
         return self._stubs['decrementer_service_stub'].Decrement
-============== file: google/cloud/example_v1/gapic/foo/transports/incrementer_service_grpc.py ==============
+============== file: google/cloud/example_v1/gapic/foo/transports/incrementer_service_grpc_transport.py ==============
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1318,7 +1318,7 @@ import google.api_core.grpc_helpers
 from google.cloud.example_v1.proto.foo import multiple_services_pb2_grpc
 
 
-class IncrementerServiceGrpc(object):
+class IncrementerServiceGrpcTransport(object):
     """gRPC transport class providing stubs for
     google.cloud.example.v1.foo IncrementerService API.
 

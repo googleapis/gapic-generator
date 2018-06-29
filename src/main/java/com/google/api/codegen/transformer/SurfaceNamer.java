@@ -770,7 +770,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getGrpcTransportClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Grpc"));
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "GrpcTransport"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
