@@ -270,7 +270,8 @@ class OutputTransformer {
   }
 
   /**
-   * Tracks the variables that were defined for this sample and the subset that is currently in scope. We do this by maintaining two scopes: sample and local.
+   * Tracks the variables that were defined for this sample and the subset that is currently in
+   * scope. We do this by maintaining two scopes: sample and local.
    *
    * <p>Sample keeps track of all variable declared by the output specs. We need this because
    * variables are function-scoped in many dynamic languages, and we should error if the spec
