@@ -332,6 +332,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
     for (int i = 0; i < parts.size(); i++) {
       packages.add(Joiner.on(".").join(parts.subList(0, i + 1)));
     }
+    packages.add(String.format("%s.transports", packageName));
     return packages;
   }
 
