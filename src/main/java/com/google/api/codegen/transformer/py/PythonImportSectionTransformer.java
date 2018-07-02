@@ -14,20 +14,9 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -46,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /* Creates the import sections of GAPIC generated code for Python. */
@@ -86,12 +76,44 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
+  public ImportSectionView generateGrpcTransportImportSection(GapicInterfaceContext context) {
+    return ImportSectionView.newBuilder()
+        .standardImports(ImmutableList.of())
+        .externalImports(generateGrpctransportExternalImports(context))
+        .appImports(generateGrpcTransportAppImports(context))
+        .build();
+  }
+
+  private List<ImportFileView> generateGrpctransportExternalImports(GapicInterfaceContext context) {
+    ImmutableList.Builder<ImportFileView> externalImports = ImmutableList.builder();
+    externalImports.add(createImport("google.api_core.grpc_helpers"));
+
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      externalImports.add(createImport("google.api_core.operations_v1"));
+    }
+    return externalImports.build();
+  }
+
+  private List<ImportFileView> generateGrpcTransportAppImports(GapicInterfaceContext context) {
+    Map<String, InterfaceModel> interfaces = new TreeMap<>();
+    for (MethodModel method : context.getSupportedMethods()) {
+      InterfaceModel targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+      interfaces.put(targetInterface.getFullName(), targetInterface);
+    }
+    ModelTypeTable typeTable = context.getImportTypeTable().cloneEmpty();
+    for (InterfaceModel targetInterface : interfaces.values()) {
+      context.getNamer().getAndSaveNicknameForGrpcClientTypeName(typeTable, targetInterface);
+    }
+    return generateFileHeaderAppImports(typeTable.getImports());
+  }
+
   private List<ImportFileView> generateFileHeaderStandardImports(InterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       imports.add(createImport("functools"));
     }
     imports.add(createImport("pkg_resources"));
+    imports.add(createImport("warnings"));
     return imports.build();
   }
 
@@ -151,7 +173,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(
         createImport(
             namer.getPackageName(), namer.getClientConfigName(context.getInterfaceConfig())));
-
+    imports.add(
+        createImport(
+            namer.getPackageName() + ".transports",
+            namer.getGrpcTransportImportName(context.getInterfaceConfig())));
     Collections.sort(imports, importFileViewComparator());
     return imports;
   }

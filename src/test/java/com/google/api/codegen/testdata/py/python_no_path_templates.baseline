@@ -777,6 +777,7 @@ __all__ = (
 """Accesses the google.cloud.example.v1 NoTemplatesAPIService API."""
 
 import pkg_resources
+import warnings
 
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
@@ -785,6 +786,7 @@ import google.api_core.grpc_helpers
 import grpc
 
 from example.gapic import no_templates_api_service_client_config
+from example.gapic.transports import no_templates_api_service_grpc_transport
 from example.proto import no_path_templates_messages_pb2
 from example.proto import no_path_templates_pb2_grpc
 from google.protobuf import empty_pb2
@@ -800,58 +802,72 @@ class NoTemplatesAPIServiceClient(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com:443'
     """The default address of the service."""
 
-    # The scopes needed to make gRPC calls to all of the methods defined in
-    # this service
-    _DEFAULT_SCOPES = (
-    )
-
-    # The name of the interface for this client. This is the key used to find
-    # method configuration in the client_config dictionary.
+    # The name of the interface for this client. This is the key used to
+    # find the method configuration in the client_config dictionary.
     _INTERFACE_NAME = 'google.cloud.example.v1.NoTemplatesAPIService'
 
-    def __init__(self, channel=None, credentials=None,
+    def __init__(self, transport=None, channel=None, credentials=None,
             client_config=no_templates_api_service_client_config.config,
             client_info=None):
         """Constructor.
 
         Args:
-            channel (grpc.Channel): A ``Channel`` instance through
-                which to make calls. This argument is mutually exclusive
+            transport (Union[~.NoTemplatesApiServiceGrpcTransport,
+                    Callable[[~.Credentials, type], ~.NoTemplatesApiServiceGrpcTransport]): A transport
+                instance, responsible for actually making the API calls.
+                The default transport uses the gRPC protocol.
+                This argument may also be a callable which returns a
+                transport instance. Callables will be sent the credentials
+                as the first argument and the default transport class as
+                the second argument.
+            channel (grpc.Channel): DEPRECATED. A ``Channel`` instance
+                through which to make calls. This argument is mutually exclusive
                 with ``credentials``; providing both will raise an exception.
             credentials (google.auth.credentials.Credentials): The
                 authorization credentials to attach to requests. These
                 credentials identify this application to the service. If none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
-            client_config (dict): A dictionary of call options for each
-                method. If not specified, the default configuration is used.
+                This argument is mutually exclusive with providing a
+                transport instance to ``transport``; doing so will raise
+                an exception.
+            client_config (dict): DEPRECATED. A dictionary of call options for
+                each method. If not specified, the default configuration is used.
             client_info (google.api_core.gapic_v1.client_info.ClientInfo):
                 The client info used to send a user-agent string along with
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
         """
-        # If both `channel` and `credentials` are specified, raise an
-        # exception (channels come with credentials baked in already).
-        if channel is not None and credentials is not None:
-            raise ValueError(
-                'The `channel` and `credentials` arguments to {} are mutually '
-                'exclusive.'.format(self.__class__.__name__),
-            )
+        # Raise deprecation warnings for things we want to go away.
+        if client_config:
+            warnings.warn('The `client_config` argument is deprecated.',
+                          PendingDeprecationWarning)
+        if channel:
+            warnings.warn('The `channel` argument is deprecated; use '
+                          '`transport` instead.', PendingDeprecationWarning)
 
-        # Create the channel.
-        self.channel = channel
-        if self.channel is None:
-            self.channel = google.api_core.grpc_helpers.create_channel(
-                self.SERVICE_ADDRESS,
-                credentials=credentials,
-                scopes=self._DEFAULT_SCOPES,
-            )
-
-        # Create the gRPC stubs.
-        self._no_templates_api_service_stub = (
-            no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel))
-
+        # Instantiate the transport.
+        # The transport is responsible for handling serialization and
+        # deserialization and actually sending data to the service.
+        if transport:
+            if callable(transport):
+                self.transport = transport(
+                    credentials=credentials,
+                    default_class=no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport,
+                )
+            else:
+                if credentials:
+                    raise ValueError(
+                        'Received both a transport instance and '
+                        'credentials; these are mutually exclusive.'
+                    )
+                self.transport = transport
+        self.transport = no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport(
+            address=self.SERVICE_ADDRESS,
+            channel=channel,
+            credentials=credentials,
+        )
 
         if client_info is None:
             client_info = (
@@ -867,26 +883,11 @@ class NoTemplatesAPIServiceClient(object):
             client_config['interfaces'][self._INTERFACE_NAME],
         )
 
+        # Save a dictionary of cached API call functions.
+        # These are the actual callables which invoke the proper
+        # transport methods, wrapped with `wrap_method` to add retry,
+        # timeout, and the like.
         self._inner_api_calls = {}
-
-    def _intercept_channel(self, *interceptors):
-        """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-        Args:
-            interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-              Zero or more gRPC interceptors. Interceptors are given control in the order
-              they are listed.
-        Raises:
-            TypeError: If interceptor does not derive from any of
-              UnaryUnaryClientInterceptor,
-              UnaryStreamClientInterceptor,
-              StreamUnaryClientInterceptor, or
-              StreamStreamClientInterceptor.
-        """
-        self.channel = grpc.intercept_channel(self.channel, *interceptors)
-        self._no_templates_api_service_stub = (
-            no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(self.channel))
-        self._inner_api_calls.clear()
 
     # Service calls
     def increment(
@@ -925,9 +926,10 @@ class NoTemplatesAPIServiceClient(object):
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
         """
+        # Wrap the transport method to add retry and timeout logic.
         if 'increment' not in self._inner_api_calls:
             self._inner_api_calls['increment'] = google.api_core.gapic_v1.method.wrap_method(
-                self._no_templates_api_service_stub.Increment,
+                self.transport.increment,
                 default_retry=self._method_configs['Increment'].retry,
                 default_timeout=self._method_configs['Increment'].timeout,
                 client_info=self._client_info,
@@ -951,6 +953,120 @@ config = {
   }
 }
 
+============== file: example/gapic/transports/__init__.py ==============
+
+============== file: example/gapic/transports/no_templates_api_service_grpc_transport.py ==============
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+import google.api_core.grpc_helpers
+
+from example.proto import no_path_templates_pb2_grpc
+
+
+class NoTemplatesApiServiceGrpcTransport(object):
+    """gRPC transport class providing stubs for
+    google.cloud.example.v1 NoTemplatesAPIService API.
+
+    The transport provides access to the raw gRPC stubs,
+    which can be used to take advantage of advanced
+    features of gRPC.
+    """
+    # The scopes needed to make gRPC calls to all of the methods defined
+    # in this service.
+    _OAUTH_SCOPES = (
+    )
+
+    def __init__(self, channel=None, credentials=None,
+                 address='no-path-templates.googleapis.com:443'):
+        """Instantiate the transport class.
+
+        Args:
+            channel (grpc.Channel): A ``Channel`` instance through
+                which to make calls. This argument is mutually exclusive
+                with ``credentials``; providing both will raise an exception.
+            credentials (google.auth.credentials.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If none
+                are specified, the client will attempt to ascertain the
+                credentials from the environment.
+            address (str): The address where the service is hosted.
+        """
+        # If both `channel` and `credentials` are specified, raise an
+        # exception (channels come with credentials baked in already).
+        if channel is not None and credentials is not None:
+            raise ValueError(
+                'The `channel` and `credentials` arguments are mutually '
+                'exclusive.',
+            )
+
+        # Create the channel.
+        if channel is None:
+            channel = self.create_channel(
+                address=address,
+                credentials=credentials,
+            )
+
+        # gRPC uses objects called "stubs" that are bound to the
+        # channel and provide a basic method for each RPC.
+        self._stubs = {
+            'no_templates_api_service_stub': no_path_templates_pb2_grpc.NoTemplatesAPIServiceStub(channel),
+        }
+
+
+    @classmethod
+    def create_channel(
+                cls,
+                address='no-path-templates.googleapis.com:443',
+                credentials=None):
+        """Create and return a gRPC channel object.
+
+        Args:
+            address (str): The host for the channel to use.
+            credentials (~.Credentials): The
+                authorization credentials to attach to requests. These
+                credentials identify this application to the service. If
+                none are specified, the client will attempt to ascertain
+                the credentials from the environment.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return google.api_core.grpc_helpers.create_channel(
+            address,
+            credentials=credentials,
+            scopes=cls._OAUTH_SCOPES,
+        )
+
+    @property
+    def increment(self):
+        """Return the gRPC stub for {$apiMethod.name}.
+
+        Increments something.
+        Sometimes the comments are indented, but Sphinx doesn't like that. So
+        in Python we trim all
+        leading
+        and trailing
+        whitespace.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['no_templates_api_service_stub'].Increment
 ============== file: example/types.py ==============
 # Copyright 2018 Google LLC
 #
