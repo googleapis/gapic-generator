@@ -16,9 +16,9 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -62,14 +62,14 @@ public class CSharpGapicClientPackageTransformer implements ModelToViewTransform
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
-    InterfaceModel lastApiInterface = null;
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      lastApiInterface = apiInterface;
+    List<ProtoInterfaceModel> apiInterfaces = model.getInterfaces();
+    if (apiInterfaces.isEmpty()) {
+      return surfaceDocs;
     }
 
     GapicInterfaceContext context =
         GapicInterfaceContext.create(
-            lastApiInterface,
+            apiInterfaces.get(apiInterfaces.size() - 1),
             productConfig,
             csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE),
             namer,

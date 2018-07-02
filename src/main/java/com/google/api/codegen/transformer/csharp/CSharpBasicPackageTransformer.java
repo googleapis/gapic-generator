@@ -30,7 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /* Transforms a ProtoApiModel into the smoke tests of an API for C#. */
 public class CSharpBasicPackageTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -47,7 +47,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
   private final GapicCodePathMapper pathMapper;
   private final String templateFilename;
   private final String fileBaseSuffix;
-  private final Function<GapicInterfaceContext, Boolean> shouldGenerateFn;
+  private final Predicate<GapicInterfaceContext> shouldGenerateFn;
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
@@ -56,7 +56,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
       GapicCodePathMapper pathMapper,
       String templateFilename,
       String fileBaseSuffix,
-      Function<GapicInterfaceContext, Boolean> shouldGenerateFn) {
+      Predicate<GapicInterfaceContext> shouldGenerateFn) {
     this.pathMapper = pathMapper;
     this.templateFilename = templateFilename;
     this.fileBaseSuffix = fileBaseSuffix;
@@ -81,7 +81,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
         pathMapper, UNITTEST_CSPROJ_TEMPLATE_FILENAME, ".Tests.csproj", parameter -> true);
   }
 
-  private static Function<GapicInterfaceContext, Boolean> shouldGenSmokeTestPackage() {
+  private static Predicate<GapicInterfaceContext> shouldGenSmokeTestPackage() {
     return parameter -> parameter.getInterfaceConfig().getSmokeTestConfig() != null;
   }
 
@@ -98,7 +98,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
               csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
               namer,
               new CSharpFeatureConfig());
-      if (shouldGenerateFn.apply(context)) {
+      if (shouldGenerateFn.test(context)) {
         surfaceDocs.add(generateCsproj(context));
       }
     }

@@ -81,7 +81,7 @@ import java.util.stream.Collectors;
 /* Transforms a ProtoApiModel into the standard GAPIC library for C#. */
 public class CSharpGapicClientTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
-  private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
+  private static final String API_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
@@ -138,7 +138,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME);
+    return Arrays.asList(API_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME);
   }
 
   private StaticLangResourceNamesView generateResourceNamesView(GapicInterfaceContext context) {
@@ -253,7 +253,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     StaticLangApiAndSettingsFileView.Builder fileView =
         StaticLangApiAndSettingsFileView.newBuilder();
 
-    fileView.templateFileName(XAPI_TEMPLATE_FILENAME);
+    fileView.templateFileName(API_TEMPLATE_FILENAME);
 
     fileView.api(generateApiClass(context));
     fileView.settings(generateSettingsClass(context));
