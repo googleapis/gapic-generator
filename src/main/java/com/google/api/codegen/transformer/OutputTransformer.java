@@ -26,8 +26,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 class OutputTransformer {
@@ -41,15 +43,17 @@ class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static OutputView toView(OutputSpec config, MethodContext context, SampleValueSet valueSet) {
-    return toView(config, context, valueSet, new HashMap<>());
+  static List<OutputView> toViews(
+      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
+    ScopeTable localVars = new ScopeTable();
+    return configs
+        .stream()
+        .map(s -> OutputTransformer.toView(s, context, valueSet, localVars))
+        .collect(ImmutableList.toImmutableList());
   }
 
   private static OutputView toView(
-      OutputSpec config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+      OutputSpec config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -74,6 +78,10 @@ class OutputTransformer {
       once.run();
       view = printView(config.getPrintList(), context, valueSet, localVars);
     }
+    if (!config.getDefine().isEmpty()) {
+      once.run();
+      view = defineView(config.getDefine(), context, valueSet, localVars);
+    }
 
     return Preconditions.checkNotNull(
         view,
@@ -83,10 +91,7 @@ class OutputTransformer {
   }
 
   private static OutputView.PrintView printView(
-      List<String> config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+      List<String> config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
@@ -99,15 +104,63 @@ class OutputTransformer {
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(a, context, valueSet, localVars, null))
+                .map(a -> accessor(a, context, valueSet, localVars))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
-  // accessor:
-  //   identifier
-  //   accessor '[' number ']'
-  //   accessor '.' identifier
+  private static OutputView.LoopView loopView(
+      OutputSpec.LoopStatement loop,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars) {
+
+    ScopeTable scope = localVars.newChild();
+    OutputView.VariableView accessor =
+        accessorNewVariable(loop.getCollection(), context, valueSet, scope, loop.getVariable());
+    OutputView.LoopView ret =
+        OutputView.LoopView.newBuilder()
+            .variableType(
+                context
+                    .getNamer()
+                    .getAndSaveTypeName(context.getTypeTable(), scope.get(loop.getVariable())))
+            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
+            .collection(accessor)
+            .body(
+                loop.getBodyList()
+                    .stream()
+                    .map(body -> toView(body, context, valueSet, scope))
+                    .collect(ImmutableList.toImmutableList()))
+            .build();
+    return ret;
+  }
+
+  private static OutputView.DefineView defineView(
+      String definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+    int p = identifierEnd(definition, 0);
+    String identifier = definition.substring(0, p);
+    Preconditions.checkArgument(
+        definition.startsWith("=", p),
+        "%s:%s invalid definition, expecting '=': %s",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        definition);
+    OutputView.VariableView reference =
+        accessorNewVariable(definition.substring(p + 1), context, valueSet, localVars, identifier);
+    return OutputView.DefineView.newBuilder()
+        .variableType(
+            context
+                .getNamer()
+                .getAndSaveTypeName(context.getTypeTable(), localVars.get(identifier)))
+        .variableName(context.getNamer().localVarName(Name.from(identifier)))
+        .reference(reference)
+        .build();
+  }
+
+  private static OutputView.VariableView accessor(
+      String config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+    return accessorNewVariable(config, context, valueSet, localVars, null);
+  }
 
   /**
    * Parses config and returns accessor the config describes.
@@ -115,18 +168,26 @@ class OutputTransformer {
    * <p>The config is type-checked. For example, indexing into a scalar field is not allowed. If
    * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
    * newVar} is not null, it is registered into {@code localVars}.
+   *
+   * <pre><code>
+   * Syntax:
+   * accessor:
+   *   identifier
+   *   accessor '[' number ']'
+   *   accessor '.' identifier
+   * </code></pre>
    */
-  private static OutputView.VariableView accessor(
+  private static OutputView.VariableView accessorNewVariable(
       String config,
       MethodContext context,
       SampleValueSet valueSet,
-      Map<String, TypeModel> localVars,
+      ScopeTable localVars,
       @Nullable String newVar) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
     int cursor = 0;
-    int end = identifier(config, cursor);
+    int end = identifierEnd(config, cursor);
 
     String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
@@ -155,7 +216,7 @@ class OutputTransformer {
             config.substring(0, end));
 
         cursor = end + 1;
-        end = identifier(config, cursor);
+        end = identifierEnd(config, cursor);
 
         String fieldName = config.substring(cursor, end);
         FieldModel field =
@@ -184,7 +245,7 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
-      if (localVars.putIfAbsent(newVar, type) != null) {
+      if (!localVars.put(newVar, type)) {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: duplicated variable declaration not allowed: %s",
@@ -196,41 +257,73 @@ class OutputTransformer {
   }
 
   /** Returns the largest p such that s.substring(startsFrom, p) is an identifier. */
-  private static int identifier(String s, int startFrom) {
+  private static int identifierEnd(String s, int startFrom) {
     for (int p = startFrom; p < s.length(); p++) {
       char c = s.charAt(p);
       if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
+        Preconditions.checkArgument(
+            p != startFrom, "not an identifier: %s", s.substring(startFrom));
         return p;
       }
     }
     return s.length();
   }
 
-  private static OutputView.LoopView loopView(
-      OutputSpec.LoopStatement loop,
-      MethodContext context,
-      SampleValueSet valueSet,
-      Map<String, TypeModel> localVars) {
+  /**
+   * Tracks the variables that were defined for this sample and the subset that is currently in
+   * scope. We do this by maintaining two scopes: sample and local.
+   *
+   * <p>Sample keeps track of all variable declared by the output specs. We need this because
+   * variables are function-scoped in many dynamic languages, and we should error if the spec
+   * declares a variable with the same name twice.
+   *
+   * <p>Local keeps track of variables in the current block. We need this because variables are
+   * block-scoped in many static languages, and we should error if the spec uses a variable not in
+   * the nested blocks currently in scope.
+   */
+  private static class ScopeTable {
+    private final Set<String> sample;
+    @Nullable private final ScopeTable parent;
+    private final Map<String, TypeModel> scope = new HashMap<>();
 
-    OutputView.VariableView accessor =
-        accessor(loop.getCollection(), context, valueSet, localVars, loop.getVariable());
-    OutputView.LoopView ret =
-        OutputView.LoopView.newBuilder()
-            .variableType(
-                context
-                    .getNamer()
-                    .getAndSaveTypeName(context.getTypeTable(), localVars.get(loop.getVariable())))
-            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
-            .collection(accessor)
-            .body(
-                loop.getBodyList()
-                    .stream()
-                    .map(body -> toView(body, context, valueSet, localVars))
-                    .collect(ImmutableList.toImmutableList()))
-            .build();
+    private ScopeTable() {
+      sample = new HashSet<>();
+      parent = null;
+    }
 
-    // The variable is only visible within the loop, delete it from the table before we return.
-    localVars.remove(loop.getVariable());
-    return ret;
+    private ScopeTable(ScopeTable parent) {
+      Preconditions.checkNotNull(parent);
+      sample = parent.sample;
+      this.parent = parent;
+    }
+
+    /** Gets the type of the variable. Returns null if the variable is not found. */
+    private TypeModel get(String name) {
+      ScopeTable table = this;
+      while (table != null) {
+        TypeModel type = table.scope.get(name);
+        if (type != null) {
+          return type;
+        }
+        table = table.parent;
+      }
+      return null;
+    }
+
+    /**
+     * Associates a variable with a type in the current scope. Returns whether the insertion was
+     * successful.
+     */
+    private boolean put(String name, TypeModel type) {
+      if (!sample.add(name)) {
+        return false;
+      }
+      scope.put(name, type);
+      return true;
+    }
+
+    private ScopeTable newChild() {
+      return new ScopeTable(this);
+    }
   }
 }
