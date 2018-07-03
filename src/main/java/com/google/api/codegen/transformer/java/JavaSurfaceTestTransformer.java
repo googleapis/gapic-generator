@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
@@ -175,16 +174,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
-    if (flatteningGroup
-        .getFlattenedFieldConfigs()
-        .values()
-        .stream()
-        .anyMatch(
-            (FieldConfig fieldConfig) ->
-                fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
-      // Don't generate a flattened method with List<ResourceName> as a parameter
-      // because that has the same type erasure as the version of the flattened method with
-      // List<String> as a parameter.
+    if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
       methodContext = methodContext.withResourceNamesInSamplesOnly();
     }
 
@@ -317,20 +307,10 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
-          if (flatteningGroup
-              .getFlattenedFieldConfigs()
-              .values()
-              .stream()
-              .anyMatch(
-                  (FieldConfig fieldConfig) ->
-                      fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
-            // Don't generate a flattened method with List<ResourceName> as a parameter
-            // because that has the same type erasure as the version of the flattened method with
-            // List<String> as a parameter.
+          if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();
           }
-
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,

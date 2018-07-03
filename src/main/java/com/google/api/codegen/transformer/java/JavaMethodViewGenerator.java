@@ -62,15 +62,7 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            if (!hasAnyResourceNameParameter(flatteningGroup)
-                || !flatteningGroup
-                    .getFlattenedFieldConfigs()
-                    .values()
-                    .stream()
-                    .anyMatch((FieldConfig fieldConfig) -> fieldConfig.getField().isRepeated())) {
-              // Don't generate a flattened method with List<ResourceName> as a parameter
-              // because that has the same type erasure as the version of the flattened method with
-              // List<String> as a parameter.
+            if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
             }
@@ -115,16 +107,7 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            if (flatteningGroup
-                .getFlattenedFieldConfigs()
-                .values()
-                .stream()
-                .anyMatch(
-                    (FieldConfig fieldConfig) ->
-                        fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
-              // Don't generate a flattened method with List<ResourceName> as a parameter
-              // because that has the same type erasure as the version of the flattened method with
-              // List<String> as a parameter.
+            if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
             apiMethods.add(
@@ -148,16 +131,7 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            if (flatteningGroup
-                .getFlattenedFieldConfigs()
-                .values()
-                .stream()
-                .anyMatch(
-                    (FieldConfig fieldConfig) ->
-                        fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
-              // Don't generate a flattened method with List<ResourceName> as a parameter
-              // because that has the same type erasure as the version of the flattened method with
-              // List<String> as a parameter.
+            if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
             apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
