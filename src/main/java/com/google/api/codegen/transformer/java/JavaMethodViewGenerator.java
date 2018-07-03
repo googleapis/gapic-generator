@@ -115,6 +115,18 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
+            if (flatteningGroup
+                .getFlattenedFieldConfigs()
+                .values()
+                .stream()
+                .anyMatch(
+                    (FieldConfig fieldConfig) ->
+                        fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
+              // Don't generate a flattened method with List<ResourceName> as a parameter
+              // because that has the same type erasure as the version of the flattened method with
+              // List<String> as a parameter.
+              flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+            }
             apiMethods.add(
                 clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                     flattenedMethodContext));
@@ -136,6 +148,18 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
+            if (flatteningGroup
+                .getFlattenedFieldConfigs()
+                .values()
+                .stream()
+                .anyMatch(
+                    (FieldConfig fieldConfig) ->
+                        fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
+              // Don't generate a flattened method with List<ResourceName> as a parameter
+              // because that has the same type erasure as the version of the flattened method with
+              // List<String> as a parameter.
+              flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+            }
             apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
 
             if (hasAnyResourceNameParameter(flatteningGroup)) {
