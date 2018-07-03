@@ -134,6 +134,9 @@ public abstract class FlatteningConfig {
     // Used in Java to prevent generating a flattened method with List<ResourceName> as a parameter
     // because that has the same type erasure as the version of the flattened method with
     // List<String> as a parameter.
+
+    // TODO(gapic-generator issue #2137) Only use raw String type for repeated params
+    // not for singular params in the same flattened method.
     return flatteningGroup
         .getFlattenedFieldConfigs()
         .values()
