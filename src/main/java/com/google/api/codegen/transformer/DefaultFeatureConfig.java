@@ -30,10 +30,7 @@ public class DefaultFeatureConfig implements FeatureConfig {
 
   @Override
   public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
-    return resourceNameTypesEnabled()
-        && fieldConfig != null
-        && fieldConfig.useResourceNameType()
-        && !fieldConfig.getField().isRepeated();
+    return resourceNameTypesEnabled() && fieldConfig != null && fieldConfig.useResourceNameType();
   }
 
   @Override

@@ -309,14 +309,14 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
               .getFlattenedFieldConfigs()
               .values()
               .stream()
-              .anyMatch((FieldConfig fieldConfig) ->
-                  fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
+              .anyMatch(
+                  (FieldConfig fieldConfig) ->
+                      fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
             // Don't generate a flattened method with List<ResourceName> as a parameter
             // because that has the same type erasure as the version of the flattened method with
             // List<String> as a parameter.
             methodContext = methodContext.withResourceNamesInSamplesOnly();
           }
-
 
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
