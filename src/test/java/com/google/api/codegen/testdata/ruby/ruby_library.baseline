@@ -757,74 +757,74 @@ end
 require "library/v1/library_service_client"
 require "errors_pb"
 
-# rubocop:disable LineLength
-
-##
-# # Ruby Client for Google Example Library API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
-#
-# [Google Example Library API][Product Documentation]:
-# A simple Google Example Library API.
-# - [Product Documentation][]
-#
-# ## Quick Start
-# In order to use this library, you first need to go through the following
-# steps:
-#
-# 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
-# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
-#
-# ### Preview
-# #### LibraryServiceClient
-# ```rb
-# require "library"
-#
-# library_service_client = Library.new(version: :V1)
-# formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-# optional_foo = ''
-# rating = :GOOD
-# book = { rating: rating }
-# update_mask = {}
-# physical_mask = {}
-# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
-# ```
-#
-# ### Next Steps
-# - Read the [Google Example Library API Product documentation][Product Documentation]
-#   to learn more about the product and see How-to Guides.
-# - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
-#   to see the full list of Cloud APIs that we cover.
-#
-# [Product Documentation]: https://cloud.google.com/library
-#
-# ## Enabling Logging
-#
-# To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
-# The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
-# or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
-# that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
-# and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
-#
-# Configuring a Ruby stdlib logger:
-#
-# ```ruby
-# require "logger"
-#
-# module MyLogger
-#   LOGGER = Logger.new $stderr, level: Logger::WARN
-#   def logger
-#     LOGGER
-#   end
-# end
-#
-# # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
-# module GRPC
-#   extend MyLogger
-# end
-# ```
-#
 module Library
+  # rubocop:disable LineLength
+
+  ##
+  # # Ruby Client for Google Example Library API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  #
+  # [Google Example Library API][Product Documentation]:
+  # A simple Google Example Library API.
+  # - [Product Documentation][]
+  #
+  # ## Quick Start
+  # In order to use this library, you first need to go through the following
+  # steps:
+  #
+  # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+  # 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+  # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Preview
+  # #### LibraryServiceClient
+  # ```rb
+  # require "library"
+  #
+  # library_service_client = Library.new(version: :V1)
+  # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+  # optional_foo = ''
+  # rating = :GOOD
+  # book = { rating: rating }
+  # update_mask = {}
+  # physical_mask = {}
+  # response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+  # ```
+  #
+  # ### Next Steps
+  # - Read the [Google Example Library API Product documentation][Product Documentation]
+  #   to learn more about the product and see How-to Guides.
+  # - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  #   to see the full list of Cloud APIs that we cover.
+  #
+  # [Product Documentation]: https://cloud.google.com/library
+  #
+  # ## Enabling Logging
+  #
+  # To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
+  # The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
+  # or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
+  # that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
+  # and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
+  #
+  # Configuring a Ruby stdlib logger:
+  #
+  # ```ruby
+  # require "logger"
+  #
+  # module MyLogger
+  #   LOGGER = Logger.new $stderr, level: Logger::WARN
+  #   def logger
+  #     LOGGER
+  #   end
+  # end
+  #
+  # # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+  # module GRPC
+  #   extend MyLogger
+  # end
+  # ```
+  #
   module V1
     # rubocop:enable LineLength
 
