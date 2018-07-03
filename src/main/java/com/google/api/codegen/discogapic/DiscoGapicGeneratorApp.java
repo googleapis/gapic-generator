@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
@@ -32,6 +33,7 @@ import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.gapic.ArtifactFlags;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -157,8 +159,10 @@ public class DiscoGapicGeneratorApp {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
+    ArtifactFlags artifactFlags =
+        new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE);
     return DiscoGapicGeneratorFactory.create(
-        language, model, productConfig, packageConfig, enabledArtifacts);
+        language, model, productConfig, packageConfig, artifactFlags);
   }
 
   public int run() throws Exception {
