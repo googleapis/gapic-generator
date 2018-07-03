@@ -175,6 +175,18 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    if (flatteningGroup
+        .getFlattenedFieldConfigs()
+        .values()
+        .stream()
+        .anyMatch(
+            (FieldConfig fieldConfig) ->
+                fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType())) {
+      // Don't generate a flattened method with List<ResourceName> as a parameter
+      // because that has the same type erasure as the version of the flattened method with
+      // List<String> as a parameter.
+      methodContext = methodContext.withResourceNamesInSamplesOnly();
+    }
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
@@ -316,6 +328,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
             // because that has the same type erasure as the version of the flattened method with
             // List<String> as a parameter.
             methodContext = methodContext.withResourceNamesInSamplesOnly();
+            flatteningGroup = methodContext.getFlatteningConfig();
           }
 
           InitCodeContext initCodeContext =
