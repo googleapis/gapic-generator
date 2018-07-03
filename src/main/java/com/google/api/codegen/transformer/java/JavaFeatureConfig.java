@@ -56,6 +56,21 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
         && !fieldConfig.getField().isRepeated();
   }
 
+  @Override
+  public boolean useResourceNameConvertersInSample(FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOptionInSample(fieldConfig)
+        && fieldConfig != null
+        && !fieldConfig.getField().isRepeated();
+  }
+
+  @Override
+  public boolean useResourceNameFormatOptionInSample(FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled()
+        && fieldConfig != null
+        && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly())
+        && !fieldConfig.getField().isRepeated();
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
 

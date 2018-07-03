@@ -566,8 +566,14 @@ public class InitCodeTransformer {
       MethodContext context, FieldConfig fieldConfig, InitCodeNode item) {
     String resourceName =
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
-    SingleResourceNameConfig singleResourceNameConfig =
-        (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
+    SingleResourceNameConfig singleResourceNameConfig;
+    try {
+       singleResourceNameConfig =
+          (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
+    }
+    catch (Exception e) {
+      return null;
+    }
     List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());
 
     return ResourceNameInitValueView.newBuilder()
