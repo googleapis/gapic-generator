@@ -2370,9 +2370,9 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   for (String element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -7232,10 +7232,10 @@ public class DiscussBookCallableSampleCallableStreamingBidiProg {
 public class FindRelatedBooksSampleFlattenedPagedOdyssey {
   public static void main(String[] args) {
     // [START core_sample]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    String namesElement = "Odyssey";
+    List<String> names = Arrays.asList(namesElement);
+    String shelvesElement = "Classics";
+    List<String> shelves = Arrays.asList(shelvesElement);
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves));
     // Do something
     for (String element : future.get().iterateAll()) {
