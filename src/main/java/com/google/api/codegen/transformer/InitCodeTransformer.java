@@ -568,10 +568,8 @@ public class InitCodeTransformer {
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
     SingleResourceNameConfig singleResourceNameConfig;
     try {
-       singleResourceNameConfig =
-          (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
-    }
-    catch (Exception e) {
+      singleResourceNameConfig = (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
+    } catch (Exception e) {
       return null;
     }
     List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());

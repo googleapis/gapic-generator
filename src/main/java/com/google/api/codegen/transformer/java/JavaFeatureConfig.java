@@ -58,7 +58,8 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
 
   @Override
   public boolean useResourceNameConvertersInSample(FieldConfig fieldConfig) {
-    return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOptionInSample(fieldConfig)
+    return !resourceNameProtoAccessorsEnabled()
+        && useResourceNameFormatOptionInSample(fieldConfig)
         && fieldConfig != null
         && !fieldConfig.getField().isRepeated();
   }
