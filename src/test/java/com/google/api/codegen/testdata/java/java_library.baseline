@@ -1616,7 +1616,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   for (ResourceName element : libraryClient.listStrings().iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1639,7 +1639,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.of("[SHELF_ID]");
-   *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(name).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1664,7 +1664,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.of("[SHELF_ID]");
-   *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(name.toString()).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1689,7 +1689,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1713,7 +1713,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1733,7 +1733,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
-   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
+   *     for (String element : response.getStringsList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2373,36 +2373,7 @@ public class LibraryClient implements BackgroundResource {
    *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (ShelfBookName element : libraryClient.findRelatedBooks(names, shelves).iterateAllAsShelfBookName()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param names
-   * @param shelves
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final FindRelatedBooksPagedResponse findRelatedBooks(List<ShelfBookName> names, List<ShelfName> shelves) {
-    FindRelatedBooksRequest request =
-        FindRelatedBooksRequest.newBuilder()
-        .addAllNames(names == null ? null : ShelfBookName.toStringList(names))
-        .addAllShelves(shelves == null ? null : ShelfName.toStringList(shelves))
-        .build();
-    return findRelatedBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (ShelfBookName element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAllAsShelfBookName()) {
+   *   for (String element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2432,10 +2403,10 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ShelfBookName.toStringList(names))
-   *     .addAllShelves(ShelfName.toStringList(shelves))
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
-   *   for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+   *   for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2460,12 +2431,12 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ShelfBookName.toStringList(names))
-   *     .addAllShelves(ShelfName.toStringList(shelves))
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2486,12 +2457,12 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ShelfBookName.toStringList(names))
-   *     .addAllShelves(ShelfName.toStringList(shelves))
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-   *     for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
+   *     for (String element : response.getNamesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -3046,7 +3017,7 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalMap
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, ShelfBookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, ProjectName requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<ShelfBookName> requiredRepeatedResourceName, List<BookName> requiredRepeatedResourceNameOneof, List<ProjectName> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, ShelfBookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, ProjectName optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<ShelfBookName> optionalRepeatedResourceName, List<BookName> optionalRepeatedResourceNameOneof, List<ProjectName> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, ShelfBookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, ProjectName requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, ShelfBookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, ProjectName optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -3073,9 +3044,9 @@ public class LibraryClient implements BackgroundResource {
         .addAllRequiredRepeatedString(requiredRepeatedString)
         .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
         .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-        .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName == null ? null : ShelfBookName.toStringList(requiredRepeatedResourceName))
-        .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof == null ? null : BookName.toStringList(requiredRepeatedResourceNameOneof))
-        .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon == null ? null : ProjectName.toStringList(requiredRepeatedResourceNameCommon))
+        .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
+        .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
+        .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
         .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
         .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
         .putAllRequiredMap(requiredMap)
@@ -3102,9 +3073,9 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedString(optionalRepeatedString)
         .addAllOptionalRepeatedBytes(optionalRepeatedBytes)
         .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
-        .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName == null ? null : ShelfBookName.toStringList(optionalRepeatedResourceName))
-        .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof == null ? null : BookName.toStringList(optionalRepeatedResourceNameOneof))
-        .addAllOptionalRepeatedResourceNameCommon(optionalRepeatedResourceNameCommon == null ? null : ProjectName.toStringList(optionalRepeatedResourceNameCommon))
+        .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName)
+        .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof)
+        .addAllOptionalRepeatedResourceNameCommon(optionalRepeatedResourceNameCommon)
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
@@ -3367,9 +3338,9 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
-   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
-   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
+   *     .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
+   *     .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
+   *     .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3445,9 +3416,9 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
-   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
-   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
+   *     .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
+   *     .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
+   *     .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3691,15 +3662,7 @@ public class LibraryClient implements BackgroundResource {
     private ListStringsPagedResponse(ListStringsPage page) {
       super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -3732,25 +3695,9 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -3774,15 +3721,7 @@ public class LibraryClient implements BackgroundResource {
         List<ListStringsPage> pages, int collectionSize) {
       return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
   public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
@@ -3810,15 +3749,7 @@ public class LibraryClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
-          @Override
-          public ShelfBookName apply(String arg0) {
-            return ShelfBookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -3851,25 +3782,9 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
-          @Override
-          public ShelfBookName apply(String arg0) {
-            return ShelfBookName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
-      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
-          @Override
-          public ShelfBookName apply(String arg0) {
-            return ShelfBookName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -3893,15 +3808,7 @@ public class LibraryClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
-      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
-          @Override
-          public ShelfBookName apply(String arg0) {
-            return ShelfBookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 }
@@ -7331,7 +7238,7 @@ public class FindRelatedBooksSampleFlattenedPagedOdyssey {
     List<ShelfName> shelves = Arrays.asList(shelvesElement);
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves));
     // Do something
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
+    for (String element : future.get().iterateAll()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -7367,10 +7274,10 @@ public class FindRelatedBooksSampleRequestPagedOdyssey {
     ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
     List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllNames(names)
+      .addAllShelves(shelves)
       .build();
-    for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+    for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -7406,12 +7313,12 @@ public class FindRelatedBooksCallableSampleCallableListOdyssey {
     ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
     List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllNames(names)
+      .addAllShelves(shelves)
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
+      for (String element : response.getNamesList()) {
         // doThingsWith(element);
       }
       String nextPageToken = response.getNextPageToken();
@@ -7454,12 +7361,12 @@ public class FindRelatedBooksPagedCallableSampleCallablePagedOdyssey {
     ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
     List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllNames(names)
+      .addAllShelves(shelves)
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
     // Do something
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
+    for (String element : future.get().iterateAll()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -8853,7 +8760,7 @@ public class LibraryClientTest {
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(UntypedResourceName.toStringList(strings))
+      .addAllStrings(strings)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -8864,10 +8771,6 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -8903,7 +8806,7 @@ public class LibraryClientTest {
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(UntypedResourceName.toStringList(strings))
+      .addAllStrings(strings)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -8914,10 +8817,6 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -9364,7 +9263,7 @@ public class LibraryClientTest {
     List<ShelfBookName> names2 = Arrays.asList(namesElement2);
     FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllNames(ShelfBookName.toStringList(names2))
+      .addAllNames(names2)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -9377,17 +9276,13 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
-    List<ShelfBookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsShelfBookName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(ShelfBookName.parse(expectedResponse.getNamesList().get(0)),
-        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(names, ShelfBookName.parseList(actualRequest.getNamesList()));
-    Assert.assertEquals(shelves, ShelfName.parseList(actualRequest.getShelvesList()));
+    Assert.assertEquals(names, actualRequest.getNamesList());
+    Assert.assertEquals(shelves, actualRequest.getShelvesList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -9735,9 +9630,9 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredRepeatedString, actualRequest.getRequiredRepeatedStringList());
     Assert.assertEquals(requiredRepeatedBytes, actualRequest.getRequiredRepeatedBytesList());
     Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
-    Assert.assertEquals(requiredRepeatedResourceName, ShelfBookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
-    Assert.assertEquals(requiredRepeatedResourceNameOneof, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
-    Assert.assertEquals(requiredRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getRequiredRepeatedResourceNameCommonList()));
+    Assert.assertEquals(requiredRepeatedResourceName, actualRequest.getRequiredRepeatedResourceNameList());
+    Assert.assertEquals(requiredRepeatedResourceNameOneof, actualRequest.getRequiredRepeatedResourceNameOneofList());
+    Assert.assertEquals(requiredRepeatedResourceNameCommon, actualRequest.getRequiredRepeatedResourceNameCommonList());
     Assert.assertEquals(requiredRepeatedFixed32, actualRequest.getRequiredRepeatedFixed32List());
     Assert.assertEquals(requiredRepeatedFixed64, actualRequest.getRequiredRepeatedFixed64List());
     Assert.assertEquals(requiredMap, actualRequest.getRequiredMapMap());
@@ -9764,9 +9659,9 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedString, actualRequest.getOptionalRepeatedStringList());
     Assert.assertEquals(optionalRepeatedBytes, actualRequest.getOptionalRepeatedBytesList());
     Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
-    Assert.assertEquals(optionalRepeatedResourceName, ShelfBookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
-    Assert.assertEquals(optionalRepeatedResourceNameOneof, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
-    Assert.assertEquals(optionalRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getOptionalRepeatedResourceNameCommonList()));
+    Assert.assertEquals(optionalRepeatedResourceName, actualRequest.getOptionalRepeatedResourceNameList());
+    Assert.assertEquals(optionalRepeatedResourceNameOneof, actualRequest.getOptionalRepeatedResourceNameOneofList());
+    Assert.assertEquals(optionalRepeatedResourceNameCommon, actualRequest.getOptionalRepeatedResourceNameCommonList());
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());
