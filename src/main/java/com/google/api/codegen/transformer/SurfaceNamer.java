@@ -769,6 +769,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
   }
 
+  public String getGrpcTransportClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "GrpcTransport"));
+  }
+
   /** The name of the implementation class that implements a particular proto interface. */
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
@@ -1388,6 +1392,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the import for a specific grpcClient */
   public String getGrpcClientImportName(InterfaceModel apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
+  }
+
+  public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
+    return getNotImplementedString("SurfaceNamer.getGrpcTransportImportName");
   }
 
   public String getVersionIndexFileImportName() {

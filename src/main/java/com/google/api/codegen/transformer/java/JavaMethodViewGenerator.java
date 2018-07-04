@@ -62,8 +62,10 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(
-                clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
+            if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
+            }
             if (hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(
@@ -105,6 +107,9 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
+            if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+              flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+            }
             apiMethods.add(
                 clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                     flattenedMethodContext));
@@ -126,6 +131,9 @@ public class JavaMethodViewGenerator {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
+            if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+              flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+            }
             apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
 
             if (hasAnyResourceNameParameter(flatteningGroup)) {

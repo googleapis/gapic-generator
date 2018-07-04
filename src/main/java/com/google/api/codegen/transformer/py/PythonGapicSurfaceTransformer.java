@@ -73,6 +73,7 @@ import java.util.stream.Collectors;
 /* Transforms a ProtoApiModel into the standard GAPIC surface for Python. */
 public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String XAPI_TEMPLATE_FILENAME = "py/main.snip";
+  private static final String TRANSPORT_TEMPLATE_FILENAME = "py/transport.snip";
   private static final String ENUM_TEMPLATE_FILENAME = "py/enum.snip";
   private static final String TYPES_TEMPLATE_FILENAME = "py/types.snip";
   private static final String VERSIONED_INIT_TEMPLATE_FILENAME =
@@ -109,6 +110,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(
         XAPI_TEMPLATE_FILENAME,
+        TRANSPORT_TEMPLATE_FILENAME,
         ENUM_TEMPLATE_FILENAME,
         TYPES_TEMPLATE_FILENAME,
         VERSIONED_INIT_TEMPLATE_FILENAME,
@@ -139,7 +141,31 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
       addApiImports(context);
-      serviceSurfaces.add(generateApiClass(context));
+
+      String subPath =
+          pathMapper.getOutputPath(
+              context.getInterfaceModel().getFullName(), context.getProductConfig());
+
+      DynamicLangXApiView.Builder serviceClass = generateApiView(context);
+      serviceClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+      serviceClass.outputPath(
+          namer.getSourceFilePath(
+              subPath, namer.getApiWrapperClassName(context.getInterfaceConfig())));
+      serviceClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+      serviceSurfaces.add(serviceClass.build());
+
+      DynamicLangXApiView.Builder grpcTransportClass = generateApiView(context);
+      grpcTransportClass.templateFileName(TRANSPORT_TEMPLATE_FILENAME);
+      grpcTransportClass.outputPath(
+          namer.getSourceFilePath(
+              subPath + "/transports",
+              namer.getGrpcTransportClassName(context.getInterfaceConfig())));
+      ImportSectionView grpcTransportImportSection =
+          importSectionTransformer.generateGrpcTransportImportSection(context);
+      grpcTransportClass.fileHeader(
+          fileHeaderTransformer.generateFileHeader(
+              productConfig, grpcTransportImportSection, namer));
+      serviceSurfaces.add(grpcTransportClass.build());
     }
 
     GrpcDocView enumFile =
@@ -182,11 +208,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     }
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context) {
+  private DynamicLangXApiView.Builder generateApiView(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath =
-        pathMapper.getOutputPath(
-            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
 
@@ -231,15 +254,14 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
             context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()));
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    xapiClass.grpcTransportClassName(namer.getGrpcTransportClassName(context.getInterfaceConfig()));
+    xapiClass.grpcTransportImportName(
+        namer.getGrpcTransportImportName(context.getInterfaceConfig()));
 
     // Generate the view for the API class.
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
     xapiClass.name(name);
     xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
-
-    return xapiClass.build();
+    return xapiClass;
   }
 
   private GrpcDocView generateEnumView(

@@ -381,7 +381,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     for (String moduleName : namer.getApiModules()) {
       boolean isVersion = moduleName.equals(namer.getApiWrapperModuleVersion());
 
-      if (moduleName.equals(namer.getModuleServiceName())) {
+      if ((isVersion && includeVersionModule)
+          || (moduleName.equals(namer.getModuleServiceName()) && !includeVersionModule)) {
         moduleViews.add(
             metadataTransformer
                 .generateReadmeMetadataView(model, productConfig, packageNamer)

@@ -26,12 +26,10 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A class that performs the transformations needed to generate the MethodSampleView for the
@@ -215,17 +213,12 @@ public class SampleTransformer {
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
-        List<OutputView> outputViews =
-            outputs
-                .stream()
-                .map(s -> OutputTransformer.toView(s, context, valueSet))
-                .collect(Collectors.toList());
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(outputViews)
+                .outputs(OutputTransformer.toViews(outputs, context, valueSet))
                 .build());
       }
     }

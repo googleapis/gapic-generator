@@ -57,8 +57,6 @@ import java.util.List;
 public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String UNITTEST_SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_unittest.snip";
-  private static final String UNITTEST_CSPROJ_TEMPLATE_FILENAME =
-      "csharp/gapic_unittest_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
@@ -97,7 +95,6 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         typeTable.saveNicknameFor("Google.LongRunning.Operations");
       }
       surfaceDocs.add(generateUnitTest(context));
-      surfaceDocs.add(generateUnitTestCsproj(context));
     }
 
     return surfaceDocs;
@@ -105,18 +102,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(UNITTEST_SNIPPETS_TEMPLATE_FILENAME, UNITTEST_CSPROJ_TEMPLATE_FILENAME);
-  }
-
-  private ClientTestFileView generateUnitTestCsproj(GapicInterfaceContext context) {
-    ClientTestFileView.Builder builder = generateUnitTestBuilder(context);
-    GapicProductConfig productConfig = context.getProductConfig();
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), productConfig);
-    builder.outputPath(
-        outputPath + File.separator + productConfig.getPackageName() + ".Tests.csproj");
-    builder.templateFileName(UNITTEST_CSPROJ_TEMPLATE_FILENAME);
-    return builder.build();
+    return Arrays.asList(UNITTEST_SNIPPETS_TEMPLATE_FILENAME);
   }
 
   private ClientTestFileView generateUnitTest(GapicInterfaceContext context) {

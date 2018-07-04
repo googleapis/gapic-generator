@@ -1,0 +1,112 @@
+@extends "py/common.snip"
+
+@snippet generate(api)
+    {@licenseSection(api.fileHeader)}
+
+    {@renderImportSection(api.fileHeader.importSection)}
+
+    class {@api.grpcTransportClassName}(object):
+        """gRPC transport class providing stubs for
+        {@api.servicePhraseName}.
+
+        The transport provides access to the raw gRPC stubs,
+        which can be used to take advantage of advanced
+        features of gRPC.
+        """
+        @# The scopes needed to make gRPC calls to all of the methods defined
+        @# in this service.
+        _OAUTH_SCOPES = (
+            @join auth_scope : api.authScopes on BREAK
+                '{@auth_scope}',
+            @end
+        )
+
+        def __init__(self, channel=None, credentials=None,
+                     address='{@api.serviceAddress}:{@api.servicePort}'):
+            """Instantiate the transport class.
+
+            Args:
+                channel (grpc.Channel): A ``Channel`` instance through
+                    which to make calls. This argument is mutually exclusive
+                    with ``credentials``; providing both will raise an exception.
+                credentials (google.auth.credentials.Credentials): The
+                    authorization credentials to attach to requests. These
+                    credentials identify this application to the service. If none
+                    are specified, the client will attempt to ascertain the
+                    credentials from the environment.
+                address (str): The address where the service is hosted.
+            """
+            # gRPC channel & client stub initialization.
+            @# If both `channel` and `credentials` are specified, raise an
+            @# exception (channels come with credentials baked in already).
+            if channel is not None and credentials is not None:
+                raise ValueError(
+                    'The `channel` and `credentials` arguments are mutually '
+                    'exclusive.',
+                )
+
+            @# Create the channel.
+            if channel is None:
+                channel = self.create_channel(
+                    address=address,
+                    credentials=credentials,
+                )
+
+            @# gRPC uses objects called "stubs" that are bound to the
+            @# channel and provide a basic method for each RPC.
+            self._stubs = {
+                @join stub : api.stubs on BREAK
+                '{@stub.name}': {@stub.grpcClientTypeName}(channel),
+                @end
+            }
+
+            # ----- SUPPORT METHODS -----
+            @if api.hasLongRunningOperations
+                @# Because this API includes a method that returns a
+                @# long-running operation (proto: google.longrunning.Operation),
+                @# instantiate an LRO client.
+                self._operations_client = google.api_core.operations_v1.OperationsClient(channel)
+            @end
+
+        @@classmethod
+        def create_channel(
+                    cls,
+                    address='{@api.serviceAddress}:{@api.servicePort}',
+                    credentials=None):
+            """Create and return a gRPC channel object.
+
+            Args:
+                address (str): The host for the channel to use.
+                credentials (~.Credentials): The
+                    authorization credentials to attach to requests. These
+                    credentials identify this application to the service. If
+                    none are specified, the client will attempt to ascertain
+                    the credentials from the environment.
+
+            Returns:
+                grpc.Channel: A gRPC channel object.
+            """
+            return google.api_core.grpc_helpers.create_channel(
+                address,
+                credentials=credentials,
+                scopes=cls._OAUTH_SCOPES,
+            )
+
+        # ----- RPC CALLS -----
+        @join apiMethod : api.apiMethods on BREAK.add(BREAK)
+            @@property
+            def {@apiMethod.name}(self):
+                """Return the gRPC stub for {$apiMethod.name}.
+
+                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                    {@line}
+                @end
+
+                Returns:
+                    Callable: A callable which accepts the appropriate
+                        deserialized request object and returns a
+                        deserialized response object.
+                """
+                return self._stubs['{@apiMethod.stubName}'].{@apiMethod.grpcMethodName}
+        @end
+@end

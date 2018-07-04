@@ -76,10 +76,10 @@
 @private processOutputViews(outputViews)
   @join view : outputViews on BREAK
     @switch view.kind
-      @case "ASSIGNMENT"
-        {@processAssignmentView}
       @case "COMMENT"
         {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
       @case "LOOP"
         {@processLoopView(view)}
       @case "PRINT"
@@ -112,7 +112,7 @@
     {@processOutputViews(view.body)}
 @end
 
-@private processAssignmentView(view)
+@private processDefineView(view)
   {@view.variableName} = {@variableField(view.reference)}
 @end
 
