@@ -172,12 +172,14 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           // TODO: Add support for rerouted methods
           continue;
         }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
+                  requestContext,
                   testNameTable,
                   flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeSync,
@@ -185,12 +187,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
+                  requestContext,
                   testNameTable,
                   flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeAsync,
                   Synchronicity.Async));
         }
-        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         testCaseViews.add(
             createRequestObjectTestCase(
                 requestContext, methodConfig, testNameTable, Synchronicity.Sync));
@@ -236,31 +238,38 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
             ? ClientMethodType.RequestObjectMethod
             : ClientMethodType.AsyncRequestObjectCallSettingsMethod,
         synchronicity,
+        null,
         null);
   }
 
   private TestCaseView createFlattenedTestCase(
       MethodContext methodContext,
+      GapicMethodContext requestContext,
       SymbolTable testNameTable,
       Iterable<FieldConfig> fieldConfigs,
       ClientMethodType clientMethodType,
       Synchronicity synchronicity) {
     InitCodeContext initCodeContext =
-        initCodeTransformer.createRequestInitCodeContext(
-            methodContext,
-            new SymbolTable(),
-            fieldConfigs,
-            InitCodeOutputType.FieldList,
-            valueGenerator);
-    InitCodeContext initCodeRequestObjectContext =
         InitCodeContext.newBuilder()
             .initObjectType(methodContext.getMethodModel().getInputType())
             .symbolTable(new SymbolTable())
-            .suggestedName(Name.from("expected_request"))
+            .suggestedName(Name.from("request"))
             .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
             .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
             .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
-            .fieldConfigMap(methodContext.getProductConfig().getDefaultResourceNameFieldConfigMap())
+            .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
+            .outputType(InitCodeOutputType.FieldList)
+            .valueGenerator(valueGenerator)
+            .build();
+    InitCodeContext initCodeRequestObjectContext =
+        InitCodeContext.newBuilder()
+            .initObjectType(requestContext.getMethodModel().getInputType())
+            .symbolTable(new SymbolTable())
+            .suggestedName(Name.from("expected_request"))
+            .initFieldConfigStrings(requestContext.getMethodConfig().getSampleCodeInitFields())
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(requestContext))
+            .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+            .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
             .outputType(InitCodeOutputType.SingleObject)
             .valueGenerator(valueGenerator)
             .build();
@@ -270,6 +279,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         initCodeContext,
         clientMethodType,
         synchronicity,
-        initCodeRequestObjectContext);
+        initCodeRequestObjectContext,
+        requestContext);
   }
 }
