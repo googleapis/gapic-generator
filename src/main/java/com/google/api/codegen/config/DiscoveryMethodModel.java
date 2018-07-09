@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.StandardSchemaGenerator;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
@@ -43,12 +45,23 @@ public final class DiscoveryMethodModel implements MethodModel {
   private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
   private final DiscoApiModel apiModel;
+  private final boolean hasExtraFieldMask;
+  private final DiscoveryField fieldMaskField;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(method);
     this.method = method;
     this.apiModel = apiModel;
+
+    String httpMethod = method.httpMethod().toUpperCase().trim();
+    hasExtraFieldMask = httpMethod.equals("PATCH") || httpMethod.equals("PUT");
+    if (hasExtraFieldMask) {
+      fieldMaskField = createFieldMaskField();
+    } else {
+      fieldMaskField = null;
+    }
+
     this.inputType = DiscoveryRequestType.create(this);
     if (method.response() != null) {
       this.outputType = DiscoveryField.create(method.response(), apiModel);
@@ -80,6 +93,10 @@ public final class DiscoveryMethodModel implements MethodModel {
         && DiscoGapicParser.getMethodInputName(method).toLowerCamel().equals(fieldName)) {
       return DiscoveryField.create(method.request(), apiModel);
     }
+    if (hasExtraFieldMask && DiscoveryMethodTransformer.FIELDMASK_STRING.equals(fieldName)) {
+      return fieldMaskField;
+    }
+
     return null;
   }
 
@@ -239,8 +256,23 @@ public final class DiscoveryMethodModel implements MethodModel {
     if (method.request() != null) {
       fieldsBuilder.add(DiscoveryField.create(method.request(), apiModel));
     }
+
+    if (hasExtraFieldMask) {
+      fieldsBuilder.add(fieldMaskField);
+    }
+
     inputFields = fieldsBuilder.build();
     return inputFields;
+  }
+
+  private DiscoveryField createFieldMaskField() {
+    return DiscoveryField.create(
+        StandardSchemaGenerator.createListSchema(
+            StandardSchemaGenerator.createStringSchema(
+                "", SurfaceNamer.Cardinality.NOT_REPEATED, true),
+            DiscoveryMethodTransformer.FIELDMASK_STRING,
+            true),
+        null);
   }
 
   /**
@@ -294,5 +326,10 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public TypeModel getOutputType() {
     return outputType;
+  }
+
+  @Override
+  public boolean hasExtraFieldMask() {
+    return hasExtraFieldMask;
   }
 }

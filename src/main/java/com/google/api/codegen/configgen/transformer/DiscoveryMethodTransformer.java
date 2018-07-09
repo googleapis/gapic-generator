@@ -30,10 +30,11 @@ import javax.annotation.Nullable;
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
 public class DiscoveryMethodTransformer implements InputSpecificMethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new HttpPagingParameters();
+  public static final String FIELDMASK_STRING = "fieldMask";
 
   // For Discovery doc configgen, assume that paged resource field name is "items". This is the only resource name
   // seen in Google Cloud Compute API.
-  private static String PAGING_RESOURCE_FIELD_NAME = "items";
+  private static final String PAGING_RESOURCE_FIELD_NAME = "items";
 
   @Override
   public PagingParameters getPagingParameters() {
@@ -48,6 +49,10 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   @Override
   public boolean isIgnoredParameter(FieldModel parameter) {
     Schema f = ((DiscoveryField) parameter).getDiscoveryField();
+    if (parameter.getSimpleName().equals(FIELDMASK_STRING)
+        && ((DiscoveryField) parameter).getDiscoApiModel() == null) {
+      return true;
+    }
     if (parameter.isRequired() || f.isPathParam()) {
       return false;
     }

@@ -100,7 +100,6 @@ public class JavaDiscoGapicRequestToViewTransformer
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
-    reservedKeywords.add("fieldMask");
   }
 
   private static final String REQUEST_TEMPLATE_FILENAME = "java/message.snip";
@@ -280,35 +279,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     paramView.properties(new LinkedList<>());
     properties.add(paramView.build());
 
-    String httpMethod = discoMethod.httpMethod().toUpperCase().trim();
-    if (httpMethod.equals("PATCH") || httpMethod.equals("PUT")) {
-      Name fieldMaskName = Name.anyCamel("fieldMask");
-      requestView.hasFieldMask(true);
-      StaticLangApiMessageView.Builder fieldMaskView = StaticLangApiMessageView.newBuilder();
-      fieldMaskView.isSerializable(false);
-      fieldMaskView.description("The mask to control which fields get updated.");
-      fieldMaskView.name(nameFormatter.localVarName(fieldMaskName));
-      fieldMaskView.typeName("List<String>");
-      fieldMaskView.innerTypeName("List<String>");
-      fieldMaskView.isRequired(true);
-      fieldMaskView.canRepeat(false);
-      fieldMaskView.fieldGetFunction(
-          context
-              .getNamer()
-              .getFieldGetFunctionName(
-                  fieldMaskName,
-                  SurfaceNamer.MapType.NOT_MAP,
-                  SurfaceNamer.Cardinality.NOT_REPEATED));
-      fieldMaskView.fieldSetFunction(
-          context
-              .getNamer()
-              .getFieldSetFunctionName(
-                  fieldMaskName,
-                  SurfaceNamer.MapType.NOT_MAP,
-                  SurfaceNamer.Cardinality.NOT_REPEATED));
-      fieldMaskView.properties(new LinkedList<>());
-      properties.add(fieldMaskView.build());
-    }
+    requestView.hasFieldMask(method.hasExtraFieldMask());
 
     Collections.sort(properties);
 
@@ -343,6 +314,7 @@ public class JavaDiscoGapicRequestToViewTransformer
       EscapeName escapeName) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
+    String innerTypeName = context.getSchemaTypeTable().getAndSaveNicknameForElementType(schema);
     paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     String fieldName = name;
@@ -351,7 +323,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     }
     paramView.name(fieldName);
     paramView.typeName(typeName);
-    paramView.innerTypeName(typeName);
+    paramView.innerTypeName(innerTypeName);
     paramView.isRequired(schema.isRequired());
     paramView.canRepeat(schema.isRepeated());
     paramView.fieldGetFunction(
@@ -373,8 +345,8 @@ public class JavaDiscoGapicRequestToViewTransformer
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
-    typeTable.getAndSaveNicknameFor("java.util.ArrayList");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
+    typeTable.getAndSaveNicknameFor("java.util.LinkedList");
     typeTable.getAndSaveNicknameFor("java.util.List");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
     typeTable.getAndSaveNicknameFor("java.util.Map");

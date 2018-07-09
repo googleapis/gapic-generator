@@ -243,4 +243,9 @@ public final class ProtoMethodModel implements MethodModel {
   public TypeModel getOutputType() {
     return outputType;
   }
+
+  @Override
+  public boolean hasExtraFieldMask() {
+    return false;
+  }
 }

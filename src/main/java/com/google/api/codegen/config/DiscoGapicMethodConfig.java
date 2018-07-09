@@ -24,6 +24,7 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
@@ -33,6 +34,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -162,6 +164,10 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
+    List<String> requiredFieldsList = Lists.newArrayList(methodConfigProto.getRequiredFieldsList());
+    if (methodModel.hasExtraFieldMask()) {
+      requiredFieldsList.add(DiscoveryMethodTransformer.FIELDMASK_STRING);
+    }
     Iterable<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
@@ -169,8 +175,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFieldsList));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -179,7 +184,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+            getOptionalFields(methodModel, requiredFieldsList));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());

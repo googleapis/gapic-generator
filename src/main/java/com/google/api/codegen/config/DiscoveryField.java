@@ -14,14 +14,15 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.StringTypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.discovery.StandardSchemaGenerator;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -41,8 +42,11 @@ import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
+  public static final String DEFAULT_NAMESPACE = "com.google.api.codegen.discovery";
+
   private final List<DiscoveryField> properties;
   private final DiscoApiModel apiModel;
+  private final String namespace;
   // Dereferenced schema to use for rendering type names and determining properties, type, and format.
   private final Schema schema;
   // Not dereferenced schema; used in rendering this FieldModel's parameter name.
@@ -66,6 +70,13 @@ public class DiscoveryField implements FieldModel, TypeModel {
   /**
    * Create a FieldModel object from a non-null Schema object, and internally dereference the input
    * schema.
+   *
+   * @param refSchema The raw schema to be wrapped in a DiscoveryField instance.
+   * @param apiModel The Discovery API model that the new DiscoveryField comes from. This defines
+   *     the namespace and allows for dereferencing of the internal schema against a Discovery
+   *     document. This param can be null if there is no Discovery API backing this DiscoveryField;
+   *     the namespace will be a default namespace, and dereferencing the schema will not be
+   *     possible.
    */
   private DiscoveryField(Schema refSchema, DiscoApiModel apiModel) {
     Preconditions.checkNotNull(refSchema);
@@ -74,8 +85,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
     this.apiModel = apiModel;
 
     String simpleName = DiscoGapicParser.stringToName(refSchema.getIdentifier()).toLowerCamel();
-    String namespace = apiModel.getDefaultPackageName();
-    if (isTopLevelSchema(schema)) {
+    this.namespace = apiModel == null ? DEFAULT_NAMESPACE : apiModel.getDefaultPackageName();
+    if (isTopLevelSchema(schema) && apiModel != null) {
       // Within this namespace, get a unique name for this message-type schema.
       SchemaNamer messageNamer =
           namespaceToSchemaNamer.computeIfAbsent(namespace, k -> new SchemaNamer());
@@ -92,7 +103,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   /** Create a FieldModel object from a non-null Schema object. */
   public static synchronized DiscoveryField create(Schema schema, DiscoApiModel rootApiModel) {
-    if (!Strings.isNullOrEmpty(schema.reference())) {
+    if (!Strings.isNullOrEmpty(schema.reference()) && rootApiModel != null) {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
@@ -149,7 +160,10 @@ public class DiscoveryField implements FieldModel, TypeModel {
   public TypeModel getMapKeyType() {
     if (isMap()) {
       // Assume that the schema's additionalProperties map keys are Strings.
-      return StringTypeModel.getInstance();
+      return DiscoveryField.create(
+          StandardSchemaGenerator.createStringSchema(
+              "", SurfaceNamer.Cardinality.NOT_REPEATED, false),
+          null);
     }
     return null;
   }
@@ -196,8 +210,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
       parentName = "";
     }
 
-    return ResourceNameMessageConfig.getFullyQualifiedMessageName(
-        apiModel.getDefaultPackageName(), parentName);
+    return ResourceNameMessageConfig.getFullyQualifiedMessageName(namespace, parentName);
   }
 
   @Override
@@ -232,7 +245,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isPrimitive() {
-    return schema.items() == null && schema.type() != Type.OBJECT;
+    return (schema.properties() == null || schema.properties().isEmpty())
+        && schema.type() != Type.OBJECT;
   }
 
   @Override
@@ -338,8 +352,11 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  // Schemas are immutable, so this is just the identity function.
   public TypeModel makeOptional() {
+    // Make a copy of this object, without the ARRAY-ness.
+    if (schema.items() != null && schema.type().equals(Type.ARRAY)) {
+      return DiscoveryField.create(schema.items(), apiModel);
+    }
     return this;
   }
 
