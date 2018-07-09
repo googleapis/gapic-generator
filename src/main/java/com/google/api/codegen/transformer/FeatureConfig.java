@@ -34,7 +34,7 @@ public interface FeatureConfig {
    * Returns true if resourceNameTypesEnabled() is true, and the field config provided has a
    * resource name format option, and is configured to use it in samples.
    */
-  boolean useResourceNameFormatOptionInSample(FieldConfig fieldConfig);
+  boolean useResourceNameFormatOptionInSample(MethodContext context, FieldConfig fieldConfig);
 
   /**
    * Returns true if useResourceNameFormatOption() and resourceNameProtoAccessorsEnabled() are true.
@@ -46,12 +46,6 @@ public interface FeatureConfig {
    * is false.
    */
   boolean useResourceNameConverters(FieldConfig fieldConfig);
-
-  /**
-   * Returns true if useResourceNameFormatOptionInSample() is true but
-   * resourceNameProtoAccessorsEnabled() is false.
-   */
-  boolean useResourceNameConvertersInSample(FieldConfig fieldConfig);
 
   /**
    * Returns true if useResourceNameFormatOptionInSampleOnly() is true but

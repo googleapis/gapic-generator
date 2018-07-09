@@ -319,7 +319,7 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
-    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(context, fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         // In a non-flattened context, we always use the resource name type set on the message
         // instead of set on the flattened method
@@ -366,7 +366,7 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.ListInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(context, fieldConfig)) {
       surfaceLine.elementTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
     } else {
       surfaceLine.elementTypeName(
@@ -423,7 +423,7 @@ public class InitCodeTransformer {
     InitValueView initValue;
     String comment = "";
 
-    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(fieldConfig)) {
+    if (context.getFeatureConfig().useResourceNameFormatOptionInSample(context, fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
         ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
         if (messageResNameConfig == null
@@ -686,7 +686,7 @@ public class InitCodeTransformer {
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {
-    if (!context.getFeatureConfig().useResourceNameFormatOptionInSample(item.getFieldConfig())
+    if (!context.getFeatureConfig().useResourceNameFormatOptionInSample(context, item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

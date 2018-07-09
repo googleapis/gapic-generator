@@ -1615,7 +1615,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   for (String element : libraryClient.listStrings().iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1638,7 +1638,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.of("[SHELF_ID]");
-   *   for (String element : libraryClient.listStrings(name).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1663,7 +1663,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.of("[SHELF_ID]");
-   *   for (String element : libraryClient.listStrings(name.toString()).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1688,7 +1688,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1712,7 +1712,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAll()) {
+   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1732,7 +1732,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
-   *     for (String element : response.getStringsList()) {
+   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2372,7 +2372,7 @@ public class LibraryClient implements BackgroundResource {
    *   String namesElement = "";
    *   List&lt;String&gt; names = Arrays.asList(namesElement);
    *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (String element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAll()) {
+   *   for (ShelfBookName element : libraryClient.findRelatedBooks(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves)).iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2398,14 +2398,14 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String namesElement = "";
-   *   List&lt;String&gt; names = Arrays.asList(namesElement);
-   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(names)
-   *     .addAllShelves(shelves)
+   *     .addAllNames(ShelfBookName.toStringList(names))
+   *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
+   *   for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2426,16 +2426,16 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String namesElement = "";
-   *   List&lt;String&gt; names = Arrays.asList(namesElement);
-   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(names)
-   *     .addAllShelves(shelves)
+   *     .addAllNames(ShelfBookName.toStringList(names))
+   *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAll()) {
+   *   for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2452,16 +2452,16 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String namesElement = "";
-   *   List&lt;String&gt; names = Arrays.asList(namesElement);
-   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
+   *   ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;ShelfBookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(names)
-   *     .addAllShelves(shelves)
+   *     .addAllNames(ShelfBookName.toStringList(names))
+   *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-   *     for (String element : response.getNamesList()) {
+   *     for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -3307,9 +3307,9 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; formattedRequiredRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; formattedRequiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -3337,9 +3337,9 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(formattedRequiredRepeatedResourceName)
-   *     .addAllRequiredRepeatedResourceNameOneof(formattedRequiredRepeatedResourceNameOneof)
-   *     .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
+   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
+   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3385,9 +3385,9 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;String&gt; requiredRepeatedString = new ArrayList&lt;&gt;();
    *   List&lt;ByteString&gt; requiredRepeatedBytes = new ArrayList&lt;&gt;();
    *   List&lt;TestOptionalRequiredFlatteningParamsRequest.InnerMessage&gt; requiredRepeatedMessage = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; formattedRequiredRepeatedResourceName = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; formattedRequiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfBookName&gt; requiredRepeatedResourceName = new ArrayList&lt;&gt;();
+   *   List&lt;BookName&gt; requiredRepeatedResourceNameOneof = new ArrayList&lt;&gt;();
+   *   List&lt;ProjectName&gt; requiredRepeatedResourceNameCommon = new ArrayList&lt;&gt;();
    *   List&lt;Integer&gt; requiredRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; requiredRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; requiredMap = new HashMap&lt;&gt;();
@@ -3415,9 +3415,9 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllRequiredRepeatedString(requiredRepeatedString)
    *     .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
    *     .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-   *     .addAllRequiredRepeatedResourceName(formattedRequiredRepeatedResourceName)
-   *     .addAllRequiredRepeatedResourceNameOneof(formattedRequiredRepeatedResourceNameOneof)
-   *     .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
+   *     .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
+   *     .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
+   *     .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
    *     .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
@@ -3661,7 +3661,15 @@ public class LibraryClient implements BackgroundResource {
     private ListStringsPagedResponse(ListStringsPage page) {
       super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
-
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -3694,9 +3702,25 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
-
-
+    public Iterable<ResourceName> getValuesAsResourceName() {
+      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -3720,7 +3744,15 @@ public class LibraryClient implements BackgroundResource {
         List<ListStringsPage> pages, int collectionSize) {
       return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
-
+    public Iterable<ResourceName> getValuesAsResourceName() {
+      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
   public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
@@ -3748,7 +3780,15 @@ public class LibraryClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-
+    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
+          @Override
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -3781,9 +3821,25 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
+    public Iterable<ShelfBookName> iterateAllAsShelfBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, ShelfBookName>() {
+          @Override
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
+          }
+        }
+      );
+    }
 
-
-
+    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
+      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
+          @Override
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -3807,7 +3863,15 @@ public class LibraryClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-
+    public Iterable<ShelfBookName> getValuesAsShelfBookName() {
+      return Iterables.transform(getValues(), new Function<String, ShelfBookName>() {
+          @Override
+          public ShelfBookName apply(String arg0) {
+            return ShelfBookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 }
@@ -7234,7 +7298,7 @@ public class FindRelatedBooksSampleFlattenedPagedOdyssey {
     List<String> shelves = Arrays.asList(shelvesElement);
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(ShelfBookName.toStringList(names), ShelfName.toStringList(shelves));
     // Do something
-    for (String element : future.get().iterateAll()) {
+    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -7265,15 +7329,15 @@ public class FindRelatedBooksSampleFlattenedPagedOdyssey {
 public class FindRelatedBooksSampleRequestPagedOdyssey {
   public static void main(String[] args) {
     // [START core_sample]
-    String namesElement = "Odyssey";
-    List<String> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(names)
-      .addAllShelves(shelves)
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
-    for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
+    for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -7304,17 +7368,17 @@ public class FindRelatedBooksSampleRequestPagedOdyssey {
 public class FindRelatedBooksCallableSampleCallableListOdyssey {
   public static void main(String[] args) {
     // [START core_sample]
-    String namesElement = "Odyssey";
-    List<String> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(names)
-      .addAllShelves(shelves)
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (String element : response.getNamesList()) {
+      for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
         // doThingsWith(element);
       }
       String nextPageToken = response.getNextPageToken();
@@ -7352,17 +7416,17 @@ public class FindRelatedBooksCallableSampleCallableListOdyssey {
 public class FindRelatedBooksPagedCallableSampleCallablePagedOdyssey {
   public static void main(String[] args) {
     // [START core_sample]
-    String namesElement = "Odyssey";
-    List<String> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names = Arrays.asList(namesElement);
+    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(names)
-      .addAllShelves(shelves)
+      .addAllNames(ShelfBookName.toStringList(names))
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
     // Do something
-    for (String element : future.get().iterateAll()) {
+    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
       // doThingsWith(element);
     }
     // [END core_sample]
@@ -8752,11 +8816,11 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    String stringsElement = "stringsElement474465855";
-    List<String> strings = Arrays.asList(stringsElement);
+    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(strings)
+      .addAllStrings(UntypedResourceName.toStringList(strings))
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -8767,6 +8831,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -8798,11 +8866,11 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    String stringsElement = "stringsElement474465855";
-    List<String> strings = Arrays.asList(stringsElement);
+    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(strings)
+      .addAllStrings(UntypedResourceName.toStringList(strings))
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -8813,6 +8881,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -9255,11 +9327,11 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void findRelatedBooksTest() {
     String nextPageToken = "";
-    String namesElement2 = "namesElement21120252792";
-    List<String> names2 = Arrays.asList(namesElement2);
+    ShelfBookName namesElement2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<ShelfBookName> names2 = Arrays.asList(namesElement2);
     FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllNames(names2)
+      .addAllNames(ShelfBookName.toStringList(names2))
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -9272,6 +9344,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    List<ShelfBookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsShelfBookName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(ShelfBookName.parse(expectedResponse.getNamesList().get(0)),
+        resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
