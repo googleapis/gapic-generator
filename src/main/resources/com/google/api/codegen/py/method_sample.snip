@@ -55,9 +55,9 @@
   @case "Request"
     {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
   @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode, processElement())}
   @case "RequestPagedAll"
-    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode)}
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode, processElement())}
   @case "RequestStreamingBidi"
     {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
   @case "RequestStreamingClient"
@@ -164,7 +164,7 @@
 @end
 
 @snippet optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, initCode, processElement())}
 @end
 
 @snippet optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
@@ -174,26 +174,29 @@
 
 @snippet optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, initCode, processElement())}
 @end
 
-@snippet pagedOptionalArrayMethodSampleCodeAll(apiMethod, initCode)
+@snippet pagedOptionalArrayMethodSampleCodeAll(apiMethod, initCode, processResp)
   @# Iterate over all results
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, initCode, processResp)}
 @end
 
-@snippet pagedOptionalArrayMethodSampleCodePaged(apiMethod, initCode)
+@snippet pagedOptionalArrayMethodSampleCodePaged(apiMethod, initCode, processResp)
   @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, initCode)}:
       for element in page:
-          @# process element
-          pass
+          {@processResp}
 @end
 
-@private responseStreamingSampleCode(apiMethod, initCode)
+@private responseStreamingSampleCode(apiMethod, initCode, processResp)
   for element in {@methodCallSampleCode(apiMethod, initCode)}:
-      @# process element
-      pass
+      {@processResp}
+@end
+
+@private processElement()
+  @# process element
+  pass
 @end
 
 @private singularResponseSampleCode(apiMethod, initCode)

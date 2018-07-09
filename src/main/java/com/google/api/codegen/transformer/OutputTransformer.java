@@ -192,8 +192,20 @@ class OutputTransformer {
     String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
-      view.variable(context.getNamer().getSampleResponseVarName());
-      type = context.getMethodModel().getOutputType();
+      view.variable(context.getNamer().getSampleResponseVarName(context));
+
+      if (context.getMethodConfig().getPageStreaming() != null) {
+        type =
+            context
+                .getMethodConfig()
+                .getPageStreaming()
+                .getResourcesFieldConfig()
+                .getField()
+                .getType()
+                .makeOptional();
+      } else {
+        type = context.getMethodModel().getOutputType();
+      }
     } else {
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type =
@@ -208,6 +220,12 @@ class OutputTransformer {
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while (end < config.length()) {
       if (config.charAt(end) == '.') {
+        Preconditions.checkArgument(
+            type.isMessage(),
+            "%s:%s: %s is not a message",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.substring(0, end));
         Preconditions.checkArgument(
             !type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not scalar",
