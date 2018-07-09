@@ -1,50 +1,42 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-@snippet generate(xapiClass)
-    {@licenseSection(xapiClass.fileHeader)}
+@snippet generate(api)
+    {@licenseSection(api.fileHeader)}
 
-    """Accesses the {@xapiClass.servicePhraseName}."""
-    {@renderImportSection(xapiClass.fileHeader.importSection)}
+    """Accesses the {@api.servicePhraseName}."""
+    {@renderImportSection(api.fileHeader.importSection)}
 
 
     _GAPIC_LIBRARY_VERSION = pkg_resources.get_distribution(
-        '{@xapiClass.gapicPackageName}',
+        '{@api.gapicPackageName}',
     ).version
 
 
-    class {@xapiClass.name}(object):
-        @if xapiClass.doc.lines
-            @if xapiClass.doc.remainingLines
+    class {@api.name}(object):
+        @if api.doc.lines
+            @if api.doc.remainingLines
                 """
-                @join line : xapiClass.doc.lines
+                @join line : api.doc.lines
                     {@line}
                 @end
                 """
             @else
-                """{@xapiClass.doc.firstLine}"""
+                """{@api.doc.firstLine}"""
             @end
 
 
         @end
-        SERVICE_ADDRESS = '{@xapiClass.serviceAddress}:{@xapiClass.servicePort}'
+        SERVICE_ADDRESS = '{@api.serviceAddress}:{@api.servicePort}'
         """The default address of the service."""
 
-        @# The scopes needed to make gRPC calls to all of the methods defined in
-        @# this service
-        _DEFAULT_SCOPES = (
-            @join auth_scope : xapiClass.authScopes on BREAK
-                '{@auth_scope}',
-            @end
-        )
+        @# The name of the interface for this client. This is the key used to
+        @# find the method configuration in the client_config dictionary.
+        _INTERFACE_NAME = '{@api.interfaceKey}'
 
-        @# The name of the interface for this client. This is the key used to find
-        @# method configuration in the client_config dictionary.
-        _INTERFACE_NAME = '{@xapiClass.interfaceKey}'
+        @if api.formatResourceFunctions
 
-        @if xapiClass.formatResourceFunctions
-
-            @join function : xapiClass.formatResourceFunctions
+            @join function : api.formatResourceFunctions
                 @@classmethod
                 def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
                     """Return a fully-qualified {@function.entityName} string."""
@@ -55,58 +47,68 @@
 
             @end
         @end
-        def __init__(self, channel=None, credentials=None,
-                client_config={@xapiClass.clientConfigName}.config,
+        def __init__(self, transport=None, channel=None, credentials=None,
+                client_config={@api.clientConfigName}.config,
                 client_info=None):
             """Constructor.
 
             Args:
-                channel (grpc.Channel): A ``Channel`` instance through
-                    which to make calls. This argument is mutually exclusive
+                transport (Union[~.{@api.grpcTransportClassName},
+                        Callable[[~.Credentials, type], ~.{@api.grpcTransportClassName}]): A transport
+                    instance, responsible for actually making the API calls.
+                    The default transport uses the gRPC protocol.
+                    This argument may also be a callable which returns a
+                    transport instance. Callables will be sent the credentials
+                    as the first argument and the default transport class as
+                    the second argument.
+                channel (grpc.Channel): DEPRECATED. A ``Channel`` instance
+                    through which to make calls. This argument is mutually exclusive
                     with ``credentials``; providing both will raise an exception.
                 credentials (google.auth.credentials.Credentials): The
                     authorization credentials to attach to requests. These
                     credentials identify this application to the service. If none
                     are specified, the client will attempt to ascertain the
                     credentials from the environment.
-                client_config (dict): A dictionary of call options for each
-                    method. If not specified, the default configuration is used.
+                    This argument is mutually exclusive with providing a
+                    transport instance to ``transport``; doing so will raise
+                    an exception.
+                client_config (dict): DEPRECATED. A dictionary of call options for
+                    each method. If not specified, the default configuration is used.
                 client_info (google.api_core.gapic_v1.client_info.ClientInfo):
                     The client info used to send a user-agent string along with
                     API requests. If ``None``, then default info will be used.
                     Generally, you only need to set this if you're developing
                     your own client library.
             """
-            # gRPC channel & client stub initialization.
-            @# If both `channel` and `credentials` are specified, raise an
-            @# exception (channels come with credentials baked in already).
-            if channel is not None and credentials is not None:
-                raise ValueError(
-                    'The `channel` and `credentials` arguments to {} are mutually '
-                    'exclusive.'.format(self.__class__.__name__),
-                )
+            @# Raise deprecation warnings for things we want to go away.
+            if client_config:
+                warnings.warn('The `client_config` argument is deprecated.',
+                              PendingDeprecationWarning)
+            if channel:
+                warnings.warn('The `channel` argument is deprecated; use '
+                              '`transport` instead.', PendingDeprecationWarning)
 
-            @# Create the channel.
-            self.channel = channel
-            if self.channel is None:
-                self.channel = google.api_core.grpc_helpers.create_channel(
-                    self.SERVICE_ADDRESS,
-                    credentials=credentials,
-                    scopes=self._DEFAULT_SCOPES,
-                )
-
-            @# Create the gRPC stubs.
-            @join stub : xapiClass.stubs
-                self._{@stub.name} = (
-                    {@stub.grpcClientTypeName}(self.channel))
-            @end
-
-            @if xapiClass.hasLongRunningOperations
-                @# Operations client for methods that return long-running operations
-                @# futures.
-                self._operations_client = (
-                    google.api_core.operations_v1.OperationsClient(self.channel))
-            @end
+            @# Instantiate the transport.
+            @# The transport is responsible for handling serialization and
+            @# deserialization and actually sending data to the service.
+            if transport:
+                if callable(transport):
+                    self.transport = transport(
+                        credentials=credentials,
+                        default_class={@api.grpcTransportImportName}.{@api.grpcTransportClassName},
+                    )
+                else:
+                    if credentials:
+                        raise ValueError(
+                            'Received both a transport instance and '
+                            'credentials; these are mutually exclusive.'
+                        )
+                    self.transport = transport
+            self.transport = {@api.grpcTransportImportName}.{@api.grpcTransportClassName}(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
             # Client information initialization.
             if client_info is None:
@@ -123,37 +125,14 @@
                 client_config['interfaces'][self._INTERFACE_NAME],
             )
 
+            @# Save a dictionary of cached API call functions.
+            @# These are the actual callables which invoke the proper
+            @# transport methods, wrapped with `wrap_method` to add retry,
+            @# timeout, and the like.
             self._inner_api_calls = {}
 
-        def _intercept_channel(self, *interceptors):
-            """ Experimental. Bind gRPC interceptors to the gRPC channel.
-
-            Args:
-                interceptors (*Union[grpc.UnaryUnaryClientInterceptor, grpc.UnaryStreamingClientInterceptor, grpc.StreamingUnaryClientInterceptor, grpc.StreamingStreamingClientInterceptor]):
-                  Zero or more gRPC interceptors. Interceptors are given control in the order
-                  they are listed.
-            Raises:
-                TypeError: If interceptor does not derive from any of
-                  UnaryUnaryClientInterceptor,
-                  UnaryStreamClientInterceptor,
-                  StreamUnaryClientInterceptor, or
-                  StreamStreamClientInterceptor.
-            """
-            self.channel = grpc.intercept_channel(self.channel, *interceptors)
-            @join stub : xapiClass.stubs
-                self._{@stub.name} = (
-                    {@stub.grpcClientTypeName}(self.channel))
-            @end
-            @if xapiClass.hasLongRunningOperations
-                @# Operations client for methods that return long-running operations
-                @# futures.
-                self._operations_client = (
-                    google.api_core.operations_v1.OperationsClient(self.channel))
-            @end
-            self._inner_api_calls.clear()
-
         @# Service calls
-        @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+        @join apiMethod : api.apiMethods on BREAK.add(BREAK)
             def {@apiMethod.name}(
                     {@renderMethodParams(apiMethod.methodParams)}):
                 """
@@ -191,9 +170,10 @@
                         {@line}
                     @end
                 """
+                @# Wrap the transport method to add retry and timeout logic.
                 if '{@apiMethod.name}' not in self._inner_api_calls:
                     self._inner_api_calls['{@apiMethod.name}'] = google.api_core.gapic_v1.method.wrap_method(
-                        self._{@apiMethod.stubName}.{@apiMethod.grpcMethodName},
+                        self.transport.{@apiMethod.name},
                         default_retry=self._method_configs['{@apiMethod.grpcMethodName}'].retry,
                         default_timeout=self._method_configs['{@apiMethod.grpcMethodName}'].timeout,
                         client_info=self._client_info,
@@ -270,7 +250,7 @@
                     operation = self._inner_api_calls['{@apiMethod.name}']({@apiMethod.requestVariableName}{@optionalParams(apiMethod)})
                     return google.api_core.operation.from_gapic(
                         operation,
-                        self._operations_client,
+                        self.transport._operations_client,
                         {@apiMethod.longRunningView.operationPayloadTypeName},
                         metadata_type={@apiMethod.longRunningView.metadataTypeName},
                     )

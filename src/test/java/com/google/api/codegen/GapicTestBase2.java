@@ -23,6 +23,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.gapic.ArtifactFlags;
 import com.google.api.codegen.gapic.GapicGeneratorFactory;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -123,14 +124,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
+    ArtifactFlags artifactFlags =
+        new ArtifactFlags(
+            Arrays.asList("surface", "test", "samples"), ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(
-            language,
-            model,
-            productConfig,
-            packageConfig,
-            Arrays.asList("surface", "test", "samples"));
+        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> generator : generators) {
@@ -171,10 +170,11 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     if (hasSmokeTestConfig(productConfig)) {
       enabledArtifacts.addAll(Arrays.asList("surface", "test", "samples"));
     }
+    ArtifactFlags artifactFlags =
+        new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(
-            language, model, productConfig, packageConfig, enabledArtifacts);
+        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
 
     // Don't run any generators we're not testing.
     ArrayList<CodeGenerator<?>> testedGenerators = new ArrayList<>();

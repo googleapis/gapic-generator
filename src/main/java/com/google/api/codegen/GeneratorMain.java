@@ -143,8 +143,14 @@ public class GeneratorMain {
       case GAPIC_CONFIG:
         gapicConfigGeneratorMain(args);
         break;
+      case GAPIC_CODE:
+        gapicGeneratorMain(artifactType, args);
+        break;
+      case GAPIC_PACKAGE:
+        gapicGeneratorMain(artifactType, args);
+        break;
       case LEGACY_GAPIC_AND_PACKAGE:
-        gapicGeneratorMain(args);
+        gapicGeneratorMain(artifactType, args);
         break;
       case DISCOGAPIC_CONFIG:
         discoGapicConfigGeneratorMain(args);
@@ -190,7 +196,7 @@ public class GeneratorMain {
     System.exit(exitCode);
   }
 
-  public static void gapicGeneratorMain(String[] args) throws Exception {
+  public static void gapicGeneratorMain(ArtifactType artifactType, String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
@@ -247,7 +253,7 @@ public class GeneratorMain {
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
-    GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions);
+    GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
     System.exit(exitCode);
   }

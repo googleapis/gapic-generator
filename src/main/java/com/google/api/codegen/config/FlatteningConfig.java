@@ -136,4 +136,20 @@ public abstract class FlatteningConfig {
                     Map.Entry::getKey, e -> e.getValue().withResourceNameInSampleOnly()));
     return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs, getFlatteningName());
   }
+
+  public static boolean hasAnyRepeatedResourceNameParameter(FlatteningConfig flatteningGroup) {
+    // Used in Java to prevent generating a flattened method with List<ResourceName> as a parameter
+    // because that has the same type erasure as the version of the flattened method with
+    // List<String> as a parameter.
+
+    // TODO(gapic-generator issue #2137) Only use raw String type for repeated params
+    // not for singular params in the same flattened method.
+    return flatteningGroup
+        .getFlattenedFieldConfigs()
+        .values()
+        .stream()
+        .anyMatch(
+            (FieldConfig fieldConfig) ->
+                fieldConfig.getField().isRepeated() && fieldConfig.useResourceNameType());
+  }
 }

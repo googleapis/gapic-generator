@@ -54,8 +54,6 @@ import java.util.List;
 public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
-  private static final String SNIPPETS_CSPROJ_TEMPLATE_FILENAME =
-      "csharp/gapic_snippets_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
@@ -88,9 +86,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
       csharpCommonTransformer.addCommonImports(context);
       context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
       context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
-      SnippetsFileView snippets = generateSnippets(context);
       surfaceDocs.add(generateSnippets(context));
-      surfaceDocs.add(generateSnippetsCsProj(context));
     }
 
     return surfaceDocs;
@@ -98,27 +94,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME, SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
-  }
-
-  private SnippetsFileView generateSnippetsCsProj(GapicInterfaceContext context) {
-    SurfaceNamer namer = context.getNamer();
-    String name = namer.getApiSnippetsClassName(context.getInterfaceConfig());
-    SnippetsFileView.Builder snippetsBuilder = SnippetsFileView.newBuilder();
-    GapicProductConfig productConfig = context.getProductConfig();
-
-    snippetsBuilder.templateFileName(SNIPPETS_CSPROJ_TEMPLATE_FILENAME);
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
-    snippetsBuilder.outputPath(
-        outputPath + File.separator + productConfig.getPackageName() + ".Snippets.csproj");
-    snippetsBuilder.name(name);
-    snippetsBuilder.snippetMethods(new ArrayList<StaticLangApiMethodSnippetView>());
-
-    // must be done as the last step to catch all imports
-    snippetsBuilder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-
-    return snippetsBuilder.build();
+    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
   }
 
   private SnippetsFileView generateSnippets(GapicInterfaceContext context) {

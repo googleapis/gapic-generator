@@ -30,6 +30,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -763,6 +764,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
+  /** The name of the class that operates on a particular Discovery Document resource type. */
+  public String getApiWrapperClassName(Document document) {
+    return publicClassName(Name.anyCamel(document.name(), "Client"));
+  }
+
+  public String getGrpcTransportClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "GrpcTransport"));
+  }
+
   /** The name of the implementation class that implements a particular proto interface. */
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
@@ -1382,6 +1392,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the import for a specific grpcClient */
   public String getGrpcClientImportName(InterfaceModel apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
+  }
+
+  public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
+    return getNotImplementedString("SurfaceNamer.getGrpcTransportImportName");
   }
 
   public String getVersionIndexFileImportName() {

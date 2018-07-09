@@ -157,6 +157,9 @@ public class JavaDiscoGapicRequestToViewTransformer
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
         MethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
+        if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+          flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+        }
         Iterable<FieldConfig> fieldConfigs =
             flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
         for (FieldConfig fieldConfig : fieldConfigs) {

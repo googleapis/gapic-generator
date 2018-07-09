@@ -57,8 +57,6 @@ import java.util.List;
 public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String UNITTEST_SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_unittest.snip";
-  private static final String UNITTEST_CSPROJ_TEMPLATE_FILENAME =
-      "csharp/gapic_unittest_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
@@ -97,7 +95,6 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         typeTable.saveNicknameFor("Google.LongRunning.Operations");
       }
       surfaceDocs.add(generateUnitTest(context));
-      surfaceDocs.add(generateUnitTestCsproj(context));
     }
 
     return surfaceDocs;
@@ -105,18 +102,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(UNITTEST_SNIPPETS_TEMPLATE_FILENAME, UNITTEST_CSPROJ_TEMPLATE_FILENAME);
-  }
-
-  private ClientTestFileView generateUnitTestCsproj(GapicInterfaceContext context) {
-    ClientTestFileView.Builder builder = generateUnitTestBuilder(context);
-    GapicProductConfig productConfig = context.getProductConfig();
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), productConfig);
-    builder.outputPath(
-        outputPath + File.separator + productConfig.getPackageName() + ".Tests.csproj");
-    builder.templateFileName(UNITTEST_CSPROJ_TEMPLATE_FILENAME);
-    return builder.build();
+    return Arrays.asList(UNITTEST_SNIPPETS_TEMPLATE_FILENAME);
   }
 
   private ClientTestFileView generateUnitTest(GapicInterfaceContext context) {
@@ -186,12 +172,14 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           // TODO: Add support for rerouted methods
           continue;
         }
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
+                  requestContext,
                   testNameTable,
                   flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeSync,
@@ -199,12 +187,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
+                  requestContext,
                   testNameTable,
                   flatteningGroup.getFlattenedFieldConfigs().values(),
                   clientMethodTypeAsync,
                   Synchronicity.Async));
         }
-        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         testCaseViews.add(
             createRequestObjectTestCase(
                 requestContext, methodConfig, testNameTable, Synchronicity.Sync));
@@ -250,31 +238,38 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
             ? ClientMethodType.RequestObjectMethod
             : ClientMethodType.AsyncRequestObjectCallSettingsMethod,
         synchronicity,
+        null,
         null);
   }
 
   private TestCaseView createFlattenedTestCase(
       MethodContext methodContext,
+      GapicMethodContext requestContext,
       SymbolTable testNameTable,
       Iterable<FieldConfig> fieldConfigs,
       ClientMethodType clientMethodType,
       Synchronicity synchronicity) {
     InitCodeContext initCodeContext =
-        initCodeTransformer.createRequestInitCodeContext(
-            methodContext,
-            new SymbolTable(),
-            fieldConfigs,
-            InitCodeOutputType.FieldList,
-            valueGenerator);
-    InitCodeContext initCodeRequestObjectContext =
         InitCodeContext.newBuilder()
             .initObjectType(methodContext.getMethodModel().getInputType())
             .symbolTable(new SymbolTable())
-            .suggestedName(Name.from("expected_request"))
+            .suggestedName(Name.from("request"))
             .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
             .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
             .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
-            .fieldConfigMap(methodContext.getProductConfig().getDefaultResourceNameFieldConfigMap())
+            .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
+            .outputType(InitCodeOutputType.FieldList)
+            .valueGenerator(valueGenerator)
+            .build();
+    InitCodeContext initCodeRequestObjectContext =
+        InitCodeContext.newBuilder()
+            .initObjectType(requestContext.getMethodModel().getInputType())
+            .symbolTable(new SymbolTable())
+            .suggestedName(Name.from("expected_request"))
+            .initFieldConfigStrings(requestContext.getMethodConfig().getSampleCodeInitFields())
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(requestContext))
+            .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+            .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
             .outputType(InitCodeOutputType.SingleObject)
             .valueGenerator(valueGenerator)
             .build();
@@ -284,6 +279,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         initCodeContext,
         clientMethodType,
         synchronicity,
-        initCodeRequestObjectContext);
+        initCodeRequestObjectContext,
+        requestContext);
   }
 }

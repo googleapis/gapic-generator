@@ -174,6 +174,9 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+      methodContext = methodContext.withResourceNamesInSamplesOnly();
+    }
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);
@@ -304,6 +307,10 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+          if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+            methodContext = methodContext.withResourceNamesInSamplesOnly();
+            flatteningGroup = methodContext.getFlatteningConfig();
+          }
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
