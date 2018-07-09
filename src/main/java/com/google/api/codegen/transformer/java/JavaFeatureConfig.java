@@ -31,15 +31,8 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   @Override
-  public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
-    return resourceNameTypesEnabled()
-        && fieldConfig != null
-        && fieldConfig.useResourceNameType();
-//        && !fieldConfig.getField().isRepeated();
-  }
-
-  @Override
-  public boolean useResourceNameFormatOptionInSample(MethodContext context, FieldConfig fieldConfig) {
+  public boolean useResourceNameFormatOptionInSample(
+      MethodContext context, FieldConfig fieldConfig) {
     return resourceNameTypesEnabled()
         && fieldConfig != null
         && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly())

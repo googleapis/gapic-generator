@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.discovery.Method;
 
 public class DefaultFeatureConfig implements FeatureConfig {
 
@@ -35,7 +34,8 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
-  public boolean useResourceNameFormatOptionInSample(MethodContext context, FieldConfig fieldConfig) {
+  public boolean useResourceNameFormatOptionInSample(
+      MethodContext context, FieldConfig fieldConfig) {
     return resourceNameTypesEnabled()
         && fieldConfig != null
         && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly());

@@ -686,7 +686,9 @@ public class InitCodeTransformer {
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {
-    if (!context.getFeatureConfig().useResourceNameFormatOptionInSample(context, item.getFieldConfig())
+    if (!context
+            .getFeatureConfig()
+            .useResourceNameFormatOptionInSample(context, item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }
