@@ -59,7 +59,8 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
-  public boolean useResourceNameConvertersInSampleOnly(MethodContext context, FieldConfig fieldConfig) {
+  public boolean useResourceNameConvertersInSampleOnly(
+      MethodContext context, FieldConfig fieldConfig) {
     return !resourceNameProtoAccessorsEnabled()
         && useResourceNameFormatOptionInSampleOnly(fieldConfig);
   }
