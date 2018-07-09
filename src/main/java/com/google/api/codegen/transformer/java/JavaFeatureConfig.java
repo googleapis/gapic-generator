@@ -40,6 +40,13 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   @Override
+  public boolean useResourceNameConvertersInSampleOnly(MethodContext context, FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled()
+        && useResourceNameFormatOptionInSampleOnly(fieldConfig)
+        && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
+  }
+
+  @Override
   public boolean useInheritanceForOneofs() {
     return true;
   }

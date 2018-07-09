@@ -51,7 +51,7 @@ public interface FeatureConfig {
    * Returns true if useResourceNameFormatOptionInSampleOnly() is true but
    * resourceNameProtoAccessorsEnabled() is false.
    */
-  boolean useResourceNameConvertersInSampleOnly(FieldConfig fieldConfig);
+  boolean useResourceNameConvertersInSampleOnly(MethodContext context, FieldConfig fieldConfig);
 
   /**
    * Returns true if useResourceNameFormatOptionInSampleOnly() is true but

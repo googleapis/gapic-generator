@@ -648,7 +648,7 @@ public class InitCodeTransformer {
       // If resource name converters should only be used in the sample, we need to convert the
       // resource name to a string before passing it or setting it on the next thing
       boolean needsConversion =
-          context.getFeatureConfig().useResourceNameConvertersInSampleOnly(fieldConfig);
+          context.getFeatureConfig().useResourceNameConvertersInSampleOnly(context, fieldConfig);
       // If resource name converters should be used and this is not a flattened method context
       // (i.e. it is for setting fields on a proto object), we need to convert the resource name
       // to a string.
