@@ -34,7 +34,8 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
-  public boolean useResourceNameFormatOptionInSample(FieldConfig fieldConfig) {
+  public boolean useResourceNameFormatOptionInSample(
+      MethodContext context, FieldConfig fieldConfig) {
     return resourceNameTypesEnabled()
         && fieldConfig != null
         && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly());
@@ -58,12 +59,8 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
-  public boolean useResourceNameConvertersInSample(FieldConfig fieldConfig) {
-    return !resourceNameProtoAccessorsEnabled() && useResourceNameFormatOptionInSample(fieldConfig);
-  }
-
-  @Override
-  public boolean useResourceNameConvertersInSampleOnly(FieldConfig fieldConfig) {
+  public boolean useResourceNameConvertersInSampleOnly(
+      MethodContext context, FieldConfig fieldConfig) {
     return !resourceNameProtoAccessorsEnabled()
         && useResourceNameFormatOptionInSampleOnly(fieldConfig);
   }

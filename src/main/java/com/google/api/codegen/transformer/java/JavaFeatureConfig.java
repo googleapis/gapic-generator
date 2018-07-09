@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -26,6 +28,23 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean resourceNameTypesEnabled() {
     return true;
+  }
+
+  @Override
+  public boolean useResourceNameFormatOptionInSample(
+      MethodContext context, FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled()
+        && fieldConfig != null
+        && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly())
+        && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
+  }
+
+  @Override
+  public boolean useResourceNameConvertersInSampleOnly(
+      MethodContext context, FieldConfig fieldConfig) {
+    return !resourceNameProtoAccessorsEnabled()
+        && useResourceNameFormatOptionInSampleOnly(fieldConfig)
+        && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
   }
 
   @Override
