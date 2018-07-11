@@ -117,7 +117,8 @@ class OutputTransformer {
 
     ScopeTable scope = localVars.newChild();
     OutputView.VariableView accessor =
-        accessorNewVariable(loop.getCollection(), context, valueSet, scope, loop.getVariable());
+        accessorNewVariable(
+            loop.getCollection(), context, valueSet, scope, loop.getVariable(), true);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(
@@ -146,7 +147,8 @@ class OutputTransformer {
         valueSet.getId(),
         definition);
     OutputView.VariableView reference =
-        accessorNewVariable(definition.substring(p + 1), context, valueSet, localVars, identifier);
+        accessorNewVariable(
+            definition.substring(p + 1), context, valueSet, localVars, identifier, false);
     return OutputView.DefineView.newBuilder()
         .variableType(
             context
@@ -159,7 +161,7 @@ class OutputTransformer {
 
   private static OutputView.VariableView accessor(
       String config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
-    return accessorNewVariable(config, context, valueSet, localVars, null);
+    return accessorNewVariable(config, context, valueSet, localVars, null, false);
   }
 
   /**
@@ -182,7 +184,8 @@ class OutputTransformer {
       MethodContext context,
       SampleValueSet valueSet,
       ScopeTable localVars,
-      @Nullable String newVar) {
+      @Nullable String newVar,
+      boolean intoScalar) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
@@ -263,6 +266,9 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
+      if (intoScalar) {
+        type = type.makeOptional();
+      }
       if (!localVars.put(newVar, type)) {
         throw new IllegalStateException(
             String.format(
