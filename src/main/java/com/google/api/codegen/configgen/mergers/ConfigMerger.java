@@ -34,7 +34,7 @@ public class ConfigMerger {
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
   private static final String CONFIG_SCHEMA_VERSION = "1.0.0";
   private static final String CONFIG_COMMENT =
-      "Adiddle fiddle middle liddle "
+      "Address all the FIXMEs in this generated config before using it for client generation. "
           + "Remove this paragraph after you closed all the FIXMEs."
           + " The retry_codes_name, required_fields, flattening, and timeout properties cannot be "
           + "precisely decided by the tooling and may require some configuration.";

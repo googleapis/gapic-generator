@@ -134,7 +134,10 @@ public class MethodMerger {
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
-    prevNode = generateLongRunningNode(prevNode, method);
+    if (method.getOutputType().toString().contains("google.longrunning.Operation")) {
+      prevNode = generateLongRunningNode(prevNode, method);
+    }
+
     generateTimeout(prevNode, method);
     return methodNode;
   }
