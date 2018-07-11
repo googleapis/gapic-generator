@@ -4107,7 +4107,6 @@ names = [names_element]
 shelves_element = 'Classics'
 shelves = [shelves_element]
 
-# Iterate over all results
 for element in client.find_related_books(names, shelves):
     book = element
     print('Here\'s a related book: {}'.format(book))
@@ -4149,7 +4148,6 @@ names = [names_element]
 shelves_element = 'Classics'
 shelves = [shelves_element]
 
-# Iterate over results one page at a time
 for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
     for element in page:
         book = element

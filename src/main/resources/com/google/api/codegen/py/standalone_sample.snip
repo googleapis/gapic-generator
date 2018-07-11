@@ -1,5 +1,5 @@
 @extends "py/common.snip"
-@extends "py/method_sample.snip"
+@extends "py/init.snip"
 
 @snippet generate(sampleFile)
   @#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
@@ -41,15 +41,15 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-  {@incodeSampleSetup(apiMethod, sample)}
+  {@standaloneSampleSetup(apiMethod, sample)}
   @switch sample.callingForm
   @case "Request"
     {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
     {@processResponse(sample)}
   @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode, processResponse(sample))}
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
   @case "RequestPagedAll"
-    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode, processResponse(sample))}
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
   @case "RequestStreamingBidi"
     {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
     {@processResponse(sample)}
@@ -67,7 +67,110 @@
   @end
 @end
 
+@private standaloneSampleSetup(apiMethod, sample)
+  {@importList(sample.initCode.importSection.appImports)}
 
+  client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+
+  @if sample.initCode.lines
+    {@initCode(sample.initCode)}
+
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
+  {@singularResponseSampleCode(apiMethod, initCode)}
+@end
+
+@private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
+  for page in {@pagedMethodCallSampleCode(apiMethod, sample.initCode)}:
+      for element in page:
+          {@processResponse(sample)}
+@end
+
+@private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
+  for element in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+      {@processResponse(sample)}
+@end
+
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
+  requests = [request]
+  {@responseStreamingSampleCode(apiMethod, initCode)}
+@end
+
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
+  requests = [request]
+  {@singularResponseSampleCode(apiMethod, initCode)}
+@end
+
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
+  {@responseStreamingSampleCode(apiMethod, initCode)}
+@end
+
+@private lroSampleCode(apiMethod, initCode)
+  response = {@methodCallSampleCode(apiMethod, initCode)}
+
+  def callback(operation_future):
+      @# Handle result.
+      result = operation_future.result()
+
+  response.add_done_callback(callback)
+
+  @# Handle metadata.
+  metadata = response.metadata()
+@end
+
+@private singularResponseSampleCode(apiMethod, initCode)
+  @if apiMethod.hasReturnValue
+    response = {@methodCallSampleCode(apiMethod, initCode)}
+  @else
+    {@methodCallSampleCode(apiMethod, initCode)}
+  @end
+@end
+
+# Render the API method call itself
+@private methodCallSampleCode(apiMethod, initCode)
+  @if apiMethod.hasRequestStreaming
+    client.{@apiMethod.name}(requests)
+  @else
+    client.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(initCode)}\
+    )
+  @end
+@end
+
+@private responseStreamingSampleCode(apiMethod, initCode)
+  for element in {@methodCallSampleCode(apiMethod, initCode)}:
+      @# process element
+      pass
+@end
+
+# Render the API method call for page streaming
+@private pagedMethodCallSampleCode(apiMethod, initCode)
+  client.{@apiMethod.name}(\
+    {@sampleMethodCallArgListAndComma(initCode)}\
+    options=CallOptions(page_token=INITIAL_PAGE))
+@end
+
+@private sampleMethodCallArgListAndComma(initCode)
+  @if initCode.fieldSettings
+    {@sampleMethodCallArgList(initCode)}, {@""}
+  @end
+@end
+
+@private sampleMethodCallArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}={@fieldSetting.identifier}
+    @end
+  @end
+@end
 
 @private processResponse(sample)
   @if sample.outputs.size == 0

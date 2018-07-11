@@ -1,4 +1,5 @@
 @extends "py/common.snip"
+@extends "py/init.snip"
 
 # Generate brief code examples for method-level documentation.
 @snippet exampleInCode(apiMethod)
@@ -55,9 +56,9 @@
   @case "Request"
     {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
   @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode, processElement())}
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
   @case "RequestPagedAll"
-    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode, processElement())}
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode)}
   @case "RequestStreamingBidi"
     {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
   @case "RequestStreamingClient"
@@ -72,77 +73,6 @@
 @end
 
 # Helper functions
-
-# Generate argument initialization code for API call
-@snippet initCode(initCodeSpec)
-  @join line : initCodeSpec.lines
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @case "MapInitLine"
-      {@initLineMap(line)}
-    @default
-      {@unhandledCase()}
-    @end
-  @end
-@end
-
-# Generate a Protobuf message argument
-@private initLineStructure(line)
-  {@line.identifier} = {{@fieldSettingKwargs(line.fieldSettings)}}
-@end
-
-# Helper method for initLineStructure()
-@private fieldSettingKwargs(fieldSettings)
-    @join fieldSetting : fieldSettings on ", "
-        '{@fieldSetting.fieldName}': {@fieldSetting.identifier}
-    @end
-@end
-
-# Generate a List argument
-@private initLineList(line)
-  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
-@end
-
-# Generate a Map argument
-@private initLineMap(line)
-  {@line.identifier} = {{@renderInitMap(line)}}
-@end
-
-# Helper method for initLineMap()
-@private renderInitMap(line)
-  @join entry : line.initEntries vertical on ","
-    {@entry.key}: {@entry.valueString}
-  @end
-@end
-
-# Generate a simple argument
-@private initLineSimple(line)
-  @if line.doc
-    @if line.needsLeadingNewline
-      {@BREAK}
-    @end
-    {@toComments(line.doc)}
-
-  @end
-  {@line.identifier} = {@renderInitValue(line.initValue)}
-@end
-
-# Value for simple argument
-@private renderInitValue(initValue)
-  @switch initValue.type
-  @case "SimpleInitValueView"
-    {@initValue.initialValue}
-  @case "FormattedInitValueView"
-    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
-  @default
-    {@unhandledCase()}
-  @end
-@end
 
 @private optionalArrayMethodSampleCode(apiMethod, initCode)
   @switch apiMethod.grpcStreamingType.toString
@@ -164,7 +94,7 @@
 @end
 
 @snippet optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
-  {@responseStreamingSampleCode(apiMethod, initCode, processElement())}
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
 @snippet optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
@@ -174,29 +104,26 @@
 
 @snippet optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod, initCode, processElement())}
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@snippet pagedOptionalArrayMethodSampleCodeAll(apiMethod, initCode, processResp)
+@snippet pagedOptionalArrayMethodSampleCodeAll(apiMethod, initCode)
   @# Iterate over all results
-  {@responseStreamingSampleCode(apiMethod, initCode, processResp)}
+  {@responseStreamingSampleCode(apiMethod, initCode)}
 @end
 
-@snippet pagedOptionalArrayMethodSampleCodePaged(apiMethod, initCode, processResp)
+@snippet pagedOptionalArrayMethodSampleCodePaged(apiMethod, initCode)
   @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, initCode)}:
       for element in page:
-          {@processResp}
+          @# process element
+          pass
 @end
 
-@private responseStreamingSampleCode(apiMethod, initCode, processResp)
+@private responseStreamingSampleCode(apiMethod, initCode)
   for element in {@methodCallSampleCode(apiMethod, initCode)}:
-      {@processResp}
-@end
-
-@private processElement()
-  @# process element
-  pass
+      @# process element
+      pass
 @end
 
 @private singularResponseSampleCode(apiMethod, initCode)
@@ -236,13 +163,6 @@
   client.{@apiMethod.name}(\
     {@sampleMethodCallArgListAndComma(initCode)}\
     options=CallOptions(page_token=INITIAL_PAGE))
-@end
-
-# Generate comma-separated argument list
-@private varList(params)
-  @join param : params on ", "
-    {@param}
-  @end
 @end
 
 @snippet sampleMethodCallArgList(initCode)
