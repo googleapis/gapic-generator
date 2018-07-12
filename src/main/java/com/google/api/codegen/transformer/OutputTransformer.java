@@ -169,7 +169,9 @@ class OutputTransformer {
    *
    * <p>The config is type-checked. For example, indexing into a scalar field is not allowed. If
    * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
-   * newVar} is not null, it is registered into {@code localVars}.
+   * newVar} is not null, it is registered into {@code localVars}. If {@code intoScalar} is true,
+   * the config must resolve to a collection type, and the type of the elements is registered
+   * instead.
    *
    * <pre><code>
    * Syntax:
@@ -267,6 +269,13 @@ class OutputTransformer {
 
     if (newVar != null) {
       if (intoScalar) {
+        Preconditions.checkArgument(
+            type.isRepeated() && !type.isMap(),
+            "%s:%s: %s is not a repeated field",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.substring(0, end));
+        // "optional" is how protobuf defines singular fields
         type = type.makeOptional();
       }
       if (!localVars.put(newVar, type)) {

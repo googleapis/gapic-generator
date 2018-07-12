@@ -1,5 +1,5 @@
 @extends "py/common.snip"
-@extends "py/init.snip"
+@extends "py/simple_init.snip"
 
 @snippet generate(sampleFile)
   @#### [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
@@ -83,12 +83,14 @@
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
+  @# Iterate over all results
   for page in {@pagedMethodCallSampleCode(apiMethod, sample.initCode)}:
       for element in page:
           {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
+  @# Iterate over all results
   for element in {@methodCallSampleCode(apiMethod, sample.initCode)}:
       {@processResponse(sample)}
 @end
