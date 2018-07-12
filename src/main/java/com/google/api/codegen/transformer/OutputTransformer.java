@@ -275,6 +275,7 @@ class OutputTransformer {
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
             config.substring(0, end));
+
         // "optional" is how protobuf defines singular fields
         type = type.makeOptional();
       }
