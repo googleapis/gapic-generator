@@ -4132,11 +4132,8 @@ shelves = [shelves_element]
 
 # Iterate over all results
 for element in client.find_related_books(names, shelves):
-    # process element
-    pass
-books = response.names
-print('Here\'s the list of related books:\n {}'.format(books))
-print('That\'s all!')
+    book = element
+    print('Here\'s a related book: {}'.format(book))
 
 # [END core_sample]
 
@@ -4178,11 +4175,8 @@ shelves = [shelves_element]
 # Iterate over results one page at a time
 for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
     for element in page:
-        # process element
-        pass
-books = response.names
-print('Here\'s the list of related books:\n {}'.format(books))
-print('That\'s all!')
+        book = element
+        print('Here\'s a related book: {}'.format(book))
 
 # [END core_sample]
 
@@ -4312,6 +4306,7 @@ series_uuid = {'series_string': series_string}
 response = client.publish_series(shelf, books, series_uuid)
 for title in response.book_names:
   print('Title: {}'.format(title))
+print('That\'s all!')
 
 # [END core_sample]
 

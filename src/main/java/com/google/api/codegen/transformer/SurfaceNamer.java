@@ -1597,8 +1597,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getPrintSpec");
   }
 
-  public String getSampleResponseVarName() {
-    return "response";
+  public String getSampleResponseVarName(MethodContext context) {
+    return context.getMethodConfig().getPageStreaming() == null ? "response" : "element";
   }
 
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////

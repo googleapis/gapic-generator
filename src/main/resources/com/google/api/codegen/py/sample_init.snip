@@ -1,0 +1,79 @@
+@extends "py/common.snip"
+
+# Generate argument initialization code for API call
+@snippet initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @default
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
+# Generate a Protobuf message argument
+@private initLineStructure(line)
+  {@line.identifier} = {{@fieldSettingKwargs(line.fieldSettings)}}
+@end
+
+# Helper method for initLineStructure()
+@private fieldSettingKwargs(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        '{@fieldSetting.fieldName}': {@fieldSetting.identifier}
+    @end
+@end
+
+# Generate a List argument
+@private initLineList(line)
+  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
+@end
+
+# Generate a simple argument
+@private initLineSimple(line)
+  @if line.doc
+    @if line.needsLeadingNewline
+      {@BREAK}
+    @end
+    {@toComments(line.doc)}
+
+  @end
+  {@line.identifier} = {@renderInitValue(line.initValue)}
+@end
+
+# Generate a Map argument
+@private initLineMap(line)
+  {@line.identifier} = {{@renderInitMap(line)}}
+@end
+
+# Helper method for initLineMap()
+@private renderInitMap(line)
+  @join entry : line.initEntries vertical on ","
+    {@entry.key}: {@entry.valueString}
+  @end
+@end
+
+# Value for simple argument
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+  @default
+    {@unhandledCase()}
+  @end
+@end
+
+# Generate comma-separated argument list
+@private varList(params)
+  @join param : params on ", "
+    {@param}
+  @end
+@end
