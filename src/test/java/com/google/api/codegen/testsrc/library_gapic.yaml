@@ -255,6 +255,8 @@ interfaces:
             print:
               - "Title: %s"
               - title
+      - print:
+        - "That's all!"
       # callingFormCheck: second_edition java: Flattened Request Callable
       # callingFormCheck: second_edition nodejs: Request
       # callingFormCheck: second_edition py: Request
@@ -647,12 +649,10 @@ interfaces:
       - names[0]=Odyssey
       - shelves[0]=Classics
       output_specs:
-        - define: books=$resp.names
+        - define: book=$resp
         - print:
-          - 'Here''s the list of related books:\n %s'
-          - books
-        - print:
-          - 'That''s all!'
+          - 'Here''s a related book: %s'
+          - book
     samples:
       in_code:
       - calling_forms: ".*"

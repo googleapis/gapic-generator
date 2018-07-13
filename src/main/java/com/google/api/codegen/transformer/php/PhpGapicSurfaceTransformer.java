@@ -59,7 +59,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import java.lang.IllegalStateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

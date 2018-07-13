@@ -133,7 +133,8 @@ public class SampleTransformer {
             context, initContext, fieldConfigs, initCodeOutputType, generator, callingForms);
 
     // Until we get rid of the non-nullable StaticLangApiMethodView.initCode field, set it to a
-    // non-null value. For an in-code sample not specified through the SampleSpec, the correct value to
+    // non-null value. For an in-code sample not specified through the SampleSpec, the correct value
+    // to
     // use is the first one on the list, since we set it in the overload of generateSamples.
     if (methodSampleViews.size() > 0) {
       methodViewBuilder.initCode(methodSampleViews.get(0).initCode());
@@ -181,13 +182,13 @@ public class SampleTransformer {
       // to generate the samples in various scenarios. Once all the configs have been migrated to
       // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
       String id = null;
-      if (sampleType
-          == SampleType
-              .IN_CODE) { // for IN_CODE, have the source of truth be sample_code_init_fields for now even if otherwise configured
+      if (sampleType == SampleType.IN_CODE) {
+        // for IN_CODE, have the source of truth be sample_code_init_fields for
+        // now even if otherwise configured
         id = "sample_code_init_field";
-      } else if (!methodConfig
-              .getSampleSpec()
-              .isConfigured() // if not configured, make the sample_code_init_fields available to all sample types
+      } else if (!methodConfig.getSampleSpec().isConfigured()
+          // if not configured, make the sample_code_init_fields available to
+          // all sample types
           || matchingValueSets.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
         id = INIT_CODE_SHIM;
       }

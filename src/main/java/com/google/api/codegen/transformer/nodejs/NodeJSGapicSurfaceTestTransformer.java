@@ -171,7 +171,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
-        //TODO: Add unit test generation for ClientStreaming methods
+        // TODO: Add unit test generation for ClientStreaming methods
         // Issue: https://github.com/googleapis/toolkit/issues/946
         continue;
       }
