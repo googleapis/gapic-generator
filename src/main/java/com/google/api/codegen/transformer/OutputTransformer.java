@@ -142,15 +142,15 @@ class OutputTransformer {
         "%s:%s: expected identifier: %s",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
-        definition.s);
-    String identifier = definition.token;
+        definition.input);
+    String identifier = definition.token();
 
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
-        definition.s);
+        definition.input);
     OutputView.VariableView reference =
         accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
     return OutputView.DefineView.newBuilder()
@@ -200,8 +200,8 @@ class OutputTransformer {
         "%s:%s: expected identifier: %s",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
-        config.s);
-    String baseIdentifier = config.token;
+        config.input);
+    String baseIdentifier = config.token();
 
     TypeModel type;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
@@ -239,21 +239,21 @@ class OutputTransformer {
             "%s:%s: %s is not a message",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.s);
+            config.input);
         Preconditions.checkArgument(
             !type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not scalar",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.s);
+            config.input);
 
         Preconditions.checkArgument(
             config.scan() == Scanner.IDENT,
             "%s:%s: expected identifier: %s",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.s);
-        String fieldName = config.token;
+            config.input);
+        String fieldName = config.token();
         FieldModel field =
             Preconditions.checkNotNull(
                 type.getField(fieldName),
@@ -271,11 +271,13 @@ class OutputTransformer {
             "%s:%s: %s is not a repeated field",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.s);
+            config.input);
         throw new UnsupportedOperationException("array indexing not supported yet");
       } else {
         throw new IllegalArgumentException(
-            String.format("unexpected character: %c (%d)", token, token));
+            String.format(
+                "%s:%s: unexpected character: %c (%d)",
+                context.getMethodModel().getSimpleName(), valueSet.getId(), token, token));
       }
     }
 
@@ -286,7 +288,7 @@ class OutputTransformer {
             "%s:%s: %s is not a repeated field",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.s);
+            config.input);
         type = type.makeOptional(); // "optional" is how protobuf defines singular fields
       }
       if (!localVars.put(newVar, type)) {
@@ -358,54 +360,81 @@ class OutputTransformer {
     }
   }
 
-  private static class Scanner {
-    private static final int EOF = -1;
-    private static final int IDENT = -2;
+  /**
+   * Tokenizes a string. {@code scan()} returns the next token. A token is either the next unicode
+   * code point in the string or a special token. If a special token is returned, the string value
+   * of the token can be retrieved from {@code token}.
+   *
+   * <p>Special tokens:
+   *
+   * <pre>{@code
+   * EOF : end of the string.
+   *
+   * IDENT : An identifier.
+   * The identifier may be prefixed with a single '$'. The "body" of the identifier is a unicode letter
+   * or underscore followed by a possible empty run of unicode letters, digits, and underscores.
+   * }</pre>
+   */
+  static class Scanner {
+    static final int EOF = -1;
+    static final int IDENT = -2;
 
-    private final String s;
+    private final String input;
+    private int loc;
     private String token = "";
-    private int p;
 
-    private Scanner(String s) {
-      this.s = s;
+    Scanner(String input) {
+      this.input = input;
     }
 
-    private int scan() {
+    int scan() {
       token = "";
-      int cp;
+      int codePoint;
 
       while (true) {
-        if (p == s.length()) {
+        if (loc == input.length()) {
           return EOF;
         }
-        cp = s.codePointAt(p);
-        if (!Character.isWhitespace(cp)) {
+        codePoint = input.codePointAt(loc);
+        if (!Character.isWhitespace(codePoint)) {
           break;
         }
-        p += Character.charCount(cp);
+        loc += Character.charCount(codePoint);
       }
 
-      if (identLead(cp)) {
-        int start = p;
+      if (identLead(codePoint) || codePoint == '$') {
+        // If the identifier starts with '$', it isn't valid yet, since it needs the body too.
+        boolean valid = identLead(codePoint);
+        int start = loc;
+        loc += Character.charCount(codePoint);
         while (true) {
-          if (p == s.length()) {
-            token = s.substring(start);
+          if (loc == input.length()) {
+            Preconditions.checkArgument(valid, "identifier needs a letter after '$': %s", input);
+            token = input.substring(start);
             return IDENT;
           }
-          cp = s.codePointAt(p);
-          if (!identFollow(cp)) {
-            token = s.substring(start, p);
+          codePoint = input.codePointAt(loc);
+          if (valid && !identFollow(codePoint)) {
+            token = input.substring(start, loc);
             return IDENT;
           }
-          p += Character.charCount(cp);
+          Preconditions.checkArgument(
+              valid || identLead(codePoint), "identifier needs a letter after '$': %s", input);
+          loc += Character.charCount(codePoint);
+          valid = true;
         }
       }
-      p += Character.charCount(cp);
-      return cp;
+      // Consume and return the next character
+      loc += Character.charCount(codePoint);
+      return codePoint;
+    }
+
+    String token() {
+      return token;
     }
 
     private static boolean identLead(int codePoint) {
-      return Character.isLetter(codePoint) || "$_".indexOf(codePoint) >= 0;
+      return Character.isLetter(codePoint) || codePoint == '_';
     }
 
     private static boolean identFollow(int codePoint) {
