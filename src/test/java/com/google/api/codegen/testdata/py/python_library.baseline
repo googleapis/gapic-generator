@@ -1002,6 +1002,7 @@ import functools
 import pkg_resources
 import warnings
 
+from google.oauth2 import service_account
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
@@ -1058,6 +1059,28 @@ class LibraryServiceClient(object):
     # The name of the interface for this client. This is the key used to
     # find the method configuration in the client_config dictionary.
     _INTERFACE_NAME = 'google.example.library.v1.LibraryService'
+
+
+    @classmethod
+    def from_service_account_file(cls, filename, *args, **kwargs):
+        """Creates an instance of this client using the provided credentials
+        file.
+
+        Args:
+            filename (str): The path to the service account private key json
+                file.
+            args: Additional arguments to pass to the constructor.
+            kwargs: Additional arguments to pass to the constructor.
+
+        Returns:
+            LibraryServiceClient: The constructed client.
+        """
+        credentials = service_account.Credentials.from_service_account_file(
+            filename)
+        kwargs['credentials'] = credentials
+        return cls(*args, **kwargs)
+
+    from_service_account_json = from_service_account_file
 
 
     @classmethod
@@ -4109,11 +4132,8 @@ shelves = [shelves_element]
 
 # Iterate over all results
 for element in client.find_related_books(names, shelves):
-    # process element
-    pass
-books = response.names
-print('Here\'s the list of related books:\n {}'.format(books))
-print('That\'s all!')
+    book = element
+    print('Here\'s a related book: {}'.format(book))
 
 # [END core_sample]
 
@@ -4155,11 +4175,8 @@ shelves = [shelves_element]
 # Iterate over results one page at a time
 for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
     for element in page:
-        # process element
-        pass
-books = response.names
-print('Here\'s the list of related books:\n {}'.format(books))
-print('That\'s all!')
+        book = element
+        print('Here\'s a related book: {}'.format(book))
 
 # [END core_sample]
 
@@ -4289,6 +4306,7 @@ series_uuid = {'series_string': series_string}
 response = client.publish_series(shelf, books, series_uuid)
 for title in response.book_names:
   print('Title: {}'.format(title))
+print('That\'s all!')
 
 # [END core_sample]
 

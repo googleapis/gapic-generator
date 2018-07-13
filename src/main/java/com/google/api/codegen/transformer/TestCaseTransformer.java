@@ -154,7 +154,8 @@ public class TestCaseTransformer {
       hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
-    // Escape variables names that may clash with hardcoded variable names in generated test surface.
+    // Escape variables names that may clash with hardcoded variable names in generated test
+    // surface.
     initCodeContext.symbolTable().getNewSymbol(methodContext.getNamer().getPagedResourceName());
 
     InitCodeContext responseInitCodeContext =
@@ -361,7 +362,8 @@ public class TestCaseTransformer {
         .filter(f -> f.isPrimitive() && !f.isRepeated())
         .filter(
             f -> {
-              // Includes field if field is not a part of a oneof, or it's the first field of the oneof.
+              // Includes field if field is not a part of a oneof, or it's the first field of the
+              // oneof.
               Oneof oneof = f.getOneof();
               return oneof == null || oneofSet.add(oneof);
             })

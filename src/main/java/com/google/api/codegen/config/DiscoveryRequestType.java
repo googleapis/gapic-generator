@@ -21,7 +21,8 @@ import java.util.List;
 @AutoValue
 public abstract class DiscoveryRequestType implements TypeModel {
 
-  // TODO(andrealin): store the created request types in the root ApiModel so they don't get duplicated.
+  // TODO(andrealin): store the created request types in the root ApiModel so they don't get
+  // duplicated.
   public static DiscoveryRequestType create(DiscoveryMethodModel method) {
     return newBuilder().typeName("message").parentMethod(method).build();
   }

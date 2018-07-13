@@ -31,7 +31,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.gapic.GapicGenerator.Builder;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;

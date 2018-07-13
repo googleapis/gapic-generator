@@ -280,7 +280,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
-          //TODO: Add unit test generation for ClientStreaming methods
+          // TODO: Add unit test generation for ClientStreaming methods
           // Issue: https://github.com/googleapis/toolkit/issues/946
           continue;
         }

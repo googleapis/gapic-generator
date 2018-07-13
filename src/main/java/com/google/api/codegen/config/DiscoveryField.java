@@ -47,7 +47,8 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
   private final DiscoApiModel apiModel;
   private final String namespace;
-  // Dereferenced schema to use for rendering type names and determining properties, type, and format.
+  // Dereferenced schema to use for rendering type names and determining properties, type, and
+  // format.
   private final Schema schema;
   // Not dereferenced schema; used in rendering this FieldModel's parameter name.
   private final Schema originalSchema;
