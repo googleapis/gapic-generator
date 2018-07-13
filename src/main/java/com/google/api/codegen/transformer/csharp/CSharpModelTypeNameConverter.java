@@ -148,7 +148,7 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
     return typeNameConverter.getTypeName(prefix + shortName);
-    //return new TypeName(prefix + shortName, shortName);
+    // return new TypeName(prefix + shortName, shortName);
   }
 
   @Override

@@ -246,7 +246,7 @@ public class InitCodeTransformer {
   private InitCodeView buildInitCodeViewFlattened(MethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
-    //Remove the request object for flattened method
+    // Remove the request object for flattened method
     orderedItems.remove(orderedItems.size() - 1);
     return buildInitCodeView(context, orderedItems, argItems);
   }
