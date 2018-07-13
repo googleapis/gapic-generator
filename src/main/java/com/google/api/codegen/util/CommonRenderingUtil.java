@@ -112,9 +112,4 @@ public class CommonRenderingUtil {
   public static int toInt(String value) {
     return Integer.valueOf(value);
   }
-
-  /** Returns the lowercase version of the given text */
-  public static String lowercase(String value) {
-    return value.toLowerCase();
-  }
 }
