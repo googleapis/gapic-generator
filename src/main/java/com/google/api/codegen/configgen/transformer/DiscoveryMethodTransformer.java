@@ -32,7 +32,8 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
   private static final PagingParameters PAGING_PARAMETERS = new HttpPagingParameters();
   public static final String FIELDMASK_STRING = "fieldMask";
 
-  // For Discovery doc configgen, assume that paged resource field name is "items". This is the only resource name
+  // For Discovery doc configgen, assume that paged resource field name is "items". This is the only
+  // resource name
   // seen in Google Cloud Compute API.
   private static final String PAGING_RESOURCE_FIELD_NAME = "items";
 
@@ -99,7 +100,8 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
       return null;
     }
 
-    // In the resulting gapic config, the resources_object must be a non-null value for the yaml to be parseable.
+    // In the resulting gapic config, the resources_object must be a non-null value for the yaml to
+    // be parseable.
     String configResourcesName;
     if (resourcesName == null) {
       configResourcesName = MethodTransformer.TODO_STRING;
