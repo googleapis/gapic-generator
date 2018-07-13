@@ -58,7 +58,7 @@
     @end
 @end
 
-@private methodSampleCode(apiMethod)
+@snippet methodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
     @else
@@ -79,6 +79,24 @@
         foreach ($page as $element) {
             // doSomethingWith($element);
         }
+    }
+@end
+
+@snippet pagedMethodCallSampleCode(apiMethod)
+    // Iterate over pages of elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iteratePages() as $page) {
+        foreach ($page as $element) {
+            // doSomethingWith($element);
+        }
+    }
+@end
+
+@snippet pagedAllMethodCallSampleCode(apiMethod)
+    // Iterate through all elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iterateAllElements() as $element) {
+        // doSomethingWith($element);
     }
 @end
 
@@ -119,7 +137,45 @@
     }
 @end
 
-@private clientStreamingMethodSampleCode(apiMethod)
+@snippet longRunningMethodCallSampleCode(apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $operationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $operationResponse->getError();
+      // handleError($error)
+    }
+@end
+
+@snippet longRunningAsyncMethodCallSampleCode(apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationName = $operationResponse->getName();
+    // ... do other work
+    $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
+    while (!$newOperationResponse->isDone()) {
+        // ... do other work
+        $newOperationResponse->reload();
+    }
+    if ($newOperationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $newOperationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $newOperationResponse->getError();
+      // handleError($error)
+    }
+@end
+
+@snippet clientStreamingMethodSampleCode(apiMethod)
     $requests = [$request];
 
     // Write data to server and wait for a response
@@ -136,7 +192,28 @@
     // doSomethingWith($result)
 @end
 
-@private serverStreamingMethodSampleCode(apiMethod)
+@snippet clientStreamingMethodCallSampleCode(apiMethod)
+    $requests = [$request];
+
+    // Write data to server and wait for a response
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $result = $stream->writeAllAndReadResponse($requests);
+    // doSomethingWith($result)
+@end
+
+@snippet clientStreamingAsyncMethodCallSampleCode(apiMethod)
+    $requests = [$request];
+
+    // write data as it becomes available, then wait for a response
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+    }
+    $result = $stream->readResponse();
+    // doSomethingWith($result)
+@end    
+
+@snippet serverStreamingMethodSampleCode(apiMethod)
     // Read all responses until the stream is complete
     $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($stream->readAll() as $element) {
@@ -156,6 +233,39 @@
     }
 
     // OR write requests individually, making read() calls if
+    // required. Call closeWrite() once writes are complete, and read the
+    // remaining responses from the server.
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+        // if required, read a single response from the stream
+        $element = $stream->read();
+        // doSomethingWith($element)
+    }
+    $stream->closeWrite();
+    $element = $stream->read();
+    while (!is_null($element)) {
+        // doSomethingWith($element)
+        $element = $stream->read();
+    }
+@end
+
+@snippet bidiStreamingMethodCallSampleCode(apiMethod)
+    $requests = [$request];
+
+    // Write all requests to the server, then read all responses until the
+    // stream is complete
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream->writeAll($requests);
+    foreach ($stream->closeWriteAndReadAll() as $element) {
+        // doSomethingWith($element);
+    }
+@end
+
+@snippet bidiStreamingAsyncMethodCallSampleCode(apiMethod)
+    $requests = [$request];
+
+    // write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
     $stream = {@methodCallSampleCode(apiMethod)};

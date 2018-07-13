@@ -31,7 +31,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.gapic.GapicGenerator.Builder;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -53,6 +52,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransforme
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.php.PhpGapicSamplesTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
@@ -374,7 +374,19 @@ public class GapicGeneratorFactory {
                 .build();
         generators.add(testGenerator);
       }
-
+      if (artifactFlags.sampleGeneratorEnabled()) {
+        GapicCodePathMapper phpPathMapper =
+            PhpGapicCodePathMapper.newBuilder().setPrefix("src").build();
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                .build();
+        generators.add(sampleGenerator);
+      }
     } else if (language.equals(PYTHON)) {
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper pythonPathMapper =
