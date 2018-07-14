@@ -55,7 +55,8 @@ public abstract class Method implements Comparable<Method>, Node {
     for (String name : root.getObject("parameters").getFieldNames()) {
       Schema schema = Schema.from(parametersNode.getObject(name), name, null);
       // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
-      // This is based on the assumption that these types can't be serialized as a query or path parameter.
+      // This is based on the assumption that these types can't be serialized as a query or path
+      // parameter.
       Preconditions.checkState(schema.type() != Schema.Type.ANY);
       Preconditions.checkState(schema.type() != Schema.Type.ARRAY);
       Preconditions.checkState(schema.type() != Schema.Type.OBJECT);
