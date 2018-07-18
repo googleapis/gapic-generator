@@ -886,11 +886,12 @@ class NoTemplatesAPIServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport(
-            address=self.SERVICE_ADDRESS,
-            channel=channel,
-            credentials=credentials,
-        )
+        else:
+            self.transport = no_templates_api_service_grpc_transport.NoTemplatesApiServiceGrpcTransport(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
         if client_info is None:
             client_info = (

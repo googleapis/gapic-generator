@@ -1184,11 +1184,12 @@ class LibraryServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = library_service_grpc_transport.LibraryServiceGrpcTransport(
-            address=self.SERVICE_ADDRESS,
-            channel=channel,
-            credentials=credentials,
-        )
+        else:
+            self.transport = library_service_grpc_transport.LibraryServiceGrpcTransport(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
         if client_info is None:
             client_info = (

@@ -937,11 +937,12 @@ class DecrementerServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = decrementer_service_grpc_transport.DecrementerServiceGrpcTransport(
-            address=self.SERVICE_ADDRESS,
-            channel=channel,
-            credentials=credentials,
-        )
+        else:
+            self.transport = decrementer_service_grpc_transport.DecrementerServiceGrpcTransport(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
         if client_info is None:
             client_info = (
@@ -1149,11 +1150,12 @@ class IncrementerServiceClient(object):
                         'credentials; these are mutually exclusive.'
                     )
                 self.transport = transport
-        self.transport = incrementer_service_grpc_transport.IncrementerServiceGrpcTransport(
-            address=self.SERVICE_ADDRESS,
-            channel=channel,
-            credentials=credentials,
-        )
+        else:
+            self.transport = incrementer_service_grpc_transport.IncrementerServiceGrpcTransport(
+                address=self.SERVICE_ADDRESS,
+                channel=channel,
+                credentials=credentials,
+            )
 
         if client_info is None:
             client_info = (
