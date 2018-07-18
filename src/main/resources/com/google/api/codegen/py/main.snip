@@ -126,11 +126,12 @@
                             'credentials; these are mutually exclusive.'
                         )
                     self.transport = transport
-            self.transport = {@api.grpcTransportImportName}.{@api.grpcTransportClassName}(
-                address=self.SERVICE_ADDRESS,
-                channel=channel,
-                credentials=credentials,
-            )
+            else:
+                self.transport = {@api.grpcTransportImportName}.{@api.grpcTransportClassName}(
+                    address=self.SERVICE_ADDRESS,
+                    channel=channel,
+                    credentials=credentials,
+                )
 
             # Client information initialization.
             if client_info is None:
