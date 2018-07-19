@@ -26,6 +26,7 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GoInitCodeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -176,8 +177,12 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
               InitCodeOutputType.SingleObject,
               valueGenerator);
       testCaseViews.add(
-          testCaseTransformer.createTestCaseView(
-              methodContext, testNameTable, initCodeContext, clientMethodType));
+          testCaseTransformer
+              .createTestCaseView(methodContext, testNameTable, initCodeContext, clientMethodType)
+              .toBuilder()
+              .goNestedInit(
+                  new GoInitCodeTransformer().generateInitCode(methodContext, initCodeContext))
+              .build());
     }
     return testCaseViews;
   }

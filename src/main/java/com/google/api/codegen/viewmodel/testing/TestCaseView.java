@@ -37,6 +37,10 @@ public abstract class TestCaseView {
 
   public abstract List<ClientTestAssertView> asserts();
 
+  /** Experimental field for testing out nested initializer in Go. */
+  @Nullable
+  public abstract String goNestedInit();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
@@ -91,6 +95,8 @@ public abstract class TestCaseView {
     return new AutoValue_TestCaseView.Builder();
   }
 
+  public abstract Builder toBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
 
@@ -117,6 +123,8 @@ public abstract class TestCaseView {
     public abstract Builder mockResponse(MockRpcResponseView val);
 
     public abstract Builder asserts(List<ClientTestAssertView> val);
+
+    public abstract Builder goNestedInit(String val);
 
     public abstract Builder requestTypeName(String val);
 
