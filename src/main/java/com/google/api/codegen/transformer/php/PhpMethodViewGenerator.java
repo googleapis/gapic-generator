@@ -26,6 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Contains the common logic for generating view models for GAPIC surface methods. This is used in
+ * the generation of both the client libraries and of the standalone samples for each of the library
+ * surface methods. Since in either case the resulting methods have one or more samples, this
+ * populates the view models with appropriate sample view models.
+ */
 public class PhpMethodViewGenerator {
 
   private final DynamicLangApiMethodTransformer clientMethodTransformer;
@@ -57,7 +63,7 @@ public class PhpMethodViewGenerator {
               methodContext,
               initContext,
               packageHasMultipleServices,
-              Arrays.asList(CallingForm.RequestPagedAll, CallingForm.RequestPaged));
+              Arrays.asList(CallingForm.RequestPaged, CallingForm.RequestPagedAll));
     } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(

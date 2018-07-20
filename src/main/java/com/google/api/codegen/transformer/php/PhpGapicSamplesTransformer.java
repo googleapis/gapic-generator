@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer.php;
 
 /**
- * A transformer to generate php standalone samples for each method in the GAPIC surface generated
+ * A transformer to generate PHP standalone samples for each method in the GAPIC surface generated
  * from the same ApiModel.
  */
 import com.google.api.codegen.config.GapicProductConfig;
@@ -37,7 +37,7 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -95,7 +95,8 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .outputPath(sampleOutputPath)
                 .className(className)
-                .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
+                .libraryMethod(
+                    method.toBuilder().samples(Collections.singletonList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }

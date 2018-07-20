@@ -27,17 +27,17 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by: java nodejs py php
+  Request, // used by: java nodejs php py
   RequestAsync,
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
-  RequestPaged, // used by: java py php
-  RequestPagedAll, // used by: py php
-  RequestStreamingBidi, // used by: nodejs py php
+  RequestPaged, // used by: java php py
+  RequestPagedAll, // used by: php py
+  RequestStreamingBidi, // used by: nodejs php py
   RequestStreamingBidiAsync, // used by: php
-  RequestStreamingClient, // used by: nodejs py php
+  RequestStreamingClient, // used by: nodejs php py
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: nodejs py php
+  RequestStreamingServer, // used by: nodejs php py
 
   Flattened, // used by: java
   FlattenedPaged, // used by: java
