@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-// TODO(andrealin): Remove functions that have identical implementations in the implementing classes.
+// TODO(andrealin): Remove functions that have identical implementations in the implementing
+// classes.
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 

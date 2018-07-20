@@ -40,7 +40,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The type name for this Schema when rendered as a field in its parent Schema, e.g. "List<Operation>".
+  // The type name for this Schema when rendered as a field in its parent Schema, e.g.
+  // "List<Operation>".
   public abstract String typeName();
 
   // The type name for this Schema when rendered as a class name, e.g. "Operation".

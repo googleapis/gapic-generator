@@ -21,7 +21,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import java.lang.Character;
 import java.util.ArrayList;
 import java.util.Map;
 

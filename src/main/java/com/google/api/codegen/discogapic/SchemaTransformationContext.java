@@ -23,6 +23,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
+
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
  * view for client library generation.
