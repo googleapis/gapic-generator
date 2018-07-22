@@ -26,6 +26,7 @@ import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -165,12 +166,16 @@ public class InitCodeNode {
    * Generates a flattened list from a tree in post-order.
    */
   public List<InitCodeNode> listInInitializationOrder() {
-    List<InitCodeNode> initCodeLines = new ArrayList<>();
-    for (InitCodeNode childItem : children.values()) {
-      initCodeLines.addAll(childItem.listInInitializationOrder());
+    ArrayList<InitCodeNode> initOrder = new ArrayList<>();
+    ArrayDeque<InitCodeNode> initStack = new ArrayDeque<>();
+    initStack.add(this);
+
+    while (!initStack.isEmpty()) {
+      InitCodeNode node = initStack.pollLast();
+      initStack.addAll(node.children.values());
+      initOrder.add(node);
     }
-    initCodeLines.add(this);
-    return initCodeLines;
+    return Lists.reverse(initOrder);
   }
 
   private InitCodeNode(String key, InitCodeLineType nodeType, InitValueConfig initValueConfig) {
