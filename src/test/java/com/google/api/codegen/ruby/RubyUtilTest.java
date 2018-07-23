@@ -76,4 +76,24 @@ public class RubyUtilTest {
             ImmutableList.of("Lorem ipsum dolor sit amet", " ", "consectetur adipiscing elit"));
     Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet");
   }
+
+  @Test
+  public void testHasMajorVersion() {
+    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1")).isTrue();
+  }
+
+  @Test
+  public void testHasMajorVersion_notVersion() {
+    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::Version")).isFalse();
+  }
+
+  @Test
+  public void testHasMajorVersion_pointVersion() {
+    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1p2beta4")).isTrue();
+  }
+
+  @Test
+  public void testHasMajorVersion_alphaVersion() {
+    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V9alpha4")).isTrue();
+  }
 }
