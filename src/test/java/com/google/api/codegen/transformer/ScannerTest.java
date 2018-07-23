@@ -39,15 +39,35 @@ public class ScannerTest {
   public void testScannerDollar() {
     assertThrow(() -> new Scanner("$$abc").scan());
 
-    Scanner scanner = new Scanner("$a$b$");
+    {
+      Scanner scanner = new Scanner("$a$b$");
 
-    assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-    assertThat(scanner.token()).isEqualTo("$a");
+      assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
+      assertThat(scanner.token()).isEqualTo("$a");
 
-    assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-    assertThat(scanner.token()).isEqualTo("$b");
+      assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
+      assertThat(scanner.token()).isEqualTo("$b");
 
-    assertThrow(() -> scanner.scan());
+      assertThrow(() -> scanner.scan());
+    }
+
+    {
+      Scanner scanner = new Scanner("a$$b");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
+      assertThat(scanner.token()).isEqualTo("a");
+
+      assertThrow(() -> scanner.scan());
+    }
+
+    {
+      Scanner scanner = new Scanner("a$");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
+      assertThat(scanner.token()).isEqualTo("a");
+
+      assertThrow(() -> scanner.scan());
+    }
   }
 
   private void assertThrow(Runnable r) {
