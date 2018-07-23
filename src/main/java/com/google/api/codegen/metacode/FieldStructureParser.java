@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.Scanner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
@@ -34,8 +35,7 @@ public class FieldStructureParser {
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
     InitFieldConfig fieldConfig = InitFieldConfig.from(initFieldConfigString);
     InitValueConfig valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
-    return parsePartialDottedPathToInitCodeNode(
-        fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
+    return parsePartialDottedPathToInitCodeNode(fieldConfig.fieldPath(), valueConfig);
   }
 
   private static InitValueConfig createInitValueConfig(
@@ -64,54 +64,70 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
+  // config:
+  //   ident
+  //   config '.' ident
+  //   config '[' number ']'
+  //   config '{' number '}'
+  //   config '{' string '}'
+  //   config '{' ident '}' (for compatibility, the identifier is just treated as a string)
   private static InitCodeNode parsePartialDottedPathToInitCodeNode(
-      String path,
-      InitCodeLineType prevType,
-      InitValueConfig initValueConfig,
-      InitCodeNode prevNode) {
+      String config, InitValueConfig initValueConfig) {
+    Scanner scanner = new Scanner(config);
 
-    InitCodeLineType nextType;
-    String key;
-    if (path.endsWith("]")) {
-      nextType = InitCodeLineType.ListInitLine;
-      int p = path.lastIndexOf("[");
-      Preconditions.checkArgument(p >= 0, "invalid list expression: %s", path);
-      key = path.substring(p + 1, path.length() - 1);
-      path = path.substring(0, p);
-    } else if (path.endsWith("}")) {
-      nextType = InitCodeLineType.MapInitLine;
-      int p = path.lastIndexOf("{");
-      Preconditions.checkArgument(p >= 0, "invalid map expression: %s", path);
-      key = CommonRenderingUtil.stripQuotes(path.substring(p + 1, path.length() - 1));
-      path = path.substring(0, p);
-    } else {
-      int p = path.lastIndexOf('.');
-      if (p >= 0) {
-        nextType = InitCodeLineType.StructureInitLine;
-        key = path.substring(p + 1);
-        path = path.substring(0, p);
-      } else {
-        key = path;
-        path = null;
-        nextType = InitCodeLineType.Unknown;
+    Preconditions.checkArgument(
+        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", config);
+    InitCodeNode root = InitCodeNode.create(scanner.token());
+
+    InitCodeNode parent = root;
+    while (true) {
+      int token = scanner.scan();
+      switch (token) {
+        case Scanner.EOF:
+          if (initValueConfig != null) {
+            parent.updateInitValueConfig(initValueConfig);
+            parent.setLineType(InitCodeLineType.SimpleInitLine);
+          }
+          return root;
+
+        case '.':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", config);
+          parent.setLineType(InitCodeLineType.StructureInitLine);
+          InitCodeNode child = InitCodeNode.create(scanner.token());
+          parent.mergeChild(child);
+          parent = child;
+          break;
+
+        case '[':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.NUMBER, "expected number after '[': %s", config);
+          parent.setLineType(InitCodeLineType.ListInitLine);
+          child = InitCodeNode.create(scanner.token());
+          parent.mergeChild(child);
+          parent = child;
+
+          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", config);
+          break;
+
+        case '{':
+          token = scanner.scan();
+          Preconditions.checkArgument(
+              token == Scanner.NUMBER || token == Scanner.IDENT || token == Scanner.STRING,
+              "invalid key after '{': %s",
+              config);
+          parent.setLineType(InitCodeLineType.MapInitLine);
+          child = InitCodeNode.create(scanner.token());
+          parent.mergeChild(child);
+          parent = child;
+
+          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", config);
+          break;
+
+        default:
+          throw new IllegalArgumentException(
+              String.format("unexpected character %c: %s", token, config));
       }
     }
-
-    // Create new InitCodeNode with prevItem as a child node. If prevItem is null, then this is the
-    // first call to parsePartialFieldToInitCodeNode(), and we create a new InitCodeNode using
-    // initValueConfig (if it is not also null)
-    InitCodeNode item;
-    if (prevNode != null) {
-      item = InitCodeNode.createWithChildren(key, prevType, prevNode);
-    } else if (initValueConfig != null) {
-      item = InitCodeNode.createWithValue(key, initValueConfig);
-    } else {
-      item = InitCodeNode.create(key);
-    }
-
-    if (path == null) {
-      return item;
-    }
-    return parsePartialDottedPathToInitCodeNode(path, nextType, null, item);
   }
 }

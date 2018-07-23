@@ -73,6 +73,10 @@ public class InitCodeNode {
     return lineType;
   }
 
+  void setLineType(InitCodeLineType lineType) {
+    this.lineType = lineType;
+  }
+
   /*
    * Get the InitValueConfig. For InitCodeNode objects with 1 or more children, the InitValueConfig
    * object will not contain an initial value or formatting config.
@@ -84,7 +88,7 @@ public class InitCodeNode {
   /*
    * Updates the InitValueConfig.
    */
-  private void updateInitValueConfig(InitValueConfig initValueConfig) {
+  void updateInitValueConfig(InitValueConfig initValueConfig) {
     this.initValueConfig = initValueConfig;
   }
 
@@ -191,7 +195,7 @@ public class InitCodeNode {
     this.varName = varName;
   }
 
-  private void mergeChild(InitCodeNode newChild) {
+  void mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
     if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
       InitValueConfig mergedValueConfig =
