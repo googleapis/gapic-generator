@@ -21,7 +21,9 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -61,15 +63,13 @@ public abstract class InitCodeContext {
   public abstract TestValueGenerator valueGenerator();
 
   /** Returns init config strings. */
-  @Nullable
-  public abstract Iterable<String> initFieldConfigStrings();
+  public abstract List<String> initFieldConfigStrings();
 
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
    * is currently used by smoke testing only.
    */
-  @Nullable
-  public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
+  public abstract List<InitCodeNode> additionalInitCodeNodes();
 
   /** The map which stores init value config data. Default to empty map. */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
@@ -82,7 +82,9 @@ public abstract class InitCodeContext {
         .symbolTable(new SymbolTable())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .fieldConfigMap(ImmutableMap.<String, FieldConfig>of())
-        .outputType(InitCodeOutputType.SingleObject);
+        .outputType(InitCodeOutputType.SingleObject)
+        .additionalInitCodeNodes(ImmutableList.of())
+        .initFieldConfigStrings(ImmutableList.of());
   }
 
   @AutoValue.Builder
@@ -99,13 +101,13 @@ public abstract class InitCodeContext {
 
     public abstract Builder valueGenerator(TestValueGenerator generator);
 
-    public abstract Builder initFieldConfigStrings(Iterable<String> configStrings);
+    public abstract Builder initFieldConfigStrings(List<String> configStrings);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
 
     public abstract Builder fieldConfigMap(ImmutableMap<String, FieldConfig> fieldConfigMap);
 
-    public abstract Builder additionalInitCodeNodes(Iterable<InitCodeNode> additionalNodes);
+    public abstract Builder additionalInitCodeNodes(List<InitCodeNode> additionalNodes);
 
     public abstract InitCodeContext build();
   }
