@@ -64,6 +64,7 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
+  // Grammar in (almost) yacc syntax.
   // config:
   //   ident
   //   config '.' ident
@@ -101,7 +102,7 @@ public class FieldStructureParser {
 
         case '[':
           Preconditions.checkArgument(
-              scanner.scan() == Scanner.NUMBER, "expected number after '[': %s", config);
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", config);
           parent.setLineType(InitCodeLineType.ListInitLine);
           child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
@@ -113,7 +114,7 @@ public class FieldStructureParser {
         case '{':
           token = scanner.scan();
           Preconditions.checkArgument(
-              token == Scanner.NUMBER || token == Scanner.IDENT || token == Scanner.STRING,
+              token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
               "invalid key after '{': %s",
               config);
           parent.setLineType(InitCodeLineType.MapInitLine);
@@ -126,7 +127,7 @@ public class FieldStructureParser {
 
         default:
           throw new IllegalArgumentException(
-              String.format("unexpected character %c: %s", token, config));
+              String.format("unexpected character '%c': %s", token, config));
       }
     }
   }

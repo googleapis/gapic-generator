@@ -33,7 +33,7 @@ public class ScannerTest {
 
     assertThat(scanner.scan()).isEqualTo('+');
 
-    assertThat(scanner.scan()).isEqualTo(Scanner.NUMBER);
+    assertThat(scanner.scan()).isEqualTo(Scanner.INT);
     assertThat(scanner.token()).isEqualTo("456");
 
     assertThat(scanner.scan()).isEqualTo('+');
@@ -79,6 +79,24 @@ public class ScannerTest {
 
       assertThrow(() -> scanner.scan());
     }
+  }
+
+  @Test
+  public void testScannerInt() {
+    {
+      Scanner scanner = new Scanner("123 456");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("123");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("456");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
+    }
+
+    // Leading zero not allowed.
+    assertThrow(() -> new Scanner("0123").scan());
   }
 
   private void assertThrow(Runnable r) {
