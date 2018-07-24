@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -33,6 +34,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -77,7 +79,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
   private PageStreamingTransformer pageStreamingTransformer;
   private GrpcStubTransformer grpcStubTransformer;
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer());
+      new DynamicLangApiMethodTransformer(
+          new PhpApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.IN_CODE);
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final PhpMethodViewGenerator methodGenerator =
@@ -122,31 +125,29 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
               modelTypeTable,
               new PhpSurfaceNamer(productConfig.getPackageName()),
               new PhpFeatureConfig());
-      surfaceDocs.addAll(transform(context, model.hasMultipleServices()));
+      surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModel> transform(GapicInterfaceContext context, boolean hasMultipleServices) {
+  public List<ViewModel> transform(GapicInterfaceContext context) {
     GapicInterfaceContext gapicImplContext =
         context.withNewTypeTable(context.getNamer().getGapicImplNamespace());
 
     List<ViewModel> surfaceData = new ArrayList<>();
-    surfaceData.add(buildGapicClientViewModel(gapicImplContext, hasMultipleServices));
+    surfaceData.add(buildGapicClientViewModel(gapicImplContext));
     surfaceData.add(buildClientViewModel(context));
     surfaceData.add(buildDescriptorConfigViewModel(context));
     surfaceData.add(buildRestConfigViewModel(context));
     return surfaceData;
   }
 
-  private ViewModel buildGapicClientViewModel(
-      GapicInterfaceContext context, boolean hasMultipleServices) {
+  private ViewModel buildGapicClientViewModel(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
 
     addApiImports(context);
 
-    List<OptionalArrayMethodView> methods =
-        methodGenerator.generateApiMethods(context, hasMultipleServices);
+    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
 
     DynamicLangXApiView.Builder apiImplClass = DynamicLangXApiView.newBuilder();
 

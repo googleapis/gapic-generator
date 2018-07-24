@@ -360,6 +360,16 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                .build();
+        generators.add(sampleGenerator);
+
         generators.add(generator);
         generators.add(clientConfigGenerator);
         generators.add(metadataGenerator);
@@ -373,19 +383,6 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer(packageConfig))
                 .build();
         generators.add(testGenerator);
-      }
-      if (artifactFlags.sampleGeneratorEnabled()) {
-        GapicCodePathMapper phpPathMapper =
-            PhpGapicCodePathMapper.newBuilder().setPrefix("src").build();
-        CodeGenerator sampleGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
-                .build();
-        generators.add(sampleGenerator);
       }
     } else if (language.equals(PYTHON)) {
       if (artifactFlags.surfaceGeneratorEnabled()) {

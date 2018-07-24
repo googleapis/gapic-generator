@@ -68,18 +68,16 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.addAll(generateSamples(context, model.hasMultipleServices()));
+      models.addAll(generateSamples(context));
     }
     return models.build();
   }
 
-  private List<ViewModel> generateSamples(
-      GapicInterfaceContext context, boolean hasMultipleServices) {
+  private List<ViewModel> generateSamples(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
 
-    List<OptionalArrayMethodView> allmethods =
-        methodGenerator.generateApiMethods(context, hasMultipleServices);
+    List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
     for (OptionalArrayMethodView method : allmethods) {
       String subPath =

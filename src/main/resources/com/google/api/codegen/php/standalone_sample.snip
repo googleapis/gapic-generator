@@ -1,5 +1,5 @@
 @extends "php/common.snip"
-@extends "php/method_sample.snip"
+@extends "php/sample_common.snip"
 
 @snippet generate(sampleFile)
   //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
@@ -36,28 +36,35 @@
 @end
 
 @snippet standaloneSample(apiMethod, sample)
+  @if sample.initCode.importSection.appImports
+    {@importList(sample.initCode.importSection.appImports)}
+
+    
+  @end
+  ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+
   {@initCode(sample.initCode, apiMethod.apiVariableName)}
   @switch sample.callingForm
-  @case "RequestPagedAll"
-    {@pagedAllMethodCallSampleCode(apiMethod)}
-  @case "RequestPaged"
-    {@pagedMethodCallSampleCode(apiMethod)}
-  @case "RequestStreamingClient"
-    {@clientStreamingMethodCallSampleCode(apiMethod)}
-  @case "RequestStreamingClientAsync"
-    {@clientStreamingAsyncMethodCallSampleCode(apiMethod)}
-  @case "RequestStreamingServer"
-    {@serverStreamingMethodSampleCode(apiMethod)}
-  @case "RequestStreamingBidi"
-    {@bidiStreamingMethodCallSampleCode(apiMethod)}
-  @case "RequestStreamingBidiAsync"
-    {@bidiStreamingAsyncMethodCallSampleCode(apiMethod)}
   @case "LongRunningRequest"
-    {@longRunningMethodCallSampleCode(apiMethod)}
+    {@longRunningSampleCode(apiMethod)}
   @case "LongRunningRequestAsync"
-    {@longRunningAsyncMethodCallSampleCode(apiMethod)}
+    {@longRunningAsyncSampleCode(apiMethod)}
   @case "Request"
-    {@methodSampleCode(apiMethod)}
+    {@requestSampleCode(apiMethod)}
+  @case "RequestPaged"
+    {@pagedSampleCode(apiMethod)}
+  @case "RequestPagedAll"
+    {@pagedAllSampleCode(apiMethod)}
+  @case "RequestStreamingBidi"
+    {@bidiStreamingSampleCode(apiMethod)}
+  @case "RequestStreamingBidiAsync"
+    {@bidiStreamingAsyncSampleCode(apiMethod)}
+  @case "RequestStreamingClient"
+    {@clientStreamingSampleCode(apiMethod)}
+  @case "RequestStreamingClientAsync"
+    {@clientStreamingAsyncSampleCode(apiMethod)}
+  @case "RequestStreamingServer"
+    {@serverStreamingSampleCode(apiMethod)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end

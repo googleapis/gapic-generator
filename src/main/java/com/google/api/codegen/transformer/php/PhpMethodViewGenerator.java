@@ -40,36 +40,30 @@ public class PhpMethodViewGenerator {
     this.clientMethodTransformer = transformer;
   }
 
-  public List<OptionalArrayMethodView> generateApiMethods(
-      GapicInterfaceContext context, boolean hasMultipleServices) {
+  public List<OptionalArrayMethodView> generateApiMethods(GapicInterfaceContext context) {
     return context
         .getSupportedMethods()
         .stream()
-        .map(
-            methodModel ->
-                generateOneApiMethod(
-                    context.asDynamicMethodContext(methodModel), null, hasMultipleServices))
+        .map(methodModel -> generateOneApiMethod(context.asDynamicMethodContext(methodModel), null))
         .collect(Collectors.toList());
   }
 
   private OptionalArrayMethodView generateOneApiMethod(
-      GapicMethodContext methodContext,
-      InitCodeContext initContext,
-      boolean packageHasMultipleServices) {
+      GapicMethodContext methodContext, InitCodeContext initContext) {
     OptionalArrayMethodView methodView = null;
     if (methodContext.getMethodConfig().isPageStreaming()) {
       methodView =
           clientMethodTransformer.generatePagedStreamingMethod(
               methodContext,
               initContext,
-              packageHasMultipleServices,
+              false,
               Arrays.asList(CallingForm.RequestPaged, CallingForm.RequestPagedAll));
     } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,
               initContext,
-              packageHasMultipleServices,
+              false,
               Arrays.asList(CallingForm.LongRunningRequest, CallingForm.LongRunningRequestAsync));
     } else {
       List<CallingForm> callingForms;
@@ -97,7 +91,7 @@ public class PhpMethodViewGenerator {
       }
       methodView =
           clientMethodTransformer.generateRequestMethod(
-              methodContext, initContext, packageHasMultipleServices, callingForms);
+              methodContext, initContext, false, callingForms);
     }
 
     return methodView;
