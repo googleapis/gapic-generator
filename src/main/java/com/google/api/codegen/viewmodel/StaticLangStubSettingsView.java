@@ -52,7 +52,7 @@ public abstract class StaticLangStubSettingsView {
   }
 
   /** ApiCalls that send exactly one request. This includes unary and server streaming apis. */
-  public List<ApiCallSettingsView> unaryRequestCallSettings() {
+  public List<ApiCallSettingsView> singleRequestRpcCallSettings() {
     ArrayList<ApiCallSettingsView> retryableCallSettings = new ArrayList<>();
     for (ApiCallSettingsView settingsView : callSettings()) {
       if (settingsView.type().serviceMethodType() == ServiceMethodType.UnaryMethod
