@@ -64,7 +64,8 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
-  // Grammar in (almost) yacc syntax.
+  // Parses `path` to construct the `InitCodeNode` it specifies. `path` must be a valid config
+  // satisfying the recursive grammar below:
   // config:
   //   ident
   //   config '.' ident
@@ -73,11 +74,11 @@ public class FieldStructureParser {
   //   config '{' string '}'
   //   config '{' ident '}' (for compatibility, the identifier is just treated as a string)
   private static InitCodeNode parsePartialDottedPathToInitCodeNode(
-      String config, InitValueConfig initValueConfig) {
-    Scanner scanner = new Scanner(config);
+      String path, InitValueConfig initValueConfig) {
+    Scanner scanner = new Scanner(path);
 
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", config);
+        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", path);
     InitCodeNode root = InitCodeNode.create(scanner.token());
 
     InitCodeNode parent = root;
@@ -93,7 +94,7 @@ public class FieldStructureParser {
 
         case '.':
           Preconditions.checkArgument(
-              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", config);
+              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", path);
           parent.setLineType(InitCodeLineType.StructureInitLine);
           InitCodeNode child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
@@ -102,13 +103,13 @@ public class FieldStructureParser {
 
         case '[':
           Preconditions.checkArgument(
-              scanner.scan() == Scanner.INT, "expected number after '[': %s", config);
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", path);
           parent.setLineType(InitCodeLineType.ListInitLine);
           child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
           parent = child;
 
-          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", config);
+          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", path);
           break;
 
         case '{':
@@ -116,18 +117,18 @@ public class FieldStructureParser {
           Preconditions.checkArgument(
               token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
               "invalid key after '{': %s",
-              config);
+              path);
           parent.setLineType(InitCodeLineType.MapInitLine);
           child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
           parent = child;
 
-          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", config);
+          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", path);
           break;
 
         default:
           throw new IllegalArgumentException(
-              String.format("unexpected character '%c': %s", token, config));
+              String.format("unexpected character '%c': %s", token, path));
       }
     }
   }

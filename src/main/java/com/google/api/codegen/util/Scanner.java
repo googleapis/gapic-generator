@@ -105,7 +105,7 @@ public class Scanner {
             sb.appendCodePoint(esc);
           } else {
             throw new IllegalArgumentException(
-                String.format("unrecognized escape \\%c: %s", codePoint, input));
+                String.format("unrecognized escape '\\%c': %s", codePoint, input));
           }
           escaped = false;
           continue;

@@ -97,6 +97,16 @@ public class ScannerTest {
 
     // Leading zero not allowed.
     assertThrow(() -> new Scanner("0123").scan());
+
+    // Just zero is OK though.
+    {
+      Scanner scanner = new Scanner("0");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("0");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
+    }
   }
 
   private void assertThrow(Runnable r) {
