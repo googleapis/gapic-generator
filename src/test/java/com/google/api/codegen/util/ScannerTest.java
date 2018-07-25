@@ -12,17 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.codegen.transformer.OutputTransformer.Scanner;
 import org.junit.Test;
 
 public class ScannerTest {
   @Test
   public void testScanner() {
-    Scanner scanner = new Scanner("$abc =   def123");
+    Scanner scanner = new Scanner("$abc =   def123 + 456 + \"xyz\";");
 
     assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
     assertThat(scanner.token()).isEqualTo("$abc");
@@ -31,6 +30,18 @@ public class ScannerTest {
 
     assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
     assertThat(scanner.token()).isEqualTo("def123");
+
+    assertThat(scanner.scan()).isEqualTo('+');
+
+    assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+    assertThat(scanner.token()).isEqualTo("456");
+
+    assertThat(scanner.scan()).isEqualTo('+');
+
+    assertThat(scanner.scan()).isEqualTo(Scanner.STRING);
+    assertThat(scanner.token()).isEqualTo("xyz");
+
+    assertThat(scanner.scan()).isEqualTo(';');
 
     assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
   }
@@ -67,6 +78,34 @@ public class ScannerTest {
       assertThat(scanner.token()).isEqualTo("a");
 
       assertThrow(() -> scanner.scan());
+    }
+  }
+
+  @Test
+  public void testScannerInt() {
+    {
+      Scanner scanner = new Scanner("123 456");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("123");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("456");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
+    }
+
+    // Leading zero not allowed.
+    assertThrow(() -> new Scanner("0123").scan());
+
+    // Just zero is OK though.
+    {
+      Scanner scanner = new Scanner("0");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.INT);
+      assertThat(scanner.token()).isEqualTo("0");
+
+      assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
     }
   }
 
