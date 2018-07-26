@@ -65,13 +65,11 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
   }
 
   private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
-    String resourcesField = null;
     for (FieldModel field : method.getOutputFields()) {
-      if (!field.isRepeated()) {
-        continue;
+      // Return the first repeated field.
+      if (field.isRepeated()) {
+        return field.getSimpleName();
       }
-
-      return field.getSimpleName();
     }
 
     helper.error(
