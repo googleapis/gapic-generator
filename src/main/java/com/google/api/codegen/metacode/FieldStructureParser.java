@@ -26,6 +26,7 @@ import java.util.Map;
  * will actually be a list.
  */
 public class FieldStructureParser {
+  private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
   public static InitCodeNode parse(String initFieldConfigString) {
     return parse(initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
@@ -33,9 +34,7 @@ public class FieldStructureParser {
 
   public static InitCodeNode parse(
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    InitFieldConfig fieldConfig = InitFieldConfig.from(initFieldConfigString);
-    InitValueConfig valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
-    return parsePartialDottedPathToInitCodeNode(fieldConfig.fieldPath(), valueConfig);
+    return parseConfig(initFieldConfigString, initValueConfigMap);
   }
 
   private static InitValueConfig createInitValueConfig(
@@ -65,36 +64,38 @@ public class FieldStructureParser {
   }
 
   // Parses `path` to construct the `InitCodeNode` it specifies. `path` must be a valid config
-  // satisfying the recursive grammar below:
-  // config:
-  //   ident
-  //   config '.' ident
-  //   config '[' number ']'
-  //   config '{' number '}'
-  //   config '{' string '}'
-  //   config '{' ident '}' (for compatibility, the identifier is just treated as a string)
-  private static InitCodeNode parsePartialDottedPathToInitCodeNode(
-      String path, InitValueConfig initValueConfig) {
-    Scanner scanner = new Scanner(path);
+  // satisfying the eBNF grammar below:
+  //
+  // config = path ['=' value];
+  // path = ident pathElem* ['%' ident]
+  // pathElem = ('.' ident) | ('[' int ']') | ('{' value '}');
+  // value = int | string | ident;
+  //
+  // For compatibility with the previous parser, when ident is used as a value, the value is
+  // the name of the ident.
+  private static InitCodeNode parseConfig(
+      String config, Map<String, InitValueConfig> initValueConfigMap) {
+    Scanner scanner = new Scanner(config);
 
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", path);
+        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", config);
     InitCodeNode root = InitCodeNode.create(scanner.token());
 
     InitCodeNode parent = root;
+    int token;
+
+    pathElem:
     while (true) {
-      int token = scanner.scan();
+      token = scanner.scan();
       switch (token) {
+        case '%':
+        case '=':
         case Scanner.EOF:
-          if (initValueConfig != null) {
-            parent.updateInitValueConfig(initValueConfig);
-            parent.setLineType(InitCodeLineType.SimpleInitLine);
-          }
-          return root;
+          break pathElem;
 
         case '.':
           Preconditions.checkArgument(
-              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", path);
+              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", config);
           parent.setLineType(InitCodeLineType.StructureInitLine);
           InitCodeNode child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
@@ -103,33 +104,92 @@ public class FieldStructureParser {
 
         case '[':
           Preconditions.checkArgument(
-              scanner.scan() == Scanner.INT, "expected number after '[': %s", path);
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", config);
           parent.setLineType(InitCodeLineType.ListInitLine);
           child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
           parent = child;
 
-          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", path);
+          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", config);
           break;
 
         case '{':
-          token = scanner.scan();
-          Preconditions.checkArgument(
-              token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
-              "invalid key after '{': %s",
-              path);
+          child = InitCodeNode.create(parseValue(scanner));
           parent.setLineType(InitCodeLineType.MapInitLine);
-          child = InitCodeNode.create(scanner.token());
           parent.mergeChild(child);
           parent = child;
 
-          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", path);
+          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", config);
           break;
 
         default:
           throw new IllegalArgumentException(
-              String.format("unexpected character '%c': %s", token, path));
+              String.format("unexpected character '%c': %s", token, config));
       }
     }
+
+    int fieldNamePos = config.length();
+
+    String entityName = null;
+    if (token == '%') {
+      fieldNamePos = scanner.pos() - 1;
+      Preconditions.checkArgument(
+          scanner.scan() == Scanner.IDENT, "expected ident after '%': %s", config);
+      entityName = scanner.token();
+      token = scanner.scan();
+    }
+
+    InitValue initValue = null;
+    if (token == '=') {
+      fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
+
+      // TODO(pongad): Currently the RHS of equal sign is just arbitrary run of text treated as string, eg
+      //   a.b=https://foo.bar.com/zip/zap
+      // We'll quote the RHS of existing configs, then we can use parseValue here.
+      // For now, just preserve old behavior.
+      // String valueString = parseValue(scanner);
+      String valueString = config.substring(scanner.pos());
+
+      if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
+        System.err.println(valueString);
+        initValue = InitValue.createRandom(valueString);
+      } else if (valueString.contains(PROJECT_ID_TOKEN)) {
+        Preconditions.checkArgument(
+            valueString.equals(PROJECT_ID_TOKEN),
+            "%s cannot be used as substring: %s",
+            PROJECT_ID_TOKEN,
+            config);
+        initValue = InitValue.createVariable(InitFieldConfig.PROJECT_ID_VARIABLE_NAME);
+      } else {
+        initValue = InitValue.createLiteral(valueString);
+      }
+      token = scanner.scan();
+    }
+
+    // TODO(pongad): When we can actually parse the RHS, we should expect EOF.
+    // Preconditions.checkArgument(scanner.scan() == Scanner.EOF, "expected EOF: %s", config);
+
+    InitValueConfig valueConfig =
+        createInitValueConfig(
+            InitFieldConfig.newBuilder()
+                .fieldPath(config.substring(0, fieldNamePos))
+                .entityName(entityName)
+                .value(initValue)
+                .build(),
+            initValueConfigMap);
+    if (valueConfig != null) {
+      parent.updateInitValueConfig(valueConfig);
+      parent.setLineType(InitCodeLineType.SimpleInitLine);
+    }
+    return root;
+  }
+
+  private static String parseValue(Scanner scanner) {
+    int token = scanner.scan();
+    Preconditions.checkArgument(
+        token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
+        "invalid value: %s",
+        scanner.input());
+    return scanner.token();
   }
 }
