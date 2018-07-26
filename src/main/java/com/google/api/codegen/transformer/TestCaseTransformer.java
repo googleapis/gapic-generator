@@ -370,7 +370,7 @@ public class TestCaseTransformer {
         .collect(Collectors.toList());
   }
 
-  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(MethodContext context) {
+  private List<InitCodeNode> createMockResponseAdditionalSubTrees(MethodContext context) {
     List<InitCodeNode> additionalSubTrees = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
