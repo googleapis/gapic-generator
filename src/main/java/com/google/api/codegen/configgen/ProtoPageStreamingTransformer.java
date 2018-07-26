@@ -71,17 +71,14 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
         continue;
       }
 
-      if (resourcesField != null) {
-        helper.error(
-            ((ProtoMethodModel) method).getProtoMethod().getLocation(),
-            "Page streaming resources field could not be heuristically determined for "
-                + "method '%s'%n",
-            method.getSimpleName());
-        return null;
-      }
-
-      resourcesField = field.getSimpleName();
+      return field.getSimpleName();
     }
-    return resourcesField;
+
+    helper.error(
+        ((ProtoMethodModel) method).getProtoMethod().getLocation(),
+        "Page streaming resources field could not be heuristically determined for "
+            + "method '%s'%n",
+        method.getSimpleName());
+    return null;
   }
 }
