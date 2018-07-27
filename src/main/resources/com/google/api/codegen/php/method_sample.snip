@@ -1,4 +1,5 @@
 @extends "php/common.snip"
+@extends "php/sample_common.snip"
 
 @snippet decorateSampleCode(xapiClass, apiMethod, coreSampleCode)
     @if xapiClass.hasMissingDefaultOptions
@@ -18,7 +19,6 @@
     @end
 
     try {
-        {@initCode(apiMethod.initCode, apiMethod.apiVariableName)}
         {@coreSampleCode}
     } finally {
         @if xapiClass.hasMissingDefaultOptions
@@ -32,153 +32,54 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    @if apiMethod.isLongRunningOperation
-        {@longRunningMethodSampleCode(apiMethod)}
-    @else
-      @switch apiMethod.grpcStreamingType
-      @case "NonStreaming"
-          @switch apiMethod.type
-          @case "OptionalArrayMethod"
-              {@methodSampleCode(apiMethod)}
-          @case "PagedOptionalArrayMethod"
-              {@pagedMethodSampleCode(apiMethod)}
-          @default
-              $unhandledCase: {@apiMethod.type}$
-          @end
-      @case "ClientStreaming"
-          {@clientStreamingMethodSampleCode(apiMethod)}
-      @case "ServerStreaming"
-          {@serverStreamingMethodSampleCode(apiMethod)}
-      @case "BidiStreaming"
-          {@bidiStreamingMethodSampleCode(apiMethod)}
-      @default
-          $unhandledCase: {@apiMethod.grpcStreamingType}$
-      @end
+    {@incodeSamples(apiMethod)}
+@end
+
+@snippet incodeSamples(apiMethod)
+    @join sample : apiMethod.samples on BREAK.add(BREAK).add(BREAK).add("// Alternatively:").add(BREAK).add(BREAK)
+        @let firstSample = apiMethod.samples.get(0)
+            # Print the set-up code for the first sample, and for
+            # subsequent samples where the code differs from the first
+            @if sampleNeedsSetup(sample, firstSample)
+                {@incodeSampleSetup(apiMethod, sample)}
+            @end
+            {@incodeSampleCall(apiMethod, sample)}
+        @end
+    @end
+@end
+
+@private incodeSampleSetup(apiMethod, sample)
+    @if sample.initCode.lines
+        {@initCode(sample.initCode, apiMethod.apiVariableName)}
 
     @end
 @end
 
-@private methodSampleCode(apiMethod)
-    @if apiMethod.hasReturnValue
-        $response = {@methodCallSampleCode(apiMethod)};
-    @else
-        {@methodCallSampleCode(apiMethod)};
-    @end
-@end
-
-@private pagedMethodSampleCode(apiMethod)
-    // Iterate through all elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($pagedResponse->iterateAllElements() as $element) {
-        // doSomethingWith($element);
-    }
-
-    // OR iterate over pages of elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($pagedResponse->iteratePages() as $page) {
-        foreach ($page as $element) {
-            // doSomethingWith($element);
-        }
-    }
-@end
-
-@private longRunningMethodSampleCode(apiMethod)
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
-    $operationResponse->pollUntilComplete();
-    if ($operationResponse->operationSucceeded()) {
-      @if apiMethod.longRunningView.isEmptyOperation
-          // operation succeeded and returns no value
-      @else
-          $result = $operationResponse->getResult();
-          // doSomethingWith($result)
-      @end
-    } else {
-      $error = $operationResponse->getError();
-      // handleError($error)
-    }
-
-    // OR start the operation, keep the operation name, and resume later
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
-    $operationName = $operationResponse->getName();
-    // ... do other work
-    $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
-    while (!$newOperationResponse->isDone()) {
-        // ... do other work
-        $newOperationResponse->reload();
-    }
-    if ($newOperationResponse->operationSucceeded()) {
-      @if apiMethod.longRunningView.isEmptyOperation
-          // operation succeeded and returns no value
-      @else
-          $result = $newOperationResponse->getResult();
-          // doSomethingWith($result)
-      @end
-    } else {
-      $error = $newOperationResponse->getError();
-      // handleError($error)
-    }
-@end
-
-@private clientStreamingMethodSampleCode(apiMethod)
-    $requests = [$request];
-
-    // Write data to server and wait for a response
-    $stream = {@methodCallSampleCode(apiMethod)};
-    $result = $stream->writeAllAndReadResponse($requests);
-    // doSomethingWith($result)
-
-    // OR write data as it becomes available, then wait for a response
-    $stream = {@methodCallSampleCode(apiMethod)};
-    foreach ($requests as $request) {
-        $stream->write($request);
-    }
-    $result = $stream->readResponse();
-    // doSomethingWith($result)
-@end
-
-@private serverStreamingMethodSampleCode(apiMethod)
-    // Read all responses until the stream is complete
-    $stream = {@methodCallSampleCode(apiMethod)};
-    foreach ($stream->readAll() as $element) {
-        // doSomethingWith($element);
-    }
-@end
-
-@private bidiStreamingMethodSampleCode(apiMethod)
-    $requests = [$request];
-
-    // Write all requests to the server, then read all responses until the
-    // stream is complete
-    $stream = {@methodCallSampleCode(apiMethod)};
-    $stream->writeAll($requests);
-    foreach ($stream->closeWriteAndReadAll() as $element) {
-        // doSomethingWith($element);
-    }
-
-    // OR write requests individually, making read() calls if
-    // required. Call closeWrite() once writes are complete, and read the
-    // remaining responses from the server.
-    $stream = {@methodCallSampleCode(apiMethod)};
-    foreach ($requests as $request) {
-        $stream->write($request);
-        // if required, read a single response from the stream
-        $element = $stream->read();
-        // doSomethingWith($element)
-    }
-    $stream->closeWrite();
-    $element = $stream->read();
-    while (!is_null($element)) {
-        // doSomethingWith($element)
-        $element = $stream->read();
-    }
-@end
-
-@snippet methodCallSampleCode(apiMethod)
-    @if apiMethod.isSingularRequestMethod
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode)})
-    @else
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}()
+# The structure of this should be parallel to that of standalone_sample.snip:@standaloneSample
+@private incodeSampleCall(apiMethod, sample)
+    @switch sample.callingForm
+    @case "LongRunningRequest"
+        {@longRunningSampleCode(apiMethod)}
+    @case "LongRunningRequestAsync"
+        {@longRunningAsyncSampleCode(apiMethod)}
+    @case "Request"
+        {@requestSampleCode(apiMethod)}
+    @case "RequestPaged"
+        {@pagedSampleCode(apiMethod)}
+    @case "RequestPagedAll"
+        {@pagedAllSampleCode(apiMethod)}
+    @case "RequestStreamingBidi"
+        {@bidiStreamingSampleCode(apiMethod)}
+    @case "RequestStreamingBidiAsync"
+        {@bidiStreamingAsyncSampleCode(apiMethod)}
+    @case "RequestStreamingClient"
+        {@clientStreamingSampleCode(apiMethod)}
+    @case "RequestStreamingClientAsync"
+        {@clientStreamingAsyncSampleCode(apiMethod)}
+    @case "RequestStreamingServer"
+        {@serverStreamingSampleCode(apiMethod)}
+    @default
+        $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
 @end
 
@@ -191,74 +92,5 @@
             ,{@" "}
         @end
         {@optionalField(initCode.optionalFieldSettings)}
-    @end
-@end
-
-@snippet optionalField(fieldSettings)
-    [{@optionalFieldEntries(fieldSettings)}]
-@end
-
-@snippet optionalFieldEntries(fieldSettings)
-    @join fieldSetting : fieldSettings on ", "
-        '{@fieldSetting.fieldName}' => ${@fieldSetting.identifier}
-    @end
-@end
-
-@snippet initCode(initCode, apiVariableName)
-    @join line : initCode.lines
-        @switch line.lineType
-        @case "StructureInitLine"
-            {@initLineStructure(line)}
-        @case "ListInitLine"
-            {@initLineList(line)}
-        @case "MapInitLine"
-            {@initLineMap(line)}
-        @case "SimpleInitLine"
-            {@initLineSimple(line, apiVariableName)}
-        @default
-            $unhandledCase: {@line.lineType}$
-        @end
-    @end
-@end
-
-@private initLineStructure(line)
-    ${@line.identifier} = new {@line.typeName}();
-    @join fieldSetting : line.fieldSettings
-        ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
-    @end
-@end
-
-@private initLineList(line)
-    ${@line.identifier} = [{@varList(line.elementIdentifiers)}];
-@end
-
-@snippet varList(args)
-    @join arg : args on ", "
-        ${@arg}
-    @end
-@end
-
-@private initLineMap(line)
-    ${@line.identifier} = [{@keyVarList(line.initEntries)}];
-@end
-
-@private keyVarList(mapEntries)
-    @join mapEntry : mapEntries on ","
-        {@mapEntry.key} => ${@mapEntry.valueString}
-    @end
-@end
-
-@private initLineSimple(line, apiVariableName)
-    ${@line.identifier} = {@renderInitValue(line.initValue, apiVariableName)};
-@end
-
-@private renderInitValue(initValue, apiVariableName)
-    @switch initValue.type
-    @case "SimpleInitValueView"
-        {@initValue.initialValue}
-    @case "FormattedInitValueView"
-        ${@apiVariableName}->{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
-    @default
-        $unhandledCase: {@initValue.type}$
     @end
 @end
