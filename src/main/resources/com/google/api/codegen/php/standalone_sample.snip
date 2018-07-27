@@ -1,0 +1,103 @@
+@extends "php/common.snip"
+@extends "php/sample_common.snip"
+
+@snippet generate(sampleFile)
+    //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
+    //// STUB standalone sample "{@sampleFile.className}" /////
+
+    // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+     
+    // [START full_sample]
+
+    // FIXME: Insert here boilerplate code not directly related to the method call itself.
+             
+    @let apiMethod = sampleFile.libraryMethod
+        @let sample = apiMethod.samples.get(0)
+        //     calling form "{@sample.callingForm.toString}"
+        //     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+        //       description: "{@sample.valueSet.description}"
+        //       {@sample.valueSet.parameters}
+        //     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
+
+        // [START core_sample]
+
+        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+        /*
+        {@standaloneSample(sampleFile, apiMethod, sample)}
+        */
+        // [END core_sample]
+
+        // FIXME: Insert here clean-up code.
+             
+        @end
+    @end
+    // [END full_sample]
+@end
+
+# The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
+@snippet standaloneSample(sampleFile, apiMethod, sample)
+    @if sample.initCode.importSection.appImports
+        {@importList(sample.initCode.importSection.appImports)}
+
+
+    @end
+    @if sampleFile.extraInfo.hasMissingDefaultOptions
+        $options = [
+            @if sampleFile.extraInfo.missingDefaultServiceAddress
+                'serviceAddress' => 'my-service-address',
+            @end
+            @if sampleFile.extraInfo.missingDefaultServiceScopes
+                'credentialsConfig' => [
+                    'scopes' => ['my-service-scope'],
+                ],
+            @end
+            ];
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+
+
+    @else
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+
+
+    @end
+    @if sample.initCode.lines
+        {@initCode(sample.initCode, apiMethod.apiVariableName)}
+
+
+    @end
+    try {
+        @switch sample.callingForm
+        @case "LongRunningRequest"
+            {@longRunningSampleCode(apiMethod)}
+        @case "LongRunningRequestAsync"
+            {@longRunningAsyncSampleCode(apiMethod)}
+        @case "Request"
+            {@requestSampleCode(apiMethod)}
+        @case "RequestPaged"
+            {@pagedSampleCode(apiMethod)}
+        @case "RequestPagedAll"
+            {@pagedAllSampleCode(apiMethod)}
+        @case "RequestStreamingBidi"
+            {@bidiStreamingSampleCode(apiMethod)}
+        @case "RequestStreamingBidiAsync"
+            {@bidiStreamingAsyncSampleCode(apiMethod)}
+        @case "RequestStreamingClient"
+            {@clientStreamingSampleCode(apiMethod)}
+        @case "RequestStreamingClientAsync"
+            {@clientStreamingAsyncSampleCode(apiMethod)}
+        @case "RequestStreamingServer"
+            {@serverStreamingSampleCode(apiMethod)}
+        @default
+            $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+        @end
+    } finally {
+        @if sampleFile.extraInfo.hasMissingDefaultOptions
+            if (isset(${@apiMethod.apiVariableName})) {
+                ${@apiMethod.apiVariableName}->close();
+            }
+        @else
+            ${@apiMethod.apiVariableName}->close();
+        @end
+    }
+@end

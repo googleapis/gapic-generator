@@ -14,10 +14,8 @@
       @let firstSample = apiMethod.samples.get(0)
         # Print the set-up code for the first sample, and for
         # subsequent samples where the code differs from the first
-        @if or(and(sample.callingForm == firstSample.callingForm, \
-                    sample.valueSet.id == firstSample.valueSet.id), \
-               sampleSetupDiffers(firstSample, sample))
-          {@incodeSampleSetup(apiMethod, sample)}
+        @if sampleNeedsSetup(sample, firstSample)
+            {@incodeSampleSetup(apiMethod, sample)}
         @end
 
         {@incodeSampleCall(apiMethod, sample)}
