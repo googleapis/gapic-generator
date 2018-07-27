@@ -113,11 +113,6 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
   @AutoValue
   public abstract static class PhpSampleExtraInfo extends DynamicLangSampleView.SampleExtraInfo {
 
-    // private PhpSampleExtraInfo(Builder builder) {
-    //   hasDefaultServiceAddress = builder.hasDefaultServiceAddress;
-    //   hasDefaultServiceScopes = builder.hasDefaultServiceScopes;
-    // }
-
     abstract boolean hasDefaultServiceAddress();
 
     abstract boolean hasDefaultServiceScopes();
