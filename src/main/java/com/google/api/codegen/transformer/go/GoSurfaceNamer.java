@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoCommentReformatter;
@@ -441,7 +442,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
-    return randomString.replace(
-        InitFieldConfig.RANDOM_TOKEN, "\" + strconv.FormatInt(time.Now().UnixNano(), 10) + \"");
+    randomString =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN,
+                "\" + strconv.FormatInt(time.Now().UnixNano(), 10) + \"");
+    return "\"" + randomString + "\"";
   }
 }

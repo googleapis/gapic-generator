@@ -178,6 +178,10 @@ public class Scanner {
     return input;
   }
 
+  public int pos() {
+    return loc;
+  }
+
   private static boolean digit(int codePoint) {
     return codePoint >= '0' && codePoint <= '9';
   }
