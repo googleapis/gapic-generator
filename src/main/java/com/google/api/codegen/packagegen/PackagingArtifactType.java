@@ -27,7 +27,13 @@ public enum PackagingArtifactType {
 
   public static PackagingArtifactType of(String generationLayerString) {
     if (generationLayerString != null) {
-      return PackagingArtifactType.valueOf(generationLayerString.toUpperCase());
+      String generationLayerStringUpper = generationLayerString.toUpperCase();
+      if (generationLayerStringUpper.equals("GAPIC_CODE")) {
+        return GAPIC;
+      } else if (generationLayerStringUpper.equals("GAPIC_CONFIG")) {
+        return GAPIC;
+      }
+      return PackagingArtifactType.valueOf(generationLayerStringUpper);
     } else {
       return UNKNOWN;
     }

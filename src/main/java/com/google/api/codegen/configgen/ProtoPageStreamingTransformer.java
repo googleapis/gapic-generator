@@ -65,23 +65,18 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
   }
 
   private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
-    String resourcesField = null;
     for (FieldModel field : method.getOutputFields()) {
-      if (!field.isRepeated()) {
-        continue;
+      // Return the first repeated field.
+      if (field.isRepeated()) {
+        return field.getSimpleName();
       }
-
-      if (resourcesField != null) {
-        helper.error(
-            ((ProtoMethodModel) method).getProtoMethod().getLocation(),
-            "Page streaming resources field could not be heuristically determined for "
-                + "method '%s'%n",
-            method.getSimpleName());
-        return null;
-      }
-
-      resourcesField = field.getSimpleName();
     }
-    return resourcesField;
+
+    helper.error(
+        ((ProtoMethodModel) method).getProtoMethod().getLocation(),
+        "Page streaming resources field could not be heuristically determined for "
+            + "method '%s'%n",
+        method.getSimpleName());
+    return null;
   }
 }
