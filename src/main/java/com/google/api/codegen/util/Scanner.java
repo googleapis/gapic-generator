@@ -49,7 +49,9 @@ public class Scanner {
       ImmutableMap.<Integer, Integer>builder()
           .put((int) '"', (int) '"')
           .put((int) '\\', (int) '\\')
+          .put((int) 'b', (int) '\b')
           .put((int) 'n', (int) '\n')
+          .put((int) 'r', (int) '\r')
           .put((int) 't', (int) '\t')
           .build();
 
