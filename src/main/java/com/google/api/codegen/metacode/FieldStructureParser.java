@@ -63,7 +63,8 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
-  // Parses `path` to construct the `InitCodeNode` it specifies. `path` must be a valid config
+  // Parses `pathconfig` to construct the `InitCodeNode` it specifies. `config` must be a valid
+  // config
   // satisfying the eBNF grammar below:
   //
   // config = path ['=' value];
@@ -72,7 +73,9 @@ public class FieldStructureParser {
   // value = int | string | ident;
   //
   // For compatibility with the previous parser, when ident is used as a value, the value is
-  // the name of the ident.
+  // the name of the ident. Eg, if the ident is "x", the value is simply "x", not the content
+  // of the variable named "x".
+  //
   private static InitCodeNode parseConfig(
       String config, Map<String, InitValueConfig> initValueConfigMap) {
     Scanner scanner = new Scanner(config);
@@ -143,15 +146,13 @@ public class FieldStructureParser {
     if (token == '=') {
       fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
 
-      // TODO(pongad): Currently the RHS of equal sign is just arbitrary run of text treated as string, eg
-      //   a.b=https://foo.bar.com/zip/zap
-      // We'll quote the RHS of existing configs, then we can use parseValue here.
-      // For now, just preserve old behavior.
-      // String valueString = parseValue(scanner);
+      // TODO(pongad): Quote the RHS of existing configs, and once that's done use 'parseValue' here
+      // (`String valueString = parseValue(scanner)`). For now we are preserving the previous
+      // behavior,
+      // where everything on the right of the equal sign is a string.
       String valueString = config.substring(scanner.pos());
 
       if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
-        System.err.println(valueString);
         initValue = InitValue.createRandom(valueString);
       } else if (valueString.contains(PROJECT_ID_TOKEN)) {
         Preconditions.checkArgument(
@@ -163,7 +164,6 @@ public class FieldStructureParser {
       } else {
         initValue = InitValue.createLiteral(valueString);
       }
-      token = scanner.scan();
     }
 
     // TODO(pongad): When we can actually parse the RHS, we should expect EOF.
