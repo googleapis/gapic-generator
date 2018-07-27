@@ -40,9 +40,7 @@
         @let firstSample = apiMethod.samples.get(0)
             # Print the set-up code for the first sample, and for
             # subsequent samples where the code differs from the first
-            @if or(and(sample.callingForm == firstSample.callingForm, \
-                       sample.valueSet.id == firstSample.valueSet.id), \
-                sampleSetupDiffers(firstSample, sample))
+            @if sampleNeedsSetup(sample, firstSample)
                 {@incodeSampleSetup(apiMethod, sample)}
             @end
             {@incodeSampleCall(apiMethod, sample)}
@@ -54,15 +52,6 @@
     @if sample.initCode.lines
         {@initCode(sample.initCode, apiMethod.apiVariableName)}
 
-    @end
-@end
-
-# This function returns true iff @incodeSampleSetup() would produce
-# different code for firstSample and secondSample.
-@private sampleSetupDiffers(firstSample, secondSample) horizontal
-    @if or(secondSample.initCode.importSection.appImports != firstSample.initCode.importSection.appImports, \
-        secondSample.initCode.lines != firstSample.initCode.lines)
-        sampleSetupDiffers: true
     @end
 @end
 

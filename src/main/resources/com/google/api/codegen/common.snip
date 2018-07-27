@@ -45,3 +45,14 @@
         s
     @end
 @end
+
+# This function returns true iff @incodeSampleSetup() would produce
+# different code for firstSample and secondSample.
+@snippet sampleNeedsSetup(firstSample, secondSample) horizontal
+    @if or(and(secondSample.callingForm == firstSample.callingForm, \
+               secondSample.valueSet.id == firstSample.valueSet.id), \
+           or(secondSample.initCode.importSection.appImports != firstSample.initCode.importSection.appImports, \
+              secondSample.initCode.lines != firstSample.initCode.lines))
+        sampleNeedsSetup: true
+    @end
+@end

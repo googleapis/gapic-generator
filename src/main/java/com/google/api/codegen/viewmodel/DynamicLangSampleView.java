@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 public abstract class DynamicLangSampleView implements ViewModel {
 
   /**
-   * a placeholder class intended for different languages to subclass and put language specific
+   * A placeholder class intended for different languages to subclass and put language-specific
    * information
    */
   public static class SampleExtraInfo {}

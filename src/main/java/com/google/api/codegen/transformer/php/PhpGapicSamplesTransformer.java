@@ -35,6 +35,7 @@ import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.Collections;
@@ -109,30 +110,24 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
     return viewModels.build();
   }
 
-  public static class PhpSampleExtraInfo extends DynamicLangSampleView.SampleExtraInfo {
+  @AutoValue
+  public abstract static class PhpSampleExtraInfo extends DynamicLangSampleView.SampleExtraInfo {
 
-    private boolean hasDefaultServiceAddress;
-    private boolean hasDefaultServiceScopes;
+    // private PhpSampleExtraInfo(Builder builder) {
+    //   hasDefaultServiceAddress = builder.hasDefaultServiceAddress;
+    //   hasDefaultServiceScopes = builder.hasDefaultServiceScopes;
+    // }
 
-    private PhpSampleExtraInfo(Builder builder) {
-      hasDefaultServiceAddress = builder.hasDefaultServiceAddress;
-      hasDefaultServiceScopes = builder.hasDefaultServiceScopes;
-    }
+    abstract boolean hasDefaultServiceAddress();
 
-    public boolean hasDefaultServiceAddress() {
-      return this.hasDefaultServiceAddress;
-    }
+    abstract boolean hasDefaultServiceScopes();
 
-    public boolean hasDefaultServiceScopes() {
-      return this.hasDefaultServiceScopes;
+    public boolean missingDefaultServiceScopes() {
+      return !hasDefaultServiceScopes();
     }
 
     public boolean missingDefaultServiceAddress() {
       return !hasDefaultServiceAddress();
-    }
-
-    public boolean missingDefaultServiceScopes() {
-      return !hasDefaultServiceScopes();
     }
 
     public boolean hasMissingDefaultOptions() {
@@ -140,27 +135,17 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
     }
 
     public static Builder newBuilder() {
-      return new Builder();
+      return new AutoValue_PhpGapicSamplesTransformer_PhpSampleExtraInfo.Builder();
     }
 
-    public static class Builder {
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-      private boolean hasDefaultServiceAddress;
-      private boolean hasDefaultServiceScopes;
+      abstract Builder hasDefaultServiceAddress(boolean val);
 
-      public Builder hasDefaultServiceAddress(boolean val) {
-        hasDefaultServiceAddress = val;
-        return this;
-      }
+      abstract Builder hasDefaultServiceScopes(boolean val);
 
-      public Builder hasDefaultServiceScopes(boolean val) {
-        hasDefaultServiceScopes = val;
-        return this;
-      }
-
-      public PhpSampleExtraInfo build() {
-        return new PhpSampleExtraInfo(this);
-      }
+      abstract PhpSampleExtraInfo build();
     }
   }
 
