@@ -37,7 +37,10 @@ import com.google.common.collect.ImmutableMap;
  * Leading zeros are not allowed.
  *
  * STRING: string quoted by " character.
- * \" escapes the quote character.
+ *   \" escapes the quote character.
+ *   \\ escapes the backslash.
+ *   \n escapes newline.
+ *   \t escapes tab.
  * The string returned by token() is already un-escaped.
  * }</pre>
  */
@@ -46,11 +49,10 @@ public class Scanner {
       ImmutableMap.<Integer, Integer>builder()
           .put((int) '"', (int) '"')
           .put((int) '\\', (int) '\\')
-          .put((int) 't', (int) '\t')
           .put((int) 'b', (int) '\b')
           .put((int) 'n', (int) '\n')
           .put((int) 'r', (int) '\r')
-          .put((int) 'f', (int) '\f')
+          .put((int) 't', (int) '\t')
           .build();
 
   public static final int EOF = -1;
