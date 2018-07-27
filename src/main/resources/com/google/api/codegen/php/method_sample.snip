@@ -19,7 +19,6 @@
     @end
 
     try {
-        {@initCode(apiMethod.initCode, apiMethod.apiVariableName)}
         {@coreSampleCode}
     } finally {
         @if xapiClass.hasMissingDefaultOptions
@@ -38,10 +37,36 @@
 
 @snippet incodeSamples(apiMethod)
     @join sample : apiMethod.samples on BREAK.add(BREAK).add(BREAK).add("// Alternatively:").add(BREAK)
-        {@incodeSampleCall(apiMethod, sample)}
+        @let firstSample = apiMethod.samples.get(0)
+            # Print the set-up code for the first sample, and for
+            # subsequent samples where the code differs from the first
+            @if or(and(sample.callingForm == firstSample.callingForm, \
+                       sample.valueSet.id == firstSample.valueSet.id), \
+                sampleSetupDiffers(firstSample, sample))
+                {@incodeSampleSetup(apiMethod, sample)}
+            @end
+            {@incodeSampleCall(apiMethod, sample)}
+        @end
     @end
 @end
 
+@private incodeSampleSetup(apiMethod, sample)
+    @if sample.initCode.lines
+        {@initCode(sample.initCode, apiMethod.apiVariableName)}
+        
+    @end
+@end
+
+# This function returns true iff @incodeSampleSetup() would produce
+# different code for firstSample and secondSample.
+@private sampleSetupDiffers(firstSample, secondSample) horizontal
+    @if or(secondSample.initCode.importSection.appImports != firstSample.initCode.importSection.appImports, \
+        secondSample.initCode.lines != firstSample.initCode.lines)
+        sampleSetupDiffers: true
+    @end
+@end
+
+# The structure of this should be parallel to that of standalone_sample.snip:@standaloneSample
 @private incodeSampleCall(apiMethod, sample)
     @switch sample.callingForm
     @case "LongRunningRequest"
@@ -67,22 +92,6 @@
     @default
         $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
-@end
-
-@private pagedMethodSampleCode(apiMethod)
-    // Iterate through all elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($pagedResponse->iterateAllElements() as $element) {
-        // doSomethingWith($element);
-    }
-
-    // OR iterate over pages of elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($pagedResponse->iteratePages() as $page) {
-        foreach ($page as $element) {
-            // doSomethingWith($element);
-        }
-    }
 @end
 
 @snippet sampleMethodCallArgList(initCode)

@@ -96,10 +96,72 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
+                .extraInfo(
+                    PhpSampleExtraInfo.newBuilder()
+                        .hasDefaultServiceScopes(
+                            context.getInterfaceConfig().hasDefaultServiceScopes())
+                        .hasDefaultServiceAddress(
+                            context.getInterfaceConfig().hasDefaultServiceAddress())
+                        .build())
                 .build());
       }
     }
     return viewModels.build();
+  }
+
+  public static class PhpSampleExtraInfo extends DynamicLangSampleView.SampleExtraInfo {
+
+    private boolean hasDefaultServiceAddress;
+    private boolean hasDefaultServiceScopes;
+
+    private PhpSampleExtraInfo(Builder builder) {
+      hasDefaultServiceAddress = builder.hasDefaultServiceAddress;
+      hasDefaultServiceScopes = builder.hasDefaultServiceScopes;
+    }
+
+    public boolean hasDefaultServiceAddress() {
+      return this.hasDefaultServiceAddress;
+    }
+
+    public boolean hasDefaultServiceScopes() {
+      return this.hasDefaultServiceScopes;
+    }
+
+    public boolean missingDefaultServiceAddress() {
+      return !hasDefaultServiceAddress();
+    }
+
+    public boolean missingDefaultServiceScopes() {
+      return !hasDefaultServiceScopes();
+    }
+
+    public boolean hasMissingDefaultOptions() {
+      return missingDefaultServiceAddress() || missingDefaultServiceScopes();
+    }
+
+    public static Builder newBuilder() {
+      return new Builder();
+    }
+
+    public static class Builder {
+
+      private boolean hasDefaultServiceAddress;
+      private boolean hasDefaultServiceScopes;
+
+      public Builder hasDefaultServiceAddress(boolean val) {
+        hasDefaultServiceAddress = val;
+        return this;
+      }
+
+      public Builder hasDefaultServiceScopes(boolean val) {
+        hasDefaultServiceScopes = val;
+        return this;
+      }
+
+      public PhpSampleExtraInfo build() {
+        return new PhpSampleExtraInfo(this);
+      }
+    }
   }
 
   private GapicInterfaceContext createContext(
