@@ -24,7 +24,6 @@
 @end
 
 @snippet longRunningAsyncSampleCode(apiMethod)
-
     // start the operation, keep the operation name, and resume later
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationName = $operationResponse->getName();
@@ -66,7 +65,6 @@
 @end
 
 @snippet pagedAllSampleCode(apiMethod)
-
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -75,7 +73,6 @@
 @end
 
 @snippet clientStreamingSampleCode(apiMethod)
-
     // Write data to server and wait for a response
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
@@ -84,7 +81,6 @@
 @end
 
 @snippet clientStreamingAsyncSampleCode(apiMethod)
-
     // Write data as it becomes available, then wait for a response
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
@@ -96,7 +92,6 @@
 @end    
 
 @snippet serverStreamingSampleCode(apiMethod)
-
     // Read all responses until the stream is complete
     $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($stream->readAll() as $element) {
@@ -105,20 +100,17 @@
 @end
 
 @snippet bidiStreamingSampleCode(apiMethod)
-
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $stream->writeAll($requests);
-    
     foreach ($stream->closeWriteAndReadAll() as $element) {
         // doSomethingWith($element);
     }
 @end
 
 @snippet bidiStreamingAsyncSampleCode(apiMethod)
-
     // Write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.

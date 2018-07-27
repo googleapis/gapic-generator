@@ -1414,7 +1414,6 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamShelves();
      *     foreach ($stream->readAll() as $element) {
@@ -1458,7 +1457,6 @@ class LibraryServiceGapicClient
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
      *     $name = '';
-     *
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamBooks($name);
      *     foreach ($stream->readAll() as $element) {
@@ -1506,13 +1504,11 @@ class LibraryServiceGapicClient
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *
      *     // Write all requests to the server, then read all responses until the
      *     // stream is complete
      *     $requests = [$request];
      *     $stream = $libraryServiceClient->discussBook();
      *     $stream->writeAll($requests);
-     *
      *     foreach ($stream->closeWriteAndReadAll() as $element) {
      *         // doSomethingWith($element);
      *     }
@@ -1575,7 +1571,6 @@ class LibraryServiceGapicClient
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *
      *     // Write data to server and wait for a response
      *     $requests = [$request];
      *     $stream = $libraryServiceClient->monologAboutBook();
@@ -2756,7 +2751,6 @@ $request = new DiscussBookRequest();
 $request->setName($name);
 
 try {
-
     // Write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
@@ -2813,13 +2807,11 @@ $request = new DiscussBookRequest();
 $request->setName($name);
 
 try {
-
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $requests = [$request];
     $stream = $libraryServiceClient->discussBook();
     $stream->writeAll($requests);
-
     foreach ($stream->closeWriteAndReadAll() as $element) {
         // doSomethingWith($element);
     }
@@ -2861,7 +2853,6 @@ $shelvesElement = 'Classics';
 $shelves = [$shelvesElement];
 
 try {
-
     // Iterate through all elements
     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -2947,7 +2938,6 @@ $libraryServiceClient = new LibraryServiceClient();
 $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
 
 try {
-
     // start the operation, keep the operation name, and resume later
     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
     $operationName = $operationResponse->getName();
@@ -3047,7 +3037,6 @@ $request = new DiscussBookRequest();
 $request->setName($name);
 
 try {
-
     // Write data as it becomes available, then wait for a response
     $requests = [$request];
     $stream = $libraryServiceClient->monologAboutBook();
@@ -3095,7 +3084,6 @@ $request = new DiscussBookRequest();
 $request->setName($name);
 
 try {
-
     // Write data to server and wait for a response
     $requests = [$request];
     $stream = $libraryServiceClient->monologAboutBook();
@@ -3225,7 +3213,6 @@ $libraryServiceClient = new LibraryServiceClient();
 $name = 'BASIC';
 
 try {
-
     // Read all responses until the stream is complete
     $stream = $libraryServiceClient->streamBooks($name);
     foreach ($stream->readAll() as $element) {
@@ -3263,10 +3250,7 @@ try {
 /*
 $libraryServiceClient = new LibraryServiceClient();
 
-
-
 try {
-
     // Read all responses until the stream is complete
     $stream = $libraryServiceClient->streamShelves();
     foreach ($stream->readAll() as $element) {
