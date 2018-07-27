@@ -63,7 +63,7 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
-  // Parses `pathconfig` to construct the `InitCodeNode` it specifies. `config` must be a valid
+  // Parses `config` to construct the `InitCodeNode` it specifies. `config` must be a valid
   // config
   // satisfying the eBNF grammar below:
   //
@@ -148,8 +148,7 @@ public class FieldStructureParser {
 
       // TODO(pongad): Quote the RHS of existing configs, and once that's done use 'parseValue' here
       // (`String valueString = parseValue(scanner)`). For now we are preserving the previous
-      // behavior,
-      // where everything on the right of the equal sign is a string.
+      // behavior, where everything on the right of the equal sign is a string.
       String valueString = config.substring(scanner.pos());
 
       if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
