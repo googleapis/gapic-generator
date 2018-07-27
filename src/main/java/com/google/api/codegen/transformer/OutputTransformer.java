@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -79,7 +80,7 @@ class OutputTransformer {
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = defineView(config.getDefine(), context, valueSet, localVars);
+      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars);
     }
 
     return Preconditions.checkNotNull(
@@ -103,7 +104,7 @@ class OutputTransformer {
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(a, context, valueSet, localVars))
+                .map(a -> accessor(new Scanner(a), context, valueSet, localVars))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
@@ -117,7 +118,7 @@ class OutputTransformer {
     ScopeTable scope = localVars.newChild();
     OutputView.VariableView accessor =
         accessorNewVariable(
-            loop.getCollection(), context, valueSet, scope, loop.getVariable(), true);
+            new Scanner(loop.getCollection()), context, valueSet, scope, loop.getVariable(), true);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(
@@ -136,18 +137,23 @@ class OutputTransformer {
   }
 
   private static OutputView.DefineView defineView(
-      String definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
-    int p = identifierEnd(definition, 0);
-    String identifier = definition.substring(0, p);
+      Scanner definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Preconditions.checkArgument(
-        definition.startsWith("=", p),
+        definition.scan() == Scanner.IDENT,
+        "%s:%s: expected identifier: %s",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        definition.input());
+    String identifier = definition.token();
+
+    Preconditions.checkArgument(
+        definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
-        definition);
+        definition.input());
     OutputView.VariableView reference =
-        accessorNewVariable(
-            definition.substring(p + 1), context, valueSet, localVars, identifier, false);
+        accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
     return OutputView.DefineView.newBuilder()
         .variableType(
             context
@@ -159,7 +165,7 @@ class OutputTransformer {
   }
 
   private static OutputView.VariableView accessor(
-      String config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      Scanner config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     return accessorNewVariable(config, context, valueSet, localVars, null, false);
   }
 
@@ -181,7 +187,7 @@ class OutputTransformer {
    * </code></pre>
    */
   private static OutputView.VariableView accessorNewVariable(
-      String config,
+      Scanner config,
       MethodContext context,
       SampleValueSet valueSet,
       ScopeTable localVars,
@@ -190,10 +196,14 @@ class OutputTransformer {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
-    int cursor = 0;
-    int end = identifierEnd(config, cursor);
+    Preconditions.checkArgument(
+        config.scan() == Scanner.IDENT,
+        "%s:%s: expected identifier: %s",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        config.input());
+    String baseIdentifier = config.token();
 
-    String baseIdentifier = config.substring(cursor, end);
     TypeModel type;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName(context));
@@ -221,26 +231,30 @@ class OutputTransformer {
               baseIdentifier);
     }
 
+    int token;
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
-    while (end < config.length()) {
-      if (config.charAt(end) == '.') {
+    while ((token = config.scan()) != Scanner.EOF) {
+      if (token == '.') {
         Preconditions.checkArgument(
             type.isMessage(),
             "%s:%s: %s is not a message",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.substring(0, end));
+            config.input());
         Preconditions.checkArgument(
             !type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not scalar",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.substring(0, end));
+            config.input());
 
-        cursor = end + 1;
-        end = identifierEnd(config, cursor);
-
-        String fieldName = config.substring(cursor, end);
+        Preconditions.checkArgument(
+            config.scan() == Scanner.IDENT,
+            "%s:%s: expected identifier: %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
+        String fieldName = config.token();
         FieldModel field =
             Preconditions.checkNotNull(
                 type.getField(fieldName),
@@ -252,17 +266,19 @@ class OutputTransformer {
 
         type = field.getType();
         accessors.add(context.getNamer().getFieldGetFunctionName(field));
-      } else if (config.charAt(end) == '[') {
+      } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not a repeated field",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.substring(0, end));
+            config.input());
         throw new UnsupportedOperationException("array indexing not supported yet");
       } else {
         throw new IllegalArgumentException(
-            String.format("unexpected character: %c (%s)", config.charAt(end), config));
+            String.format(
+                "%s:%s: unexpected character: %c (%d)",
+                context.getMethodModel().getSimpleName(), valueSet.getId(), token, token));
       }
     }
 
@@ -273,10 +289,8 @@ class OutputTransformer {
             "%s:%s: %s is not a repeated field",
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
-            config.substring(0, end));
-
-        // "optional" is how protobuf defines singular fields
-        type = type.makeOptional();
+            config.input());
+        type = type.makeOptional(); // "optional" is how protobuf defines singular fields
       }
       if (!localVars.put(newVar, type)) {
         throw new IllegalStateException(
@@ -287,19 +301,6 @@ class OutputTransformer {
     }
 
     return view.accessors(accessors.build()).build();
-  }
-
-  /** Returns the largest p such that s.substring(startsFrom, p) is an identifier. */
-  private static int identifierEnd(String s, int startFrom) {
-    for (int p = startFrom; p < s.length(); p++) {
-      char c = s.charAt(p);
-      if (!Character.isLetterOrDigit(c) && c != '_' && c != '$') {
-        Preconditions.checkArgument(
-            p != startFrom, "not an identifier: %s", s.substring(startFrom));
-        return p;
-      }
-    }
-    return s.length();
   }
 
   /**

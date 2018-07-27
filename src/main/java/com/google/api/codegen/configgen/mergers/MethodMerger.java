@@ -38,6 +38,14 @@ public class MethodMerger {
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
+  // Default LRO values.
+  private static final String LRO_TOTAL_POLL_TIMEOUT = "300000";
+  private static final String LRO_INITIAL_POLL_DELAY = "500";
+  private static final String LRO_POLL_DELAY_MULTIPLIER = "1.5";
+  private static final String LRO_MAX_POLL_DELAY = "5000";
+  private static final String LRO_RETURN_TYPE_EMPTY = "google.protobuf.Empty";
+  private static final String LRO_METADATA_TYPE = "google.protobuf.Struct";
+
   private static final String METHODS_COMMENT =
       "A list of method configurations.\n"
           + "Common properties:\n\n"
@@ -126,6 +134,10 @@ public class MethodMerger {
     prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
+    if (method.getOutputType().toString().contains("google.longrunning.Operation")) {
+      prevNode = generateLongRunningNode(prevNode, method);
+    }
+
     generateTimeout(prevNode, method);
     return methodNode;
   }
@@ -171,6 +183,48 @@ public class MethodMerger {
             String.valueOf(requestObjectMethod));
     prevNode.insertNext(requestObjectMethodNode);
     return requestObjectMethodNode;
+  }
+
+  private ConfigNode generateLongRunningNode(ConfigNode prevNode, MethodModel methodModel) {
+    ConfigNode longRunningNode =
+        new FieldConfigNode(NodeFinder.getNextLine(prevNode), "long_running")
+            .setComment(new FixmeComment("Configure long running operation."));
+    prevNode.insertNext(longRunningNode);
+
+    ConfigNode returnType =
+        FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(prevNode), "return_type", LRO_RETURN_TYPE_EMPTY)
+            .setComment(new FixmeComment("Configure return type."));
+
+    longRunningNode.setChild(returnType);
+
+    ConfigNode metadataTypeNode =
+        FieldConfigNode.createStringPair(
+                NodeFinder.getNextLine(prevNode), "metadata_type", LRO_METADATA_TYPE)
+            .setComment(new FixmeComment("Configure metadata type."));
+    returnType.insertNext(metadataTypeNode);
+
+    ConfigNode initialPollDelayNode =
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(prevNode), "initial_poll_delay_millis", LRO_INITIAL_POLL_DELAY);
+    metadataTypeNode.insertNext(initialPollDelayNode);
+
+    ConfigNode pollDelayMultiplierNode =
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(prevNode), "poll_delay_multiplier", LRO_POLL_DELAY_MULTIPLIER);
+    initialPollDelayNode.insertNext(pollDelayMultiplierNode);
+
+    ConfigNode maxPollDelayNode =
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(prevNode), "max_poll_delay_millis", LRO_MAX_POLL_DELAY);
+    pollDelayMultiplierNode.insertNext(maxPollDelayNode);
+
+    ConfigNode totalPollTimeoutNode =
+        FieldConfigNode.createStringPair(
+            NodeFinder.getNextLine(prevNode), "total_poll_timeout_millis", LRO_TOTAL_POLL_TIMEOUT);
+    maxPollDelayNode.insertNext(totalPollTimeoutNode);
+
+    return longRunningNode;
   }
 
   private ConfigNode generateFlatteningNode(ConfigNode prevNode, List<String> parameterList) {

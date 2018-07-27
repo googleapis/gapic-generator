@@ -23,7 +23,7 @@ public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
 
   private static final Pattern IDENTIFIER_PATTERN =
-      Pattern.compile("(.+?)::([vV][\\D]*[0-9]+)(::.*)?");
+      Pattern.compile("(.+?)::([vV][^:]*[0-9]+)(::.*)?");
 
   public static boolean isLongrunning(String packageName) {
     return packageName.equals(LONGRUNNING_PACKAGE_NAME);

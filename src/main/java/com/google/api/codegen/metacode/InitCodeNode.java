@@ -24,8 +24,10 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -72,6 +74,10 @@ public class InitCodeNode {
     return lineType;
   }
 
+  void setLineType(InitCodeLineType lineType) {
+    this.lineType = lineType;
+  }
+
   /*
    * Get the InitValueConfig. For InitCodeNode objects with 1 or more children, the InitValueConfig
    * object will not contain an initial value or formatting config.
@@ -83,7 +89,7 @@ public class InitCodeNode {
   /*
    * Updates the InitValueConfig.
    */
-  private void updateInitValueConfig(InitValueConfig initValueConfig) {
+  void updateInitValueConfig(InitValueConfig initValueConfig) {
     this.initValueConfig = initValueConfig;
   }
 
@@ -165,12 +171,16 @@ public class InitCodeNode {
    * Generates a flattened list from a tree in post-order.
    */
   public List<InitCodeNode> listInInitializationOrder() {
-    List<InitCodeNode> initCodeLines = new ArrayList<>();
-    for (InitCodeNode childItem : children.values()) {
-      initCodeLines.addAll(childItem.listInInitializationOrder());
+    ArrayList<InitCodeNode> initOrder = new ArrayList<>();
+    ArrayDeque<InitCodeNode> initStack = new ArrayDeque<>();
+    initStack.add(this);
+
+    while (!initStack.isEmpty()) {
+      InitCodeNode node = initStack.pollLast();
+      initStack.addAll(node.children.values());
+      initOrder.add(node);
     }
-    initCodeLines.add(this);
-    return initCodeLines;
+    return Lists.reverse(initOrder);
   }
 
   private InitCodeNode(String key, InitCodeLineType nodeType, InitValueConfig initValueConfig) {
@@ -186,7 +196,7 @@ public class InitCodeNode {
     this.varName = varName;
   }
 
-  private void mergeChild(InitCodeNode newChild) {
+  void mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
     if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
       InitValueConfig mergedValueConfig =
@@ -218,34 +228,27 @@ public class InitCodeNode {
   }
 
   private static List<InitCodeNode> buildSubTrees(InitCodeContext context) {
+    Preconditions.checkArgument(
+        context.initFields() != null || context.outputType() != InitCodeOutputType.FieldList,
+        "init field array is not set for flattened method");
+
     List<InitCodeNode> subTrees = new ArrayList<>();
-    if (context.initFieldConfigStrings() != null) {
-      for (String initFieldConfigString : context.initFieldConfigStrings()) {
-        subTrees.add(
-            FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
-      }
-    }
     if (context.initFields() != null) {
-      // Add items in fieldSet to newSubTrees in case they were not included in
-      // sampleCodeInitFields, and to ensure the order is determined by initFields
-      List<InitCodeNode> newSubTrees = new ArrayList<>();
       for (FieldModel field : context.initFields()) {
         String nameString = field.getNameAsParameter();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
-          newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
+          subTrees.add(InitCodeNode.createWithName(nameString, nameString));
         } else {
-          newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
+          subTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }
       }
-      newSubTrees.addAll(subTrees);
-      subTrees = newSubTrees;
-    } else if (context.outputType() == InitCodeOutputType.FieldList) {
-      throw new IllegalArgumentException("Init field array is not set for flattened method.");
     }
-    if (context.additionalInitCodeNodes() != null) {
-      subTrees.addAll(Lists.newArrayList(context.additionalInitCodeNodes()));
+
+    for (String initFieldConfigString : context.initFieldConfigStrings()) {
+      subTrees.add(FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
     }
+    subTrees.addAll(context.additionalInitCodeNodes());
     return subTrees;
   }
 

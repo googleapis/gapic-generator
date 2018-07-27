@@ -350,7 +350,19 @@
         public static {@api.name} Create(grpccore::Channel channel, {@settings.name} settings = null)
         {
             gax::GaxPreconditions.CheckNotNull(channel, nameof(channel));
-            {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(channel);
+            return Create(new grpccore::DefaultCallInvoker(channel), settings);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="{@api.name}"/> which uses the specified call invoker for remote operations.
+        /// </summary>
+        /// <param name="callInvoker">The <see cref="grpccore::CallInvoker"/> for remote operations. Must not be null.</param>
+        /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
+        /// <returns>The created <see cref="{@api.name}"/>.</returns>
+        public static {@api.name} Create(grpccore::CallInvoker callInvoker, {@settings.name} settings = null)
+        {
+            gax::GaxPreconditions.CheckNotNull(callInvoker, nameof(callInvoker));
+            {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(callInvoker);
             return new {@api.implName}(grpcClient, settings);
         }
 
