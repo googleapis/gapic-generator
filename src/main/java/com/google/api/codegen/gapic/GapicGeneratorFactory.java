@@ -52,6 +52,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransforme
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.php.PhpGapicSamplesTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
@@ -347,6 +348,16 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                .build();
+        generators.add(sampleGenerator);
+
         generators.add(generator);
         generators.add(clientConfigGenerator);
         generators.add(metadataGenerator);
@@ -361,7 +372,6 @@ public class GapicGeneratorFactory {
                 .build();
         generators.add(testGenerator);
       }
-
     } else if (language.equals(PYTHON)) {
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper pythonPathMapper =
