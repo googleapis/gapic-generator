@@ -1,1 +1,726 @@
-hola
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(classFile)
+  {@renderFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView.doc)}
+  @@Generated("by gapic-generator")
+  @if classFile.classView.releaseLevelAnnotation
+    {@classFile.classView.releaseLevelAnnotation}
+  @end
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} implements BackgroundResource {
+    {@members(classView)}
+    {@statics(classView)}
+    {@staticFunctions(classView)}
+    {@constructors(classView)}
+    {@memberMethods(classView)}
+    {@apiMethods(classView)}
+    {@cleanupSection()}
+    {@staticPagedResponseWrappers(classView)}
+  }
+@end
+
+@private classDoc(doc)
+  @switch doc.exampleApiMethod.type
+  @case "FlattenedMethod"
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
+  @case "PagedFlattenedMethod"
+    @let coreSampleCode = pagedIterableMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
+  @case "RequestObjectMethod"
+    @let coreSampleCode = syncMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
+  @case "AsyncOperationFlattenedMethod"
+    @let coreSampleCode = asyncOperationMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
+  @default
+    $unhandledCase: {@doc.exampleApiMethod.type}$
+  @end
+@end
+
+@private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
+  // AUTO-GENERATED DOCUMENTATION AND SERVICE
+  /**
+  @if xapiClassDoc.lines
+    {@""} * Service Description: {@xapiClassDoc.firstLine}
+    @if xapiClassDoc.remainingLines
+      @join commentLine : xapiClassDoc.remainingLines
+        {@""} * {@commentLine}
+      @end
+    @end
+  @else
+    {@""} * Service Description:
+  @end
+   *
+   * <p>This class provides the ability to make remote calls to the backing service through method
+   * calls that map to API methods. Sample code to get started:
+   *
+   * <pre>
+   * <code>
+  @join sampleLine : util.getDocLines(exampleMethodSampleCode)
+    {@""} * {@sampleLine}
+  @end
+   * </code>
+   * </pre>
+   *
+   * <p>Note: close() needs to be called on the {@xapiClassDoc.apiVarName} object to clean up resources such
+   * as threads. In the example above, try-with-resources is used, which automatically calls
+   * close().
+   *
+   * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+   *
+   * <ol>
+   * <li> A "flattened" method. With this type of method, the fields of the request type have been
+   * converted into function parameters. It may be the case that not all fields are available
+   * as parameters, and not every API method will have a flattened method entry point.
+   * <li> A "request object" method. This type of method only takes one parameter, a request
+   * object, which must be constructed before the call. Not every API method will have a request
+   * object method.
+   * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+   * API callable object, which can be used to initiate calls to the service.
+   * </ol>
+   *
+   * <p>See the individual methods for example code.
+   *
+   * <p>Many parameters require resource names to be formatted in a particular way. To assist
+   * with these names, this class includes a format method for each type of name, and additionally
+   * a parse method to extract the individual identifiers contained within names that are
+   * returned.
+   *
+   * <p>This class can be customized by passing in a custom instance of {@xapiClassDoc.settingsClassName} to
+   * create(). For example:
+   *
+   * To customize credentials:
+   *
+   * <pre>
+   * <code>
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
+   *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+   *         .build();
+   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   * </code>
+   * </pre>
+  @if xapiClassDoc.hasDefaultInstance
+    {@""} *
+     * To customize the endpoint:
+     *
+     * <pre>
+     * <code>
+     * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+     *     {@xapiClassDoc.settingsClassName}.newBuilder().setEndpoint(myEndpoint).build();
+     * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+     *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+     * </code>
+     * </pre>
+  @end
+   */
+@end
+
+@private statics(xapiClass)
+  @join pathTemplate : xapiClass.pathTemplates
+    private static final PathTemplate {@pathTemplate.name} =
+        PathTemplate.createWithoutUrlEncoding("{@pathTemplate.pattern}");
+    {@""}
+  @end
+@end
+
+@private staticFunctions(xapiClass)
+  @join function : xapiClass.formatResourceFunctions
+    {@formatResourceFunction(function)}
+  @end
+  {@""}
+  @join function : xapiClass.parseResourceFunctions
+    {@parseResourceFunction(function)}
+  @end
+@end
+
+@private staticPagedResponseWrappers(apiClass)
+  @join pagedResponseClass : apiClass.pagedResponseViews
+    public static class {@pagedResponseClass.pagedResponseTypeName} extends AbstractPagedListResponse<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      public static ApiFuture<{@pagedResponseClass.pagedResponseTypeName}> createAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        ApiFuture<{@pagedResponseClass.pageTypeName}> futurePage =
+            {@pagedResponseClass.pageTypeName}.createEmptyPage().createPageAsync(context, futureResponse);
+        return ApiFutures.transform(
+            futurePage,
+            new ApiFunction<{@pagedResponseClass.pageTypeName}, {@pagedResponseClass.pagedResponseTypeName}>() {
+              @@Override
+              public {@pagedResponseClass.pagedResponseTypeName} apply({@pagedResponseClass.pageTypeName} input) {
+                return new {@pagedResponseClass.pagedResponseTypeName}(input);
+              }
+            });
+      }
+
+      private {@pagedResponseClass.pagedResponseTypeName}({@pagedResponseClass.pageTypeName} page) {
+        super(page, {@pagedResponseClass.fixedSizeCollectionTypeName}.createEmptyCollection());
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.pageTypeName} extends AbstractPage<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName}> {
+
+      private {@pagedResponseClass.pageTypeName}(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        super(context, response);
+      }
+
+      private static {@pagedResponseClass.pageTypeName} createEmptyPage() {
+        return new {@pagedResponseClass.pageTypeName}(null, null);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.pageTypeName} createPage(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          {@pagedResponseClass.responseTypeName} response) {
+        return new {@pagedResponseClass.pageTypeName}(context, response);
+      }
+
+      @@Override
+      public ApiFuture<{@pagedResponseClass.pageTypeName}> createPageAsync(
+          PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+          ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
+        return super.createPageAsync(context, futureResponse);
+      }
+      {@iterateAllResourceMethods(pagedResponseClass)}
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
+
+    public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
+        {@pagedResponseClass.requestTypeName},
+        {@pagedResponseClass.responseTypeName},
+        {@pagedResponseClass.resourceTypeName},
+        {@pagedResponseClass.pageTypeName},
+        {@pagedResponseClass.fixedSizeCollectionTypeName}> {
+
+      private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        super(pages, collectionSize);
+      }
+
+      private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
+      }
+
+      @@Override
+      protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+          List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+        return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
+      }
+      {@getValuesResourceMethods(pagedResponseClass)}
+    }
+  @end
+@end
+
+@private formatResourceFunction(function)
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a {@function.entityName} resource.
+   */
+  public static final String {@function.name}(\
+      {@formatResourceFunctionParams(function.resourceIdParams)}) {
+    return {@function.pathTemplateName}.instantiate(
+        {@pathTemplateArgs(function.resourceIdParams)});
+  }
+  {@""}
+@end
+
+@private formatResourceFunctionParams(resourceIdParams)
+  @join param : resourceIdParams on ", "
+    String {@param.name}
+  @end
+@end
+
+@private pathTemplateArgs(resourceIdParams)
+  @join param : resourceIdParams on ",".add(BREAK)
+    "{@param.templateKey}", {@param.name}
+  @end
+@end
+
+@private parseResourceFunction(function)
+  /**
+   * Parses the {@function.outputResourceId} from the given fully-qualified path which
+   * represents a {@function.entityName} resource.
+   */
+  public static final String {@function.name}(String {@function.entityNameParamName}) {
+    return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
+      .get("{@function.outputResourceId}");
+  }
+  {@""}
+@end
+
+@private members(xapiClass)
+  private final {@xapiClass.settingsClassName} settings;
+  private final {@xapiClass.stubInterfaceName} stub;
+  @if xapiClass.hasLongRunningOperations
+    private final OperationsClient operationsClient;
+  @end
+  {@""}
+@end
+
+@private constructors(xapiClass)
+  @if xapiClass.hasDefaultInstance
+    /**
+     * Constructs an instance of {@xapiClass.name} with default settings.
+     */
+    public static final {@xapiClass.name} create() throws IOException {
+      return create({@xapiClass.settingsClassName}.newBuilder().build());
+    }
+    {@""}
+  @end
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
+    return new {@xapiClass.name}(settings);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
+   * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
+   */
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
+    return new {@xapiClass.name}(stub);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
+    this.settings = settings;
+    this.stub = (({@xapiClass.stubSettingsClassName}) settings.getStubSettings()).createStub();
+    @if xapiClass.hasLongRunningOperations
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+    @end
+  }
+
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  protected {@xapiClass.name}({@xapiClass.stubInterfaceName} stub) {
+    this.settings = null;
+    this.stub = stub;
+    @if xapiClass.hasLongRunningOperations
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+    @end
+  }
+  {@""}
+@end
+
+@private memberMethods(xapiClass)
+  public final {@xapiClass.settingsClassName} getSettings() {
+    return settings;
+  }
+
+  @@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public {@xapiClass.stubInterfaceName} getStub() {
+    return stub;
+  }
+
+  @if xapiClass.hasLongRunningOperations
+    /**
+     * Returns the OperationsClient that can be used to query the status of a long-running
+     * operation returned by another API method call.
+     */
+    @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public final OperationsClient getOperationsClient() {
+      return operationsClient;
+    }
+  @end
+  {@""}
+@end
+
+@private apiMethods(xapiClass)
+  @join apiMethod : xapiClass.apiMethods
+    @switch apiMethod.type
+    @case "PagedFlattenedMethod"
+      {@pagedFlattenedMethod(apiMethod)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectMethod(apiMethod)}
+    @case "PagedCallableMethod"
+      {@pagedCallableMethod(apiMethod)}
+    @case "UnpagedListCallableMethod"
+      {@unpagedListCallableMethod(apiMethod)}
+    @case "FlattenedMethod"
+      {@flattenedMethod(apiMethod)}
+    @case "RequestObjectMethod"
+      {@requestObjectMethod(apiMethod)}
+    @case "CallableMethod"
+      @if apiMethod.isStreaming
+        {@streamingCallableMethod(apiMethod)}
+      @else
+        {@callableMethod(apiMethod)}
+      @end
+    @case "AsyncOperationFlattenedMethod"
+      {@asyncOperationFlattenedMethod(apiMethod)}
+    @case "AsyncOperationRequestObjectMethod"
+      {@asyncOperationRequestObjectMethod(apiMethod)}
+    @case "OperationCallableMethod"
+      {@operationCallableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+    @end
+    {@BREAK}
+  @end
+@end
+
+@private cleanupSection()
+  @@Override
+  public final void close() {
+    stub.close();
+  }
+
+  @@Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @@Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @@Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @@Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @@Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
+  }
+
+@end
+
+@private pagedFlattenedMethod(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
+    {@apiMethod.serviceRequestTypeName} request =
+        {@apiMethod.serviceRequestTypeName}.newBuilder()
+        {@builderSetCalls(apiMethod.requestObjectParams)}
+        .build();
+    return {@apiMethod.name}(request);
+  }
+@end
+
+@private pagedRequestObjectMethod(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
+    return {@apiMethod.requestObjectMethod.callableMethodName}()
+        .call(request);
+  }
+@end
+
+@private pagedCallableMethod(apiMethod)
+  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private unpagedListCallableMethod(apiMethod)
+  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private flattenedMethod(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
+       {@paramList(apiMethod.methodParams)}) {
+    {@flattenedRequestBuildingCode(apiMethod)}
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.name}(request);
+    @else
+      {@apiMethod.name}(request);
+    @end
+  }
+@end
+
+@private requestObjectMethod(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
+    @else
+      {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
+    @end
+  }
+@end
+
+@private callableMethod(apiMethod)
+  @let coreSampleCode = callableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private callableMethodImpl(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return stub.{@apiMethod.callableMethod.callableName}();
+  }
+@end
+
+@private streamingCallableMethod(apiMethod)
+  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  {@apiMethod.visibility} final {@apiMethod.callableMethod.interfaceTypeName}\
+      <{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return stub.{@apiMethod.callableMethod.callableName}();
+  }
+@end
+
+@private asyncOperationFlattenedMethod(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
+      {@paramList(apiMethod.methodParams)}) {
+    {@flattenedRequestBuildingCode(apiMethod)}
+    return {@apiMethod.name}(request);
+  }
+@end
+
+@private asyncOperationRequestObjectMethod(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
+    return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
+  }
+@end
+
+@private operationCallableMethod(apiMethod)
+  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+      {@apiMethod.name}() {
+    return stub.{@apiMethod.callableMethod.callableName}();
+  }
+@end
+
+@private flattenedRequestBuildingCode(apiMethod)
+  @join pathTemplateCheck : apiMethod.pathTemplateChecks
+    {@pathTemplateCheckLine(pathTemplateCheck)}
+  @end
+
+  {@apiMethod.serviceRequestTypeName} request =
+      {@apiMethod.serviceRequestTypeName}.newBuilder()
+      {@builderSetCalls(apiMethod.requestObjectParams)}
+      .build();
+@end
+
+@private methodDoc(apiMethodDoc, methodSampleCode)
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+  @if apiMethodDoc.mainDocLines
+    @join commentLine : apiMethodDoc.mainDocLines
+      {@""} * {@commentLine}
+    @end
+  @else
+    {@""} *
+  @end
+   *
+   * Sample code:
+   * <pre><code>
+  @join sampleLine : util.getDocLines(methodSampleCode)
+    {@""} * {@sampleLine}
+  @end
+   * </code></pre>
+  @if apiMethodDoc.paramDocs
+    {@""} *
+    @join doc : apiMethodDoc.paramDocs
+      {@paramDoc(doc)}
+    @end
+  @end
+  @if apiMethodDoc.throwsDocLines
+    @join commentLine : apiMethodDoc.throwsDocLines
+      {@""} * {@commentLine}
+    @end
+  @end
+   */
+  {@EMPTY}
+@end
+
+@private paramDoc(doc)
+  @switch doc.type
+  @case "SimpleParamDocView"
+    {@simpleParamDoc(doc)}
+  @default
+    $unhandledCase: {@doc.type}$
+  @end
+@end
+
+@private simpleParamDoc(doc)
+  @if doc.lines
+    {@""} * @@param {@doc.paramName} {@doc.firstLine}
+    @if doc.remainingLines
+      @join commentLine : doc.remainingLines
+        {@""} * {@commentLine}
+      @end
+    @end
+  @else
+    {@""} * @@param {@doc.paramName}
+  @end
+@end
+
+@private builderSetCalls(requestObjectParams)
+  @join requestObjectParam : requestObjectParams
+    .{@requestObjectParam.setCallName}({@builderSetCallParam(requestObjectParam)})
+  @end
+@end
+
+@private builderSetCallParam(requestObjectParam)
+  @if requestObjectParam.hasTransformParamFunction
+    {@requestObjectParam.name} == null ? null : \
+      {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name})
+    @if requestObjectParam.hasFormatMethodName
+      .{@requestObjectParam.formatMethodName}()
+    @end
+  @else
+    @if requestObjectParam.hasFormatMethodName
+      {@requestObjectParam.name} == null ? null : \
+        {@requestObjectParam.name}.{@requestObjectParam.formatMethodName}()
+    @else
+      {@requestObjectParam.name}
+    @end
+  @end
+@end
+
+@private pathTemplateCheckLine(pathTemplateCheck)
+  @if pathTemplateCheck.allowEmptyString
+    if (!{@pathTemplateCheck.paramName}.isEmpty()) {
+      {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
+        "{@pathTemplateCheck.validationMessageContext}");
+    }
+  @else
+    {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
+      "{@pathTemplateCheck.validationMessageContext}");
+  @end
+@end
+
+@private iterateAllResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end
+
+@private getValuesResourceMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeGetValuesMethodName}() {
+      return Iterables.transform({@iterateMethod.getValuesMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+          @@Override
+          public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
+            return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);
+          }
+        }
+      );
+    }
+  @end
+  {@BREAK}
+@end
