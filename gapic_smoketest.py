@@ -73,10 +73,12 @@ def run_smoke_test(root_dir, log):
                 msg = 'Failed to generate %s of %s.' % (
                     target, artman_yaml_path)
                 failure.append(msg)
+                logger.info(msg)
             else:
                 msg = 'Succeded to generate %s of %s.' % (
                     target, artman_yaml_path)
                 success.append(msg)
+                logger.info(msg)
 
                 cwd = os.getcwd()
                 os.chdir("artman-genfiles/%s" % language)
@@ -90,7 +92,7 @@ def run_smoke_test(root_dir, log):
                         language)
                     success.append(msg)
                 os.chdir(cwd)
-            logger.info(msg)
+                logger.info(msg)
     logger.info('================ Smoketest summary ================')
     logger.info('Successes:')
     for msg in success:
