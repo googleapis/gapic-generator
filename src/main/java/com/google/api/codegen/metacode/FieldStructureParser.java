@@ -28,13 +28,15 @@ import java.util.Map;
 public class FieldStructureParser {
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
-  public static InitCodeNode parse(String initFieldConfigString) {
-    return parse(initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
+  public static InitCodeNode parse(InitCodeNode root, String initFieldConfigString) {
+    return parse(root, initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
   }
 
   public static InitCodeNode parse(
-      String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    return parseConfig(initFieldConfigString, initValueConfigMap);
+      InitCodeNode root,
+      String initFieldConfigString,
+      Map<String, InitValueConfig> initValueConfigMap) {
+    return parseConfig(root, initFieldConfigString, initValueConfigMap);
   }
 
   private static InitValueConfig createInitValueConfig(
@@ -67,8 +69,8 @@ public class FieldStructureParser {
   // config
   // satisfying the eBNF grammar below:
   //
-  // config = path ['=' value];
-  // path = ident pathElem* ['%' ident]
+  // config = path ['%' ident] ['=' value];
+  // path = ident pathElem*
   // pathElem = ('.' ident) | ('[' int ']') | ('{' value '}');
   // value = int | string | ident;
   //
@@ -77,61 +79,13 @@ public class FieldStructureParser {
   // of the variable named "x".
   //
   private static InitCodeNode parseConfig(
-      String config, Map<String, InitValueConfig> initValueConfigMap) {
+      InitCodeNode root, String config, Map<String, InitValueConfig> initValueConfigMap) {
     Scanner scanner = new Scanner(config);
 
-    Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", config);
-    InitCodeNode root = InitCodeNode.create(scanner.token());
-
-    InitCodeNode parent = root;
-    int token;
-
-    pathElem:
-    while (true) {
-      token = scanner.scan();
-      switch (token) {
-        case '%':
-        case '=':
-        case Scanner.EOF:
-          break pathElem;
-
-        case '.':
-          Preconditions.checkArgument(
-              scanner.scan() == Scanner.IDENT, "expected identifier after '.': %s", config);
-          parent.setLineType(InitCodeLineType.StructureInitLine);
-          InitCodeNode child = InitCodeNode.create(scanner.token());
-          parent.mergeChild(child);
-          parent = child;
-          break;
-
-        case '[':
-          Preconditions.checkArgument(
-              scanner.scan() == Scanner.INT, "expected number after '[': %s", config);
-          parent.setLineType(InitCodeLineType.ListInitLine);
-          child = InitCodeNode.create(scanner.token());
-          parent.mergeChild(child);
-          parent = child;
-
-          Preconditions.checkArgument(scanner.scan() == ']', "expected closing ']': %s", config);
-          break;
-
-        case '{':
-          child = InitCodeNode.create(parseValue(scanner));
-          parent.setLineType(InitCodeLineType.MapInitLine);
-          parent.mergeChild(child);
-          parent = child;
-
-          Preconditions.checkArgument(scanner.scan() == '}', "expected closing '}': %s", config);
-          break;
-
-        default:
-          throw new IllegalArgumentException(
-              String.format("unexpected character '%c': %s", token, config));
-      }
-    }
+    InitCodeNode parent = parsePath(root, scanner);
 
     int fieldNamePos = config.length();
+    int token = scanner.last();
 
     String entityName = null;
     if (token == '%') {
@@ -177,10 +131,61 @@ public class FieldStructureParser {
                 .build(),
             initValueConfigMap);
     if (valueConfig != null) {
-      parent.updateInitValueConfig(valueConfig);
+      // System.err.println("old: " + parent.getInitValueConfig());
+      // System.err.println("new: " + valueConfig);
+      parent.updateInitValueConfig(
+          InitCodeNode.mergeInitValueConfig(parent.getInitValueConfig(), valueConfig));
+      // System.err.println("result: " + parent.getInitValueConfig());
       parent.setLineType(InitCodeLineType.SimpleInitLine);
     }
     return root;
+  }
+
+  private static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
+    Preconditions.checkArgument(
+        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
+    InitCodeNode parent = root.mergeChild(InitCodeNode.create(scanner.token()));
+    int token;
+
+    while (true) {
+      token = scanner.scan();
+      switch (token) {
+        case '%':
+        case '=':
+        case Scanner.EOF:
+          return parent;
+        case '.':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT,
+              "expected identifier after '.': %s",
+              scanner.input());
+          parent.setLineType(InitCodeLineType.StructureInitLine);
+          parent = parent.mergeChild(InitCodeNode.create(scanner.token()));
+          break;
+
+        case '[':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", scanner.input());
+          parent.setLineType(InitCodeLineType.ListInitLine);
+          parent = parent.mergeChild(InitCodeNode.create(scanner.token()));
+
+          Preconditions.checkArgument(
+              scanner.scan() == ']', "expected closing ']': %s", scanner.input());
+          break;
+
+        case '{':
+          parent.setLineType(InitCodeLineType.MapInitLine);
+          parent = parent.mergeChild(InitCodeNode.create(parseValue(scanner)));
+
+          Preconditions.checkArgument(
+              scanner.scan() == '}', "expected closing '}': %s", scanner.input());
+          break;
+
+        default:
+          throw new IllegalArgumentException(
+              String.format("unexpected character '%c': %s", token, scanner.input()));
+      }
+    }
   }
 
   private static String parseValue(Scanner scanner) {

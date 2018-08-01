@@ -63,6 +63,7 @@ public class Scanner {
   private final String input;
   private int loc;
   private String token = "";
+  private int last;
 
   public Scanner(String input) {
     this.input = input;
@@ -74,7 +75,7 @@ public class Scanner {
 
     while (true) {
       if (loc >= input.length()) {
-        return EOF;
+        return last = EOF;
       }
       codePoint = input.codePointAt(loc);
       if (!Character.isWhitespace(codePoint)) {
@@ -95,7 +96,7 @@ public class Scanner {
         if (!escaped && codePoint == '"') {
           loc += Character.charCount(codePoint);
           token = sb.toString();
-          return STRING;
+          return last = STRING;
         }
         if (!escaped && codePoint == '\\') {
           escaped = true;
@@ -137,7 +138,7 @@ public class Scanner {
         throw new IllegalArgumentException(
             String.format("leading zero not allowed: %s: %s", token, input));
       }
-      return INT;
+      return last = INT;
     }
 
     if (identLead(codePoint) || codePoint == '$') {
@@ -150,12 +151,12 @@ public class Scanner {
           Preconditions.checkArgument(
               valid, "identifier needs a letter or underscore after '$': %s", input);
           token = input.substring(start);
-          return IDENT;
+          return last = IDENT;
         }
         codePoint = input.codePointAt(loc);
         if (valid && !identFollow(codePoint)) {
           token = input.substring(start, loc);
-          return IDENT;
+          return last = IDENT;
         }
         Preconditions.checkArgument(
             valid || identLead(codePoint),
@@ -167,7 +168,7 @@ public class Scanner {
     }
     // Consume and return the next character
     loc += Character.charCount(codePoint);
-    return codePoint;
+    return last = codePoint;
   }
 
   public String token() {
@@ -180,6 +181,10 @@ public class Scanner {
 
   public int pos() {
     return loc;
+  }
+
+  public int last() {
+    return last;
   }
 
   private static boolean digit(int codePoint) {
