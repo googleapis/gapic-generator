@@ -10,7 +10,7 @@ jobs:
   run-generated-unit-tests:
     docker:
       - image: googleapis/artman:latest
-    working_directory: /toolkit
+    working_directory: /gapic-generator
     steps:
       - checkout
       - run:
@@ -21,12 +21,11 @@ jobs:
           name: Build and install toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
-            ./gradlew clean
             ./gradlew fatJar
             ./gradlew createToolPaths
             rm -rf /toolkit/.git/
             ./gradlew install build -x test
-            export TOOLKIT_HOME=/toolkit
+            export TOOLKIT_HOME=/gapic-generator
       - run:
           name: Generate and run unit tests
           command: |

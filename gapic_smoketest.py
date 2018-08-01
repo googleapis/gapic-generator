@@ -118,6 +118,7 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file):
             'artman',
             '--local',
             '--verbose',
+            '--user-config', "artman_config.yaml",
             '--config', os.path.join(root_dir, artman_config),
             '--root-dir', root_dir,
             'generate', artifact_name
