@@ -33,7 +33,7 @@ logger.setLevel(logging.INFO)
 
 test_languages = {
     "java" : lambda api_name, api_version, log : runJavaTests(api_name, api_version, log),
-    # # TODO: all other languages
+    #TODO: all other languages
 }
 
 test_apis = [
