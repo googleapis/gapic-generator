@@ -206,7 +206,6 @@ public class InitCodeNode {
       initStack.addAll(node.children.values());
       initOrder.add(node);
     }
-    System.err.println("initOrder: " + Lists.reverse(initOrder));
     return Lists.reverse(initOrder);
   }
 
@@ -252,7 +251,22 @@ public class InitCodeNode {
     if (newConfig.hasFormattingConfigInitialValues()) {
       collectionValues.putAll(newConfig.getResourceNameBindingValues());
     }
-    return oldConfig.withInitialCollectionValues(collectionValues);
+    return InitValueConfig.newBuilder()
+        .setApiWrapperName(
+            firstNotNull(oldConfig.getApiWrapperName(), newConfig.getApiWrapperName()))
+        .setSingleResourceNameConfig(
+            firstNotNull(
+                oldConfig.getSingleResourceNameConfig(), newConfig.getSingleResourceNameConfig()))
+        .setInitialValue(firstNotNull(oldConfig.getInitialValue(), newConfig.getInitialValue()))
+        .setResourceNameBindingValues(collectionValues)
+        .build();
+  }
+
+  private static <T> T firstNotNull(T a, T b) {
+    if (a != null) {
+      return a;
+    }
+    return b;
   }
 
   private void resolveNamesAndTypes(

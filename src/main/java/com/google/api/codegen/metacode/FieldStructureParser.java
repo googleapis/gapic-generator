@@ -131,11 +131,8 @@ public class FieldStructureParser {
                 .build(),
             initValueConfigMap);
     if (valueConfig != null) {
-      // System.err.println("old: " + parent.getInitValueConfig());
-      // System.err.println("new: " + valueConfig);
       parent.updateInitValueConfig(
           InitCodeNode.mergeInitValueConfig(parent.getInitValueConfig(), valueConfig));
-      // System.err.println("result: " + parent.getInitValueConfig());
       parent.setLineType(InitCodeLineType.SimpleInitLine);
     }
     return root;
