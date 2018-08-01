@@ -46,13 +46,11 @@ def runJavaTests(api_name, api_version, log):
     gapic_dir = "gapic-google-cloud-%s-%s" % (api_name, api_version)
     # Run gradle test in the main java directory and also in the gapic directory.
     cmds = ("%s/gradlew build test" % os.getcwd()).split()
-    logger.info("cmds: %s" % " ".join(cmds))
     exit_code = subprocess.call(cmds, stdout=log, stderr=log)
     if exit_code:
         return exit_code
 
     cmds = ("%s/gradlew -p %s build test" % (os.getcwd(), gapic_dir)).split()
-    logger.info("cmds: %s" % " ".join(cmds))
     return subprocess.call(cmds, stdout=log, stderr=log)
 
 def run_smoke_test(root_dir, log):
@@ -123,7 +121,6 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file):
             '--root-dir', root_dir,
             'generate', artifact_name
         ]
-        logger.info("Calling artman: %s", " ".join(grpc_pipeline_args))
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 def _test_artifact(test_call, api_name, api_version, log_file):
