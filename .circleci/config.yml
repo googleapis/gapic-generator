@@ -18,7 +18,7 @@ jobs:
           command: |
             git clone https://github.com/googleapis/googleapis.git /tmp/googleapis
       - run:
-          name: Build and install toolkit
+          name: Build and install local toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             ./gradlew fatJar
@@ -32,7 +32,6 @@ jobs:
             mkdir /tmp/reports
             export RUNNING_IN_ARTMAN_DOCKER=True
             python gapic_smoketest.py --root-dir=/tmp/googleapis/ --log=/tmp/reports/smoketest.log
-#            docker run -v gapic_smoketest.py -t googleapis/artman:latest python gapic_smoketest.py --root-dir=/var/code/googleapis/ --log=/tmp/reports/smoketest.log
       - store_test_results:
           path: /tmp/reports
       - store_artifacts:
