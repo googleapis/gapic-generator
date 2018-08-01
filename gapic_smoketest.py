@@ -59,7 +59,6 @@ def run_smoke_test(root_dir, log):
     success = []
     warning = []
     for (api_name, api_version, artman_yaml_path) in test_apis:
-        logger.info("api_name: %s, api_version: %s, artman_yaml_path: %s" % (api_name, api_version, artman_yaml_path))
         for language in test_languages:
             target = language + "_gapic"
             logger.info('Start artifact generation for %s of %s'
