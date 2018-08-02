@@ -107,6 +107,8 @@ def run_smoke_test(api_name, language, root_dir, user_config, logger):
     else:
         logger.info("none.")
 
+    return False if failure else True
+
 
 def _generate_artifact(artman_config, artifact_name, root_dir, user_config_file, logger):
     grpc_pipeline_args = [
