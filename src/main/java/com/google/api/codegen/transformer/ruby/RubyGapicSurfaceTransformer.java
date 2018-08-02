@@ -293,15 +293,15 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     List<String> apiSpecificPathEnvVars =
         ImmutableList.of(
             namer.inittedConstantName(
-                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile")),
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials")),
             namer.inittedConstantName(
-                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials")));
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile")));
     List<String> apiSpecificJsonEnvVars =
         ImmutableList.of(
             namer.inittedConstantName(
-                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json")),
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials").join("json")),
             namer.inittedConstantName(
-                Name.lowerCamel(sanitizedShortName.split(" ")).join("credentials").join("json")));
+                Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json")));
 
     List<String> pathEnvVars =
         ImmutableList.<String>builder()
