@@ -57,8 +57,7 @@ jobs:
           command: |
             cd workspace/gapic-generator
             mkdir /tmp/test_results
-            circleci tests glob "smoketests/tests/test*.py" | circleci tests split \
-                | xargs python -m pytest --reuse-db --junitxml=/tmp/test_results/results.xml
+            circleci tests glob "smoketests/tests/test*.py" | circleci tests split
 #            python smoketests/gapic_smoketest.py --user-config=artman_config.yaml java pubsub
       - store_test_results:
           path: /tmp/test_results
