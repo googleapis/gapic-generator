@@ -1,126 +1,84 @@
 version: 2.0
 
-#jobs:
-#  build:
-#    docker:
-#      - image: googleapis/git
-#    steps:
-#      - checkout
-#    working_directory: /gapic-generator
-#  install-toolkit:
-#    docker:
-##      - image: googleapis/artman:0.14.3
-#      - image: googleapis/git
-#    working_directory: /gapic-generator
-#    steps:
-#      - checkout
-#      - run:
-#          name: Checkout googleapis
-#          command: mkdir -p workspace/googleapis
-##            mkdir -p tmp
-##            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
-#      - run: echo "Hello, world!" > workspace/googleapis/echo-output
-#      - run:
-#          name: Build and install local toolkit
-#          command: |
-#            export RUNNING_IN_ARTMAN_DOCKER=True
-#            ls
-##            ./gradlew fatJar
-##            ./gradlew createToolPaths
-##            rm -rf /gapic-generator/.git/
-##            ./gradlew install build -x test
-#      - persist_to_workspace:
-#          root: workspace
-#          paths:
-#            - googleapis
-#  run-generated-tests:
-#    docker:
-#      - image: googleapis/git
-##      - image: googleapis/artman:0.14.3
-#    working_directory: /gapic-generator
-#    steps:
-#      - checkout
-#      - attach_workspace:
-#          at: /gapic-generator/workspace
-#      - run: |
-#          if [[ `cat /gapic-generator/workspace/googleapis/echo-output` == "Hello, world!" ]]; then
-#            echo "It worked!";
-#          else
-#            echo "Nope!"; exit 1
-#          fi
-#      - run:
-#          command: ls googleapis
-#      - run:
-#          name: Make reports dir
-#          command: mkdir -p tmp/reports
-#      - run:
-#          name: Generate and run Java unit tests for Pubsub
-#          command: |
-#            python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
-##      - run:
-##          name: Generate and run Java unit tests for Logging
-##          command: |
-##            python gapic_smoketest.py --user-config=artman_config.yaml java logging
-##      - run:
-##          name: Generate and run Java unit tests for Speech
-##          command: |
-##            python gapic_smoketest.py --user-config=artman_config.yaml java speech
-#      - store_test_results:
-#          path: /tmp/reports
-#      - store_artifacts:
-#          path: /tmp/reports
-#
-#workflows:
-#  version: 2
-#  run_generated_tests:
-#    jobs:
-#      - install-toolkit
-#      - run-generated-tests:
-#          requires:
-#            - install-toolkit
-#
-#machine:
-#  services:
-#    - docker
-
-
-defaults: &defaults
-  working_directory: /gapic-generator
-  docker:
-    - image: buildpack-deps:jessie
-
 jobs:
-  flow:
-    <<: *defaults
+  build:
+    docker:
+      - image: buildpack-deps:jessie
     steps:
-      - run: mkdir -p workspace
-      - run: echo "Hello, world!" > workspace/echo-output
+      - checkout
+    working_directory: /gapic-generator
+  install-toolkit:
+    docker:
+#      - image: googleapis/artman:0.14.3
+      - image: buildpack-deps:jessie
+    working_directory: /gapic-generator
+    steps:
+      - checkout
+      - run:
+          name: Checkout googleapis
+          command: mkdir -p workspace/googleapis
+#            mkdir -p tmp
+#            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
+      - run: echo "Hello, world!" > workspace/googleapis/echo-output
+      - run:
+          name: Build and install local toolkit
+          command: |
+            export RUNNING_IN_ARTMAN_DOCKER=True
+            ls
+#            ./gradlew fatJar
+#            ./gradlew createToolPaths
+#            rm -rf /gapic-generator/.git/
+#            ./gradlew install build -x test
       - persist_to_workspace:
           root: workspace
-          # Must be relative path from root
           paths:
-            - echo-output
-
-  downstream:
-    <<: *defaults
+            - googleapis
+  run-generated-tests:
+    docker:
+      - image: buildpack-deps:jessie
+#      - image: googleapis/artman:0.14.3
+    working_directory: /gapic-generator
     steps:
+      - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: /gapic-generator/workspace
-
       - run: |
-          if [[ `cat /gapic-generator/workspace/echo-output` == "Hello, world!" ]]; then
+          if [[ `cat /gapic-generator/workspace/googleapis/echo-output` == "Hello, world!" ]]; then
             echo "It worked!";
           else
             echo "Nope!"; exit 1
           fi
+      - run:
+          command: ls googleapis
+      - run:
+          name: Make reports dir
+          command: mkdir -p tmp/reports
+      - run:
+          name: Generate and run Java unit tests for Pubsub
+          command: |
+            python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
+#      - run:
+#          name: Generate and run Java unit tests for Logging
+#          command: |
+#            python gapic_smoketest.py --user-config=artman_config.yaml java logging
+#      - run:
+#          name: Generate and run Java unit tests for Speech
+#          command: |
+#            python gapic_smoketest.py --user-config=artman_config.yaml java speech
+      - store_test_results:
+          path: /tmp/reports
+      - store_artifacts:
+          path: /tmp/reports
 
 workflows:
   version: 2
-
-  btd:
+  run_generated_tests:
     jobs:
-      - flow
-      - downstream:
+      - install-toolkit
+      - run-generated-tests:
           requires:
-            - flow
+            - install-toolkit
+
+machine:
+  services:
+    - docker
