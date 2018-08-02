@@ -17,7 +17,6 @@ anchor_docker: &anchor_docker
 
 jobs:
   build:
-    <<: *anchor_docker
     steps:
       - checkout
   install-toolkit:
@@ -47,6 +46,13 @@ jobs:
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
+      - store_test_results:
+          path: /tmp/reports
+      - store_artifacts:
+          path: /tmp/reports
+      - run:
+          name: Check if generation script caused any changes.
+          command: git status -s && git diff-index --quiet HEAD
   test-java-logging:
     <<: *anchor_docker
     steps:
@@ -57,6 +63,8 @@ jobs:
             mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java logging
       - store_test_results:
+          path: /tmp/reports
+      - store_artifacts:
           path: /tmp/reports
       - run:
           name: Check if generation script caused any changes.
@@ -71,6 +79,8 @@ jobs:
             mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
+          path: /tmp/reports
+      - store_artifacts:
           path: /tmp/reports
       - run:
           name: Check if generation script caused any changes.
