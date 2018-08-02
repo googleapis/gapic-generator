@@ -17,11 +17,11 @@ jobs:
           path: gapic-generator
       - run:
           command: ls gapic-generator
-      - run:
-          name: Checkout googleapis
-          command: |
-            mkdir -p googleapis
-            git clone https://github.com/googleapis/googleapis.git googleapis
+#      - run:
+#          name: Checkout googleapis
+#          command: |
+#            mkdir -p googleapis
+#            git clone https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Build and install local toolkit
           command: |
@@ -29,9 +29,9 @@ jobs:
             rm -rf gapic-generator/.git/
             gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test
       - persist_to_workspace:
-          root: workspace
+          root: /tmp/workspace
           paths:
-            - googleapis
+#            - googleapis
             - gapic-generator
   run-generated-tests:
     docker:
