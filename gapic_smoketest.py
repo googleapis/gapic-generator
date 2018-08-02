@@ -111,7 +111,7 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
     with open(log_file, 'a') as log:
         grpc_pipeline_args = [
             'artman',
-            '--local',
+            # '--local',
             '--verbose',
         ]
         if user_config_file:
@@ -122,6 +122,7 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
             '--root-dir', root_dir,
             'generate', artifact_name
         ]
+        logger.info("running call: %s" % " ".join(grpc_pipeline_args))
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 def _test_artifact(test_call, api_name, api_version, log_file):
@@ -139,15 +140,17 @@ def parse_args(*args):
         help='The API to generate. One of [\"pubsub\", \"logging\", \"api\"]')
     parser.add_argument(
         '--root-dir',
-        default='/googleapis',
+        # The default value is configured for CircleCI.
+        default='/tmp/googleapis/',
         help='Specify where googleapis local repo lives.')
     parser.add_argument(
         '--log',
-        default='/tmp/smoketest.log',
+        # The default value is configured for CircleCI.
+        default='/tmp/reports/smoketest.log',
         help='Specify where smoketest log should be stored.')
     parser.add_argument(
         '--user-config',
-        default='~/.artman/config.yaml',
+        default=None,
         help='Specify where the artman user config lives.')
     return parser.parse_args(args=args)
 

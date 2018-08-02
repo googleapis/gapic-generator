@@ -15,13 +15,6 @@ anchor_docker: &anchor_docker
     - image: googleapis/artman:0.14.3
   working_directory: /gapic-generator
 
-anchor_after_test: &anchor_after_test
-  - store_test_results:
-      path: /tmp/reports
-  - run:
-      name: Check if generation script caused any changes.
-      command: git status -s && git diff-index --quiet HEAD
-
 jobs:
   build:
     <<: *anchor_docker
@@ -57,7 +50,6 @@ jobs:
                 --root-dir=/tmp/googleapis/ \
                 --log=/tmp/reports/smoketest.log \
                 --user-config=artman_config.yaml
-          <<: *anchor_after_test
   test-java-logging:
     <<: *anchor_docker
     steps:
@@ -66,11 +58,12 @@ jobs:
           name: Generate and run Java unit tests for Logging
           command: |
             mkdir /tmp/reports
-            python gapic_smoketest.py \
-                --root-dir=/tmp/googleapis/ \
-                --log=/tmp/reports/smoketest.log \
-                --user-config=artman_config.yaml
-          <<: *anchor_after_test
+            python gapic_smoketest.py --user-config=artman_config.yaml
+      - store_test_results:
+          path: /tmp/reports
+      - run:
+          name: Check if generation script caused any changes.
+          command: git status -s && git diff-index --quiet HEAD
   test-java-speech:
     <<: *anchor_docker
     steps:
@@ -83,23 +76,27 @@ jobs:
                 --root-dir=/tmp/googleapis/ \
                 --log=/tmp/reports/smoketest.log \
                 --user-config=artman_config.yaml
-          <<: *anchor_after_test
+      - store_test_results:
+          path: /tmp/reports
+      - run:
+          name: Check if generation script caused any changes.
+          command: git status -s && git diff-index --quiet HEAD
 
 workflows:
   version: 2
   run_generated_tests:
     jobs:
       - build
-      - install-toolkit
+      - install-toolkit:
           requires:
             - build
-      - test-java-pubsub
+      - test-java-pubsub:
           requires:
             - install-toolkit
-      - test-java-logging
+      - test-java-logging:
           requires:
             - install-toolkit
-      - test-java-speech
+      - test-java-speech:
           requires:
             - install-toolkit
 
