@@ -1,5 +1,27 @@
 version: 2.0
 
+anchor_build: &anchor_build
+  name: Build and install local toolkit
+  command: |
+    export RUNNING_IN_ARTMAN_DOCKER=True
+    ./gradlew fatJar
+    ./gradlew createToolPaths
+    rm -rf /toolkit/.git/
+    ./gradlew install build -x test
+    export TOOLKIT_HOME=/gapic-generator
+
+anchor_docker: &anchor_docker
+  docker:
+    - image: googleapis/artman:0.14.3
+  working_directory: /gapic-generator
+
+anchor_after_test: &anchor_after_test
+  - store_test_results:
+      path: /tmp/reports
+  - run:
+      name: Check if generation script caused any changes.
+      command: git status -s && git diff-index --quiet HEAD
+
 jobs:
   build:
     docker:
@@ -7,10 +29,9 @@ jobs:
     steps:
       - checkout
     working_directory: /gapic-generator
-  run-generated-unit-tests:
-    docker:
-      - image: googleapis/artman:0.14.3
-    working_directory: /gapic-generator
+
+  install-toolkit:
+    <<: *anchor_docker
     steps:
       - checkout
       - run:
@@ -26,21 +47,50 @@ jobs:
             rm -rf /toolkit/.git/
             ./gradlew install build -x test
             export TOOLKIT_HOME=/gapic-generator
+            mkdir /tmp/reports
+  test-java-pubsub:
+    <<: *anchor_docker
+    steps:
+      - checkout
       - run:
           name: Generate and run unit tests
           command: |
             mkdir /tmp/reports
-            export RUNNING_IN_ARTMAN_DOCKER=True
-            python gapic_smoketest.py --root-dir=/tmp/googleapis/ --log=/tmp/reports/smoketest.log
-      - store_test_results:
-          path: /tmp/reports
+            python gapic_smoketest.py \
+                --root-dir=/tmp/googleapis/ \
+                --log=/tmp/reports/smoketest.log \
+                --user-config=artman_config.yaml
+          <<: *anchor_after_test
+  test-java-logging:
+    <<: *anchor_docker
+    steps:
+      - checkout
       - run:
-          name: Check if generation script caused any changes.
-          command: git status -s && git diff-index --quiet HEAD
+          name: Generate and run unit tests
+          command: |
+            mkdir /tmp/reports
+            python gapic_smoketest.py \
+                --root-dir=/tmp/googleapis/ \
+                --log=/tmp/reports/smoketest.log \
+                --user-config=artman_config.yaml
+          <<: *anchor_after_test
+  test-java-speech:
+    <<: *anchor_docker
+    steps:
+      - checkout
+      - run:
+          name: Generate and run unit tests
+          command: |
+            mkdir /tmp/reports
+            python gapic_smoketest.py \
+                --root-dir=/tmp/googleapis/ \
+                --log=/tmp/reports/smoketest.log \
+                --user-config=artman_config.yaml
+          <<: *anchor_after_test
 
 workflows:
   version: 2
-  tests:
+  run_generated_tests:
     jobs:
       - run-generated-unit-tests
 

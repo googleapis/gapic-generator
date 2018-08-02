@@ -25,8 +25,6 @@ import logging
 import os
 import subprocess
 import sys
-# TODO: requirements.txt for pip install deps
-
 
 logger = logging.getLogger('smoketest')
 logger.setLevel(logging.INFO)
@@ -36,11 +34,11 @@ test_languages = {
     #TODO: all other languages
 }
 
-test_apis = [
-    ("pubsub", "v1", "google/pubsub/artman_pubsub.yaml"),
-    ("logging", "v2", "google/logging/artman_logging.yaml"),
-    ("speech", "v1", "google/cloud/speech/artman_speech_v1.yaml"),
-]
+test_apis = {
+    "pubsub" : ("v1", "google/pubsub/artman_pubsub.yaml"),
+    "logging" : ("v2", "google/logging/artman_logging.yaml"),
+    "speech" : ("v1", "google/cloud/speech/artman_speech_v1.yaml"),
+}
 
 def runJavaTests(api_name, api_version, log):
     gapic_dir = "gapic-google-cloud-%s-%s" % (api_name, api_version)
@@ -53,43 +51,42 @@ def runJavaTests(api_name, api_version, log):
     cmds = ("%s/gradlew -p %s build test" % (os.getcwd(), gapic_dir)).split()
     return subprocess.call(cmds, stdout=log, stderr=log)
 
-def run_smoke_test(root_dir, log):
+def run_smoke_test(api_name, language, root_dir, log):
     log_file = _setup_logger(log)
     failure = []
     success = []
     warning = []
-    for (api_name, api_version, artman_yaml_path) in test_apis:
-        for language in test_languages:
-            target = language + "_gapic"
-            logger.info('Start artifact generation for %s of %s'
-                        % (target, artman_yaml_path))
-            if _generate_artifact(artman_yaml_path,
-                                  target,
-                                  root_dir,
-                                  log_file):
-                msg = 'Failed to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                failure.append(msg)
-                logger.info(msg)
-            else:
-                msg = 'Succeded to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                success.append(msg)
-                logger.info(msg)
+    (api_version, artman_yaml_path) = test_apis[api_name]
+    target = language + "_gapic"
+    logger.info('Start artifact generation for %s of %s'
+                % (target, artman_yaml_path))
+    if _generate_artifact(artman_yaml_path,
+                          target,
+                          root_dir,
+                          log_file):
+        msg = 'Failed to generate %s of %s.' % (
+            target, artman_yaml_path)
+        failure.append(msg)
+        logger.info(msg)
+    else:
+        msg = 'Succeded to generate %s of %s.' % (
+            target, artman_yaml_path)
+        success.append(msg)
+        logger.info(msg)
 
-                cwd = os.getcwd()
-                os.chdir("artman-genfiles/%s" % language)
+        cwd = os.getcwd()
+        os.chdir("artman-genfiles/%s" % language)
 
-                if _test_artifact(test_languages[language], api_name, api_version, log_file):
-                    msg = 'Failed to pass tests for %s library.' % (
-                        language)
-                    failure.append(msg)
-                else:
-                    msg = 'Succeeded to pass tests for %s library.' % (
-                        language)
-                    success.append(msg)
-                os.chdir(cwd)
-                logger.info(msg)
+        if _test_artifact(test_languages[language], api_name, api_version, log_file):
+            msg = 'Failed to pass tests for %s library.' % (
+                language)
+            failure.append(msg)
+        else:
+            msg = 'Succeeded to pass tests for %s library.' % (
+                language)
+            success.append(msg)
+        os.chdir(cwd)
+        logger.info(msg)
     logger.info('================ Smoketest summary ================')
     logger.info('Successes:')
     for msg in success:
@@ -109,13 +106,17 @@ def run_smoke_test(root_dir, log):
         logger.info("none.")
 
 
-def _generate_artifact(artman_config, artifact_name, root_dir, log_file):
+def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_config_file):
     with open(log_file, 'a') as log:
         grpc_pipeline_args = [
             'artman',
             '--local',
             '--verbose',
-            '--user-config', "artman_config.yaml",
+        ]
+        if user_config_file:
+            grpc_pipeline_args = grpc_pipeline_args + [
+                '--user-config', user_config_file,]
+        grpc_pipeline_args = grpc_pipeline_args + [
             '--config', os.path.join(root_dir, artman_config),
             '--root-dir', root_dir,
             'generate', artifact_name
@@ -129,15 +130,26 @@ def _test_artifact(test_call, api_name, api_version, log_file):
 def parse_args(*args):
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        'language',
+        required=True,
+        help='Language to test and run. One of [\"java\"]')
+        # TODO - support more languages.
+    parser.add_argument(
+        'api',
+        required=True,
+        help='The API to generate. One of [\"pubsub\", \"logging\", \"api\"]')
+    parser.add_argument(
         '--root-dir',
         default='/googleapis',
-        type=str,
         help='Specify where googleapis local repo lives.')
     parser.add_argument(
         '--log',
         default='/tmp/smoketest.log',
-        type=str,
         help='Specify where smoketest log should be stored.')
+    parser.add_argument(
+        '--user-config',
+        default='~/.artman/config.yaml',
+        help='Specify where the artman user config lives.')
     return parser.parse_args(args=args)
 
 
@@ -152,4 +164,10 @@ def _setup_logger(log_file):
 if __name__ == '__main__':
     flags = parse_args(*sys.argv[1:])
 
-    run_smoke_test(os.path.abspath(flags.root_dir), os.path.abspath(flags.log))
+    root_dir = os.path.abspath(flags.root_dir)
+    log = os.path.abspath(flags.log)
+    api = os.path.abspath(flags.api)
+    language = os.path.abspath(flags.language)
+    user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
+
+    run_smoke_test(api, language, root_dir, log, user_config)
