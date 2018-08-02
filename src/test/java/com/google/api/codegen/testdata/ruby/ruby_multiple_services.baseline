@@ -1515,10 +1515,10 @@ require "google/example"
 require "google/example/v1/foo/decrementer_service_client"
 require "multiple_services_services_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -1546,7 +1546,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockDecrementerServiceCredentials < Google::Example::V1::Foo::Credentials
+class MockDecrementerServiceCredentials_v1 < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1562,7 +1562,7 @@ end
 describe Google::Example::V1::Foo::DecrementerServiceClient do
 
   describe 'decrement' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
 
     it 'invokes decrement without error' do
 
@@ -1570,10 +1570,10 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials_v1.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1600,10 +1600,10 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials_v1.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1645,10 +1645,10 @@ require "google/example"
 require "google/example/v1/foo/incrementer_service_client"
 require "multiple_services_services_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -1676,7 +1676,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockIncrementerServiceCredentials < Google::Example::V1::Foo::Credentials
+class MockIncrementerServiceCredentials_v1 < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1692,7 +1692,7 @@ end
 describe Google::Example::V1::Foo::IncrementerServiceClient do
 
   describe 'increment' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::IncrementerServiceClient#increment."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Example::V1::Foo::IncrementerServiceClient#increment."
 
     it 'invokes increment without error' do
 
@@ -1700,10 +1700,10 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials_v1.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1730,10 +1730,10 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials_v1.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
