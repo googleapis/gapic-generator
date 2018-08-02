@@ -34,10 +34,10 @@ jobs:
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             ./gradlew fatJar
+            cp -r build workspace
 #            ./gradlew createToolPaths
 #            rm -rf /gapic-generator/.git/
 #            ./gradlew install build -x test
-            cp -r build workspace
       - persist_to_workspace:
           root: workspace
           paths:
