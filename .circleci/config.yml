@@ -17,9 +17,10 @@ jobs:
     steps:
       - checkout
     working_directory: /gapic-generator
-  run-generated-tests:
+  install-toolkit:
     docker:
-      - image: googleapis/artman:0.14.3
+#      - image: googleapis/artman:0.14.3
+      - image: googleapis/git
     working_directory: /gapic-generator
     steps:
       - checkout
@@ -41,18 +42,31 @@ jobs:
       - run:
           name: Make reports dir
           command: mkdir /tmp/reports
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - googleapis
+            - reports
+  run-generated-tests:
+    docker:
+#      - image: googleapis/artman:0.14.3
+      - image: googleapis/git
+    working_directory: /gapic-generator
+    steps:
+      - attach_workspace:
+          at: /tmp/
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
-      - run:
-          name: Generate and run Java unit tests for Logging
-          command: |
-            python gapic_smoketest.py --user-config=artman_config.yaml java logging
-      - run:
-          name: Generate and run Java unit tests for Speech
-          command: |
-            python gapic_smoketest.py --user-config=artman_config.yaml java speech
+#      - run:
+#          name: Generate and run Java unit tests for Logging
+#          command: |
+#            python gapic_smoketest.py --user-config=artman_config.yaml java logging
+#      - run:
+#          name: Generate and run Java unit tests for Speech
+#          command: |
+#            python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
           path: /tmp/reports
       - store_artifacts:
@@ -62,7 +76,10 @@ workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - run-generated-tests
+      - install-toolkit
+#      - run-generated-tests:
+#          requires:
+#            - install-toolkit
 
 machine:
   services:
