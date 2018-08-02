@@ -10,11 +10,6 @@ anchor_build: &anchor_build
     ./gradlew install build -x test
     export TOOLKIT_HOME=/gapic-generator
 
-anchor_docker: &anchor_docker
-  docker:
-    - image: googleapis/artman:0.14.3
-  working_directory: /gapic-generator
-
 jobs:
   build:
     docker:
@@ -22,14 +17,14 @@ jobs:
     steps:
       - checkout
     working_directory: /gapic-generator
-  install-toolkit:
-    <<: *anchor_docker
-    steps:
-      - checkout
   run-generated-tests:
-    <<: *anchor_docker
+    docker:
+      - image: googleapis/artman:0.14.3
+    working_directory: /gapic-generator
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Checkout googleapis
           command: |
@@ -43,21 +38,20 @@ jobs:
             rm -rf /toolkit/.git/
             ./gradlew install build -x test
             export TOOLKIT_HOME=/gapic-generator
-            mkdir /tmp/reports
+      - run:
+          name: Make reports dir
+          command: mkdir /tmp/reports
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
-            mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
       - run:
           name: Generate and run Java unit tests for Logging
           command: |
-            mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java logging
       - run:
           name: Generate and run Java unit tests for Speech
           command: |
-            mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
           path: /tmp/reports
