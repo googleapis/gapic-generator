@@ -20,20 +20,19 @@ jobs:
       - run:
           name: Checkout googleapis
           command: |
-            mkdir -p workspace/googleapis
-            git clone https://github.com/googleapis/googleapis.git workspace/googleapis
+            mkdir -p googleapis
+            git clone https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Build and install local toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
-            ./gradlew -p gapic-generator fatJar createToolPaths install build -x test
-#            cp -r build workspace
+            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test
       - persist_to_workspace:
           root: workspace
           paths:
-#            - googleapis
-            - build
+            - googleapis
+            - gapic-generator
   run-generated-tests:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -45,11 +44,8 @@ jobs:
       - attach_workspace:
           at: workspace
       - run:
-          name: Copy installed toolkit
-          command: cp -r workspace/build .
-      - run:
-          name: Ensure toolkit is installed
-          command: ls build/libs/gapic-generator-latest-fatjar.jar
+          name: Ensure fatJar was built
+          command: ls workspace/gapic-generator/build/libs/gapic-generator-latest-fatjar.jar
       - run:
           name: Make reports dir
           command: mkdir -p tmp/reports
