@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.util.Name;
@@ -28,7 +29,6 @@ import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -189,12 +189,8 @@ public class SampleInitCodeTest {
     assertThat(actualFormattedFieldNode.getInitValueConfig()).isNotNull();
     assertThat(actualFormattedFieldNode.getInitValueConfig().hasFormattingConfigInitialValues())
         .isTrue();
-    assertThat(
-            actualFormattedFieldNode
-                .getInitValueConfig()
-                .getResourceNameBindingValues()
-                .equals(expectedCollectionValues))
-        .isTrue();
+    assertThat(actualFormattedFieldNode.getInitValueConfig().getResourceNameBindingValues())
+        .isEqualTo(expectedCollectionValues);
   }
 
   @Test
@@ -343,31 +339,22 @@ public class SampleInitCodeTest {
     List<String> fieldSpecs =
         Arrays.asList("mylist", "myfield", "secondfield", "stringmap", "intmap");
 
-    List<String> expectedKeyList =
-        Lists.newArrayList("mylist", "myfield", "secondfield", "stringmap", "intmap", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("mylist", "myfield", "secondfield", "stringmap", "intmap", "root")
+        .inOrder();
   }
 
   @Test
   public void testMultipleListEntries() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[1]");
 
-    List<String> expectedKeyList = Arrays.asList("0", "1", "mylist", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("0", "1", "mylist", "root")
+        .inOrder();
   }
 
   @Test
@@ -375,16 +362,11 @@ public class SampleInitCodeTest {
     List<String> fieldSpecs =
         Arrays.asList("stringmap{\"key1\"}", "stringmap{\"key2\"}", "intmap{123}", "intmap{456}");
 
-    List<String> expectedKeyList =
-        Arrays.asList("key1", "key2", "stringmap", "123", "456", "intmap", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("key1", "key2", "stringmap", "123", "456", "intmap", "root")
+        .inOrder();
   }
 
   @Test
@@ -392,8 +374,6 @@ public class SampleInitCodeTest {
     List<String> fieldSpecs =
         Arrays.asList(
             "formatted_field%entity1", "formatted_field%entity2", "formatted_field%entity3");
-
-    List<String> expectedKeyList = Arrays.asList("formatted_field", "root");
 
     HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
@@ -405,57 +385,42 @@ public class SampleInitCodeTest {
             .initValueConfigMap(initValueMap)
             .build();
     InitCodeNode rootNode = InitCodeNode.createTree(context);
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("formatted_field", "root")
+        .inOrder();
   }
 
   @Test
   public void testListEmbeddedMultipleFields() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[0].subfield", "mylist[0].subsecondfield");
 
-    List<String> expectedKeyList =
-        Arrays.asList("subfield", "subsecondfield", "0", "mylist", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("subfield", "subsecondfield", "0", "mylist", "root")
+        .inOrder();
   }
 
   @Test
   public void testCompoundingStructure() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield", "myfield.subfield");
 
-    List<String> expectedKeyList = Arrays.asList("subfield", "myfield", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("subfield", "myfield", "root")
+        .inOrder();
   }
 
   @Test
   public void testCompoundingStructureList() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist", "mylist[0]", "mylist[0].subfield");
 
-    List<String> expectedKeyList = Arrays.asList("subfield", "0", "mylist", "root");
-
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    List<String> actualKeyList = new ArrayList<>();
-    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
-      actualKeyList.add(node.getKey());
-    }
-    assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+        .containsExactly("subfield", "0", "mylist", "root")
+        .inOrder();
   }
 
   private static void assertNodeEqual(InitCodeNode a, InitCodeNode b) {
