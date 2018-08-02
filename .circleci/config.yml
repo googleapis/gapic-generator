@@ -40,30 +40,24 @@ jobs:
             - reports
   run-generated-tests:
     docker:
-      - image: googleapis/artman:0.14.3
+#      - image: googleapis/artman:0.14.3
+      - image: circleci/python
     environment:
       RUNNING_IN_ARTMAN_DOCKER: True
-    working_directory: /tmp/
-    parallelism: 3
+#    working_directory: /tmp/
+    working_directory: /tmp/workspace/gapic-generator
+    parallelism: 2
     steps:
-      - attach_workspace:
-          # Use the workspace created in install-toolkit
-          at: workspace
+      - checkout #TODO remove this
+#      - attach_workspace:
+#          # Use the workspace created in install-toolkit
+#          at: workspace
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
             cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
-      - run:
-          name: Generate and run Java unit tests for Logging
-          command: |
-            cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java logging
-      - run:
-          name: Generate and run Java unit tests for Speech
-          command: |
-            cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java speech
+            circleci tests glob "smoketests/tests/test*.py
+#            python smoketests/gapic_smoketest.py --user-config=artman_config.yaml java pubsub
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -73,10 +67,11 @@ workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - install-toolkit
-      - run-generated-tests:
-          requires:
-            - install-toolkit
+      - run-generated-tests
+#      - install-toolkit
+#      - run-generated-tests:
+#          requires:
+#            - install-toolkit
 
 machine:
   services:
