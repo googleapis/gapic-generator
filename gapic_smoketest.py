@@ -111,7 +111,7 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
     with open(log_file, 'a') as log:
         grpc_pipeline_args = [
             'artman',
-            # '--local',
+            '--local',
             '--verbose',
         ]
         if user_config_file:
