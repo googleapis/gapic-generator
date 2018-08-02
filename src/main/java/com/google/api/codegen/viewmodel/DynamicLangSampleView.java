@@ -16,10 +16,17 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** A ViewModel for standalone samples for dynamic languages. */
 @AutoValue
 public abstract class DynamicLangSampleView implements ViewModel {
+
+  /**
+   * A placeholder class intended for different languages to subclass and put language-specific
+   * information
+   */
+  public static class SampleExtraInfo {}
 
   public abstract String templateFileName();
 
@@ -36,6 +43,9 @@ public abstract class DynamicLangSampleView implements ViewModel {
   public abstract OptionalArrayMethodView libraryMethod();
 
   public abstract String gapicPackageName();
+
+  @Nullable
+  public abstract SampleExtraInfo extraInfo();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangSampleView.Builder();
@@ -55,6 +65,8 @@ public abstract class DynamicLangSampleView implements ViewModel {
     public abstract Builder libraryMethod(OptionalArrayMethodView val);
 
     public abstract Builder gapicPackageName(String val);
+
+    public abstract Builder extraInfo(SampleExtraInfo extraInfo);
 
     public abstract DynamicLangSampleView build();
   }

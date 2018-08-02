@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -33,6 +34,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -49,6 +51,7 @@ import com.google.api.codegen.viewmodel.DynamicLangXApiSubclassView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RestConfigView;
 import com.google.api.codegen.viewmodel.RestInterfaceConfigView;
 import com.google.api.codegen.viewmodel.RestMethodConfigView;
@@ -65,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -73,10 +77,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
   private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
-  private DynamicLangApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
+  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+      new DynamicLangApiMethodTransformer(
+          new PhpApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.IN_CODE);
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
+  private final PhpMethodViewGenerator methodGenerator =
+      new PhpMethodViewGenerator(apiMethodTransformer);
 
   private static final String API_TEMPLATE_FILENAME = "php/partial_veneer_client.snip";
   private static final String API_IMPL_TEMPLATE_FILENAME = "php/client_impl.snip";
@@ -90,8 +98,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.apiMethodTransformer =
-        new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer());
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 
@@ -141,7 +147,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     addApiImports(context);
 
-    List<ApiMethodView> methods = generateApiMethods(context);
+    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
 
     DynamicLangXApiView.Builder apiImplClass = DynamicLangXApiView.newBuilder();
 
@@ -183,7 +189,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
             context.getImportTypeTable(), context.getInterfaceModel());
     apiImplClass.grpcClientTypeName(grpcClientTypeName);
 
-    apiImplClass.apiMethods(methods);
+    apiImplClass.apiMethods(methods.stream().collect(Collectors.toList()));
 
     apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 

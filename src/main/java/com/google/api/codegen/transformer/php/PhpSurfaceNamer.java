@@ -268,4 +268,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     return Joiner.on(". ").join(stringParts);
   }
+
+  @Override
+  public String getApiSampleFileName(String className) {
+    return className + ".php";
+  }
 }

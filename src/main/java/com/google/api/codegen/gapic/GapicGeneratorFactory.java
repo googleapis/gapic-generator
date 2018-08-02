@@ -52,6 +52,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransforme
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.php.PhpGapicSamplesTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
@@ -186,77 +187,65 @@ public class GapicGeneratorFactory {
       }
 
     } else if (language.equals(JAVA)) {
+      Function<ModelToViewTransformer<ProtoApiModel>, CodeGenerator> newJavaGenerator =
+          transformer ->
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                  .setModelToViewTransformer(transformer)
+                  .build();
+
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper javaPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        CodeGenerator mainGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(
-                    new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig))
-                .build();
 
-        generators.add(mainGenerator);
+        if (artifactFlags.codeFilesEnabled()) {
+          generators.add(
+              newJavaGenerator.apply(
+                  new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig)));
+          generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
+        }
 
-        CodeGenerator metadataGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(
-                    new JavaGapicPackageTransformer<ProtoApiModel>(packageConfig))
-                .build();
-        generators.add(metadataGenerator);
+        if (artifactFlags.packagingFilesEnabled()) {
+          generators.add(newJavaGenerator.apply(new JavaGapicPackageTransformer<>(packageConfig)));
 
-        CodeGenerator staticResourcesGenerator =
-            new StaticResourcesGenerator(
-                ImmutableMap.<String, String>builder()
-                    .put("java/static/build.gradle", "../build.gradle")
-                    .put("java/static/settings.gradle", "../settings.gradle")
-                    .put("java/static/gradlew", "../gradlew")
-                    .put("java/static/gradlew.bat", "../gradlew.bat")
-                    .put(
-                        "java/static/gradle/wrapper/gradle-wrapper.jar",
-                        "../gradle/wrapper/gradle-wrapper.jar")
-                    .put(
-                        "java/static/gradle/wrapper/gradle-wrapper.properties",
-                        "../gradle/wrapper/gradle-wrapper.properties")
-                    .build(),
-                ImmutableSet.of("../gradlew"));
-        generators.add(staticResourcesGenerator);
-
-        CodeGenerator sampleGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicSamplesTransformer(javaPathMapper))
-                .build();
-        generators.add(sampleGenerator);
+          CodeGenerator staticResourcesGenerator =
+              new StaticResourcesGenerator(
+                  ImmutableMap.<String, String>builder()
+                      .put("java/static/build.gradle", "../build.gradle")
+                      .put("java/static/settings.gradle", "../settings.gradle")
+                      .put("java/static/gradlew", "../gradlew")
+                      .put("java/static/gradlew.bat", "../gradlew.bat")
+                      .put(
+                          "java/static/gradle/wrapper/gradle-wrapper.jar",
+                          "../gradle/wrapper/gradle-wrapper.jar")
+                      .put(
+                          "java/static/gradle/wrapper/gradle-wrapper.properties",
+                          "../gradle/wrapper/gradle-wrapper.properties")
+                      .build(),
+                  ImmutableSet.of("../gradlew"));
+          generators.add(staticResourcesGenerator);
+        }
       }
+
       if (artifactFlags.testGeneratorEnabled()) {
-        GapicCodePathMapper javaTestPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/test/java")
-                .setShouldAppendPackage(true)
-                .build();
-        CodeGenerator testGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new JavaSurfaceTestTransformer<ProtoApiModel>(
-                        javaTestPathMapper,
-                        new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
-                        "java/grpc_test.snip"))
-                .build();
-        generators.add(testGenerator);
+        if (artifactFlags.codeFilesEnabled()) {
+          GapicCodePathMapper javaTestPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("src/test/java")
+                  .setShouldAppendPackage(true)
+                  .build();
+          generators.add(
+              newJavaGenerator.apply(
+                  new JavaSurfaceTestTransformer<>(
+                      javaTestPathMapper,
+                      new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                      "java/grpc_test.snip")));
+        }
       }
       return generators;
 
@@ -359,6 +348,16 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                .build();
+        generators.add(sampleGenerator);
+
         generators.add(generator);
         generators.add(clientConfigGenerator);
         generators.add(metadataGenerator);
@@ -373,7 +372,6 @@ public class GapicGeneratorFactory {
                 .build();
         generators.add(testGenerator);
       }
-
     } else if (language.equals(PYTHON)) {
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper pythonPathMapper =

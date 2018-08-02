@@ -586,19 +586,21 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *
-     *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->listShelves();
-     *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doSomethingWith($element);
-     *     }
-     *
-     *     // OR iterate over pages of elements
+     *     // Iterate over pages of elements
      *     $pagedResponse = $libraryServiceClient->listShelves();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
      *         }
+     *     }
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -890,18 +892,21 @@ class LibraryServiceGapicClient
      * try {
      *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $filter = 'book-filter-string';
-     *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
-     *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doSomethingWith($element);
-     *     }
-     *
-     *     // OR iterate over pages of elements
+     *     // Iterate over pages of elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
      *         }
+     *     }
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1108,19 +1113,21 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *
-     *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->listStrings();
-     *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doSomethingWith($element);
-     *     }
-     *
-     *     // OR iterate over pages of elements
+     *     // Iterate over pages of elements
      *     $pagedResponse = $libraryServiceClient->listStrings();
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
      *         }
+     *     }
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1407,7 +1414,6 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamShelves();
      *     foreach ($stream->readAll() as $element) {
@@ -1498,19 +1504,22 @@ class LibraryServiceGapicClient
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *     $requests = [$request];
-     *
      *     // Write all requests to the server, then read all responses until the
      *     // stream is complete
+     *     $requests = [$request];
      *     $stream = $libraryServiceClient->discussBook();
      *     $stream->writeAll($requests);
      *     foreach ($stream->closeWriteAndReadAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR write requests individually, making read() calls if
+     *
+     *     // Alternatively:
+     *
+     *     // Write requests individually, making read() calls if
      *     // required. Call closeWrite() once writes are complete, and read the
      *     // remaining responses from the server.
+     *     $requests = [$request];
      *     $stream = $libraryServiceClient->discussBook();
      *     foreach ($requests as $request) {
      *         $stream->write($request);
@@ -1562,14 +1571,17 @@ class LibraryServiceGapicClient
      *     $name = '';
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *     $requests = [$request];
-     *
      *     // Write data to server and wait for a response
+     *     $requests = [$request];
      *     $stream = $libraryServiceClient->monologAboutBook();
      *     $result = $stream->writeAllAndReadResponse($requests);
      *     // doSomethingWith($result)
      *
-     *     // OR write data as it becomes available, then wait for a response
+     *
+     *     // Alternatively:
+     *
+     *     // Write data as it becomes available, then wait for a response
+     *     $requests = [$request];
      *     $stream = $libraryServiceClient->monologAboutBook();
      *     foreach ($requests as $request) {
      *         $stream->write($request);
@@ -1613,18 +1625,21 @@ class LibraryServiceGapicClient
      *     $namesElement = '';
      *     $names = [$namesElement];
      *     $shelves = [];
-     *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
-     *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doSomethingWith($element);
-     *     }
-     *
-     *     // OR iterate over pages of elements
+     *     // Iterate over pages of elements
      *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
      *         }
+     *     }
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1783,14 +1798,17 @@ class LibraryServiceGapicClient
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
-     *       $result = $operationResponse->getResult();
-     *       // doSomethingWith($result)
+     *         $result = $operationResponse->getResult();
+     *         // doSomethingWith($result)
      *     } else {
-     *       $error = $operationResponse->getError();
-     *       // handleError($error)
+     *         $error = $operationResponse->getError();
+     *         // handleError($error)
      *     }
      *
-     *     // OR start the operation, keep the operation name, and resume later
+     *
+     *     // Alternatively:
+     *
+     *     // start the operation, keep the operation name, and resume later
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationName = $operationResponse->getName();
      *     // ... do other work
@@ -1850,13 +1868,16 @@ class LibraryServiceGapicClient
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
-     *       // operation succeeded and returns no value
+     *         // operation succeeded and returns no value
      *     } else {
-     *       $error = $operationResponse->getError();
-     *       // handleError($error)
+     *         $error = $operationResponse->getError();
+     *         // handleError($error)
      *     }
      *
-     *     // OR start the operation, keep the operation name, and resume later
+     *
+     *     // Alternatively:
+     *
+     *     // start the operation, keep the operation name, and resume later
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationName = $operationResponse->getName();
      *     // ... do other work
@@ -2700,6 +2721,550 @@ return [
     ]
 ];
 
+============== file: src/V1/samples/discussBook/DiscussBookSampleRequestStreamingBidiAsyncProg.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleRequestStreamingBidiAsyncProg" ]
+//// STUB standalone sample "DiscussBookSampleRequestStreamingBidiAsyncProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingBidiAsync"
+//     valueSet "prog" ("Programming Books")
+//       description: "Testing calling forms"
+//       [name=BASIC]
+//     apiMethod "discussBook" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\DiscussBookRequest;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'BASIC';
+$request = new DiscussBookRequest();
+$request->setName($name);
+
+try {
+    // Write requests individually, making read() calls if
+    // required. Call closeWrite() once writes are complete, and read the
+    // remaining responses from the server.
+    $requests = [$request];
+    $stream = $libraryServiceClient->discussBook();
+    foreach ($requests as $request) {
+        $stream->write($request);
+        // if required, read a single response from the stream
+        $element = $stream->read();
+        // doSomethingWith($element)
+    }
+    $stream->closeWrite();
+    $element = $stream->read();
+    while (!is_null($element)) {
+        // doSomethingWith($element)
+        $element = $stream->read();
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/discussBook/DiscussBookSampleRequestStreamingBidiProg.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookSampleRequestStreamingBidiProg" ]
+//// STUB standalone sample "DiscussBookSampleRequestStreamingBidiProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingBidi"
+//     valueSet "prog" ("Programming Books")
+//       description: "Testing calling forms"
+//       [name=BASIC]
+//     apiMethod "discussBook" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\DiscussBookRequest;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'BASIC';
+$request = new DiscussBookRequest();
+$request->setName($name);
+
+try {
+    // Write all requests to the server, then read all responses until the
+    // stream is complete
+    $requests = [$request];
+    $stream = $libraryServiceClient->discussBook();
+    $stream->writeAll($requests);
+    foreach ($stream->closeWriteAndReadAll() as $element) {
+        // doSomethingWith($element);
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksSampleRequestPagedAllOdyssey.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestPagedAllOdyssey" ]
+//// STUB standalone sample "FindRelatedBooksSampleRequestPagedAllOdyssey" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestPagedAll"
+//     valueSet "odyssey" ("The Odyssey")
+//       description: "Testing calling forms"
+//       [names[0]=Odyssey, shelves[0]=Classics]
+//     apiMethod "findRelatedBooks" of type "PagedOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+$namesElement = 'Odyssey';
+$names = [$namesElement];
+$shelvesElement = 'Classics';
+$shelves = [$shelvesElement];
+
+try {
+    // Iterate through all elements
+    $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+    foreach ($pagedResponse->iterateAllElements() as $element) {
+        // doSomethingWith($element);
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksSampleRequestPagedOdyssey.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksSampleRequestPagedOdyssey" ]
+//// STUB standalone sample "FindRelatedBooksSampleRequestPagedOdyssey" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestPaged"
+//     valueSet "odyssey" ("The Odyssey")
+//       description: "Testing calling forms"
+//       [names[0]=Odyssey, shelves[0]=Classics]
+//     apiMethod "findRelatedBooks" of type "PagedOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+$namesElement = 'Odyssey';
+$names = [$namesElement];
+$shelvesElement = 'Classics';
+$shelves = [$shelvesElement];
+
+try {
+    // Iterate over pages of elements
+    $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+    foreach ($pagedResponse->iteratePages() as $page) {
+        foreach ($page as $element) {
+            // doSomethingWith($element);
+        }
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/getBigBook/GetBigBookSampleLongRunningRequestAsyncWap.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleLongRunningRequestAsyncWap" ]
+//// STUB standalone sample "GetBigBookSampleLongRunningRequestAsyncWap" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "LongRunningRequestAsync"
+//     valueSet "wap" ("GetBigBook: 'War and Peace'")
+//       description: "Testing calling forms"
+//       [name="War and Peace"]
+//     apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+$formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+try {
+    // start the operation, keep the operation name, and resume later
+    $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+    $operationName = $operationResponse->getName();
+    // ... do other work
+    $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+    while (!$newOperationResponse->isDone()) {
+        // ... do other work
+        $newOperationResponse->reload();
+    }
+    if ($newOperationResponse->operationSucceeded()) {
+      $result = $newOperationResponse->getResult();
+      // doSomethingWith($result)
+    } else {
+      $error = $newOperationResponse->getError();
+      // handleError($error)
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/getBigBook/GetBigBookSampleLongRunningRequestWap.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookSampleLongRunningRequestWap" ]
+//// STUB standalone sample "GetBigBookSampleLongRunningRequestWap" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "LongRunningRequest"
+//     valueSet "wap" ("GetBigBook: 'War and Peace'")
+//       description: "Testing calling forms"
+//       [name="War and Peace"]
+//     apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+$formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+try {
+    $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+        $result = $operationResponse->getResult();
+        // doSomethingWith($result)
+    } else {
+        $error = $operationResponse->getError();
+        // handleError($error)
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/monologAboutBook/MonologAboutBookSampleRequestStreamingClientAsyncProg.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleRequestStreamingClientAsyncProg" ]
+//// STUB standalone sample "MonologAboutBookSampleRequestStreamingClientAsyncProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingClientAsync"
+//     valueSet "prog" ("Programming Books")
+//       description: "Testing calling forms"
+//       [name=BASIC]
+//     apiMethod "monologAboutBook" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\DiscussBookRequest;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'BASIC';
+$request = new DiscussBookRequest();
+$request->setName($name);
+
+try {
+    // Write data as it becomes available, then wait for a response
+    $requests = [$request];
+    $stream = $libraryServiceClient->monologAboutBook();
+    foreach ($requests as $request) {
+        $stream->write($request);
+    }
+    $result = $stream->readResponse();
+    // doSomethingWith($result)
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/monologAboutBook/MonologAboutBookSampleRequestStreamingClientProg.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookSampleRequestStreamingClientProg" ]
+//// STUB standalone sample "MonologAboutBookSampleRequestStreamingClientProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingClient"
+//     valueSet "prog" ("Programming Books")
+//       description: "Testing calling forms"
+//       [name=BASIC]
+//     apiMethod "monologAboutBook" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\DiscussBookRequest;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'BASIC';
+$request = new DiscussBookRequest();
+$request->setName($name);
+
+try {
+    // Write data to server and wait for a response
+    $requests = [$request];
+    $stream = $libraryServiceClient->monologAboutBook();
+    $result = $stream->writeAllAndReadResponse($requests);
+    // doSomethingWith($result)
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/publishSeries/PublishSeriesSampleRequestPiVersion.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestPiVersion" ]
+//// STUB standalone sample "PublishSeriesSampleRequestPiVersion" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "Request"
+//     valueSet "pi_version" ("Pi version")
+//       description: "Testing calling forms"
+//       [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//     apiMethod "publishSeries" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\Book;
+use \Google\Example\Library\V1\SeriesUuid;
+use \Google\Example\Library\V1\Shelf;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'Math';
+$shelf = new Shelf();
+$shelf->setName($name);
+$books = [];
+$seriesString = 'xyz3141592654';
+$seriesUuid = new SeriesUuid();
+$seriesUuid->setSeriesString($seriesString);
+
+try {
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/publishSeries/PublishSeriesSampleRequestSecondEdition.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesSampleRequestSecondEdition" ]
+//// STUB standalone sample "PublishSeriesSampleRequestSecondEdition" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "Request"
+//     valueSet "second_edition" ("Second edition")
+//       description: "Testing calling forms"
+//       [edition=2]
+//     apiMethod "publishSeries" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+use \Google\Example\Library\V1\Book;
+use \Google\Example\Library\V1\SeriesUuid;
+use \Google\Example\Library\V1\Shelf;
+
+$libraryServiceClient = new LibraryServiceClient();
+
+$shelf = new Shelf();
+$books = [];
+$seriesUuid = new SeriesUuid();
+$edition = 2;
+
+try {
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/streamBooks/StreamBooksSampleRequestStreamingServerProg.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksSampleRequestStreamingServerProg" ]
+//// STUB standalone sample "StreamBooksSampleRequestStreamingServerProg" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingServer"
+//     valueSet "prog" ("Programming Books")
+//       description: "Testing calling forms"
+//       [name=BASIC]
+//     apiMethod "streamBooks" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+$name = 'BASIC';
+
+try {
+    // Read all responses until the stream is complete
+    $stream = $libraryServiceClient->streamBooks($name);
+    foreach ($stream->readAll() as $element) {
+        // doSomethingWith($element);
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
+============== file: src/V1/samples/streamShelves/StreamShelvesSampleRequestStreamingServerEmpty.php ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesSampleRequestStreamingServerEmpty" ]
+//// STUB standalone sample "StreamShelvesSampleRequestStreamingServerEmpty" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START full_sample]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//     calling form "RequestStreamingServer"
+//     valueSet "empty" ("Server streaming")
+//       description: "Testing calling forms"
+//       []
+//     apiMethod "streamShelves" of type "OptionalArrayMethod"
+
+// [START core_sample]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+$libraryServiceClient = new LibraryServiceClient();
+
+try {
+    // Read all responses until the stream is complete
+    $stream = $libraryServiceClient->streamShelves();
+    foreach ($stream->readAll() as $element) {
+        // doSomethingWith($element);
+    }
+} finally {
+    $libraryServiceClient->close();
+}
+*/
+// [END core_sample]
+
+// FIXME: Insert here clean-up code.
+
+// [END full_sample]
 ============== file: tests/System/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*

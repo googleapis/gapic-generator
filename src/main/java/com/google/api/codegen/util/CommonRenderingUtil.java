@@ -19,22 +19,18 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** Utility class to process text in the templates. */
 public class CommonRenderingUtil {
-  private static Pattern singleQuoteStringPattern = Pattern.compile("'([^\\\']*)'");
-  private static Pattern doubleQuoteStringPattern = Pattern.compile("\"([^\\\"]*)\"");
 
   /** Strips the surrounding quotes from the given string */
   public static String stripQuotes(String value) {
-    Matcher singleQuoteMatcher = singleQuoteStringPattern.matcher(value);
-    Matcher doubleQuoteMatcher = doubleQuoteStringPattern.matcher(value);
-    if (singleQuoteMatcher.matches()) {
-      value = singleQuoteMatcher.group(1);
-    } else if (doubleQuoteMatcher.matches()) {
-      value = doubleQuoteMatcher.group(1);
+    for (char quoteChar : new char[] {'\'', '"'}) {
+      if (value.length() >= 2
+          && value.charAt(0) == quoteChar
+          && value.indexOf(quoteChar, 1) == value.length() - 1) {
+        return value.substring(1, value.length() - 1);
+      }
     }
     return value;
   }

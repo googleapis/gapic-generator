@@ -37,29 +37,19 @@ public abstract class InitFieldConfig {
   @Nullable
   public abstract InitValue value();
 
-  /*
-   * Parses the given config string and returns the corresponding object.
-   */
-  public static InitFieldConfig from(String initFieldConfigString) {
-    String fieldName = null;
-    String entityName = null;
-    InitValue value = null;
+  public static Builder newBuilder() {
+    return new AutoValue_InitFieldConfig.Builder();
+  }
 
-    String[] equalsParts = initFieldConfigString.split("[=]");
-    if (equalsParts.length > 2) {
-      throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
-    } else if (equalsParts.length == 2) {
-      value = parseValueString(equalsParts[1]);
-    }
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder fieldPath(String val);
 
-    String[] fieldSpecs = equalsParts[0].split("[%]");
-    fieldName = fieldSpecs[0];
-    if (fieldSpecs.length == 2) {
-      entityName = fieldSpecs[1];
-    } else if (fieldSpecs.length > 2) {
-      throw new IllegalArgumentException("Inconsistent: found multiple '%' characters");
-    }
-    return new AutoValue_InitFieldConfig(fieldName, entityName, value);
+    public abstract Builder entityName(String val);
+
+    public abstract Builder value(InitValue val);
+
+    public abstract InitFieldConfig build();
   }
 
   public boolean hasSimpleInitValue() {
@@ -72,19 +62,5 @@ public abstract class InitFieldConfig {
 
   public boolean hasFormattedInitValue() {
     return entityName() != null && value() != null;
-  }
-
-  private static InitValue parseValueString(String valueString) {
-    InitValue initValue = InitValue.createLiteral(valueString);
-    if (valueString.contains(RANDOM_TOKEN)) {
-      initValue = InitValue.createRandom(valueString);
-    } else if (valueString.contains(PROJECT_ID_TOKEN)) {
-      if (!valueString.equals(PROJECT_ID_TOKEN)) {
-        throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
-      }
-      valueString = PROJECT_ID_VARIABLE_NAME;
-      initValue = InitValue.createVariable(valueString);
-    }
-    return initValue;
   }
 }
