@@ -29,14 +29,13 @@ jobs:
           command: mkdir -p workspace/googleapis
 #            mkdir -p tmp
 #            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
+      - run: echo "Hello, world!" > workspace/googleapis/echo-output
       - run:
           name: Build and install local toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
-            mkdir build
             ls
 #            ./gradlew fatJar
-
 #            ./gradlew createToolPaths
 #            rm -rf /gapic-generator/.git/
 #            ./gradlew install build -x test
@@ -44,7 +43,6 @@ jobs:
           root: workspace
           paths:
             - googleapis
-            - build
   run-generated-tests:
     docker:
       - image: googleapis/git
@@ -53,7 +51,13 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: workspace
+          at: /gapic-generator/workspace
+      - run: |
+          if [[ `cat /gapic-generator/workspace/googleapis/echo-output` == "Hello, world!" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
       - run:
           command: ls googleapis
       - run:
