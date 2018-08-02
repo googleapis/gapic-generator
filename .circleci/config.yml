@@ -1,15 +1,5 @@
-#version: 2.0
-#
-#anchor_build: &anchor_build
-#  name: Build and install local toolkit
-#  command: |
-#    export RUNNING_IN_ARTMAN_DOCKER=True
-#    ./gradlew fatJar
-#    ./gradlew createToolPaths
-#    rm -rf /toolkit/.git/
-#    ./gradlew install build -x test
-#    export TOOLKIT_HOME=/gapic-generator
-#
+version: 2.0
+
 #jobs:
 #  build:
 #    docker:
@@ -95,11 +85,10 @@
 
 
 defaults: &defaults
-  working_directory: /tmp
+  working_directory: /gapic-generator
   docker:
-    - image: buildpack-deps:jessie
+    - image: googleapis/git
 
-version: 2
 jobs:
   flow:
     <<: *defaults
@@ -117,10 +106,10 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
+          at: /gapic-generator/workspace
 
       - run: |
-          if [[ `cat /tmp/workspace/echo-output` == "Hello, world!" ]]; then
+          if [[ `cat /gapic-generator/workspace/echo-output` == "Hello, world!" ]]; then
             echo "It worked!";
           else
             echo "Nope!"; exit 1
