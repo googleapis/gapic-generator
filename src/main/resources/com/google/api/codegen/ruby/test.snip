@@ -5,7 +5,7 @@
 @snippet generate(apiTest)
   {@header(apiTest.fileHeader)}
 
-  {@helpers(apiTest.testClass)}
+  {@helpers(apiTest.apiVersion, apiTest.testClass)}
 
   {@testClass(apiTest.apiVersion, apiTest.testClass)}
 @end
@@ -20,11 +20,11 @@
   {@importList(fileHeader.importSection.appImports)}
 @end
 
-@private helpers(testClass)
-  class CustomTestError < StandardError; end
+@private helpers(apiVersion, testClass)
+  class CustomTestError_{@apiVersion} < StandardError; end
 
   @# Mock for the GRPC::ClientStub class.
-  class MockGrpcClientStub
+  class MockGrpcClientStub_{@apiVersion}
 
     @# @@param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
     @# @@param mock_method [Proc] The method that is being mocked.
@@ -71,56 +71,56 @@
     @join test : testClass.testCases
 
       describe '{@test.clientMethodName}' do
-        custom_error = CustomTestError.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
+        custom_error = CustomTestError_{@apiVersion}.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
 
-        {@testCase(testClass, test)}
+        {@testCase(apiVersion, testClass, test)}
 
-        {@errorTestCase(testClass, test)}
+        {@errorTestCase(apiVersion, testClass, test)}
       end
     @end
   end
 @end
 
-@private testCase(testClass, test)
+@private testCase(apiVersion, testClass, test)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(testClass, test)}
+      {@requestObjectTestCase(apiVersion, testClass, test)}
     @case "PagedRequestObjectMethod"
-      {@pageIterationTestCase(testClass, test)}
+      {@pageIterationTestCase(apiVersion, testClass, test)}
     @case "OperationCallableMethod"
-      {@longrunningTestCase(testClass, test)}
+      {@longrunningTestCase(apiVersion, testClass, test)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-    {@serverStreamingTest(testClass, test)}
+    {@serverStreamingTest(apiVersion, testClass, test)}
   @case "BidiStreaming"
-    {@bidiStreamingTest(testClass, test)}
+    {@bidiStreamingTest(apiVersion, testClass, test)}
   @case "ClientStreaming"
-    {@clientStreamingTest(testClass, test)}
+    {@clientStreamingTest(apiVersion, testClass, test)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
-@private errorTestCase(testClass, test)
+@private errorTestCase(apiVersion, testClass, test)
   @switch test.grpcStreamingType
     @case "NonStreaming"
-      {@simpleErrorTestCase(testClass, test)}
+      {@simpleErrorTestCase(apiVersion, testClass, test)}
     @case "ServerStreaming"
-      {@simpleErrorTestCase(testClass, test)}
+      {@simpleErrorTestCase(apiVersion, testClass, test)}
     @case "BidiStreaming"
-      {@clientStreamingErrorTestCase(testClass, test)}
+      {@clientStreamingErrorTestCase(apiVersion, testClass, test)}
     @case "ClientStreaming"
-       {@clientStreamingErrorTestCase(testClass, test)}
+       {@clientStreamingErrorTestCase(apiVersion, testClass, test)}
     @default
       $unhandled case: {@test.grpcStreamingType.toString}$
     @end
 @end
 
-@private requestObjectTestCase(testClass, test)
+@private requestObjectTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -137,7 +137,7 @@
 
     @# Mock Grpc layer
     {@mockUnaryRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -171,7 +171,7 @@
   end
 @end
 
-@private pageIterationTestCase(testClass, test)
+@private pageIterationTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -184,7 +184,7 @@
 
     @# Mock Grpc layer
     {@mockUnaryRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -208,7 +208,7 @@
   end
 @end
 
-@private longrunningTestCase(testClass, test)
+@private longrunningTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -228,7 +228,7 @@
 
     @# Mock Grpc layer
     {@mockLongrunningRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -264,7 +264,7 @@
 
     @# Mock Grpc layer
     {@mockLongrunningRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -284,7 +284,7 @@
   end
 @end
 
-@private serverStreamingTest(testClass, test)
+@private serverStreamingTest(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if test.hasRequestParameters
       @# Create request parameters
@@ -297,7 +297,7 @@
 
     @# Mock Grpc layer
     {@mockServerStreamingRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -317,7 +317,7 @@
   end
 @end
 
-@private clientStreamingTest(testClass, test)
+@private clientStreamingTest(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -330,7 +330,7 @@
 
     @# Mock Grpc layer
     {@mockClientStreamingRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -353,7 +353,7 @@
   end
 @end
 
-@private bidiStreamingTest(testClass, test)
+@private bidiStreamingTest(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -364,7 +364,7 @@
 
     @# Mock Grpc layer
     {@mockBidiStreamingRequest(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -384,7 +384,7 @@
   end
 @end
 
-@private simpleErrorTestCase(testClass, test)
+@private simpleErrorTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -393,7 +393,7 @@
     @end
     @# Mock Grpc layer
     {@mockUnaryError(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}
@@ -414,14 +414,14 @@
   end
 @end
 
-@private clientStreamingErrorTestCase(testClass, test)
+@private clientStreamingErrorTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} with error' do
     @# Create request parameters
     {@initCode(test.initCode)}
 
     @# Mock Grpc layer
     {@mockClientStreamingError(test)}
-    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+    mock_stub = MockGrpcClientStub_{@apiVersion}.new(:{@test.clientMethodName}, mock_method)
 
     @# Mock auth layer
     {@mockAuth(test.clientMethodName, testClass.mockCredentialsClassName)}

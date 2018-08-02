@@ -228,7 +228,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getMockCredentialsClassName(Interface anInterface) {
-    return String.format("Mock%sCredentials", anInterface.getSimpleName());
+    return String.format(
+        "Mock%sCredentials_%s",
+        anInterface.getSimpleName(), getApiWrapperModuleVersion().toLowerCase());
   }
 
   @Override
