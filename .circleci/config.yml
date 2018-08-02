@@ -46,10 +46,7 @@ jobs:
           name: Generate and run Java unit tests for Pubsub
           command: |
             mkdir /tmp/reports
-            python gapic_smoketest.py \
-                --root-dir=/tmp/googleapis/ \
-                --log=/tmp/reports/smoketest.log \
-                --user-config=artman_config.yaml
+            python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
   test-java-logging:
     <<: *anchor_docker
     steps:
@@ -58,7 +55,7 @@ jobs:
           name: Generate and run Java unit tests for Logging
           command: |
             mkdir /tmp/reports
-            python gapic_smoketest.py --user-config=artman_config.yaml
+            python gapic_smoketest.py --user-config=artman_config.yaml java logging
       - store_test_results:
           path: /tmp/reports
       - run:
@@ -72,10 +69,7 @@ jobs:
           name: Generate and run Java unit tests for Speech
           command: |
             mkdir /tmp/reports
-            python gapic_smoketest.py \
-                --root-dir=/tmp/googleapis/ \
-                --log=/tmp/reports/smoketest.log \
-                --user-config=artman_config.yaml
+            python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
           path: /tmp/reports
       - run:
