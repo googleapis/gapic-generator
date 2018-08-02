@@ -56,12 +56,14 @@ jobs:
           name: Generate and run Java unit tests for Pubsub
           command: |
             cd workspace/gapic-generator
-            circleci tests glob "smoketests/tests/test*.py" | circleci tests split
+            mkdir /tmp/test_results
+            circleci tests glob "smoketests/tests/test*.py" | circleci tests split \
+                | xargs python -m pytest --reuse-db --junitxml=/tmp/test_results/results.xml
 #            python smoketests/gapic_smoketest.py --user-config=artman_config.yaml java pubsub
       - store_test_results:
-          path: /tmp/workspace/reports
+          path: /tmp/test_results
       - store_artifacts:
-          path: /tmp/workspace/reports
+          path: /tmp/test_results
 
 workflows:
   version: 2

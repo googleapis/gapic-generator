@@ -24,9 +24,10 @@ import pytest
 
 from smoketests.gapic_smoketest import run_smoke_test
 
-def test_java_pubsub():
-    print("tested java logging")
-    # caplog.set_level(logging.INFO)
+def test_java_pubsub(caplog):
+    print("tested java pubsub")
+    # assert 0
+    caplog.set_level(logging.INFO)
     # run_smoke_test("pubsub",
     #                "java",
     #                "/tmp/workspace/googleapis",
