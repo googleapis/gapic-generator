@@ -25,11 +25,11 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,17 +242,10 @@ public class InitCodeNode {
 
   static InitValueConfig mergeInitValueConfig(
       InitValueConfig oldConfig, InitValueConfig newConfig) {
-    HashMap<String, InitValue> collectionValues = new HashMap<>();
     if (oldConfig.hasSimpleInitialValue()
         && newConfig.hasSimpleInitialValue()
         && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
       throw new IllegalArgumentException("Inconsistent init values");
-    }
-    if (oldConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(oldConfig.getResourceNameBindingValues());
-    }
-    if (newConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(newConfig.getResourceNameBindingValues());
     }
     return InitValueConfig.newBuilder()
         .setApiWrapperName(
@@ -261,7 +254,11 @@ public class InitCodeNode {
             firstNotNull(
                 oldConfig.getSingleResourceNameConfig(), newConfig.getSingleResourceNameConfig()))
         .setInitialValue(firstNotNull(oldConfig.getInitialValue(), newConfig.getInitialValue()))
-        .setResourceNameBindingValues(collectionValues)
+        .setResourceNameBindingValues(
+            ImmutableMap.<String, InitValue>builder()
+                .putAll(oldConfig.getResourceNameBindingValues())
+                .putAll(newConfig.getResourceNameBindingValues())
+                .build())
         .build();
   }
 
@@ -435,9 +432,5 @@ public class InitCodeNode {
    */
   private static void validateValue(TypeModel type, String value) {
     type.validateValue(value);
-  }
-
-  public String toString() {
-    return String.format("InitCodeNode{%s}", initValueConfig);
   }
 }

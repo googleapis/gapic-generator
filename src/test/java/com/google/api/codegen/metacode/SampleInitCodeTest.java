@@ -30,7 +30,6 @@ import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
@@ -170,27 +169,22 @@ public class SampleInitCodeTest {
     List<String> fieldSpecs =
         Arrays.asList("formatted_field%entity1=test1", "formatted_field%entity2=test2");
 
-    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
-    initValueMap.put("formatted_field", initValueConfig);
-
-    HashMap<String, InitValue> expectedCollectionValues = new HashMap<>();
-    expectedCollectionValues.put("entity1", InitValue.createLiteral("test1"));
-    expectedCollectionValues.put("entity2", InitValue.createLiteral("test2"));
 
     InitCodeContext context =
         getContextBuilder()
             .initFieldConfigStrings(fieldSpecs)
-            .initValueConfigMap(initValueMap)
+            .initValueConfigMap(ImmutableMap.of("formatted_field", initValueConfig))
             .build();
     InitCodeNode actualStructure = InitCodeNode.createTree(context);
     assertThat(actualStructure.getChildren().isEmpty()).isFalse();
     InitCodeNode actualFormattedFieldNode = actualStructure.getChildren().get("formatted_field");
-    assertThat(actualFormattedFieldNode.getInitValueConfig()).isNotNull();
-    assertThat(actualFormattedFieldNode.getInitValueConfig().hasFormattingConfigInitialValues())
-        .isTrue();
     assertThat(actualFormattedFieldNode.getInitValueConfig().getResourceNameBindingValues())
-        .isEqualTo(expectedCollectionValues);
+        .containsExactly(
+            "entity1",
+            InitValue.createLiteral("test1"),
+            "entity2",
+            InitValue.createLiteral("test2"));
   }
 
   @Test
@@ -375,14 +369,12 @@ public class SampleInitCodeTest {
         Arrays.asList(
             "formatted_field%entity1", "formatted_field%entity2", "formatted_field%entity3");
 
-    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
-    initValueMap.put("formatted_field", initValueConfig);
 
     InitCodeContext context =
         getContextBuilder()
             .initFieldConfigStrings(fieldSpecs)
-            .initValueConfigMap(initValueMap)
+            .initValueConfigMap(ImmutableMap.of("formatted_field", initValueConfig))
             .build();
     InitCodeNode rootNode = InitCodeNode.createTree(context);
     assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))

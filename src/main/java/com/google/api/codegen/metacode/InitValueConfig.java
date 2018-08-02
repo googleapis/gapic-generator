@@ -17,8 +17,6 @@ package com.google.api.codegen.metacode;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Nullable;
 
 /** InitValueConfig configures the initial value of an initialized variable. */
@@ -44,7 +42,7 @@ public abstract class InitValueConfig {
   public static InitValueConfig create(
       String apiWrapperName,
       SingleResourceNameConfig singleResourceNameConfig,
-      Map<String, InitValue> resourceNameBindingValues) {
+      ImmutableMap<String, InitValue> resourceNameBindingValues) {
     return newBuilder()
         .setApiWrapperName(apiWrapperName)
         .setSingleResourceNameConfig(singleResourceNameConfig)
@@ -61,7 +59,7 @@ public abstract class InitValueConfig {
   @Nullable
   public abstract InitValue getInitialValue();
 
-  public abstract Map<String, InitValue> getResourceNameBindingValues();
+  public abstract ImmutableMap<String, InitValue> getResourceNameBindingValues();
 
   public abstract Builder toBuilder();
 
@@ -77,21 +75,14 @@ public abstract class InitValueConfig {
 
     public abstract Builder setInitialValue(InitValue val);
 
-    public abstract Builder setResourceNameBindingValues(Map<String, InitValue> val);
+    public abstract Builder setResourceNameBindingValues(ImmutableMap<String, InitValue> val);
 
     public abstract InitValueConfig build();
   }
 
   /** Creates an updated InitValueConfig with the provided value. */
   public InitValueConfig withInitialCollectionValue(String entityName, InitValue value) {
-    HashMap<String, InitValue> resourceNameBindingValues = new HashMap<>();
-    resourceNameBindingValues.put(entityName, value);
-    return withInitialCollectionValues(resourceNameBindingValues);
-  }
-
-  public InitValueConfig withInitialCollectionValues(
-      Map<String, InitValue> resourceNameBindingValues) {
-    return toBuilder().setResourceNameBindingValues(resourceNameBindingValues).build();
+    return toBuilder().setResourceNameBindingValues(ImmutableMap.of(entityName, value)).build();
   }
 
   public boolean isEmpty() {
@@ -100,10 +91,6 @@ public abstract class InitValueConfig {
 
   public boolean hasFormattingConfig() {
     return getSingleResourceNameConfig() != null;
-  }
-
-  public boolean hasFormattingConfigInitialValues() {
-    return !getResourceNameBindingValues().isEmpty();
   }
 
   public boolean hasSimpleInitialValue() {

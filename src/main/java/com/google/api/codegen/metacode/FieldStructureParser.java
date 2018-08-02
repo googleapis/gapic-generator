@@ -66,8 +66,7 @@ public class FieldStructureParser {
   }
 
   // Parses `config` to construct the `InitCodeNode` it specifies. `config` must be a valid
-  // config
-  // satisfying the eBNF grammar below:
+  // config satisfying the eBNF grammar below:
   //
   // config = path ['%' ident] ['=' value];
   // path = ident pathElem*
