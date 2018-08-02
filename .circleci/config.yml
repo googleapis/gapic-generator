@@ -28,30 +28,29 @@ jobs:
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
             gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test
+      - run:
+          name: Make reports dir
+          command: mkdir -p reports
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
 #            - googleapis
             - gapic-generator
+            - reports
   run-generated-tests:
     docker:
-      - image: circleci/openjdk:8-jdk
-#      - image: googleapis/artman:0.14.3
+      - image: googleapis/artman:0.14.3
     environment:
       RUNNING_IN_ARTMAN_DOCKER: True
     working_directory: /tmp/
+    parallelism: 3
     steps:
       - attach_workspace:
           at: workspace
       - run:
-          name: Ensure fatJar was built
-          command: ls workspace/gapic-generator/build/libs/gapic-generator-latest-fatjar.jar
-      - run:
-          name: Make reports dir
-          command: mkdir -p tmp/reports
-      - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
+            cd gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
 #      - run:
 #          name: Generate and run Java unit tests for Logging
@@ -62,9 +61,9 @@ jobs:
 #          command: |
 #            python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
-          path: /tmp/reports
+          path: /tmp/workspace/reports
       - store_artifacts:
-          path: /tmp/reports
+          path: /tmp/workspace/reports
 
 workflows:
   version: 2
