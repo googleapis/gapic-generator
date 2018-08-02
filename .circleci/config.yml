@@ -24,12 +24,9 @@ anchor_after_test: &anchor_after_test
 
 jobs:
   build:
-    docker:
-      - image: googleapis/git
+    <<: *anchor_docker
     steps:
       - checkout
-    working_directory: /gapic-generator
-
   install-toolkit:
     <<: *anchor_docker
     steps:
@@ -53,7 +50,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Generate and run unit tests
+          name: Generate and run Java unit tests for Pubsub
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py \
@@ -66,7 +63,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Generate and run unit tests
+          name: Generate and run Java unit tests for Logging
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py \
@@ -79,7 +76,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Generate and run unit tests
+          name: Generate and run Java unit tests for Speech
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py \
@@ -92,7 +89,19 @@ workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - run-generated-unit-tests
+      - build
+      - install-toolkit
+          requires:
+            - build
+      - test-java-pubsub
+          requires:
+            - install-toolkit
+      - test-java-logging
+          requires:
+            - install-toolkit
+      - test-java-speech
+          requires:
+            - install-toolkit
 
 machine:
   services:

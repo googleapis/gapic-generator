@@ -51,7 +51,7 @@ def runJavaTests(api_name, api_version, log):
     cmds = ("%s/gradlew -p %s build test" % (os.getcwd(), gapic_dir)).split()
     return subprocess.call(cmds, stdout=log, stderr=log)
 
-def run_smoke_test(api_name, language, root_dir, log):
+def run_smoke_test(api_name, language, root_dir, log, user_config):
     log_file = _setup_logger(log)
     failure = []
     success = []
@@ -63,7 +63,8 @@ def run_smoke_test(api_name, language, root_dir, log):
     if _generate_artifact(artman_yaml_path,
                           target,
                           root_dir,
-                          log_file):
+                          log_file,
+                          user_config):
         msg = 'Failed to generate %s of %s.' % (
             target, artman_yaml_path)
         failure.append(msg)
@@ -131,12 +132,10 @@ def parse_args(*args):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'language',
-        required=True,
         help='Language to test and run. One of [\"java\"]')
         # TODO - support more languages.
     parser.add_argument(
         'api',
-        required=True,
         help='The API to generate. One of [\"pubsub\", \"logging\", \"api\"]')
     parser.add_argument(
         '--root-dir',
@@ -166,8 +165,8 @@ if __name__ == '__main__':
 
     root_dir = os.path.abspath(flags.root_dir)
     log = os.path.abspath(flags.log)
-    api = os.path.abspath(flags.api)
-    language = os.path.abspath(flags.language)
+    api = flags.api
+    language = flags.language
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
 
     run_smoke_test(api, language, root_dir, log, user_config)
