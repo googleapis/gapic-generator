@@ -157,6 +157,10 @@ public class InitCodeNode {
     return InitCodeNode.createWithChildren(key, InitCodeLineType.ListInitLine, child);
   }
 
+  public static InitCodeNode newRoot() {
+    return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+  }
+
   /*
    * Constructs a tree of objects to be initialized using the provided context, and returns the root
    */
@@ -164,8 +168,7 @@ public class InitCodeNode {
     Preconditions.checkArgument(
         context.initFields() != null || context.outputType() != InitCodeOutputType.FieldList,
         "init field array is not set for flattened method");
-    InitCodeNode root =
-        new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+    InitCodeNode root = newRoot();
 
     if (context.initFields() != null) {
       for (FieldModel field : context.initFields()) {

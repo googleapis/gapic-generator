@@ -16,6 +16,7 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -60,13 +61,12 @@ public abstract class InitValueConfig {
   @Nullable
   public abstract InitValue getInitialValue();
 
-  @Nullable
   public abstract Map<String, InitValue> getResourceNameBindingValues();
 
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
-    return new AutoValue_InitValueConfig.Builder();
+    return new AutoValue_InitValueConfig.Builder().setResourceNameBindingValues(ImmutableMap.of());
   }
 
   @AutoValue.Builder
@@ -89,6 +89,11 @@ public abstract class InitValueConfig {
     return withInitialCollectionValues(resourceNameBindingValues);
   }
 
+  public InitValueConfig withInitialCollectionValues(
+      Map<String, InitValue> resourceNameBindingValues) {
+    return toBuilder().setResourceNameBindingValues(resourceNameBindingValues).build();
+  }
+
   public boolean isEmpty() {
     return getSingleResourceNameConfig() == null;
   }
@@ -98,7 +103,7 @@ public abstract class InitValueConfig {
   }
 
   public boolean hasFormattingConfigInitialValues() {
-    return getResourceNameBindingValues() != null && !getResourceNameBindingValues().isEmpty();
+    return !getResourceNameBindingValues().isEmpty();
   }
 
   public boolean hasSimpleInitialValue() {

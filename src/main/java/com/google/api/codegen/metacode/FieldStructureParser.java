@@ -28,15 +28,15 @@ import java.util.Map;
 public class FieldStructureParser {
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
-  public static InitCodeNode parse(InitCodeNode root, String initFieldConfigString) {
-    return parse(root, initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
+  public static void parse(InitCodeNode root, String initFieldConfigString) {
+    parse(root, initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
   }
 
-  public static InitCodeNode parse(
+  public static void parse(
       InitCodeNode root,
       String initFieldConfigString,
       Map<String, InitValueConfig> initValueConfigMap) {
-    return parseConfig(root, initFieldConfigString, initValueConfigMap);
+    parseConfig(root, initFieldConfigString, initValueConfigMap);
   }
 
   private static InitValueConfig createInitValueConfig(
