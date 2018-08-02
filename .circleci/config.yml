@@ -3,53 +3,53 @@ version: 2.0
 jobs:
   build:
     docker:
-      - image: buildpack-deps:jessie
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
-    working_directory: /gapic-generator
+    working_directory: /tmp/workspace/gapic-generator
   install-toolkit:
     docker:
 #      - image: googleapis/artman:0.14.3
-      - image: buildpack-deps:jessie
-    working_directory: /gapic-generator
+      - image: circleci/openjdk:8-jdk
+    working_directory: /tmp/workspace
     steps:
-      - checkout
+      - checkout:
+          path: gapic-generator
+      - run:
+          command: ls gapic-generator
       - run:
           name: Checkout googleapis
-          command: mkdir -p workspace/googleapis
-#            mkdir -p tmp
-#            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
-      - run: echo "Hello, world!" > workspace/googleapis/echo-output
+          command: |
+            mkdir -p workspace/googleapis
+            git clone https://github.com/googleapis/googleapis.git workspace/googleapis
       - run:
           name: Build and install local toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
-            ls
-#            ./gradlew fatJar
-#            ./gradlew createToolPaths
-#            rm -rf /gapic-generator/.git/
-#            ./gradlew install build -x test
+            rm -rf gapic-generator/.git/
+            ./gradlew -p gapic-generator fatJar createToolPaths install build -x test
+#            cp -r build workspace
       - persist_to_workspace:
           root: workspace
           paths:
-            - googleapis
+#            - googleapis
+            - build
   run-generated-tests:
     docker:
-      - image: buildpack-deps:jessie
+      - image: circleci/openjdk:8-jdk
 #      - image: googleapis/artman:0.14.3
-    working_directory: /gapic-generator
+    environment:
+      RUNNING_IN_ARTMAN_DOCKER: True
+    working_directory: /tmp/
     steps:
-      - checkout
       - attach_workspace:
-          at: /gapic-generator/workspace
-      - run: |
-          if [[ `cat /gapic-generator/workspace/googleapis/echo-output` == "Hello, world!" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
+          at: workspace
       - run:
-          command: ls googleapis
+          name: Copy installed toolkit
+          command: cp -r workspace/build .
+      - run:
+          name: Ensure toolkit is installed
+          command: ls build/libs/gapic-generator-latest-fatjar.jar
       - run:
           name: Make reports dir
           command: mkdir -p tmp/reports
