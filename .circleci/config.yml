@@ -57,10 +57,12 @@ jobs:
       - run:
           name: Generate and run Java unit tests for Logging
           command: |
+            cd workspace/gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java logging
       - run:
           name: Generate and run Java unit tests for Speech
           command: |
+            cd workspace/gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
           path: /tmp/workspace/reports

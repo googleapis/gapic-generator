@@ -58,8 +58,8 @@ def run_smoke_test(api_name, language, root_dir, log, user_config):
     warning = []
     (api_version, artman_yaml_path) = test_apis[api_name]
     target = language + "_gapic"
-    logger.info('Start artifact generation for %s of %s'
-                % (target, artman_yaml_path))
+
+    # Generate client library for an API and language.
     if _generate_artifact(artman_yaml_path,
                           target,
                           root_dir,
@@ -75,6 +75,8 @@ def run_smoke_test(api_name, language, root_dir, log, user_config):
         success.append(msg)
         logger.info(msg)
 
+        # Test the generated client library.
+        logger.info("Starting testing of %s %s client library." %(language, api_name))
         cwd = os.getcwd()
         os.chdir("artman-genfiles/%s" % language)
 
@@ -122,7 +124,8 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
             '--root-dir', root_dir,
             'generate', artifact_name
         ]
-        logger.info("running call: %s" % " ".join(grpc_pipeline_args))
+        logger.info("Start artifact generation for %s of %s: %s" %
+                    (artifact_name, artman_config, " ".join(grpc_pipeline_args)))
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 def _test_artifact(test_call, api_name, api_version, log_file):
