@@ -34,10 +34,6 @@ jobs:
             python gapic_smoketest.py --root-dir=/tmp/googleapis/ --log=/tmp/reports/smoketest.log
       - store_test_results:
           path: /tmp/reports
-      - store_artifacts:
-          path: /tmp/reports
-      - store_artifacts:
-          path: /var/code/googleapis
       - run:
           name: Check if generation script caused any changes.
           command: git status -s && git diff-index --quiet HEAD
