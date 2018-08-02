@@ -184,8 +184,6 @@ public class InitCodeNode {
 
     for (String initFieldConfigString : context.initFieldConfigStrings()) {
       FieldStructureParser.parse(root, initFieldConfigString, context.initValueConfigMap());
-      // root.mergeChild(
-      //     FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
     }
 
     for (InitCodeNode node : context.additionalInitCodeNodes()) {
@@ -263,10 +261,7 @@ public class InitCodeNode {
   }
 
   private static <T> T firstNotNull(T a, T b) {
-    if (a != null) {
-      return a;
-    }
-    return b;
+    return a != null ? a : b;
   }
 
   private void resolveNamesAndTypes(
