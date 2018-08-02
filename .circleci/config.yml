@@ -44,11 +44,11 @@ jobs:
             mkdir /tmp/reports
   run-generated-tests:
     <<: *anchor_docker
+    parallelism: 3
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      parallelism: 3
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
