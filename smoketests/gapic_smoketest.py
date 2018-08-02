@@ -16,8 +16,9 @@
 
 """Gapic generator smoke tests.
 
-It generates GAPIC client libraries for a Google APIs in googleapis
-repo. The test will fail if any generation fails.
+It generates a GAPIC client library in one a single language for a single API.
+The generated client library is then run against its own unit tests.
+This smoketest currently supports languages {Java} and APIs {pubsub, logging, speech}.
 """
 
 import argparse
@@ -26,11 +27,8 @@ import os
 import subprocess
 import sys
 
-logger = logging.getLogger('smoketest')
-logger.setLevel(logging.INFO)
-
 test_languages = {
-    "java" : lambda api_name, api_version, log : runJavaTests(api_name, api_version, log),
+    "java" : lambda api_name, api_version, log : run_java_tests(api_name, api_version, log),
     #TODO: all other languages
 }
 
@@ -40,19 +38,20 @@ test_apis = {
     "speech" : ("v1", "google/cloud/speech/artman_speech_v1.yaml"),
 }
 
-def runJavaTests(api_name, api_version, log):
+
+def run_java_tests(api_name, api_version, log):
     gapic_dir = "gapic-google-cloud-%s-%s" % (api_name, api_version)
     # Run gradle test in the main java directory and also in the gapic directory.
     cmds = ("%s/gradlew build test" % os.getcwd()).split()
-    exit_code = subprocess.call(cmds, stdout=log, stderr=log)
+    exit_code = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if exit_code:
         return exit_code
 
     cmds = ("%s/gradlew -p %s build test" % (os.getcwd(), gapic_dir)).split()
-    return subprocess.call(cmds, stdout=log, stderr=log)
+    return subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def run_smoke_test(api_name, language, root_dir, log, user_config):
-    log_file = _setup_logger(log)
+
+def run_smoke_test(api_name, language, root_dir, user_config, logger):
     failure = []
     success = []
     warning = []
@@ -63,7 +62,7 @@ def run_smoke_test(api_name, language, root_dir, log, user_config):
     if _generate_artifact(artman_yaml_path,
                           target,
                           root_dir,
-                          log_file,
+                          # log_file,
                           user_config):
         msg = 'Failed to generate %s of %s.' % (
             target, artman_yaml_path)
@@ -109,28 +108,27 @@ def run_smoke_test(api_name, language, root_dir, log, user_config):
         logger.info("none.")
 
 
-def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_config_file):
-    with open(log_file, 'a') as log:
-        grpc_pipeline_args = [
-            'artman',
-            '--local',
-            '--verbose',
-        ]
-        if user_config_file:
-            grpc_pipeline_args = grpc_pipeline_args + [
-                '--user-config', user_config_file,]
+def _generate_artifact(artman_config, artifact_name, root_dir, user_config_file, logger):
+    grpc_pipeline_args = [
+        'artman',
+        '--local',
+        '--verbose',
+    ]
+    if user_config_file:
         grpc_pipeline_args = grpc_pipeline_args + [
-            '--config', os.path.join(root_dir, artman_config),
-            '--root-dir', root_dir,
-            'generate', artifact_name
-        ]
-        logger.info("Start artifact generation for %s of %s: %s" %
-                    (artifact_name, artman_config, " ".join(grpc_pipeline_args)))
-        return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
+            '--user-config', user_config_file,]
+    grpc_pipeline_args = grpc_pipeline_args + [
+        '--config', os.path.join(root_dir, artman_config),
+        '--root-dir', root_dir,
+        'generate', artifact_name
+    ]
+    logger.info("Start artifact generation for %s of %s: %s" %
+                (artifact_name, artman_config, " ".join(grpc_pipeline_args)))
+    return subprocess.call(grpc_pipeline_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def _test_artifact(test_call, api_name, api_version, log_file):
-    with open(log_file, 'a') as log:
-        return test_call(api_name, api_version, log)
+
+def _test_artifact(test_call, api_name, api_version, logger):
+    return test_call(api_name, api_version, log)
 
 def parse_args(*args):
     parser = argparse.ArgumentParser()
@@ -165,14 +163,23 @@ def _setup_logger(log_file):
     logger.addHandler(logging.StreamHandler())
     return log_file
 
+# @pytest.mark.parameterize("api", ["pubsub", "logging"])
+# @pytest.mark.parameterize("language", ["java"])
+# def test_all_clients(api, language, logger):
+#     run_smoke_test(api, language,
+#                    "/tmp/workspace/googleapis",
+#                    "../../artman_config.yaml", logger)
+
 
 if __name__ == '__main__':
     flags = parse_args(*sys.argv[1:])
 
     root_dir = os.path.abspath(flags.root_dir)
     log = os.path.abspath(flags.log)
+    logger = logging.getLogger('smoketest')
+    logger.setLevel(logging.INFO)
     api = flags.api
     language = flags.language
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
 
-    run_smoke_test(api, language, root_dir, log, user_config)
+    run_smoke_test(api, language, root_dir, user_config, logger)

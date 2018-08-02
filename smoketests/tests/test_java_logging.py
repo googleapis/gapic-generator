@@ -28,7 +28,8 @@ from smoketests.gapic_smoketest import run_smoke_test
 def test_java_pubsub(caplog):
     print("tested java pubsub")
     caplog.set_level(logging.INFO)
-    # run_smoke_test("logging",
-    #                "java",
-    #                "/tmp/workspace/googleapis",
-    #                "../../artman_config.yaml")
+    run_smoke_test("logging",
+                   "java",
+                   "/tmp/workspace/googleapis",
+                   "../../artman_config.yaml",
+                   caplog)

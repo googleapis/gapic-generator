@@ -28,7 +28,8 @@ def test_java_pubsub(caplog):
     print("tested java pubsub")
     # assert 0
     caplog.set_level(logging.INFO)
-    # run_smoke_test("pubsub",
-    #                "java",
-    #                "/tmp/workspace/googleapis",
-    #                "../../artman_config.yaml")
+    run_smoke_test("pubsub",
+                   "java",
+                   "/tmp/workspace/googleapis",
+                   "../../artman_config.yaml",
+                   caplog)
