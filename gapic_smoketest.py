@@ -141,12 +141,12 @@ def parse_args(*args):
     parser.add_argument(
         '--root-dir',
         # The default value is configured for CircleCI.
-        default='/tmp/googleapis/',
+        default='/tmp/workspace/googleapis/',
         help='Specify where googleapis local repo lives.')
     parser.add_argument(
         '--log',
         # The default value is configured for CircleCI.
-        default='/tmp/reports/smoketest.log',
+        default='/tmp/workspace/reports/smoketest.log',
         help='Specify where smoketest log should be stored.')
     parser.add_argument(
         '--user-config',

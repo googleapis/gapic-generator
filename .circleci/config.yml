@@ -32,6 +32,7 @@ jobs:
           name: Make reports dir
           command: mkdir -p reports
       - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
           root: /tmp/workspace
           paths:
 #            - googleapis
@@ -46,20 +47,21 @@ jobs:
     parallelism: 3
     steps:
       - attach_workspace:
+          # Use the workspace created in install-toolkit
           at: workspace
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
-            cd gapic-generator
+            cd workspace/gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
-#      - run:
-#          name: Generate and run Java unit tests for Logging
-#          command: |
-#            python gapic_smoketest.py --user-config=artman_config.yaml java logging
-#      - run:
-#          name: Generate and run Java unit tests for Speech
-#          command: |
-#            python gapic_smoketest.py --user-config=artman_config.yaml java speech
+      - run:
+          name: Generate and run Java unit tests for Logging
+          command: |
+            python gapic_smoketest.py --user-config=artman_config.yaml java logging
+      - run:
+          name: Generate and run Java unit tests for Speech
+          command: |
+            python gapic_smoketest.py --user-config=artman_config.yaml java speech
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
