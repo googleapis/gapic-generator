@@ -17,12 +17,17 @@ anchor_docker: &anchor_docker
 
 jobs:
   build:
+    docker:
+      - image: googleapis/git
     steps:
       - checkout
+    working_directory: /gapic-generator
   install-toolkit:
     <<: *anchor_docker
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Checkout googleapis
           command: |
@@ -37,42 +42,23 @@ jobs:
             ./gradlew install build -x test
             export TOOLKIT_HOME=/gapic-generator
             mkdir /tmp/reports
-  test-java-pubsub:
+  run-generated-tests:
     <<: *anchor_docker
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      parallelism: 3
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
-      - store_test_results:
-          path: /tmp/reports
-      - store_artifacts:
-          path: /tmp/reports
-      - run:
-          name: Check if generation script caused any changes.
-          command: git status -s && git diff-index --quiet HEAD
-  test-java-logging:
-    <<: *anchor_docker
-    steps:
-      - checkout
       - run:
           name: Generate and run Java unit tests for Logging
           command: |
             mkdir /tmp/reports
             python gapic_smoketest.py --user-config=artman_config.yaml java logging
-      - store_test_results:
-          path: /tmp/reports
-      - store_artifacts:
-          path: /tmp/reports
-      - run:
-          name: Check if generation script caused any changes.
-          command: git status -s && git diff-index --quiet HEAD
-  test-java-speech:
-    <<: *anchor_docker
-    steps:
-      - checkout
       - run:
           name: Generate and run Java unit tests for Speech
           command: |
@@ -82,9 +68,6 @@ jobs:
           path: /tmp/reports
       - store_artifacts:
           path: /tmp/reports
-      - run:
-          name: Check if generation script caused any changes.
-          command: git status -s && git diff-index --quiet HEAD
 
 workflows:
   version: 2
@@ -94,13 +77,7 @@ workflows:
       - install-toolkit:
           requires:
             - build
-      - test-java-pubsub:
-          requires:
-            - install-toolkit
-      - test-java-logging:
-          requires:
-            - install-toolkit
-      - test-java-speech:
+      - run-generated-tests:
           requires:
             - install-toolkit
 
