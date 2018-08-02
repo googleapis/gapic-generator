@@ -24,29 +24,24 @@ jobs:
     working_directory: /gapic-generator
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           name: Checkout googleapis
-          command: mkdir -p tmp/googleapis
+          command: mkdir -p workspace/googleapis
 #            mkdir -p tmp
 #            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
       - run:
           name: Build and install local toolkit
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
-#            ./gradlew fatJar
+            ./gradlew fatJar
 #            ./gradlew createToolPaths
-#            rm -rf /toolkit/.git/
+#            rm -rf /gapic-generator/.git/
 #            ./gradlew install build -x test
-#            export TOOLKIT_HOME=/gapic-generator
-      - run:
-          name: Make reports dir
-          command: mkdir -p tmp/reports
+            cp -r build workspace
       - persist_to_workspace:
-          root: /gapic-generator
+          root: workspace
           paths:
-            - tmp
+            - googleapis
             - build
   run-generated-tests:
     docker:
@@ -54,10 +49,14 @@ jobs:
 #      - image: googleapis/artman:0.14.3
     working_directory: /gapic-generator
     steps:
+      - checkout
       - attach_workspace:
-          at: /gapic-generator
+          at: workspace
       - run:
-          command: ls build
+          command: ls googleapis
+      - run:
+          name: Make reports dir
+          command: mkdir -p tmp/reports
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
@@ -87,4 +86,3 @@ workflows:
 machine:
   services:
     - docker
-  docker_layer_caching: true
