@@ -28,8 +28,9 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Checkout googleapis
-          command: |
-            git clone https://github.com/googleapis/googleapis.git /tmp/googleapis
+          command: mkdir -p tmp/googleapis
+#            mkdir -p tmp
+#            git clone https://github.com/googleapis/googleapis.git tmp/googleapis
       - run:
           name: Build and install local toolkit
           command: |
@@ -41,20 +42,22 @@ jobs:
 #            export TOOLKIT_HOME=/gapic-generator
       - run:
           name: Make reports dir
-          command: mkdir /tmp/reports
+          command: mkdir -p tmp/reports
       - persist_to_workspace:
-          root: /tmp
+          root: /gapic-generator
           paths:
-            - googleapis
-            - reports
+            - tmp
+            - build
   run-generated-tests:
     docker:
-#      - image: googleapis/artman:0.14.3
       - image: googleapis/git
+#      - image: googleapis/artman:0.14.3
     working_directory: /gapic-generator
     steps:
       - attach_workspace:
-          at: /tmp/
+          at: /gapic-generator
+      - run:
+          command: ls build
       - run:
           name: Generate and run Java unit tests for Pubsub
           command: |
