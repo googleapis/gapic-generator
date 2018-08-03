@@ -10,13 +10,13 @@ anchor_test_env: &anchor_test_env
 jobs:
   build:
     docker:
+      # TODO: Find a way to cache the armtan executor docker image.
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
     working_directory: /tmp/workspace/gapic-generator
   install-toolkit:
     docker:
-#      - image: googleapis/artman:0.14.3
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     steps:
