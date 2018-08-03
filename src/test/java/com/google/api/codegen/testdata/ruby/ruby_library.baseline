@@ -921,13 +921,13 @@ module Library
         "https://www.googleapis.com/auth/cloud-platform",
         "https://www.googleapis.com/auth/library"
       ].freeze
-      PATH_ENV_VARS = %w(LIBRARY_KEYFILE
-                         LIBRARY_CREDENTIALS
+      PATH_ENV_VARS = %w(LIBRARY_CREDENTIALS
+                         LIBRARY_KEYFILE
                          GOOGLE_CLOUD_CREDENTIALS
                          GOOGLE_CLOUD_KEYFILE
                          GCLOUD_KEYFILE)
-      JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON
-                         LIBRARY_CREDENTIALS_JSON
+      JSON_ENV_VARS = %w(LIBRARY_CREDENTIALS_JSON
+                         LIBRARY_KEYFILE_JSON
                          GOOGLE_CLOUD_CREDENTIALS_JSON
                          GOOGLE_CLOUD_KEYFILE_JSON
                          GCLOUD_KEYFILE_JSON)
@@ -4845,10 +4845,10 @@ require "library_services_pb"
 require "tagger_services_pb"
 require "google/longrunning/operations_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -4876,7 +4876,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockLibraryServiceCredentials < Library::V1::Credentials
+class MockLibraryServiceCredentials_v1 < Library::V1::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -4892,7 +4892,7 @@ end
 describe Library::V1::LibraryServiceClient do
 
   describe 'create_shelf' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#create_shelf."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#create_shelf."
 
     it 'invokes create_shelf without error' do
       # Create request parameters
@@ -4915,10 +4915,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:create_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -4950,10 +4950,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:create_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("create_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -4972,7 +4972,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_shelf' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_shelf."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_shelf."
 
     it 'invokes get_shelf without error' do
       # Create request parameters
@@ -4997,10 +4997,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(options_, request.options)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5034,10 +5034,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(options_, request.options)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5056,7 +5056,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'list_shelves' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#list_shelves."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#list_shelves."
 
     it 'invokes list_shelves without error' do
       # Create expected grpc response
@@ -5070,10 +5070,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5096,10 +5096,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5118,7 +5118,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'delete_shelf' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#delete_shelf."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#delete_shelf."
 
     it 'invokes delete_shelf without error' do
       # Create request parameters
@@ -5130,10 +5130,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5165,10 +5165,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_shelf, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("delete_shelf")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("delete_shelf")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5187,7 +5187,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'merge_shelves' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#merge_shelves."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#merge_shelves."
 
     it 'invokes merge_shelves without error' do
       # Create request parameters
@@ -5212,10 +5212,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:merge_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5249,10 +5249,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:merge_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("merge_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("merge_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5271,7 +5271,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'create_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#create_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#create_book."
 
     it 'invokes create_book without error' do
       # Create request parameters
@@ -5298,10 +5298,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:create_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("create_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5335,10 +5335,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:create_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("create_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5357,7 +5357,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'publish_series' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#publish_series."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#publish_series."
 
     it 'invokes publish_series without error' do
       # Create request parameters
@@ -5383,10 +5383,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:publish_series, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("publish_series")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5434,10 +5434,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:publish_series, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("publish_series")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("publish_series")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5460,7 +5460,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_book."
 
     it 'invokes get_book without error' do
       # Create request parameters
@@ -5485,10 +5485,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5520,10 +5520,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5542,7 +5542,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'list_books' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#list_books."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#list_books."
 
     it 'invokes list_books without error' do
       # Create request parameters
@@ -5562,10 +5562,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5594,10 +5594,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5616,7 +5616,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'delete_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#delete_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#delete_book."
 
     it 'invokes delete_book without error' do
       # Create request parameters
@@ -5628,10 +5628,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("delete_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5663,10 +5663,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("delete_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("delete_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5685,7 +5685,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'update_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#update_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#update_book."
 
     it 'invokes update_book without error' do
       # Create request parameters
@@ -5712,10 +5712,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:update_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("update_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5749,10 +5749,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:update_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("update_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("update_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5771,7 +5771,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'move_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#move_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#move_book."
 
     it 'invokes move_book without error' do
       # Create request parameters
@@ -5798,10 +5798,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:move_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("move_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5835,10 +5835,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:move_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("move_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("move_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5857,7 +5857,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'list_strings' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#list_strings."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#list_strings."
 
     it 'invokes list_strings without error' do
       # Create expected grpc response
@@ -5871,10 +5871,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_strings, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_strings")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5897,10 +5897,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_strings, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("list_strings")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_strings")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5919,7 +5919,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'add_comments' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#add_comments."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#add_comments."
 
     it 'invokes add_comments without error' do
       # Create request parameters
@@ -5944,10 +5944,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(comments, request.comments)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_comments, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_comments")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -5992,10 +5992,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(comments, request.comments)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_comments, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_comments")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_comments")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6014,7 +6014,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_book_from_archive' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_archive."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_archive."
 
     it 'invokes get_book_from_archive without error' do
       # Create request parameters
@@ -6039,10 +6039,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6074,10 +6074,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_archive")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_archive")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6096,7 +6096,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_book_from_anywhere' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_anywhere."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_anywhere."
 
     it 'invokes get_book_from_anywhere without error' do
       # Create request parameters
@@ -6123,10 +6123,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_alt_book_name, request.alt_book_name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6160,10 +6160,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_alt_book_name, request.alt_book_name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_anywhere")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6182,7 +6182,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_book_from_absolutely_anywhere' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_absolutely_anywhere."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_absolutely_anywhere."
 
     it 'invokes get_book_from_absolutely_anywhere without error' do
       # Create request parameters
@@ -6207,10 +6207,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_absolutely_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6242,10 +6242,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_book_from_absolutely_anywhere, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_book_from_absolutely_anywhere")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_book_from_absolutely_anywhere")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6264,7 +6264,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'update_book_index' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#update_book_index."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#update_book_index."
 
     it 'invokes update_book_index without error' do
       # Create request parameters
@@ -6281,10 +6281,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(index_map, request.index_map)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:update_book_index, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6329,10 +6329,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(index_map, request.index_map)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:update_book_index, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("update_book_index")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("update_book_index")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6355,7 +6355,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'stream_shelves' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#stream_shelves."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#stream_shelves."
 
     it 'invokes stream_shelves without error' do
       # Create expected grpc response
@@ -6368,10 +6368,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: [expected_response])
       end
-      mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:stream_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6392,10 +6392,10 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:stream_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("stream_shelves")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("stream_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6414,7 +6414,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'stream_books' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#stream_books."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#stream_books."
 
     it 'invokes stream_books without error' do
       # Create request parameters
@@ -6439,10 +6439,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: [expected_response])
       end
-      mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:stream_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("stream_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6468,10 +6468,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:stream_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("stream_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("stream_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6490,7 +6490,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'discuss_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#discuss_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#discuss_book."
 
     it 'invokes discuss_book without error' do
       # Create request parameters
@@ -6510,10 +6510,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: [expected_response])
       end
-      mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:discuss_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6541,10 +6541,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:discuss_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("discuss_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("discuss_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6563,7 +6563,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'monolog_about_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#monolog_about_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#monolog_about_book."
 
     it 'invokes monolog_about_book without error' do
       # Create request parameters
@@ -6583,10 +6583,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:monolog_about_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6613,10 +6613,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:monolog_about_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("monolog_about_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("monolog_about_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6635,7 +6635,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'find_related_books' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#find_related_books."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#find_related_books."
 
     it 'invokes find_related_books without error' do
       # Create request parameters
@@ -6657,10 +6657,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(shelves, request.shelves)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6691,10 +6691,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(shelves, request.shelves)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("find_related_books")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("find_related_books")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6713,7 +6713,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'add_tag' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#add_tag."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#add_tag."
 
     it 'invokes add_tag without error' do
       # Create request parameters
@@ -6731,10 +6731,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(tag, request.tag)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_tag, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_tag")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6768,10 +6768,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(tag, request.tag)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_tag, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_tag")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_tag")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6790,7 +6790,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'add_label' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#add_label."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#add_label."
 
     it 'invokes add_label without error' do
       # Create request parameters
@@ -6808,10 +6808,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(label, request.label)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_label, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_label")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6845,10 +6845,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(label, request.label)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:add_label, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("add_label")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("add_label")
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6867,7 +6867,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_big_book' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_big_book."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_big_book."
 
     it 'invokes get_big_book without error' do
       # Create request parameters
@@ -6899,10 +6899,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: operation)
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6937,10 +6937,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: operation)
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6966,10 +6966,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_book, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_book")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -6988,7 +6988,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'get_big_nothing' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_big_nothing."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_big_nothing."
 
     it 'invokes get_big_nothing without error' do
       # Create request parameters
@@ -7011,10 +7011,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: operation)
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -7049,10 +7049,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: operation)
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -7078,10 +7078,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_big_nothing, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("get_big_nothing")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_big_nothing")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -7100,7 +7100,7 @@ describe Library::V1::LibraryServiceClient do
   end
 
   describe 'test_optional_required_flattening_params' do
-    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#test_optional_required_flattening_params."
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#test_optional_required_flattening_params."
 
     it 'invokes test_optional_required_flattening_params without error' do
       # Create request parameters
@@ -7175,10 +7175,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_map, request.required_map)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -7329,10 +7329,10 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_map, request.required_map)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials.new("test_optional_required_flattening_params")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("test_optional_required_flattening_params")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
