@@ -56,7 +56,17 @@ public class Name {
     try {
       name = Name.from(pieces);
     } catch (IllegalArgumentException e) {
-      name = Name.lowerCamel(pieces);
+      try {
+        name = Name.lowerCamel(pieces);
+      } catch (IllegalArgumentException ex) {
+        String msg = "[";
+        for (String p : pieces) {
+          msg += String.format("\"%s\", ", p);
+        }
+        msg += "]\n";
+        throw new IllegalArgumentException(
+            "Name: identifiers are not all either lower-underscore or lower-camel: " + msg);
+      }
     }
     return name;
   }

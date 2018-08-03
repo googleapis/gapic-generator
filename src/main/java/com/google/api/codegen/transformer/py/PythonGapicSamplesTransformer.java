@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -137,6 +138,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private List<ViewModel> generateSampleClasses(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
+    SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
     List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
 
@@ -146,10 +148,12 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
           pathMapper.getSamplesOutputPath(
               context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
       for (MethodSampleView methodSample : method.samples()) {
-        String className =
-            namer.getApiSampleClassName(
-                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id());
+        String callingForm = methodSample.callingForm().toLowerCamel();
+        String valueSet = methodSample.valueSet().id();
+        String className = namer.getApiSampleClassName(method.name(), callingForm, valueSet);
         String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
+        generatedSamples.addFile(
+            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)

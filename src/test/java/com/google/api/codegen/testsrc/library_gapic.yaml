@@ -553,8 +553,14 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
       standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Python only
+      - calling_forms: request_streaming_server
+        value_sets: prog
+        region_tag: lovelace
+      # Java only
+      - calling_forms: callable_streaming_server
+        value_sets: "prog"
+        region_tag: babbage
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
@@ -582,6 +588,7 @@ interfaces:
       standalone:
       - calling_forms: ".*"
         value_sets: ".*"
+        region_tag: "turing_%v_%c"
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
@@ -741,6 +748,7 @@ interfaces:
       standalone:
       - calling_forms: ".*"
         value_sets: ".*"
+        region_tag: hopper
   - name: GetBigNothing
     flattening:
       groups:

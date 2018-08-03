@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.common.base.CaseFormat;
+
 /**
  * The different calling forms we wish to illustrate in samples. Not every method type will have
  * every calling form, and a calling form for a given method type need not be applicable to every
@@ -61,5 +63,14 @@ public enum CallingForm {
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
-  Generic
+  Generic;
+
+  /**
+   * Returns the {@code String} representation of this enum, but in lower camelcase.
+   *
+   * @return the lower camelcase name of this enum value
+   */
+  public String toLowerCamel() {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, toString());
+  }
 }

@@ -18,25 +18,30 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.SampleConfiguration;
 import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
-import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.common.collect.ImmutableList;
+import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
- * Class SampleSpec stores the sample specification for a given method, and provides methods to
- * easily access them by calling form and sample type.
+ * Class {@code SampleSpec} stores the sample specification for a given method, and provides methods
+ * to easily access them by calling form and sample type.
  */
 public class SampleSpec {
 
-  /** A reference to the Sample Configuration from which the other fields are derived. */
+  /** A reference to the {@code SampleConfiguration} from which the other fields are derived. */
   private final SampleConfiguration sampleConfiguration;
 
-  /** All the SampleValueSets defined for this method. */
+  /** All the {@code SampleValueSets} defined for this method. */
   private final List<SampleValueSet> valueSets;
 
+  /** Whether samples have been specified (ie. need to be emitted) for this method. */
   private final boolean specified;
 
   /** The various types of supported samples. */
@@ -46,16 +51,49 @@ public class SampleSpec {
     EXPLORER,
   }
 
+  /**
+   * A class used by {@code getMatchingValueSets} to return a value set needed to generate a sample
+   * for a given method, sample type, and calling form, together with region tag that should be used
+   * in that sample.
+   */
+  @AutoValue
+  public abstract static class ValueSetAndTags {
+
+    public abstract SampleValueSet values();
+
+    /** Returns the region tag prefix to be used for this sample. */
+    @Nullable
+    public abstract String regionTag();
+
+    public static Builder newBuilder() {
+      return new AutoValue_SampleSpec_ValueSetAndTags.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+      public abstract Builder values(SampleValueSet sets);
+
+      public abstract Builder regionTag(String tag);
+
+      public abstract ValueSetAndTags build();
+    }
+  }
+
   public SampleSpec(MethodConfigProto methodConfigProto) {
     specified = methodConfigProto.hasSamples();
     sampleConfiguration = methodConfigProto.getSamples();
     valueSets = methodConfigProto.getSampleValueSetsList();
 
-    HashSet<String> ids = new HashSet<>();
+    HashMap<String, SampleValueSet> setMap = new HashMap<>();
     for (SampleValueSet valueSet : valueSets) {
       String id = valueSet.getId();
-      if (!ids.add(id)) {
-        throw new IllegalArgumentException("SampleSpec: duplicate element: " + id);
+      SampleValueSet oldSet = setMap.put(id, valueSet);
+      if (oldSet != null) {
+        throw new IllegalArgumentException(
+            String.format(
+                "in method \"%s\": duplicate value set id: \"%s\"",
+                methodConfigProto.getName(), id));
       }
     }
   }
@@ -76,23 +114,18 @@ public class SampleSpec {
     return id.matches(expression);
   }
 
-  public List<SampleValueSet> getMatchingValueSets(
-      ClientMethodType methodForm, SampleType sampleType) {
-    return getMatchingValueSets(CallingForm.Generic, sampleType);
-  }
-
   /**
    * Returns the SampleValueSets that were specified for this methodForm and sampleType.
    *
-   * @param methodForm The calling form for which value sets are requestd
+   * @param methodForm The calling form for which value sets are requested
    * @param sampleType The sample type for which value sets are requested
    * @return A set of SampleValueSets for methodForm andSampleType
    */
-  public List<SampleValueSet> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
-    String methodFormString = methodForm.toString();
+  public List<ValueSetAndTags> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
+    String methodFormString = Name.anyCamel(methodForm.toString()).toLowerUnderscore();
 
-    // Get the value set expressions configured for this calling form.
-    List<String> valueSetExpressions =
+    // Get the `SampleTypeConfigs` configured for this `methodForm`.
+    List<SampleTypeConfiguration> matchingSamples =
         getConfigFor(sampleType)
             .stream()
             .filter(
@@ -101,21 +134,26 @@ public class SampleSpec {
                         .getCallingFormsList()
                         .stream()
                         .anyMatch(expression -> expressionMatchesId(expression, methodFormString)))
-            .flatMap(sampleConfig -> sampleConfig.getValueSetsList().stream())
             .collect(Collectors.toList());
 
-    // Return the value sets corresponding to the selected value set expressions.
-    return valueSets
-        .stream()
-        .filter(
-            valueSet ->
-                valueSetExpressions
-                    .stream()
-                    .anyMatch(expression -> expressionMatchesId(expression, valueSet.getId())))
-        .collect(ImmutableList.toImmutableList());
+    // Construct a `ValueSetAndTags` for each sample specified in each element of `matchingSamples`.
+    List<ValueSetAndTags> result = new ArrayList<>();
+    Set<String> generated = new HashSet<>();
+    for (SampleValueSet vset : valueSets) {
+      for (SampleTypeConfiguration sample : matchingSamples) {
+        for (String valueSetExpression : sample.getValueSetsList()) {
+          if (expressionMatchesId(valueSetExpression, vset.getId())) {
+            result.add(
+                ValueSetAndTags.newBuilder().values(vset).regionTag(sample.getRegionTag()).build());
+            generated.add(vset.getId());
+          }
+        }
+      }
+    }
+    return result;
   }
 
-  /** Returns the single SampleTypeConfiguration for the specified sampleType. */
+  /** Returns the single {@code SampleTypeConfiguration} for the specified {@code sampleType}. */
   private List<SampleTypeConfiguration> getConfigFor(SampleType sampleType) {
     switch (sampleType) {
       case STANDALONE:

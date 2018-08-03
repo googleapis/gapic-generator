@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -36,6 +37,7 @@ import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.Collections;
@@ -77,6 +79,7 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
   private List<ViewModel> generateSamples(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
+    SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
     List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
@@ -85,10 +88,16 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
           pathMapper.getSamplesOutputPath(
               context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
       for (MethodSampleView methodSample : method.samples()) {
+        String callingForm = methodSample.callingForm().toLowerCamel();
+        String valueSet = methodSample.valueSet().id();
         String className =
             namer.getApiSampleClassName(
-                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id());
+                CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.name()),
+                callingForm,
+                valueSet);
         String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
+        generatedSamples.addFile(
+            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
