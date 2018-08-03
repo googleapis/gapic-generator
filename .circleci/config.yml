@@ -45,7 +45,7 @@ jobs:
             - googleapis
             - gapic-generator
             - reports
-  run-generated-tests:
+  test-java-pubsub:
     <<: *anchor_test_env
     steps:
       - attach_workspace:
@@ -56,11 +56,31 @@ jobs:
           command: |
             cd workspace/gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
+      - store_test_results:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/reports
+test-java-logging:
+    <<: *anchor_test_env
+    steps:
+      - attach_workspace:
+          # Use the workspace created in install-toolkit
+          at: workspace
       - run:
           name: Generate and run Java unit tests for Logging
           command: |
             cd workspace/gapic-generator
             python gapic_smoketest.py --user-config=artman_config.yaml java logging
+      - store_test_results:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/reports
+test-java-speech:
+    <<: *anchor_test_env
+    steps:
+      - attach_workspace:
+          # Use the workspace created in install-toolkit
+          at: workspace
       - run:
           name: Generate and run Java unit tests for Speech
           command: |
@@ -76,7 +96,13 @@ workflows:
   run_generated_tests:
     jobs:
       - install-toolkit
-      - run-generated-tests:
+      - test-java-pubsub:
+          requires:
+            - install-toolkit
+      - test-java-logging:
+          requires:
+            - install-toolkit
+      - test-java-speech:
           requires:
             - install-toolkit
 
