@@ -60,36 +60,36 @@ jobs:
           path: /tmp/workspace/reports
       - store_artifacts:
           path: /tmp/workspace/reports
-test-java-logging:
-    <<: *anchor_test_env
-    steps:
-      - attach_workspace:
-          # Use the workspace created in install-toolkit
-          at: workspace
-      - run:
-          name: Generate and run Java unit tests for Logging
-          command: |
-            cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java logging
-      - store_test_results:
-          path: /tmp/workspace/reports
-      - store_artifacts:
-          path: /tmp/workspace/reports
-test-java-speech:
-    <<: *anchor_test_env
-    steps:
-      - attach_workspace:
-          # Use the workspace created in install-toolkit
-          at: workspace
-      - run:
-          name: Generate and run Java unit tests for Speech
-          command: |
-            cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java speech
-      - store_test_results:
-          path: /tmp/workspace/reports
-      - store_artifacts:
-          path: /tmp/workspace/reports
+  test-java-logging:
+      <<: *anchor_test_env
+      steps:
+        - attach_workspace:
+            # Use the workspace created in install-toolkit
+            at: workspace
+        - run:
+            name: Generate and run Java unit tests for Logging
+            command: |
+              cd workspace/gapic-generator
+              python gapic_smoketest.py --user-config=artman_config.yaml java logging
+        - store_test_results:
+            path: /tmp/workspace/reports
+        - store_artifacts:
+            path: /tmp/workspace/reports
+  test-java-speech:
+      <<: *anchor_test_env
+      steps:
+        - attach_workspace:
+            # Use the workspace created in install-toolkit
+            at: workspace
+        - run:
+            name: Generate and run Java unit tests for Speech
+            command: |
+              cd workspace/gapic-generator
+              python gapic_smoketest.py --user-config=artman_config.yaml java speech
+        - store_test_results:
+            path: /tmp/workspace/reports
+        - store_artifacts:
+            path: /tmp/workspace/reports
 
 workflows:
   version: 2
