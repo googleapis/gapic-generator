@@ -1,5 +1,12 @@
 version: 2.0
 
+anchor_test_env: &anchor_test_env
+  docker:
+    - image: googleapis/artman:0.14.3
+  environment:
+    RUNNING_IN_ARTMAN_DOCKER: True
+  working_directory: /tmp/
+
 jobs:
   build:
     docker:
@@ -39,12 +46,7 @@ jobs:
             - gapic-generator
             - reports
   run-generated-tests:
-    docker:
-      - image: googleapis/artman:0.14.3
-    environment:
-      RUNNING_IN_ARTMAN_DOCKER: True
-    working_directory: /tmp/
-    parallelism: 3
+    <<: *anchor_test_env
     steps:
       - attach_workspace:
           # Use the workspace created in install-toolkit
