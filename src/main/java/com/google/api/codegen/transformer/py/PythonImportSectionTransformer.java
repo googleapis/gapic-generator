@@ -139,7 +139,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("google.api_core.page_iterator"));
     }
 
-    if (new PathTemplateTransformer().generateFormatResourceFunctions(context).isEmpty()) {
+    if (!(new PathTemplateTransformer().generateFormatResourceFunctions(context)).isEmpty()) {
       imports.add(createImport("google.api_core.path_template"));
     }
 
