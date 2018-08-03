@@ -34,3 +34,4 @@ def test_java_pubsub(caplog):
                            "/tmp/workspace/googleapis",
                            "../../artman_config.yaml",
                            caplog)
+    assert False
