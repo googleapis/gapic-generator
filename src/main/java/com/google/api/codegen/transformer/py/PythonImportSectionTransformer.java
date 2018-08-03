@@ -125,7 +125,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("google.api_core.gapic_v1.client_info"));
     imports.add(createImport("google.api_core.gapic_v1.config"));
     imports.add(createImport("google.api_core.gapic_v1.method"));
-    imports.add(createImport("google.api_core.path_template"));
 
     if (hasRequestHeaderParams((GapicInterfaceContext) context)) {
       imports.add(createImport("google.api_core.gapic_v1.routing_header"));
@@ -138,6 +137,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       imports.add(createImport("google.api_core.page_iterator"));
+    }
+
+    if (new PathTemplateTransformer().generateFormatResourceFunctions(context).isEmpty()) {
+      imports.add(createImport("google.api_core.path_template"));
     }
 
     if (hasOneOf(context)) {
