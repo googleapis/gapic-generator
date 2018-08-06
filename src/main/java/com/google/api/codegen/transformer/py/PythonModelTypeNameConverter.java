@@ -164,7 +164,14 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
       String shortName = Joiner.on(".").join(path);
       return getTypeNameInImplicitPackage(shortName);
     }
-    if (elem instanceof Interface || elem instanceof Method) {
+
+    boolean useGrpcName = elem instanceof Interface || elem instanceof Method;
+    if (elem.getFile().getSimpleName().equals("google/iam/v1/iam_policy.proto")) {
+      // IAM policy gRPC service isn't actually used; API producers implement this themselves.
+      useGrpcName = false;
+    }
+
+    if (useGrpcName) {
       path.add(0, getGrpcPbFileName(elem.getFile().getSimpleName()));
     } else {
       path.add(0, getPbFileName(elem.getFile().getSimpleName()));
