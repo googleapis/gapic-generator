@@ -20,7 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
-    - "acceptance/**/*smoke_test.rb"
+    - "acceptance/**/*"
 
 Documentation:
   Enabled: false
@@ -35,6 +35,7 @@ Style/MethodDefParentheses:
 --title=Google Example Library API
 --exclude _pb\.rb$
 --markup markdown
+--markup-provider redcarpet
 
 ./lib/**/*.rb
 -
@@ -274,7 +275,7 @@ steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
@@ -561,14 +562,14 @@ require "minitest/spec"
 
 require "library"
 
-describe "LibraryServiceSmokeTest" do
+describe "LibraryServiceSmokeTest v1" do
   it "runs one smoke test with update_book" do
     unless ENV["LIBRARY_TEST_PROJECT"]
       fail "LIBRARY_TEST_PROJECT environment variable must be defined"
     end
     project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
-    library_service_client = Library.new
+    library_service_client = Library.new(version: :v1)
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     optional_foo = ''
     rating = :GOOD
@@ -612,7 +613,7 @@ require "pathname"
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
 # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
 # ### Installation
@@ -677,7 +678,7 @@ module Library
   AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
     .select { |file| File.directory?(file) }
     .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-    .select { |dir| File.exist?(File.join(dir, ".rb")) }
+    .select { |dir| File.exist?(dir + ".rb")) }
     .map { |dir| File.basename(dir) }
 
   ##
@@ -778,7 +779,7 @@ module Library
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
+  # 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Installation
@@ -1958,17 +1959,6 @@ end
 module Google
   module Example
     module Library
-      ##
-      # # Google Example Library API Contents
-      #
-      # | Class | Description |
-      # | ----- | ----------- |
-      # | [LibraryServiceClient][] | This API represents a simple digital library. |
-      # | [Data Types][] | Data types for Library::V1 |
-      #
-      # [LibraryServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/example/library/v1/libraryserviceclient
-      # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/example/library/v1/datatypes
-      #
       module V1
         # A single book in the library.
         # Message comment may include special characters: <>&"+'@.
@@ -4734,8 +4724,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
+  gem.add_development_dependency "redcarpet", "~> 3.0"
   gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
+  gem.add_development_dependency "yard", "~> 0.9"
 end
 
 ============== file: test/library/v1/library_service_client_test.rb ==============
