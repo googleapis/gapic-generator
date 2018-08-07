@@ -81,32 +81,35 @@ def run_smoke_test(api_name, language, root_dir, log, user_config):
         os.chdir("artman-genfiles/%s" % language)
 
         if _test_artifact(test_languages[language], api_name, api_version, log_file):
-            msg = 'Failed to pass tests for %s library.' % (
+            msg = 'Tests failed for %s library.' % (
                 language)
             failure.append(msg)
         else:
-            msg = 'Succeeded to pass tests for %s library.' % (
+            msg = 'Tests passed for %s library.' % (
                 language)
             success.append(msg)
         os.chdir(cwd)
         logger.info(msg)
     logger.info('================ Smoketest summary ================')
-    logger.info('Successes:')
-    for msg in success:
-        logger.info(msg)
-    logger.info('Warnings:')
-    if warning:
-        for msg in warning:
+    if not warning and not failure:
+        logger.info('Successes:')
+        for msg in success:
             logger.info(msg)
+        logger.info('Warnings:')
+        if warning:
+            for msg in warning:
+                logger.info(msg)
+        else:
+            logger.info("none.")
+        logger.info('Failures:')
+        if failure:
+            for msg in failure:
+                logger.error(msg)
+            sys.exit('Smoke test failed.')
+        else:
+            logger.info("none.")
     else:
-        logger.info("none.")
-    logger.info('Failures:')
-    if failure:
-        for msg in failure:
-            logger.error(msg)
-        sys.exit('Smoke test failed.')
-    else:
-        logger.info("none.")
+        logger.info("All passed.")
 
 
 def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_config_file):
@@ -124,7 +127,7 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
             '--root-dir', root_dir,
             'generate', artifact_name
         ]
-        logger.info("Start artifact generation for %s of %s: %s" %
+        logger.info("Generate artifact %s of %s: %s" %
                     (artifact_name, artman_config, " ".join(grpc_pipeline_args)))
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
