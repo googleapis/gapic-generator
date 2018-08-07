@@ -20,7 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
-    - "acceptance/**/*smoke_test.rb"
+    - "acceptance/**/*"
 
 Documentation:
   Enabled: false
@@ -562,14 +562,14 @@ require "minitest/spec"
 
 require "library"
 
-describe "LibraryServiceSmokeTest" do
+describe "LibraryServiceSmokeTest v1" do
   it "runs one smoke test with update_book" do
     unless ENV["LIBRARY_TEST_PROJECT"]
       fail "LIBRARY_TEST_PROJECT environment variable must be defined"
     end
     project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
-    library_service_client = Library.new
+    library_service_client = Library.new(version: :v1)
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     optional_foo = ''
     rating = :GOOD
@@ -673,7 +673,7 @@ module Library
   AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
     .select { |file| File.directory?(file) }
     .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-    .select { |dir| File.exist?(dir + ".rb")) }
+    .select { |dir| File.exist?(dir + ".rb") }
     .map { |dir| File.basename(dir) }
 
   ##
@@ -1949,17 +1949,6 @@ end
 module Google
   module Example
     module Library
-      ##
-      # # Google Example Library API Contents
-      #
-      # | Class | Description |
-      # | ----- | ----------- |
-      # | [LibraryServiceClient][] | This API represents a simple digital library. |
-      # | [Data Types][] | Data types for Library::V1 |
-      #
-      # [LibraryServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/example/library/v1/libraryserviceclient
-      # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/example/library/v1/datatypes
-      #
       module V1
         # A single book in the library.
         # Message comment may include special characters: <>&"+'@.
