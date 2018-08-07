@@ -20,7 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
-    - "acceptance/**/*smoke_test.rb"
+    - "acceptance/**/*"
 
 Documentation:
   Enabled: false
@@ -35,6 +35,7 @@ Style/MethodDefParentheses:
 --title=Google Long Running Operations API
 --exclude _pb\.rb$
 --markup markdown
+--markup-provider redcarpet
 
 ./lib/**/*.rb
 -
@@ -274,7 +275,7 @@ steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/library/api/longrunning.googleapis.com)
 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
@@ -649,8 +650,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-gax", "~> 1.3"
 
   gem.add_development_dependency "minitest", "~> 5.10"
+  gem.add_development_dependency "redcarpet", "~> 3.0"
   gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
+  gem.add_development_dependency "yard", "~> 0.9"
 end
 
 ============== file: lib/google/longrunning.rb ==============
@@ -700,7 +703,7 @@ module Google
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+  # 3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/library/api/longrunning.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Preview
@@ -1137,17 +1140,6 @@ end
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Google
-  ##
-  # # Google Long Running Operations API Contents
-  #
-  # | Class | Description |
-  # | ----- | ----------- |
-  # | [OperationsClient][] | Manages long-running operations with an API service. |
-  # | [Data Types][] | Data types for Google::Longrunning |
-  #
-  # [OperationsClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google/latest/google/longrunning/operationsclient
-  # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google/latest/google/longrunning/datatypes
-  #
   module Longrunning
     # This resource represents a long-running operation that is the result of a
     # network API call.
@@ -1270,7 +1262,7 @@ module Google
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+  # 3. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/library/api/longrunning.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Installation
@@ -1819,10 +1811,10 @@ require "google/longrunning"
 require "google/longrunning/operations_client"
 require "longrunning_services_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -1850,7 +1842,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockOperationsCredentials < Google::Auth::Credentials
+class MockOperationsCredentials_longrunning < Google::Auth::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1866,7 +1858,7 @@ end
 describe Google::Longrunning::OperationsClient do
 
   describe 'get_operation' do
-    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#get_operation."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Longrunning::OperationsClient#get_operation."
 
     it 'invokes get_operation without error' do
       # Create request parameters
@@ -1884,10 +1876,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("get_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1919,10 +1911,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("get_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1941,7 +1933,7 @@ describe Google::Longrunning::OperationsClient do
   end
 
   describe 'list_operations' do
-    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#list_operations."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Longrunning::OperationsClient#list_operations."
 
     it 'invokes list_operations without error' do
       # Create request parameters
@@ -1962,10 +1954,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(filter, request.filter)
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("list_operations")
+      mock_credentials = MockOperationsCredentials_longrunning.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1995,10 +1987,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(filter, request.filter)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("list_operations")
+      mock_credentials = MockOperationsCredentials_longrunning.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -2017,7 +2009,7 @@ describe Google::Longrunning::OperationsClient do
   end
 
   describe 'cancel_operation' do
-    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#cancel_operation."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Longrunning::OperationsClient#cancel_operation."
 
     it 'invokes cancel_operation without error' do
       # Create request parameters
@@ -2029,10 +2021,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -2064,10 +2056,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -2086,7 +2078,7 @@ describe Google::Longrunning::OperationsClient do
   end
 
   describe 'delete_operation' do
-    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#delete_operation."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Longrunning::OperationsClient#delete_operation."
 
     it 'invokes delete_operation without error' do
       # Create request parameters
@@ -2098,10 +2090,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("delete_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -2133,10 +2125,10 @@ describe Google::Longrunning::OperationsClient do
         assert_equal(name, request.name)
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockOperationsCredentials.new("delete_operation")
+      mock_credentials = MockOperationsCredentials_longrunning.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do

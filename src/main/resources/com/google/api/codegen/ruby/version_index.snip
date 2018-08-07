@@ -104,7 +104,11 @@
     AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
       .select { |file| File.directory?(file) }
       .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
-      .select { |dir| File.exist?(File.join(dir, "{@index.postVersionDirPath}.rb")) }
+      @if index.postVersionDirPath
+        .select { |dir| File.exist?(File.join(dir, "{@index.postVersionDirPath}.rb")) }
+      @else
+        .select { |dir| File.exist?(dir + ".rb") }
+      @end
       .map { |dir| File.basename(dir) }
 
   @default

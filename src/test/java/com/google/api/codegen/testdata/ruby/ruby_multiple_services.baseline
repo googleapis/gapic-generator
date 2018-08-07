@@ -20,7 +20,7 @@ AllCops:
     - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
-    - "acceptance/**/*smoke_test.rb"
+    - "acceptance/**/*"
 
 Documentation:
   Enabled: false
@@ -35,6 +35,7 @@ Style/MethodDefParentheses:
 --title=Google Example API
 --exclude _pb\.rb$
 --markup markdown
+--markup-provider redcarpet
 
 ./lib/**/*.rb
 -
@@ -275,7 +276,7 @@ steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/api/multiple_services.googleapis.com)
 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
@@ -505,8 +506,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
+  gem.add_development_dependency "redcarpet", "~> 3.0"
   gem.add_development_dependency "rubocop", "~> 0.50.0"
   gem.add_development_dependency "simplecov", "~> 0.9"
+  gem.add_development_dependency "yard", "~> 0.9"
 end
 
 ============== file: lib/google/example.rb ==============
@@ -544,7 +547,7 @@ module Google
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/api/multiple_services.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Next Steps
@@ -730,7 +733,7 @@ module Google
     #
     # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
     # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-    # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+    # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/api/multiple_services.googleapis.com)
     # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
     #
     # ### Next Steps
@@ -907,13 +910,13 @@ module Google
         class Credentials < Google::Auth::Credentials
           SCOPE = [
           ].freeze
-          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE
-                             MULTIPLE_SERVICES_CREDENTIALS
+          PATH_ENV_VARS = %w(MULTIPLE_SERVICES_CREDENTIALS
+                             MULTIPLE_SERVICES_KEYFILE
                              GOOGLE_CLOUD_CREDENTIALS
                              GOOGLE_CLOUD_KEYFILE
                              GCLOUD_KEYFILE)
-          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON
-                             MULTIPLE_SERVICES_CREDENTIALS_JSON
+          JSON_ENV_VARS = %w(MULTIPLE_SERVICES_CREDENTIALS_JSON
+                             MULTIPLE_SERVICES_KEYFILE_JSON
                              GOOGLE_CLOUD_CREDENTIALS_JSON
                              GOOGLE_CLOUD_KEYFILE_JSON
                              GCLOUD_KEYFILE_JSON)
@@ -1179,19 +1182,6 @@ end
 module Google
   module Cloud
     module Example
-      ##
-      # # Google Example API Contents
-      #
-      # | Class | Description |
-      # | ----- | ----------- |
-      # | [IncrementerServiceClient][] |  |
-      # | [DecrementerServiceClient][] |  |
-      # | [Data Types][] | Data types for Google::Example::V1::Foo |
-      #
-      # [IncrementerServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/incrementerserviceclient
-      # [DecrementerServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/decrementerserviceclient
-      # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-example/latest/google/cloud/example/v1/foo/datatypes
-      #
       module V1
         module Foo
           class IncrementRequest; end
@@ -1234,7 +1224,7 @@ module Google
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+  # 3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/api/multiple_services.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
   #
   # ### Installation
@@ -1515,10 +1505,10 @@ require "google/example"
 require "google/example/v1/foo/decrementer_service_client"
 require "multiple_services_services_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -1546,7 +1536,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockDecrementerServiceCredentials < Google::Example::V1::Foo::Credentials
+class MockDecrementerServiceCredentials_v1 < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1562,7 +1552,7 @@ end
 describe Google::Example::V1::Foo::DecrementerServiceClient do
 
   describe 'decrement' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
 
     it 'invokes decrement without error' do
 
@@ -1570,10 +1560,10 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials_v1.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1600,10 +1590,10 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials_v1.new("decrement")
 
       Google::Cloud::Example::V1::Foo::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1645,10 +1635,10 @@ require "google/example"
 require "google/example/v1/foo/incrementer_service_client"
 require "multiple_services_services_pb"
 
-class CustomTestError < StandardError; end
+class CustomTestError_v1 < StandardError; end
 
 # Mock for the GRPC::ClientStub class.
-class MockGrpcClientStub
+class MockGrpcClientStub_v1
 
   # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
   # @param mock_method [Proc] The method that is being mocked.
@@ -1676,7 +1666,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockIncrementerServiceCredentials < Google::Example::V1::Foo::Credentials
+class MockIncrementerServiceCredentials_v1 < Google::Example::V1::Foo::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1692,7 +1682,7 @@ end
 describe Google::Example::V1::Foo::IncrementerServiceClient do
 
   describe 'increment' do
-    custom_error = CustomTestError.new "Custom test error for Google::Example::V1::Foo::IncrementerServiceClient#increment."
+    custom_error = CustomTestError_v1.new "Custom test error for Google::Example::V1::Foo::IncrementerServiceClient#increment."
 
     it 'invokes increment without error' do
 
@@ -1700,10 +1690,10 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: nil)
       end
-      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials_v1.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
@@ -1730,10 +1720,10 @@ describe Google::Example::V1::Foo::IncrementerServiceClient do
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub.new(:increment, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockIncrementerServiceCredentials.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials_v1.new("increment")
 
       Google::Cloud::Example::V1::Foo::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::V1::Foo::Credentials.stub(:default, mock_credentials) do
