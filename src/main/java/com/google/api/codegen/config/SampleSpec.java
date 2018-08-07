@@ -22,10 +22,8 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -85,11 +83,10 @@ public class SampleSpec {
     sampleConfiguration = methodConfigProto.getSamples();
     valueSets = methodConfigProto.getSampleValueSetsList();
 
-    HashMap<String, SampleValueSet> setMap = new HashMap<>();
+    HashSet<String> ids = new HashSet<>();
     for (SampleValueSet valueSet : valueSets) {
       String id = valueSet.getId();
-      SampleValueSet oldSet = setMap.put(id, valueSet);
-      if (oldSet != null) {
+      if (!ids.add(id)) {
         throw new IllegalArgumentException(
             String.format(
                 "in method \"%s\": duplicate value set id: \"%s\"",
@@ -138,14 +135,12 @@ public class SampleSpec {
 
     // Construct a `ValueSetAndTags` for each sample specified in each element of `matchingSamples`.
     List<ValueSetAndTags> result = new ArrayList<>();
-    Set<String> generated = new HashSet<>();
     for (SampleValueSet vset : valueSets) {
       for (SampleTypeConfiguration sample : matchingSamples) {
         for (String valueSetExpression : sample.getValueSetsList()) {
           if (expressionMatchesId(valueSetExpression, vset.getId())) {
             result.add(
                 ValueSetAndTags.newBuilder().values(vset).regionTag(sample.getRegionTag()).build());
-            generated.add(vset.getId());
           }
         }
       }

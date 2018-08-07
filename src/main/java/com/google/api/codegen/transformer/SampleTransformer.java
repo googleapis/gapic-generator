@@ -29,6 +29,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -246,11 +247,11 @@ public class SampleTransformer {
    * Creates a region tag from the spec, replacing any {@code %m}, {@code %c}, and {@code %v}
    * placeholders with the method name, calling form name, and value set id, respectively.
    */
-  private String regionTagFromSpec(
+  private static String regionTagFromSpec(
       String spec, String methodName, CallingForm callingForm, String valueSetId) {
     final String DEFAULT_REGION_SPEC = "sample";
 
-    if (spec == null || spec.isEmpty()) {
+    if (Strings.isNullOrEmpty(spec)) {
       spec = DEFAULT_REGION_SPEC;
     }
     return spec.replace("%m", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodName))

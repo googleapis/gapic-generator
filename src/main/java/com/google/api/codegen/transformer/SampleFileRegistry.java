@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class SampleFileRegistry {
 
-  Map<String, SampleInfo> files = new HashMap<>();
+  private final Map<String, SampleInfo> files = new HashMap<>();
 
   /**
    * Adds a file with the given parameters to the registry. If a file with the given {@code path}
@@ -33,39 +33,22 @@ public class SampleFileRegistry {
    */
   public void addFile(
       String path, String method, String callingForm, String valueSet, String regionTag) {
+    SampleInfo current =
+        SampleInfo.newBuilder()
+            .path(path)
+            .method(method)
+            .callingForm(callingForm)
+            .valueSet(valueSet)
+            .regionTag(regionTag)
+            .build();
     SampleInfo previous = files.get(path);
     if (previous == null) {
-      files.put(
-          path,
-          SampleInfo.newBuilder()
-              .path(path)
-              .method(method)
-              .callingForm(callingForm)
-              .valueSet(valueSet)
-              .regionTag(regionTag)
-              .build());
-    } else if (!(previous.path().equals(path)
-        && previous.method().equals(method)
-        && previous.callingForm().equals(callingForm)
-        && previous.valueSet().equals(valueSet)
-        && previous.regionTag().equals(regionTag))) {
+      files.put(path, current);
+    } else if (!current.equals(previous)) {
       throw new IllegalArgumentException(
           String.format(
-              "conflicting configurations for sample \"%s\":\n"
-                  + "%s\n%s\n"
-                  + "  {method:\"%s\", calling form:\"%s\", value set:\"%s\", region tag:\"%s\"}\n"
-                  + "  {method:\"%s\", calling form:\"%s\", value set:\"%s\", region tag:\"%s\"}\n",
-              path,
-              previous.path(),
-              path,
-              previous.method(),
-              previous.callingForm(),
-              previous.valueSet(),
-              previous.regionTag(),
-              method,
-              callingForm,
-              valueSet,
-              regionTag));
+              "conflicting configurations for sample \"%s\":\n  %s\n  %s",
+              path, previous.toString(), current.toString()));
     }
   }
 
