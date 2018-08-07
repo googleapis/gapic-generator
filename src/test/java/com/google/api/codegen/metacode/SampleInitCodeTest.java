@@ -381,7 +381,7 @@ public class SampleInitCodeTest {
             .initValueConfigMap(ImmutableMap.of("formatted_field", initValueConfig))
             .build();
     InitCodeNode rootNode = InitCodeNode.createTree(context);
-    List<InitCodeNode> initOrder =rootNode.listInInitializationOrder();
+    List<InitCodeNode> initOrder = rootNode.listInInitializationOrder();
     assertThat(initOrder.stream().map(node -> node.getKey()))
         .containsExactly("formatted_field", "root")
         .inOrder();
