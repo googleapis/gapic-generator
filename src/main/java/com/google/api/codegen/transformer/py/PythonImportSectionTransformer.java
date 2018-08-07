@@ -164,7 +164,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .getInterfaceConfig()
         .getMethodConfigs()
         .stream()
-        .anyMatch(config -> config.getOneofNames(context.getNamer()).iterator().hasNext());
+        .anyMatch(config -> !config.getOneofNames(context.getNamer()).isEmpty());
   }
 
   private List<ImportFileView> generateMainAppImports(InterfaceContext context) {

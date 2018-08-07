@@ -168,7 +168,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (methodModel.hasExtraFieldMask()) {
       requiredFieldsList.add(DiscoveryMethodTransformer.FIELDMASK_STRING);
     }
-    Iterable<FieldConfig> requiredFieldConfigs =
+    ImmutableList<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
@@ -177,7 +177,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
             resourceNameConfigs,
             getRequiredFields(diagCollector, methodModel, requiredFieldsList));
 
-    Iterable<FieldConfig> optionalFieldConfigs =
+    ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
@@ -230,9 +230,9 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
   }
 
-  @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer) {
+  @Override
+  public ImmutableList<ImmutableList<String>> getOneofNames(SurfaceNamer namer) {
     return ImmutableList.of();
   }
 }
