@@ -144,7 +144,7 @@ class OutputTransformer {
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
         definition.input());
-    String identifier = definition.token();
+    String identifier = definition.tokenStr();
 
     Preconditions.checkArgument(
         definition.scan() == '=',
@@ -202,7 +202,7 @@ class OutputTransformer {
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
         config.input());
-    String baseIdentifier = config.token();
+    String baseIdentifier = config.tokenStr();
 
     TypeModel type;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
@@ -254,7 +254,7 @@ class OutputTransformer {
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
             config.input());
-        String fieldName = config.token();
+        String fieldName = config.tokenStr();
         FieldModel field =
             Preconditions.checkNotNull(
                 type.getField(fieldName),

@@ -67,12 +67,14 @@ public class SampleInitCodeTest {
         .suggestedName(Name.from("request"));
   }
 
+  // TODO(pongad): Consider using createTree everywhere.
+
   @Test
   public void testSimpleField() throws Exception {
     String fieldSpec = "myfield";
 
     InitCodeNode expectedStructure = InitCodeNode.newRoot();
-    expectedStructure.mergeChild(InitCodeNode.create("myfield"));
+    expectedStructure.mergeChild(InitCodeNode.create(fieldSpec));
 
     InitCodeNode actualStructure = InitCodeNode.newRoot();
     FieldStructureParser.parse(actualStructure, fieldSpec);
@@ -264,12 +266,14 @@ public class SampleInitCodeTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testFormattedFieldBadField() throws Exception {
+    // Error because `name` is not configured to be a resource name field.
     String fieldSpec = "name%entity";
     FieldStructureParser.parse(InitCodeNode.newRoot(), fieldSpec);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testFormattedFieldBadFieldWithValue() throws Exception {
+    // Error because `name` is not configured to be a resource name field.
     String fieldSpec = "name%entity=test";
     FieldStructureParser.parse(InitCodeNode.newRoot(), fieldSpec);
   }
@@ -377,7 +381,8 @@ public class SampleInitCodeTest {
             .initValueConfigMap(ImmutableMap.of("formatted_field", initValueConfig))
             .build();
     InitCodeNode rootNode = InitCodeNode.createTree(context);
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+    List<InitCodeNode> initOrder =rootNode.listInInitializationOrder();
+    assertThat(initOrder.stream().map(node -> node.getKey()))
         .containsExactly("formatted_field", "root")
         .inOrder();
   }

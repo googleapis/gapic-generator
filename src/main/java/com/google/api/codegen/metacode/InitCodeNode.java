@@ -157,12 +157,13 @@ public class InitCodeNode {
     return InitCodeNode.createWithChildren(key, InitCodeLineType.ListInitLine, child);
   }
 
+  /** Creates a node to be used as the root of the initialization tree. */
   public static InitCodeNode newRoot() {
     return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
   }
 
   /*
-   * Constructs a tree of objects to be initialized using the provided context, and returns the root
+   * Constructs a tree of objects to be initialized using the provided context, and returns the root.
    */
   public static InitCodeNode createTree(InitCodeContext context) {
     Preconditions.checkArgument(
@@ -240,18 +241,16 @@ public class InitCodeNode {
 
   static InitValueConfig mergeInitValueConfig(
       InitValueConfig oldConfig, InitValueConfig newConfig) {
-    if (oldConfig.hasSimpleInitialValue()
-        && newConfig.hasSimpleInitialValue()
-        && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
-      throw new IllegalArgumentException("Inconsistent init values");
-    }
     return InitValueConfig.newBuilder()
         .setApiWrapperName(
-            firstNotNull(oldConfig.getApiWrapperName(), newConfig.getApiWrapperName()))
+            merge("api wrapper", oldConfig.getApiWrapperName(), newConfig.getApiWrapperName()))
         .setSingleResourceNameConfig(
-            firstNotNull(
-                oldConfig.getSingleResourceNameConfig(), newConfig.getSingleResourceNameConfig()))
-        .setInitialValue(firstNotNull(oldConfig.getInitialValue(), newConfig.getInitialValue()))
+            merge(
+                "resource name config",
+                oldConfig.getSingleResourceNameConfig(),
+                newConfig.getSingleResourceNameConfig()))
+        .setInitialValue(
+            merge("init value", oldConfig.getInitialValue(), newConfig.getInitialValue()))
         .setResourceNameBindingValues(
             ImmutableMap.<String, InitValue>builder()
                 .putAll(oldConfig.getResourceNameBindingValues())
@@ -260,7 +259,15 @@ public class InitCodeNode {
         .build();
   }
 
-  private static <T> T firstNotNull(T a, T b) {
+  /**
+   * If both {@code a} and {@code b} are non-null, verify that they are equal and return {@code a}.
+   * If both are null, return null. Otherwise, return whichever is non-null.
+   */
+  private static <T> T merge(String desc, T a, T b) {
+    if (a != null && b != null) {
+      Preconditions.checkArgument(a.equals(b), "inconsistent %s, old: %s, new: %s", desc, a, b);
+      return a;
+    }
     return a != null ? a : b;
   }
 

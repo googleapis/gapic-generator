@@ -171,7 +171,11 @@ public class Scanner {
     return last = codePoint;
   }
 
-  public String token() {
+  public int lastToken() {
+    return last;
+  }
+
+  public String tokenStr() {
     return token;
   }
 
@@ -181,10 +185,6 @@ public class Scanner {
 
   public int pos() {
     return loc;
-  }
-
-  public int last() {
-    return last;
   }
 
   private static boolean digit(int codePoint) {
