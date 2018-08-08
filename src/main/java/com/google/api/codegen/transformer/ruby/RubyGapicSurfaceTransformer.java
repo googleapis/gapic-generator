@@ -178,7 +178,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         pathTemplateTransformer.generateParseResourceFunctions(context));
     xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
 
-    xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(

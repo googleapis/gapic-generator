@@ -299,8 +299,7 @@ public class ApiCallableTransformer {
     settings.responseTypeName(
         method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
 
-    settings.grpcTypeName(typeTable.getAndSaveNicknameFor(context.getGrpcContainerTypeName()));
-    settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
+    typeTable.getAndSaveNicknameFor(context.getGrpcContainerTypeName());
     settings.retryCodesName(methodConfig.getRetryCodesConfigName());
     settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
@@ -312,8 +311,6 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "resourceTypeName"));
     settings.pagedListResponseTypeName(
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseTypeName"));
-    settings.pageStreamingDescriptorName(
-        namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
     settings.pagedListResponseFactoryName(
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
     settings.batchingDescriptorName(
@@ -341,7 +338,6 @@ public class ApiCallableTransformer {
         settings.pagedListResponseTypeName(
             namer.getAndSavePagedResponseTypeName(
                 context, methodConfig.getPageStreaming().getResourcesFieldConfig()));
-        settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
         settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
         break;
       case BatchingApiCallable:

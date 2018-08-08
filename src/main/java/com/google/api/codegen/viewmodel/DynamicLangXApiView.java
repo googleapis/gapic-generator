@@ -59,8 +59,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<GrpcStreamingDetailView> grpcStreamingDescriptors();
 
-  public abstract List<String> methodKeys();
-
   public abstract String clientConfigPath();
 
   @Nullable
@@ -176,8 +174,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
 
     public abstract Builder grpcStreamingDescriptors(List<GrpcStreamingDetailView> val);
-
-    public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
 
