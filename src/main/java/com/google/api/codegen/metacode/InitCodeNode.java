@@ -25,11 +25,11 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,12 +157,41 @@ public class InitCodeNode {
     return InitCodeNode.createWithChildren(key, InitCodeLineType.ListInitLine, child);
   }
 
-  /*
-   * Constructs a tree of objects to be initialized using the provided context, and returns the root
+  /** Creates a node to be used as the root of the initialization tree. */
+  public static InitCodeNode newRoot() {
+    return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+  }
+
+  /**
+   * Constructs a tree of objects to be initialized using the provided context, and returns the
+   * root.
    */
   public static InitCodeNode createTree(InitCodeContext context) {
-    List<InitCodeNode> subTrees = buildSubTrees(context);
-    InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
+    Preconditions.checkArgument(
+        context.initFields() != null || context.outputType() != InitCodeOutputType.FieldList,
+        "init field array is not set for flattened method");
+    InitCodeNode root = newRoot();
+
+    if (context.initFields() != null) {
+      for (FieldModel field : context.initFields()) {
+        String nameString = field.getNameAsParameter();
+        InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
+        if (initValueConfig == null) {
+          root.mergeChild(InitCodeNode.createWithName(nameString, nameString));
+        } else {
+          root.mergeChild(InitCodeNode.createWithValue(nameString, initValueConfig));
+        }
+      }
+    }
+
+    for (String initFieldConfigString : context.initFieldConfigStrings()) {
+      FieldStructureParser.parse(root, initFieldConfigString, context.initValueConfigMap());
+    }
+
+    for (InitCodeNode node : context.additionalInitCodeNodes()) {
+      root.mergeChild(node);
+    }
+
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
     return root;
   }
@@ -196,60 +225,51 @@ public class InitCodeNode {
     this.varName = varName;
   }
 
-  void mergeChild(InitCodeNode newChild) {
+  InitCodeNode mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
-    if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
-      InitValueConfig mergedValueConfig =
-          mergeInitValueConfig(oldChild.getInitValueConfig(), newChild.getInitValueConfig());
-      oldChild.updateInitValueConfig(mergedValueConfig);
-      for (InitCodeNode newSubChild : newChild.children.values()) {
-        oldChild.mergeChild(newSubChild);
-      }
-    } else {
+    if (oldChild == null || oldChild.lineType == InitCodeLineType.Unknown) {
       children.put(newChild.key, newChild);
+      return newChild;
     }
+    InitValueConfig mergedValueConfig =
+        mergeInitValueConfig(oldChild.getInitValueConfig(), newChild.getInitValueConfig());
+    oldChild.updateInitValueConfig(mergedValueConfig);
+    for (InitCodeNode newSubChild : newChild.children.values()) {
+      oldChild.mergeChild(newSubChild);
+    }
+    return oldChild;
   }
 
-  private static InitValueConfig mergeInitValueConfig(
+  static InitValueConfig mergeInitValueConfig(
       InitValueConfig oldConfig, InitValueConfig newConfig) {
-    HashMap<String, InitValue> collectionValues = new HashMap<>();
-    if (oldConfig.hasSimpleInitialValue()
-        && newConfig.hasSimpleInitialValue()
-        && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
-      throw new IllegalArgumentException("Inconsistent init values");
-    }
-    if (oldConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(oldConfig.getResourceNameBindingValues());
-    }
-    if (newConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(newConfig.getResourceNameBindingValues());
-    }
-    return oldConfig.withInitialCollectionValues(collectionValues);
+    return InitValueConfig.newBuilder()
+        .setApiWrapperName(
+            merge("api wrapper", oldConfig.getApiWrapperName(), newConfig.getApiWrapperName()))
+        .setSingleResourceNameConfig(
+            merge(
+                "resource name config",
+                oldConfig.getSingleResourceNameConfig(),
+                newConfig.getSingleResourceNameConfig()))
+        .setInitialValue(
+            merge("init value", oldConfig.getInitialValue(), newConfig.getInitialValue()))
+        .setResourceNameBindingValues(
+            ImmutableMap.<String, InitValue>builder()
+                .putAll(oldConfig.getResourceNameBindingValues())
+                .putAll(newConfig.getResourceNameBindingValues())
+                .build())
+        .build();
   }
 
-  private static List<InitCodeNode> buildSubTrees(InitCodeContext context) {
-    Preconditions.checkArgument(
-        context.initFields() != null || context.outputType() != InitCodeOutputType.FieldList,
-        "init field array is not set for flattened method");
-
-    List<InitCodeNode> subTrees = new ArrayList<>();
-    if (context.initFields() != null) {
-      for (FieldModel field : context.initFields()) {
-        String nameString = field.getNameAsParameter();
-        InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
-        if (initValueConfig == null) {
-          subTrees.add(InitCodeNode.createWithName(nameString, nameString));
-        } else {
-          subTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
-        }
-      }
+  /**
+   * If both {@code a} and {@code b} are non-null, verify that they are equal and return {@code a}.
+   * If both are null, return null. Otherwise, return whichever is non-null.
+   */
+  private static <T> T merge(String desc, T a, T b) {
+    if (a != null && b != null) {
+      Preconditions.checkArgument(a.equals(b), "inconsistent %s, old: %s, new: %s", desc, a, b);
+      return a;
     }
-
-    for (String initFieldConfigString : context.initFieldConfigStrings()) {
-      subTrees.add(FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
-    }
-    subTrees.addAll(context.additionalInitCodeNodes());
-    return subTrees;
+    return a != null ? a : b;
   }
 
   private void resolveNamesAndTypes(

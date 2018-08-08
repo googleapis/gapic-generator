@@ -62,19 +62,20 @@ public class Scanner {
 
   private final String input;
   private int loc;
-  private String token = "";
+  private String tokenStr = "";
+  private int last;
 
   public Scanner(String input) {
     this.input = input;
   }
 
   public int scan() {
-    token = "";
+    tokenStr = "";
     int codePoint;
 
     while (true) {
       if (loc >= input.length()) {
-        return EOF;
+        return last = EOF;
       }
       codePoint = input.codePointAt(loc);
       if (!Character.isWhitespace(codePoint)) {
@@ -94,8 +95,8 @@ public class Scanner {
 
         if (!escaped && codePoint == '"') {
           loc += Character.charCount(codePoint);
-          token = sb.toString();
-          return STRING;
+          tokenStr = sb.toString();
+          return last = STRING;
         }
         if (!escaped && codePoint == '\\') {
           escaped = true;
@@ -132,12 +133,12 @@ public class Scanner {
         loc += Character.charCount(codePoint);
       }
 
-      token = input.substring(start, loc);
-      if (input.codePointCount(start, loc) > 1 && token.startsWith("0")) {
+      tokenStr = input.substring(start, loc);
+      if (input.codePointCount(start, loc) > 1 && tokenStr.startsWith("0")) {
         throw new IllegalArgumentException(
-            String.format("leading zero not allowed: %s: %s", token, input));
+            String.format("leading zero not allowed: %s: %s", tokenStr, input));
       }
-      return INT;
+      return last = INT;
     }
 
     if (identLead(codePoint) || codePoint == '$') {
@@ -149,13 +150,13 @@ public class Scanner {
         if (loc >= input.length()) {
           Preconditions.checkArgument(
               valid, "identifier needs a letter or underscore after '$': %s", input);
-          token = input.substring(start);
-          return IDENT;
+          tokenStr = input.substring(start);
+          return last = IDENT;
         }
         codePoint = input.codePointAt(loc);
         if (valid && !identFollow(codePoint)) {
-          token = input.substring(start, loc);
-          return IDENT;
+          tokenStr = input.substring(start, loc);
+          return last = IDENT;
         }
         Preconditions.checkArgument(
             valid || identLead(codePoint),
@@ -167,11 +168,15 @@ public class Scanner {
     }
     // Consume and return the next character
     loc += Character.charCount(codePoint);
-    return codePoint;
+    return last = codePoint;
   }
 
-  public String token() {
-    return token;
+  public int lastToken() {
+    return last;
+  }
+
+  public String tokenStr() {
+    return tokenStr;
   }
 
   public String input() {
