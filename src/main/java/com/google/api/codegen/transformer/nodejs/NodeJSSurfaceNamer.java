@@ -114,16 +114,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleClassName(String methodName, String callingForm, String values) {
-    return publicClassName(
-        Name.anyLower(
-            Name.anyLower(methodName).toLowerUnderscore(),
-            "sample",
-            Name.anyCamel(callingForm).toLowerUnderscore(),
-            Name.anyLower(values).toLowerUnderscore()));
-  }
-
-  @Override
   public String getApiSampleFileName(String className) {
     return Name.anyCamel(className).toLowerUnderscore() + ".js";
   }

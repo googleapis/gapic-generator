@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -33,6 +34,7 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +86,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
   private List<ViewModel> generateSampleFiles(InterfaceContext context) {
     List<ViewModel> files = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
+    SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
     StaticLangFileView.Builder<StaticLangSampleClassView> sampleFile =
         StaticLangFileView.<StaticLangSampleClassView>newBuilder();
@@ -93,17 +96,23 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
 
     for (StaticLangApiMethodView method : allMethods) {
       for (MethodSampleView methodSample : method.samples()) {
-        StaticLangSampleClassView classView = generateSampleClass(context, method, methodSample);
+        String callingForm = methodSample.callingForm().toLowerCamel();
+        String valueSet = methodSample.valueSet().id();
+        StaticLangSampleClassView classView =
+            generateSampleClass(context, method, methodSample, callingForm, valueSet);
         String outputPath =
             pathMapper.getSamplesOutputPath(
                 context.getInterfaceModel().getFullName(),
                 context.getProductConfig(),
                 method.name());
+        String fullPath =
+            outputPath + File.separator + namer.getApiSampleFileName(classView.name());
+        generatedSamples.addFile(
+            fullPath, method.name(), callingForm, valueSet, methodSample.regionTag());
         files.add(
             sampleFile
                 .classView(classView)
-                .outputPath(
-                    outputPath + File.separator + namer.getApiSampleFileName(classView.name()))
+                .outputPath(fullPath)
                 .fileHeader(
                     fileHeaderTransformer.generateFileHeader(
                         context,
@@ -116,13 +125,19 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
   }
 
   private StaticLangSampleClassView generateSampleClass(
-      InterfaceContext context, StaticLangApiMethodView method, MethodSampleView methodSample) {
+      InterfaceContext context,
+      StaticLangApiMethodView method,
+      MethodSampleView methodSample,
+      String callingForm,
+      String valueSet) {
     SurfaceNamer namer = context.getNamer();
     StaticLangSampleClassView.Builder sampleClass = StaticLangSampleClassView.newBuilder();
     sampleClass
         .name(
             namer.getApiSampleClassName(
-                method.name(), methodSample.callingForm().toString(), methodSample.valueSet().id()))
+                CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.name()),
+                callingForm,
+                valueSet))
         .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build());
 
     return sampleClass.build();
