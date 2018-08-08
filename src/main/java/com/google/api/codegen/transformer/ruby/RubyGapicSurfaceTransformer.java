@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -247,7 +246,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         .requireViews(requireViews.build())
         .requireTypes(ImmutableList.copyOf(requireTypes))
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
-        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
                 productConfig, ImportSectionView.newBuilder().build(), namer))
@@ -356,7 +354,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         .apiVersion(packageConfig.apiVersion())
         .requireViews(requireViews.build())
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
-        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
                 productConfig, ImportSectionView.newBuilder().build(), namer))
