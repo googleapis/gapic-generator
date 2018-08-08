@@ -77,16 +77,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   public abstract boolean hasFieldMask();
 
-  // List of ResourceNames that this message contains.
-  @Nullable
-  public abstract RequestObjectParamView pathAsResourceName();
-
   // If this field should be part of the parent message's serialization.
   public abstract boolean isSerializable();
-
-  public boolean hasResourceName() {
-    return pathAsResourceName() != null;
-  }
 
   public static StaticLangApiMessageView.Builder newBuilder() {
     return new AutoValue_StaticLangApiMessageView.Builder()
@@ -114,8 +106,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder fieldAddFunction(String val);
 
     public abstract Builder properties(List<StaticLangApiMessageView> val);
-
-    public abstract Builder pathAsResourceName(RequestObjectParamView val);
 
     public abstract Builder hasRequiredProperties(boolean val);
 
