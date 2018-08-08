@@ -141,7 +141,7 @@ public class FieldStructureParser {
 
   /**
    * Parses the path found in {@code scanner} and descend the tree rooted at {@code root}. If
-   * children specified by the path does not exist, they are created.
+   * children specified by the path do not exist, they are created.
    */
   private static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
     Preconditions.checkArgument(

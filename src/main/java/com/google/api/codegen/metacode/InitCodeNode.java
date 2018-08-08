@@ -162,8 +162,9 @@ public class InitCodeNode {
     return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
   }
 
-  /*
-   * Constructs a tree of objects to be initialized using the provided context, and returns the root.
+  /**
+   * Constructs a tree of objects to be initialized using the provided context, and returns the
+   * root.
    */
   public static InitCodeNode createTree(InitCodeContext context) {
     Preconditions.checkArgument(
