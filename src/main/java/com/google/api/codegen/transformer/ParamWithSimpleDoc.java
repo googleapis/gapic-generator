@@ -78,7 +78,6 @@ public abstract class ParamWithSimpleDoc {
         .elementTypeName(elementTypeName())
         .typeName(typeName())
         .setCallName(setCallName())
-        .addCallName(addCallName())
         .getCallName(getCallName())
         .isMap(isMap())
         .isArray(isArray())

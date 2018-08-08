@@ -25,10 +25,6 @@ public abstract class GrpcStubView {
 
   public abstract String createStubFunctionName();
 
-  public abstract String grpcClientVariableName();
-
-  public abstract String grpcClientImportName();
-
   public abstract String grpcClientTypeName();
 
   public abstract List<String> methodNames();
@@ -50,10 +46,6 @@ public abstract class GrpcStubView {
     public abstract Builder fullyQualifiedType(String val);
 
     public abstract Builder createStubFunctionName(String val);
-
-    public abstract Builder grpcClientVariableName(String val);
-
-    public abstract Builder grpcClientImportName(String val);
 
     public abstract Builder grpcClientTypeName(String val);
 

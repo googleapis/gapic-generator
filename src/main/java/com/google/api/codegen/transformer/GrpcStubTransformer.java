@@ -58,8 +58,6 @@ public class GrpcStubTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), targetInterface);
     stub.grpcClientTypeName(grpcClientTypeName);
-    stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
-    stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
 
     List<String> methodNames = new ArrayList<>();
     for (MethodModel method : methods) {
