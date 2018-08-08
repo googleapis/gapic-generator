@@ -376,6 +376,16 @@ message SampleConfiguration {
     // matching. In particular, the expression "*" will
     // match all IDs.
     repeated string value_sets = 2;
+
+    // The region tag value to be used inside each of these particular
+    // samples to bracket off (in language-specific comments)
+    // important areas of the sample. A region tag value can only
+    // consist of word characters (letters, numbers, or underscores)
+    // as well as the special tokens "%m", "%c", and "%v" (no quotes)
+    // which get replaced by each sample's method name, calling form,
+    // and value set, respectively. If not specified, `region_tag`
+    // defaults to "sample".
+    string region_tag = 3;
   }
 
   // The configuration for in-code samples, which appear in the format
@@ -389,6 +399,11 @@ message SampleConfiguration {
   // generated language. If this field is not specified, a stand-alone
   // sample is generated for every combination of calling form and
   // `MethodConfigProto.sample_value_sets`, if the latter is defined.
+  //
+  // If multiple samples configured here would result in files
+  // clobbering each other (ie. two files with the same path but not
+  // with identical calling forms, value sets, and region tags), an
+  // exception is raised.
   repeated SampleTypeConfiguration standalone = 2;
 
   // The configuration for user-parametrized samples ("API explorer
@@ -398,6 +413,11 @@ message SampleConfiguration {
   // specified, an explorer sample is generated for every combination
   // of calling form and `MethodConfigProto.sample_value_sets`, if the
   // latter is defined.
+  //
+  // If multiple samples configured here would result in files
+  // clobbering each other (ie. two files with the same path but not
+  // with identical calling forms, value sets, and region tags), an
+  // exception is raised.
   repeated SampleTypeConfiguration api_explorer = 3;
 }
 

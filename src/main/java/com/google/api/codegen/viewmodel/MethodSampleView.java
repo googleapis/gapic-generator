@@ -33,6 +33,9 @@ public abstract class MethodSampleView {
   /** The response printing code. */
   public abstract List<OutputView> outputs();
 
+  /** The region tag to be used for this sample. */
+  public abstract String regionTag();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -46,6 +49,8 @@ public abstract class MethodSampleView {
     public abstract Builder initCode(InitCodeView val);
 
     public abstract Builder outputs(List<OutputView> val);
+
+    public abstract Builder regionTag(String val);
 
     public abstract MethodSampleView build();
   }
