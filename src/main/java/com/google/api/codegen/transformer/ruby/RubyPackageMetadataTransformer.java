@@ -331,9 +331,10 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
     for (InterfaceModel apiInterface : interfaces) {
       versionNamespaces.add(namer.getNamespace(apiInterface));
     }
-    if (versionNamespaces.size() > 1) {
-      throw new IllegalArgumentException("Multiple versionNamespaces found for the package.");
-    }
+    // TODO: log a warning instead?
+    // if (versionNamespaces.size() > 1) {
+    //  throw new IllegalArgumentException("Multiple versionNamespaces found for the package.");
+    // }
     return versionNamespaces.iterator().next();
   }
 

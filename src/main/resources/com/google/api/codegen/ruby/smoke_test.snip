@@ -19,7 +19,13 @@
 @end
 
 @private testBody(smokeTest)
-describe "{@smokeTest.name}" do
+@switch smokeTest.apiMethod.apiVersion
+@case "Longrunning"
+  describe "{@smokeTest.name}" do
+@default
+  describe "{@smokeTest.name} {@smokeTest.apiVersion}" do
+@end
+
   it "runs one smoke test with {@smokeTest.apiMethod.name}" do
     @if smokeTest.requireProjectId
       unless ENV["{@smokeTest.projectIdVariableName}"]
@@ -28,7 +34,7 @@ describe "{@smokeTest.name}" do
       project_id = ENV["{@smokeTest.projectIdVariableName}"].freeze
     @end
 
-    {@topLevelClientSampleCode(smokeTest.apiMethod)}
+    {@versionedClientSampleCode(smokeTest.apiMethod)}
   end
 end
 @end
