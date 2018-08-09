@@ -222,7 +222,7 @@ public class SampleTransformer {
                         initCodeOutputType,
                         valueSet.values().getParametersList(),
                         valueSet.values().getSampleArgsList()));
-        List<OutputSpec> outputs = valueSet.values().getOutputSpecsList();
+        List<OutputSpec> outputs = valueSet.values().getOnSuccessList();
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }

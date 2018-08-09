@@ -168,7 +168,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
-    Iterable<FieldConfig> requiredFieldConfigs =
+    ImmutableList<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
@@ -178,7 +178,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             getRequiredFields(
                 diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
 
-    Iterable<FieldConfig> optionalFieldConfigs =
+    ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
@@ -250,7 +250,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
   /** Return the list of "one of" instances associated with the fields. */
   @Override
-  public Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer) {
+  public ImmutableList<ImmutableList<String>> getOneofNames(SurfaceNamer namer) {
     return ProtoField.getOneofFieldsNames(getOptionalFields(), namer);
   }
 }

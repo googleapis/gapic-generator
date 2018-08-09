@@ -44,12 +44,6 @@ public abstract class ApiCallSettingsView {
 
   public abstract String settingsGetFunction();
 
-  public abstract String grpcTypeName();
-
-  public abstract String grpcMethodConstant();
-
-  public abstract String pageStreamingDescriptorName();
-
   public abstract String pagedListResponseFactoryName();
 
   public abstract String batchingDescriptorName();
@@ -100,12 +94,6 @@ public abstract class ApiCallSettingsView {
     public abstract Builder memberName(String val);
 
     public abstract Builder settingsGetFunction(String val);
-
-    public abstract Builder grpcTypeName(String val);
-
-    public abstract Builder grpcMethodConstant(String val);
-
-    public abstract Builder pageStreamingDescriptorName(String val);
 
     public abstract Builder pagedListResponseFactoryName(String val);
 

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -158,7 +157,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         pathTemplateTransformer.generateParseResourceFunctions(context));
     xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
 
-    xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(
@@ -167,18 +165,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
 
-    xapiClass.packageVersion(
-        packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
-
     xapiClass.apiVersion(packageConfig.apiVersion());
 
-    xapiClass.packageHasMultipleServices(hasMultipleServices);
-    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()));
-
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
-    xapiClass.constructorName(
-        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
-    xapiClass.isGcloud(NodeJSUtils.isGcloud(context.getProductConfig()));
 
     return xapiClass.build();
   }
@@ -293,8 +282,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
             .outputPath(indexOutputPath)
             .requireViews(requireViews)
             .primaryService(requireViews.get(0))
-            .packageVersion(
-                packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     productConfig, ImportSectionView.newBuilder().build(), namer))
@@ -314,9 +301,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
               .primaryService(requireViews.get(0))
               .apiVersion(version)
               .stubs(versionIndexStubs(apiInterfaces, productConfig))
-              .isGcloud(NodeJSUtils.isGcloud(productConfig))
-              .packageVersion(
-                  packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))

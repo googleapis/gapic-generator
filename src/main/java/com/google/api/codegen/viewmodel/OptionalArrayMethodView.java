@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -111,7 +112,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return apiVersion() != null;
   }
 
-  public abstract Iterable<Iterable<String>> oneofParams();
+  public abstract ImmutableList<ImmutableList<String>> oneofParams();
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
@@ -196,7 +197,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder versionAliasedApiClassName(String val);
 
-    public abstract Builder oneofParams(Iterable<Iterable<String>> val);
+    public abstract Builder oneofParams(ImmutableList<ImmutableList<String>> val);
 
     public abstract Builder localPackageName(String val);
 

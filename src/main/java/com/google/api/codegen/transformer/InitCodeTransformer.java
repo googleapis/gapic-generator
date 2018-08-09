@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -55,9 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * InitCodeTransformer generates initialization code for a given method and then transforms it to a
@@ -677,12 +674,13 @@ public class InitCodeTransformer {
 
   /** Determines whether a field is required */
   private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
-    Set<String> requiredFieldSimpleNames =
-        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
-            .map(FieldModel::getSimpleName)
-            .collect(Collectors.toSet());
     return fieldConfig != null
-        && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName());
+        && context
+            .getMethodConfig()
+            .getRequiredFieldConfigs()
+            .stream()
+            .anyMatch(
+                fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {

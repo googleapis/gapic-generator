@@ -352,8 +352,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
-    settingsClass.pagedListResponseFactories(
-        pageStreamingTransformer.generateFactoryClasses(context));
     settingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
     settingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));

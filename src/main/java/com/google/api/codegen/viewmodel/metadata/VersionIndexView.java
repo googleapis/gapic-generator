@@ -42,8 +42,6 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract String apiVersion();
 
-  public abstract String packageVersion();
-
   @Nullable
   public abstract List<ModuleView> modules();
 
@@ -56,8 +54,6 @@ public abstract class VersionIndexView implements ViewModel {
 
   @Nullable
   public abstract List<GrpcStubView> stubs();
-
-  public abstract boolean isGcloud();
 
   public abstract VersionIndexType type();
 
@@ -89,7 +85,6 @@ public abstract class VersionIndexView implements ViewModel {
     // Use v1 as the default version.
     return new AutoValue_VersionIndexView.Builder()
         .apiVersion("v1")
-        .isGcloud(false)
         .packageHasEnums(false)
         .type(VersionIndexType.Unspecified);
   }
@@ -104,8 +99,6 @@ public abstract class VersionIndexView implements ViewModel {
 
     public abstract Builder apiVersion(String val);
 
-    public abstract Builder packageVersion(String val);
-
     public abstract Builder modules(List<ModuleView> val);
 
     public abstract Builder requireViews(List<VersionIndexRequireView> val);
@@ -115,8 +108,6 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder stubs(List<GrpcStubView> vals);
-
-    public abstract Builder isGcloud(boolean val);
 
     public abstract Builder type(VersionIndexType val);
 
