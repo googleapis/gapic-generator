@@ -1,5 +1,60 @@
 version: 2.0
 
+anchor_generate_language: &anchor_generate_language
+  # We will set the LANGUAGE var right before each invocation
+  # of this command in order to specify which language to generate.
+  command: |
+    cd workspace/gapic-generator
+    python gapic_smoketest.py \
+        --user-config=.circleci/artman_config.yaml \
+        --log=/tmp/workspace/reports/smoketest.log \
+        ${LANGUAGE}
+    # Get the exit code from the python script
+    retVal=$?
+    if [ $retVal -eq 0 ]; then
+      # If language client generation succeeded,
+      # create a file in REPORTS_DIR just as a signal of success.
+      # The `verify-[lang]-generation` job will check for existence of that file to
+      # determine whether or not to kick off a `test-[lang]` job.
+      echo "Success." > ${REPORTS_DIR}/${LANGUAGE}.log
+    fi
+
+anchor_check_generation: &anchor_check_generation
+  command: |
+    # LANGUAGE must be set in BASH_ENV in a prior command.
+    if [ -e /tmp/workspace/reports/${LANGUAGE}.log ]
+    then
+        exit 0
+    else
+        exit 1
+    fi
+
+# We use this setup for jobs that verify that generation of a given language succeeded.
+anchor_verify_generation: &anchor_verify_generation
+  working_directory: /tmp/
+  docker:
+    # Use a CircleCI Docker image because it is cached and supports workspace persistence.
+    - image: circleci/openjdk:8-jdk
+  steps:
+    - attach_workspace:
+        # Load the REPORTS_DIR from generate-clients
+        at: workspace
+    - run:
+        name: Check if language generation had succeeded.
+        <<: *anchor_check_generation
+
+# This command is called for each API that we run python nox tests on.
+anchor_test_python: &anchor_test_python
+  command: |
+    cd workspace/gapic-generator/artman-genfiles/python/${TEST_API}
+    nox --session "unit(py='2.7')"
+    nox --session "unit(py='3.5')"
+    nox --session "unit(py='3.6')"
+    # python3.7 isn't installed on this Docker image yet, so we can't test against 3.7.
+    # https://github.com/googleapis/gapic-generator/issues/2208
+  when: always
+
+
 jobs:
   build:
     docker:
@@ -7,9 +62,9 @@ jobs:
     steps:
       - checkout
     working_directory: /tmp/workspace/gapic-generator
-  generate-clients:
+  install-gapic-generator:
     docker:
-      - image: googleapis/artman:0.14.3
+      - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     steps:
       - checkout:
@@ -25,16 +80,42 @@ jobs:
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
             gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test -x javadoc
+      - persist_to_workspace:
+          # Save the toolkit and googleapis installations in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator
+            - googleapis
+  generate-clients:
+    docker:
+      - image: googleapis/artman:0.14.3
+    working_directory: /tmp/
+    steps:
+      - attach_workspace:
+          # Use the workspace created in install-gapic-generator
+          at: workspace
       - run:
           name: Make reports directory
-          command: mkdir -p reports
-      - run:
-          name: Generate all client libraries
           command: |
-            cd gapic-generator
-            python gapic_smoketest.py \
-                --user-config=.circleci/artman_config.yaml \
-                --log=/tmp/workspace/reports/smoketest.log
+            mkdir -p workspace/reports
+            echo 'export REPORTS_DIR="/tmp/workspace/reports"' >> $BASH_ENV
+      - run:
+          name: Prepare to generate all Java libraries
+          command: echo 'export LANGUAGE="java"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Generate all Java libraries
+          <<: *anchor_generate_language
+          when: always
+      - run:
+          name: Prepare to generate all Python libraries
+          command: echo 'export LANGUAGE="python"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Generate all Python libraries
+          <<: *anchor_generate_language
+          when: always
+      # TODO: run tasks to generate all other languages
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -44,6 +125,16 @@ jobs:
           root: /tmp/workspace
           paths:
             - gapic-generator/artman-genfiles
+            - reports
+  verify-java-generation:
+    <<: *anchor_verify_generation
+    environment:
+      LANGUAGE: java
+  verify-python-generation:
+    <<: *anchor_verify_generation
+    environment:
+      LANGUAGE: python
+  # TODO: verify other language clients were generated.
   test-java:
     working_directory: /tmp/
     docker:
@@ -61,6 +152,7 @@ jobs:
           name: Save test results
           command: |
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /tmp/workspace/reports/ \;
+          when: always
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -76,36 +168,39 @@ jobs:
           at: workspace
       # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
       - run:
+          name: Prepare to run nox on pubsub
+          command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+      - run:
           name: Run nox on pubsub
-          command: |
-            cd workspace/gapic-generator/artman-genfiles/python/pubsub-v1
-            nox --session "unit(py='2.7')"
-            nox --session "unit(py='3.5')"
-            nox --session "unit(py='3.6')"
-            # python3.7 isn't installed on this Docker image yet, so we can't test against 3.7.
-            # https://github.com/googleapis/gapic-generator/issues/2208
-          when: always
+          <<: *anchor_test_python
+      - run:
+          name: Prepare to run nox on speech
+          command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
       - run:
           name: Run nox on speech
-          command: |
-            cd workspace/gapic-generator/artman-genfiles/python/speech-v1
-            nox --session "unit(py='2.7')"
-            nox --session "unit(py='3.5')"
-            nox --session "unit(py='3.6')"
-            # TODO: set up credentials for system tests.
-          when: always
+          <<: *anchor_test_python
+  # TODO: test other language clients.
 
 workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - generate-clients
+      - install-gapic-generator
+      - generate-clients:
+          requires:
+            - install-gapic-generator
+      - verify-java-generation:
+          requires:
+            - generate-clients
+      - verify-python-generation:
+          requires:
+            - generate-clients
       - test-java:
           requires:
-            - generate-clients
+            - verify-java-generation
       - test-python:
           requires:
-            - generate-clients
+            - verify-python-generation
 
 machine:
   services:
