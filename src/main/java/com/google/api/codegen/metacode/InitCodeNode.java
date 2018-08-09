@@ -21,6 +21,7 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.TypeRef;
@@ -194,6 +195,10 @@ public class InitCodeNode {
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
     return root;
+  }
+
+  public InitCodeNode subTree(String config) {
+    return FieldStructureParser.parsePath(this, new Scanner(config));
   }
 
   /*

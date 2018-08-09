@@ -19,6 +19,8 @@ import java.util.List;
 
 @AutoValue
 public abstract class InitCodeView {
+  public abstract List<InitCodeLineView> argDefaultLines();
+
   public abstract List<InitCodeLineView> lines();
 
   public abstract List<InitCodeLineView> topLevelLines();
@@ -49,6 +51,8 @@ public abstract class InitCodeView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder argDefaultLines(List<InitCodeLineView> val);
+
     public abstract Builder lines(List<InitCodeLineView> val);
 
     public abstract Builder topLevelLines(List<InitCodeLineView> val);

@@ -258,7 +258,7 @@ public class InitCodeTransformer {
   }
 
   private InitCodeView buildInitCodeView(
-      MethodContext context, Iterable<InitCodeNode> orderedItems, Iterable<InitCodeNode> argItems) {
+      MethodContext context, List<InitCodeNode> orderedItems, List<InitCodeNode> argItems) {
     ImportTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -273,6 +273,7 @@ public class InitCodeTransformer {
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
+        .argDefaultLines(ImmutableList.of())
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(fieldSettings)

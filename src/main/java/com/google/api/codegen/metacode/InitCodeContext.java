@@ -66,6 +66,12 @@ public abstract class InitCodeContext {
   public abstract List<String> initFieldConfigStrings();
 
   /**
+   * When generating samples, the sample function accept these parts of the request object as
+   * argument.
+   */
+  public abstract ImmutableList<String> sampleArgStrings();
+
+  /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
    * is currently used by smoke testing only.
    */
@@ -84,7 +90,8 @@ public abstract class InitCodeContext {
         .fieldConfigMap(ImmutableMap.<String, FieldConfig>of())
         .outputType(InitCodeOutputType.SingleObject)
         .additionalInitCodeNodes(ImmutableList.of())
-        .initFieldConfigStrings(ImmutableList.of());
+        .initFieldConfigStrings(ImmutableList.of())
+        .sampleArgStrings(ImmutableList.of());
   }
 
   @AutoValue.Builder
@@ -102,6 +109,8 @@ public abstract class InitCodeContext {
     public abstract Builder valueGenerator(TestValueGenerator generator);
 
     public abstract Builder initFieldConfigStrings(List<String> configStrings);
+
+    public abstract Builder sampleArgStrings(ImmutableList<String> val);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
 
