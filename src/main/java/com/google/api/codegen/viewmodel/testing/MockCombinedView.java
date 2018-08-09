@@ -70,8 +70,6 @@ public abstract class MockCombinedView implements ViewModel {
   @Nullable
   public abstract String localPackageName();
 
-  public abstract boolean packageHasMultipleServices();
-
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -84,7 +82,7 @@ public abstract class MockCombinedView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockCombinedView.Builder().packageHasMultipleServices(false);
+    return new AutoValue_MockCombinedView.Builder();
   }
 
   @AutoValue.Builder
@@ -102,8 +100,6 @@ public abstract class MockCombinedView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder templateFileName(String val);
-
-    public abstract Builder packageHasMultipleServices(boolean val);
 
     public abstract MockCombinedView build();
   }

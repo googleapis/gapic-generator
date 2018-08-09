@@ -28,9 +28,6 @@ public abstract class PageStreamingDescriptorView {
   public abstract String requestTokenSetMethodName();
 
   @Nullable
-  public abstract String requestPageSizeFieldName();
-
-  @Nullable
   public abstract String requestPageSizeGetMethodName();
 
   @Nullable
@@ -53,7 +50,7 @@ public abstract class PageStreamingDescriptorView {
   }
 
   public boolean requestHasPageSizeField() {
-    return requestPageSizeFieldName() != null;
+    return requestPageSizeGetMethodName() != null;
   }
 
   @AutoValue.Builder
@@ -65,8 +62,6 @@ public abstract class PageStreamingDescriptorView {
     public abstract Builder requestTokenGetMethodName(String val);
 
     public abstract Builder requestTokenSetMethodName(String val);
-
-    public abstract Builder requestPageSizeFieldName(String val);
 
     public abstract Builder requestPageSizeGetMethodName(String val);
 

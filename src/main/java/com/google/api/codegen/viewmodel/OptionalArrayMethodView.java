@@ -27,8 +27,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String apiClassName();
 
-  public abstract String fullyQualifiedApiClassName();
-
   public abstract String apiVariableName();
 
   public abstract String apiModuleName();
@@ -74,8 +72,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract boolean hasRequestParameters();
 
-  public abstract boolean hasRequiredParameters();
-
   public abstract boolean hasReturnValue();
 
   public abstract String stubName();
@@ -95,11 +91,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   public abstract String packageName();
 
   public abstract String localPackageName();
-
-  public abstract boolean packageHasMultipleServices();
-
-  /** The name of the service exported by the package. */
-  public abstract String packageServiceName();
 
   @Nullable
   public abstract String apiVersion();
@@ -134,8 +125,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
-
-    public abstract Builder fullyQualifiedApiClassName(String val);
 
     public abstract Builder apiVariableName(String val);
 
@@ -172,8 +161,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder hasRequestParameters(boolean val);
 
-    public abstract Builder hasRequiredParameters(boolean val);
-
     public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder stubName(String val);
@@ -185,11 +172,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder isSingularRequestMethod(boolean val);
 
     public abstract Builder packageName(String val);
-
-    public abstract Builder packageHasMultipleServices(boolean val);
-
-    /** The name of the service exported by the package. */
-    public abstract Builder packageServiceName(String val);
 
     public abstract Builder apiVersion(String val);
 

@@ -32,14 +32,6 @@ public abstract class InitCodeView {
   /** Used to hold information about the types used in method samples. */
   public abstract ImportSectionView importSection();
 
-  /**
-   * The file name of the client library generated. This is used for import statements in samples.
-   */
-  public abstract String apiFileName();
-
-  /** The file name of the version index file. */
-  public abstract String versionIndexFileImportName();
-
   /** The file name of the top level index file. */
   public abstract String topLevelIndexFileImportName();
 
@@ -60,10 +52,6 @@ public abstract class InitCodeView {
     public abstract Builder requiredFieldSettings(List<FieldSettingView> val);
 
     public abstract Builder importSection(ImportSectionView val);
-
-    public abstract Builder apiFileName(String apiFileName);
-
-    public abstract Builder versionIndexFileImportName(String indexFileImportName);
 
     public abstract Builder topLevelIndexFileImportName(String val);
 
