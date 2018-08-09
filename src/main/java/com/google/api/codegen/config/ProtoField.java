@@ -28,7 +28,8 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a protobuf Field. */
@@ -129,33 +130,23 @@ public class ProtoField implements FieldModel {
     return DocumentationUtil.getScopedDescription(protoField);
   }
 
-  public static Iterable<Iterable<String>> getOneofFieldsNames(
-      Iterable<FieldModel> fields, SurfaceNamer namer) {
-    ImmutableSet.Builder<Oneof> oneOfsBuilder = ImmutableSet.builder();
-    for (FieldModel field : fields) {
-      Oneof oneof = ((ProtoField) field).protoField.getOneof();
-      if (oneof == null) {
-        continue;
-      }
-      oneOfsBuilder.add(oneof);
-    }
+  public static ImmutableList<ImmutableList<String>> getOneofFieldsNames(
+      List<FieldModel> fields, SurfaceNamer namer) {
 
-    Iterable<Oneof> oneOfs = oneOfsBuilder.build();
-
-    ImmutableList.Builder<Iterable<String>> fieldsNames = ImmutableList.builder();
-
-    for (Oneof oneof : oneOfs) {
-      boolean hasItems = false;
-      ImmutableSet.Builder<String> fieldNames = ImmutableSet.builder();
-      for (Field field : oneof.getFields()) {
-        fieldNames.add(namer.getVariableName(new ProtoField(field)));
-        hasItems = true;
-      }
-      if (hasItems) {
-        fieldsNames.add(fieldNames.build());
-      }
-    }
-    return fieldsNames.build();
+    return fields
+        .stream()
+        .map(f -> ((ProtoField) f).protoField.getOneof())
+        .filter(Objects::nonNull)
+        .distinct()
+        .map(
+            oneof ->
+                oneof
+                    .getFields()
+                    .stream()
+                    .map(f -> namer.getVariableName(new ProtoField(f)))
+                    .collect(ImmutableList.toImmutableList()))
+        .filter(list -> !list.isEmpty())
+        .collect(ImmutableList.toImmutableList());
   }
 
   @Override

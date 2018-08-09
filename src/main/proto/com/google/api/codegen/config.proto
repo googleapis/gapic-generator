@@ -333,7 +333,9 @@ message SampleValueSet {
   //   several placeholders.
   repeated string parameters = 4;
 
-  repeated OutputSpec output_specs = 5;
+  // How to process a successful response from the client library
+  // function being exemplified.
+  repeated OutputSpec on_success = 5;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"
@@ -668,19 +670,38 @@ message LongRunningConfigProto {
 
 message OutputSpec {
   message LoopStatement {
+    // The collection over which to iterate.
     string collection = 1;
+
+    // The iteration variable.
     string variable = 2;
+
+    // The contents of the loop.
     repeated OutputSpec body = 3;
   }
 
   // Exactly one of the following should be set.
 
+  // A loop construct.
   LoopStatement loop = 1;
 
-  // example ["%s=%s", thing.variable, thing.value]
-  // field name is singular because the array
-  // represents one print statement.
+  // The elements of `print` consist of a printf-like format string
+  // followed by variables to be interpolated in the string (for
+  // example, ["%s=%s", thing.variable, thing.value]).  These
+  // variables must either be `$resp` or have been previously defined
+  // by `loop` or `define`.
+  //
+  // Note that this field name is singular because the array
+  // represents a single print statement. A newline will be
+  // automatically appended to the print statement.
   repeated string print = 2;
 
+  // A variable definition construct, of the form
+  // `name=var[. field...]`, where `name` is the new variable being
+  // defined, `var` is either `$resp` or a variable that was
+  // previously defined by `loop` or `define`, and everything to the
+  // right of the period is any valid sequence of subfield or
+  // bracketed list subscripts or map keys to dereference a descendant
+  // of `var`.
   string define = 3;
 }
