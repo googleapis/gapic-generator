@@ -14,7 +14,20 @@ set -e
 # so we end up with methods defined in SurfaceNamer that
 # we don't use anywhere.
 #
-# NOTE(pongad): This misses overloads and helper methods used by namers themselves.
+# This script has some false-negatives:
+#   - For overloads, this will flag when none are used.
+#     If only some are used, it won't determine which ones are or aren't used.
+#   - If a namer identifier is not used anywhere, but some other class also happens to define the same identifier,
+#     this will incorrectly flag the namer identifier as being used.
+# and some false-positives:
+#   - For helper methods used only in the namer classes,
+#     this may incorrectly say they are not used at all,
+#     when in reality they are not used outside the namers but may be used in the namers.
+#
+# The false-negatives are safe. We could miss some methods, but we won't break anything.
+# The false-positives are not safe. If we delete something we shouldn't, we'll get compile-error.
+# It shouldn't be possible to silently break anything.
+
 comm -2 -3 \
 <(find src/main -name '*SurfaceNamer.java' |
   xargs cat |
