@@ -98,7 +98,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return valueType(typeTable.getAndSaveNicknameFor(type));
+    return typeTable.getAndSaveNicknameFor(type).replace("*", "");
   }
 
   @Override
@@ -172,16 +172,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
       name = name.join("operation");
     }
     return publicClassName(name);
-  }
-
-  @Override
-  public String valueType(String type) {
-    for (int i = 0; i < type.length(); i++) {
-      if (type.charAt(i) != '*') {
-        return type.substring(i);
-      }
-    }
-    return "";
   }
 
   @Override
