@@ -286,7 +286,6 @@ public class JavaDiscoGapicRequestToViewTransformer
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
-    requestView.pathAsResourceName(resourceNameView);
 
     Schema requestBodyDef = discoMethod.request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {

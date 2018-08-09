@@ -321,7 +321,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
         .smokeTestKeyfileVariable(namer.getKeyfileVariable(true))
         .smokeTestJsonKeyVariable(namer.getJsonKeyVariable(true))
         .projectVariable(namer.getProjectVariable(false))
-        .keyfileVariable(namer.getKeyfileVariable(false))
         .jsonKeyVariable(namer.getJsonKeyVariable(false))
         .build();
   }

@@ -402,7 +402,6 @@ public class JavaSurfaceTransformer {
 
     xsettingsClass.callSettings(apiCallableTransformer.generateCallSettings(context));
     xsettingsClass.pageStreamingDescriptors(stubSettingsView.pageStreamingDescriptors());
-    xsettingsClass.pagedListResponseFactories(stubSettingsView.pagedListResponseFactories());
     xsettingsClass.batchingDescriptors(stubSettingsView.batchingDescriptors());
     xsettingsClass.retryCodesDefinitions(stubSettingsView.retryCodesDefinitions());
     xsettingsClass.hasDefaultServiceAddress(stubSettingsView.hasDefaultServiceAddress());

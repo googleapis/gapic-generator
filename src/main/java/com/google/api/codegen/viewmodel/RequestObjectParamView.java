@@ -15,8 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -33,8 +31,6 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
   public abstract String typeName();
 
   public abstract String setCallName();
-
-  public abstract String addCallName();
 
   public abstract String getCallName();
 
@@ -78,11 +74,8 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     return formatMethodName() != null;
   }
 
-  // Methods for getting/setting the fields of the generated class.
-  public abstract List<StaticLangMemberView> fieldCopyMethods();
-
   public static Builder newBuilder() {
-    return new AutoValue_RequestObjectParamView.Builder().fieldCopyMethods(new ArrayList<>());
+    return new AutoValue_RequestObjectParamView.Builder();
   }
 
   @AutoValue.Builder
@@ -98,8 +91,6 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     public abstract Builder typeName(String val);
 
     public abstract Builder setCallName(String val);
-
-    public abstract Builder addCallName(String val);
 
     public abstract Builder getCallName(String val);
 
@@ -118,8 +109,6 @@ public abstract class RequestObjectParamView implements Comparable<RequestObject
     public abstract Builder defaultValue(String val);
 
     public abstract Builder optionalDefault(String val);
-
-    public abstract Builder fieldCopyMethods(List<StaticLangMemberView> val);
 
     public abstract RequestObjectParamView build();
   }

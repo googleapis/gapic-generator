@@ -180,7 +180,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     apiImplClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     apiImplClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
-    apiImplClass.methodKeys(generateMethodKeys(context));
     apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     apiImplClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
@@ -460,16 +459,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
         || interfaceConfig.hasReroutedInterfaceMethods()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\Call");
     }
-  }
-
-  private List<String> generateMethodKeys(GapicInterfaceContext context) {
-    List<String> methodKeys = new ArrayList<>(context.getInterface().getMethods().size());
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      methodKeys.add(context.getNamer().getMethodKey(method));
-    }
-
-    return methodKeys;
   }
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
