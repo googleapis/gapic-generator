@@ -63,8 +63,6 @@ public abstract class StaticLangSettingsView {
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
 
-  public abstract List<PagedListResponseFactoryClassView> pagedListResponseFactories();
-
   public abstract List<BatchingDescriptorClassView> batchingDescriptors();
 
   public abstract List<RetryCodesDefinitionView> retryCodesDefinitions();
@@ -118,8 +116,6 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder pageStreamingDescriptors(
         List<PageStreamingDescriptorClassView> generateDescriptorClasses);
-
-    public abstract Builder pagedListResponseFactories(List<PagedListResponseFactoryClassView> val);
 
     public abstract Builder batchingDescriptors(List<BatchingDescriptorClassView> val);
 

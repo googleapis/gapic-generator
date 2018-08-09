@@ -58,22 +58,12 @@ public class PackageMetadataTransformer {
       String outputPath,
       TargetLanguage language,
       Set<String> whitelistedDependencies) {
-    // Note that internally, this is overridable in the service config, but the component is not
-    // available externally. See:
-    //   https://github.com/googleapis/toolkit/issues/933
-    String discoveryApiName = model.getServiceName();
-    int dotIndex = discoveryApiName.indexOf(".");
-    if (dotIndex > 0) {
-      discoveryApiName = discoveryApiName.substring(0, dotIndex).replace("-", "_");
-    }
-
     return PackageMetadataView.newBuilder()
         .templateFileName(template)
         .outputPath(outputPath)
         .packageVersionBound(packageConfig.generatedPackageVersionBound(language))
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
-        .gapicConfigName(packageConfig.gapicConfigName())
         .artifactType(packageConfig.artifactType())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .gaxGrpcVersionBound(packageConfig.gaxGrpcVersionBound(language))
@@ -97,7 +87,6 @@ public class PackageMetadataTransformer {
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
         .fullName(model.getTitle())
-        .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false)
         .publishProtos(false);
   }

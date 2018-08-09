@@ -1286,15 +1286,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getConfigPath");
   }
 
-  /**
-   * The type name of the method constant in the Grpc container class. This needs to match what Grpc
-   * generates for the particular language.
-   */
-  public String getGrpcMethodConstant(MethodModel method) {
-    return inittedConstantName(
-        Name.from("method").join(Name.anyCamelKeepUpperAcronyms(method.getSimpleName())));
-  }
-
   /** The keyword controlling the visiblity, eg "public", "protected". */
   public String getVisiblityKeyword(VisibilityConfig visibility) {
     switch (visibility) {

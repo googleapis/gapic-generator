@@ -150,10 +150,6 @@ public abstract class PackageMetadataConfig {
   /** The name of the license of the client library. */
   public abstract String licenseName();
 
-  /** The file name of the GAPIC API config yaml. */
-  @Nullable
-  public abstract String gapicConfigName();
-
   private static Builder newBuilder() {
     return new AutoValue_PackageMetadataConfig.Builder();
   }
@@ -204,8 +200,6 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder licenseName(String val);
 
-    abstract Builder gapicConfigName(String val);
-
     abstract PackageMetadataConfig build();
   }
 
@@ -233,7 +227,6 @@ public abstract class PackageMetadataConfig {
         .email("")
         .homepage("")
         .licenseName("")
-        .gapicConfigName("")
         .build();
   }
 

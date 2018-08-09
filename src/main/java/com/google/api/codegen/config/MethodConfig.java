@@ -54,9 +54,9 @@ public abstract class MethodConfig {
 
   public abstract Duration getTimeout();
 
-  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
+  public abstract ImmutableList<FieldConfig> getRequiredFieldConfigs();
 
-  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
+  public abstract ImmutableList<FieldConfig> getOptionalFieldConfigs();
 
   public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
 
@@ -119,16 +119,22 @@ public abstract class MethodConfig {
     return getLongRunningConfig() != null;
   }
 
-  public Iterable<FieldModel> getRequiredFields() {
-    return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
+  public ImmutableList<FieldModel> getRequiredFields() {
+    return getRequiredFieldConfigs()
+        .stream()
+        .map(f -> f.getField())
+        .collect(ImmutableList.toImmutableList());
   }
 
-  public Iterable<FieldModel> getOptionalFields() {
-    return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
+  public ImmutableList<FieldModel> getOptionalFields() {
+    return getOptionalFieldConfigs()
+        .stream()
+        .map(f -> f.getField())
+        .collect(ImmutableList.toImmutableList());
   }
 
   /** Return the lists of the simple names of the "one of" instances associated with the fields. */
-  public abstract Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer);
+  public abstract ImmutableList<ImmutableList<String>> getOneofNames(SurfaceNamer namer);
 
   static Iterable<FieldModel> getOptionalFields(
       MethodModel method, List<String> requiredFieldNames) {
@@ -200,7 +206,7 @@ public abstract class MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  static Iterable<FieldConfig> createFieldNameConfigs(
+  static ImmutableList<FieldConfig> createFieldNameConfigs(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
