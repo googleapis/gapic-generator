@@ -17,7 +17,6 @@ package com.google.api.codegen.configgen.mergers;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.configgen.ConfigHelper;
-import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
@@ -25,7 +24,6 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import java.io.File;
 
 /** Merges the gapic config from an ApiModel into a ConfigNode. */
 public class ConfigMerger {
@@ -62,15 +60,6 @@ public class ConfigMerger {
     }
 
     return configNode.setComment(new FixmeComment(CONFIG_COMMENT));
-  }
-
-  public ConfigNode mergeConfig(ApiModel model, File file) {
-    FieldConfigNode configNode = new ConfigYamlReader().generateConfigNode(file, helper);
-    if (configNode == null) {
-      return null;
-    }
-
-    return mergeConfig(model, configNode);
   }
 
   private FieldConfigNode mergeConfig(ApiModel model, FieldConfigNode configNode) {
