@@ -27,8 +27,6 @@ public abstract class BatchingDescriptorClassView {
 
   public abstract String responseTypeName();
 
-  public abstract String batchedFieldTypeName();
-
   @Nullable
   public abstract String subresponseTypeName();
 
@@ -62,8 +60,6 @@ public abstract class BatchingDescriptorClassView {
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
-
-    public abstract Builder batchedFieldTypeName(String val);
 
     public abstract Builder subresponseTypeName(String val);
 

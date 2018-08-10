@@ -72,9 +72,7 @@ public class BatchingTransformer {
     BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
     batchingConfigView.elementCountThreshold(batchingConfig.getElementCountThreshold());
-    batchingConfigView.elementCountLimit(batchingConfig.getElementCountLimit());
     batchingConfigView.requestByteThreshold(batchingConfig.getRequestByteThreshold());
-    batchingConfigView.requestByteLimit(batchingConfig.getRequestByteLimit());
     batchingConfigView.delayThresholdMillis(batchingConfig.getDelayThresholdMillis());
     batchingConfigView.flowControlElementLimit(batchingConfig.getFlowControlElementLimit());
     batchingConfigView.flowControlByteLimit(batchingConfig.getFlowControlByteLimit());
@@ -108,7 +106,6 @@ public class BatchingTransformer {
         method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     desc.responseTypeName(
         method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));
 

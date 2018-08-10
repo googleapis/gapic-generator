@@ -23,10 +23,6 @@ public abstract class BatchingConfigView {
 
   public abstract long requestByteThreshold();
 
-  public abstract int elementCountLimit();
-
-  public abstract long requestByteLimit();
-
   public abstract long delayThresholdMillis();
 
   @Nullable
@@ -54,10 +50,6 @@ public abstract class BatchingConfigView {
     public abstract Builder elementCountThreshold(int val);
 
     public abstract Builder requestByteThreshold(long val);
-
-    public abstract Builder elementCountLimit(int val);
-
-    public abstract Builder requestByteLimit(long val);
 
     public abstract Builder delayThresholdMillis(long val);
 
