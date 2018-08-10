@@ -42,8 +42,6 @@ public abstract class ClientTestClassView {
 
   public abstract List<TestCaseView> testCases();
 
-  public abstract boolean apiHasLongRunningMethods();
-
   /**
    * Indicates that the api has a method that makes a unary request and returns a unary response.
    */
@@ -66,9 +64,6 @@ public abstract class ClientTestClassView {
    * response.
    */
   public abstract boolean apiHasStreamingStreamingMethod();
-
-  @Nullable
-  public abstract String packageServiceName();
 
   public abstract boolean missingDefaultServiceAddress();
 
@@ -127,8 +122,6 @@ public abstract class ClientTestClassView {
 
     public abstract Builder testCases(List<TestCaseView> val);
 
-    public abstract Builder apiHasLongRunningMethods(boolean val);
-
     public abstract Builder apiHasUnaryUnaryMethod(boolean val);
 
     public abstract Builder apiHasUnaryStreamingMethod(boolean val);
@@ -138,8 +131,6 @@ public abstract class ClientTestClassView {
     public abstract Builder apiHasStreamingStreamingMethod(boolean val);
 
     /** The name of the property of the api export that exports this service. Used in Node.js. */
-    public abstract Builder packageServiceName(String val);
-
     public abstract Builder missingDefaultServiceAddress(boolean val);
 
     public abstract Builder missingDefaultServiceScopes(boolean val);

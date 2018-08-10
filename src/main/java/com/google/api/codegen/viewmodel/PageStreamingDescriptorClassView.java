@@ -29,8 +29,6 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String resourceTypeName();
 
-  public abstract String tokenTypeName();
-
   public abstract String defaultTokenValue();
 
   public abstract String requestTokenSetFunction();
@@ -67,8 +65,6 @@ public abstract class PageStreamingDescriptorClassView {
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder resourceTypeName(String val);
-
-    public abstract Builder tokenTypeName(String val);
 
     public abstract Builder defaultTokenValue(String val);
 

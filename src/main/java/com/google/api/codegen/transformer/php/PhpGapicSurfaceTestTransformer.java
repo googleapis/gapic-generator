@@ -130,7 +130,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
     testClass.name(name);
     testClass.apiName(packageConfig.shortName());
     testClass.testCases(createTestCaseViews(context));
-    testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     // Add gRPC client imports.
     for (InterfaceModel grpcInterface :
         mockServiceTransformer
