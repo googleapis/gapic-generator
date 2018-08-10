@@ -238,33 +238,28 @@ public class InitCodeTransformer {
     // Remove the request object for flattened method
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     orderedItems.remove(orderedItems.size() - 1);
+    // Remove things already initialized by the args
+    orderedItems.removeAll(argDefaults);
+
     return buildInitCodeView(
         context, orderedItems, ImmutableList.copyOf(root.getChildren().values()), argDefaults);
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
       MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
-    // TODO(pongad): need to hoist the tree before root.listInInitOrder
-
     List<InitCodeNode> argDefaults = initArgDefaults(initCodeContext, root);
-    return buildInitCodeView(
-        context, root.listInInitializationOrder(), ImmutableList.of(root), argDefaults);
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
+    orderedItems.removeAll(argDefaults);
+
+    return buildInitCodeView(context, orderedItems, ImmutableList.of(root), argDefaults);
   }
 
   private List<InitCodeNode> initArgDefaults(InitCodeContext initCodeContext, InitCodeNode root) {
-    List<InitCodeNode> ret = new ArrayList<>();
-    for (String sampleArg : initCodeContext.sampleArgStrings()) {
-      InitCodeNode target = root.subTree(sampleArg);
-
-      // Make a copy here, since we need to modify original.
-      ret.addAll(new InitCodeNode(target).listInInitializationOrder());
-
-      target.getChildren().clear();
-      target.setLineType(InitCodeLineType.SimpleInitLine);
-      target.updateInitValueConfig(
-          InitValueConfig.createWithValue(InitValue.createVariable("something")));
-    }
-    return ret;
+    return initCodeContext
+        .sampleArgStrings()
+        .stream()
+        .flatMap(sampleArg -> root.subTree(sampleArg).listInInitializationOrder().stream())
+        .collect(Collectors.toList());
   }
 
   private InitCodeView buildInitCodeView(

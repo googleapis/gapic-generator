@@ -230,21 +230,6 @@ public class InitCodeNode {
     this.varName = varName;
   }
 
-  /** Make a copy of the node. Children are shallow-copied. */
-  public InitCodeNode(InitCodeNode from) {
-    this.children = new LinkedHashMap<>(from.children);
-
-    // The rest are immutable anyway.
-    this.key = from.key;
-    this.lineType = from.lineType;
-    this.initValueConfig = from.initValueConfig;
-    this.typeRef = from.typeRef;
-    this.nodeFieldConfig = from.nodeFieldConfig;
-    this.identifier = from.identifier;
-    this.oneofConfig = from.oneofConfig;
-    this.varName = from.varName;
-  }
-
   InitCodeNode mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
     if (oldChild == null || oldChild.lineType == InitCodeLineType.Unknown) {
