@@ -30,8 +30,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * {@code MixedPathTestDataLocator} first tries to find resource on a file system, if it cannot find
- * it this class fallbacks to default {@link ClassPathTestDataLocator} implementation.
+ * A test data locator which first tries to find the specified resource on a file system, if the
+ * file was not found this class fallbacks to the default ({@link ClassPathTestDataLocator})
+ * implementation.
  *
  * <p>This behavior is useful for cases when some parts of test infrastructure expect actual file on
  * a disk (instead of classpath resource) and the resource is packaged inside a jar file (thus
