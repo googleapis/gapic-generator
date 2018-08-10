@@ -75,6 +75,7 @@ maven_jar(
 )
 
 maven_jar(
+
     name = "com_google_code_gson_gson",
     artifact = "com.google.code.gson:gson:2.3",
     sha1 = "5fc52c41ef0239d1093a1eb7c3697036183677ce",
@@ -82,8 +83,8 @@ maven_jar(
 
 maven_jar(
     name = "com_google_guava_guava",
-    artifact = "com.google.guava:guava:25.0-jre",
-    sha1 = "7319c34fa5866a85b6bad445adad69d402323129",
+    artifact = "com.google.guava:guava:26.0-jre",
+    sha1 = "6a806eff209f36f635f943e16d97491f00f6bfab",
 )
 
 maven_jar(
