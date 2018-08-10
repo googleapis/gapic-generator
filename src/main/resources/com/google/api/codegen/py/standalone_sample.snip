@@ -74,8 +74,14 @@
 
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
+  @if sample.initCode.argDefaultLines
+    @# DEFAULT BEGINS
+    {@initCode(sample.initCode.argDefaultLines)}
+    @# DEFAULT ENDS
+
+  @end
   @if sample.initCode.lines
-    {@initCode(sample.initCode)}
+    {@initCode(sample.initCode.lines)}
 
   @end
 @end

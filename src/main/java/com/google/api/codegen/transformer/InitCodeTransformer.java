@@ -96,9 +96,9 @@ public class InitCodeTransformer {
       MethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      return buildInitCodeViewFlattened(methodContext, rootNode);
+      return buildInitCodeViewFlattened(methodContext, initCodeContext, rootNode);
     } else {
-      return buildInitCodeViewRequestObject(methodContext, rootNode);
+      return buildInitCodeViewRequestObject(methodContext, initCodeContext, rootNode);
     }
   }
 
@@ -240,22 +240,46 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(MethodContext context, InitCodeNode root) {
-    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
+  private InitCodeView buildInitCodeViewFlattened(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> argDefaults = initArgDefaults(initCodeContext, root);
     // Remove the request object for flattened method
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     orderedItems.remove(orderedItems.size() - 1);
-    return buildInitCodeView(context, orderedItems, argItems);
+    return buildInitCodeView(
+        context, orderedItems, ImmutableList.copyOf(root.getChildren().values()), argDefaults);
   }
 
-  private InitCodeView buildInitCodeViewRequestObject(MethodContext context, InitCodeNode root) {
-    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = Lists.newArrayList(root);
-    return buildInitCodeView(context, orderedItems, argItems);
+  private InitCodeView buildInitCodeViewRequestObject(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    // TODO(pongad): need to hoist the tree before root.listInInitOrder
+
+    List<InitCodeNode> argDefaults = initArgDefaults(initCodeContext, root);
+    return buildInitCodeView(
+        context, root.listInInitializationOrder(), ImmutableList.of(root), argDefaults);
+  }
+
+  private List<InitCodeNode> initArgDefaults(InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> ret = new ArrayList<>();
+    for (String sampleArg : initCodeContext.sampleArgStrings()) {
+      InitCodeNode target = root.subTree(sampleArg);
+
+      // Make a copy here, since we need to modify original.
+      ret.addAll(new InitCodeNode(target).listInInitializationOrder());
+
+      target.getChildren().clear();
+      target.setLineType(InitCodeLineType.SimpleInitLine);
+      target.updateInitValueConfig(
+          InitValueConfig.createWithValue(InitValue.createVariable("something")));
+    }
+    return ret;
   }
 
   private InitCodeView buildInitCodeView(
-      MethodContext context, List<InitCodeNode> orderedItems, List<InitCodeNode> argItems) {
+      MethodContext context,
+      List<InitCodeNode> orderedItems,
+      List<InitCodeNode> argItems,
+      List<InitCodeNode> argDefaults) {
     ImportTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -270,7 +294,7 @@ public class InitCodeTransformer {
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
-        .argDefaultLines(ImmutableList.of())
+        .argDefaultLines(generateSurfaceInitCodeLines(context, argDefaults))
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(fieldSettings)

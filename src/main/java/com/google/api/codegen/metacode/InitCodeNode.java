@@ -75,7 +75,7 @@ public class InitCodeNode {
     return lineType;
   }
 
-  void setLineType(InitCodeLineType lineType) {
+  public void setLineType(InitCodeLineType lineType) {
     this.lineType = lineType;
   }
 
@@ -90,7 +90,7 @@ public class InitCodeNode {
   /*
    * Updates the InitValueConfig.
    */
-  void updateInitValueConfig(InitValueConfig initValueConfig) {
+  public void updateInitValueConfig(InitValueConfig initValueConfig) {
     this.initValueConfig = initValueConfig;
   }
 
@@ -228,6 +228,21 @@ public class InitCodeNode {
     this.initValueConfig = initValueConfig;
     this.children = new LinkedHashMap<>();
     this.varName = varName;
+  }
+
+  /** Make a copy of the node. Children are shallow-copied. */
+  public InitCodeNode(InitCodeNode from) {
+    this.children = new LinkedHashMap<>(from.children);
+
+    // The rest are immutable anyway.
+    this.key = from.key;
+    this.lineType = from.lineType;
+    this.initValueConfig = from.initValueConfig;
+    this.typeRef = from.typeRef;
+    this.nodeFieldConfig = from.nodeFieldConfig;
+    this.identifier = from.identifier;
+    this.oneofConfig = from.oneofConfig;
+    this.varName = from.varName;
   }
 
   InitCodeNode mergeChild(InitCodeNode newChild) {
