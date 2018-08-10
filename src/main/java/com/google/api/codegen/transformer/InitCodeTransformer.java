@@ -175,12 +175,7 @@ public class InitCodeTransformer {
       boolean isMap = fieldConfig.getField().isMap();
       boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
 
-      String enumTypeName = null;
       TypeModel fieldType = fieldItemTree.getType();
-      if (fieldType.isEnum() && !fieldType.isRepeated()) {
-        enumTypeName = methodContext.getTypeTable().getNicknameFor(fieldType);
-      }
-
       String messageTypeName = null;
       if (fieldType.isMessage()) {
         messageTypeName = methodContext.getTypeTable().getFullNameForMessageType(fieldType);
@@ -194,7 +189,6 @@ public class InitCodeTransformer {
               isMap,
               isArray,
               getterMethod,
-              enumTypeName,
               messageTypeName));
     }
     return assertViews;
@@ -226,7 +220,6 @@ public class InitCodeTransformer {
       boolean isMap,
       boolean isArray,
       String actual,
-      String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
@@ -235,7 +228,6 @@ public class InitCodeTransformer {
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
-        .enumTypeName(enumTypeName)
         .messageTypeName(messageTypeName)
         .build();
   }
@@ -301,9 +293,7 @@ public class InitCodeTransformer {
         .optionalFieldSettings(optionalFieldSettings)
         .requiredFieldSettings(requiredFieldSettings)
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
-        .versionIndexFileImportName(namer.getVersionIndexFileImportName())
         .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
-        .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }
 
@@ -372,7 +362,6 @@ public class InitCodeTransformer {
 
     String typeName = typeTable.getAndSaveNicknameFor(item.getType());
     surfaceLine.typeName(typeName);
-    surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 

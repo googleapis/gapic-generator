@@ -989,14 +989,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
-  /**
-   * In languages with pointers, strip the pointer, leaving only the base type. Eg, in C, "int*"
-   * would become "int".
-   */
-  public String valueType(String type) {
-    return getNotImplementedString("SurfaceNamer.valueType");
-  }
-
   /** The async return type name in a static language that is used by the caller */
   public String getStaticLangCallerAsyncReturnTypeName(MethodContext methodContext) {
     return getStaticLangAsyncReturnTypeName(methodContext);
@@ -1109,12 +1101,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeFactoryName(
-      ImportTypeTable typeTable, FieldConfig fieldConfig) {
-    return getNotImplementedString("SurfaceNamer.getAndSaveResourceTypeFactoryName");
-  }
-
-  /** The class name of the generated resource type from the entity name. */
   public String getAndSaveElementResourceTypeName(
       ImportTypeTable typeTable, FieldConfig fieldConfig) {
     ResourceNameConfig resourceNameConfig = fieldConfig.getResourceNameConfig();
@@ -1140,10 +1126,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
-  }
-
-  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
-    return getNotImplementedString("SurfaceNamer.getCreateCallableFunctionName");
   }
 
   /** Return the type name used to discriminate oneof variants. */
@@ -1318,11 +1300,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The public access modifier for the current language. */
-  public String getPublicAccessModifier() {
-    return "public";
-  }
-
   /** The private access modifier for the current language. */
   public String getPrivateAccessModifier() {
     return "private";
@@ -1346,11 +1323,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
   public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
-  }
-
-  /** The string of the package path */
-  public String getPackagePath() {
-    return getNotImplementedString("SurfaceNamer.getPackagePath");
   }
 
   ///////////////////////////////////////// Imports ///////////////////////////////////////////////

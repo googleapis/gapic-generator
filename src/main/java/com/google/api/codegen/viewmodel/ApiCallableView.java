@@ -59,8 +59,6 @@ public abstract class ApiCallableView {
   // Used in C#
   public abstract String grpcClientVarName();
 
-  public abstract String methodDescriptorName();
-
   public abstract String transportSettingsVar();
 
   @Nullable
@@ -103,8 +101,6 @@ public abstract class ApiCallableView {
     public abstract Builder settingsFunctionName(String name);
 
     public abstract Builder grpcClientVarName(String name);
-
-    public abstract Builder methodDescriptorName(String name);
 
     public abstract Builder transportSettingsVar(String val);
 

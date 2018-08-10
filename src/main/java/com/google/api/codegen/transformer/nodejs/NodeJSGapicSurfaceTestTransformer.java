@@ -132,8 +132,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                   namer.getNotImplementedString(
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
-              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()))
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
@@ -150,7 +148,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .localPackageName(namer.getLocalPackageName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .packageHasMultipleServices(model.hasMultipleServices())
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }

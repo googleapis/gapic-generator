@@ -41,7 +41,6 @@ public class PageStreamingTransformer {
     descriptor.requestTokenSetMethodName(
         context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
     if (pageStreaming.hasPageSizeField()) {
-      descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
       descriptor.requestPageSizeGetMethodName(
           context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
       descriptor.requestPageSizeSetMethodName(
@@ -96,7 +95,6 @@ public class PageStreamingTransformer {
     desc.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
     desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
 
-    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
     desc.defaultTokenValue(
         typeTable.getSnippetZeroValueAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
 

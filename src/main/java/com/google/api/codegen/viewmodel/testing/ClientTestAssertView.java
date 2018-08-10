@@ -33,12 +33,6 @@ public abstract class ClientTestAssertView {
   @Nullable
   public abstract String actualValueTransformFunction();
 
-  // Enum type name is needed for ruby because enum fields are converted to symbols when assigned
-  // for a message. In order to do comparison, the enum value will need to be resolved to the
-  // corresponding symbol using the enumTypeName.
-  @Nullable
-  public abstract String enumTypeName();
-
   // Message type name is needed for ruby since the value of the init code is in the form of a hash
   // and will need to be converted to its message type in order to compare with what is in the
   // request.
@@ -51,10 +45,6 @@ public abstract class ClientTestAssertView {
 
   public boolean hasActualValueTransformFunction() {
     return actualValueTransformFunction() != null;
-  }
-
-  public boolean hasEnumTypeName() {
-    return enumTypeName() != null;
   }
 
   public boolean hasMessageTypeName() {
@@ -78,8 +68,6 @@ public abstract class ClientTestAssertView {
     public abstract Builder expectedValueTransformFunction(String val);
 
     public abstract Builder actualValueTransformFunction(String val);
-
-    public abstract Builder enumTypeName(String val);
 
     public abstract Builder messageTypeName(String val);
 
