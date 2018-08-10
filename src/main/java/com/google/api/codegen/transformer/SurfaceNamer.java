@@ -733,11 +733,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
 
-  /** The name of the variable to hold the grpc client of an API interface. */
-  public String getGrpcClientVariableName(InterfaceModel apiInterface) {
-    return localVarName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
-  }
-
   /** The name of the field. */
   public String getFieldName(FieldModel field) {
     return publicFieldName(field.getNameAsParameterName());
@@ -1244,11 +1239,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return keyName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
   }
 
-  /** The formatted name of a page streaming page size field. */
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    return keyName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
-  }
-
   /** The formatted field name of a page streaming response token. */
   public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
     return keyName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
@@ -1345,11 +1335,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getProtoFileImportName(String filename) {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportName");
-  }
-
-  /** The name of the import for a specific grpcClient */
-  public String getGrpcClientImportName(InterfaceModel apiInterface) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
   }
 
   public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {
