@@ -44,17 +44,14 @@ import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  private final Pattern versionPattern = Pattern.compile("^v\\d+");
   private final JavaNameFormatter nameFormatter;
 
   public JavaSurfaceNamer(String rootPackageName, String packageName) {
@@ -205,6 +202,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         + publicMethodName(Name.from("parse"));
   }
 
+  private String getAndSaveResourceTypeFactoryName(
+      ImportTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForTypedResourceName(
+        fieldConfig, Inflector.pluralize(resourceClassName));
+  }
+
   @Override
   public String getAndSavePagedResponseTypeName(
       MethodContext methodContext, FieldConfig resourceFieldConfig) {
@@ -284,15 +289,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAndSaveResourceTypeFactoryName(
-      ImportTypeTable typeTable, FieldConfig fieldConfig) {
-    String resourceClassName =
-        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
-    return typeTable.getAndSaveNicknameForTypedResourceName(
-        fieldConfig, Inflector.pluralize(resourceClassName));
-  }
-
-  @Override
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
@@ -354,22 +350,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
-    switch (serviceMethodType) {
-      case UnaryMethod:
-        return "createDirectCallable";
-      case GrpcBidiStreamingMethod:
-        return "createDirectBidiStreamingCallable";
-      case GrpcServerStreamingMethod:
-        return "createDirectServerStreamingCallable";
-      case GrpcClientStreamingMethod:
-        return "createDirectClientStreamingCallable";
-      default:
-        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
-    }
-  }
-
-  @Override
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
@@ -408,17 +388,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       resourceClassName = commonResourceName.substring(commonResourceName.lastIndexOf(".") + 1);
     }
     return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
-  }
-
-  @Override
-  public String getPackagePath() {
-    List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
-    int endIndex = packagePath.size();
-    // strip off the last leg of the path if it is a version
-    if (versionPattern.matcher(packagePath.get(packagePath.size() - 1)).find()) {
-      endIndex--;
-    }
-    return Joiner.on("/").join(packagePath.subList(0, endIndex));
   }
 
   @Override
