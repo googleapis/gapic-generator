@@ -62,13 +62,13 @@ jobs:
           command: |
             mkdir -p workspace/reports
       - run:
-          name: Generate all Java libraries
+          name: Generate all language libraries
           command: |
             cd workspace/gapic-generator
             python generate_clients.py \
                 --user-config=.circleci/artman_config.yaml \
                 --log=/tmp/workspace/reports/smoketest.log
-      # TODO: run tasks to generate all other languages
+            # TODO: To add languages to generate, edit generate_clients.py
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
