@@ -29,6 +29,13 @@ import sys
 logger = logging.getLogger('smoketest')
 logger.setLevel(logging.INFO)
 
+languages = [
+    "java",
+    "python",
+    "ruby"
+    # TODO: add other languages here.
+]
+
 test_apis = {
     "pubsub" : ("v1", "google/pubsub/artman_pubsub.yaml"),
     "logging" : ("v2", "google/logging/artman_logging.yaml"),
@@ -36,28 +43,29 @@ test_apis = {
 }
 
 
-def generate_clients(language, root_dir, log, user_config):
+def generate_clients(root_dir, log, user_config):
     log_file = _setup_logger(log)
     failure = []
     success = []
     warning = []
-    for api_name in test_apis:
-        (api_version, artman_yaml_path) = test_apis[api_name]
-        target = language + "_gapic"
-        # Generate client library for an API and language.
-        if _generate_artifact(artman_yaml_path,
-                              target,
-                              root_dir,
-                              log_file,
-                              user_config):
-            msg = 'Failed to generate %s of %s.' % (
-                target, artman_yaml_path)
-            failure.append(msg)
-        else:
-            msg = 'Succeded to generate %s of %s.' % (
-                target, artman_yaml_path)
-            success.append(msg)
-        logger.info(msg)
+    for language in languages:
+        for api_name in test_apis:
+            (api_version, artman_yaml_path) = test_apis[api_name]
+            target = language + "_gapic"
+            # Generate client library for an API and language.
+            if _generate_artifact(artman_yaml_path,
+                                  target,
+                                  root_dir,
+                                  log_file,
+                                  user_config):
+                msg = 'Failed to generate %s of %s.' % (
+                    target, artman_yaml_path)
+                failure.append(msg)
+            else:
+                msg = 'Succeded to generate %s of %s.' % (
+                    target, artman_yaml_path)
+                success.append(msg)
+            logger.info(msg)
     logger.info('================ Library Generation Summary ================')
     if not warning or not failure:
         logger.info('Successes:')
@@ -105,9 +113,6 @@ def _test_artifact(test_call, api_name, api_version, log_file):
 def parse_args(*args):
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'language',
-        help='The language to generate a client for.')
-    parser.add_argument(
         '--root-dir',
         # The default value is configured for CircleCI.
         default='/tmp/workspace/googleapis/',
@@ -139,6 +144,5 @@ if __name__ == '__main__':
     root_dir = os.path.abspath(flags.root_dir)
     log = os.path.abspath(flags.log)
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
-    language = flags.language
 
-    generate_clients(language, root_dir, log, user_config)
+    generate_clients(root_dir, log, user_config)

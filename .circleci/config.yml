@@ -1,15 +1,5 @@
 version: 2.0
 
-anchor_generate_language: &anchor_generate_language
-  # We will set the LANGUAGE var right before each invocation
-  # of this command in order to specify which language to generate.
-  command: |
-    cd workspace/gapic-generator
-    python generate_clients.py \
-        --user-config=.circleci/artman_config.yaml \
-        --log=/tmp/workspace/reports/smoketest.log \
-        ${LANGUAGE}
-
 # This command is called for each API that we run python nox tests on.
 anchor_test_python: &anchor_test_python
   command: |
@@ -21,6 +11,12 @@ anchor_test_python: &anchor_test_python
     # https://github.com/googleapis/gapic-generator/issues/2208
   when: always
 
+anchor_test_ruby: &anchor_test_ruby
+  command: |
+    cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
+    bundle update
+    bundle exec rake test
+  when: always
 
 jobs:
   build:
@@ -65,23 +61,13 @@ jobs:
           name: Make reports directory
           command: |
             mkdir -p workspace/reports
-            echo 'export REPORTS_DIR="/tmp/workspace/reports"' >> $BASH_ENV
-      - run:
-          name: Prepare to generate all Java libraries
-          command: echo 'export LANGUAGE="java"' >> $BASH_ENV
-          when: always
       - run:
           name: Generate all Java libraries
-          <<: *anchor_generate_language
-          when: always
-      - run:
-          name: Prepare to generate all Python libraries
-          command: echo 'export LANGUAGE="python"' >> $BASH_ENV
-          when: always
-      - run:
-          name: Generate all Python libraries
-          <<: *anchor_generate_language
-          when: always
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                --user-config=.circleci/artman_config.yaml \
+                --log=/tmp/workspace/reports/smoketest.log
       # TODO: run tasks to generate all other languages
       - store_artifacts:
           path: /tmp/workspace/reports
@@ -137,6 +123,34 @@ jobs:
       - run:
           name: Run nox on speech
           <<: *anchor_test_python
+  test-ruby:
+    working_directory: /tmp/
+    docker:
+      - image: circleci/ruby:2.4-node
+    steps:
+      - attach_workspace:
+          # Use the workspace created in generate-clients
+          at: workspace
+      - run:
+          name: Install Ruby client dependencies.
+          command: |
+            gem install bundler
+            git clone https://github.com/GoogleCloudPlatform/google-cloud-ruby
+            cd google-cloud-ruby
+            bundle update
+      - run:
+          name: Prepare to test Pubsub.
+          command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+      - run:
+          name: Test Pubsub.
+          <<: *anchor_test_ruby
+      - run:
+          name: Prepare to test Speech.
+          command: echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+      - run:
+          name: Test Speech.
+          <<: *anchor_test_ruby
+      # Generated Ruby Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2204.
   # TODO: test other language clients.
 
 workflows:
@@ -151,6 +165,9 @@ workflows:
           requires:
             - generate-clients
       - test-python:
+          requires:
+            - generate-clients
+      - test-ruby:
           requires:
             - generate-clients
 
