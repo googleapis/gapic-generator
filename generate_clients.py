@@ -58,7 +58,7 @@ def generate_clients(language, root_dir, log, user_config):
                 target, artman_yaml_path)
             success.append(msg)
         logger.info(msg)
-    logger.info('================ Smoketest summary ================')
+    logger.info('================ Library Generation Summary ================')
     if not warning or not failure:
         logger.info('Successes:')
         if warning:
