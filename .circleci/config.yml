@@ -9,39 +9,6 @@ anchor_generate_language: &anchor_generate_language
         --user-config=.circleci/artman_config.yaml \
         --log=/tmp/workspace/reports/smoketest.log \
         ${LANGUAGE}
-    # Get the exit code from the python script
-    retVal=$?
-    if [ $retVal -eq 0 ]; then
-      # If language client generation succeeded,
-      # create a file in REPORTS_DIR just as a signal of success.
-      # The `verify-[lang]-generation` job will check for existence of that file to
-      # determine whether or not to kick off a `test-[lang]` job.
-      echo "Success." > ${REPORTS_DIR}/${LANGUAGE}.log
-    fi
-
-anchor_check_generation: &anchor_check_generation
-  command: |
-    # LANGUAGE must be set in BASH_ENV in a prior command.
-    if [ -e /tmp/workspace/reports/${LANGUAGE}.log ]
-    then
-        exit 0
-    else
-        exit 1
-    fi
-
-# We use this setup for jobs that verify that generation of a given language succeeded.
-anchor_verify_generation: &anchor_verify_generation
-  working_directory: /tmp/
-  docker:
-    # Use a CircleCI Docker image because it is cached and supports workspace persistence.
-    - image: circleci/openjdk:8-jdk
-  steps:
-    - attach_workspace:
-        # Load the REPORTS_DIR from generate-clients
-        at: workspace
-    - run:
-        name: Check if language generation had succeeded.
-        <<: *anchor_check_generation
 
 # This command is called for each API that we run python nox tests on.
 anchor_test_python: &anchor_test_python
@@ -126,15 +93,6 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
-  verify-java-generation:
-    <<: *anchor_verify_generation
-    environment:
-      LANGUAGE: java
-  verify-python-generation:
-    <<: *anchor_verify_generation
-    environment:
-      LANGUAGE: python
-  # TODO: verify other language clients were generated.
   test-java:
     working_directory: /tmp/
     docker:
@@ -189,18 +147,12 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-      - verify-java-generation:
-          requires:
-            - generate-clients
-      - verify-python-generation:
-          requires:
-            - generate-clients
       - test-java:
           requires:
-            - verify-java-generation
+            - generate-clients
       - test-python:
           requires:
-            - verify-python-generation
+            - generate-clients
 
 machine:
   services:
