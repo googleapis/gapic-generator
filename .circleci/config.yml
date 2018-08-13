@@ -137,6 +137,29 @@ jobs:
       - run:
           name: Run nox on speech
           <<: *anchor_test_python
+  test-php-7.0:
+    working_directory: /tmp/
+    docker:
+      # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
+      - image: circleci/php:7.0-apache-node-browsers
+    steps:
+      - attach_workspace:
+          # Use the workspace created in generate-clients
+          at: workspace
+      # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
+      - checkout
+#      - run:
+#          name: Prepare to run nox on pubsub
+#          command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+#      - run:
+#          name: Run nox on pubsub
+#          <<: *anchor_test_python
+#      - run:
+#          name: Prepare to run nox on speech
+#          command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+#      - run:
+#          name: Run nox on speech
+#          <<: *anchor_test_python
   # TODO: test other language clients.
 
 workflows:
@@ -151,6 +174,9 @@ workflows:
           requires:
             - generate-clients
       - test-python:
+          requires:
+            - generate-clients
+      - test-php-7.0:
           requires:
             - generate-clients
 
