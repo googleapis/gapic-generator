@@ -1,29 +1,41 @@
 version: 2.0
 
-anchor_test_env: &anchor_test_env
-  docker:
-    - image: googleapis/artman:0.14.3
-  environment:
-    RUNNING_IN_ARTMAN_DOCKER: True
-  working_directory: /tmp/
+anchor_generate_language: &anchor_generate_language
+  # We will set the LANGUAGE var right before each invocation
+  # of this command in order to specify which language to generate.
+  command: |
+    cd workspace/gapic-generator
+    python generate_clients.py \
+        --user-config=.circleci/artman_config.yaml \
+        --log=/tmp/workspace/reports/smoketest.log \
+        ${LANGUAGE}
+
+# This command is called for each API that we run python nox tests on.
+anchor_test_python: &anchor_test_python
+  command: |
+    cd workspace/gapic-generator/artman-genfiles/python/${TEST_API}
+    nox --session "unit(py='2.7')"
+    nox --session "unit(py='3.5')"
+    nox --session "unit(py='3.6')"
+    # python3.7 isn't installed on this Docker image yet, so we can't test against 3.7.
+    # https://github.com/googleapis/gapic-generator/issues/2208
+  when: always
+
 
 jobs:
   build:
     docker:
-      # TODO: Find a way to cache the armtan executor docker image.
-      - image: circleci/openjdk:8-jdk
+      - image: googleapis/git
     steps:
       - checkout
     working_directory: /tmp/workspace/gapic-generator
-  install-toolkit:
+  install-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     steps:
       - checkout:
           path: gapic-generator
-      - run:
-          command: ls gapic-generator
       - run:
           name: Checkout googleapis
           command: |
@@ -34,77 +46,113 @@ jobs:
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
-            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test
+            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test -x javadoc
+      - persist_to_workspace:
+          # Save the toolkit and googleapis installations in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator
+            - googleapis
+  generate-clients:
+    docker:
+      - image: googleapis/artman:0.14.3
+    working_directory: /tmp/
+    steps:
+      - attach_workspace:
+          # Use the workspace created in install-gapic-generator
+          at: workspace
       - run:
-          name: Make reports dir
-          command: mkdir -p reports
+          name: Make reports directory
+          command: |
+            mkdir -p workspace/reports
+            echo 'export REPORTS_DIR="/tmp/workspace/reports"' >> $BASH_ENV
+      - run:
+          name: Prepare to generate all Java libraries
+          command: echo 'export LANGUAGE="java"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Generate all Java libraries
+          <<: *anchor_generate_language
+          when: always
+      - run:
+          name: Prepare to generate all Python libraries
+          command: echo 'export LANGUAGE="python"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Generate all Python libraries
+          <<: *anchor_generate_language
+          when: always
+      # TODO: run tasks to generate all other languages
+      - store_artifacts:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/gapic-generator/artman-genfiles
       - persist_to_workspace:
           # Save all generated directories in workspace for later CircleCI jobs.
           root: /tmp/workspace
           paths:
-            - googleapis
-            - gapic-generator
+            - gapic-generator/artman-genfiles
             - reports
-  test-java-pubsub:
-    <<: *anchor_test_env
+  test-java:
+    working_directory: /tmp/
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - attach_workspace:
-          # Use the workspace created in install-toolkit
+          # Use the workspace created in generate-clients
           at: workspace
       - run:
-          name: Generate and run Java unit tests for Pubsub
+          name: Run all Java generated unit tests
           command: |
-            cd workspace/gapic-generator
-            python gapic_smoketest.py --user-config=artman_config.yaml java pubsub
+            cd workspace/gapic-generator/artman-genfiles/java
+            ./gradlew build test
+      - run:
+          name: Save test results
+          command: |
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /tmp/workspace/reports/ \;
+          when: always
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
           path: /tmp/workspace/reports
-  test-java-logging:
-      <<: *anchor_test_env
-      steps:
-        - attach_workspace:
-            # Use the workspace created in install-toolkit
-            at: workspace
-        - run:
-            name: Generate and run Java unit tests for Logging
-            command: |
-              cd workspace/gapic-generator
-              python gapic_smoketest.py --user-config=artman_config.yaml java logging
-        - store_test_results:
-            path: /tmp/workspace/reports
-        - store_artifacts:
-            path: /tmp/workspace/reports
-  test-java-speech:
-      <<: *anchor_test_env
-      steps:
-        - attach_workspace:
-            # Use the workspace created in install-toolkit
-            at: workspace
-        - run:
-            name: Generate and run Java unit tests for Speech
-            command: |
-              cd workspace/gapic-generator
-              python gapic_smoketest.py --user-config=artman_config.yaml java speech
-        - store_test_results:
-            path: /tmp/workspace/reports
-        - store_artifacts:
-            path: /tmp/workspace/reports
+  test-python:
+    working_directory: /tmp/
+    docker:
+      # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
+      - image: googleapis/nox:0.17.0
+    steps:
+      - attach_workspace:
+          # Use the workspace created in generate-clients
+          at: workspace
+      # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
+      - run:
+          name: Prepare to run nox on pubsub
+          command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+      - run:
+          name: Run nox on pubsub
+          <<: *anchor_test_python
+      - run:
+          name: Prepare to run nox on speech
+          command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+      - run:
+          name: Run nox on speech
+          <<: *anchor_test_python
+  # TODO: test other language clients.
 
 workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - install-toolkit
-      - test-java-pubsub:
+      - install-gapic-generator
+      - generate-clients:
           requires:
-            - install-toolkit
-      - test-java-logging:
+            - install-gapic-generator
+      - test-java:
           requires:
-            - install-toolkit
-      - test-java-speech:
+            - generate-clients
+      - test-python:
           requires:
-            - install-toolkit
+            - generate-clients
 
 machine:
   services:
