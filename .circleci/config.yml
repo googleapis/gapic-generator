@@ -105,7 +105,7 @@ jobs:
       - run:
           name: Make reports directory
           command: |
-            mkdir -p workspace/reports/generations
+            mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
           name: Generate all language libraries
           command: |
@@ -226,6 +226,9 @@ workflows:
           requires:
             - generate-clients
       - verify-python-generation:
+          requires:
+            - generate-clients
+      - verify-ruby-generation:
           requires:
             - generate-clients
       - test-java:
