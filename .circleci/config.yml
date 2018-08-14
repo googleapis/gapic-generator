@@ -21,6 +21,13 @@ anchor_run_decrypt: &anchor_run_decrypt
     openssl aes-256-cbc -md sha256 -d -in .circleci/gapic-generator-it-test.json.enc \
         -out .circleci/gapic-generator-it-test.json -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
 
+anchor_test_ruby: &anchor_test_ruby
+  command: |
+    cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
+    bundle update
+    bundle exec rake test
+  when: always
+
 jobs:
   build:
     docker:
@@ -128,6 +135,35 @@ jobs:
       - run:
           name: Run nox on speech
           <<: *anchor_test_python
+      - run:
+          name: Run nox on speech
+          <<: *anchor_test_python
+  test-ruby:
+    working_directory: /tmp/
+    docker:
+      - image: circleci/ruby:2.4-node
+    steps:
+      - attach_workspace:
+          # Use the workspace created in generate-clients
+          at: workspace
+      - run:
+          name: Prepare to test Pubsub.
+          command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+      - run:
+          name: Test Pubsub.
+          <<: *anchor_test_ruby
+      - run:
+          name: Prepare to test Speech.
+          command: echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+      - run:
+          name: Test Speech.
+          <<: *anchor_test_ruby
+      - run:
+          name: Prepare to test Logging.
+          command: echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+      - run:
+          name: Test Logging.
+          <<: *anchor_test_ruby
   test-php-7.0:
     working_directory: /tmp/
     environment:
@@ -158,7 +194,6 @@ jobs:
 #          name: Prepare to run PHP unit tests
 #          command: vendor/bin/phpunit -c phpunit-system.xml.dist --group pub_sub
 #          when: always
-
   # TODO: test other language clients.
 
 workflows:
@@ -176,6 +211,9 @@ workflows:
           requires:
             - generate-clients
       - test-php-7.0:
+          requires:
+            - generate-clients
+      - test-ruby:
           requires:
             - generate-clients
 

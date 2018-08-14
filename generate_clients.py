@@ -34,7 +34,8 @@ logger.setLevel(logging.INFO)
 languages = [
     "java",
     "python",
-    "php"
+    "php",
+    "ruby"
     # TODO: add other languages here.
 ]
 
