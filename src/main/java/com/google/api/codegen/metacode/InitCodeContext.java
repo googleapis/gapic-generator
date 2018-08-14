@@ -67,7 +67,7 @@ public abstract class InitCodeContext {
 
   /**
    * When generating samples, the sample function accept these parts of the request object as
-   * argument.
+   * arguments.
    */
   public abstract ImmutableList<String> sampleArgStrings();
 

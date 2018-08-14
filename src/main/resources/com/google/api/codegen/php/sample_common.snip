@@ -89,7 +89,7 @@
     }
     $result = $stream->readResponse();
     // doSomethingWith($result)
-@end    
+@end
 
 @snippet serverStreamingSampleCode(apiMethod)
     // Read all responses until the stream is complete
@@ -131,7 +131,17 @@
 @end
 
 @snippet initCode(initCode, apiVariableName)
-    @join line : initCode.lines
+    @if initCode.argDefaultLines
+        // Should be commented out here to not clobber args
+        {@initCodeLines(initCode.argDefaultLines, apiVariableName)}
+        // args end
+
+    @end
+    {@initCodeLines(initCode.lines, apiVariableName)}
+@end
+
+@private initCodeLines(lines, apiVariableName)
+    @join line : lines
         @switch line.lineType
         @case "StructureInitLine"
             {@initLineStructure(line)}
