@@ -59,6 +59,7 @@ anchor_test_ruby: &anchor_test_ruby
     cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
     bundle update
     bundle exec rake test
+    bundle exec rake acceptance
   when: always
 
 jobs:
@@ -195,6 +196,9 @@ jobs:
       - attach_workspace:
           # Use the workspace created in generate-clients
           at: workspace
+      - checkout
+      - run:
+          <<: *anchor_run_decrypt
       - run:
           name: Prepare to test Pubsub.
           command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
