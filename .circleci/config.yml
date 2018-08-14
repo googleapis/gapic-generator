@@ -9,16 +9,15 @@ anchor_generate_language: &anchor_generate_language
         --user-config=.circleci/artman_config.yaml \
         --log=/tmp/workspace/reports/smoketest.log \
         ${LANGUAGE}
-    # Get the exit code from the python script
-    retVal=$?
-    if [ $retVal -eq 0 ]; then
-      # If language client generation succeeded,
-      # create a file in REPORTS_DIR just as a signal of success.
-      # The `verify-[lang]-generation` job will check for existence of that file to
-      # determine whether or not to kick off a `test-[lang]` job.
-      echo "Success." > ${REPORTS_DIR}/${LANGUAGE}.log
-    fi
-    exit 0
+#    # Get the exit code from the python script
+#    retVal=$?
+#    if [ $retVal -eq 0 ]; then
+#      # If language client generation succeeded,
+#      # create a file in REPORTS_DIR just as a signal of success.
+#      # The `verify-[lang]-generation` job will check for existence of that file to
+#      # determine whether or not to kick off a `test-[lang]` job.
+#      echo "Success." > ${REPORTS_DIR}/${LANGUAGE}.log
+#    fi
 
 anchor_check_generation: &anchor_check_generation
   command: |
