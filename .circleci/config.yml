@@ -129,7 +129,10 @@ jobs:
           at: workspace
       - run:
           name: Set up project credentials
-          command: echo 'export TEST_API="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
+          command: |
+            echo 'export TEST_API="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
+            # TODO: set php key path
+            echo 'export GOOGLE_CLOUD_PHP_TESTS_KEY_PATH="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
 #      - run:
 #          name: Set up google-cloud-python with generated clients
 #          command: |
