@@ -79,7 +79,6 @@ def generate_clients(root_dir, log, user_config):
         if failure:
             for msg in failure:
                 logger.error(msg)
-            sys.exit('Smoke test failed.')
     else:
         logger.info("All passed.")
 
@@ -149,5 +148,7 @@ if __name__ == '__main__':
     (successes, failures) = generate_clients(root_dir, log, user_config)
 
     # Exit with success if there were any successful generations.
-    exit_code = 0 if successes else 1
-    sys.exit(exit_code)
+    if successes:
+        sys.exit(0)
+    else:
+        sys.exit('All language client generations failed.')
