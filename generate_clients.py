@@ -17,7 +17,7 @@
 """Gapic generator smoke tests.
 
 It generates GAPIC client libraries for a Google APIs in googleapis
-repo. The test will fail if any generation fails.
+repo. The test will fail only if ALL generations fails.
 """
 
 import argparse
