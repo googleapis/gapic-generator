@@ -1,7 +1,17 @@
 @extends "java/common.snip"
 
 @snippet initCode(initCodeSpec)
-  @join line : initCodeSpec.lines
+  @if initCodeSpec.argDefaultLines
+    // should be commented to not clobber args
+    {@initCodeLines(initCodeSpec.argDefaultLines)}
+    // args end
+
+  @end
+  {@initCodeLines(initCodeSpec.lines)}
+@end
+
+@private initCodeLines(lines)
+  @join line : lines
     @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}
