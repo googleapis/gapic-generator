@@ -130,25 +130,22 @@ jobs:
       - run:
           name: Set up project credentials
           command: echo 'export TEST_API="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
-      - run:
-          name: Set up google-cloud-python with generated clients
-          command: |
-            git clone https://github.com/GoogleCloudPlatform/google-cloud-php.git
-            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-pubsub-v1/* \
-                /tmp/workspace/google-cloud-php/PubSub
-            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-speech-v1/* \
-                /tmp/workspace/google-cloud-php/Speech
-            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-logging-v2/* \
-                /tmp/workspace/google-cloud-php/Logging
-            composer install
-            composer update
-      - run:
-          name: Prepare to run PHP unit tests
-          command: vendor/bin/phpunit -c phpunit-system.xml.dist --group pub_sub
-          when: always
-      - run:
-          name: Run nox on pubsub
-          <<: *anchor_test_python
+#      - run:
+#          name: Set up google-cloud-python with generated clients
+#          command: |
+#            git clone https://github.com/GoogleCloudPlatform/google-cloud-php.git
+#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-pubsub-v1/* \
+#                /tmp/workspace/google-cloud-php/PubSub
+#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-speech-v1/* \
+#                /tmp/workspace/google-cloud-php/Speech
+#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-logging-v2/* \
+#                /tmp/workspace/google-cloud-php/Logging
+#            composer install
+#            composer update
+#      - run:
+#          name: Prepare to run PHP unit tests
+#          command: vendor/bin/phpunit -c phpunit-system.xml.dist --group pub_sub
+#          when: always
 
   # TODO: test other language clients.
 
