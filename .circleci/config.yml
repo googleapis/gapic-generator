@@ -1,22 +1,7 @@
 version: 2.0
 
-anchor_generate_language: &anchor_generate_language
-  # We will set the LANGUAGE var right before each invocation
-  # of this command in order to specify which language to generate.
-  command: |
-    cd workspace/gapic-generator
-    python generate_clients.py \
-        --user-config=.circleci/artman_config.yaml \
-        --log=/tmp/workspace/reports/smoketest.log
-#    # Get the exit code from the python script
-#    retVal=$?
-#    if [ $retVal -eq 0 ]; then
-#      # If language client generation succeeded,
-#      # create a file in REPORTS_DIR just as a signal of success.
-#      # The `verify-[lang]-generation` job will check for existence of that file to
-#      # determine whether or not to kick off a `test-[lang]` job.
-#      echo "Success." > ${REPORTS_DIR}/${LANGUAGE}.log
-#    fi
+anchor_artman_vars: &anchor_artman_vars
+  ARTMAN_REPORTS_DIR: /tmp/workspace/reports/generations
 
 anchor_auth_vars: &anchor_auth_vars
   GCLOUD_PROJECT: gapic-test
@@ -33,7 +18,7 @@ anchor_run_decrypt: &anchor_run_decrypt
 anchor_check_generation: &anchor_check_generation
   command: |
     # LANGUAGE must be set in BASH_ENV in a prior command.
-    if [ -e /tmp/workspace/reports/${LANGUAGE}.log ]
+    if [ -e ${ARTMAN_REPORTS_DIR}/${LANGUAGE}.log ]
     then
         exit 0
     else
@@ -42,10 +27,12 @@ anchor_check_generation: &anchor_check_generation
 
 # We use this setup for jobs that verify that generation of a given language succeeded.
 anchor_verify_generation: &anchor_verify_generation
+  environment:
+    <<: *anchor_artman_vars
   working_directory: /tmp/
   docker:
-    # Use a CircleCI Docker image because it is cached and supports workspace persistence.
-    - image: circleci/openjdk:8-jdk
+    # Use a small CircleCI Docker image which will support workspace persistence.
+    - image: circleci/slim-base
   steps:
     - attach_workspace:
         # Load the REPORTS_DIR from generate-clients
@@ -109,6 +96,8 @@ jobs:
     docker:
       - image: googleapis/artman:0.14.3
     working_directory: /tmp/
+    environment:
+      <<: *anchor_artman_vars
     steps:
       - attach_workspace:
           # Use the workspace created in install-gapic-generator
@@ -116,14 +105,14 @@ jobs:
       - run:
           name: Make reports directory
           command: |
-            mkdir -p workspace/reports
+            mkdir -p workspace/reports/generations
       - run:
           name: Generate all language libraries
           command: |
             cd workspace/gapic-generator
             python generate_clients.py \
                 --user-config=.circleci/artman_config.yaml \
-                --log=/tmp/workspace/reports/smoketest.log
+                --log_dir=${ARTMAN_REPORTS_DIR}
             # TODO: To add languages to generate, edit generate_clients.py
       - store_artifacts:
           path: /tmp/workspace/reports

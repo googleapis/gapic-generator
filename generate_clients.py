@@ -18,6 +18,9 @@
 
 It generates GAPIC client libraries for a set of Google APIs in googleapis
 repo. The test will fail only if ALL generations fails.
+
+For each language, if the ALL API client generations for that language passes,
+then this script outputs a file called [language].log in the given log_dir.
 """
 
 import argparse
@@ -43,12 +46,14 @@ test_apis = {
 }
 
 
-def generate_clients(root_dir, log, user_config):
+def generate_clients(root_dir, log_dir, user_config):
+    log = os.path.join(log_dir, "smoketest.log")
     log_file = _setup_logger(log)
     failure = []
     success = []
     warning = []
     for language in languages:
+        lang_success = True
         for api_name in test_apis:
             (api_version, artman_yaml_path) = test_apis[api_name]
             target = language + "_gapic"
@@ -61,11 +66,16 @@ def generate_clients(root_dir, log, user_config):
                 msg = 'Failed to generate %s of %s.' % (
                     target, artman_yaml_path)
                 failure.append(msg)
+                lang_success = False
             else:
                 msg = 'Succeded to generate %s of %s.' % (
                     target, artman_yaml_path)
                 success.append(msg)
             logger.info(msg)
+        if lang_success:
+            # Output the [language.log] file.
+            write_lang_success_log(language, log_dir)
+
     logger.info('================ Library Generation Summary ================')
     if not warning or not failure:
         logger.info('Successes:')
@@ -111,6 +121,13 @@ def _test_artifact(test_call, api_name, api_version, log_file):
         return test_call(api_name, api_version, log)
 
 
+def write_lang_success_log(language, log_dir):
+    file_name = "%s.log" % language
+    filepath = os.path.join(log_dir, file_name)
+    with open(filepath,"w") as f:
+        f.write("Success.")
+
+
 def parse_args(*args):
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -119,10 +136,12 @@ def parse_args(*args):
         default='/tmp/workspace/googleapis/',
         help='Specify where googleapis local repo lives.')
     parser.add_argument(
-        '--log',
+        '--log-dir',
         # The default value is configured for CircleCI.
-        default='/tmp/workspace/reports/smoketest.log',
-        help='Specify where smoketest log should be stored.')
+        default='/tmp/workspace/reports/',
+        required=True,
+        help='Specify where smoketest log and language success logs should be stored. ' +
+             'The contents of this directory will be removed prior to execution.')
     parser.add_argument(
         '--user-config',
         # Default to the artman-specified default location.
@@ -143,10 +162,14 @@ if __name__ == '__main__':
     flags = parse_args(*sys.argv[1:])
 
     root_dir = os.path.abspath(flags.root_dir)
-    log = os.path.abspath(flags.log)
+    log_dir = os.path.abspath(flags.log_dir)
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
 
-    successes = generate_clients(root_dir, log, user_config)
+    # Clear log directory.
+    for f in os.listdir(log_dir):
+        os.remove(os.path.join(log_dir, f))
+
+    successes = generate_clients(root_dir, log_dir, user_config)
 
     # Exit with success if there were any successful generations.
     if successes:
