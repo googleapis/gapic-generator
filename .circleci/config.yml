@@ -99,21 +99,12 @@ jobs:
             mkdir -p workspace/reports
             echo 'export REPORTS_DIR="/tmp/workspace/reports"' >> $BASH_ENV
       - run:
-          name: Prepare to generate all Java libraries
-          command: echo 'export LANGUAGE="java"' >> $BASH_ENV
-          when: always
-      - run:
-          name: Generate all Java libraries
-          <<: *anchor_generate_language
-          when: always
-      - run:
-          name: Prepare to generate all Python libraries
-          command: echo 'export LANGUAGE="python"' >> $BASH_ENV
-          when: always
-      - run:
-          name: Generate all Python libraries
-          <<: *anchor_generate_language
-          when: always
+          name: Generate all libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                --user-config=.circleci/artman_config.yaml \
+                --log=/tmp/workspace/reports/smoketest.log
       # TODO: run tasks to generate all other languages
       - store_artifacts:
           path: /tmp/workspace/reports
