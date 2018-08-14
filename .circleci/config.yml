@@ -150,7 +150,12 @@ jobs:
       - run:
           name: Test Speech.
           <<: *anchor_test_ruby
-      # Generated Ruby Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2204.
+      - run:
+          name: Prepare to test Logging.
+          command: echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+      - run:
+          name: Test Speech.
+          <<: *anchor_test_ruby
   # TODO: test other language clients.
 
 workflows:
