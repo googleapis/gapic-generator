@@ -11,14 +11,6 @@ anchor_test_python: &anchor_test_python
     # https://github.com/googleapis/gapic-generator/issues/2208
   when: always
 
-# This command is called for each API client library that we run PHP unit tests in.
-anchor_test_python: &anchor_test_python
-  command: |
-    cd workspace/gapic-generator/artman-genfiles/php/google-cloud-${TEST_API}
-    composer install
-    composer update
-  when: always
-
 jobs:
   build:
     docker:
