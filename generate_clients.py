@@ -16,8 +16,10 @@
 
 """Gapic generator smoke tests.
 
-It generates GAPIC client libraries for a Google APIs in googleapis
-repo. The test will fail if any generation fails.
+It generates GAPIC client libraries for a select set of APIs from the googleapis
+repo, for a select set of languages. The test will attempt to generate
+all client libraries specified. After all generation, if any library generation fails,
+this script will return an failure exit code.
 """
 
 import argparse
