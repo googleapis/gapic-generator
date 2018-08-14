@@ -11,6 +11,16 @@ anchor_test_python: &anchor_test_python
     # https://github.com/googleapis/gapic-generator/issues/2208
   when: always
 
+anchor_auth_vars: &anchor_auth_vars
+  GCLOUD_PROJECT: gapic-test
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
+
+anchor_run_decrypt: &anchor_run_decrypt
+  name: Decrypt credentials
+  command: |
+    openssl aes-256-cbc -md sha256 -d -in .circleci/gapic-generator-it-test.json.enc \
+        -out .circleci/gapic-generator-it-test.json -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
+
 jobs:
   build:
     docker:
@@ -120,6 +130,9 @@ jobs:
           <<: *anchor_test_python
   test-php-7.0:
     working_directory: /tmp/
+    environment:
+      <<: *anchor_auth_vars
+      GOOGLE_CLOUD_PHP_TESTS_KEY_PATH: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
     docker:
       # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
       - image: circleci/php:7.0-apache-node-browsers
@@ -128,11 +141,7 @@ jobs:
           # Use the workspace created in generate-clients
           at: workspace
       - run:
-          name: Set up project credentials
-          command: |
-            echo 'export TEST_API="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
-            # TODO: set php key path
-            echo 'export GOOGLE_CLOUD_PHP_TESTS_KEY_PATH="${GOOGLE_CLOUD_PROJECT}"' >> $BASH_ENV
+          <<: *anchor_run_decrypt
 #      - run:
 #          name: Set up google-cloud-python with generated clients
 #          command: |
