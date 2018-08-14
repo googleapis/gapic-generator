@@ -131,31 +131,31 @@ jobs:
       - attach_workspace:
           # Use the workspace created in generate-clients
           at: workspace
-      - run:
-          name: Install Ruby client dependencies.
-          command: |
-            gem install bundler
-            git clone https://github.com/GoogleCloudPlatform/google-cloud-ruby
-            cd google-cloud-ruby
-            bundle update
-      - run:
-          name: Prepare to test Pubsub.
-          command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
-      - run:
-          name: Test Pubsub.
-          <<: *anchor_test_ruby
-      - run:
-          name: Prepare to test Speech.
-          command: echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
-      - run:
-          name: Test Speech.
-          <<: *anchor_test_ruby
-      - run:
-          name: Prepare to test Logging.
-          command: echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
-      - run:
-          name: Test Logging.
-          <<: *anchor_test_ruby
+#      - run:
+#          name: Install Ruby client dependencies.
+#          command: |
+#            gem install bundler
+#            git clone https://github.com/GoogleCloudPlatform/google-cloud-ruby
+#            cd google-cloud-ruby
+#            bundle update
+#      - run:
+#          name: Prepare to test Pubsub.
+#          command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+#      - run:
+#          name: Test Pubsub.
+#          <<: *anchor_test_ruby
+#      - run:
+#          name: Prepare to test Speech.
+#          command: echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+#      - run:
+#          name: Test Speech.
+#          <<: *anchor_test_ruby
+#      - run:
+#          name: Prepare to test Logging.
+#          command: echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+#      - run:
+#          name: Test Logging.
+#          <<: *anchor_test_ruby
   # TODO: test other language clients.
 
 workflows:
