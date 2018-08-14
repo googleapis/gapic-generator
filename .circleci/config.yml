@@ -112,7 +112,7 @@ jobs:
             cd workspace/gapic-generator
             python generate_clients.py \
                 --user-config=.circleci/artman_config.yaml \
-                --log_dir=${ARTMAN_REPORTS_DIR}
+                --log-dir=${ARTMAN_REPORTS_DIR}
             # TODO: To add languages to generate, edit generate_clients.py
       - store_artifacts:
           path: /tmp/workspace/reports
@@ -171,6 +171,7 @@ jobs:
       - attach_workspace:
           # Use the workspace created in generate-clients
           at: workspace
+      - checkout
       - run:
           <<: *anchor_run_decrypt
       # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
