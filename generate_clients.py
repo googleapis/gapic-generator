@@ -16,7 +16,7 @@
 
 """Gapic generator smoke tests.
 
-It generates GAPIC client libraries for a Google APIs in googleapis
+It generates GAPIC client libraries for a set of Google APIs in googleapis
 repo. The test will fail only if ALL generations fails.
 """
 
@@ -32,6 +32,7 @@ logger.setLevel(logging.INFO)
 languages = [
     "java",
     "python",
+    "ruby"
     # TODO: add other languages here.
 ]
 
@@ -82,7 +83,7 @@ def generate_clients(root_dir, log, user_config):
     else:
         logger.info("All passed.")
 
-    return success, failure
+    return success
 
 
 def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_config_file):
@@ -145,7 +146,7 @@ if __name__ == '__main__':
     log = os.path.abspath(flags.log)
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
 
-    (successes, failures) = generate_clients(root_dir, log, user_config)
+    successes = generate_clients(root_dir, log, user_config)
 
     # Exit with success if there were any successful generations.
     if successes:

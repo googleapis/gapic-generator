@@ -67,6 +67,12 @@ anchor_test_python: &anchor_test_python
     nox --session "session(py='3.6')"
   when: always
 
+anchor_test_ruby: &anchor_test_ruby
+  command: |
+    cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
+    bundle update
+    bundle exec rake test
+  when: always
 
 jobs:
   build:
@@ -111,15 +117,14 @@ jobs:
           name: Make reports directory
           command: |
             mkdir -p workspace/reports
-            echo 'export REPORTS_DIR="/tmp/workspace/reports"' >> $BASH_ENV
       - run:
-          name: Generate all libraries
+          name: Generate all language libraries
           command: |
             cd workspace/gapic-generator
             python generate_clients.py \
                 --user-config=.circleci/artman_config.yaml \
                 --log=/tmp/workspace/reports/smoketest.log
-      # TODO: run tasks to generate all other languages
+            # TODO: To add languages to generate, edit generate_clients.py
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -138,6 +143,10 @@ jobs:
     <<: *anchor_verify_generation
     environment:
       LANGUAGE: python
+  verify-ruby-generation:
+    <<: *anchor_verify_generation
+    environment:
+      LANGUAGE: ruby
   # TODO: verify other language clients were generated.
   test-java:
     working_directory: /tmp/
@@ -188,6 +197,32 @@ jobs:
       - run:
           name: Run nox on speech
           <<: *anchor_test_python
+  test-ruby:
+    working_directory: /tmp/
+    docker:
+      - image: circleci/ruby:2.4-node
+    steps:
+      - attach_workspace:
+          # Use the workspace created in generate-clients
+          at: workspace
+      - run:
+          name: Prepare to test Pubsub.
+          command: echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+      - run:
+          name: Test Pubsub.
+          <<: *anchor_test_ruby
+      - run:
+          name: Prepare to test Speech.
+          command: echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+      - run:
+          name: Test Speech.
+          <<: *anchor_test_ruby
+      - run:
+          name: Prepare to test Logging.
+          command: echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+      - run:
+          name: Test Logging.
+          <<: *anchor_test_ruby
   # TODO: test other language clients.
 
 workflows:
@@ -210,6 +245,9 @@ workflows:
       - test-python:
           requires:
             - verify-python-generation
+      - test-ruby:
+          requires:
+            - verify-ruby-generation
 
 machine:
   services:
