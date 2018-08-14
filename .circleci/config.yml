@@ -19,15 +19,16 @@ anchor_generate_language: &anchor_generate_language
 #    fi
 
 anchor_auth_vars: &anchor_auth_vars
-  environment:
-    GCLOUD_PROJECT: gapic-test
-    GOOGLE_APPLICATION_CREDENTIALS: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
+  GCLOUD_PROJECT: gapic-test
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
 
 anchor_run_decrypt: &anchor_run_decrypt
   name: Decrypt credentials
   command: |
-    openssl aes-256-cbc -md sha256 -d -in .circleci/gapic-generator-it-test.json.enc \
-        -out .circleci/gapic-generator-it-test.json -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
+    openssl aes-256-cbc -md sha256 -d \
+        -in /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json.enc \
+        -out /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json \
+        -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
 
 anchor_check_generation: &anchor_check_generation
   command: |
@@ -163,7 +164,8 @@ jobs:
           path: /tmp/workspace/reports
   test-python:
     working_directory: /tmp/
-    <<: *anchor_auth_vars
+    environment:
+      <<: *anchor_auth_vars
     docker:
       # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
       - image: googleapis/nox:0.17.0
