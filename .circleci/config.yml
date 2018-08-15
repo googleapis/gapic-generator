@@ -13,6 +13,7 @@ anchor_run_decrypt: &anchor_run_decrypt
   name: Decrypt credentials (if encryption key is given)
   command: |
     if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ]
+    then
       openssl aes-256-cbc -md sha256 -d \
           -in /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json.enc \
           -out /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json \
