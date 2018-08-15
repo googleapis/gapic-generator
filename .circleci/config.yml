@@ -62,7 +62,7 @@ anchor_test_python: &anchor_test_python
         name: Save nox command
         command: |
           # Set NOX_COMMANDS for each job that uses this config.
-          nox_tests () { $NOX_COMMANDS }
+          nox_tests () { eval "$NOX_COMMANDS" }
           echo 'export -f nox_tests' >> $BASH_ENV
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
