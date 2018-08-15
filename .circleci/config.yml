@@ -11,21 +11,6 @@ anchor_test_python: &anchor_test_python
     # https://github.com/googleapis/gapic-generator/issues/2208
   when: always
 
-anchor_auth_vars: &anchor_auth_vars
-  GCLOUD_PROJECT: gapic-test
-  GOOGLE_APPLICATION_CREDENTIALS: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
-
-anchor_run_decrypt: &anchor_run_decrypt
-  name: Decrypt credentials (if encryption key is given)
-  command: |
-    if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ]
-    then
-      openssl aes-256-cbc -md sha256 -d \
-          -in /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json.enc \
-          -out /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json \
-          -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
-    fi
-
 anchor_test_ruby: &anchor_test_ruby
   command: |
     cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
@@ -187,8 +172,7 @@ jobs:
   test-php-7.0:
     working_directory: /tmp/
     environment:
-      <<: *anchor_auth_vars
-      GOOGLE_CLOUD_PHP_TESTS_KEY_PATH: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
+      # TODO: Enable system tests by setting env vars for credentials
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
     docker:
       # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
@@ -197,8 +181,6 @@ jobs:
       - attach_workspace:
           # Use the workspace created in generate-clients
           at: workspace
-      - run:
-          <<: *anchor_run_decrypt
       - run:
           name: Prepare to test Pubsub
           command: |
