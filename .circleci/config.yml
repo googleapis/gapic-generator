@@ -33,6 +33,21 @@ anchor_test_ruby: &anchor_test_ruby
     bundle exec rake test
   when: always
 
+anchor_test_php: &anchor_test_php
+  command: |
+    cd workspace
+    git clone \
+        https://github.com/GoogleCloudPlatform/google-cloud-php-${TEST_API}.git
+    cd google-cloud-php-${TEST_API}
+    cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/src \
+        google-cloud-php-pubsub
+    cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/tests \
+        google-cloud-php-pubsub
+    composer install
+    composer update
+    vendor/bin/phpunit
+  when: always
+
 jobs:
   build:
     docker:
@@ -174,6 +189,7 @@ jobs:
     environment:
       <<: *anchor_auth_vars
       GOOGLE_CLOUD_PHP_TESTS_KEY_PATH: /tmp/workspace/gapic-generator/.circleci/gapic-generator-it-test.json
+      PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
     docker:
       # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
       - image: circleci/php:7.0-apache-node-browsers
@@ -183,22 +199,29 @@ jobs:
           at: workspace
       - run:
           <<: *anchor_run_decrypt
-#      - run:
-#          name: Set up google-cloud-python with generated clients
-#          command: |
-#            git clone https://github.com/GoogleCloudPlatform/google-cloud-php.git
-#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-pubsub-v1/* \
-#                /tmp/workspace/google-cloud-php/PubSub
-#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-speech-v1/* \
-#                /tmp/workspace/google-cloud-php/Speech
-#            cp -r /tmp/workspace/gapic-generator/artman-genfiles/php/google-cloud-logging-v2/* \
-#                /tmp/workspace/google-cloud-php/Logging
-#            composer install
-#            composer update
-#      - run:
-#          name: Prepare to run PHP unit tests
-#          command: vendor/bin/phpunit -c phpunit-system.xml.dist --group pub_sub
-#          when: always
+      - run:
+          name: Prepare to test Pubsub
+          command: |
+            echo 'export TEST_API="pubsub"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Pubsub client
+          <<: *anchor_test_php
+      - run:
+          name: Prepare to test Speech
+          command: |
+            echo 'export TEST_API="speech"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Speech client
+      - run:
+          name: Prepare to test Logging
+          command: |
+            echo 'export TEST_API="logging"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Logging client
+          <<: *anchor_test_php
   # TODO: test other language clients.
 
 workflows:
