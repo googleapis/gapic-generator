@@ -20,17 +20,22 @@ anchor_test_ruby: &anchor_test_ruby
 
 anchor_test_php: &anchor_test_php
   command: |
-    cd workspace
-    git clone \
-        https://github.com/GoogleCloudPlatform/google-cloud-php-${TEST_API}.git
-    cd google-cloud-php-${TEST_API}
-    cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/src \
-        google-cloud-php-pubsub
-    cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/tests \
-        google-cloud-php-pubsub
-    composer install
-    composer update
-    vendor/bin/phpunit
+    # Only run PHP API test if we have project credentials key
+    # or this API client doesn't require credentials.
+    if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
+    then
+      cd workspace
+      git clone \
+          https://github.com/GoogleCloudPlatform/google-cloud-php-${TEST_API}.git
+      cd google-cloud-php-${TEST_API}
+      cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/src \
+          google-cloud-php-pubsub
+      cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/tests \
+          google-cloud-php-pubsub
+      composer install
+      composer update
+      vendor/bin/phpunit
+    fi
   when: always
 
 jobs:
@@ -172,7 +177,6 @@ jobs:
   test-php-7.0:
     working_directory: /tmp/
     environment:
-      # TODO: Enable system tests by setting env vars for credentials
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
     docker:
       # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
@@ -185,6 +189,7 @@ jobs:
           name: Prepare to test Pubsub
           command: |
             echo 'export TEST_API="pubsub"' >> $BASH_ENV
+            echo 'export KEY_REQUIRED=false' >> $BASH_ENV
           when: always
       - run:
           name: Test PHP Pubsub client
@@ -193,6 +198,8 @@ jobs:
           name: Prepare to test Speech
           command: |
             echo 'export TEST_API="speech"' >> $BASH_ENV
+            # Need creds for Speech client tests that make live calls to server
+            echo 'export KEY_REQUIRED=true' >> $BASH_ENV
           when: always
       - run:
           name: Test PHP Speech client
@@ -201,6 +208,7 @@ jobs:
           name: Prepare to test Logging
           command: |
             echo 'export TEST_API="logging"' >> $BASH_ENV
+            echo 'export KEY_REQUIRED=false' >> $BASH_ENV
           when: always
       - run:
           name: Test PHP Logging client
