@@ -190,7 +190,7 @@ jobs:
     environment:
       <<: *anchor_artman_vars
       LANGUAGE: ruby
-  verify-ruby-generation:
+  verify-csharp-generation:
     <<: *anchor_verify_generation
     environment:
       <<: *anchor_artman_vars
@@ -295,18 +295,18 @@ workflows:
       - test-csharp:
           requires:
             - verify-csharp-generation
-      - test-python-system:
-          requires:
-            - verify-python-generation
-          filters:
-            branches:
-              only: master
-      - test-ruby-system:
-          requires:
-            - verify-ruby-generation
-          filters:
-            branches:
-              only: master
+#      - test-python-system:
+#          requires:
+#            - verify-python-generation
+#          filters:
+#            branches:
+#              only: master
+#      - test-ruby-system:
+#          requires:
+#            - verify-ruby-generation
+#          filters:
+#            branches:
+#              only: master
       # TODO: schedule C# smoke tests job
 
 machine:
