@@ -33,9 +33,10 @@ logger = logging.getLogger('smoketest')
 logger.setLevel(logging.INFO)
 
 languages = [
-    "java",
-    "python",
-    "ruby"
+    # "java",
+    # "python",
+    # "ruby",
+    "csharp"
     # TODO: add other languages here.
 ]
 

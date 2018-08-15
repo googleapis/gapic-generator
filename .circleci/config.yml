@@ -190,6 +190,11 @@ jobs:
     environment:
       <<: *anchor_artman_vars
       LANGUAGE: ruby
+  verify-ruby-generation:
+    <<: *anchor_verify_generation
+    environment:
+      <<: *anchor_artman_vars
+      LANGUAGE: csharp
   # TODO: verify other language clients were generated.
   test-java:
     working_directory: /tmp/
@@ -220,6 +225,23 @@ jobs:
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
     <<: *anchor_test_python
+  test-csharp:
+    working_directory: /tmp/
+    docker:
+      - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run: dotnet restore
+      - run: dotnet build
+      - run: dotnet test --no-build Build.Tests
+      - store_test_results:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/reports
+  # TODO: Run C# smoke tests by cd to generated directory
+  # ending with ".SmokeTests" and running:
+  # dotnet run -f netcoreapp1.0 -- PROJECT_ID
   test-python-system:
     environment:
       <<: *anchor_auth_vars
@@ -249,24 +271,30 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-      - verify-java-generation:
+#      - verify-java-generation:
+#          requires:
+#            - generate-clients
+#      - verify-python-generation:
+#          requires:
+#            - generate-clients
+#      - verify-ruby-generation:
+#          requires:
+#            - generate-clients
+      - verify-csharp-generation:
           requires:
             - generate-clients
-      - verify-python-generation:
+#      - test-java:
+#          requires:
+#            - verify-java-generation
+#      - test-python:
+#          requires:
+#            - verify-python-generation
+#      - test-ruby:
+#          requires:
+#            - verify-ruby-generation
+      - test-csharp:
           requires:
-            - generate-clients
-      - verify-ruby-generation:
-          requires:
-            - generate-clients
-      - test-java:
-          requires:
-            - verify-java-generation
-      - test-python:
-          requires:
-            - verify-python-generation
-      - test-ruby:
-          requires:
-            - verify-ruby-generation
+            - verify-csharp-generation
       - test-python-system:
           requires:
             - verify-python-generation
@@ -279,6 +307,7 @@ workflows:
           filters:
             branches:
               only: master
+      # TODO: schedule C# smoke tests job
 
 machine:
   services:
