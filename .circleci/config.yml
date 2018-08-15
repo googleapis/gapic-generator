@@ -58,24 +58,18 @@ anchor_test_python: &anchor_test_python
         at: workspace
     - run:
         <<: *anchor_run_decrypt
-    - run:
-        name: Save nox command
-        command: |
-          # Set NOX_COMMANDS for each job that uses this config.
-          nox_tests () { eval "$NOX_COMMANDS"; }
-          echo 'export -f nox_tests' >> $BASH_ENV
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
         name: Run nox on pubsub
         command: |
           cd workspace/gapic-generator/artman-genfiles/python/pubsub-v1
-          nox_tests
+          eval "$NOX_COMMANDS"
         when: always
     - run:
         name: Run nox on speech
         command: |
           cd workspace/gapic-generator/artman-genfiles/python/speech-v1
-          nox_tests
+          eval "$NOX_COMMANDS"
         when: always
 
 anchor_ruby_bundle: &anchor_ruby_bundle
