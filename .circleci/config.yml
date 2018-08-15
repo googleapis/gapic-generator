@@ -176,11 +176,9 @@ jobs:
     environment:
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
     docker:
-      # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
       - image: circleci/php:7.0-apache-node-browsers
     steps:
       - attach_workspace:
-          # Use the workspace created in generate-clients
           at: workspace
       - run:
           name: Prepare to test Pubsub
