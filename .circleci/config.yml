@@ -45,9 +45,15 @@ anchor_check_generation: &anchor_check_generation
 # Test a Ruby client if generation succeeded.
 anchor_test_python_client: &anchor_test_python_client
   command: |
+    if [ -z $NOX_COMMANDS]
+    then
+      echo "NOX_COMMANDS was not configured. Check CircleCI config."
+      exit 1
+    fi
     if [ -e ${PYTHON_GEN_DIR}/${TEST_API} ]
     then
       cd ${PYTHON_GEN_DIR}/${TEST_API}
+      echo "Running test commands: $NOX_COMMANDS"
       eval "$NOX_COMMANDS"
     else
       echo "Python ${TEST_API} library was not generated."
