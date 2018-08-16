@@ -241,8 +241,12 @@ public class InitCodeTransformer {
     // Remove things already initialized by the args
     orderedItems.removeAll(argDefaults);
 
-    return buildInitCodeView(
-        context, orderedItems, ImmutableList.copyOf(root.getChildren().values()), argDefaults);
+    // NOTE(pongad): To the best of my understanding, this variable is used by dynamic languages to
+    // determine the arguments to be passed to the function. We should not remove argDefaults from
+    // them, otherwise the sample would call the function with a wrong number of args.
+    List<InitCodeNode> argItems = ImmutableList.copyOf(root.getChildren().values());
+
+    return buildInitCodeView(context, orderedItems, argItems, argDefaults);
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
@@ -262,6 +266,17 @@ public class InitCodeTransformer {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Transform {@code InitCodeNode}s into {@code InitCodeView}.
+   *
+   * @param orderedItems These nodes are converted into request-initialization code. The
+   *     initialization is "shallow": children nodes are not initialized. If children nodes should
+   *     also be initialized, callers must also include them in the list.
+   * @param argItems Used by samples for flattened methods. These nodes contain values that become
+   *     arguments to the method.
+   * @param argDefaults Used by standalone samples, where the sample themselves are enclosed within
+   *     a function. These nodes contain values that are passed into function parameters.
+   */
   private InitCodeView buildInitCodeView(
       MethodContext context,
       List<InitCodeNode> orderedItems,
