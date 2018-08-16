@@ -34,24 +34,24 @@ unrelated line
 
 	for _, exp := range []checkConfig{
 		{
-			id:   "set1",
-			lang: "java",
-			form: "foo",
+			valueSet: "set1",
+			lang:     "java",
+			form:     "foo",
 		},
 		{
-			id:   "set1",
-			lang: "java",
-			form: "bar",
+			valueSet: "set1",
+			lang:     "java",
+			form:     "bar",
 		},
 		{
-			id:   "set2",
-			lang: "go",
-			form: "zip",
+			valueSet: "set2",
+			lang:     "go",
+			form:     "zip",
 		},
 		{
-			id:   "set2",
-			lang: "go",
-			form: "zap",
+			valueSet: "set2",
+			lang:     "go",
+			form:     "zap",
 		},
 	} {
 		if !checks[exp] {
@@ -109,50 +109,50 @@ func TestDeleteFoundForms(t *testing.T) {
 	}{
 		{
 			conf: checkConfig{
-				id:   "set1",
-				form: "form1",
-				lang: lang,
+				valueSet: "set1",
+				form:     "form1",
+				lang:     lang,
 			},
 			expectMatch: true,
 		},
 		{
 			conf: checkConfig{
-				id:   "badset",
-				form: "badform",
-				lang: lang,
+				valueSet: "badset",
+				form:     "badform",
+				lang:     lang,
 			},
 			expectMatch: false,
 		},
 		{
 			conf: checkConfig{
-				id:   "form2",
-				form: "set2",
-				lang: lang,
+				valueSet: "form2",
+				form:     "set2",
+				lang:     lang,
 			},
 			expectMatch: false,
 		},
 
 		{
 			conf: checkConfig{
-				id:   "set10",
-				form: "form10",
-				lang: lang,
+				valueSet: "set10",
+				form:     "form10",
+				lang:     lang,
 			},
 			expectMatch: true,
 		},
 		{
 			conf: checkConfig{
-				id:   "badset10",
-				form: "badform10",
-				lang: lang,
+				valueSet: "badset10",
+				form:     "badform10",
+				lang:     lang,
 			},
 			expectMatch: false,
 		},
 		{
 			conf: checkConfig{
-				id:   "form20",
-				form: "set20",
-				lang: lang,
+				valueSet: "form20",
+				form:     "set20",
+				lang:     lang,
 			},
 			expectMatch: false,
 		},
