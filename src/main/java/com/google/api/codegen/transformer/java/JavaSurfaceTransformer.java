@@ -24,7 +24,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -69,7 +68,6 @@ import java.util.List;
 /** A transformer to transform an ApiModel into the standard GAPIC surface in Java. */
 public class JavaSurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageMetadataConfig;
 
   // TODO: Figure out a way to simplify the transformers in a way that reduces duplication and makes
   // it easy to follow the code.
@@ -100,12 +98,10 @@ public class JavaSurfaceTransformer {
 
   public JavaSurfaceTransformer(
       GapicCodePathMapper pathMapper,
-      PackageMetadataConfig packageMetadataConfig,
       SurfaceTransformer surfaceTransformer,
       String rpcStubSnippetFileName,
       String callableFactoryTemplateFilename) {
     this.pathMapper = Preconditions.checkNotNull(pathMapper);
-    this.packageMetadataConfig = Preconditions.checkNotNull(packageMetadataConfig);
     this.surfaceTransformer = Preconditions.checkNotNull(surfaceTransformer);
     this.rpcStubTemplateFilename = Preconditions.checkNotNull(rpcStubSnippetFileName);
     this.callableFactoryTemplateFilename =
@@ -197,8 +193,7 @@ public class JavaSurfaceTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod, productConfig));
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    xapiClass.releaseLevelAnnotation(
-        namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
+    xapiClass.releaseLevelAnnotation(namer.getReleaseAnnotation(productConfig.getReleaseLevel()));
     xapiClass.name(name);
     xapiClass.settingsClassName(namer.getApiSettingsClassName(interfaceConfig));
     xapiClass.stubInterfaceName(
@@ -214,14 +209,12 @@ public class JavaSurfaceTransformer {
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
-    xapiClass.pagedResponseViews(
-        generatePagedResponseWrappers(
-            context, productConfig, packageMetadataConfig.releaseLevel()));
+    xapiClass.pagedResponseViews(generatePagedResponseWrappers(context));
     return xapiClass.build();
   }
 
   private List<StaticLangPagedResponseView> generatePagedResponseWrappers(
-      InterfaceContext context, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+      InterfaceContext context) {
     addPagedResponseWrapperImports(context.getImportTypeTable());
 
     ImmutableList.Builder<StaticLangPagedResponseView> pagedResponseWrappersList =
@@ -432,7 +425,7 @@ public class JavaSurfaceTransformer {
 
     StaticLangStubSettingsView.Builder xsettingsClass = StaticLangStubSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
-        context.getNamer().getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
+        context.getNamer().getReleaseAnnotation(productConfig.getReleaseLevel()));
     xsettingsClass.doc(
         generateSettingsDoc(
             context,
@@ -530,7 +523,7 @@ public class JavaSurfaceTransformer {
 
     String name = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
     stubInterface.releaseLevelAnnotation(
-        context.getNamer().getReleaseAnnotation(packageMetadataConfig.releaseLevel()));
+        context.getNamer().getReleaseAnnotation(productConfig.getReleaseLevel()));
     stubInterface.name(name);
     stubInterface.callableMethods(filterIncludeCallableMethods(methods));
     stubInterface.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());

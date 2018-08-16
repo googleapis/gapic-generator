@@ -1,4 +1,7 @@
 load("//:gapic_generator.bzl", "gapic_generator_tests")
+load("//:gapic_generator.bzl", "google_java_format_srcs")
+
+_SRCS = glob(["src/main/java/**/*.java"])
 
 _COMPILE_DEPS = [
     "@cglib_cglib//jar",
@@ -25,6 +28,8 @@ _COMPILE_DEPS = [
     "@org_threeten_threetenbp//jar",
     "@org_yaml_snakeyaml//jar",
 ]
+
+_TEST_SRCS = glob(["src/test/java/**/*.java"])
 
 _TEST_COMPILE_DEPS = [
     "@com_google_api_api_compiler_testing//jar",
@@ -69,7 +74,7 @@ java_proto_library(
 
 java_binary(
     name = "gapic_generator",
-    srcs = glob(["src/main/java/**/*.java"]),
+    srcs = _SRCS,
     create_executable = True,
     javacopts = _JAVA_COPTS,
     main_class = "com.google.api.codegen.GeneratorMain",
@@ -95,7 +100,7 @@ genrule(
 
 java_library(
     name = "gapic_generator_testlib",
-    srcs = glob(["src/test/java/**/*.java"]),
+    srcs = _TEST_SRCS,
     data = glob([
         "src/**/testdata/**/*",
         "src/**/testsrc/**/*",
@@ -130,4 +135,19 @@ gapic_generator_tests(
     size = "small",
     srcs = glob(["src/test/java/**/*Test.java"]),
     runtime_deps = [":gapic_generator_testlib"],
+)
+
+# google-java-format
+java_binary(
+    name = "google_java_format_binary",
+    main_class = "com.google.googlejavaformat.java.Main",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@google_java_format_all_deps//jar"],
+)
+
+# Run `bazel run //:google_java_format` to format gapic-generator sources
+google_java_format_srcs(
+    name = "google_java_format_srcs",
+    srcs = _SRCS + _TEST_SRCS,
+    formatter = "//:google_java_format_binary",
 )

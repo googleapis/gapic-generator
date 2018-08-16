@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -38,7 +37,6 @@ public class JavaGapicSurfaceTransformer
     implements ModelToViewTransformer<ProtoApiModel>, SurfaceTransformer {
 
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageMetadataConfig;
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -51,13 +49,8 @@ public class JavaGapicSurfaceTransformer
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
 
-  public JavaGapicSurfaceTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = Preconditions.checkNotNull(pathMapper);
-    this.packageMetadataConfig =
-        Preconditions.checkNotNull(
-            packageMetadataConfig,
-            "packageMetadataConfig is missing, but is required for JavaGapicSurfaceTransformer");
   }
 
   @Override
@@ -77,11 +70,7 @@ public class JavaGapicSurfaceTransformer
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper,
-            packageMetadataConfig,
-            this,
-            GRPC_STUB_TEMPLATE_FILENAME,
-            GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME);
+            pathMapper, this, GRPC_STUB_TEMPLATE_FILENAME, GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME);
     return commonSurfaceTransformer.transform(model, productConfig);
   }
 
