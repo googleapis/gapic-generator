@@ -67,7 +67,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
     for (String fileName : gapicConfigFileNames) {
       // TODO: fix non-final method (getTestDataLocator()) invocation in constructor.
-      // This does not allow to properly override getTestDataLocator() in subclasses of this
+      // This does not allow us to properly override getTestDataLocator() in subclasses of this
       // abstract class, while getTestDataLocator() was designed specifically for this purpose.
       this.gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
     }

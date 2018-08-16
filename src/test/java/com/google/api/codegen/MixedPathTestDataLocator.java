@@ -30,12 +30,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * A test data locator which first tries to find the specified resource on a file system, if the
+ * A test data locator which first tries to find the specified resource on a file system, and if the
  * file was not found this class fallbacks to the default ({@link ClassPathTestDataLocator})
  * implementation.
  *
- * <p>This behavior is useful for cases when some parts of test infrastructure expect actual file on
- * a disk (instead of classpath resource) and the resource is packaged inside a jar file (thus
+ * <p>This behavior is useful for cases when some parts of test infrastructure expect an actual file
+ * on a disk (instead of classpath resource) and the resource is packaged inside a jar file (thus
  * cannot be handled as a regular file). Specifically when a test is executed by gradle or IDE the
  * compiled code and its resources are not packaged in a jar file, thus a resource can be read as a
  * regular file. Unfortunately it does not work that well in bazel, which normally packages compiled
