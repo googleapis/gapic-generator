@@ -99,7 +99,7 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
-  test-java:
+  test-java-openjdk8:
     working_directory: /tmp/
     docker:
       - image: circleci/openjdk:8-jdk
@@ -145,7 +145,7 @@ jobs:
       - run:
           name: Run nox on speech
           <<: *anchor_test_python
-  test-ruby:
+  test-ruby-2.4:
     working_directory: /tmp/
     docker:
       - image: circleci/ruby:2.4-node
@@ -218,7 +218,7 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-      - test-java:
+      - test-java-openjdk8:
           requires:
             - generate-clients
       - test-python:
@@ -227,7 +227,7 @@ workflows:
       - test-php-7.0:
           requires:
             - generate-clients
-      - test-ruby:
+      - test-ruby-2.4:
           requires:
             - generate-clients
 
