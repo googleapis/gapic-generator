@@ -30,6 +30,7 @@ import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -219,7 +220,8 @@ public class SampleTransformer {
                         context,
                         fieldConfigs,
                         initCodeOutputType,
-                        valueSet.values().getParametersList()));
+                        valueSet.values().getParametersList(),
+                        valueSet.values().getSampleArgsList()));
         List<OutputSpec> outputs = valueSet.values().getOnSuccessList();
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
@@ -263,11 +265,13 @@ public class SampleTransformer {
       MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      List<String> sampleCodeInitFields) {
+      List<String> sampleCodeInitFields,
+      List<String> sampleArgs) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(sampleCodeInitFields)
+        .sampleArgStrings(ImmutableList.copyOf(sampleArgs))
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)
