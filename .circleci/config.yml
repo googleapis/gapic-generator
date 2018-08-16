@@ -171,12 +171,12 @@ jobs:
       - run:
           name: Test Logging.
           <<: *anchor_test_ruby
-  test-php-7.0:
+  test-php-7.2:
     working_directory: /tmp/
     environment:
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
     docker:
-      - image: circleci/php:7.0-apache-node-browsers
+      - image: circleci/php:7.2.0-cli-stretch
     steps:
       - attach_workspace:
           at: workspace
@@ -224,9 +224,10 @@ workflows:
       - test-python:
           requires:
             - generate-clients
-      - test-php-7.0:
+      - test-php-7.2:
           requires:
             - generate-clients
+        # TODO: Other php versions
       - test-ruby-2.4:
           requires:
             - generate-clients
