@@ -211,7 +211,7 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 
 		// The expected lines look like this:
 		//   // calling form: "form"
-		//   ## valueSet "set" ("title")
+		//   // valueSet: "set" ("title")
 		// The comment character differs between languages.
 		// Some langs also have colons and others don't. Instead of mandating
 		// exact format, just be a little resilient.
@@ -222,8 +222,9 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		})
 		var set *string
 		const (
-			formPrefix = "calling form"
-			setPrefix  = "valueSet"
+			formPrefix     = "calling form"
+			setPrefix      = "valueSet"
+			combinedPrefix = "[ DO NOT EDIT: generated sample file (\""
 		)
 		switch {
 		case strings.HasPrefix(line, formPrefix):
@@ -232,6 +233,28 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		case strings.HasPrefix(line, setPrefix):
 			set = &foundForm.id
 			line = line[len(setPrefix):]
+		case strings.HasPrefix(line, combinedPrefix):
+			workString := line[len(combinedPrefix):]
+			quoteIndex := strings.IndexRune(workString, '"')
+			if quoteIndex < 0 {
+				return fmt.Errorf("could not find end quote for calling form")
+			}
+			foundForm.form = workString[:quoteIndex]
+			workString = workString[quoteIndex+1:]
+
+			quoteIndex = strings.IndexRune(workString, '"')
+			if quoteIndex < 0 {
+				return fmt.Errorf("could not find start quote for value set")
+			}
+			workString = workString[quoteIndex+1:]
+
+			quoteIndex = strings.IndexRune(workString, '"')
+			if quoteIndex < 0 {
+				return fmt.Errorf("could not find end quote for value set")
+			}
+			foundForm.id = workString[:quoteIndex]
+
+			continue
 		default:
 			continue
 		}
