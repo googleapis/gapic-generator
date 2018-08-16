@@ -24,7 +24,6 @@ anchor_check_generation: &anchor_check_generation
   command: |
     # Generation for a language passed if there exists a [language].log
     # which was outputted by generate_clients.py upon success.
-    # LANGUAGE must be set in BASH_ENV in a prior command.
     if [ -e ${ARTMAN_REPORTS_DIR}/${LANGUAGE}.log ]
     then
         exit 0
@@ -47,6 +46,16 @@ anchor_verify_generation: &anchor_verify_generation
     - run:
         name: Check if language generation had succeeded.
         <<: *anchor_check_generation
+
+anchor_test_csharp_client: &anchor_test_csharp_client
+  command: |
+    cd ${CHARP_GEN_DIR}/${TEST_API}
+    dotnet new sln
+    dotnet new classlib
+    dotnet sln add google-cloud-logging.csproj
+    dotnet restore
+    dotnet build
+    dotnet test --no-build Build.Tests
 
 anchor_test_python: &anchor_test_python
   working_directory: /tmp/
@@ -229,12 +238,32 @@ jobs:
     working_directory: /tmp/
     docker:
       - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
+    environment:
+      CSHARP_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/csharp
     steps:
       - attach_workspace:
           at: workspace
-      - run: dotnet restore
-      - run: dotnet build
-      - run: dotnet test --no-build Build.Tests
+      - run:
+          name: Prepare for C# Pubsub testing.
+          command: |
+            echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+      - run:
+          name: Test Pubsub.
+          <<: *anchor_test_csharp_client
+      - run:
+          name: Prepare for C# Logging testing.
+          command: |
+            echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+      - run:
+          name: Test Logging.
+          <<: *anchor_test_csharp_client
+      - run:
+          name: Prepare for C# Speech testing.
+          command: |
+            echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+      - run:
+          name: Test Speech.
+          <<: *anchor_test_csharp_client
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
