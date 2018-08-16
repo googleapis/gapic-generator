@@ -242,14 +242,12 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 			foundForm.form = workString[:quoteIndex]
 			workString = workString[quoteIndex+1:]
 
-			quoteIndex = strings.IndexRune(workString, '"')
-			if quoteIndex < 0 {
+			if quoteIndex = strings.IndexRune(workString, '"'); quoteIndex < 0 {
 				return fmt.Errorf("could not find start quote for value set")
 			}
 			workString = workString[quoteIndex+1:]
 
-			quoteIndex = strings.IndexRune(workString, '"')
-			if quoteIndex < 0 {
+			if quoteIndex = strings.IndexRune(workString, '"'); quoteIndex < 0 {
 				return fmt.Errorf("could not find end quote for value set")
 			}
 			foundForm.valueSet = workString[:quoteIndex]
