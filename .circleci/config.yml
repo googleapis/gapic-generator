@@ -60,10 +60,6 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
   docker:
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     - image: googleapis/nox:0.17.0
-  environment:
-    LANGUAGE: python
-    <<: *anchor_artman_vars
-    PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
   steps:
     - attach_workspace:
         at: workspace
@@ -234,6 +230,9 @@ jobs:
           path: /tmp/workspace/reports
   verify-and-test-python:
     environment:
+      LANGUAGE: python
+      <<: *anchor_artman_vars
+      PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
       NOX_COMMANDS: "
         nox --session \"unit(py='2.7')\";
         nox --session \"unit(py='3.5')\";
@@ -242,6 +241,9 @@ jobs:
   verify-and-test-python-system:
     environment:
       <<: *anchor_auth_vars
+      LANGUAGE: python
+      <<: *anchor_artman_vars
+      PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
       NOX_COMMANDS: "
         nox --session \"unit(py='2.7')\";
         nox --session \"unit(py='3.5')\";
