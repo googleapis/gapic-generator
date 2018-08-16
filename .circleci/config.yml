@@ -24,17 +24,10 @@ anchor_test_php: &anchor_test_php
     # or this API client doesn't require credentials.
     if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
     then
-      cd workspace
-      git clone \
-          https://github.com/GoogleCloudPlatform/google-cloud-php-${TEST_API}.git
-      cd google-cloud-php-${TEST_API}
-      cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/src \
-          google-cloud-php-pubsub
-      cp -r ${PHP_CLIENTS_DIR}/google-cloud-pubsub-*/tests \
-          google-cloud-php-pubsub
+      cd ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API}
       composer install
       composer update
-      vendor/bin/phpunit
+      vendor/bin/phpunit tests
     fi
   when: always
 
