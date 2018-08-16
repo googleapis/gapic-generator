@@ -22,12 +22,14 @@ anchor_test_php: &anchor_test_php
   command: |
     # Only run PHP API test if we have project credentials key
     # or this API client doesn't require credentials.
+    # We can remove this if-check when https://github.com/googleapis/gapic-generator/issues/2235
+    # is resolved and unblocks PHP unit tests without credentials.
     if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
     then
       cd ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API}
       composer install
       composer update
-      vendor/bin/phpunit tests
+      vendor/bin/phpunit ${TESTS_DIR}
     fi
   when: always
 
@@ -168,6 +170,7 @@ jobs:
     working_directory: /tmp/
     environment:
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
+      TESTS_DIR: tests/Unit # Only run unit tests here.
     docker:
       - image: circleci/php:7.2.0-cli-stretch
     steps:
@@ -220,6 +223,7 @@ workflows:
       - test-php-7.2:
           requires:
             - generate-clients
+        # TODO: php smoke tests, once credentials are set up
         # TODO: Other php versions
       - test-ruby-2.4:
           requires:
