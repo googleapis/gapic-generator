@@ -70,7 +70,6 @@ import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.py.PythonRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -269,7 +268,7 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
         CodeGenerator clientConfigGenerator =
-            LegacyGapicGenerator.<Interface>newBuilder()
+            LegacyGapicGenerator.newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -331,7 +330,7 @@ public class GapicGeneratorFactory {
         GapicCodePathMapper phpClientConfigPathMapper =
             PhpGapicCodePathMapper.newBuilder().setPrefix("src").setSuffix("resources").build();
         CodeGenerator clientConfigGenerator =
-            LegacyGapicGenerator.<Interface>newBuilder()
+            LegacyGapicGenerator.newBuilder()
                 .setModel(model)
                 .setContext(new PhpClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -393,7 +392,7 @@ public class GapicGeneratorFactory {
                     new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
                 .build();
         CodeGenerator clientConfigGenerator =
-            LegacyGapicGenerator.<Interface>newBuilder()
+            LegacyGapicGenerator.newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
@@ -448,7 +447,7 @@ public class GapicGeneratorFactory {
                     new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
         CodeGenerator clientConfigGenerator =
-            LegacyGapicGenerator.<Interface>newBuilder()
+            LegacyGapicGenerator.newBuilder()
                 .setModel(model)
                 .setContext(new ClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
