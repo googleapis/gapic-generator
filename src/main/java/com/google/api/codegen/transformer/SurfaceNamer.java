@@ -733,11 +733,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
 
-  /** The name of the variable to hold the grpc client of an API interface. */
-  public String getGrpcClientVariableName(InterfaceModel apiInterface) {
-    return localVarName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
-  }
-
   /** The name of the field. */
   public String getFieldName(FieldModel field) {
     return publicFieldName(field.getNameAsParameterName());
@@ -989,14 +984,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
-  /**
-   * In languages with pointers, strip the pointer, leaving only the base type. Eg, in C, "int*"
-   * would become "int".
-   */
-  public String valueType(String type) {
-    return getNotImplementedString("SurfaceNamer.valueType");
-  }
-
   /** The async return type name in a static language that is used by the caller */
   public String getStaticLangCallerAsyncReturnTypeName(MethodContext methodContext) {
     return getStaticLangAsyncReturnTypeName(methodContext);
@@ -1109,12 +1096,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeFactoryName(
-      ImportTypeTable typeTable, FieldConfig fieldConfig) {
-    return getNotImplementedString("SurfaceNamer.getAndSaveResourceTypeFactoryName");
-  }
-
-  /** The class name of the generated resource type from the entity name. */
   public String getAndSaveElementResourceTypeName(
       ImportTypeTable typeTable, FieldConfig fieldConfig) {
     ResourceNameConfig resourceNameConfig = fieldConfig.getResourceNameConfig();
@@ -1140,10 +1121,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
-  }
-
-  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
-    return getNotImplementedString("SurfaceNamer.getCreateCallableFunctionName");
   }
 
   /** Return the type name used to discriminate oneof variants. */
@@ -1262,11 +1239,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return keyName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
   }
 
-  /** The formatted name of a page streaming page size field. */
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    return keyName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
-  }
-
   /** The formatted field name of a page streaming response token. */
   public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
     return keyName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
@@ -1318,11 +1290,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The public access modifier for the current language. */
-  public String getPublicAccessModifier() {
-    return "public";
-  }
-
   /** The private access modifier for the current language. */
   public String getPrivateAccessModifier() {
     return "private";
@@ -1348,11 +1315,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 
-  /** The string of the package path */
-  public String getPackagePath() {
-    return getNotImplementedString("SurfaceNamer.getPackagePath");
-  }
-
   ///////////////////////////////////////// Imports ///////////////////////////////////////////////
 
   /** Returns true if the request object param type for the given field should be imported. */
@@ -1373,11 +1335,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getProtoFileImportName(String filename) {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportName");
-  }
-
-  /** The name of the import for a specific grpcClient */
-  public String getGrpcClientImportName(InterfaceModel apiInterface) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
   }
 
   public String getGrpcTransportImportName(InterfaceConfig interfaceConfig) {

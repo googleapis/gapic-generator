@@ -203,7 +203,6 @@ public class ApiCallableTransformer {
     apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
-    apiCallableBuilder.methodDescriptorName(namer.getMethodDescriptorName(method));
     apiCallableBuilder.transportSettingsVar(namer.getTransportSettingsVar(method));
     apiCallableBuilder.httpMethod(generateHttpFields(context));
   }

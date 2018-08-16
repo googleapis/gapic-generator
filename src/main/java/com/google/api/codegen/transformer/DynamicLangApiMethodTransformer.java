@@ -163,8 +163,6 @@ public class DynamicLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
 
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    apiMethod.fullyQualifiedApiClassName(
-        namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.topLevelAliasedApiClassName(
         namer.getTopLevelAliasedApiClassName(
             (context.getInterfaceConfig()), packageHasMultipleServices));
@@ -204,7 +202,6 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.optionalRequestObjectParamsNoPageToken(optionalParamsNoPageToken);
     apiMethod.hasRequestParameters(
         !requiredParams.isEmpty() || !optionalParamsNoPageToken.isEmpty());
-    apiMethod.hasRequiredParameters(!requiredParams.isEmpty());
 
     GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
     apiMethod.grpcStreamingType(grpcStreamingType);
@@ -213,8 +210,6 @@ public class DynamicLangApiMethodTransformer {
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
 
     apiMethod.packageName(namer.getPackageName());
-    apiMethod.packageHasMultipleServices(packageHasMultipleServices);
-    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()));
     apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
 
     apiMethod.oneofParams(context.getMethodConfig().getOneofNames(namer));

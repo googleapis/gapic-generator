@@ -145,7 +145,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
         .apiClassName(namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()))
         .name(testClassName)
         .testCases(createUnitTestCaseViews(context, packageHasMultipleServices))
-        .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
         .missingDefaultServiceAddress(!context.getInterfaceConfig().hasDefaultServiceAddress())
         .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
         .mockCredentialsClassName(namer.getMockCredentialsClassName(context.getInterface()))

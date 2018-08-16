@@ -251,7 +251,6 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
-    testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
 
     testClass.mockServices(
         mockServiceTransformer.createMockServices(
