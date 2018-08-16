@@ -247,7 +247,9 @@ interfaces:
       parameters:
       - shelf.name=Math
       - series_uuid.series_string=xyz3141592654
-      output_specs:
+      sample_args:
+      - shelf.name
+      on_success:
       - loop:
           variable: title
           collection: $resp.book_names
@@ -553,8 +555,14 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
       standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Python only
+      - calling_forms: request_streaming_server
+        value_sets: prog
+        region_tag: lovelace
+      # Java only
+      - calling_forms: callable_streaming_server
+        value_sets: "prog"
+        region_tag: babbage
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
@@ -582,6 +590,7 @@ interfaces:
       standalone:
       - calling_forms: ".*"
         value_sets: ".*"
+        region_tag: "turing_%v_%c"
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
@@ -648,7 +657,7 @@ interfaces:
       parameters:
       - names[0]=Odyssey
       - shelves[0]=Classics
-      output_specs:
+      on_success:
         - define: book = $resp
         - print:
           - 'Here''s a related book: %s'
@@ -741,6 +750,7 @@ interfaces:
       standalone:
       - calling_forms: ".*"
         value_sets: ".*"
+        region_tag: hopper
   - name: GetBigNothing
     flattening:
       groups:

@@ -23,7 +23,6 @@ import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
-import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +72,7 @@ public class BatchingTransformer {
     BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
     batchingConfigView.elementCountThreshold(batchingConfig.getElementCountThreshold());
-    batchingConfigView.elementCountLimit(batchingConfig.getElementCountLimit());
     batchingConfigView.requestByteThreshold(batchingConfig.getRequestByteThreshold());
-    batchingConfigView.requestByteLimit(batchingConfig.getRequestByteLimit());
     batchingConfigView.delayThresholdMillis(batchingConfig.getDelayThresholdMillis());
     batchingConfigView.flowControlElementLimit(batchingConfig.getFlowControlElementLimit());
     batchingConfigView.flowControlByteLimit(batchingConfig.getFlowControlByteLimit());
@@ -109,10 +106,8 @@ public class BatchingTransformer {
         method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     desc.responseTypeName(
         method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));
-    desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
     desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedField));
     desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedField));
@@ -139,20 +134,5 @@ public class BatchingTransformer {
       keys.add(key);
     }
     return keys;
-  }
-
-  private List<FieldCopyView> generateDiscriminatorFieldCopies(MethodContext context) {
-    List<FieldCopyView> fieldCopies = new ArrayList<>();
-    BatchingConfig batching = context.getMethodConfig().getBatching();
-    for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
-      FieldModel selectedType = fieldSelector.getLastField();
-      FieldCopyView fieldCopy =
-          FieldCopyView.newBuilder()
-              .fieldGetFunction(context.getNamer().getFieldGetFunctionName(selectedType))
-              .fieldSetFunction(context.getNamer().getFieldSetFunctionName(selectedType))
-              .build();
-      fieldCopies.add(fieldCopy);
-    }
-    return fieldCopies;
   }
 }

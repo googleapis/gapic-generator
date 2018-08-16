@@ -19,6 +19,7 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
+import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -27,6 +28,9 @@ import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -175,7 +179,7 @@ public class SampleTransformer {
     for (CallingForm form : callingForms) {
       MethodConfig methodConfig = context.getMethodConfig();
 
-      List<SampleValueSet> matchingValueSets =
+      List<ValueSetAndTags> matchingValueSets =
           methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
 
       // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
@@ -195,46 +199,79 @@ public class SampleTransformer {
       if (id != null) {
         matchingValueSets =
             Collections.singletonList(
-                SampleValueSet.newBuilder()
-                    .addAllParameters(methodConfig.getSampleCodeInitFields())
-                    .setId(id)
-                    .setDescription("value set imported from sample_code_init_fields")
-                    .setTitle("Sample Values")
+                ValueSetAndTags.newBuilder()
+                    .values(
+                        SampleValueSet.newBuilder()
+                            .addAllParameters(methodConfig.getSampleCodeInitFields())
+                            .setId(id)
+                            .setDescription("value set imported from sample_code_init_fields")
+                            .setTitle("Sample Values")
+                            .build())
+                    .regionTag("")
                     .build());
       }
 
-      for (SampleValueSet valueSet : matchingValueSets) {
+      for (ValueSetAndTags valueSet : matchingValueSets) {
         InitCodeView initCodeView =
             sampleGenerator.generate(
                 initContext != null
                     ? initContext
                     : createInitCodeContext(
-                        context, fieldConfigs, initCodeOutputType, valueSet.getParametersList()));
-        List<OutputSpec> outputs = valueSet.getOutputSpecsList();
+                        context,
+                        fieldConfigs,
+                        initCodeOutputType,
+                        valueSet.values().getParametersList(),
+                        valueSet.values().getSampleArgsList()));
+        List<OutputSpec> outputs = valueSet.values().getOnSuccessList();
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
+
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
-                .valueSet(SampleValueSetView.of(valueSet))
+                .valueSet(SampleValueSetView.of(valueSet.values()))
                 .initCode(initCodeView)
-                .outputs(OutputTransformer.toViews(outputs, context, valueSet))
+                .outputs(OutputTransformer.toViews(outputs, context, valueSet.values()))
+                .regionTag(
+                    regionTagFromSpec(
+                        valueSet.regionTag(),
+                        context.getMethodModel().getSimpleName(),
+                        form,
+                        valueSet.values().getId()))
                 .build());
       }
     }
     return methodSampleViews;
   }
 
+  /**
+   * Creates a region tag from the spec, replacing any {@code %m}, {@code %c}, and {@code %v}
+   * placeholders with the method name, calling form name, and value set id, respectively.
+   */
+  private static String regionTagFromSpec(
+      String spec, String methodName, CallingForm callingForm, String valueSetId) {
+    final String DEFAULT_REGION_SPEC = "sample";
+
+    if (Strings.isNullOrEmpty(spec)) {
+      spec = DEFAULT_REGION_SPEC;
+    }
+    return spec.replace("%m", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodName))
+        .replace("%c", callingForm.toLowerCamel())
+        .replace("%v", valueSetId);
+  }
+
   private InitCodeContext createInitCodeContext(
       MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      List<String> sampleCodeInitFields) {
+      List<String> sampleCodeInitFields,
+      List<String> sampleArgs) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(sampleCodeInitFields)
+        .sampleArgStrings(ImmutableList.copyOf(sampleArgs))
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)

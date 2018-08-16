@@ -126,7 +126,6 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
     testClass.apiVariableName("client");
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
-    testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     testClass.mockServices(
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getApiModel(), context.getProductConfig()));

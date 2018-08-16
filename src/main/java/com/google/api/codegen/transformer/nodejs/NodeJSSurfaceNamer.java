@@ -36,7 +36,6 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
@@ -114,16 +113,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleClassName(String methodName, String callingForm, String values) {
-    return publicClassName(
-        Name.anyLower(
-            Name.anyLower(methodName).toLowerUnderscore(),
-            "sample",
-            Name.anyCamel(callingForm).toLowerUnderscore(),
-            Name.anyLower(values).toLowerUnderscore()));
-  }
-
-  @Override
   public String getApiSampleFileName(String className) {
     return Name.anyCamel(className).toLowerUnderscore() + ".js";
   }
@@ -191,11 +180,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     return getModelTypeFormatter().getFullNameFor(apiInterface);
-  }
-
-  @Override
-  public String getGrpcClientImportName(InterfaceModel apiInterface) {
-    return "grpc-" + NamePath.dotted(apiInterface.getFileFullName()).toDashed();
   }
 
   @Override

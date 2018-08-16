@@ -10,31 +10,33 @@
   @# To run with the published packaged, execute the following before running this code:
   @#   pip install {@sampleFile.gapicPackageName}
 
-  @# [START full_sample]
-
-  @# FIXME: Insert here boilerplate code not directly related to the method call itself.
-
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
-      @##     calling form "{@sample.callingForm.toString}"
-      @##     valueSet "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
-      @##       description: "{@sample.valueSet.description}"
+      @# [START {@sample.regionTag}]
+
+      @# FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+      @##     calling form: "{@sample.callingForm.toString}"
+      @##       region tag: "{@sample.regionTag}"
+      @##        className: "{@sampleFile.className}"
+      @##         valueSet: "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
+      @##      description: "{@sample.valueSet.description}"
       @##       {@sample.valueSet.parameters}
       @##     apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
 
-      @# [START core_sample]
+      @# [END {@sample.regionTag}_core]
 
       @# FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
       {@standaloneSample(apiMethod, sample)}
 
-      @# [END core_sample]
+      @# [END {@sample.regionTag}_core]
 
       @# FIXME: Insert here clean-up code.
 
+      @# [END {@sample.regionTag}]
     @end
   @end
-  @# [END full_sample]
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall.
@@ -72,8 +74,14 @@
 
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
+  @if sample.initCode.argDefaultLines
+    @# FIXME(pongad): These lines should be commented. The top-level vars are declared by function param.
+    {@initCode(sample.initCode.argDefaultLines)}
+    @# FIXME(pongad): ARGS ENDS
+
+  @end
   @if sample.initCode.lines
-    {@initCode(sample.initCode)}
+    {@initCode(sample.initCode.lines)}
 
   @end
 @end

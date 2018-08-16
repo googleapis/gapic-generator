@@ -49,7 +49,7 @@ sourceCompatibility = 1.8
 group = 'com.google.api'
 project.version = file('version.txt').text.trim()
 
-def protoVersion = '3.4.0'
+def protoVersion = '3.6.0'
 
 // Dependencies
 // ------------
@@ -67,7 +67,7 @@ ext {
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
     gson: 'com.google.code.gson:gson:2.3',
-    guava: 'com.google.guava:guava:25.0-jre',
+    guava: 'com.google.guava:guava:26.0-jre',
     jacksonAnnotations: 'com.fasterxml.jackson.core:jackson-annotations:2.9.0',
     jacksonCore: 'com.fasterxml.jackson.core:jackson-core:2.9.0',
     jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
@@ -78,8 +78,9 @@ ext {
     // Testing
     junit: 'junit:junit:4.12',
     mockito: 'org.mockito:mockito-core:2.+',
-    truth: 'com.google.truth:truth:0.40',
-    toolsFxTesting: 'com.google.api:api-compiler:0.0.6:testing',
+    truth: 'com.google.truth:truth:0.42',
+    truth8: 'com.google.truth.extensions:truth-java8-extension:0.42',
+    toolsFxTesting: 'com.google.api:api-compiler:0.0.7:testing',
     junitParams: 'pl.pragmatists:JUnitParams:1.1.1',
 
     // Protobuf
@@ -117,6 +118,7 @@ dependencies {
 
   testCompile libraries.junit,
     libraries.truth,
+    libraries.truth8,
     libraries.toolsFxTesting,
     libraries.mockito,
     libraries.commonProtos,
@@ -439,6 +441,8 @@ tasks.googleJavaFormat {
   exclude 'benchmark/**'
   exclude 'modules/googleapis/third_party'
   exclude 'bazel-*'
+  exclude 'tmp/**'
+  exclude 'artman-genfiles/**'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
@@ -447,5 +451,7 @@ tasks.verifyGoogleJavaFormat {
   exclude 'benchmark/**'
   exclude 'modules/googleapis/third_party'
   exclude 'bazel-*'
+  exclude 'tmp/**'
+  exclude 'artman-genfiles/**'
 }
 test.dependsOn verifyGoogleJavaFormat

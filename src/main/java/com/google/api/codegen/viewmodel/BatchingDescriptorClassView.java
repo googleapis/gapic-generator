@@ -27,14 +27,10 @@ public abstract class BatchingDescriptorClassView {
 
   public abstract String responseTypeName();
 
-  public abstract String batchedFieldTypeName();
-
   @Nullable
   public abstract String subresponseTypeName();
 
   public abstract List<BatchingPartitionKeyView> partitionKeys();
-
-  public abstract List<FieldCopyView> discriminatorFieldCopies();
 
   public abstract String batchedFieldGetFunction();
 
@@ -65,14 +61,9 @@ public abstract class BatchingDescriptorClassView {
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder batchedFieldTypeName(String val);
-
     public abstract Builder subresponseTypeName(String val);
 
     public abstract Builder partitionKeys(List<BatchingPartitionKeyView> val);
-
-    public abstract Builder discriminatorFieldCopies(
-        List<FieldCopyView> generateDiscriminatorFieldCopies);
 
     public abstract Builder batchedFieldGetFunction(String val);
 

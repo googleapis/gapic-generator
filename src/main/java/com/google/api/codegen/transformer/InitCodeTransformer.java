@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -55,9 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * InitCodeTransformer generates initialization code for a given method and then transforms it to a
@@ -99,9 +96,9 @@ public class InitCodeTransformer {
       MethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      return buildInitCodeViewFlattened(methodContext, rootNode);
+      return buildInitCodeViewFlattened(methodContext, initCodeContext, rootNode);
     } else {
-      return buildInitCodeViewRequestObject(methodContext, rootNode);
+      return buildInitCodeViewRequestObject(methodContext, initCodeContext, rootNode);
     }
   }
 
@@ -178,12 +175,7 @@ public class InitCodeTransformer {
       boolean isMap = fieldConfig.getField().isMap();
       boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
 
-      String enumTypeName = null;
       TypeModel fieldType = fieldItemTree.getType();
-      if (fieldType.isEnum() && !fieldType.isRepeated()) {
-        enumTypeName = methodContext.getTypeTable().getNicknameFor(fieldType);
-      }
-
       String messageTypeName = null;
       if (fieldType.isMessage()) {
         messageTypeName = methodContext.getTypeTable().getFullNameForMessageType(fieldType);
@@ -197,7 +189,6 @@ public class InitCodeTransformer {
               isMap,
               isArray,
               getterMethod,
-              enumTypeName,
               messageTypeName));
     }
     return assertViews;
@@ -229,7 +220,6 @@ public class InitCodeTransformer {
       boolean isMap,
       boolean isArray,
       String actual,
-      String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
@@ -238,27 +228,63 @@ public class InitCodeTransformer {
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
-        .enumTypeName(enumTypeName)
         .messageTypeName(messageTypeName)
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(MethodContext context, InitCodeNode root) {
-    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
+  private InitCodeView buildInitCodeViewFlattened(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> sampleFuncDefaults = initsampleFuncDefaults(initCodeContext, root);
     // Remove the request object for flattened method
-    orderedItems.remove(orderedItems.size() - 1);
-    return buildInitCodeView(context, orderedItems, argItems);
-  }
-
-  private InitCodeView buildInitCodeViewRequestObject(MethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = Lists.newArrayList(root);
-    return buildInitCodeView(context, orderedItems, argItems);
+    orderedItems.remove(orderedItems.size() - 1);
+    // Remove things already initialized by the args
+    orderedItems.removeAll(sampleFuncDefaults);
+
+    // NOTE(pongad): To the best of my understanding, this variable is used by dynamic languages to
+    // determine the arguments to be passed to the client lib method. We should not remove
+    // sampleFuncDefaults from them, otherwise the sample would call the function with a wrong
+    // number of args.
+    List<InitCodeNode> libArguments = ImmutableList.copyOf(root.getChildren().values());
+
+    return buildInitCodeView(context, orderedItems, libArguments, sampleFuncDefaults);
   }
 
+  private InitCodeView buildInitCodeViewRequestObject(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> sampleFuncDefaults = initsampleFuncDefaults(initCodeContext, root);
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
+    orderedItems.removeAll(sampleFuncDefaults);
+
+    return buildInitCodeView(context, orderedItems, ImmutableList.of(root), sampleFuncDefaults);
+  }
+
+  private List<InitCodeNode> initsampleFuncDefaults(
+      InitCodeContext initCodeContext, InitCodeNode root) {
+    return initCodeContext
+        .sampleArgStrings()
+        .stream()
+        .flatMap(sampleArg -> root.subTree(sampleArg).listInInitializationOrder().stream())
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Transform {@code InitCodeNode}s into {@code InitCodeView}.
+   *
+   * @param orderedItems These nodes are converted into request-initialization code. The
+   *     initialization is "shallow": children nodes are not initialized. If children nodes should
+   *     also be initialized, callers must also include them in the list.
+   * @param libArguments Used by samples for flattened client lib methods. These nodes contain
+   *     values that become arguments to the method.
+   * @param sampleFuncDefaults Used by standalone samples, where each client library method call is
+   *     contained within a function that's part of the sample. These nodes contain values that are
+   *     passed into function parameters. Like {@code orderedItems}, the init code is "shallow".
+   */
   private InitCodeView buildInitCodeView(
-      MethodContext context, Iterable<InitCodeNode> orderedItems, Iterable<InitCodeNode> argItems) {
+      MethodContext context,
+      List<InitCodeNode> orderedItems,
+      List<InitCodeNode> libArguments,
+      List<InitCodeNode> sampleFuncDefaults) {
     ImportTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -267,21 +293,20 @@ public class InitCodeTransformer {
     typeTable.getAndSaveNicknameFor(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
-    List<FieldSettingView> fieldSettings = getFieldSettings(context, argItems);
+    List<FieldSettingView> fieldSettings = getFieldSettings(context, libArguments);
     List<FieldSettingView> optionalFieldSettings =
         fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
+        .argDefaultLines(generateSurfaceInitCodeLines(context, sampleFuncDefaults))
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
-        .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
+        .topLevelLines(generateSurfaceInitCodeLines(context, libArguments))
         .fieldSettings(fieldSettings)
         .optionalFieldSettings(optionalFieldSettings)
         .requiredFieldSettings(requiredFieldSettings)
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
-        .versionIndexFileImportName(namer.getVersionIndexFileImportName())
         .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
-        .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }
 
@@ -350,7 +375,6 @@ public class InitCodeTransformer {
 
     String typeName = typeTable.getAndSaveNicknameFor(item.getType());
     surfaceLine.typeName(typeName);
-    surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 
@@ -583,8 +607,7 @@ public class InitCodeTransformer {
           context
               .getTypeTable()
               .renderValueAsString("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
-      if (initValueConfig.hasFormattingConfigInitialValues()
-          && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
+      if (initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
           case Variable:
@@ -677,12 +700,13 @@ public class InitCodeTransformer {
 
   /** Determines whether a field is required */
   private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
-    Set<String> requiredFieldSimpleNames =
-        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
-            .map(FieldModel::getSimpleName)
-            .collect(Collectors.toSet());
     return fieldConfig != null
-        && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName());
+        && context
+            .getMethodConfig()
+            .getRequiredFieldConfigs()
+            .stream()
+            .anyMatch(
+                fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {

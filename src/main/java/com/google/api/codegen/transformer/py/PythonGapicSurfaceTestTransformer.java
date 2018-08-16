@@ -124,7 +124,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                       Name.upperCamelKeepUpperAcronyms(
                           context.getInterfaceModel().getSimpleName())))
               .testCases(createTestCaseViews(context))
-              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .apiHasUnaryUnaryMethod(hasUnaryUnary(context.getInterfaceConfig()))
               .apiHasUnaryStreamingMethod(hasUnaryStreaming(context.getInterfaceConfig()))
               .apiHasStreamingUnaryMethod(hasStreamingUnary(context.getInterfaceConfig()))

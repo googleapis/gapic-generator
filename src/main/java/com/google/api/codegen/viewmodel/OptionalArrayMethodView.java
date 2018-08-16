@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -25,8 +26,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   public abstract ClientMethodType type();
 
   public abstract String apiClassName();
-
-  public abstract String fullyQualifiedApiClassName();
 
   public abstract String apiVariableName();
 
@@ -73,8 +72,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract boolean hasRequestParameters();
 
-  public abstract boolean hasRequiredParameters();
-
   public abstract boolean hasReturnValue();
 
   public abstract String stubName();
@@ -95,11 +92,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String localPackageName();
 
-  public abstract boolean packageHasMultipleServices();
-
-  /** The name of the service exported by the package. */
-  public abstract String packageServiceName();
-
   @Nullable
   public abstract String apiVersion();
 
@@ -111,7 +103,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return apiVersion() != null;
   }
 
-  public abstract Iterable<Iterable<String>> oneofParams();
+  public abstract ImmutableList<ImmutableList<String>> oneofParams();
 
   public abstract List<HeaderRequestParamView> headerRequestParams();
 
@@ -133,8 +125,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
-
-    public abstract Builder fullyQualifiedApiClassName(String val);
 
     public abstract Builder apiVariableName(String val);
 
@@ -171,8 +161,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder hasRequestParameters(boolean val);
 
-    public abstract Builder hasRequiredParameters(boolean val);
-
     public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder stubName(String val);
@@ -185,18 +173,13 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder packageName(String val);
 
-    public abstract Builder packageHasMultipleServices(boolean val);
-
-    /** The name of the service exported by the package. */
-    public abstract Builder packageServiceName(String val);
-
     public abstract Builder apiVersion(String val);
 
     public abstract Builder topLevelAliasedApiClassName(String val);
 
     public abstract Builder versionAliasedApiClassName(String val);
 
-    public abstract Builder oneofParams(Iterable<Iterable<String>> val);
+    public abstract Builder oneofParams(ImmutableList<ImmutableList<String>> val);
 
     public abstract Builder localPackageName(String val);
 

@@ -24,10 +24,9 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
-import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Objects;
 import org.junit.rules.TemporaryFolder;
 
 public class CodegenTestUtil {
@@ -49,18 +48,12 @@ public class CodegenTestUtil {
     MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (String gapicConfigFileName : gapicConfigFileNames) {
       URL gapicConfigUrl = testDataLocator.findTestData(gapicConfigFileName);
-      File gapicConfigFile = null;
-      try {
-        if (gapicConfigUrl == null) {
-          throw new IllegalArgumentException("File not found: " + gapicConfigFileName);
-        }
-        gapicConfigFile = new File(gapicConfigUrl.toURI());
-      } catch (URISyntaxException e) {
-        continue;
-      }
 
-      ConfigHelper helper = new ConfigHelper(diagCollector, gapicConfigFile.getName());
-      ConfigNode configNode = yamlReader.generateConfigNode(gapicConfigFile, helper);
+      String gapicConfigPath = Objects.requireNonNull(gapicConfigUrl).getPath();
+      String actualFileName = gapicConfigPath.substring(gapicConfigPath.lastIndexOf('/') + 1);
+
+      ConfigHelper helper = new ConfigHelper(diagCollector, actualFileName);
+      ConfigNode configNode = yamlReader.generateConfigNode(gapicConfigUrl, helper);
       if (configNode == null) {
         continue;
       }

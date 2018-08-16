@@ -21,8 +21,9 @@ import com.google.api.codegen.SampleConfiguration;
 import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.SampleSpec.SampleType;
-import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.CallingForm;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 
 public class SampleSpecTest {
@@ -75,7 +76,11 @@ public class SampleSpecTest {
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
     final List<SampleValueSet> matchingValues =
-        sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE);
+        sampleSpec
+            .getMatchingValueSets(CallingForm.Request, SampleType.STANDALONE)
+            .stream()
+            .map(vsat -> vsat.values())
+            .collect(Collectors.toList());
     assertThat(matchingValues).containsExactly(valueSetAlice, valueSetAlison).inOrder();
   }
 
@@ -101,8 +106,7 @@ public class SampleSpecTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    assertThat(
-            sampleSpec.getMatchingValueSets(ClientMethodType.CallableMethod, SampleType.STANDALONE))
-        .hasSize(2);
+    assertThat(sampleSpec.getMatchingValueSets(CallingForm.Request, SampleType.STANDALONE))
+        .hasSize(3);
   }
 }

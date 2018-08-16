@@ -24,22 +24,22 @@ public class ScannerTest {
     Scanner scanner = new Scanner("$abc =   def123 + 456 + \"xyz\";");
 
     assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-    assertThat(scanner.token()).isEqualTo("$abc");
+    assertThat(scanner.tokenStr()).isEqualTo("$abc");
 
     assertThat(scanner.scan()).isEqualTo('=');
 
     assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-    assertThat(scanner.token()).isEqualTo("def123");
+    assertThat(scanner.tokenStr()).isEqualTo("def123");
 
     assertThat(scanner.scan()).isEqualTo('+');
 
     assertThat(scanner.scan()).isEqualTo(Scanner.INT);
-    assertThat(scanner.token()).isEqualTo("456");
+    assertThat(scanner.tokenStr()).isEqualTo("456");
 
     assertThat(scanner.scan()).isEqualTo('+');
 
     assertThat(scanner.scan()).isEqualTo(Scanner.STRING);
-    assertThat(scanner.token()).isEqualTo("xyz");
+    assertThat(scanner.tokenStr()).isEqualTo("xyz");
 
     assertThat(scanner.scan()).isEqualTo(';');
 
@@ -54,10 +54,10 @@ public class ScannerTest {
       Scanner scanner = new Scanner("$a$b$");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-      assertThat(scanner.token()).isEqualTo("$a");
+      assertThat(scanner.tokenStr()).isEqualTo("$a");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-      assertThat(scanner.token()).isEqualTo("$b");
+      assertThat(scanner.tokenStr()).isEqualTo("$b");
 
       assertThrow(() -> scanner.scan());
     }
@@ -66,7 +66,7 @@ public class ScannerTest {
       Scanner scanner = new Scanner("a$$b");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-      assertThat(scanner.token()).isEqualTo("a");
+      assertThat(scanner.tokenStr()).isEqualTo("a");
 
       assertThrow(() -> scanner.scan());
     }
@@ -75,7 +75,7 @@ public class ScannerTest {
       Scanner scanner = new Scanner("a$");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
-      assertThat(scanner.token()).isEqualTo("a");
+      assertThat(scanner.tokenStr()).isEqualTo("a");
 
       assertThrow(() -> scanner.scan());
     }
@@ -87,10 +87,10 @@ public class ScannerTest {
       Scanner scanner = new Scanner("123 456");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.INT);
-      assertThat(scanner.token()).isEqualTo("123");
+      assertThat(scanner.tokenStr()).isEqualTo("123");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.INT);
-      assertThat(scanner.token()).isEqualTo("456");
+      assertThat(scanner.tokenStr()).isEqualTo("456");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
     }
@@ -103,7 +103,7 @@ public class ScannerTest {
       Scanner scanner = new Scanner("0");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.INT);
-      assertThat(scanner.token()).isEqualTo("0");
+      assertThat(scanner.tokenStr()).isEqualTo("0");
 
       assertThat(scanner.scan()).isEqualTo(Scanner.EOF);
     }

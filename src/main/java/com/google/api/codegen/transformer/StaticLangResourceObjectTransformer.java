@@ -17,10 +17,6 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.codegen.viewmodel.StaticLangMemberView;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /** Transforms request objects to ViewModels form. */
 public class StaticLangResourceObjectTransformer {
@@ -69,7 +65,6 @@ public class StaticLangResourceObjectTransformer {
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
-    String addCallName = namer.getFieldAddFunctionName(field);
     String getCallName = namer.getFieldGetFunctionName(field);
     String transformParamFunctionName = null;
     String formatMethodName = null;
@@ -97,7 +92,6 @@ public class StaticLangResourceObjectTransformer {
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
-    param.addCallName(addCallName);
     param.getCallName(getCallName);
     param.transformParamFunctionName(transformParamFunctionName);
     param.formatMethodName(formatMethodName);
@@ -108,17 +102,6 @@ public class StaticLangResourceObjectTransformer {
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
     }
-    List<StaticLangMemberView> fieldViews = new ArrayList<>();
-    for (FieldModel child : context.getMethodModel().getResourceNameInputFields()) {
-      StaticLangMemberView.Builder staticMember = StaticLangMemberView.newBuilder();
-      staticMember.fieldGetFunction(namer.getFieldGetFunctionName(child));
-      staticMember.fieldSetFunction(namer.getFieldSetFunctionName(child));
-      staticMember.name(child.getNameAsParameter());
-      staticMember.typeName(child.getTypeFullName());
-      fieldViews.add(staticMember.build());
-    }
-    Collections.sort(fieldViews);
-    param.fieldCopyMethods(fieldViews);
 
     return param.build();
   }

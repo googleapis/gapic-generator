@@ -43,9 +43,6 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract PackagingArtifactType artifactType();
 
   @Nullable
-  public abstract String gapicConfigName();
-
-  @Nullable
   public abstract String packageName();
 
   @Nullable
@@ -105,14 +102,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract VersionBound authVersionBound();
 
-  @Nullable
-  public abstract String serviceName();
-
   public abstract String fullName();
 
   public abstract String shortName();
-
-  public abstract String discoveryApiName();
 
   public abstract String protoPackageName();
 
@@ -186,9 +178,6 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String projectVariable();
 
   @Nullable
-  public abstract String keyfileVariable();
-
-  @Nullable
   public abstract String jsonKeyVariable();
 
   public abstract boolean publishProtos();
@@ -206,8 +195,6 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder packageName(String packageName);
 
     public abstract Builder identifier(String val);
-
-    public abstract Builder gapicConfigName(String val);
 
     public abstract Builder artifactType(PackagingArtifactType val);
 
@@ -233,16 +220,11 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder authVersionBound(VersionBound val);
 
-    public abstract Builder serviceName(String val);
-
     /** The full name of the API, including branding. E.g., "Stackdriver Logging". */
     public abstract Builder fullName(String val);
 
     /** A single-word short name of the API. E.g., "logging". */
     public abstract Builder shortName(String val);
-
-    /** The API name used for generating the URL for the Discovery doc and APIs Explorer link. */
-    public abstract Builder discoveryApiName(String val);
 
     /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
     public abstract Builder protoPackageName(String val);
@@ -329,12 +311,6 @@ public abstract class PackageMetadataView implements ViewModel {
      * credentials.
      */
     public abstract Builder projectVariable(String s);
-
-    /**
-     * Environment variable to determine the Google Cloud service account keyfile used to configure
-     * default credentials.
-     */
-    public abstract Builder keyfileVariable(String s);
 
     /**
      * Environment variable to determine the contents of the Google Cloud service account keyfile

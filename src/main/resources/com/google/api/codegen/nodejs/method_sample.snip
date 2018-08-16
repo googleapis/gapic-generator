@@ -66,7 +66,7 @@
   @case "LongRunningPromise"
     {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.initCode, additionalCallback)}
   @default
-    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$    
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
 @end
 
@@ -344,14 +344,20 @@
 @end
 
 @snippet initCode(apiMethod, init)
-  {@initCodeLines(init)}
+  @if init.argDefaultLines
+    // FIXME(pongad): should be commented to not clobber args
+    {@initCodeLines(init.argDefaultLines)}
+    // FIXME(pongad): args end
+
+  @end
+  {@initCodeLines(init.lines)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
   @end
 @end
 
-@snippet initCodeLines(initCode)
-  @join line : initCode.lines
+@snippet initCodeLines(lines)
+  @join line : lines
     @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}
