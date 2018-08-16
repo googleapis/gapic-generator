@@ -49,10 +49,10 @@ anchor_verify_generation: &anchor_verify_generation
 
 anchor_test_csharp_client: &anchor_test_csharp_client
   command: |
-    cd ${CSHARP_GEN_DIR}/${TEST_API}
+    cd ${CSHARP_GEN_DIR}/google-cloud-${TEST_API}
     dotnet new sln
     dotnet new classlib
-    dotnet sln add google-cloud-logging.csproj
+    dotnet sln add google-cloud-${TEST_API}.csproj
     dotnet restore
     dotnet build
     dotnet test --no-build Build.Tests
@@ -241,26 +241,28 @@ jobs:
     environment:
       CSHARP_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/csharp
     steps:
+      # TODO: remove checkout step
+      - checkout
       - attach_workspace:
           at: workspace
       - run:
           name: Prepare for C# Pubsub testing.
           command: |
-            echo 'export TEST_API="google-cloud-pubsub"' >> $BASH_ENV
+            echo 'export TEST_API="pubsub"' >> $BASH_ENV
       - run:
           name: Test Pubsub.
           <<: *anchor_test_csharp_client
       - run:
           name: Prepare for C# Logging testing.
           command: |
-            echo 'export TEST_API="google-cloud-logging"' >> $BASH_ENV
+            echo 'export TEST_API="logging"' >> $BASH_ENV
       - run:
           name: Test Logging.
           <<: *anchor_test_csharp_client
       - run:
           name: Prepare for C# Speech testing.
           command: |
-            echo 'export TEST_API="google-cloud-speech"' >> $BASH_ENV
+            echo 'export TEST_API="speech"' >> $BASH_ENV
       - run:
           name: Test Speech.
           <<: *anchor_test_csharp_client
