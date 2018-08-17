@@ -333,11 +333,26 @@ message SampleValueSet {
   //   several placeholders.
   repeated string parameters = 4;
 
-  repeated string sample_args = 5;
+  // Attributes governing how to init request object.
+  // Each attribute must have unique, non-overlapping, path.
+  repeated SampleInitAttribute attributes = 5;
 
   // How to process a successful response from the client library
   // function being exemplified.
   repeated OutputSpec on_success = 6;
+}
+
+// `SampleInitAttribute` controls how a sample initializes the request object.
+message SampleInitAttribute {
+  // Required. The part of the request object this attribute is talking about.
+  string path = 1;
+
+  // If a sample, the call to client lib method is itself in a function.
+  // If `function_param` is true, the part of the request object specified by `path`
+  // should be accepted as a parameter to the sample function.
+  //
+  // TODO: Allow configuring the param name?
+  bool function_param = 2;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"

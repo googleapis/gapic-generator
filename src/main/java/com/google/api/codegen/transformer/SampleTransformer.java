@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
+import com.google.api.codegen.SampleInitAttribute;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -211,18 +212,29 @@ public class SampleTransformer {
                     .build());
       }
 
-      for (ValueSetAndTags valueSet : matchingValueSets) {
-        InitCodeView initCodeView =
-            sampleGenerator.generate(
-                initContext != null
-                    ? initContext
-                    : createInitCodeContext(
-                        context,
-                        fieldConfigs,
-                        initCodeOutputType,
-                        valueSet.values().getParametersList(),
-                        valueSet.values().getSampleArgsList()));
-        List<OutputSpec> outputs = valueSet.values().getOnSuccessList();
+      for (ValueSetAndTags setAndTag : matchingValueSets) {
+        // Don't overwrite the initContext in outer scope.
+        InitCodeContext thisContext = initContext;
+        SampleValueSet valueSet = setAndTag.values();
+        if (thisContext == null) {
+          // TODO(pongad): Check that the attributes don't overlap.
+          // Probably do this after we implement the second kind of attributes;
+          // with only one implemented, I'm not sure what's the best way to do this yet.
+          thisContext =
+              createInitCodeContext(
+                  context,
+                  fieldConfigs,
+                  initCodeOutputType,
+                  valueSet.getParametersList(),
+                  valueSet
+                      .getAttributesList()
+                      .stream()
+                      .filter(SampleInitAttribute::getFunctionParam)
+                      .map(SampleInitAttribute::getPath)
+                      .collect(ImmutableList.toImmutableList()));
+        }
+        InitCodeView initCodeView = sampleGenerator.generate(thisContext);
+        List<OutputSpec> outputs = valueSet.getOnSuccessList();
         if (outputs.isEmpty()) {
           outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
         }
@@ -230,15 +242,15 @@ public class SampleTransformer {
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
-                .valueSet(SampleValueSetView.of(valueSet.values()))
+                .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(OutputTransformer.toViews(outputs, context, valueSet.values()))
+                .outputs(OutputTransformer.toViews(outputs, context, valueSet))
                 .regionTag(
                     regionTagFromSpec(
-                        valueSet.regionTag(),
+                        setAndTag.regionTag(),
                         context.getMethodModel().getSimpleName(),
                         form,
-                        valueSet.values().getId()))
+                        valueSet.getId()))
                 .build());
       }
     }
