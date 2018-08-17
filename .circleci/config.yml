@@ -149,6 +149,10 @@ anchor_test_php: &anchor_test_php
     # or this API client doesn't require credentials.
     # We can remove this if-check when https://github.com/googleapis/gapic-generator/issues/2235
     # is resolved and unblocks PHP unit tests without credentials.
+    if ! [ -e ${RUBY_GEN_DIR}/google-cloud-${TEST_API} ]
+      echo "PHP ${TEST_API} library was not generated."
+      exit 1
+    fi
     if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
     then
       cd ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API}
@@ -280,16 +284,20 @@ jobs:
       RUBY_TEST_COMMAND: "bundle exec rake acceptance"
       <<: *anchor_auth_vars
     <<: *anchor_run_ruby
-  test-php-7.2:
+  verify-and-test-php-7.2:
     working_directory: /tmp/
     environment:
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests/Unit # Only run unit tests here.
+      <<: *anchor_artman_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
     steps:
       - attach_workspace:
           at: workspace
+      - run:
+          name: Verify all PHP generation succeeded
+          <<: *anchor_check_generation
       - run:
           name: Prepare to test Pubsub
           command: |
@@ -344,7 +352,7 @@ workflows:
           filters:
             branches:
               only: master
-      - test-php-7.2:
+      - verify-and-test-php-7.2:
           requires:
             - generate-clients
         # TODO: php smoke tests
