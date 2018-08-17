@@ -55,8 +55,14 @@
   
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
+  @if sample.initCode.argDefaultLines
+    @# FIXME(pongad): These lines should be commented. The top-level vars are declared by function param.
+    {@initCode(sample.initCode.argDefaultLines)}
+    @# FIXME(pongad): ARGS ENDS
+
+  @end
   @if sample.initCode.lines
-    {@initCode(sample.initCode)}
+    {@initCode(sample.initCode.lines)}
 
   @end
 @end

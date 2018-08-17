@@ -49,6 +49,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -200,13 +201,14 @@ public class DiscoGapicGeneratorApp {
     return files;
   }
 
-  private static ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+  private static ConfigProto loadConfigFromFiles(List<String> configFileNames)
+      throws MalformedURLException {
     DiagCollector diagCollector = new SimpleDiagCollector();
     ConfigYamlReader yamlReader = new ConfigYamlReader();
     MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (File file : pathsToFiles(configFileNames)) {
       ConfigHelper helper = new ConfigHelper(diagCollector, file.getName());
-      ConfigNode configNode = yamlReader.generateConfigNode(file, helper);
+      ConfigNode configNode = yamlReader.generateConfigNode(file.toURI().toURL(), helper);
       if (configNode == null) {
         continue;
       }

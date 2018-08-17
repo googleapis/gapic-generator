@@ -48,7 +48,7 @@ public class GapicConfigProducerTest {
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");
-    Truth.assertThat(model.getDiagCollector().hasErrors());
+    Truth.assertThat(model.getDiagCollector().hasErrors()).isTrue();
     Truth.assertThat(model.getDiagCollector().getDiags()).contains(expectedError);
   }
 }

@@ -96,9 +96,9 @@ public class InitCodeTransformer {
       MethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      return buildInitCodeViewFlattened(methodContext, rootNode);
+      return buildInitCodeViewFlattened(methodContext, initCodeContext, rootNode);
     } else {
-      return buildInitCodeViewRequestObject(methodContext, rootNode);
+      return buildInitCodeViewRequestObject(methodContext, initCodeContext, rootNode);
     }
   }
 
@@ -232,22 +232,59 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(MethodContext context, InitCodeNode root) {
-    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
+  private InitCodeView buildInitCodeViewFlattened(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> sampleFuncDefaults = initsampleFuncDefaults(initCodeContext, root);
     // Remove the request object for flattened method
-    orderedItems.remove(orderedItems.size() - 1);
-    return buildInitCodeView(context, orderedItems, argItems);
-  }
-
-  private InitCodeView buildInitCodeViewRequestObject(MethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = Lists.newArrayList(root);
-    return buildInitCodeView(context, orderedItems, argItems);
+    orderedItems.remove(orderedItems.size() - 1);
+    // Remove things already initialized by the args
+    orderedItems.removeAll(sampleFuncDefaults);
+
+    // NOTE(pongad): To the best of my understanding, this variable is used by dynamic languages to
+    // determine the arguments to be passed to the client lib method. We should not remove
+    // sampleFuncDefaults from them, otherwise the sample would call the function with a wrong
+    // number of args.
+    List<InitCodeNode> libArguments = ImmutableList.copyOf(root.getChildren().values());
+
+    return buildInitCodeView(context, orderedItems, libArguments, sampleFuncDefaults);
   }
 
+  private InitCodeView buildInitCodeViewRequestObject(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    List<InitCodeNode> sampleFuncDefaults = initsampleFuncDefaults(initCodeContext, root);
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
+    orderedItems.removeAll(sampleFuncDefaults);
+
+    return buildInitCodeView(context, orderedItems, ImmutableList.of(root), sampleFuncDefaults);
+  }
+
+  private List<InitCodeNode> initsampleFuncDefaults(
+      InitCodeContext initCodeContext, InitCodeNode root) {
+    return initCodeContext
+        .sampleArgStrings()
+        .stream()
+        .flatMap(sampleArg -> root.subTree(sampleArg).listInInitializationOrder().stream())
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Transform {@code InitCodeNode}s into {@code InitCodeView}.
+   *
+   * @param orderedItems These nodes are converted into request-initialization code. The
+   *     initialization is "shallow": children nodes are not initialized. If children nodes should
+   *     also be initialized, callers must also include them in the list.
+   * @param libArguments Used by samples for flattened client lib methods. These nodes contain
+   *     values that become arguments to the method.
+   * @param sampleFuncDefaults Used by standalone samples, where each client library method call is
+   *     contained within a function that's part of the sample. These nodes contain values that are
+   *     passed into function parameters. Like {@code orderedItems}, the init code is "shallow".
+   */
   private InitCodeView buildInitCodeView(
-      MethodContext context, Iterable<InitCodeNode> orderedItems, Iterable<InitCodeNode> argItems) {
+      MethodContext context,
+      List<InitCodeNode> orderedItems,
+      List<InitCodeNode> libArguments,
+      List<InitCodeNode> sampleFuncDefaults) {
     ImportTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -256,14 +293,15 @@ public class InitCodeTransformer {
     typeTable.getAndSaveNicknameFor(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
-    List<FieldSettingView> fieldSettings = getFieldSettings(context, argItems);
+    List<FieldSettingView> fieldSettings = getFieldSettings(context, libArguments);
     List<FieldSettingView> optionalFieldSettings =
         fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
+        .argDefaultLines(generateSurfaceInitCodeLines(context, sampleFuncDefaults))
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
-        .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
+        .topLevelLines(generateSurfaceInitCodeLines(context, libArguments))
         .fieldSettings(fieldSettings)
         .optionalFieldSettings(optionalFieldSettings)
         .requiredFieldSettings(requiredFieldSettings)
