@@ -1,3 +1,50 @@
+load("//:gapic_generator.bzl", "gapic_generator_tests")
+
+_COMPILE_DEPS = [
+    "@cglib_cglib//jar",
+    "@com_atlassian_commonmark_commonmark//jar",
+    "@com_fasterxml_jackson_core_jackson_annotations//jar",
+    "@com_fasterxml_jackson_core_jackson_core//jar",
+    "@com_fasterxml_jackson_core_jackson_databind//jar",
+    "@com_google_api_api_common//jar",
+    "@com_google_api_api_compiler//jar",
+    "@com_google_api_gax//jar",
+    "@com_google_api_grpc_proto_google_common_protos//jar",
+    "@com_google_auto_value_auto_value//jar",
+    "@com_google_auto_value_auto_value_annotations//jar",
+    "@com_google_code_findbugs_jsr305//jar",
+    "@com_google_code_gson_gson//jar",
+    "@com_google_guava_guava//jar",
+    "@com_google_inject_guice//jar",
+    "@com_google_protobuf//:protobuf_java",
+    "@commons_cli_commons_cli//jar",
+    "@io_grpc_grpc_core//jar",
+    "@javax_inject_javax_inject//jar",
+    "@org_apache_commons_commons_lang3//jar",
+    "@org_ow2_asm_asm//jar",
+    "@org_threeten_threetenbp//jar",
+    "@org_yaml_snakeyaml//jar",
+]
+
+_TEST_COMPILE_DEPS = [
+    "@com_google_api_api_compiler_testing//jar",
+    "@com_google_truth_truth//jar",
+    "@com_google_truth_extensions_truth_java8_extension//jar",
+    "@junit_junit//jar",
+    "@pl_pragmatists_JUnitParams//jar",
+    "@org_mockito_mockito_core//jar",
+    "@org_hamcrest_hamcrest_core//jar",
+    "@net_bytebuddy_byte_buddy//jar",
+    "@org_objenesis_objenesis//jar",
+]
+
+_JAVA_COPTS = [
+    "-source",
+    "1.8",
+    "-target",
+    "1.8",
+]
+
 java_plugin(
     name = "auto_value_plugin",
     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
@@ -23,35 +70,64 @@ java_proto_library(
 java_binary(
     name = "gapic_generator",
     srcs = glob(["src/main/java/**/*.java"]),
-    resources = glob(["src/main/resources/**/*"]),
-    main_class = "com.google.api.codegen.gapic.GapicGeneratorTool",
     create_executable = True,
-    deps = [
-        ":config_java_proto",
-        ":auto_value",
-        "@cglib_cglib//jar",
-        "@com_atlassian_commonmark_commonmark//jar",
-        "@com_fasterxml_jackson_core_jackson_annotations//jar",
-        "@com_fasterxml_jackson_core_jackson_core//jar",
-        "@com_fasterxml_jackson_core_jackson_databind//jar",
-        "@com_google_api_api_common//jar",
-        "@com_google_api_api_compiler//jar",
-        "@com_google_api_gax//jar",
-        "@com_google_api_grpc_proto_google_common_protos//jar",
-        "@com_google_auto_value_auto_value//jar",
-        "@com_google_auto_value_auto_value_annotations//jar",
-        "@com_google_code_findbugs_jsr305//jar",
-        "@com_google_code_gson_gson//jar",
-        "@com_google_guava_guava//jar",
-        "@com_google_inject_guice//jar",
-        "@com_google_protobuf//:protobuf_java",
-        "@commons_cli_commons_cli//jar",
-        "@io_grpc_grpc_core//jar",
-        "@javax_inject_javax_inject//jar",
-        "@org_apache_commons_commons_lang3//jar",
-        "@org_ow2_asm_asm//jar",
-        "@org_threeten_threetenbp//jar",
-        "@org_yaml_snakeyaml//jar",
-    ],
+    javacopts = _JAVA_COPTS,
+    main_class = "com.google.api.codegen.GeneratorMain",
+    resources = glob(["src/main/resources/**/*"]),
     visibility = ["//visibility:public"],
+    deps = [
+        ":auto_value",
+        ":config_java_proto",
+    ] + _COMPILE_DEPS,
+)
+
+
+# This is probably not the right way of doing it, but good enough for now.
+# api-compiler module expects "protoc" binary to be accessible during tests execution, this genrule
+# "puts" the "binary" in a proper location (the tests are still hermetic, even with this hack).
+genrule(
+    name = "protoc_binary_hack_for_test",
+    outs = ["protoc"],
+    cmd = "echo 'external/com_google_protobuf/protoc \"$$@\"' > $@",
+    executable = True,
+    tools = ["@com_google_protobuf//:protoc"],
+)
+
+java_library(
+    name = "gapic_generator_testlib",
+    srcs = glob(["src/test/java/**/*.java"]),
+    data = glob([
+        "src/**/testdata/**/*",
+        "src/**/testsrc/**/*",
+        "src/**/discoverytestdata/**/*",
+    ]) + [":protoc_binary_hack_for_test"],
+    javacopts = _JAVA_COPTS,
+    resources = glob([
+        "src/**/testdata/**/*",
+        "src/**/testsrc/**/*",
+        "src/**/discoverytestdata/**/*",
+        "src/test/java/**/*.proto",
+    ]) + ["@com_google_protobuf//:well_known_protos"],
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@com_google_protobuf//:protoc"],
+    deps = [
+        ":auto_value",
+        ":config_java_proto",
+        ":gapic_generator",
+    ] + _COMPILE_DEPS + _TEST_COMPILE_DEPS,
+)
+
+# This will generate test targets, one for each test and put them in one big test_suite
+# (with same name as this macros). The targets will be accessible by the corresponding tagets in the
+# format `//:<fully.qualified.test.class.name>`.
+# For example try running `bazel test //:com.google.api.codegen.config.ConfigGenerationTest`.
+# To run all tests and see error details (if any) try:
+#   `bazel test //:all --test_output=errors`
+#    or
+#   `bazel test //:gapic_generator_tests --test_output=errors`
+gapic_generator_tests(
+    name = "gapic_generator_tests",
+    size = "small",
+    srcs = glob(["src/test/java/**/*Test.java"]),
+    runtime_deps = [":gapic_generator_testlib"],
 )

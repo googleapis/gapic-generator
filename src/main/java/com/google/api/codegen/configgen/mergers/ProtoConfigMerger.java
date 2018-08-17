@@ -24,7 +24,6 @@ import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.protobuf.Api;
-import java.io.File;
 
 /** Merges the gapic config from a proto Model into a ConfigNode. */
 public class ProtoConfigMerger {
@@ -35,15 +34,6 @@ public class ProtoConfigMerger {
     }
 
     return configMerger.mergeConfig(new ProtoApiModel(model));
-  }
-
-  public ConfigNode mergeConfig(Model model, File file) {
-    ConfigMerger configMerger = createMerger(model, file.getName());
-    if (configMerger == null) {
-      return null;
-    }
-
-    return configMerger.mergeConfig(new ProtoApiModel(model), file);
   }
 
   private ConfigMerger createMerger(Model model, String fileName) {
