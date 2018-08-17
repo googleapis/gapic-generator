@@ -15,6 +15,7 @@
 package com.google.api.codegen.util.java;
 
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.tools.framework.snippet.Doc;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,5 +42,9 @@ public class JavaRenderingUtil {
     Arrays.fill(array, '=');
     String eqsString = new String(array);
     return Arrays.asList(eqsString, heading, eqsString);
+  }
+
+  public static List<String> pretty(Doc doc) {
+    return CommonRenderingUtil.pretty(doc);
   }
 }
