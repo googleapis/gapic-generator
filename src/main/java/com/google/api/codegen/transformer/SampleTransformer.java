@@ -158,7 +158,8 @@ public class SampleTransformer {
   /**
    * Returns a list of MethodSampleViews for the given MethodContext.
    *
-   * @param context
+   * @param initContext
+   * @param methodContext
    * @param fieldConfigs
    * @param initCodeOutputType
    * @param sampleGenerator The function (typically a lambda) to generate the InitCode for a sample
