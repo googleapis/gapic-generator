@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleInitAttribute;
+import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -168,7 +169,7 @@ public class SampleTransformer {
    *     forthe method
    */
   public List<MethodSampleView> generateSamples(
-      MethodContext context,
+      MethodContext methodContext,
       InitCodeContext initContext,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
@@ -178,7 +179,7 @@ public class SampleTransformer {
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
 
     for (CallingForm form : callingForms) {
-      MethodConfig methodConfig = context.getMethodConfig();
+      MethodConfig methodConfig = methodContext.getMethodConfig();
 
       List<ValueSetAndTags> matchingValueSets =
           methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
@@ -198,18 +199,18 @@ public class SampleTransformer {
         id = INIT_CODE_SHIM;
       }
       if (id != null) {
+        SampleValueSet valueSet =
+            SampleValueSet.newBuilder()
+                .setParameters(
+                    SampleParameters.newBuilder()
+                        .addAllDefaults(methodConfig.getSampleCodeInitFields())
+                        .build())
+                .setId(id)
+                .setDescription("value set imported from sample_code_init_fields")
+                .setTitle("Sample Values")
+                .build();
         matchingValueSets =
-            Collections.singletonList(
-                ValueSetAndTags.newBuilder()
-                    .values(
-                        SampleValueSet.newBuilder()
-                            .addAllParameters(methodConfig.getSampleCodeInitFields())
-                            .setId(id)
-                            .setDescription("value set imported from sample_code_init_fields")
-                            .setTitle("Sample Values")
-                            .build())
-                    .regionTag("")
-                    .build());
+            ImmutableList.of(ValueSetAndTags.newBuilder().values(valueSet).regionTag("").build());
       }
 
       for (ValueSetAndTags setAndTag : matchingValueSets) {
@@ -217,26 +218,28 @@ public class SampleTransformer {
         InitCodeContext thisContext = initContext;
         SampleValueSet valueSet = setAndTag.values();
         if (thisContext == null) {
-          // TODO(pongad): Check that the attributes don't overlap.
+          // TODO(pongad): Check that the attributes don't "overlap".
+          // Eg, specifying attributes for both `list` and `list[0]` should be an error.
           // Probably do this after we implement the second kind of attributes;
           // with only one implemented, I'm not sure what's the best way to do this yet.
           thisContext =
               createInitCodeContext(
-                  context,
+                  methodContext,
                   fieldConfigs,
                   initCodeOutputType,
-                  valueSet.getParametersList(),
+                  valueSet.getParameters().getDefaultsList(),
                   valueSet
+                      .getParameters()
                       .getAttributesList()
                       .stream()
-                      .filter(SampleInitAttribute::getFunctionParam)
-                      .map(SampleInitAttribute::getPath)
+                      .filter(SampleInitAttribute::getSampleArgument)
+                      .map(SampleInitAttribute::getParameter)
                       .collect(ImmutableList.toImmutableList()));
         }
         InitCodeView initCodeView = sampleGenerator.generate(thisContext);
         List<OutputSpec> outputs = valueSet.getOnSuccessList();
         if (outputs.isEmpty()) {
-          outputs = OutputTransformer.defaultOutputSpecs(context.getMethodModel());
+          outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
         }
 
         methodSampleViews.add(
@@ -244,11 +247,11 @@ public class SampleTransformer {
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(OutputTransformer.toViews(outputs, context, valueSet))
+                .outputs(OutputTransformer.toViews(outputs, methodContext, valueSet))
                 .regionTag(
                     regionTagFromSpec(
                         setAndTag.regionTag(),
-                        context.getMethodModel().getSimpleName(),
+                        methodContext.getMethodModel().getSimpleName(),
                         form,
                         valueSet.getId()))
                 .build());
@@ -277,13 +280,13 @@ public class SampleTransformer {
       MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      List<String> sampleCodeInitFields,
-      List<String> sampleArgs) {
+      List<String> sampleCodeDefaultValues,
+      List<String> sampleFunctionArguments) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
-        .initFieldConfigStrings(sampleCodeInitFields)
-        .sampleArgStrings(ImmutableList.copyOf(sampleArgs))
+        .initFieldConfigStrings(sampleCodeDefaultValues)
+        .sampleArgStrings(ImmutableList.copyOf(sampleFunctionArguments))
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)
