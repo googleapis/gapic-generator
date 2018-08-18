@@ -132,9 +132,10 @@
 
 @snippet initCode(initCode, apiVariableName)
     @if initCode.argDefaultLines
-        // FIXME(pongad): Should be commented out here to not clobber args
-        {@initCodeLines(initCode.argDefaultLines, apiVariableName)}
-        // FIXME(pongad): args end
+        @join line : util.pretty(initCodeLines(initCode.argDefaultLines, apiVariableName))
+          // {@line}
+        @end
+
 
     @end
     {@initCodeLines(initCode.lines, apiVariableName)}
