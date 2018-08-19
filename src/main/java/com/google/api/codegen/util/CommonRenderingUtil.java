@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Utility class to process text in the templates. */
@@ -107,5 +109,11 @@ public class CommonRenderingUtil {
    */
   public static int toInt(String value) {
     return Integer.valueOf(value);
+  }
+
+  public static List<String> pretty(Doc doc) {
+    StringBuilder sb = new StringBuilder();
+    doc.prettyPrint(sb);
+    return Arrays.asList(sb.toString().split("\n"));
   }
 }

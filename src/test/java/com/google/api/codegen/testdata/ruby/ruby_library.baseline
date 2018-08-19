@@ -275,7 +275,7 @@ steps:
 
 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
+3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/library.googleapis.com)
 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
@@ -613,8 +613,13 @@ require "pathname"
 #
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
+# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/library.googleapis.com)
 # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+#
+# ### Installation
+# ```
+# $ gem install library
+# ```
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -774,8 +779,13 @@ module Library
   #
   # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
   # 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-  # 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
+  # 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/library.googleapis.com)
   # 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Installation
+  # ```
+  # $ gem install library
+  # ```
   #
   # ### Preview
   # #### LibraryServiceClient
@@ -1205,17 +1215,18 @@ module Google
     #     }
     # @!attribute [rw] type_url
     #   @return [String]
-    #     A URL/resource name whose content describes the type of the
-    #     serialized protocol buffer message.
+    #     A URL/resource name that uniquely identifies the type of the serialized
+    #     protocol buffer message. The last segment of the URL's path must represent
+    #     the fully qualified name of the type (as in
+    #     +path/google.protobuf.Duration+). The name should be in a canonical form
+    #     (e.g., leading "." is not accepted).
     #
-    #     For URLs which use the scheme +http+, +https+, or no scheme, the
-    #     following restrictions and interpretations apply:
+    #     In practice, teams usually precompile into the binary all types that they
+    #     expect it to use in the context of Any. However, for URLs which use the
+    #     scheme +http+, +https+, or no scheme, one can optionally set up a type
+    #     server that maps type URLs to message definitions as follows:
     #
     #     * If no scheme is provided, +https+ is assumed.
-    #     * The last segment of the URL's path must represent the fully
-    #       qualified name of the type (as in +path/google.protobuf.Duration+).
-    #       The name should be in a canonical form (e.g., leading "." is
-    #       not accepted).
     #     * An HTTP GET on the URL must yield a {Google::Protobuf::Type}
     #       value in binary format, or produce an error.
     #     * Applications are allowed to cache lookup results based on the
@@ -1223,6 +1234,10 @@ module Google
     #       lookup. Therefore, binary compatibility needs to be preserved
     #       on changes to types. (Use versioned type names to manage
     #       breaking changes.)
+    #
+    #     Note: this functionality is not currently available in the official
+    #     protobuf release, and it is not used for type URLs beginning with
+    #     type.googleapis.com.
     #
     #     Schemes other than +http+, +https+ (or the empty scheme) might be
     #     used with implementation specific semantics.
@@ -1570,6 +1585,12 @@ module Google
     #
     # Note that oneof type names ("test_oneof" in this case) cannot be used in
     # paths.
+    #
+    # == Field Mask Verification
+    #
+    # The implementation of any API method which has a FieldMask type field in the
+    # request should verify the included field paths, and return an
+    # +INVALID_ARGUMENT+ error if any path is duplicated or unmappable.
     # @!attribute [rw] paths
     #   @return [Array<String>]
     #     The set of field mask paths.
@@ -1730,7 +1751,9 @@ module Google
     # {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
     # seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
     # are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
-    # is required, though only UTC (as indicated by "Z") is presently supported.
+    # is required. A proto3 JSON serializer should always use UTC (as indicated by
+    # "Z") when printing the Timestamp type and a proto3 JSON parser should be
+    # able to accept both UTC and other timezones (as indicated by an offset).
     #
     # For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
     # 01:30 UTC on January 15, 2017.
@@ -1741,8 +1764,8 @@ module Google
     # to this format using [+strftime+](https://docs.python.org/2/library/time.html#time.strftime)
     # with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
     # can use the Joda Time's [+ISODateTimeFormat.dateTime()+](
-    # http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime())
-    # to obtain a formatter capable of generating timestamps in this format.
+    # http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--
+    # ) to obtain a formatter capable of generating timestamps in this format.
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Represents seconds of UTC time since Unix epoch
@@ -2540,97 +2563,6 @@ module Google
         class TestOptionalRequiredFlatteningParamsResponse; end
       end
     end
-  end
-end
-============== file: lib/library/v1/doc/overview.rb ==============
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# rubocop:disable LineLength
-
-##
-# # Ruby Client for Google Example Library API ([GA](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
-#
-# [Google Example Library API][Product Documentation]:
-# A simple Google Example Library API.
-# - [Product Documentation][]
-#
-# ## Quick Start
-# In order to use this library, you first need to go through the following
-# steps:
-#
-# 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-# 2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-# 3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/api/library.googleapis.com)
-# 4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
-#
-# ### Installation
-# ```
-# $ gem install library
-# ```
-#
-# ### Preview
-# #### LibraryServiceClient
-# ```rb
-# require "library"
-#
-# library_service_client = Library.new
-# formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-# optional_foo = ''
-# rating = :GOOD
-# book = { rating: rating }
-# update_mask = {}
-# physical_mask = {}
-# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
-# ```
-#
-# ### Next Steps
-# - Read the [Google Example Library API Product documentation][Product Documentation]
-#   to learn more about the product and see How-to Guides.
-# - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
-#   to see the full list of Cloud APIs that we cover.
-#
-# [Product Documentation]: https://cloud.google.com/library
-#
-# ## Enabling Logging
-#
-# To enable logging for this library, set the logger for the underlying [gRPC](https://github.com/grpc/grpc/tree/master/src/ruby) library.
-# The logger that you set may be a Ruby stdlib [`Logger`](https://ruby-doc.org/stdlib-2.5.0/libdoc/logger/rdoc/Logger.html) as shown below,
-# or a [`Google::Cloud::Logging::Logger`](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/google/cloud/logging/logger)
-# that will write logs to [Stackdriver Logging](https://cloud.google.com/logging/). See [grpc/logconfig.rb](https://github.com/grpc/grpc/blob/master/src/ruby/lib/grpc/logconfig.rb)
-# and the gRPC [spec_helper.rb](https://github.com/grpc/grpc/blob/master/src/ruby/spec/spec_helper.rb) for additional information.
-#
-# Configuring a Ruby stdlib logger:
-#
-# ```ruby
-# require "logger"
-#
-# module MyLogger
-#   LOGGER = Logger.new $stderr, level: Logger::WARN
-#   def logger
-#     LOGGER
-#   end
-# end
-#
-# # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
-# module GRPC
-#   extend MyLogger
-# end
-# ```
-#
-module Library
-  module V1
   end
 end
 ============== file: lib/library/v1/doc/shared_type.rb ==============

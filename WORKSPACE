@@ -1,5 +1,13 @@
 workspace(name = "com_google_api_gapic_generator")
 
+# TODO: try loading precompiled protoc (it comes with common protos) and use it for everything.
+# Using protobuf requires building it before usage, which takes time.
+git_repository(
+    name = "com_google_protobuf",
+    remote = "https://github.com/google/protobuf.git",
+    tag = "v3.6.0",
+)
+
 maven_jar(
     name = "com_atlassian_commonmark_commonmark",
     artifact = "com.atlassian.commonmark:commonmark:0.9.0",
@@ -67,6 +75,7 @@ maven_jar(
 )
 
 maven_jar(
+
     name = "com_google_code_gson_gson",
     artifact = "com.google.code.gson:gson:2.3",
     sha1 = "5fc52c41ef0239d1093a1eb7c3697036183677ce",
@@ -74,21 +83,14 @@ maven_jar(
 
 maven_jar(
     name = "com_google_guava_guava",
-    artifact = "com.google.guava:guava:23.0",
-    sha1 = "c947004bb13d18182be60077ade044099e4f26f1",
+    artifact = "com.google.guava:guava:26.0-jre",
+    sha1 = "6a806eff209f36f635f943e16d97491f00f6bfab",
 )
 
 maven_jar(
     name = "com_google_inject_guice",
     artifact = "com.google.inject:guice:4.0",
     sha1 = "0f990a43d3725781b6db7cd0acf0a8b62dfd1649",
-)
-
-http_archive(
-    name = "com_google_protobuf",
-    sha256 = "1f8b9b202e9a4e467ff0b0f25facb1642727cdf5e69092038f15b37c75b99e45",
-    strip_prefix = "protobuf-3.5.1",
-    urls = ["https://github.com/google/protobuf/archive/v3.5.1.zip"],
 )
 
 maven_jar(
@@ -121,8 +123,6 @@ maven_jar(
     sha1 = "e4a441249ade301985cb8d009d4e4a72b85bf68e",
 )
 
-# ----- Runtime transitive dependencies
-
 maven_jar(
     name = "cglib_cglib",
     artifact = "cglib:cglib:3.1",
@@ -139,4 +139,61 @@ maven_jar(
     name = "org_ow2_asm_asm",
     artifact = "org.ow2.asm:asm:4.2",
     sha1 = "4b2c12b92dd045aeabf5b2aeeb3220bf010da9d4",
+)
+
+# Test Dependencies
+
+maven_jar(
+    name = "junit_junit",
+    artifact = "junit:junit:4.12",
+)
+
+maven_jar(
+    name = "com_google_truth_truth",
+    artifact = "com.google.truth:truth:0.42",
+)
+
+maven_jar(
+    name = "com_google_truth_truth",
+    artifact = "com.google.truth:truth:0.42",
+)
+
+maven_jar(
+    name = "com_google_truth_extensions_truth_java8_extension",
+    artifact = "com.google.truth.extensions:truth-java8-extension:0.42",
+)
+
+maven_jar(
+    name = "com_google_api_api_compiler_testing",
+    artifact = "com.google.api:api-compiler:jar:testing:0.0.7",
+)
+
+maven_jar(
+    name = "pl_pragmatists_JUnitParams",
+    artifact = "pl.pragmatists:JUnitParams:1.1.1",
+)
+
+maven_jar(
+    name = "org_mockito_mockito_core",
+    artifact = "org.mockito:mockito-core:2.21.0",
+)
+
+maven_jar(
+    name = "org_hamcrest_hamcrest_core",
+    artifact = "org.hamcrest:hamcrest-core:1.3",
+)
+
+maven_jar(
+    name = "net_bytebuddy_byte_buddy",
+    artifact = "net.bytebuddy:byte-buddy:1.8.15",
+)
+
+maven_jar(
+    name = "net_bytebuddy_byte_buddy",
+    artifact = "net.bytebuddy:byte-buddy:1.8.15",
+)
+
+maven_jar(
+    name = "org_objenesis_objenesis",
+    artifact = "org.objenesis:objenesis:2.6",
 )

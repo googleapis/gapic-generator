@@ -36,7 +36,6 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
@@ -181,11 +180,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     return getModelTypeFormatter().getFullNameFor(apiInterface);
-  }
-
-  @Override
-  public String getGrpcClientImportName(InterfaceModel apiInterface) {
-    return "grpc-" + NamePath.dotted(apiInterface.getFileFullName()).toDashed();
   }
 
   @Override
