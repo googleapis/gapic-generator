@@ -69,7 +69,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
-            "library") // ,
+            "library"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"no_path_templates_gapic.yaml"},
@@ -124,8 +124,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             TargetLanguage.CSHARP,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
-            "library")
-        );
+            "library"));
   }
 
   @Test
