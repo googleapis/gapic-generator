@@ -1,5 +1,6 @@
 @extends "java/common.snip"
-@extends "java/method_sample.snip"
+#@extends "java/method_sample.snip"
+@extends "java/initcode.snip"
 
 @snippet generate(sampleFile)
   //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.classView.name}" ]
@@ -26,7 +27,7 @@
     public class {@sampleFile.classView.name} {
       public static void main(String[] args) {
         // [START {@sample.regionTag}_core]
-        @let coreSampleCode = generateSample(apiMethod, sample.callingForm, sample.initCode)
+        @let coreSampleCode = generateSample(apiMethod, sample)
           {@methodLines(coreSampleCode)}
         @end
         // [END {@sample.regionTag}_core]
@@ -41,42 +42,278 @@
 
 # adapted from main.snip:apiMethods(xapiClass) and its dependencies
 # For real use, we'll want to switch on the calling form id.
-@private generateSample(apiMethod, callingForm, initCode)
-  @switch callingForm
+@private generateSample(apiMethod, sample)
+  @switch sample.callingForm
   @case "Request"
-    {@syncMethodSampleCode(apiMethod, initCode)}
+    {@syncMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "RequestPaged"
-    {@pagedIterableMethodSampleCode(apiMethod, initCode)}
+    {@pagedIterableMethodSampleCode(apiMethod, sample)}
   @case "Flattened"
-    {@syncMethodSampleCode(apiMethod, initCode)}
+    {@syncMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "FlattenedPaged"
-    {@pagedCallableMethodSampleCode(apiMethod, initCode)}      
+    {@pagedCallableMethodSampleCode(apiMethod, sample)}      
   @case "Callable"
-    {@callableMethodSampleCode(apiMethod, initCode)}
+    {@callableMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "CallableList"
-    {@unpagedListCallableMethodSampleCode(apiMethod, initCode)}
+    {@unpagedListCallableMethodSampleCode(apiMethod, sample)}
   @case "CallablePaged"
-    {@pagedCallableMethodSampleCode(apiMethod, initCode)}
+    {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "CallableStreamingBidi"
-    {@bidiStreamingCallableSampleCode(apiMethod, initCode)}      
+    {@bidiStreamingCallableSampleCode(apiMethod, sample)} 
   @case "CallableStreamingClient"
-    {@clientStreamingCallableSampleCode(apiMethod, initCode)}
+    {@clientStreamingCallableSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "CallableStreamingServer"
-    {@serverStreamingCallableSampleCode(apiMethod, initCode)}
+    {@serverStreamingCallableSampleCode(apiMethod, sample)}
   @case "LongRunningCallable"
-    {@asyncOperationCallableMethodSampleCode(apiMethod, initCode)}
+    {@asyncOperationCallableMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "LongRunningFlattenedAsync"
-    {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+    {@asyncOperationMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @case "LongRunningRequestAsync"
-    {@asyncOperationMethodSampleCode(apiMethod, initCode)}
+    {@asyncOperationMethodSampleCode(apiMethod, sample)}
+    {@processResponse(sample)}
   @default
-    $unhandledCallingForm: {@callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
 @end
+
+# The snippets are copied and modified from method_sample.snip since standalone
+# samples need to deal with output.
+@snippet pagedIterableMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
+    {@processResponse(sample)}
+  }
+@end
+
+@snippet pagedCallableMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  ApiFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  for ({@apiMethod.listMethod.resourceTypeName} element : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
+    {@processResponse(sample)}
+  }
+@end
+
+@snippet unpagedListCallableMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  while (true) {
+    {@apiMethod.responseTypeName} response = \
+        {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+        {@sampleMethodCallArgList(sample.initCode.fieldSettings)});
+    for ({@apiMethod.listMethod.resourceTypeName} element : \
+        {@resourceListGetCall(apiMethod)}) {
+      {@processResponse(sample)}
+    }
+    String nextPageToken = response.getNextPageToken();
+    if (!Strings.isNullOrEmpty(nextPageToken)) {
+      request = request.toBuilder().setPageToken(nextPageToken).build();
+    } else {
+      break;
+    }
+  }
+@end
+
+@snippet resourceListGetCall(apiMethod)
+  @if apiMethod.unpagedListCallableMethod.resourceListParseFunction
+    {@apiMethod.unpagedListCallableMethod.resourceListParseFunction}(\
+      response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}())
+  @else
+    response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}()
+  @end
+@end
+
+@snippet syncMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
+  @else
+    {@sampleSyncMethodCall(apiMethod)};
+  @end
+@end
+
+@snippet asyncOperationMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(sample.initCode.fieldSettings)}).get();
+@end
+
+@snippet callableMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  ApiFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
+@end
+
+@snippet asyncOperationCallableMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+  OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  {@apiMethod.responseTypeName} response = future.get();
+@end
+
+@snippet streamingCallableMethodSampleCode(apiMethod, sample)
+  @switch apiMethod.grpcStreamingType
+  @case "BidiStreaming"
+    {@bidiStreamingCallableSampleCode(apiMethod, sample)}
+  @case "ServerStreaming"
+    {@serverStreamingCallableSampleCode(apiMethod, sample)}
+  @case "ClientStreaming"
+    {@clientStreamingCallableSampleCode(apiMethod, sample)}
+  @default
+    $unhandledCase: {@apiMethod.grpcStreamingType}$
+  @end
+@end
+
+@snippet bidiStreamingCallableSampleCode(apiMethod, sample)
+  BidiStream<{@apiMethod.callableMethod.requestType}, {@apiMethod.callableMethod.genericAwareResponseType}> bidiStream =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().call();
+
+  {@initCode(sample.initCode)}
+  bidiStream.send(request);
+  for ({@apiMethod.callableMethod.genericAwareResponseType} response : bidiStream) {
+    // Do something when receive a response
+    {@processResponse(sample)}
+  }
+@end
+
+@snippet serverStreamingCallableSampleCode(apiMethod, sample)
+  {@initCode(sample.initCode)}
+
+  ServerStream<{@apiMethod.callableMethod.genericAwareResponseType}> stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+      {@sampleMethodCallArgList(sample.initCode.fieldSettings)});
+  for ({@apiMethod.callableMethod.genericAwareResponseType} response : stream) {
+    {@processResponse(sample)}
+  }
+@end
+
+@snippet clientStreamingCallableSampleCode(apiMethod, sample)
+  {@responseObserver(apiMethod, sample)}
+  ApiStreamObserver<{@apiMethod.callableMethod.requestType}> requestObserver =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver);
+
+  {@initCode(sample.initCode)}
+  requestObserver.onNext(request);
+@end
+
 
 # copied & modified from main.snip
 @private methodLines(methodSampleCode)
   @join sampleLine : util.splitLines(methodSampleCode)
     {@sampleLine}
   @end
+@end
+
+@private processResponse(sample)
+  @if sample.outputs.size == 0
+    System.out.println(response);
+  @else
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private processOutputViews(outputViews)
+  @join view : outputViews on BREAK
+   @switch view.kind
+     @case "COMMENT"
+       {@processCommentView(view)}
+     @case "DEFINE"
+       {@processDefineView(view)}
+     @case "LOOP"
+       {@processLoopView(view)}
+     @case "PRINT"
+       {@processPrintView(view)}
+     @default
+       $unhandledResponseForm: {@view}
+    @end
+  @end
+@end
+
+@private processCommentView(view)
+  {@toComments(view.lines)}
+@end
+
+@private processDefineView(view)
+  {@view}
+  {@view.variableType} {@view.variableName} = {@variableField(view.reference)};
+@end
+
+@private processPrintView(view)
+  @if not(view.args.size)
+    System.out.println("{@view.format}");
+  @else
+    @if view.format == ""
+      System.out.println({@variableField(view.args.get(0))});
+    @else
+      System.out.printf("{@view.format}\n", {@concatenatedArgs(view.args)});
+    @end
+  @end
+@end
+
+@private processLoopView(view)
+  {@view}
+  for ({@view.variableType} {@view.variableName} : {@variableField(@view.collection)}) {
+    {@processOutputViews(@view.body)}
+  }
+@end
+
+@private concatenatedArgs(args)
+  @join arg : args on ", "
+    {@variableField(arg)}
+  @end
+@end
+
+@private variableField(arg)
+  {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+  @join field : accessors on ""
+    .{@field}()
+  @end
+@end
+
+@private sampleFutureMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleSyncMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@snippet sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@renderFieldSettingValue(fieldSetting)}
+  @end
+@end
+
+@private responseObserver(apiMethod, sample)
+  ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
+      new ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
+        @@Override
+        public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
+          {@processResponse(sample)}
+        }
+
+        @@Override
+        public void onError(Throwable t) {
+          // Add error-handling
+        }
+
+        @@Override
+        public void onCompleted() {
+          // Do something when complete.
+        }
+      };
 @end

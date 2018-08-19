@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
@@ -121,10 +122,7 @@ class OutputTransformer {
             new Scanner(loop.getCollection()), context, valueSet, scope, loop.getVariable(), true);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
-            .variableType(
-                context
-                    .getNamer()
-                    .getAndSaveTypeName(context.getTypeTable(), scope.get(loop.getVariable())))
+            .variableType(scope.getTypeName(loop.getVariable()))
             .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
             .collection(accessor)
             .body(
@@ -145,7 +143,7 @@ class OutputTransformer {
         valueSet.getId(),
         definition.input());
     String identifier = definition.tokenStr();
-
+    System.out.println("working on define view for :" + identifier);
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
@@ -154,11 +152,9 @@ class OutputTransformer {
         definition.input());
     OutputView.VariableView reference =
         accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
+    // System.out.println("localVars.get(identifier): " + localVars.get(identifier));
     return OutputView.DefineView.newBuilder()
-        .variableType(
-            context
-                .getNamer()
-                .getAndSaveTypeName(context.getTypeTable(), localVars.get(identifier)))
+        .variableType(localVars.getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
         .reference(reference)
         .build();
@@ -209,26 +205,68 @@ class OutputTransformer {
       view.variable(context.getNamer().getSampleResponseVarName(context));
 
       if (context.getMethodConfig().getPageStreaming() != null) {
-        type =
-            context
-                .getMethodConfig()
-                .getPageStreaming()
-                .getResourcesFieldConfig()
-                .getField()
-                .getType()
-                .makeOptional();
+        FieldConfig resourceFieldConfig =
+            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+
+        // change the element of the output of page streaming call to a resource name
+        if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
+          String typeName =
+              context
+                  .getNamer()
+                  .getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
+
+          Preconditions.checkArgument(
+              config.scan() == Scanner.EOF,
+              "%s:%s: accessing fields of resource names is not supported",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId());
+
+          if (newVar != null) {
+            Preconditions.checkArgument(
+                !intoScalar,
+                "%s:%s: cannot parse a resource name into scalar",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId());
+
+            if (!localVars.put(newVar, null, typeName)) {
+              throw new IllegalStateException(
+                  String.format(
+                      "%s:%s: duplicated variable declaration not allowed: %s",
+                      context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
+            }
+          }
+          return view.accessors(ImmutableList.<String>of()).build();
+        } else {
+          type =
+              context
+                  .getMethodConfig()
+                  .getPageStreaming()
+                  .getResourcesFieldConfig()
+                  .getField()
+                  .getType()
+                  .makeOptional();
+        }
       } else {
         type = context.getMethodModel().getOutputType();
       }
     } else {
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
-      type =
-          Preconditions.checkNotNull(
-              localVars.get(baseIdentifier),
-              "%s:%s: variable not defined: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
-              baseIdentifier);
+      type = localVars.getType(baseIdentifier);
+      if (type == null) {
+        String typeName =
+            Preconditions.checkNotNull(
+                localVars.getTypeName(baseIdentifier),
+                "%s:%s: variable not defined: %s",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId(),
+                baseIdentifier);
+        Preconditions.checkArgument(
+            config.scan() == Scanner.EOF,
+            "%s:%s: accessing fields of resource names is not supported",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId());
+        return view.accessors(ImmutableList.<String>of()).build();
+      }
     }
 
     int token;
@@ -292,7 +330,8 @@ class OutputTransformer {
             config.input());
         type = type.makeOptional(); // "optional" is how protobuf defines singular fields
       }
-      if (!localVars.put(newVar, type)) {
+      String typeName = context.getNamer().getAndSaveTypeName(context.getTypeTable(), type);
+      if (!localVars.put(newVar, type, typeName)) {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: duplicated variable declaration not allowed: %s",
@@ -318,7 +357,8 @@ class OutputTransformer {
   private static class ScopeTable {
     private final Set<String> sample;
     @Nullable private final ScopeTable parent;
-    private final Map<String, TypeModel> scope = new HashMap<>();
+    private final Map<String, TypeModel> types = new HashMap<>();
+    private final Map<String, String> typeNames = new HashMap<>();
 
     private ScopeTable() {
       sample = new HashSet<>();
@@ -332,10 +372,10 @@ class OutputTransformer {
     }
 
     /** Gets the type of the variable. Returns null if the variable is not found. */
-    private TypeModel get(String name) {
+    private TypeModel getType(String name) {
       ScopeTable table = this;
       while (table != null) {
-        TypeModel type = table.scope.get(name);
+        TypeModel type = table.types.get(name);
         if (type != null) {
           return type;
         }
@@ -345,14 +385,38 @@ class OutputTransformer {
     }
 
     /**
+     * Gets the type name of the variable. Returns null if the variable is not found. This is mostly
+     * used for resource name since they do not have a {@code TypeModel}.
+     */
+    private String getTypeName(String name) {
+      ScopeTable table = this;
+      while (table != null) {
+        String typeName = table.typeNames.get(name);
+        if (typeName != null) {
+          return typeName;
+        }
+        table = table.parent;
+      }
+      return null;
+    }
+
+    /**
      * Associates a variable with a type in the current scope. Returns whether the insertion was
      * successful.
+     *
+     * <p>{@code type} could be left null if {@code typeName} is not associated with a {@code
+     * TypeModel}, for example, when {@code typeName} is a resource name.
      */
-    private boolean put(String name, TypeModel type) {
+    private boolean put(String name, @Nullable TypeModel type, String typeName) {
       if (!sample.add(name)) {
         return false;
       }
-      scope.put(name, type);
+      if (type == null) {
+        typeNames.put(name, typeName);
+        return true;
+      }
+      types.put(name, type);
+      typeNames.put(name, typeName);
       return true;
     }
 

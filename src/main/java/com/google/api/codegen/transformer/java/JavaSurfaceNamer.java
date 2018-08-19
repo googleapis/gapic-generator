@@ -394,4 +394,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getToStringMethod() {
     return "Objects.toString";
   }
+
+  @Override
+  public String getPrintSpec(String spec) {
+    return spec;
+  }
+
+  @Override
+  public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return typeTable.getAndSaveNicknameForElementType(type);
+  }
 }
