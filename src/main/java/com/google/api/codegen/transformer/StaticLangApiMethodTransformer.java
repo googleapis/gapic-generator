@@ -637,10 +637,8 @@ public class StaticLangApiMethodTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
       resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
-      System.out.println("entered if");
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField);
-      System.out.println("entered else");
     }
 
     String iterateMethodName =

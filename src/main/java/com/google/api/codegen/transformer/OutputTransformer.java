@@ -143,7 +143,6 @@ class OutputTransformer {
         valueSet.getId(),
         definition.input());
     String identifier = definition.tokenStr();
-    System.out.println("working on define view for :" + identifier);
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
@@ -152,7 +151,6 @@ class OutputTransformer {
         definition.input());
     OutputView.VariableView reference =
         accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
-    // System.out.println("localVars.get(identifier): " + localVars.get(identifier));
     return OutputView.DefineView.newBuilder()
         .variableType(localVars.getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))

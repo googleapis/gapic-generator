@@ -1,5 +1,4 @@
 @extends "java/common.snip"
-#@extends "java/method_sample.snip"
 @extends "java/initcode.snip"
 
 @snippet generate(sampleFile)
@@ -65,7 +64,6 @@
     {@bidiStreamingCallableSampleCode(apiMethod, sample)} 
   @case "CallableStreamingClient"
     {@clientStreamingCallableSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
   @case "CallableStreamingServer"
     {@serverStreamingCallableSampleCode(apiMethod, sample)}
   @case "LongRunningCallable"
@@ -181,7 +179,6 @@
   {@initCode(sample.initCode)}
   bidiStream.send(request);
   for ({@apiMethod.callableMethod.genericAwareResponseType} response : bidiStream) {
-    // Do something when receive a response
     {@processResponse(sample)}
   }
 @end
@@ -243,7 +240,6 @@
 @end
 
 @private processDefineView(view)
-  {@view}
   {@view.variableType} {@view.variableName} = {@variableField(view.reference)};
 @end
 
@@ -254,13 +250,16 @@
     @if view.format == ""
       System.out.println({@variableField(view.args.get(0))});
     @else
-      System.out.printf("{@view.format}\n", {@concatenatedArgs(view.args)});
+      @if view.format == "%s"
+        System.out.println({@variableField(view.args.get(0))});
+      @else
+        System.out.printf("{@view.format}\n", {@concatenatedArgs(view.args)});
+      @end
     @end
   @end
 @end
 
 @private processLoopView(view)
-  {@view}
   for ({@view.variableType} {@view.variableName} : {@variableField(@view.collection)}) {
     {@processOutputViews(@view.body)}
   }
