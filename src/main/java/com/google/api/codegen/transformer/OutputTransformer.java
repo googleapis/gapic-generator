@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
@@ -201,53 +200,61 @@ class OutputTransformer {
     TypeModel type;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName(context));
+      boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
+      boolean pageStreamingAndUseResourceName =
+          pageStreaming
+              ? context
+                  .getFeatureConfig()
+                  .useResourceNameFormatOption(
+                      context.getMethodConfig().getPageStreaming().getResourcesFieldConfig())
+              : false;
 
-      if (context.getMethodConfig().getPageStreaming() != null) {
-        FieldConfig resourceFieldConfig =
-            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+      // Compute the resource name format of output type and save that to local variables
+      if (pageStreamingAndUseResourceName) {
+        String typeName =
+            context
+                .getNamer()
+                .getAndSaveElementResourceTypeName(
+                    context.getTypeTable(),
+                    context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
-        // change the element of the output of page streaming call to a resource name
-        if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
-          String typeName =
-              context
-                  .getNamer()
-                  .getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
+        Preconditions.checkArgument(
+            config.scan() == Scanner.EOF,
+            "%s:%s: accessing fields of resource names is not supported",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId());
 
+        if (newVar != null) {
           Preconditions.checkArgument(
-              config.scan() == Scanner.EOF,
-              "%s:%s: accessing fields of resource names is not supported",
+              !intoScalar,
+              "%s:%s: cannot parse a resource name into scalar",
               context.getMethodModel().getSimpleName(),
               valueSet.getId());
 
-          if (newVar != null) {
-            Preconditions.checkArgument(
-                !intoScalar,
-                "%s:%s: cannot parse a resource name into scalar",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId());
-
-            if (!localVars.put(newVar, null, typeName)) {
-              throw new IllegalStateException(
-                  String.format(
-                      "%s:%s: duplicated variable declaration not allowed: %s",
-                      context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
-            }
+          if (!localVars.put(newVar, null, typeName)) {
+            throw new IllegalStateException(
+                String.format(
+                    "%s:%s: duplicated variable declaration not allowed: %s",
+                    context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
           }
-          return view.accessors(ImmutableList.<String>of()).build();
-        } else {
-          type =
-              context
-                  .getMethodConfig()
-                  .getPageStreaming()
-                  .getResourcesFieldConfig()
-                  .getField()
-                  .getType()
-                  .makeOptional();
         }
+        return view.accessors(ImmutableList.<String>of()).build();
+      }
+
+      if (pageStreaming) {
+        type =
+            context
+                .getMethodConfig()
+                .getPageStreaming()
+                .getResourcesFieldConfig()
+                .getField()
+                .getType()
+                .makeOptional();
       } else {
         type = context.getMethodModel().getOutputType();
       }
-    } else {
+    } else { // Defining and assigning the value of a local variable. Reference the type from the
+      // local variable
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getType(baseIdentifier);
       if (type == null) {
@@ -409,12 +416,10 @@ class OutputTransformer {
       if (!sample.add(name)) {
         return false;
       }
-      if (type == null) {
-        typeNames.put(name, typeName);
-        return true;
-      }
-      types.put(name, type);
       typeNames.put(name, typeName);
+      if (type != null) {
+        types.put(name, type);
+      }
       return true;
     }
 
