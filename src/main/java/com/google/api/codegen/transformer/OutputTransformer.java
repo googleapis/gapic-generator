@@ -167,9 +167,9 @@ class OutputTransformer {
    *
    * <p>The config is type-checked. For example, indexing into a scalar field is not allowed. If
    * config refers to a local variable, the variable is looked up in {@code localVars}. If {@code
-   * newVar} is not null, it is registered into {@code localVars}. If {@code intoScalar} is true,
-   * the config must resolve to a collection type, and the type of the elements is registered
-   * instead.
+   * newVar} is not null, it is registered into {@code localVars}. If {@code
+   * scalarTypeForCollection} is true, the config must resolve to a collection type, and the type of
+   * the elements is registered instead.
    *
    * <pre><code>
    * Syntax:
@@ -185,7 +185,7 @@ class OutputTransformer {
       SampleValueSet valueSet,
       ScopeTable localVars,
       @Nullable String newVar,
-      boolean intoScalar) {
+      boolean scalarTypeForCollection) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
@@ -225,8 +225,8 @@ class OutputTransformer {
 
         if (newVar != null) {
           Preconditions.checkArgument(
-              !intoScalar,
-              "%s:%s: cannot parse a resource name into scalar",
+              !scalarTypeForCollection,
+              "%s:%s: resournce names can never be a repeated field",
               context.getMethodModel().getSimpleName(),
               valueSet.getId());
 
@@ -253,18 +253,16 @@ class OutputTransformer {
         type = context.getMethodModel().getOutputType();
       }
     } else {
-      // Defining and assigning the value of a local variable. Reference the type from the local
-      // variable
+      // Referencing the value of a local variable
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
-      type = localVars.getType(baseIdentifier);
+      type = localVars.getTypeModel(baseIdentifier);
       if (type == null) {
-        String typeName =
-            Preconditions.checkNotNull(
-                localVars.getTypeName(baseIdentifier),
-                "%s:%s: variable not defined: %s",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId(),
-                baseIdentifier);
+        Preconditions.checkNotNull(
+            localVars.getTypeName(baseIdentifier),
+            "%s:%s: variable not defined: %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            baseIdentifier);
         Preconditions.checkArgument(
             config.scan() == Scanner.EOF,
             "%s:%s: accessing fields of resource names is not supported",
@@ -326,7 +324,7 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
-      if (intoScalar) {
+      if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not a repeated field",
@@ -377,7 +375,7 @@ class OutputTransformer {
     }
 
     /** Gets the type of the variable. Returns null if the variable is not found. */
-    private TypeModel getType(String name) {
+    private TypeModel getTypeModel(String name) {
       ScopeTable table = this;
       while (table != null) {
         TypeModel type = table.types.get(name);
@@ -410,7 +408,7 @@ class OutputTransformer {
      * successful.
      *
      * <p>{@code type} could be left null if {@code typeName} is not associated with a {@code
-     * TypeModel}, for example, when {@code typeName} is a resource name.
+     * TypeModel}, like when {@code typeName} is a resource name.
      */
     private boolean put(String name, @Nullable TypeModel type, String typeName) {
       if (!sample.add(name)) {
