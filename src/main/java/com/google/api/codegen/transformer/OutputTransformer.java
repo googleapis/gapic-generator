@@ -203,11 +203,10 @@ class OutputTransformer {
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
       boolean pageStreamingAndUseResourceName =
           pageStreaming
-              ? context
+              && context
                   .getFeatureConfig()
                   .useResourceNameFormatOption(
-                      context.getMethodConfig().getPageStreaming().getResourcesFieldConfig())
-              : false;
+                      context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
       // Compute the resource name format of output type and save that to local variables
       if (pageStreamingAndUseResourceName) {
@@ -231,12 +230,12 @@ class OutputTransformer {
               context.getMethodModel().getSimpleName(),
               valueSet.getId());
 
-          if (!localVars.put(newVar, null, typeName)) {
-            throw new IllegalStateException(
-                String.format(
-                    "%s:%s: duplicated variable declaration not allowed: %s",
-                    context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
-          }
+          Preconditions.checkArgument(
+              localVars.put(newVar, null, typeName),
+              "%s:%s: duplicated variable declaration not allowed: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              newVar);
         }
         return view.accessors(ImmutableList.<String>of()).build();
       }
@@ -253,8 +252,9 @@ class OutputTransformer {
       } else {
         type = context.getMethodModel().getOutputType();
       }
-    } else { // Defining and assigning the value of a local variable. Reference the type from the
-      // local variable
+    } else {
+      // Defining and assigning the value of a local variable. Reference the type from the local
+      // variable
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getType(baseIdentifier);
       if (type == null) {
