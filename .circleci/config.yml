@@ -143,6 +143,26 @@ anchor_run_ruby: &anchor_run_ruby
         name: Test Logging.
         <<: *anchor_test_ruby_client
 
+anchor_test_php: &anchor_test_php
+  command: |
+    # Only run PHP API test if we have project credentials key
+    # or this API client doesn't require credentials.
+    # We can remove this if-check when https://github.com/googleapis/gapic-generator/issues/2235
+    # is resolved and unblocks PHP unit tests without credentials.
+    if ! [ -e ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API} ]
+    then
+      echo "PHP ${TEST_API} library was not generated."
+      exit 1
+    fi
+    if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
+    then
+      cd ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API}
+      composer install
+      composer update
+      vendor/bin/phpunit ${TESTS_DIR}
+    fi
+  when: always
+
 # ======================= JOBS =======================
 
 jobs:
@@ -207,7 +227,7 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
-  verify-and-test-java:
+  verify-and-test-java-openjdk8:
     working_directory: /tmp/
     environment:
       LANGUAGE: java
@@ -245,7 +265,7 @@ jobs:
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
     <<: *anchor_verify_and_test_python
-  verify-and-test-python-system:
+  verify-and-test-system-python:
     environment:
       <<: *anchor_auth_vars
       LANGUAGE: python
@@ -256,15 +276,51 @@ jobs:
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
     <<: *anchor_verify_and_test_python
-  verify-and-test-ruby:
+  verify-and-test-ruby-2.4:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake test"
     <<: *anchor_run_ruby
-  verify-and-test-ruby-system:
+  verify-and-test-system-ruby-2.4:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake acceptance"
       <<: *anchor_auth_vars
     <<: *anchor_run_ruby
+  verify-and-test-php-7.2:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: php
+      PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
+      TESTS_DIR: tests/Unit # Only run unit tests here.
+      <<: *anchor_artman_vars
+    docker:
+      - image: circleci/php:7.2.0-cli-stretch
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all PHP generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Prepare to test Pubsub
+          command: |
+            echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+            echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Pubsub client
+          <<: *anchor_test_php
+      - run:
+          name: Prepare to test Speech
+          command: |
+            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+            # Need creds for Speech client tests that make live calls to server
+            echo 'export KEY_REQUIRED=true' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Speech client
+          <<: *anchor_test_php
+      # Logging client needs common proto refresh before build will work:
+      # https://github.com/googleapis/gapic-generator/issues/2238
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
@@ -277,27 +333,32 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-      - verify-and-test-java:
+      - verify-and-test-java-openjdk8:
           requires:
             - generate-clients
       - verify-and-test-python:
           requires:
             - generate-clients
-      - verify-and-test-ruby:
+      - verify-and-test-ruby-2.4:
           requires:
             - generate-clients
-      - verify-and-test-python-system:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - verify-and-test-ruby-system:
+      - verify-and-test-system-python:
           requires:
             - generate-clients
           filters:
             branches:
               only: master
+      - verify-and-test-system-ruby-2.4:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - verify-and-test-php-7.2:
+          requires:
+            - generate-clients
+        # TODO: php smoke tests
+        # TODO: Other php versions
 
 machine:
   services:
