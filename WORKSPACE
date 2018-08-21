@@ -197,3 +197,10 @@ maven_jar(
     name = "org_objenesis_objenesis",
     artifact = "org.objenesis:objenesis:2.6",
 )
+
+# Tools dependencies
+
+http_jar(
+    name = "google_java_format_all_deps",
+    url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.6/google-java-format-1.6-all-deps.jar"
+)

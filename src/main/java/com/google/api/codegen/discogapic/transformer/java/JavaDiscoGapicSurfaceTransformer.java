@@ -83,11 +83,7 @@ public class JavaDiscoGapicSurfaceTransformer
   public List<ViewModel> transform(DiscoApiModel model, GapicProductConfig productConfig) {
     JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper,
-            packageMetadataConfig,
-            this,
-            RPC_STUB_TEMPLATE_FILENAME,
-            CALLABLE_FACTORY_TEMPLATE_FILENAME);
+            pathMapper, this, RPC_STUB_TEMPLATE_FILENAME, CALLABLE_FACTORY_TEMPLATE_FILENAME);
     return commonSurfaceTransformer.transform(model, productConfig);
   }
 
