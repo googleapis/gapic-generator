@@ -15,3 +15,16 @@ def gapic_generator_tests(name, srcs, runtime_deps, size):
             name = name,
             tests = classNames,
         )
+
+def google_java_format_srcs(name, srcs, formatter):
+    native.genrule(
+        name = name,
+        outs = ["%s.sh" % name],
+        srcs = srcs,
+        # TODO: this may fail is list of files is too long (exceeds max command line limit in shell).
+        #       Split the command into multiple executions if this ever fails (good enough for now)
+        cmd = "echo ' $(location %s) --replace $(SRCS)' > $@" % formatter,
+        executable = True,
+        tools = [formatter],
+        local = 1,
+    )
