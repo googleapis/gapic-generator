@@ -15,6 +15,7 @@
 package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -71,5 +72,9 @@ public class PythonRenderingUtil {
   /** @see CommonRenderingUtil#toInt(String) */
   public static int toInt(String value) {
     return CommonRenderingUtil.toInt(value);
+  }
+
+  public static List<String> pretty(Doc doc) {
+    return CommonRenderingUtil.pretty(doc);
   }
 }

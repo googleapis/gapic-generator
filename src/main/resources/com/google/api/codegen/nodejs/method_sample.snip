@@ -345,9 +345,10 @@
 
 @snippet initCode(apiMethod, init)
   @if init.argDefaultLines
-    // FIXME(pongad): should be commented to not clobber args
-    {@initCodeLines(init.argDefaultLines)}
-    // FIXME(pongad): args end
+    @join line : util.pretty(initCodeLines(init.argDefaultLines))
+      // {@line}
+    @end
+
 
   @end
   {@initCodeLines(init.lines)}
