@@ -39,7 +39,7 @@ public abstract class SampleValueSetView {
         .id(config.getId())
         .title(config.getTitle())
         .description(config.getDescription())
-        .parameters(config.getParametersList())
+        .parameters(config.getParameters().getDefaultsList())
         .build();
   }
 
