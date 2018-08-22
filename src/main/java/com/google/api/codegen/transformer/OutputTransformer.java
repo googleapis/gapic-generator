@@ -306,7 +306,7 @@ class OutputTransformer {
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type != null,
-            "%s:%s: a resource names can never be a repeated field",
+            "%s:%s: a resource name can never be a repeated field",
             context.getMethodModel().getSimpleName(),
             valueSet.getId());
 
@@ -317,6 +317,12 @@ class OutputTransformer {
             valueSet.getId(),
             config.input());
         type = type.makeOptional(); // "optional" is how protobuf defines singular fields
+      }
+      if (type == null && typeName == null) {
+        throw new IllegalStateException(
+            String.format(
+                "%s:%s: type and typeName can't be null at the same time",
+                context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
       }
       typeName =
           type == null
