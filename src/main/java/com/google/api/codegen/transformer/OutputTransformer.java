@@ -197,7 +197,8 @@ class OutputTransformer {
         config.input());
     String baseIdentifier = config.tokenStr();
 
-    TypeModel type;
+    TypeModel type = null;
+    String typeName = null;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName(context));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
@@ -208,39 +209,15 @@ class OutputTransformer {
                   .useResourceNameFormatOption(
                       context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
-      // Compute the resource name format of output type and save that to local variables
+      // Compute the resource name format of output type and store that in typeName
       if (pageStreamingAndUseResourceName) {
-        String typeName =
+        typeName =
             context
                 .getNamer()
                 .getAndSaveElementResourceTypeName(
                     context.getTypeTable(),
                     context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
-
-        Preconditions.checkArgument(
-            config.scan() == Scanner.EOF,
-            "%s:%s: accessing fields of resource names is not supported",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId());
-
-        if (newVar != null) {
-          Preconditions.checkArgument(
-              !scalarTypeForCollection,
-              "%s:%s: resournce names can never be a repeated field",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId());
-
-          Preconditions.checkArgument(
-              localVars.put(newVar, null, typeName),
-              "%s:%s: duplicated variable declaration not allowed: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
-              newVar);
-        }
-        return view.accessors(ImmutableList.<String>of()).build();
-      }
-
-      if (pageStreaming) {
+      } else if (pageStreaming) {
         type =
             context
                 .getMethodConfig()
@@ -257,18 +234,13 @@ class OutputTransformer {
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getTypeModel(baseIdentifier);
       if (type == null) {
-        Preconditions.checkNotNull(
-            localVars.getTypeName(baseIdentifier),
-            "%s:%s: variable not defined: %s",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
-            baseIdentifier);
-        Preconditions.checkArgument(
-            config.scan() == Scanner.EOF,
-            "%s:%s: accessing fields of resource names is not supported",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId());
-        return view.accessors(ImmutableList.<String>of()).build();
+        typeName =
+            Preconditions.checkNotNull(
+                localVars.getTypeName(baseIdentifier),
+                "%s:%s: variable not defined: %s",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId(),
+                baseIdentifier);
       }
     }
 
@@ -276,6 +248,12 @@ class OutputTransformer {
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
       if (token == '.') {
+        // TODO(hzyi): add support for accessing fields of resource name types
+        Preconditions.checkArgument(
+            type != null,
+            "%s:%s: accessing a field of a resource name is not currently supported",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId());
         Preconditions.checkArgument(
             type.isMessage(),
             "%s:%s: %s is not a message",
@@ -295,6 +273,7 @@ class OutputTransformer {
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
             config.input());
+
         String fieldName = config.tokenStr();
         FieldModel field =
             Preconditions.checkNotNull(
@@ -326,6 +305,12 @@ class OutputTransformer {
     if (newVar != null) {
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
+            type != null,
+            "%s:%s: a resource names can never be a repeated field",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId());
+
+        Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not a repeated field",
             context.getMethodModel().getSimpleName(),
@@ -333,11 +318,14 @@ class OutputTransformer {
             config.input());
         type = type.makeOptional(); // "optional" is how protobuf defines singular fields
       }
-      String typeName = context.getNamer().getAndSaveTypeName(context.getTypeTable(), type);
+      typeName =
+          type == null
+              ? typeName
+              : context.getNamer().getAndSaveTypeName(context.getTypeTable(), type);
       if (!localVars.put(newVar, type, typeName)) {
         throw new IllegalStateException(
             String.format(
-                "%s:%s: duplicated variable declaration not allowed: %s",
+                "%s:%s: duplicate variable declaration not allowed: %s",
                 context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
       }
     }
