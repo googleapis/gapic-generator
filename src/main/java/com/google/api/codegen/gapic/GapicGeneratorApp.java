@@ -59,6 +59,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "output_file",
           "The name of the output file or folder to put generated code.",
           "");
+  public static final Option<String> PROTO_PACKAGE =
+      ToolOptions.createOption(
+          String.class,
+          "proto_package",
+          "The proto package designating the files actually intended for output.\n"
+              + "This option is required if the GAPIC generator config files are not given.",
+          "");
 
   public static final Option<List<String>> GENERATOR_CONFIG_FILES =
       ToolOptions.createOption(
