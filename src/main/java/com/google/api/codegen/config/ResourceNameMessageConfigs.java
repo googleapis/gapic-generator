@@ -47,12 +47,16 @@ public abstract class ResourceNameMessageConfigs {
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Model model, ConfigProto configProto, String defaultPackage) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
-    for (ResourceNameMessageConfigProto messageResourceTypesProto :
-        configProto.getResourceNameGenerationList()) {
-      ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createResourceNameMessageConfig(
-              model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
-      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    if (configProto != null) {
+      // Get ResourceNameMessageConfigs from configProto.
+      for (ResourceNameMessageConfigProto messageResourceTypesProto :
+          configProto.getResourceNameGenerationList()) {
+        ResourceNameMessageConfig messageResourceTypeConfig =
+            ResourceNameMessageConfig.createResourceNameMessageConfig(
+                model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
+        builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+      }
+      // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
