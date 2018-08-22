@@ -7309,7 +7309,9 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
     String shelvesElement = "Classics";
     List<String> shelves = Arrays.asList(shelvesElement);
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
+
     // Do something
+
     for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
       ShelfBookName book = element;
       System.out.printf("Here's a related book: %s\n", book);
@@ -7446,7 +7448,9 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
       .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+
     // Do something
+
     for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
       ShelfBookName book = element;
       System.out.printf("Here's a related book: %s\n", book);
@@ -7555,7 +7559,9 @@ public class GetBigBookCallableCallableWap {
       .setName(name.toString())
       .build();
     ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
     // Do something
+
     Operation response = future.get();
     System.out.println(response);
     // [END hopper_core]
@@ -7593,7 +7599,9 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       .setName(name.toString())
       .build();
     OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
     // Do something
+
     Book response = future.get();
     System.out.println(response);
     // [END hopper_core]
@@ -7868,7 +7876,9 @@ public class PublishSeriesCallableCallablePiVersion {
       .setSeriesUuid(seriesUuid)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
     // Do something
+
     PublishSeriesResponse response = future.get();
     for (String title : response.getBookNamesList()) {
       System.out.printf("Title: %s\n", title);
@@ -7915,7 +7925,9 @@ public class PublishSeriesCallableCallableSecondEdition {
       .setEdition(edition)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
     // Do something
+
     PublishSeriesResponse response = future.get();
     System.out.println(response);
     // [END canonical_core]
