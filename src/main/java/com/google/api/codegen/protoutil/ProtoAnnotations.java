@@ -34,10 +34,6 @@ public class ProtoAnnotations {
             .get();
     AnnotationsProto.registerAllExtensions(registry);
     registry.toString();
-    //    for (DescriptorProtos.FieldDescriptorProto extension :
-    // annotationProto.getProto().getExtensionList()) {
-    //      registry.add(extension);
-    //    }
   }
 
   //  public static void parseExtension() {
