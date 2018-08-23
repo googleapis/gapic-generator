@@ -203,9 +203,7 @@ public class GapicGeneratorFactory {
                 .build();
 
         if (artifactFlags.codeFilesEnabled()) {
-          generators.add(
-              newJavaGenerator.apply(
-                  new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig)));
+          generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
           generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
         }
 
@@ -242,7 +240,7 @@ public class GapicGeneratorFactory {
               newJavaGenerator.apply(
                   new JavaSurfaceTestTransformer<>(
                       javaTestPathMapper,
-                      new JavaGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                      new JavaGapicSurfaceTransformer(javaTestPathMapper),
                       "java/grpc_test.snip")));
         }
       }

@@ -19,6 +19,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.SampleConfiguration;
 import com.google.api.codegen.SampleConfiguration.SampleTypeConfiguration;
+import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -52,11 +53,20 @@ public class SampleSpecTest {
   @Test
   public void valueSetsMatching() {
     SampleValueSet valueSetAlice =
-        SampleValueSet.newBuilder().setId("alice").addParameters("apple").build();
+        SampleValueSet.newBuilder()
+            .setId("alice")
+            .setParameters(SampleParameters.newBuilder().addDefaults("apple").build())
+            .build();
     SampleValueSet valueSetBob =
-        SampleValueSet.newBuilder().setId("bob").addParameters("banana").build();
+        SampleValueSet.newBuilder()
+            .setId("bob")
+            .setParameters(SampleParameters.newBuilder().addDefaults("banana").build())
+            .build();
     SampleValueSet valueSetAlison =
-        SampleValueSet.newBuilder().setId("alison").addParameters("apricot").build();
+        SampleValueSet.newBuilder()
+            .setId("alison")
+            .setParameters(SampleParameters.newBuilder().addDefaults("apricot").build())
+            .build();
 
     final MethodConfigProto methodConfigProto =
         MethodConfigProto.newBuilder()
