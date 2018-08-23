@@ -106,7 +106,7 @@ public class GeneratorMain {
           .argName("GAPIC-YAML")
           .required(true)
           .build();
-  private static final Option GAPIC_YAML_NON_REQUIRED_OPTION =
+  private static final Option GAPIC_YAML_NONREQUIRED_OPTION =
       Option.builder()
           .longOpt("gapic_yaml")
           .desc(
@@ -223,7 +223,7 @@ public class GeneratorMain {
     options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
     // TODO make required after artman passes this in
     options.addOption(LANGUAGE_NONREQUIRED_OPTION);
-    options.addOption(GAPIC_YAML_NON_REQUIRED_OPTION);
+    options.addOption(GAPIC_YAML_NONREQUIRED_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(OUTPUT_OPTION);
@@ -251,7 +251,7 @@ public class GeneratorMain {
 
     // TODO(andrealin): Write system tests to ensure at least one option given.
     checkAtLeastOneOption(cl, SERVICE_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
-    checkAtLeastOneOption(cl, GAPIC_YAML_NON_REQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
+    checkAtLeastOneOption(cl, GAPIC_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
     checkAtLeastOneOption(cl, PACKAGE_YAML2_OPTION, TARGET_API_PROTO_PACKAGE);
 
     toolOptions.set(
@@ -272,10 +272,10 @@ public class GeneratorMain {
           Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt())));
       checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
     }
-    if (cl.getOptionValues(GAPIC_YAML_NON_REQUIRED_OPTION.getLongOpt()) != null) {
+    if (cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
       toolOptions.set(
           GapicGeneratorApp.GENERATOR_CONFIG_FILES,
-          Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NON_REQUIRED_OPTION.getLongOpt())));
+          Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt())));
       checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
     }
     if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
@@ -448,7 +448,7 @@ public class GeneratorMain {
     }
   }
 
-  // Throws an exception if neither options were given.
+  // Throws an exception if neither option was given.
   private static void checkAtLeastOneOption(CommandLine cl, Option option1, Option option2) {
     if (cl.getOptionValues(option1.getLongOpt()) == null
         && cl.getOptionValues(option2.getLongOpt()) == null) {
