@@ -37,7 +37,7 @@ public class ProtoConfigMerger {
   }
 
   private ConfigMerger createMerger(Model model, String fileName) {
-    ConfigHelper helper = new ConfigHelper(model.getDiagCollector(), fileName);
+    ConfigHelper helper = new ConfigHelper(model.getDiagReporter().getDiagCollector(), fileName);
     String packageName = getPackageName(model, helper);
     if (packageName == null) {
       return null;
