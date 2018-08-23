@@ -36,7 +36,8 @@ languages = [
     "java",
     "python",
     "ruby",
-    "php"
+    "php",
+    "nodejs"
     # TODO: add other languages here.
 ]
 

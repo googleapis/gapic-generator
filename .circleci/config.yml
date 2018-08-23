@@ -163,6 +163,18 @@ anchor_test_php: &anchor_test_php
     fi
   when: always
 
+# Test a NodeJS client if generation succeeded.
+anchor_test_nodejs_client: &anchor_test_nodejs_client
+  command: |
+    if [ -e ${NODEJS_GEN_DIR}/google-cloud-${TEST_API} ]
+    then
+      echo ":)"
+    else
+      echo "Node ${TEST_API} library was not generated."
+      exit 1
+    fi
+  when: always
+
 # ======================= JOBS =======================
 
 jobs:
@@ -321,6 +333,46 @@ jobs:
           <<: *anchor_test_php
       # Logging client needs common proto refresh before build will work:
       # https://github.com/googleapis/gapic-generator/issues/2238
+  verify-and-test-nodejs-8:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: nodejs
+      NODEJS_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/nodejs
+      <<: *anchor_artman_vars
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all NodeJS generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Prepare to test Pubsub
+          command: |
+            echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Pubsub client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Speech
+          command: |
+            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Speech client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Logging
+          command: |
+            echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Logging client
+          <<: *anchor_test_nodejs_client
+      # Logging client needs common proto refresh before build will work:
+      # https://github.com/googleapis/gapic-generator/issues/2238
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
@@ -359,6 +411,9 @@ workflows:
             - generate-clients
         # TODO: php smoke tests
         # TODO: Other php versions
+      - verify-and-test-nodejs-8:
+          requires:
+            - generate-clients
 
 machine:
   services:
