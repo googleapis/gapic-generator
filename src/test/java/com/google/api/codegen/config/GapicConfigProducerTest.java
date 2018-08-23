@@ -43,15 +43,10 @@ public class GapicConfigProducerTest {
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
-<<<<<<< HEAD
-            model.getDiagCollector(), locator, new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto, null, TargetLanguage.JAVA);
-=======
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto, TargetLanguage.JAVA);
->>>>>>> api-compiler
+    productConfig = GapicProductConfig.create(model, configProto, null, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");

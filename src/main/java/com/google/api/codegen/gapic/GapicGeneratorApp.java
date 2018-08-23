@@ -132,7 +132,6 @@ public class GapicGeneratorApp extends ToolDriverBase {
       List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
       Adviser adviser = new Adviser(adviceSuppressors);
       adviser.advise(model, configProto);
-
     }
 
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
