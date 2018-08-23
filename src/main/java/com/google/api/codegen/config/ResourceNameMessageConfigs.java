@@ -71,8 +71,7 @@ public abstract class ResourceNameMessageConfigs {
               messageResourceTypeConfigMap.get(msg.getFullName());
           if (messageConfigFromConfig == null) {
             // Check proto annotation for resource name config.
-            if (msg.getOptionFields() != null)
-            continue;
+            if (msg.getOptionFields() != null) continue;
           }
           // TODO(adjust for proto annotation)
           for (Field field : msg.getFields()) {

@@ -63,7 +63,6 @@ ext {
     autovalue: 'com.google.auto.value:auto-value:1.6',
     autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
     commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
-    commonProtos: 'com.google.api.grpc:grpc-google-common-protos:1.0.5',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
     gson: 'com.google.code.gson:gson:2.3',
@@ -90,7 +89,7 @@ ext {
     // Formatter
     javaFormatter: 'com.google.googlejavaformat:google-java-format:1.6'
   ]
-}s
+}
 
 repositories {
   mavenLocal()
@@ -121,7 +120,6 @@ dependencies {
     libraries.truth8,
     libraries.toolsFxTesting,
     libraries.mockito,
-    libraries.commonProtos,
     libraries.junitParams
 
   annotationProcessor libraries.autovalue
@@ -170,6 +168,8 @@ sourceSets {
     proto {
       // Include proto sources for GAPIC generator config.
       srcDir 'src/main/proto'
+      // Include submodule api-common-protos.
+      srcDir 'src/modules/api-common-protos'
     }
     java {
       // Include location where proto plugin puts generated sources.
