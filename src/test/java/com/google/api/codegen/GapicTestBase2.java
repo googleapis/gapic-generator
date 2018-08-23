@@ -158,8 +158,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
 
-    GapicProductConfig productConfig =
-        GapicProductConfig.create(model, gapicConfig, language);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
