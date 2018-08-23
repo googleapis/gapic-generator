@@ -7272,7 +7272,7 @@ public class DiscussBookCallableCallableStreamingBidiProg {
       .build();
     bidiStream.send(request);
     for (Comment response : bidiStream) {
-      // Do something when receive a response
+      System.out.println(response);
     }
     // [END turing_prog_callable_streaming_bidi_core]
   }
@@ -7309,9 +7309,12 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
     String shelvesElement = "Classics";
     List<String> shelves = Arrays.asList(shelvesElement);
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
+
     // Do something
+
     for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      // doThingsWith(element);
+      ShelfBookName book = element;
+      System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
   }
@@ -7352,7 +7355,8 @@ public class FindRelatedBooksRequestPagedOdyssey {
       .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-      // doThingsWith(element);
+      ShelfBookName book = element;
+      System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
   }
@@ -7395,7 +7399,8 @@ public class FindRelatedBooksCallableCallableListOdyssey {
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
       for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
-        // doThingsWith(element);
+        ShelfBookName book = element;
+        System.out.printf("Here's a related book: %s\n", book);
       }
       String nextPageToken = response.getNextPageToken();
       if (!Strings.isNullOrEmpty(nextPageToken)) {
@@ -7443,9 +7448,12 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
       .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+
     // Do something
+
     for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      // doThingsWith(element);
+      ShelfBookName book = element;
+      System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
   }
@@ -7479,6 +7487,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
     // [START hopper_core]
     ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     Book response = libraryClient.getBigBookAsync(name.toString()).get();
+    System.out.println(response);
     // [END hopper_core]
   }
 }
@@ -7514,6 +7523,7 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
       .setName(name.toString())
       .build();
     Book response = libraryClient.getBigBookAsync(request).get();
+    System.out.println(response);
     // [END hopper_core]
   }
 }
@@ -7549,8 +7559,11 @@ public class GetBigBookCallableCallableWap {
       .setName(name.toString())
       .build();
     ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
     // Do something
+
     Operation response = future.get();
+    System.out.println(response);
     // [END hopper_core]
   }
 }
@@ -7586,8 +7599,11 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       .setName(name.toString())
       .build();
     OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
     // Do something
+
     Book response = future.get();
+    System.out.println(response);
     // [END hopper_core]
   }
 }
@@ -7622,7 +7638,7 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
         new ApiStreamObserver<Comment>() {
           @Override
           public void onNext(Comment response) {
-            // Do something when receive a response
+            System.out.println(response);
           }
 
           @Override
@@ -7684,6 +7700,10 @@ public class PublishSeriesFlattenedPiVersion {
       .setSeriesString(seriesString)
       .build();
     PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    for (String title : response.getBookNamesList()) {
+      System.out.printf("Title: %s\n", title);
+    }
+    System.out.println("That's all!");
     // [END canonical_core]
   }
 }
@@ -7719,6 +7739,7 @@ public class PublishSeriesFlattenedSecondEdition {
     int edition = 2;
     SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
     PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    System.out.println(response);
     // [END canonical_core]
   }
 }
@@ -7764,6 +7785,10 @@ public class PublishSeriesRequestPiVersion {
       .setSeriesUuid(seriesUuid)
       .build();
     PublishSeriesResponse response = libraryClient.publishSeries(request);
+    for (String title : response.getBookNamesList()) {
+      System.out.printf("Title: %s\n", title);
+    }
+    System.out.println("That's all!");
     // [END canonical_core]
   }
 }
@@ -7805,6 +7830,7 @@ public class PublishSeriesRequestSecondEdition {
       .setEdition(edition)
       .build();
     PublishSeriesResponse response = libraryClient.publishSeries(request);
+    System.out.println(response);
     // [END canonical_core]
   }
 }
@@ -7850,8 +7876,14 @@ public class PublishSeriesCallableCallablePiVersion {
       .setSeriesUuid(seriesUuid)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
     // Do something
+
     PublishSeriesResponse response = future.get();
+    for (String title : response.getBookNamesList()) {
+      System.out.printf("Title: %s\n", title);
+    }
+    System.out.println("That's all!");
     // [END canonical_core]
   }
 }
@@ -7893,8 +7925,11 @@ public class PublishSeriesCallableCallableSecondEdition {
       .setEdition(edition)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
     // Do something
+
     PublishSeriesResponse response = future.get();
+    System.out.println(response);
     // [END canonical_core]
   }
 }
@@ -7932,7 +7967,7 @@ public class StreamBooksCallableCallableStreamingServerProg {
 
     ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
     for (Book response : stream) {
-      // Do something when receive a response
+      System.out.println(response);
     }
     // [END babbage_core]
   }
@@ -7968,7 +8003,7 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
 
     ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
     for (StreamShelvesResponse response : stream) {
-      // Do something when receive a response
+      System.out.println(response);
     }
     // [END sample_core]
   }
