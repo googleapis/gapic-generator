@@ -121,7 +121,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public DiagCollector getDiagCollector() {
-    return protoModel.getDiagCollector();
+    return protoModel.getDiagReporter().getDiagCollector();
   }
 
   /** Helper to extract the types from the underlying model. */

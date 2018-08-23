@@ -78,7 +78,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     super.setupModel();
     gapicConfig =
         CodegenTestUtil.readConfig(
-            model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+            model.getDiagReporter().getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
         ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
@@ -95,8 +95,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       }
     }
     // TODO (garrettjones) depend on the framework to take care of this.
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       throw new IllegalArgumentException("Problem creating Generator");
@@ -151,8 +151,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   @Override
   public Map<String, ?> run() throws IOException {
     model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;
@@ -161,7 +161,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     GapicProductConfig productConfig =
         GapicProductConfig.create(model, gapicConfig, null, language);
     if (productConfig == null) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;

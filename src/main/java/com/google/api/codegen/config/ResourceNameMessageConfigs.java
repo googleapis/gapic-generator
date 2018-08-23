@@ -53,7 +53,9 @@ public abstract class ResourceNameMessageConfigs {
           configProto.getResourceNameGenerationList()) {
         ResourceNameMessageConfig messageResourceTypeConfig =
             ResourceNameMessageConfig.createResourceNameMessageConfig(
-                model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
+                model.getDiagReporter().getDiagCollector(),
+                messageResourceTypesProto,
+                defaultPackage);
         builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
       }
       // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.

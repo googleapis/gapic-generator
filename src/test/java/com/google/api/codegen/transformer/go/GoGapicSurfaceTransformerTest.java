@@ -62,12 +62,15 @@ public class GoGapicSurfaceTransformerTest {
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
-            model.getDiagCollector(), locator, new String[] {"myproto_gapic.yaml"});
+            model.getDiagReporter().getDiagCollector(),
+            locator,
+            new String[] {"myproto_gapic.yaml"});
 
     productConfig = GapicProductConfig.create(model, configProto, null, TargetLanguage.GO);
 
-    if (model.getDiagCollector().hasErrors()) {
-      throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
+    if (model.getDiagReporter().getDiagCollector().hasErrors()) {
+      throw new IllegalStateException(
+          model.getDiagReporter().getDiagCollector().getDiags().toString());
     }
   }
 
