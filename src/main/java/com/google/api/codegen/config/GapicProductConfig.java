@@ -118,7 +118,8 @@ public abstract class GapicProductConfig implements ProductConfig {
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
    * returned, and diagnostics are reported to the model.
    *
-   * @param protoPackage the value of the --package flag that indicates which protos are source protos
+   * @param protoPackage the value of the --package flag that indicates which protos are source
+   *     protos
    */
   @Nullable
   public static GapicProductConfig create(
