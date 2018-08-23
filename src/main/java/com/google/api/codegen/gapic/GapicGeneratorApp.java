@@ -109,30 +109,27 @@ public class GapicGeneratorApp extends ToolDriverBase {
   protected void process() throws Exception {
 
     // Read the YAML config and convert it to proto.
-    ConfigProto configProto = null;
-    if (options.get(GENERATOR_CONFIG_FILES).size() > 0) {
-      List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
-      if (configFileNames.size() == 0) {
-        error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
-        return;
-      }
-
-      ConfigSource configSource = loadConfigFromFiles(configFileNames);
-      if (configSource == null) {
-        return;
-      }
-
-      configProto = (ConfigProto) configSource.getConfig();
-      if (configProto == null) {
-        return;
-      }
-
-      model.establishStage(Merged.KEY);
-
-      List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
-      Adviser adviser = new Adviser(adviceSuppressors);
-      adviser.advise(model, configProto);
+    List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
+    if (configFileNames.size() == 0) {
+      error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
+      return;
     }
+
+    ConfigSource configSource = loadConfigFromFiles(configFileNames);
+    if (configSource == null) {
+      return;
+    }
+
+    ConfigProto configProto = (ConfigProto) configSource.getConfig();
+    if (configProto == null) {
+      return;
+    }
+
+    model.establishStage(Merged.KEY);
+
+    List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
+    Adviser adviser = new Adviser(adviceSuppressors);
+    adviser.advise(model, configProto);
 
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
@@ -155,17 +152,15 @@ public class GapicGeneratorApp extends ToolDriverBase {
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
     } else {
-      if (configProto == null || Strings.isNullOrEmpty(configProto.getLanguage())) {
+      String languageStr = configProto.getLanguage();
+      if (Strings.isNullOrEmpty(languageStr)) {
         throw new IllegalArgumentException(
             "Language not set by --language option or by gapic config.");
       }
-      language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
+      language = TargetLanguage.fromString(languageStr.toUpperCase());
     }
 
-    String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
-
-    GapicProductConfig productConfig =
-        GapicProductConfig.create(model, configProto, protoPackage, language);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
     if (productConfig == null) {
       return;
     }

@@ -60,8 +60,6 @@ public abstract class ResourceNameMessageConfigs {
       }
       // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.
     }
-
-    // Created from configProto.
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
@@ -70,15 +68,13 @@ public abstract class ResourceNameMessageConfigs {
       if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
         seenProtoFiles.add(protoFile.getSimpleName());
         for (MessageType msg : protoFile.getMessages()) {
-          ResourceNameMessageConfig messageConfigFromConfig =
+          ResourceNameMessageConfig messageConfig =
               messageResourceTypeConfigMap.get(msg.getFullName());
-          if (messageConfigFromConfig == null) {
-            // Check proto annotation for resource name config.
-            if (msg.getOptionFields() != null) continue;
+          if (messageConfig == null) {
+            continue;
           }
-          // TODO(adjust for proto annotation)
           for (Field field : msg.getFields()) {
-            if (messageConfigFromConfig.getEntityNameForField(field.getSimpleName()) != null) {
+            if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
               fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }

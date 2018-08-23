@@ -45,7 +45,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 /**
@@ -117,63 +116,33 @@ public abstract class GapicProductConfig implements ProductConfig {
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
    * returned, and diagnostics are reported to the model.
-   *
-   * @param protoPackage the value of the --package flag that indicates which protos are source
-   *     protos
    */
   @Nullable
   public static GapicProductConfig create(
-      Model model,
-      @Nullable ConfigProto configProto,
-      @Nullable String protoPackage,
-      TargetLanguage language) {
+      Model model, ConfigProto configProto, TargetLanguage language) {
 
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
-    ProtoFile file;
-    if (protoPackage != null) {
-      Optional<ProtoFile> maybeFile =
-          model
-              .getFiles()
-              .stream()
-              .filter(f -> f.getProto().getPackage().equals(protoPackage))
-              .findFirst();
-      if (maybeFile.isPresent()) {
-        file = maybeFile.get();
-      } else {
-        throw new IllegalArgumentException(
-            "Proto package \'%s\' was not found in any proto file in the descriptor set.");
-      }
-    } else if (configProto != null) {
-      file =
-          model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
-    } else {
-      throw new IllegalStateException(
-          "Either a proto package must be given , or a set of config files given");
-    }
-
+    ProtoFile file =
+        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     String defaultPackage = file.getProto().getPackage();
 
-    // TODO(andrealin): Handle null configProto here.
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model, configProto, defaultPackage);
 
-    // TODO(andrealin): Handle null configProto here.
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
             model.getDiagReporter().getDiagCollector(), configProto, file, language);
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
-    // TODO(andrealin): Handle null configProto here.
     LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    // TODO(andrealin): Handle null configProto here.
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
@@ -187,7 +156,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
     try {
-      // TODO(andrealin): Handle null configProto here.
       LicenseHeaderProto licenseHeader =
           configProto
               .getLicenseHeader()
@@ -206,7 +174,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
-    // TODO(andrealin): Handle null configProto here.
     String configSchemaVersion = configProto.getConfigSchemaVersion();
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
@@ -238,32 +205,27 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   public static GapicProductConfig create(
       DiscoApiModel model, ConfigProto configProto, TargetLanguage language) {
-    // TODO(andrealin): Handle null configProto here.
     String defaultPackage =
         configProto
             .getLanguageSettingsMap()
             .get(language.toString().toLowerCase())
             .getPackageName();
 
-    // TODO(andrealin): Handle null configProto here.
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model, configProto, defaultPackage);
 
-    // TODO(andrealin): Handle null configProto here.
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(model.getDiagCollector(), configProto, null, language);
 
     TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
-    // TODO(andrealin): Handle null configProto here.
     LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    // TODO(andrealin): Handle null configProto here.
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
             model, configProto, settings, messageConfigs, resourceNameConfigs, language);
@@ -271,7 +233,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
     try {
-      // TODO(andrealin): Handle null configProto here.
       LicenseHeaderProto licenseHeader =
           configProto
               .getLicenseHeader()
@@ -288,7 +249,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
-    // TODO(andrealin): Handle null configProto here.
     String configSchemaVersion = configProto.getConfigSchemaVersion();
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
