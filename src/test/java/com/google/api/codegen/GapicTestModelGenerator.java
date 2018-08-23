@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.model.Experiments;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.model.testing.TestModelGenerator;
@@ -27,7 +28,8 @@ public class GapicTestModelGenerator extends TestModelGenerator {
   }
 
   @Override
-  public TestConfig createTestConfig(String tempDir, List<String> protoFiles) {
+  public TestConfig createTestConfig(
+      String tempDir, List<String> protoFiles, Experiments experiments) {
     return new GapicTestConfig(getTestDataLocator(), tempDir, protoFiles);
   }
 }

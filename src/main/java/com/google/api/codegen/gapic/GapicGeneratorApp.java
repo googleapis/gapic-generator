@@ -131,8 +131,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
     Adviser adviser = new Adviser(adviceSuppressors);
     adviser.advise(model, configProto);
 
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return;
@@ -212,13 +212,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
   private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
-    if (model.getDiagCollector().getErrorCount() > 0) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return null;
     }
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    return MultiYamlReader.read(model.getDiagCollector(), configFiles, supportedConfigTypes);
+    return MultiYamlReader.read(
+        model.getDiagReporter().getDiagCollector(), configFiles, supportedConfigTypes);
   }
 
   private List<File> pathsToFiles(List<String> configFileNames) {
@@ -237,10 +238,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
   }
 
   private void error(String message, Object... args) {
-    model.getDiagCollector().addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+    model
+        .getDiagReporter()
+        .getDiagCollector()
+        .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
   }
 
   private void warning(String message, Object... args) {
-    model.getDiagCollector().addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
+    model
+        .getDiagReporter()
+        .getDiagCollector()
+        .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }
