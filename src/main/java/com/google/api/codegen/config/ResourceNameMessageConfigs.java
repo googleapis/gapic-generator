@@ -47,13 +47,18 @@ public abstract class ResourceNameMessageConfigs {
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Model model, ConfigProto configProto, String defaultPackage) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
-    for (ResourceNameMessageConfigProto messageResourceTypesProto :
-        configProto.getResourceNameGenerationList()) {
-      ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createResourceNameMessageConfig(
-              model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
-      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    if (configProto != null) {
+      // Get ResourceNameMessageConfigs from configProto.
+      for (ResourceNameMessageConfigProto messageResourceTypesProto :
+          configProto.getResourceNameGenerationList()) {
+        ResourceNameMessageConfig messageResourceTypeConfig =
+            ResourceNameMessageConfig.createResourceNameMessageConfig(
+                model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
+        builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+      }
     }
+
+    // Created from configProto.
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
@@ -62,13 +67,15 @@ public abstract class ResourceNameMessageConfigs {
       if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
         seenProtoFiles.add(protoFile.getSimpleName());
         for (MessageType msg : protoFile.getMessages()) {
-          ResourceNameMessageConfig messageConfig =
+          ResourceNameMessageConfig messageConfigFromConfig =
               messageResourceTypeConfigMap.get(msg.getFullName());
-          if (messageConfig == null) {
-            continue;
+          if (messageConfigFromConfig == null) {
+            // Check proto annotation for resource name config.
+            if (msg.getOptionFields() != null) continue;
           }
+          // TODO(adjust for proto annotation)
           for (Field field : msg.getFields()) {
-            if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
+            if (messageConfigFromConfig.getEntityNameForField(field.getSimpleName()) != null) {
               fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }
