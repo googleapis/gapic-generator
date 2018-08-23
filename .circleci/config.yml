@@ -319,8 +319,16 @@ jobs:
       - run:
           name: Test PHP Speech client
           <<: *anchor_test_php
-      # Logging client needs common proto refresh before build will work:
-      # https://github.com/googleapis/gapic-generator/issues/2238
+      - run:
+          name: Prepare to test Logging
+          command: |
+            echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+            # Need creds for Speech client tests that make live calls to server
+            echo 'export KEY_REQUIRED=true' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test PHP Speech client
+          <<: *anchor_test_php
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
