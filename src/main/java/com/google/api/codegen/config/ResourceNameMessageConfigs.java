@@ -89,7 +89,9 @@ public abstract class ResourceNameMessageConfigs {
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
           ResourceNameMessageConfig.createResourceNameMessageConfig(
-              model.getDiagReporter().getDiagCollector(), messageResourceTypesProto, defaultPackage);
+              model.getDiagReporter().getDiagCollector(),
+              messageResourceTypesProto,
+              defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();

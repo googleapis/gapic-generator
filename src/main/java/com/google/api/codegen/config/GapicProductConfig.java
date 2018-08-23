@@ -132,7 +132,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagReporter().getDiagCollector(), configProto, file, language);
+        createResourceNameConfigs(
+            model.getDiagReporter().getDiagCollector(), configProto, file, language);
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
@@ -161,11 +162,13 @@ public abstract class GapicProductConfig implements ProductConfig {
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      copyrightLines = loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+      copyrightLines =
+          loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
       licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
     } catch (Exception e) {
       model
-          .getDiagReporter().getDiagCollector()
+          .getDiagReporter()
+          .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
       throw new RuntimeException(e);
@@ -175,7 +178,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       model
-          .getDiagReporter().getDiagCollector()
+          .getDiagReporter()
+          .getDiagCollector()
           .addDiag(
               Diag.error(
                   SimpleLocation.TOPLEVEL,
@@ -238,7 +242,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
       licenseLines = getResourceLines(licenseHeader.getLicenseFile());
     } catch (Exception e) {
-      model.getDiagCollector()
+      model
+          .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
       throw new RuntimeException(e);
@@ -247,7 +252,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     String configSchemaVersion = configProto.getConfigSchemaVersion();
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
-      model.getDiagCollector()
+      model
+          .getDiagCollector()
           .addDiag(
               Diag.error(
                   SimpleLocation.TOPLEVEL,

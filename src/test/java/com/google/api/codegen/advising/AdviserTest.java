@@ -14,14 +14,24 @@
  */
 package com.google.api.codegen.advising;
 
+import com.google.api.Service;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
+import com.google.api.tools.framework.model.ConfigAspect;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.annotation.Nullable;
 
 public class AdviserTest extends ConfigBaselineTestCase {
   private ConfigProto configProto;
@@ -29,8 +39,11 @@ public class AdviserTest extends ConfigBaselineTestCase {
 
   @Override
   public Object run() throws Exception {
-    model.addSupressionDirective(model, "control-*");
-    model.getDiagSuppressor().addPattern(model, "http:.*");
+    model
+        .getDiagReporter()
+        .getDiagSuppressor()
+        .addSuppressionDirective(model, "<aspect>-*", Arrays.asList());
+    model.getDiagReporter().getDiagSuppressor().addPattern(model, "http:.*");
     model.establishStage(Merged.KEY);
     adviser.advise(model, configProto);
     return "";

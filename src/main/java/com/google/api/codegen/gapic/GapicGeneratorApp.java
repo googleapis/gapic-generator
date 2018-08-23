@@ -218,7 +218,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    return MultiYamlReader.read(model.getDiagReporter().getDiagCollector(), configFiles, supportedConfigTypes);
+    return MultiYamlReader.read(
+        model.getDiagReporter().getDiagCollector(), configFiles, supportedConfigTypes);
   }
 
   private List<File> pathsToFiles(List<String> configFileNames) {
@@ -237,10 +238,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
   }
 
   private void error(String message, Object... args) {
-    model.getDiagReporter().getDiagCollector().addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+    model
+        .getDiagReporter()
+        .getDiagCollector()
+        .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
   }
 
   private void warning(String message, Object... args) {
-    model.getDiagReporter().getDiagCollector().addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
+    model
+        .getDiagReporter()
+        .getDiagCollector()
+        .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }
