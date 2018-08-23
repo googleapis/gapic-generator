@@ -22,6 +22,7 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
@@ -351,25 +352,26 @@ class OutputTransformer {
    * block-scoped in many static languages, and we should error if the spec uses a variable not in
    * the nested blocks currently in scope.
    */
-  private static class ScopeTable {
+  @VisibleForTesting
+  static class ScopeTable {
     private final Set<String> sample;
     @Nullable private final ScopeTable parent;
     private final Map<String, TypeModel> types = new HashMap<>();
     private final Map<String, String> typeNames = new HashMap<>();
 
-    private ScopeTable() {
+    ScopeTable() {
       sample = new HashSet<>();
       parent = null;
     }
 
-    private ScopeTable(ScopeTable parent) {
+    ScopeTable(ScopeTable parent) {
       Preconditions.checkNotNull(parent);
       sample = parent.sample;
       this.parent = parent;
     }
 
     /** Gets the type of the variable. Returns null if the variable is not found. */
-    private TypeModel getTypeModel(String name) {
+    TypeModel getTypeModel(String name) {
       ScopeTable table = this;
       while (table != null) {
         TypeModel type = table.types.get(name);
@@ -385,7 +387,7 @@ class OutputTransformer {
      * Gets the type name of the variable. Returns null if the variable is not found. This is mostly
      * used for resource name since they do not have a {@code TypeModel}.
      */
-    private String getTypeName(String name) {
+    String getTypeName(String name) {
       ScopeTable table = this;
       while (table != null) {
         String typeName = table.typeNames.get(name);
@@ -404,7 +406,7 @@ class OutputTransformer {
      * <p>{@code type} could be left null if {@code typeName} is not associated with a {@code
      * TypeModel}, like when {@code typeName} is a resource name.
      */
-    private boolean put(String name, @Nullable TypeModel type, String typeName) {
+    boolean put(String name, @Nullable TypeModel type, String typeName) {
       if (!sample.add(name)) {
         return false;
       }
