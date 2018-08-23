@@ -50,7 +50,7 @@ public class Adviser {
 
       for (String message : rule.collectAdvice(model, configProto)) {
         model
-            .getDiagCollector()
+            .getDiagReporter().getDiagCollector()
             .addDiag(Diag.warning(GAPIC_CONFIG_LOCATION, "(%s) %s", rule.getName(), message));
       }
     }

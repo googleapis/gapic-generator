@@ -56,13 +56,13 @@ public class GapicGenerator implements CodeGenerator<Doc> {
   public Map<String, GeneratedResult<Doc>> generate() {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
     List<ViewModel> surfaceDocs =
         modelToViewTransformer.transform(new ProtoApiModel(model), productConfig);
-    if (model.getDiagCollector().getErrorCount() > 0) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
