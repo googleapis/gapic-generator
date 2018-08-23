@@ -25,6 +25,12 @@ public abstract class InitCodeView {
    */
   public abstract List<InitCodeLineView> argDefaultLines();
 
+  /**
+   * Used by standalone samples, where the sample themselves are enclosed within a function. Params
+   * of the sample-containing function.
+   */
+  public abstract List<InitCodeLineView> argDefaultParams();
+
   /** The "normal" init lines. */
   public abstract List<InitCodeLineView> lines();
 
@@ -56,6 +62,8 @@ public abstract class InitCodeView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder argDefaultLines(List<InitCodeLineView> val);
+
+    public abstract Builder argDefaultParams(List<InitCodeLineView> val);
 
     public abstract Builder lines(List<InitCodeLineView> val);
 

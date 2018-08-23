@@ -4093,20 +4093,21 @@ def lint_setup_py(session):
 
 from google.cloud.example import library_v1
 
-# [START turing_prog_request_streaming_bidi_core]
+def some_func():
+  # [START turing_prog_request_streaming_bidi_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
-request = {'name': name}
+  name = 'BASIC'
+  request = {'name': name}
 
-requests = [request]
-for element in client.discuss_book(requests):
-    # process element
-    pass
-print(response)
+  requests = [request]
+  for element in client.discuss_book(requests):
+      # process element
+      pass
+  print(response)
 
-# [END turing_prog_request_streaming_bidi_core]
+  # [END turing_prog_request_streaming_bidi_core]
 
 # [END turing_prog_request_streaming_bidi]
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_all_odyssey.py ==============
@@ -4121,21 +4122,22 @@ print(response)
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def some_func():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-names_element = 'Odyssey'
-names = [names_element]
-shelves_element = 'Classics'
-shelves = [shelves_element]
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
 
-# Iterate over all results
-for element in client.find_related_books(names, shelves):
-    book = element
-    print('Here\'s a related book: {}'.format(book))
+  # Iterate over all results
+  for element in client.find_related_books(names, shelves):
+      book = element
+      print('Here\'s a related book: {}'.format(book))
 
-# [END sample_core]
+  # [END sample_core]
 
 # [END sample]
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_odyssey.py ==============
@@ -4150,22 +4152,23 @@ for element in client.find_related_books(names, shelves):
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def some_func():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-names_element = 'Odyssey'
-names = [names_element]
-shelves_element = 'Classics'
-shelves = [shelves_element]
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
 
-# Iterate over results one page at a time
-for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
-    for element in page:
-        book = element
-        print('Here\'s a related book: {}'.format(book))
+  # Iterate over results one page at a time
+  for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+      for element in page:
+          book = element
+          print('Here\'s a related book: {}'.format(book))
 
-# [END sample_core]
+  # [END sample_core]
 
 # [END sample]
 ============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_long_running_promise_wap.py ==============
@@ -4180,25 +4183,26 @@ for page in client.find_related_books(names, shelves, options=CallOptions(page_t
 
 from google.cloud.example import library_v1
 
-# [START hopper_core]
+def some_func():
+  # [START hopper_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-response = client.get_big_book(name)
+  response = client.get_big_book(name)
 
-def callback(operation_future):
-    # Handle result.
-    result = operation_future.result()
+  def callback(operation_future):
+      # Handle result.
+      result = operation_future.result()
 
-response.add_done_callback(callback)
+  response.add_done_callback(callback)
 
-# Handle metadata.
-metadata = response.metadata()
-print(response)
+  # Handle metadata.
+  metadata = response.metadata()
+  print(response)
 
-# [END hopper_core]
+  # [END hopper_core]
 
 # [END hopper]
 ============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
@@ -4213,18 +4217,19 @@ print(response)
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def some_func():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
-request = {'name': name}
+  name = 'BASIC'
+  request = {'name': name}
 
-requests = [request]
-response = client.monolog_about_book(requests)
-print(response)
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(response)
 
-# [END sample_core]
+  # [END sample_core]
 
 # [END sample]
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_pi_version.py ==============
@@ -4239,25 +4244,26 @@ print(response)
 
 from google.cloud.example import library_v1
 
-# [START canonical_core]
+def some_func(name):
+  # [START canonical_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-# name = 'Math'
+  # name = 'Math'
 
-shelf = {'name': name}
+  shelf = {'name': name}
 
-# TODO: Initialize ``books``:
-books = []
-series_string = 'xyz3141592654'
-series_uuid = {'series_string': series_string}
+  # TODO: Initialize ``books``:
+  books = []
+  series_string = 'xyz3141592654'
+  series_uuid = {'series_string': series_string}
 
-response = client.publish_series(shelf, books, series_uuid)
-for title in response.book_names:
-  print('Title: {}'.format(title))
-print('That\'s all!')
+  response = client.publish_series(shelf, books, series_uuid)
+  for title in response.book_names:
+    print('Title: {}'.format(title))
+  print('That\'s all!')
 
-# [END canonical_core]
+  # [END canonical_core]
 
 # [END canonical]
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_second_edition.py ==============
@@ -4272,24 +4278,25 @@ print('That\'s all!')
 
 from google.cloud.example import library_v1
 
-# [START canonical_core]
+def some_func():
+  # [START canonical_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-# TODO: Initialize ``shelf``:
-shelf = {}
+  # TODO: Initialize ``shelf``:
+  shelf = {}
 
-# TODO: Initialize ``books``:
-books = []
+  # TODO: Initialize ``books``:
+  books = []
 
-# TODO: Initialize ``series_uuid``:
-series_uuid = {}
-edition = 2
+  # TODO: Initialize ``series_uuid``:
+  series_uuid = {}
+  edition = 2
 
-response = client.publish_series(shelf, books, series_uuid, edition=edition)
-print(response)
+  response = client.publish_series(shelf, books, series_uuid, edition=edition)
+  print(response)
 
-# [END canonical_core]
+  # [END canonical_core]
 
 # [END canonical]
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_books/stream_books_request_streaming_server_prog.py ==============
@@ -4304,18 +4311,19 @@ print(response)
 
 from google.cloud.example import library_v1
 
-# [START lovelace_core]
+def some_func():
+  # [START lovelace_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
+  name = 'BASIC'
 
-for element in client.stream_books(name):
-    # process element
-    pass
-print(response)
+  for element in client.stream_books(name):
+      # process element
+      pass
+  print(response)
 
-# [END lovelace_core]
+  # [END lovelace_core]
 
 # [END lovelace]
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_request_streaming_server_empty.py ==============
@@ -4330,16 +4338,17 @@ print(response)
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def some_func():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-for element in client.stream_shelves():
-    # process element
-    pass
-print(response)
+  for element in client.stream_shelves():
+      # process element
+      pass
+  print(response)
 
-# [END sample_core]
+  # [END sample_core]
 
 # [END sample]
 ============== file: setup.cfg ==============

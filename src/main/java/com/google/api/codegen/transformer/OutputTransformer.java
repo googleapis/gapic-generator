@@ -43,7 +43,7 @@ class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static List<OutputView> toViews(
+  static ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
     ScopeTable localVars = new ScopeTable();
     return configs
