@@ -20,14 +20,15 @@ import java.util.List;
 @AutoValue
 public abstract class InitCodeView {
   /**
-   * Used by standalone samples, where the sample themselves are enclosed within a function. These
-   * lines contain inits for values that are passed into function parameters.
+   * Used by standalone samples, each of which includes a function that performs the request
+   * creation, client library call, and response processing. These lines contain inits for values
+   * that are passed into function parameters.
    */
   public abstract List<InitCodeLineView> argDefaultLines();
 
   /**
-   * Used by standalone samples, where the sample themselves are enclosed within a function. Params
-   * of the sample-containing function.
+   * A subset of {@code argDefaultLines}, containing only the params themselves, not the value they
+   * depend on. Used to render the sample function parameters.
    */
   public abstract List<InitCodeLineView> argDefaultParams();
 

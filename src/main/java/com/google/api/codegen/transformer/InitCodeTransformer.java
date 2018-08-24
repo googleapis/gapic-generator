@@ -268,9 +268,9 @@ public class InitCodeTransformer {
    *     values that become arguments to the method.
    * @param sampleFuncParams Used by standalone samples, where each client library method call is
    *     contained within a function that's part of the sample. These nodes contain values that are
-   *     passed into function parameters. Unlike {@code orderedItems}, the {@code sampleFuncParams}
-   *     are "deep". The init code for these nodes and their children are commented out so that they
-   *     don't clobber the function arguments.
+   *     passed into the sample function parameters. Unlike {@code orderedItems}, the {@code
+   *     sampleFuncParams} are "deep". The init code for these nodes and their children are
+   *     commented out so that they don't clobber the function arguments.
    */
   private InitCodeView buildInitCodeView(
       MethodContext context,
