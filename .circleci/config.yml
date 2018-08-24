@@ -301,6 +301,7 @@ jobs:
                 google/pubsub/artman_pubsub.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
       - run:
           name: Generate Logging Libraries
           command: |
@@ -309,6 +310,7 @@ jobs:
                 google/logging/artman_logging.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
       - run:
           name: Generate Speech Libraries
           command: |
@@ -317,6 +319,7 @@ jobs:
                 google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
       - run:
           name: Generate Showcase Libraries
           command: |
@@ -327,6 +330,7 @@ jobs:
                 --log=--log-dir=${ARTMAN_REPORTS_DIR} \
                 --languages=ruby \
                 --root-dir=/tmp/workspace/showcase-protos
+          when: always
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
