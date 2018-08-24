@@ -57,12 +57,12 @@ def generate_clients(root_dir, languages, artman_config, log_dir, user_config):
                               log_file,
                               user_config):
             msg = 'Failed to generate %s of %s.' % (
-                target, artman_yaml_path)
+                target, artman_config)
             failure.append(msg)
             lang_success = False
         else:
             msg = 'Succeded to generate %s of %s.' % (
-                target, artman_yaml_path)
+                target, artman_config)
             success.append(msg)
         logger.info(msg)
     if not lang_success:
