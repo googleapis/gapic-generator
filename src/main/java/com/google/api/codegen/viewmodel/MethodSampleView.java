@@ -15,7 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /** A view model for methods samples. */
 @AutoValue
@@ -31,7 +31,7 @@ public abstract class MethodSampleView {
   public abstract InitCodeView initCode();
 
   /** The response printing code. */
-  public abstract List<OutputView> outputs();
+  public abstract ImmutableList<OutputView> outputs();
 
   /** The region tag to be used for this sample. */
   public abstract String regionTag();
@@ -48,7 +48,7 @@ public abstract class MethodSampleView {
 
     public abstract Builder initCode(InitCodeView val);
 
-    public abstract Builder outputs(List<OutputView> val);
+    public abstract Builder outputs(ImmutableList<OutputView> val);
 
     public abstract Builder regionTag(String val);
 
