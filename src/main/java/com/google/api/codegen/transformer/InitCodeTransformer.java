@@ -261,14 +261,12 @@ public class InitCodeTransformer {
   /**
    * Transform {@code InitCodeNode}s into {@code InitCodeView}.
    *
-   * @param orderedItems These nodes are converted into request-initialization code. The
+   * @param orderedItems These nodes are converted into request-initialization code. It contains all initializations regardless of whether they are parameters to the sample function. The
    *     initialization is "shallow": children nodes are not initialized. If children nodes should
    *     also be initialized, callers must also include them in the list.
    * @param libArguments Used by samples for flattened client lib methods. These nodes contain
    *     values that become arguments to the method.
-   * @param sampleFuncParams Used by standalone samples, where each client library method call is
-   *     contained within a function that's part of the sample. These nodes contain values that are
-   *     passed into the sample function parameters. Unlike {@code orderedItems}, the {@code
+   * @param sampleFuncParams Subset of {@code orderedItems} containing only items that are function parameters. Unlike {@code orderedItems}, the {@code
    *     sampleFuncParams} are "deep". The init code for these nodes and their children are
    *     commented out so that they don't clobber the function arguments.
    */
