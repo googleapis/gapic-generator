@@ -164,7 +164,7 @@ if __name__ == '__main__':
     for f in os.listdir(log_dir):
         os.remove(os.path.join(log_dir, f))
 
-    successes = generate_clients(root_dir, flags.languages, flags.artman_config, log, user_config)
+    successes = generate_clients(root_dir, flags.languages, flags.artman_config, log_dir, user_config)
 
     # Exit with success if there were any successful generations.
     if successes:
