@@ -110,26 +110,25 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
-    if (configFileNames.size() == 0) {
-      error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
-      return;
+
+    ConfigProto configProto = null;
+    if (configFileNames.size() > 0) {
+      ConfigSource configSource = loadConfigFromFiles(configFileNames);
+      if (configSource == null) {
+        return;
+      }
+
+      configProto = (ConfigProto) configSource.getConfig();
+      if (configProto == null) {
+        return;
+      }
+
+      model.establishStage(Merged.KEY);
+
+      List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
+      Adviser adviser = new Adviser(adviceSuppressors);
+      adviser.advise(model, configProto);
     }
-
-    ConfigSource configSource = loadConfigFromFiles(configFileNames);
-    if (configSource == null) {
-      return;
-    }
-
-    ConfigProto configProto = (ConfigProto) configSource.getConfig();
-    if (configProto == null) {
-      return;
-    }
-
-    model.establishStage(Merged.KEY);
-
-    List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
-    Adviser adviser = new Adviser(adviceSuppressors);
-    adviser.advise(model, configProto);
 
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
@@ -152,12 +151,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
     } else {
-      String languageStr = configProto.getLanguage();
-      if (Strings.isNullOrEmpty(languageStr)) {
+      if (configProto == null || Strings.isNullOrEmpty(configProto.getLanguage())) {
         throw new IllegalArgumentException(
             "Language not set by --language option or by gapic config.");
       }
-      language = TargetLanguage.fromString(languageStr.toUpperCase());
+      language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
     }
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
