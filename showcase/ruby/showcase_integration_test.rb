@@ -27,6 +27,19 @@ describe Google::Showcase::V1alpha1::EchoClient do
       # Verify the response
       assert_equal(expected_response, response)
     end
+
+    it 'invokes echo with error' do
+      # Create expected grpc response
+      error = {
+        code: 13, # 500 internal service error
+        message: "Errors errors errors!"
+      }
+      # Call method
+      response = @client.echo(error: error)
+
+      # Verify the response
+      assert_equal(expected_response, response)
+    end
   end
 
   describe 'wait' do

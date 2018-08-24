@@ -42,6 +42,7 @@ logger.setLevel(logging.INFO)
 
 
 def generate_clients(root_dir, languages, artman_config, log, user_config):
+    log = os.path.join(log_dir, "smoketest.log")
     log_file = _setup_logger(log)
     failure = []
     success = []
@@ -66,9 +67,9 @@ def generate_clients(root_dir, languages, artman_config, log, user_config):
                     target, artman_yaml_path)
                 success.append(msg)
             logger.info(msg)
-        if lang_success:
+        if not lang_success:
             # Output the [language.log] file.
-            write_lang_success_log(language, log_dir)
+            write_lang_error_log(language, log_dir)
 
     logger.info('================ Library Generation Summary ================')
     if not warning or not failure:
@@ -110,11 +111,11 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 
-def write_lang_success_log(language, log_dir):
+def write_lang_error_log(language, log_dir):
     file_name = "%s.log" % language
     filepath = os.path.join(log_dir, file_name)
     with open(filepath,"w") as f:
-        f.write("Success.")
+        f.write("Error.")
 
 
 def parse_args(*args):

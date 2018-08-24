@@ -29,17 +29,17 @@ anchor_run_decrypt: &anchor_run_decrypt
 
 anchor_check_generation: &anchor_check_generation
   command: |
-    # Generation for a language passed if there exists a [language].log
-    # which was outputted by generate_clients.py upon success.
+    # Generation for a language failed if there exists a [language].log
+    # which was outputted by generate_clients.py upon failure.
     # LANGUAGE must be set in BASH_ENV in a prior command.
     if [ -e ${ARTMAN_REPORTS_DIR}/${LANGUAGE}.log ]
     then
-      echo "All client generations for ${LANGUAGE} succeeded."
-      exit 0
-    else
       echo "Not all client generations for ${LANGUAGE} succeeded."
       echo "See artman generation log at /tmp/workspace/reports/generations/smoketest.log."
       exit 1
+    else
+      echo "All client generations for ${LANGUAGE} succeeded."
+      exit 0
     fi
 
 # Test a Ruby client if generation succeeded.
