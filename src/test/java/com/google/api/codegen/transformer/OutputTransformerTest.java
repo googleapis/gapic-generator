@@ -28,14 +28,6 @@ public class OutputTransformerTest {
   private ScopeTable outer;
   private ScopeTable inner;
 
-  private static final TypeModel stringTypeModel =
-      ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-  private static final String stringTypeName = "String";
-  private static final String stringVariable = "str";
-
-  private static final String resourceNameTypeName = "ShelfBookName";
-  private static final String resourceNameVariable = "book";
-
   @Before
   public void setUp() {
     outer = new ScopeTable();
@@ -44,40 +36,44 @@ public class OutputTransformerTest {
 
   @Test
   public void testScopeTablePut() {
-    assertThat(outer.put(stringVariable, stringTypeModel, stringTypeName)).isTrue();
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
   }
 
   @Test
   public void testScopeTablePutFail() {
-    assertThat(outer.put(stringVariable, stringTypeModel, stringTypeName)).isTrue();
-    assertThat(outer.put(stringVariable, stringTypeModel, stringTypeName)).isFalse();
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(outer.put("str", stringTypeModel, "String")).isFalse();
   }
 
   @Test
   public void testScopeTableGetTypeModel() {
-    assertThat(outer.put(stringVariable, stringTypeModel, stringTypeName)).isTrue();
-    assertThat(outer.getTypeModel(stringVariable)).isEqualTo(stringTypeModel);
-    assertThat(outer.getTypeName(stringVariable)).isEqualTo(stringTypeName);
-    
-    assertThat(outer.getTypeModel(resourceNameVariable)).isNull();
-    assertThat(outer.getTypeName(resourceNameVariable)).isNull();
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(outer.getTypeModel("str")).isEqualTo(stringTypeModel);
+    assertThat(outer.getTypeName("str")).isEqualTo("String");
+
+    assertThat(outer.getTypeModel("book")).isNull();
+    assertThat(outer.getTypeName("book")).isNull();
   }
 
   @Test
   public void testScopeTablePutAndGetResourceName() {
-    assertThat(outer.put(resourceNameVariable, null, resourceNameTypeName)).isTrue();
-    assertThat(outer.getTypeModel(resourceNameVariable)).isEqualTo(null);
-    assertThat(outer.getTypeName(resourceNameVariable)).isEqualTo(resourceNameTypeName);
+    assertThat(outer.put("book", null, "ShelfBookName")).isTrue();
+    assertThat(outer.getTypeModel("book")).isEqualTo(null);
+    assertThat(outer.getTypeName("book")).isEqualTo("ShelfBookName");
   }
 
   @Test
   public void testScopeTableGetFromParent() {
-    assertThat(outer.put(stringVariable, stringTypeModel, stringTypeName)).isTrue();
-    assertThat(outer.put(resourceNameVariable, null, resourceNameTypeName)).isTrue();
-    
-    assertThat(inner.getTypeModel(stringVariable)).isEqualTo(stringTypeModel);
-    assertThat(inner.getTypeName(stringVariable)).isEqualTo(stringTypeName);
-    assertThat(inner.getTypeModel(resourceNameVariable)).isEqualTo(null);
-    assertThat(inner.getTypeName(resourceNameVariable)).isEqualTo(resourceNameTypeName);
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(outer.put("book", null, "ShelfBookName")).isTrue();
+
+    assertThat(inner.getTypeModel("str")).isEqualTo(stringTypeModel);
+    assertThat(inner.getTypeName("str")).isEqualTo("String");
+    assertThat(inner.getTypeModel("book")).isEqualTo(null);
+    assertThat(inner.getTypeName("book")).isEqualTo("ShelfBookName");
   }
 }
