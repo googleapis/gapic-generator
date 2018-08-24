@@ -49,27 +49,25 @@ def generate_clients(root_dir, languages, artman_config, log, user_config):
     warning = []
     for language in languages:
         lang_success = True
-        for api_name in test_apis:
-            (api_version, artman_yaml_path) = test_apis[api_name]
-            target = language + "_gapic"
-            # Generate client library for an API and language.
-            if _generate_artifact(artman_yaml_path,
-                                  target,
-                                  root_dir,
-                                  log_file,
-                                  user_config):
-                msg = 'Failed to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                failure.append(msg)
-                lang_success = False
-            else:
-                msg = 'Succeded to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                success.append(msg)
-            logger.info(msg)
-        if not lang_success:
-            # Output the [language.log] file.
-            write_lang_error_log(language, log_dir)
+        target = language + "_gapic"
+        # Generate client library for an API and language.
+        if _generate_artifact(artman_config,
+                              target,
+                              root_dir,
+                              log_file,
+                              user_config):
+            msg = 'Failed to generate %s of %s.' % (
+                target, artman_yaml_path)
+            failure.append(msg)
+            lang_success = False
+        else:
+            msg = 'Succeded to generate %s of %s.' % (
+                target, artman_yaml_path)
+            success.append(msg)
+        logger.info(msg)
+    if not lang_success:
+        # Output the [language.log] file.
+        write_lang_error_log(language, log_dir)
 
     logger.info('================ Library Generation Summary ================')
     if not warning or not failure:

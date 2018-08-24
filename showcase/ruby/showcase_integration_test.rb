@@ -34,16 +34,16 @@ describe Google::Showcase::V1alpha1::EchoClient do
         code: 13, # 500 internal service error
         message: "Errors errors errors!"
       }
-      # Call method
-      response = @client.echo(error: error)
 
       # Verify the response
-      assert_equal(expected_response, response)
+      assert_raises do
+        @client.echo(error: error)
+      end
     end
   end
 
   describe 'wait' do
-    it 'invokes wait without error' do
+    it 'invokes wait' do
       # Create expected grpc response
       response_delay = {seconds: 2}
       success = { content: "wait Content" }
@@ -55,6 +55,20 @@ describe Google::Showcase::V1alpha1::EchoClient do
 
       # Verify the response
       assert_equal(expected_response, response)
+    end
+  end
+
+  describe 'expand' do
+    it 'invokes expand' do
+      content = "The rain in spain stays mainly on the plain!"
+
+      response = []
+
+      @client.expand(content: content).each do |resp|
+        response << resp.content
+      end
+
+      assert_equal(response.join(" "), content)
     end
   end
 end
