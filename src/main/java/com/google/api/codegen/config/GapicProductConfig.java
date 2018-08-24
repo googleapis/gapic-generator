@@ -133,7 +133,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     String defaultPackage;
 
     if (protoPackage != null) {
-      // First check if --package option was given to indicate default package.
+      // Default to using --package option for value of default package and first API protoFile.
       defaultPackage = protoPackage;
       file =
           model
@@ -147,11 +147,11 @@ public abstract class GapicProductConfig implements ProductConfig {
                           String.format(
                               "No proto package %s in input descriptor set.", defaultPackage)));
     } else {
-      // Get the proto file containing the first interface listed in the config proto, and use it as
+      // Otherwise use configProto to get the proto file containing the first interface listed in
+      // the config proto, and use it as
       // the assigned file for generated resource names, and to get the default message namespace
       file =
           model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
-
       defaultPackage = file.getProto().getPackage();
     }
 
@@ -483,22 +483,28 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
       DiagCollector diagCollector,
-      ConfigProto configProto,
+      @Nullable ConfigProto configProto,
       ProtoFile file,
       TargetLanguage language) {
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
-    for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
-      createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
-    }
-    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-      for (CollectionConfigProto collectionConfigProto :
-          interfaceConfigProto.getCollectionsList()) {
+
+    if (configProto != null) {
+      // Use configProto to make ResourceNameConfigs.
+      for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
         createSingleResourceNameConfig(
             diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
       }
+      for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+        for (CollectionConfigProto collectionConfigProto :
+            interfaceConfigProto.getCollectionsList()) {
+          createSingleResourceNameConfig(
+              diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
+        }
+      }
     }
+    // Add more ResourceNameConfigs from proto annotations. Overwrite the configs from configProto
+    // if any clash.
 
     if (diagCollector.getErrorCount() > 0) {
       return null;

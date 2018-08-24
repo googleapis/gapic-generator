@@ -16,6 +16,8 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
@@ -39,6 +41,20 @@ public abstract class ResourceNameMessageConfig {
         ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
 
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
+  }
+
+  @Nullable
+  public static ResourceNameMessageConfig createResourceNameMessageConfig(
+      DiagCollector diagCollector,
+      Field field,
+      String resourcePath) {
+    String messageName = field.getParent().getFullName();
+    ImmutableMap<String, String> fieldEntityMap =
+        // Assume that each MessageType will only have one Field that has a resource name,
+        // And that that Field is the name of the MessageType.
+        ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName());
+
+    return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
   }
 
   public static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
