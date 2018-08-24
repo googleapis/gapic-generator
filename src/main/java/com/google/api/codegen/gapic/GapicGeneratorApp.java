@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.AnnotationsProto;
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.advising.Adviser;
@@ -102,17 +103,19 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   public ExtensionRegistry getPlatformExtensions() {
     ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
+    AnnotationsProto.registerAllExtensions(extensionRegistry);
     return extensionRegistry;
   }
 
   @Override
   protected void process() throws Exception {
 
-    // Read the YAML config and convert it to proto.
-    List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
+    String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
 
+    List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     ConfigProto configProto = null;
     if (configFileNames.size() > 0) {
+      // Read the YAML config and convert it to proto.
       ConfigSource configSource = loadConfigFromFiles(configFileNames);
       if (configSource == null) {
         return;
@@ -158,7 +161,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
       language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, protoPackage, language);
     if (productConfig == null) {
       return;
     }
