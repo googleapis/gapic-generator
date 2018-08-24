@@ -38,7 +38,7 @@ anchor_check_generation: &anchor_check_generation
       exit 0
     else
       echo "Not all client generations for ${LANGUAGE} succeeded."
-      echo "See previous job's console log for artman log."
+      echo "See artman generation log at /tmp/workspace/reports/generations/smoketest.log."
       exit 1
     fi
 
@@ -163,6 +163,45 @@ anchor_test_php: &anchor_test_php
     fi
   when: always
 
+anchor_run_php: &anchor_run_php
+  working_directory: /tmp/
+  steps:
+    - attach_workspace:
+        at: workspace
+    - run:
+        name: Verify all PHP generation succeeded
+        <<: *anchor_check_generation
+    - run:
+        <<: *anchor_run_decrypt
+    - run:
+        name: Prepare to test Pubsub
+        command: |
+          echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Pubsub client
+        <<: *anchor_test_php
+    - run:
+        name: Prepare to test Speech
+        command: |
+          echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+          # Need creds for Speech client tests that make live calls to server
+          echo 'export KEY_REQUIRED=true' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Speech client
+        <<: *anchor_test_php
+    - run:
+        name: Prepare to test Logging
+        command: |
+          echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Logging client
+        <<: *anchor_test_php
+
 # ======================= JOBS =======================
 
 jobs:
@@ -286,41 +325,26 @@ jobs:
       <<: *anchor_auth_vars
     <<: *anchor_run_ruby
   verify-and-test-php-7.2:
-    working_directory: /tmp/
+    <<: *anchor_run_php
     environment:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests/Unit # Only run unit tests here.
       <<: *anchor_artman_vars
+      <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-    steps:
-      - attach_workspace:
-          at: workspace
-      - run:
-          name: Verify all PHP generation succeeded
-          <<: *anchor_check_generation
-      - run:
-          name: Prepare to test Pubsub
-          command: |
-            echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
-            echo 'export KEY_REQUIRED=false' >> $BASH_ENV
-          when: always
-      - run:
-          name: Test PHP Pubsub client
-          <<: *anchor_test_php
-      - run:
-          name: Prepare to test Speech
-          command: |
-            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
-            # Need creds for Speech client tests that make live calls to server
-            echo 'export KEY_REQUIRED=true' >> $BASH_ENV
-          when: always
-      - run:
-          name: Test PHP Speech client
-          <<: *anchor_test_php
-      # Logging client needs common proto refresh before build will work:
-      # https://github.com/googleapis/gapic-generator/issues/2238
+  verify-and-test-system-php-7.2:
+    <<: *anchor_run_php
+    environment:
+      LANGUAGE: php
+      PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
+      TESTS_DIR: tests # Only run unit tests here.
+      <<: *anchor_artman_vars
+      <<: *anchor_auth_vars
+    docker:
+      - image: circleci/php:7.2.0-cli-stretch
+
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
