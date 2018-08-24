@@ -88,20 +88,20 @@ func TestDeleteFoundForms(t *testing.T) {
 // valueSet "set1"
 
 ============== file: foo ==============
-// [ DO NOT EDIT: generated sample file ("form10", "set10")
+// DO NOT EDIT! This is a generated sample ("form10", "set10")
 ============== file: bar ==============
-// [ DO NOT EDIT: generated sample file ("badform10", "set10")
+// DO NOT EDIT! This is a generated sample ("badform10", "set10")
 ============== file: bar ==============
-// [ DO NOT EDIT: generated sample file ("form10", "badset10")
+// DO NOT EDIT! This is a generated sample ("form10", "badset10")
 ============== file: x ==============
 // Deleting a config not present in the set is a no-op
-// [ DO NOT EDIT: generated sample file ("formNotFound", "setNotFound")
+// DO NOT EDIT! This is a generated sample ("formNotFound", "setNotFound")
 ============== file: x ==============
 // Deleting partial matches are no-ops
-// [ DO NOT EDIT: generated sample file ("form10", "set20")
+// DO NOT EDIT! This is a generated sample ("form10", "set20")
 ============== file: x ==============
 // Deleting partial matches are no-ops
-// [ DO NOT EDIT: generated sample file ("form20", "set10")
+// DO NOT EDIT! This is a generated sample ("form20", "set10")
 `
 	tests := []struct {
 		conf        checkConfig

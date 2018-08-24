@@ -23,6 +23,7 @@ import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -49,6 +50,8 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
@@ -113,6 +116,7 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
+                .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
                 .className(className)
                 .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
