@@ -25,55 +25,55 @@ import org.junit.Test;
 
 public class OutputTransformerTest {
 
-  private ScopeTable outer;
-  private ScopeTable inner;
+  private ScopeTable parent;
+  private ScopeTable child;
 
   @Before
   public void setUp() {
-    outer = new ScopeTable();
-    inner = new ScopeTable(outer);
+    parent = new ScopeTable();
+    child = new ScopeTable(parent);
   }
 
   @Test
   public void testScopeTablePut() {
     TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(parent.put("str", stringTypeModel, "String")).isTrue();
   }
 
   @Test
   public void testScopeTablePutFail() {
     TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
-    assertThat(outer.put("str", stringTypeModel, "String")).isFalse();
+    assertThat(parent.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(parent.put("str", stringTypeModel, "String")).isFalse();
   }
 
   @Test
   public void testScopeTableGetTypeModel() {
     TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
-    assertThat(outer.getTypeModel("str")).isEqualTo(stringTypeModel);
-    assertThat(outer.getTypeName("str")).isEqualTo("String");
+    assertThat(parent.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(parent.getTypeModel("str")).isEqualTo(stringTypeModel);
+    assertThat(parent.getTypeName("str")).isEqualTo("String");
 
-    assertThat(outer.getTypeModel("book")).isNull();
-    assertThat(outer.getTypeName("book")).isNull();
+    assertThat(parent.getTypeModel("book")).isNull();
+    assertThat(parent.getTypeName("book")).isNull();
   }
 
   @Test
   public void testScopeTablePutAndGetResourceName() {
-    assertThat(outer.put("book", null, "ShelfBookName")).isTrue();
-    assertThat(outer.getTypeModel("book")).isEqualTo(null);
-    assertThat(outer.getTypeName("book")).isEqualTo("ShelfBookName");
+    assertThat(parent.put("book", null, "ShelfBookName")).isTrue();
+    assertThat(parent.getTypeModel("book")).isEqualTo(null);
+    assertThat(parent.getTypeName("book")).isEqualTo("ShelfBookName");
   }
 
   @Test
   public void testScopeTableGetFromParent() {
     TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-    assertThat(outer.put("str", stringTypeModel, "String")).isTrue();
-    assertThat(outer.put("book", null, "ShelfBookName")).isTrue();
+    assertThat(parent.put("str", stringTypeModel, "String")).isTrue();
+    assertThat(parent.put("book", null, "ShelfBookName")).isTrue();
 
-    assertThat(inner.getTypeModel("str")).isEqualTo(stringTypeModel);
-    assertThat(inner.getTypeName("str")).isEqualTo("String");
-    assertThat(inner.getTypeModel("book")).isEqualTo(null);
-    assertThat(inner.getTypeName("book")).isEqualTo("ShelfBookName");
+    assertThat(child.getTypeModel("str")).isEqualTo(stringTypeModel);
+    assertThat(child.getTypeName("str")).isEqualTo("String");
+    assertThat(child.getTypeModel("book")).isEqualTo(null);
+    assertThat(child.getTypeName("book")).isEqualTo("ShelfBookName");
   }
 }
