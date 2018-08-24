@@ -252,7 +252,6 @@ public class GeneratorMain {
     // TODO(andrealin): Write system tests to ensure at least one option given.
     checkAtLeastOneOption(cl, SERVICE_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
     checkAtLeastOneOption(cl, GAPIC_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
-    checkAtLeastOneOption(cl, PACKAGE_YAML2_OPTION, TARGET_API_PROTO_PACKAGE);
 
     toolOptions.set(
         GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
@@ -330,7 +329,6 @@ public class GeneratorMain {
 
     ToolOptions toolOptions = ToolOptions.create();
 
-    checkAtLeastOneOption(cl, TARGET_API_PROTO_PACKAGE, PACKAGE_YAML2_OPTION);
     toolOptions.set(PackageGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.INPUT_DIR, cl.getOptionValue(inputOption.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.OUTPUT_DIR, cl.getOptionValue(OUTPUT_OPTION.getLongOpt()));
