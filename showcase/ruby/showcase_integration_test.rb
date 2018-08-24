@@ -1,3 +1,17 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 require "minitest/autorun"
 require "minitest/spec"
 
@@ -42,6 +56,47 @@ describe Google::Showcase::V1alpha1::EchoClient do
     end
   end
 
+  describe 'expand' do
+    it 'invokes expand' do
+      content = "The rain in spain stays mainly on the plain!"
+
+      response = []
+
+      @client.expand(content: content).each do |resp|
+        response << resp.content
+      end
+
+      assert_equal(response.join(" "), content)
+    end
+  end
+
+  describe 'collect' do
+    it 'invokes collect' do
+      expected = "The rain in spain stays mainly on the plain!"
+
+      requests = expected.split(" ").map { |s| {content: s} }
+
+      response = @client.collect(requests)
+
+      assert_equal(expected, response.content)
+    end
+  end
+
+  describe 'chat' do
+    it 'invokes chat' do
+      expected = "The rain in spain stays mainly on the plain!"
+
+      requests = expected.split(" ").map { |s| {content: s} }
+      response = []
+
+      @client.chat(requests).each do |resp|
+        response << resp.content
+      end
+
+      assert_equal(response.join(" "), expected)
+    end
+  end
+
   describe 'wait' do
     it 'invokes wait' do
       # Create expected grpc response
@@ -58,17 +113,28 @@ describe Google::Showcase::V1alpha1::EchoClient do
     end
   end
 
-  describe 'expand' do
-    it 'invokes expand' do
-      content = "The rain in spain stays mainly on the plain!"
+  describe 'pagination' do
+    it 'invokes pagination' do
+      page_size = 5
+      max_response = 20
 
-      response = []
-
-      @client.expand(content: content).each do |resp|
-        response << resp.content
+      expected = 0
+      @client.pagination(max_response, page_size: 5).each do |element|
+        assert_equal(expected, element)
+        expected = expected + 1
       end
 
-      assert_equal(response.join(" "), content)
+      expected = 0
+      pages = 0
+      @client.pagination(max_response, page_size: 5).each_page do |page|
+        pages = pages + 1
+        page.each do |element|
+          assert_equal(expected, element)
+          expected = expected + 1
+        end
+      end
+      assert_equal(4, pages)
     end
   end
+
 end
