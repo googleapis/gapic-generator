@@ -41,7 +41,7 @@ logger = logging.getLogger('smoketest')
 logger.setLevel(logging.INFO)
 
 
-def generate_clients(root_dir, languages, artman_config, log, user_config):
+def generate_clients(root_dir, languages, artman_config, log_dir, user_config):
     log = os.path.join(log_dir, "smoketest.log")
     log_file = _setup_logger(log)
     failure = []
