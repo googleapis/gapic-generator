@@ -103,6 +103,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   public ExtensionRegistry getPlatformExtensions() {
     ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
+    // Use annotations.proto to parse annotations in API protos.
     AnnotationsProto.registerAllExtensions(extensionRegistry);
     return extensionRegistry;
   }
@@ -161,7 +162,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
       language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, protoPackage, language);
+    GapicProductConfig productConfig =
+        GapicProductConfig.create(model, configProto, protoPackage, language);
     if (productConfig == null) {
       return;
     }

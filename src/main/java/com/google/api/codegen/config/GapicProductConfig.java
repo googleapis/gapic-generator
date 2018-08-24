@@ -45,6 +45,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import javax.annotation.Nullable;
 
 /**
@@ -118,17 +119,41 @@ public abstract class GapicProductConfig implements ProductConfig {
    * returned, and diagnostics are reported to the model.
    *
    * @param configProto The parsed set of config files from input
-   * @param protoPackage The source proto package, as opposed to imported protos, that we will generate clients for.
+   * @param protoPackage The source proto package, as opposed to imported protos, that we will
+   *     generate clients for.
    */
   @Nullable
   public static GapicProductConfig create(
-      Model model, @Nullable ConfigProto configProto, @Nullable String protoPackage, TargetLanguage language) {
+      Model model,
+      @Nullable ConfigProto configProto,
+      @Nullable String protoPackage,
+      TargetLanguage language) {
 
-    // Get the proto file containing the first interface listed in the config proto, and use it as
-    // the assigned file for generated resource names, and to get the default message namespace
-    ProtoFile file =
-        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
-    String defaultPackage = file.getProto().getPackage();
+    ProtoFile file;
+    String defaultPackage;
+
+    if (protoPackage != null) {
+      // First check if --package option was given to indicate default package.
+      defaultPackage = protoPackage;
+      file =
+          model
+              .getFiles()
+              .stream()
+              .filter(f -> f.getProto().getPackage().equals(defaultPackage))
+              .findFirst()
+              .orElseThrow(
+                  () ->
+                      new NoSuchElementException(
+                          String.format(
+                              "No proto package %s in input descriptor set.", defaultPackage)));
+    } else {
+      // Get the proto file containing the first interface listed in the config proto, and use it as
+      // the assigned file for generated resource names, and to get the default message namespace
+      file =
+          model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+
+      defaultPackage = file.getProto().getPackage();
+    }
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
