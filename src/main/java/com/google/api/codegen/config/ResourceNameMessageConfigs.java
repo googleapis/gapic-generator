@@ -29,13 +29,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
-
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** Configuration of the resource name types for all message field. */
@@ -78,16 +75,14 @@ public abstract class ResourceNameMessageConfigs {
           if (Strings.isNullOrEmpty(resourcePath)) continue;
 
           ResourceNameMessageConfig messageResourceTypeConfig =
-              ResourceNameMessageConfig.createResourceNameMessageConfig(
-                  model.getDiagReporter().getDiagCollector(),
-                  field,
-                  defaultPackage);
+              ResourceNameMessageConfig.createResourceNameMessageConfig(field);
           builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
         }
       }
     }
 
-    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = ImmutableMap.copyOf(builder);
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
+        ImmutableMap.copyOf(builder);
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
     Set<String> seenProtoFiles = new HashSet<>();
@@ -102,7 +97,6 @@ public abstract class ResourceNameMessageConfigs {
           }
           for (Field field : msg.getFields()) {
             if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
-//              if (field.setType(field.getProto().getType()));
               fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }

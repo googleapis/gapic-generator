@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.AnnotationsProto;
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.advising.Adviser;
