@@ -29,8 +29,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
+
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -50,7 +53,7 @@ public abstract class ResourceNameMessageConfigs {
   @Nullable
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Model model, ConfigProto configProto, String defaultPackage) {
-    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
+    Map<String, ResourceNameMessageConfig> builder = new HashMap<>();
     if (configProto != null) {
       // Get ResourceNameMessageConfigs from configProto.
       for (ResourceNameMessageConfigProto messageResourceTypesProto :
@@ -84,7 +87,7 @@ public abstract class ResourceNameMessageConfigs {
       }
     }
 
-    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = ImmutableMap.copyOf(builder);
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
     Set<String> seenProtoFiles = new HashSet<>();
@@ -99,6 +102,7 @@ public abstract class ResourceNameMessageConfigs {
           }
           for (Field field : msg.getFields()) {
             if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
+//              if (field.setType(field.getProto().getType()));
               fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }
