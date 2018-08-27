@@ -38,7 +38,6 @@ use PHPUnit\Framework\TestCase;
 class ShowcaseIntegrationTests extends TestCase
 {
     private static $grpcClient;
-    private static $restClient;
 
     /**
      * @param Google\Showcase\V1alpha1\EchoClient $client
@@ -95,15 +94,10 @@ class ShowcaseIntegrationTests extends TestCase
                 ]
             ]);
         }
-        if (empty(self::$restClient)) {
-            self::$restClient = new \Google\Showcase\V1alpha1\EchoClient([
-                'serviceAddress' => 'localhost:7469',
-                'transport' => 'rest',
-            ]);
-        }
+        // TODO(michaelbausor): add clients that use alternate transports
+        // (rest, grpc-fallback) once they are supported by Showcase
         return [
             [self::$grpcClient],
-            //[self::$restClient],
         ];
     }
 }
