@@ -35,6 +35,14 @@
       @end
 
 
+      # FIXME(hzyi): handle ListInitType, MapInitType and StructInitType correctly
+      @join line : sample.initCode.argDefaultLines
+        @if line.lineType == "SimpleInitLine"
+          @if line.typeName == "str"
+            {@convertBinaryToStr(line.identifier)}
+          @end
+        @end
+      @end
     @end
     @if sample.initCode.lines
       {@initCode(sample.initCode.lines)}
@@ -74,6 +82,12 @@
   @join param : defaultParams on ", "
     {@param.identifier}
   @end
+@end
+
+@private convertBinaryToStr(identifier)
+  if isinstance({@identifier}, six.binary_type):
+    {@identifier} = {@identifier}.decode('utf-8')
+
 @end
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
