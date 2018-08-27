@@ -37,7 +37,6 @@ public class GapicConfigProducerTest {
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = TestDataLocator.create(GapicConfigProducerTest.class);
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/imports");
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/configonly");
     model =
         CodegenTestUtil.readModel(
