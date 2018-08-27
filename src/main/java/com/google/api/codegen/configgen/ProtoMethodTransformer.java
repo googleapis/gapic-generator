@@ -19,6 +19,8 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
@@ -41,6 +43,6 @@ public class ProtoMethodTransformer implements MethodTransformer {
         return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
       }
     }
-    return "60000";
+    return DEFAULT_MAX_RETRY_DELAY;
   }
 }

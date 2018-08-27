@@ -102,6 +102,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    *
    * <p>TODO(eoogbe): Validate the value in GAPIC config advisor.
    */
+  @Nullable
   public abstract String getConfigSchemaVersion();
 
   public GapicProductConfig withPackageName(String packageName) {
@@ -136,22 +137,26 @@ public abstract class GapicProductConfig implements ProductConfig {
       TargetLanguage language) {
 
     ProtoFile file;
-    String defaultPackage;
+    final String defaultPackage;
 
     if (protoPackage != null) {
       // Default to using --package option for value of default package and first API protoFile.
       defaultPackage = protoPackage;
-      file =
+      List<ProtoFile> sourceProtos =
           model
               .getFiles()
               .stream()
               .filter(f -> f.getProto().getPackage().equals(defaultPackage))
-              .findFirst()
-              .orElseThrow(
-                  () ->
-                      new NoSuchElementException(
-                          String.format(
-                              "No proto package %s in input descriptor set.", defaultPackage)));
+              .collect(Collectors.toList());
+      if (sourceProtos.size() == 0) {
+        throw new IllegalArgumentException(String.format(
+            "No proto package %s in input descriptor set.", defaultPackage));
+      }
+      file = sourceProtos.get(0);
+      if (configProto == null) {
+        sourceProtos.stream().forEach(p -> model.addRoot(p));
+
+      }
     } else if (configProto != null) {
       // Otherwise use configProto to get the proto file containing the first interface listed in
       // the config proto, and use it as
@@ -201,35 +206,40 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
-    try {
-      LicenseHeaderProto licenseHeader =
-          configProto
-              .getLicenseHeader()
-              .toBuilder()
-              .mergeFrom(settings.getLicenseHeaderOverride())
-              .build();
-      copyrightLines =
-          loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
-    } catch (Exception e) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
-      throw new RuntimeException(e);
-    }
+    String configSchemaVersion = null;
+    if (configProto != null) {
+      try {
+        LicenseHeaderProto licenseHeader =
+            configProto
+                .getLicenseHeader()
+                .toBuilder()
+                .mergeFrom(settings.getLicenseHeaderOverride())
+                .build();
+        copyrightLines =
+            loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+        licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+      } catch (Exception e) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
+        e.printStackTrace(System.err);
+        throw new RuntimeException(e);
+      }
 
-    String configSchemaVersion = configProto.getConfigSchemaVersion();
-    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
-    if (Strings.isNullOrEmpty(configSchemaVersion)) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "config_schema_version field is required in GAPIC yaml."));
+      // TODO(andrealin): Figure out how to get LICENSE without a configProto.
+
+      configSchemaVersion = configProto.getConfigSchemaVersion();
+      // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
+      if (Strings.isNullOrEmpty(configSchemaVersion)) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "config_schema_version field is required in GAPIC yaml."));
+      }
     }
 
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
@@ -411,7 +421,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         String serviceFullName =
             String.format("%s.%s", file.getProto().getPackage(), service.getName());
         Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
-        if (apiInterface == null || !apiInterface.isReachable()) {
+        if (apiInterface == null) {
           diagCollector.addDiag(
               Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;

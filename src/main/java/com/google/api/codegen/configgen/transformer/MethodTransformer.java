@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
   private final InputSpecificMethodTransformer helperTransformer;
@@ -57,7 +59,7 @@ public class MethodTransformer {
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
       generateFieldNamePatterns(method, methodView, collectionNameMap);
-      methodView.timeoutMillis("60000");
+      methodView.timeoutMillis(DEFAULT_MAX_RETRY_DELAY);
       methods.add(methodView.build());
     }
     return methods.build();

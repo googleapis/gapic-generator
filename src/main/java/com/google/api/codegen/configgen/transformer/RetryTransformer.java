@@ -26,6 +26,14 @@ public class RetryTransformer {
   public static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";
   public static final String RETRY_PARAMS_DEFAULT_NAME = "default";
 
+  public static final String DEFAULT_INITIAL_RETRY_DELAY = "100";
+  public static final String RETRY_DELAY_MULTIPLIER = "1.3";
+  public static final String DEFAULT_MAX_RETRY_DELAY = "60000";
+  public static final String DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER = "20000";
+  public static final String DEFAULT_RPC_TIMEOUT_MULTIPLIER = "1";
+  public static final String DEFAULT_MAX_RPC_TIMEOUT_MILLIS = "20000";
+  public static final String DEFAULT_TOTAL_TIMEOUT_MILLIS = "600000";
+
   public void generateRetryDefinitions(
       InterfaceView.Builder interfaceView,
       List<String> idempotentRetryCodes,
@@ -54,13 +62,13 @@ public class RetryTransformer {
     return ImmutableList.of(
         RetryParamView.newBuilder()
             .name(RETRY_PARAMS_DEFAULT_NAME)
-            .initialRetryDelayMillis("100")
-            .retryDelayMultiplier("1.3")
-            .maxRetryDelayMillis("60000")
-            .initialRpcTimeoutMillis("20000")
-            .rpcTimeoutMultiplier("1")
-            .maxRpcTimeoutMillis("20000")
-            .totalTimeoutMillis("600000")
+            .initialRetryDelayMillis(DEFAULT_INITIAL_RETRY_DELAY)
+            .retryDelayMultiplier(RETRY_DELAY_MULTIPLIER)
+            .maxRetryDelayMillis(DEFAULT_MAX_RETRY_DELAY)
+            .initialRpcTimeoutMillis(DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER)
+            .rpcTimeoutMultiplier(DEFAULT_RPC_TIMEOUT_MULTIPLIER)
+            .maxRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
+            .totalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
             .build());
   }
 }

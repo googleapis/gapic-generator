@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
 
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
@@ -27,9 +28,12 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -97,8 +101,16 @@ public class RetryDefinitionsTransformer {
   public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(
       InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, RetryParamsDefinitionProto> builder = ImmutableMap.builder();
-    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      builder.put(retryDef.getName(), retryDef);
+    if (interfaceConfigProto != null) {
+      for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
+        builder.put(retryDef.getName(), retryDef);
+      }
+    } else {
+      // Use default values.
+//      Map<String, String> defaultRetryParams = ImmutableMap
+//          .builder()
+//          .put("initial_retry_delay_millis", )
+//      builder.put(RETRY_PARAMS_DEFAULT_NAME, );
     }
     return builder.build();
   }
