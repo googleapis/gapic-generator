@@ -29,7 +29,7 @@ public abstract class RetryCodesDefinitionView {
 
   public abstract String retryFilterMethodName();
 
-  public abstract ImmutableSet<String> codes();
+  public abstract List<String> codes();
 
   @Nullable // Used in C#
   public abstract List<String> codeNames();
@@ -46,7 +46,7 @@ public abstract class RetryCodesDefinitionView {
 
     public abstract Builder retryFilterMethodName(String val);
 
-    public abstract Builder codes(ImmutableSet<String> val);
+    public abstract Builder codes(List<String> val);
 
     public abstract Builder codeNames(List<String> val);
 

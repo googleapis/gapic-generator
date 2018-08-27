@@ -38,6 +38,4 @@ public class ProtoAnnotations {
   public static String getResourceEntityName(Field field) {
     return field.getSimpleName().toLowerCase();
   }
-
-
 }

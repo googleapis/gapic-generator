@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
+
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
-import com.google.api.codegen.configgen.mergers.MethodMerger;
-import com.google.api.codegen.configgen.mergers.RetryMerger;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
@@ -28,16 +28,13 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
+import javax.annotation.Nullable;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
@@ -46,7 +43,7 @@ public class RetryDefinitionsTransformer {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
-    for (Entry<String, ImmutableSet<String>> retryCodesDef :
+    for (Entry<String, List<String>> retryCodesDef :
         context.getInterfaceConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
       for (String code : retryCodesDef.getValue()) {
@@ -85,7 +82,8 @@ public class RetryDefinitionsTransformer {
                     interfaceConfigProto.getName()));
           }
         }
-        builder.put(retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
+        builder.put(
+            retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
       }
     } else {
       // Use default values for retry settings.

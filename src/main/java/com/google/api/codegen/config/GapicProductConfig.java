@@ -31,7 +31,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
@@ -44,7 +43,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
 import com.google.protobuf.DescriptorProtos;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -182,8 +180,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    List<ProtoFile> sourceProtos = model.getFiles().stream()
-        .filter(f -> f.getProto().getPackage().equals(defaultPackage)).collect(Collectors.toList());
+    List<ProtoFile> sourceProtos =
+        model
+            .getFiles()
+            .stream()
+            .filter(f -> f.getProto().getPackage().equals(defaultPackage))
+            .collect(Collectors.toList());
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
@@ -401,14 +403,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (ProtoFile file : sourceProtos) {
       if (file.getProto().getServiceList().size() == 0) continue;
       for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
-        String serviceFullName = String.format("%s.%s", file.getProto().getPackage(), service.getName());
+        String serviceFullName =
+            String.format("%s.%s", file.getProto().getPackage(), service.getName());
         Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
         if (apiInterface == null || !apiInterface.isReachable()) {
           diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "interface not found: %s",
-                  service.getName()));
+              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
         String interfaceNameOverride =
@@ -556,7 +556,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         for (Field field : messageType.getFields()) {
           String resourcePath = ProtoAnnotations.getResourcePath(field);
           if (resourcePath != null) {
-            createSingleResourceNameConfig(diagCollector, field, singleResourceNameConfigsMap, file);
+            createSingleResourceNameConfig(
+                diagCollector, field, singleResourceNameConfigsMap, file);
           }
         }
       }
