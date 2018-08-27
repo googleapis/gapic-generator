@@ -22,7 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Code generator baseline tests. Tests generation using proto annotations, without config files. */
+/**
+ * Code generator baseline tests. Tests generation using proto annotations, without config files.
+ */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
