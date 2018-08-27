@@ -224,7 +224,7 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		const (
 			formPrefix     = "calling form"
 			setPrefix      = "valueSet"
-			combinedPrefix = "[ DO NOT EDIT: generated sample file (\""
+			combinedPrefix = "DO NOT EDIT! This is a generated sample (\""
 		)
 		switch {
 		case strings.HasPrefix(line, formPrefix):
