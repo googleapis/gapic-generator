@@ -1,0 +1,27 @@
+// Dummy service that doesn't use standard resource names
+
+syntax = "proto3";
+
+package google.cloud.example.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "no_path_templates_messages.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "NoPathTemplatesProto";
+option java_package = "com.google.example.noPathTemplates.v1";
+
+service NoTemplatesAPIService {
+
+  // Increments something.
+  //   Sometimes the comments are indented, but Sphinx doesn't like that. So
+  //  in Python we trim all
+  //      leading
+  //         and trailing
+  //    whitespace.
+  rpc Increment(IncrementRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v1/me:increment" body: "*" };
+  }
+
+}
