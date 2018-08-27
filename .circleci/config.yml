@@ -234,6 +234,28 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Test PHP Logging client
         <<: *anchor_test_php
+    - run:
+        name: Prepare to test Showcase.
+        command: |
+          echo 'export TEST_API="showcase"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+    - run:
+        name: Test Showcase Generated Unit Tests.
+        <<: *anchor_test_php_client
+    - run:
+        name: Run Showcase Server.
+        command: |
+          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
+               --output showcase-server
+          chmod a+x showcase-server
+          ./showcase-server
+        background: true
+    - run:
+        name: Run Showcase Integration Tests
+        command: |
+          cd workspace/gapic-generator/showcase/php
+          composer update
+          vendor/bin/phpunit tests/ShowcaseIntegrationTests.php
 
 # ======================= JOBS =======================
 
