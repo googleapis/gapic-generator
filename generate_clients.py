@@ -29,25 +29,19 @@ import os
 import subprocess
 import sys
 
-logger = logging.getLogger('smoketest')
-logger.setLevel(logging.INFO)
-
-languages = [
+default_languages = [
     "java",
     "python",
     "ruby",
-    "php"
+    "php",
     # TODO: add other languages here.
 ]
 
-test_apis = {
-    "pubsub" : ("v1", "google/pubsub/artman_pubsub.yaml"),
-    "logging" : ("v2", "google/logging/artman_logging.yaml"),
-    "speech" : ("v1", "google/cloud/speech/artman_speech_v1.yaml"),
-}
+logger = logging.getLogger('smoketest')
+logger.setLevel(logging.INFO)
 
 
-def generate_clients(root_dir, log_dir, user_config):
+def generate_clients(root_dir, languages, artman_config, log_dir, user_config):
     log = os.path.join(log_dir, "smoketest.log")
     log_file = _setup_logger(log)
     failure = []
@@ -55,27 +49,25 @@ def generate_clients(root_dir, log_dir, user_config):
     warning = []
     for language in languages:
         lang_success = True
-        for api_name in test_apis:
-            (api_version, artman_yaml_path) = test_apis[api_name]
-            target = language + "_gapic"
-            # Generate client library for an API and language.
-            if _generate_artifact(artman_yaml_path,
-                                  target,
-                                  root_dir,
-                                  log_file,
-                                  user_config):
-                msg = 'Failed to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                failure.append(msg)
-                lang_success = False
-            else:
-                msg = 'Succeded to generate %s of %s.' % (
-                    target, artman_yaml_path)
-                success.append(msg)
-            logger.info(msg)
-        if lang_success:
-            # Output the [language.log] file.
-            write_lang_success_log(language, log_dir)
+        target = language + "_gapic"
+        # Generate client library for an API and language.
+        if _generate_artifact(artman_config,
+                              target,
+                              root_dir,
+                              log_file,
+                              user_config):
+            msg = 'Failed to generate %s of %s.' % (
+                target, artman_config)
+            failure.append(msg)
+            lang_success = False
+        else:
+            msg = 'Succeded to generate %s of %s.' % (
+                target, artman_config)
+            success.append(msg)
+        logger.info(msg)
+    if not lang_success:
+        # Output the [language.log] file.
+        write_lang_error_log(language, log_dir)
 
     logger.info('================ Library Generation Summary ================')
     if not warning or not failure:
@@ -117,20 +109,16 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 
-def _test_artifact(test_call, api_name, api_version, log_file):
-    with open(log_file, 'a') as log:
-        return test_call(api_name, api_version, log)
-
-
-def write_lang_success_log(language, log_dir):
+def write_lang_error_log(language, log_dir):
     file_name = "%s.log" % language
     filepath = os.path.join(log_dir, file_name)
     with open(filepath,"w") as f:
-        f.write("Success.")
+        f.write("Error.")
 
 
 def parse_args(*args):
     parser = argparse.ArgumentParser()
+    parser.add_argument('artman_config', help='The artman config relative to the root directory.')
     parser.add_argument(
         '--root-dir',
         # The default value is configured for CircleCI.
@@ -148,6 +136,11 @@ def parse_args(*args):
         # Default to the artman-specified default location.
         default="~/.artman/config.yaml",
         help='Specify where the artman user config lives.')
+    parser.add_argument(
+        '--languages',
+        nargs='+',
+        default=default_languages,
+        help='Languages to generate clients for.')
     return parser.parse_args(args=args)
 
 
@@ -170,10 +163,10 @@ if __name__ == '__main__':
     for f in os.listdir(log_dir):
         os.remove(os.path.join(log_dir, f))
 
-    successes = generate_clients(root_dir, log_dir, user_config)
+    successes = generate_clients(root_dir, flags.languages, flags.artman_config, log_dir, user_config)
 
     # Exit with success if there were any successful generations.
     if successes:
         sys.exit(0)
     else:
-        sys.exit('All language client generations failed.')
+        sys.exit('Client generation failed.')

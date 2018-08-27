@@ -30,6 +30,8 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String templateFileName();
 
+  public abstract FileHeaderView fileHeader();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -57,6 +59,8 @@ public abstract class DynamicLangSampleView implements ViewModel {
   public abstract static class Builder {
 
     public abstract Builder templateFileName(String val);
+
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder outputPath(String val);
 
