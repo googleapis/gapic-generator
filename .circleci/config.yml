@@ -198,6 +198,8 @@ anchor_test_php: &anchor_test_php
 
 anchor_run_php: &anchor_run_php
   working_directory: /tmp/
+  environment:
+      SHOWCASE_VERSION: 0.0.4
   steps:
     - attach_workspace:
         at: workspace
@@ -246,9 +248,9 @@ anchor_run_php: &anchor_run_php
         name: Run Showcase Server.
         command: |
           curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
-               --output showcase-server-php
-          chmod a+x showcase-server-php
-          ./showcase-server-php
+               --output showcase-server
+          chmod a+x showcase-server
+          ./showcase-server
         background: true
     - run:
         name: Run Showcase Integration Tests
