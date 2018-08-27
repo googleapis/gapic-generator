@@ -69,10 +69,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/imports");
   }
 
-  public GapicTestBase2(
-      TargetLanguage language,
-      List<String> snippetNames,
-      String baselineFile) {
+  public GapicTestBase2(TargetLanguage language, List<String> snippetNames, String baselineFile) {
     this.language = language;
     this.gapicConfigFileNames = null;
     this.packageConfigFileName = null;
