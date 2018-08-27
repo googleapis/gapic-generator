@@ -32,12 +32,12 @@ public class ProtoMethodTransformer implements MethodTransformer {
   @Override
   public String getTimeoutMillis(MethodModel method) {
     Model model = ((ProtoMethodModel) method).getProtoMethod().getModel();
-    return getTimeoutMillis(model);
+    return getTimeoutMillis(model, method.getFullName());
   }
 
-  public static String getTimeoutMillis(Model method) {
-    for (BackendRule backendRule : method.getServiceConfig().getBackend().getRulesList()) {
-      if (backendRule.getSelector().equals(method.getFullName())) {
+  public static String getTimeoutMillis(Model model, String methodFullName) {
+    for (BackendRule backendRule : model.getServiceConfig().getBackend().getRulesList()) {
+      if (backendRule.getSelector().equals(methodFullName)) {
         return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
       }
     }

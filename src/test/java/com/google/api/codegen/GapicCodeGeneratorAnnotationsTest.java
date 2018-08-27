@@ -15,9 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.common.TargetLanguage;
-
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,11 +45,11 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-//    return new LinkedList<>();
+    //    return new LinkedList<>();
     // TODO(andrealin): Implement parsing proto-annotations.
-            return Arrays.asList(
-                GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
-                GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library"));
+    return Arrays.asList(
+        GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
+        GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library"));
   }
 
   @Test
