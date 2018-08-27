@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.*;
 
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
@@ -107,10 +107,17 @@ public class RetryDefinitionsTransformer {
       }
     } else {
       // Use default values.
-//      Map<String, String> defaultRetryParams = ImmutableMap
-//          .builder()
-//          .put("initial_retry_delay_millis", )
-//      builder.put(RETRY_PARAMS_DEFAULT_NAME, );
+      RetryParamsDefinitionProto defaultRetryParams = RetryParamsDefinitionProto.getDefaultInstance()
+          .toBuilder()
+          .setInitialRetryDelayMillis(DEFAULT_INITIAL_RETRY_DELAY)
+          .setRetryDelayMultiplier(DEFAULT_RETRY_DELAY_MULTIPLIER)
+          .setMaxRetryDelayMillis(DEFAULT_MAX_RETRY_DELAY)
+          .setInitialRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
+          .setRpcTimeoutMultiplier(DEFAULT_RPC_TIMEOUT_MULTIPLIER)
+          .setMaxRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
+          .setTotalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
+          .build();
+      builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
     }
     return builder.build();
   }

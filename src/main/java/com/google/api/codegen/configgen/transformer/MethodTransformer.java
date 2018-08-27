@@ -59,7 +59,7 @@ public class MethodTransformer {
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
       generateFieldNamePatterns(method, methodView, collectionNameMap);
-      methodView.timeoutMillis(DEFAULT_MAX_RETRY_DELAY);
+      methodView.timeoutMillis(String.valueOf(DEFAULT_MAX_RETRY_DELAY));
       methods.add(methodView.build());
     }
     return methods.build();

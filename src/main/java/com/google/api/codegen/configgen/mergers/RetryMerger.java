@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_INITIAL_RETRY_DELAY;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_DELAY_MULTIPLIER;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_RETRY_DELAY_MULTIPLIER;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_RPC_TIMEOUT_MULTIPLIER;
@@ -101,31 +101,31 @@ public class RetryMerger {
     retryParamDefNode.setChild(nameNode);
     ConfigNode initialRetryDelayMillisNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(nameNode), INITIAL_RETRY_DELAY_NAME, DEFAULT_INITIAL_RETRY_DELAY);
+            NodeFinder.getNextLine(nameNode), INITIAL_RETRY_DELAY_NAME, String.valueOf(DEFAULT_INITIAL_RETRY_DELAY));
     nameNode.insertNext(initialRetryDelayMillisNode);
     ConfigNode retryDelayMultiplierNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(initialRetryDelayMillisNode), RETRY_DELAY_MULTIPLIER_NAME, RETRY_DELAY_MULTIPLIER);
+            NodeFinder.getNextLine(initialRetryDelayMillisNode), RETRY_DELAY_MULTIPLIER_NAME, String.valueOf(DEFAULT_RETRY_DELAY_MULTIPLIER));
     initialRetryDelayMillisNode.insertNext(retryDelayMultiplierNode);
     ConfigNode maxRetryDelayMillisNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(retryDelayMultiplierNode), MAX_RETRY_DELAY_NAME, DEFAULT_MAX_RETRY_DELAY);
+            NodeFinder.getNextLine(retryDelayMultiplierNode), MAX_RETRY_DELAY_NAME, String.valueOf(DEFAULT_MAX_RETRY_DELAY));
     retryDelayMultiplierNode.insertNext(maxRetryDelayMillisNode);
     ConfigNode initialRpcTimeoutMillisNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(maxRetryDelayMillisNode), INITIAL_RPC_TIMEOUT_NAME, DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER);
+            NodeFinder.getNextLine(maxRetryDelayMillisNode), INITIAL_RPC_TIMEOUT_NAME, String.valueOf(DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER));
     maxRetryDelayMillisNode.insertNext(initialRpcTimeoutMillisNode);
     ConfigNode rpcTimeoutMultiplierNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(initialRpcTimeoutMillisNode), RPC_TIMEOUT_MULTIPLIER_NAME, DEFAULT_RPC_TIMEOUT_MULTIPLIER);
+            NodeFinder.getNextLine(initialRpcTimeoutMillisNode), RPC_TIMEOUT_MULTIPLIER_NAME, String.valueOf(DEFAULT_RPC_TIMEOUT_MULTIPLIER));
     initialRpcTimeoutMillisNode.insertNext(rpcTimeoutMultiplierNode);
     ConfigNode maxRpcTimeoutMillisNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(rpcTimeoutMultiplierNode), MAX_RPC_TIMEOUT_NAME, DEFAULT_MAX_RPC_TIMEOUT_MILLIS);
+            NodeFinder.getNextLine(rpcTimeoutMultiplierNode), MAX_RPC_TIMEOUT_NAME, String.valueOf(DEFAULT_MAX_RPC_TIMEOUT_MILLIS));
     rpcTimeoutMultiplierNode.insertNext(maxRpcTimeoutMillisNode);
     ConfigNode totalTimeoutMillisNode =
         FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(maxRpcTimeoutMillisNode), TOTAL_TIMEOUT_NAME, DEFAULT_TOTAL_TIMEOUT_MILLIS);
+            NodeFinder.getNextLine(maxRpcTimeoutMillisNode), TOTAL_TIMEOUT_NAME, String.valueOf(DEFAULT_TOTAL_TIMEOUT_MILLIS));
     maxRpcTimeoutMillisNode.insertNext(totalTimeoutMillisNode);
     return retryParamDefNode;
   }

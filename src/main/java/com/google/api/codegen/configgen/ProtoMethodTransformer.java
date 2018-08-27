@@ -43,6 +43,6 @@ public class ProtoMethodTransformer implements MethodTransformer {
         return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
       }
     }
-    return DEFAULT_MAX_RETRY_DELAY;
+    return String.valueOf(DEFAULT_MAX_RETRY_DELAY);
   }
 }
