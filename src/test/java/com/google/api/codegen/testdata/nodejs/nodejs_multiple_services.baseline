@@ -65,7 +65,7 @@ $ npm install --save @google-cloud/multiple-services
     "lodash.union": "^4.6.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
+    "mocha": "^5.2.0",
     "through2": "^2.0.3"
   },
   "scripts": {
@@ -75,7 +75,7 @@ $ npm install --save @google-cloud/multiple-services
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.0.0"
   }
 }
 
@@ -240,13 +240,13 @@ class DecrementerServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    var clientHeader = [
+    const clientHeader = [
       `gl-node/${process.version}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
@@ -257,7 +257,7 @@ class DecrementerServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge(
+    const protos = merge(
       {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
@@ -266,7 +266,7 @@ class DecrementerServiceClient {
     );
 
     // Put together the default options sent with requests.
-    var defaults = gaxGrpc.constructSettings(
+    const defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.foo.DecrementerService',
       gapicConfig,
       opts.clientConfig,
@@ -280,14 +280,14 @@ class DecrementerServiceClient {
 
     // Put together the "service stub" for
     // google.cloud.example.v1.foo.DecrementerService.
-    var decrementerServiceStub = gaxGrpc.createStub(
+    const decrementerServiceStub = gaxGrpc.createStub(
       protos.google.cloud.example.v1.foo.DecrementerService,
       opts
     );
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    var decrementerServiceStubMethods = [
+    const decrementerServiceStubMethods = [
       'decrement',
     ];
     for (let methodName of decrementerServiceStubMethods) {
@@ -295,7 +295,7 @@ class DecrementerServiceClient {
         decrementerServiceStub.then(
           stub =>
             function() {
-              var args = Array.prototype.slice.call(arguments, 0);
+              const args = Array.prototype.slice.call(arguments, 0);
               return stub[methodName].apply(stub, args);
             }
         ),
@@ -358,7 +358,7 @@ class DecrementerServiceClient {
    *
    * const multipleServices = require('@google-cloud/multiple-services');
    *
-   * var client = new multipleServices.v1.DecrementerServiceClient({
+   * const client = new multipleServices.v1.DecrementerServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -421,7 +421,7 @@ module.exports = DecrementerServiceClient;
  * @memberof google.cloud.example.v1.foo
  * @see [google.cloud.example.v1.foo.IncrementRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/multiple_services.proto}
  */
-var IncrementRequest = {
+const IncrementRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -430,7 +430,7 @@ var IncrementRequest = {
  * @memberof google.cloud.example.v1.foo
  * @see [google.cloud.example.v1.foo.DecrementRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/multiple_services.proto}
  */
-var DecrementRequest = {
+const DecrementRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_empty.js ==============
@@ -465,7 +465,7 @@ var DecrementRequest = {
  * @memberof google.protobuf
  * @see [google.protobuf.Empty definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/empty.proto}
  */
-var Empty = {
+const Empty = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/incrementer_service_client.js ==============
@@ -540,13 +540,13 @@ class IncrementerServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    var clientHeader = [
+    const clientHeader = [
       `gl-node/${process.version}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
@@ -557,7 +557,7 @@ class IncrementerServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge(
+    const protos = merge(
       {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
@@ -566,7 +566,7 @@ class IncrementerServiceClient {
     );
 
     // Put together the default options sent with requests.
-    var defaults = gaxGrpc.constructSettings(
+    const defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.foo.IncrementerService',
       gapicConfig,
       opts.clientConfig,
@@ -580,14 +580,14 @@ class IncrementerServiceClient {
 
     // Put together the "service stub" for
     // google.cloud.example.v1.foo.IncrementerService.
-    var incrementerServiceStub = gaxGrpc.createStub(
+    const incrementerServiceStub = gaxGrpc.createStub(
       protos.google.cloud.example.v1.foo.IncrementerService,
       opts
     );
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    var incrementerServiceStubMethods = [
+    const incrementerServiceStubMethods = [
       'increment',
     ];
     for (let methodName of incrementerServiceStubMethods) {
@@ -595,7 +595,7 @@ class IncrementerServiceClient {
         incrementerServiceStub.then(
           stub =>
             function() {
-              var args = Array.prototype.slice.call(arguments, 0);
+              const args = Array.prototype.slice.call(arguments, 0);
               return stub[methodName].apply(stub, args);
             }
         ),
@@ -658,7 +658,7 @@ class IncrementerServiceClient {
    *
    * const multipleServices = require('@google-cloud/multiple-services');
    *
-   * var client = new multipleServices.v1.IncrementerServiceClient({
+   * const client = new multipleServices.v1.IncrementerServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -742,20 +742,20 @@ const assert = require('assert');
 
 const multipleServicesModule = require('../src');
 
-var FAKE_STATUS_CODE = 1;
-var error = new Error();
+const FAKE_STATUS_CODE = 1;
+const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('IncrementerServiceClient', () => {
   describe('increment', () => {
     it('invokes increment without error', done => {
-      var client = new multipleServicesModule.v1.IncrementerServiceClient({
+      const client = new multipleServicesModule.v1.IncrementerServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.increment = mockSimpleGrpcMethod(request);
@@ -767,13 +767,13 @@ describe('IncrementerServiceClient', () => {
     });
 
     it('invokes increment with error', done => {
-      var client = new multipleServicesModule.v1.IncrementerServiceClient({
+      const client = new multipleServicesModule.v1.IncrementerServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.increment = mockSimpleGrpcMethod(
@@ -794,13 +794,13 @@ describe('IncrementerServiceClient', () => {
 describe('DecrementerServiceClient', () => {
   describe('decrement', () => {
     it('invokes decrement without error', done => {
-      var client = new multipleServicesModule.v1.DecrementerServiceClient({
+      const client = new multipleServicesModule.v1.DecrementerServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.decrement = mockSimpleGrpcMethod(request);
@@ -812,13 +812,13 @@ describe('DecrementerServiceClient', () => {
     });
 
     it('invokes decrement with error', done => {
-      var client = new multipleServicesModule.v1.DecrementerServiceClient({
+      const client = new multipleServicesModule.v1.DecrementerServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.decrement = mockSimpleGrpcMethod(

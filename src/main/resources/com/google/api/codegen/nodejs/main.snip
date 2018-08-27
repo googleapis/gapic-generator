@@ -71,13 +71,13 @@
       // Create a `gaxGrpc` object, with any grpc-specific options
       // sent to the client.
       opts.scopes = this.constructor.scopes;
-      var gaxGrpc = new gax.GrpcClient(opts);
+      const gaxGrpc = new gax.GrpcClient(opts);
 
       // Save the auth object to the client, for use by other methods.
       this.auth = gaxGrpc.auth;
 
       // Determine the client header string.
-      var clientHeader = [
+      const clientHeader = [
         `gl-node/${process.version}`,
         `grpc/${gaxGrpc.grpcVersion}`,
         `gax/${gax.version}`,
@@ -88,7 +88,7 @@
       }
 
       // Load the applicable protos.
-      var protos = merge(
+      const protos = merge(
         {},
         @join stub : xapi.stubs on {@","}.add(BREAK)
           gaxGrpc.loadProto(
@@ -141,7 +141,7 @@
         };
       @end
       @if or(xapi.hasBatchingMethods, xapi.hasLongRunningOperations)
-        var protoFilesRoot = new gax.GoogleProtoFilesRoot();
+        const protoFilesRoot = new gax.GoogleProtoFilesRoot();
         @join stub : xapi.stubs
           protoFilesRoot = protobuf.loadSync(
             @if xapi.fileHeader.hasVersion
@@ -188,10 +188,10 @@
         }).operationsClient(opts);
 
         @join descriptor : xapi.longRunningDescriptors
-          var {@descriptor.methodName}Response = protoFilesRoot.lookup(
+          const {@descriptor.methodName}Response = protoFilesRoot.lookup(
             '{@descriptor.operationPayloadTypeName}'
           );
-          var {@descriptor.methodName}Metadata = protoFilesRoot.lookup(
+          const {@descriptor.methodName}Metadata = protoFilesRoot.lookup(
             '{@descriptor.metadataTypeName}'
           );
         @end
@@ -208,7 +208,7 @@
       @end
 
       // Put together the default options sent with requests.
-      var defaults = gaxGrpc.constructSettings(
+      const defaults = gaxGrpc.constructSettings(
         '{@xapi.interfaceKey}',
         gapicConfig,
         opts.clientConfig,
@@ -223,14 +223,14 @@
 
         // Put together the "service stub" for
         // {@stub.fullyQualifiedType}.
-        var {@stub.name} = gaxGrpc.createStub(
+        const {@stub.name} = gaxGrpc.createStub(
           protos.{@stub.fullyQualifiedType},
           opts
         );
 
         // Iterate over each of the methods that the service provides
         // and create an API call method for each.
-        var {@stub.stubMethodsArrayName} = [
+        const {@stub.stubMethodsArrayName} = [
           @join method : {@stub.methodNames} on BREAK
             '{@method}',
           @end
@@ -240,7 +240,7 @@
             {@stub.name}.then(
               stub =>
                 function() {
-                  var args = Array.prototype.slice.call(arguments, 0);
+                  const args = Array.prototype.slice.call(arguments, 0);
                   return stub[methodName].apply(stub, args);
                 }
             ),
