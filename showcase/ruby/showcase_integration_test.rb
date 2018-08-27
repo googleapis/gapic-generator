@@ -124,7 +124,7 @@ describe Google::Showcase::V1alpha1::EchoClient do
       end
     end
 
-    it 'invokes pagination for each page'
+    it 'invokes pagination for each page' do
       page_size = 5
       max_response = 20
       expected = 0
@@ -139,5 +139,4 @@ describe Google::Showcase::V1alpha1::EchoClient do
       assert_equal(4, pages)
     end
   end
-
 end
