@@ -52,18 +52,23 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   protected ConfigProto gapicConfig;
   protected PackageMetadataConfig packageConfig;
   private final String baselineFile;
+  private final String protoPackage;
 
   public GapicTestBase2(
       TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetNames,
-      String baselineFile) {
+      String baselineFile,
+      String protoPackage) {
     this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
+
+    // Represents the test value for the --package flag.
+    this.protoPackage = protoPackage;
 
     String dir = language.toString().toLowerCase();
     if ("python".equals(dir)) {
@@ -169,7 +174,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     }
 
     GapicProductConfig productConfig =
-        GapicProductConfig.create(model, gapicConfig, null, language);
+        GapicProductConfig.create(model, gapicConfig, protoPackage, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());

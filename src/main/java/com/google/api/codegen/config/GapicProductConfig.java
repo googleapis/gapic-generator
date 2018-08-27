@@ -152,13 +152,15 @@ public abstract class GapicProductConfig implements ProductConfig {
                       new NoSuchElementException(
                           String.format(
                               "No proto package %s in input descriptor set.", defaultPackage)));
-    } else {
+    } else if (configProto != null){
       // Otherwise use configProto to get the proto file containing the first interface listed in
       // the config proto, and use it as
       // the assigned file for generated resource names, and to get the default message namespace
       file =
           model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
       defaultPackage = file.getProto().getPackage();
+    } else {
+      throw new NullPointerException("configProto and protoPackage cannot both be null.");
     }
 
     // Get list of fields from proto

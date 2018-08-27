@@ -35,7 +35,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       List<String> snippetName,
       String apiName,
       String baseline) {
-    super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline);
+    super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, null);
     this.apiName = apiName;
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/configonly");
   }
