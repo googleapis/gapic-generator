@@ -41,7 +41,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     if ("python".equals(dir)) {
       dir = "py";
     }
-    getTestDataLocator().addTestDataSource(getClass(), "protoannotations");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/annotationsonly");
     getTestDataLocator().addTestDataSource(getClass(), dir);
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }

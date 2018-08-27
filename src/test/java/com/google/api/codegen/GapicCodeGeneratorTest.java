@@ -41,7 +41,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     if ("python".equals(dir)) {
       dir = "py";
     }
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/configonly");
     getTestDataLocator().addTestDataSource(getClass(), dir);
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }

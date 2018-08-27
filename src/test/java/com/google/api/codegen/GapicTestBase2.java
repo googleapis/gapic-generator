@@ -64,6 +64,9 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
+
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/imports");
   }
 
   public GapicTestBase2(
