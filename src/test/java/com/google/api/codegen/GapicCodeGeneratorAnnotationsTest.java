@@ -15,14 +15,14 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.common.TargetLanguage;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Go code generator baseline tests. */
+/** Code generator baseline tests. Tests generation using proto annotations, without config files. */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
@@ -36,26 +36,22 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline) {
     super(language, null, null, snippetName, baseline);
+
     this.apiName = apiName;
-    String dir = language.toString().toLowerCase();
-    if ("python".equals(dir)) {
-      dir = "py";
-    }
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/annotationsonly");
-    getTestDataLocator().addTestDataSource(getClass(), dir);
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }
 
-  @Parameters(name = "{0}")
+  @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-    return Arrays.asList(
-        GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
-        GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, "library_pkg2.yaml", "library"));
+    return new LinkedList<>();
+    // TODO(andrealin): Implement parsing proto-annotations.
+    //        return Arrays.asList(
+    //            GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
+    //            GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library"));
   }
 
   @Test
   public void test() throws Exception {
-    // TODO(andrealin): Implement parsing proto-annotations.
-    //    test(apiName);
+    test(apiName);
   }
 }

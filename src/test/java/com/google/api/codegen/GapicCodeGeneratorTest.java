@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Code generator baseline tests. */
+/** Code generator baseline tests. Tests generation using config files. */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
-  private final String apiName;
+  final String apiName;
 
   public GapicCodeGeneratorTest(
       TargetLanguage language,
@@ -37,13 +37,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       String baseline) {
     super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline);
     this.apiName = apiName;
-    String dir = language.toString().toLowerCase();
-    if ("python".equals(dir)) {
-      dir = "py";
-    }
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/configonly");
-    getTestDataLocator().addTestDataSource(getClass(), dir);
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }
 
   @Parameters(name = "{5}")

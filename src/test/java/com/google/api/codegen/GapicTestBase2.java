@@ -65,6 +65,12 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
 
+    String dir = language.toString().toLowerCase();
+    if ("python".equals(dir)) {
+      dir = "py";
+    }
+    getTestDataLocator().addTestDataSource(getClass(), dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
   }
 
