@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Go code generator baseline tests. */
+/** Code generator baseline tests. */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
@@ -41,6 +41,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     if ("python".equals(dir)) {
       dir = "py";
     }
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
     getTestDataLocator().addTestDataSource(getClass(), dir);
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }
