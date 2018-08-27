@@ -74,14 +74,6 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
   }
 
-  public GapicTestBase2(TargetLanguage language, List<String> snippetNames, String baselineFile) {
-    this.language = language;
-    this.gapicConfigFileNames = null;
-    this.packageConfigFileName = null;
-    this.snippetNames = ImmutableList.copyOf(snippetNames);
-    this.baselineFile = baselineFile;
-  }
-
   @Override
   protected void test(String... baseNames) throws Exception {
     super.test(new GapicTestModelGenerator(getTestDataLocator(), tempDir), baseNames);

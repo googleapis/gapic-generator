@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
-  final String apiName;
+  private final String apiName;
 
   public GapicCodeGeneratorTest(
       TargetLanguage language,
