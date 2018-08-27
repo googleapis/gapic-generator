@@ -31,6 +31,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
@@ -42,13 +43,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
+import com.google.protobuf.DescriptorProtos;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -177,10 +182,13 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
+    List<ProtoFile> sourceProtos = model.getFiles().stream()
+        .filter(f -> f.getProto().getPackage().equals(defaultPackage)).collect(Collectors.toList());
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
             configProto,
+            sourceProtos,
             settings,
             messageConfigs,
             resourceNameConfigs,
@@ -350,39 +358,76 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
-      ConfigProto configProto,
+      @Nullable ConfigProto configProto,
+      List<ProtoFile> sourceProtos,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
       TargetLanguage language) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
-    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-      Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
-      if (apiInterface == null || !apiInterface.isReachable()) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "interface not found: %s",
-                interfaceConfigProto.getName()));
-        continue;
-      }
-      String interfaceNameOverride =
-          languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
 
-      GapicInterfaceConfig interfaceConfig =
-          GapicInterfaceConfig.createInterfaceConfig(
-              diagCollector,
-              language,
-              interfaceConfigProto,
-              apiInterface,
-              interfaceNameOverride,
-              messageConfigs,
-              resourceNameConfigs);
-      if (interfaceConfig == null) {
-        continue;
+    if (configProto != null) {
+      // Parse config for interfaces.
+      for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+        Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
+        if (apiInterface == null || !apiInterface.isReachable()) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "interface not found: %s",
+                  interfaceConfigProto.getName()));
+          continue;
+        }
+        String interfaceNameOverride =
+            languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
+
+        GapicInterfaceConfig interfaceConfig =
+            GapicInterfaceConfig.createInterfaceConfig(
+                diagCollector,
+                language,
+                interfaceConfigProto,
+                apiInterface,
+                interfaceNameOverride,
+                messageConfigs,
+                resourceNameConfigs);
+        if (interfaceConfig == null) {
+          continue;
+        }
+        interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
       }
-      interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
+    }
+    // Parse proto file for interfaces.
+    for (ProtoFile file : sourceProtos) {
+      if (file.getProto().getServiceList().size() == 0) continue;
+      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
+        String serviceFullName = String.format("%s.%s", file.getProto().getPackage(), service.getName());
+        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
+        if (apiInterface == null || !apiInterface.isReachable()) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "interface not found: %s",
+                  service.getName()));
+          continue;
+        }
+        String interfaceNameOverride =
+            languageSettings.getInterfaceNamesMap().get(service.getName());
+
+        GapicInterfaceConfig interfaceConfig =
+            GapicInterfaceConfig.createInterfaceConfig(
+                diagCollector,
+                language,
+                null,
+                apiInterface,
+                interfaceNameOverride,
+                messageConfigs,
+                resourceNameConfigs);
+        if (interfaceConfig == null) {
+          continue;
+        }
+        interfaceConfigMap.put(service.getName(), interfaceConfig);
+      }
     }
 
     if (diagCollector.getErrorCount() > 0) {

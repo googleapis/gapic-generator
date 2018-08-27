@@ -123,9 +123,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
       if (configProto == null) {
         return;
       }
+    }
 
-      model.establishStage(Merged.KEY);
+    model.establishStage(Merged.KEY);
 
+    if (configFileNames.size() > 0) {
       List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
       Adviser adviser = new Adviser(adviceSuppressors);
       adviser.advise(model, configProto);

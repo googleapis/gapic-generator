@@ -23,14 +23,26 @@ import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
 import io.grpc.Status;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Merges retry properties from an API interface into a ConfigNode. */
 public class RetryMerger {
   private static final String RETRY_CODES_IDEMPOTENT_NAME = "idempotent";
   private static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";
   private static final String RETRY_PARAMS_DEFAULT_NAME = "default";
+
+  public static final Map<String, List<String>> DEFAULT_RETRY_CODES = ImmutableSortedMap.of(
+      RETRY_CODES_IDEMPOTENT_NAME,
+      ImmutableList.of(Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name()),
+      RETRY_CODES_NON_IDEMPOTENT_NAME,
+      ImmutableList.of());
 
   public ConfigNode generateRetryDefinitionsNode(ConfigNode prevNode) {
     FieldConfigNode retryCodesDefNode =
@@ -51,13 +63,13 @@ public class RetryMerger {
         generateRetryCodeDefNode(
             NodeFinder.getNextLine(parentNode),
             RETRY_CODES_IDEMPOTENT_NAME,
-            ImmutableList.of(Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name()));
+            DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
     parentNode.setChild(idempotentNode);
     ConfigNode nonIdempotentNode =
         generateRetryCodeDefNode(
             NodeFinder.getNextLine(idempotentNode),
             RETRY_CODES_NON_IDEMPOTENT_NAME,
-            ImmutableList.<String>of());
+            DEFAULT_RETRY_CODES.get(RETRY_CODES_NON_IDEMPOTENT_NAME));
     idempotentNode.insertNext(nonIdempotentNode);
   }
 

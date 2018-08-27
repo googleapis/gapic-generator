@@ -82,8 +82,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      List<String> retryCodesConfigNames,
+      List<String> retryParamsConfigNames) {
 
     boolean error = false;
     DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, apiModel);

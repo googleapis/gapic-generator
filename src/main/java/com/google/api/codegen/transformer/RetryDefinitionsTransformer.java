@@ -17,20 +17,27 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.configgen.mergers.MethodMerger;
+import com.google.api.codegen.configgen.mergers.RetryMerger;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
@@ -59,25 +66,30 @@ public class RetryDefinitionsTransformer {
     return definitions;
   }
 
-  public static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
-    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(String.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
+  public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
+      DiagCollector diagCollector, @Nullable InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
+    if (interfaceConfigProto != null) {
+      for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
+        // Enforce ordering on set for baseline test consistency.
+        Set<String> codes = new TreeSet<>();
+        for (String codeText : retryDef.getRetryCodesList()) {
+          try {
+            codes.add(String.valueOf(codeText));
+          } catch (IllegalArgumentException e) {
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "status code not found: '%s' (in interface %s)",
+                    codeText,
+                    interfaceConfigProto.getName()));
+          }
         }
+        builder.put(retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
       }
-      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
+    } else {
+      // Use default values for retry settings.
+      builder.putAll(DEFAULT_RETRY_CODES);
     }
     if (diagCollector.getErrorCount() > 0) {
       return null;
