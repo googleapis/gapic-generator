@@ -371,6 +371,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       TargetLanguage language) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
+
     if (configProto != null) {
       // Parse config for interfaces.
       for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
@@ -383,6 +385,7 @@ public abstract class GapicProductConfig implements ProductConfig {
                   interfaceConfigProto.getName()));
           continue;
         }
+        interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
         String interfaceNameOverride =
             languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
 
@@ -413,6 +416,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
+        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
         String interfaceNameOverride =
             languageSettings.getInterfaceNamesMap().get(service.getName());
 
@@ -420,7 +424,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             GapicInterfaceConfig.createInterfaceConfig(
                 diagCollector,
                 language,
-                null,
+                interfaceConfigProto,
                 apiInterface,
                 interfaceNameOverride,
                 messageConfigs,
