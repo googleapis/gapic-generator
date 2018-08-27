@@ -237,7 +237,7 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Prepare to test Showcase.
         command: |
-          echo 'export TEST_API="showcase"' >> $BASH_ENV
+          echo 'export TEST_API="showcase-v1alpha1"' >> $BASH_ENV
           echo 'export KEY_REQUIRED=false' >> $BASH_ENV
     - run:
         name: Test Showcase Generated Unit Tests.
@@ -350,7 +350,7 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages=ruby \
+                --languages ruby php \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
       - store_artifacts:
