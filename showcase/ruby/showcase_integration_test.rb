@@ -58,7 +58,7 @@ describe Google::Showcase::V1alpha1::EchoClient do
 
   describe 'expand' do
     it 'invokes expand' do
-      content = "The rain in spain stays mainly on the plain!"
+      content = "The rain in Spain stays mainly on the plain!"
 
       response = []
 
@@ -114,16 +114,19 @@ describe Google::Showcase::V1alpha1::EchoClient do
   end
 
   describe 'pagination' do
-    it 'invokes pagination' do
+    it 'invokes pagination for each element' do
       page_size = 5
       max_response = 20
-
       expected = 0
       @client.pagination(max_response, page_size: 5).each do |element|
         assert_equal(expected, element)
         expected = expected + 1
       end
+    end
 
+    it 'invokes pagination for each page'
+      page_size = 5
+      max_response = 20
       expected = 0
       pages = 0
       @client.pagination(max_response, page_size: 5).each_page do |page|
