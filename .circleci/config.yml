@@ -247,8 +247,11 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Run Showcase Server.
         command: |
+          ls
+          echo https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64
           curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
                --output showcase-server
+          ls
           chmod a+x showcase-server
           ./showcase-server
         background: true
