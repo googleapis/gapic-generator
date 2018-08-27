@@ -29,17 +29,17 @@ anchor_run_decrypt: &anchor_run_decrypt
 
 anchor_check_generation: &anchor_check_generation
   command: |
-    # Generation for a language passed if there exists a [language].log
-    # which was outputted by generate_clients.py upon success.
+    # Generation for a language failed if there exists a [language].log
+    # which was outputted by generate_clients.py upon failure.
     # LANGUAGE must be set in BASH_ENV in a prior command.
     if [ -e ${ARTMAN_REPORTS_DIR}/${LANGUAGE}.log ]
     then
-      echo "All client generations for ${LANGUAGE} succeeded."
-      exit 0
-    else
       echo "Not all client generations for ${LANGUAGE} succeeded."
       echo "See artman generation log at /tmp/workspace/reports/generations/smoketest.log."
       exit 1
+    else
+      echo "All client generations for ${LANGUAGE} succeeded."
+      exit 0
     fi
 
 # Test a Ruby client if generation succeeded.
@@ -112,6 +112,7 @@ anchor_run_ruby: &anchor_run_ruby
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
+    SHOWCASE_VERSION: 0.0.4
     <<: *anchor_artman_vars
   steps:
     - attach_workspace:
@@ -142,6 +143,38 @@ anchor_run_ruby: &anchor_run_ruby
     - run:
         name: Test Logging.
         <<: *anchor_test_ruby_client
+    - run:
+        name: Prepare to test Showcase.
+        command: echo 'export TEST_API="showcase"' >> $BASH_ENV
+    - run:
+        name: Test Showcase Generated Unit Tests.
+        <<: *anchor_test_ruby_client
+    - run:
+        name: Setup Showcase Integration Tests
+        # Git needs to be initialized since the gemspec tracks the packaged files using git.
+        command: |
+          cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-showcase
+          git config --global user.email "googleapis@google.com"
+          git config --global user.name "googleapis"
+          git init
+          git add .
+          git commit -m "init"
+          gem build google-showcase.gemspec
+          gem install google-showcase-0.1.0.gem
+    - run:
+        name: Run Showcase Server.
+        command: |
+          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
+               --output showcase-server
+          chmod a+x showcase-server
+          ./showcase-server
+        background: true
+    - run:
+        name: Run Showcase Integration Tests
+        command: |
+          cd workspace/gapic-generator/showcase/ruby
+          bundle install
+          bundle exec ruby showcase_integration_test.rb
 
 anchor_test_php: &anchor_test_php
   command: |
@@ -215,6 +248,8 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
+    environment:
+      SHOWCASE_VERSION: 0.0.4
     steps:
       - checkout:
           path: gapic-generator
@@ -223,6 +258,15 @@ jobs:
           command: |
             mkdir -p googleapis
             git clone https://github.com/googleapis/googleapis.git googleapis
+      - run:
+          name: Setup showcase protos.
+          command: |
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos.tar.gz | tar xz
+            mv gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos showcase-protos
+            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc"
+            cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha1/
+            cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
       - run:
           name: Build and install local toolkit
           command: |
@@ -235,6 +279,7 @@ jobs:
           paths:
             - gapic-generator
             - googleapis
+            - showcase-protos
   generate-clients:
     docker:
       - image: googleapis/artman:0.14.3
@@ -249,13 +294,43 @@ jobs:
           command: |
             mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
-          name: Generate all language libraries
+          name: Generate Pubsub Libraries
           command: |
             cd workspace/gapic-generator
             python generate_clients.py \
+                google/pubsub/artman_pubsub.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
-            # TODO: To add languages to generate, edit generate_clients.py
+          when: always
+      - run:
+          name: Generate Logging Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/logging/artman_logging.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
+      - run:
+          name: Generate Speech Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/cloud/speech/artman_speech_v1.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
+      - run:
+          name: Generate Showcase Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/showcase/artman_showcase.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR} \
+                --languages=ruby \
+                --root-dir=/tmp/workspace/showcase-protos
+          when: always
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
