@@ -25,6 +25,7 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -50,6 +51,8 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PhpApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final GapicCodePathMapper pathMapper;
   private final PhpMethodViewGenerator methodGenerator =
       new PhpMethodViewGenerator(apiMethodTransformer);
@@ -101,6 +104,7 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
+                .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
                 .className(className)
                 .libraryMethod(
