@@ -14,25 +14,78 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.transformer.OutputTransformer.ScopeTable;
+import static com.google.api.codegen.transformer.OutputTransformer.accessorNewVariable;
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
+import com.google.api.codegen.SampleValueSet;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.util.Scanner;
+import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class OutputTransformerTest {
 
-  private ScopeTable parent;
-  private ScopeTable child;
+  private OutputTransformer.ScopeTable parent;
+  private OutputTransformer.ScopeTable child;
+  private SampleValueSet valueSet;
+
+  @Mock private MethodModel model;
+  @Mock private MethodContext context;
+  @Mock private MethodConfig config;
+  @Mock private PageStreamingConfig pageStreamingConfig;
+  @Mock private FeatureConfig featureConfig;
+  @Mock private SurfaceNamer namer;
+  @Mock private FieldConfig resourceFieldConfig;
 
   @Before
   public void setUp() {
-    parent = new ScopeTable();
-    child = new ScopeTable(parent);
+    MockitoAnnotations.initMocks(this);
+    valueSet = SampleValueSet.newBuilder().setId("test-sample-value-set-id").build();
+    parent = new OutputTransformer.ScopeTable();
+    child = new OutputTransformer.ScopeTable(parent);
   }
+
+  @Test
+  public void testAccessorNewVariableResourceName() {
+    String input = "$resp";
+    Scanner scanner = new Scanner(input);
+    String newVar = "variable";
+    when(context.getMethodConfig()).thenReturn(config);
+    when(context.getMethodModel()).thenReturn(model);
+    when(context.getFeatureConfig()).thenReturn(featureConfig);
+    when(model.getSimpleName()).thenReturn("methodSimpleName");
+    when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
+    when(pageStreamingConfig.getResourcesFieldConfig()).thenReturn(resourceFieldConfig);
+    when(context.getNamer()).thenReturn(namer);
+    when(namer.getSampleResponseVarName(any(MethodContext.class))).thenReturn("variable");
+    when(featureConfig.useResourceNameFormatOption(any(FieldConfig.class))).thenReturn(true);
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, newVar, false);
+    System.out.println(variableView);
+  }
+
+  @Test
+  public void testAccessorNewVariablePageStreaming() {}
+
+  @Test
+  public void testAccessorNewVariableResponseType() {}
+
+  @Test
+  public void testAccessorNewVariableFromScopeTable() {}
+
+  @Test
+  public void testResponseResourceNameType() {}
 
   @Test
   public void testScopeTablePut() {

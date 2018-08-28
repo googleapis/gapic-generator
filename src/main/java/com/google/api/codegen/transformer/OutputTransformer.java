@@ -180,7 +180,8 @@ class OutputTransformer {
    *   accessor '.' identifier
    * </code></pre>
    */
-  private static OutputView.VariableView accessorNewVariable(
+  @VisibleForTesting
+  static OutputView.VariableView accessorNewVariable(
       Scanner config,
       MethodContext context,
       SampleValueSet valueSet,
@@ -200,6 +201,7 @@ class OutputTransformer {
 
     TypeModel type = null;
     String typeName = null;
+    System.out.println(baseIdentifier);
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName(context));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
