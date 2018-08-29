@@ -245,6 +245,42 @@ anchor_test_csharp_client: &anchor_test_csharp_client
     dotnet build
     dotnet test --no-build Build.Tests
 
+anchor_run_csharp: &anchor_run_csharp
+  working_directory: /tmp/
+  steps:
+    # TODO: remove checkout step
+    - checkout
+    - attach_workspace:
+        at: workspace
+    - run:
+        name: Prepare for C# Pubsub testing.
+        command: |
+          echo 'export TEST_API="pubsub"' >> $BASH_ENV
+    - run:
+        name: Test Pubsub.
+        <<: *anchor_test_csharp_client
+    - run:
+        name: Prepare for C# Logging testing.
+        command: |
+          echo 'export TEST_API="logging"' >> $BASH_ENV
+    - run:
+        name: Test Logging.
+        <<: *anchor_test_csharp_client
+    - run:
+        name: Prepare for C# Speech testing.
+        command: |
+          echo 'export TEST_API="speech"' >> $BASH_ENV
+    - run:
+        name: Test Speech.
+        <<: *anchor_test_csharp_client
+    - store_test_results:
+        path: /tmp/workspace/reports
+    - store_artifacts:
+        path: /tmp/workspace/reports
+    # TODO: Run C# smoke tests by cd to generated directory
+    # ending with ".SmokeTests" and running:
+    # dotnet run -f netcoreapp1.0 -- PROJECT_ID
+
 # ======================= JOBS =======================
 
 jobs:
@@ -429,45 +465,15 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-  test-csharp:
-    working_directory: /tmp/
+  verify-and-test-csharp-2.1.3:
+    <<: *anchor_run_csharp
+    environment:
+      LANGUAGE: csharp
+      CSHARP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/csharp
+      <<: *anchor_artman_vars
+      <<: *anchor_auth_vars
     docker:
       - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
-    environment:
-      CSHARP_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/csharp
-    steps:
-      # TODO: remove checkout step
-      - checkout
-      - attach_workspace:
-          at: workspace
-      - run:
-          name: Prepare for C# Pubsub testing.
-          command: |
-            echo 'export TEST_API="pubsub"' >> $BASH_ENV
-      - run:
-          name: Test Pubsub.
-          <<: *anchor_test_csharp_client
-      - run:
-          name: Prepare for C# Logging testing.
-          command: |
-            echo 'export TEST_API="logging"' >> $BASH_ENV
-      - run:
-          name: Test Logging.
-          <<: *anchor_test_csharp_client
-      - run:
-          name: Prepare for C# Speech testing.
-          command: |
-            echo 'export TEST_API="speech"' >> $BASH_ENV
-      - run:
-          name: Test Speech.
-          <<: *anchor_test_csharp_client
-      - store_test_results:
-          path: /tmp/workspace/reports
-      - store_artifacts:
-          path: /tmp/workspace/reports
-  # TODO: Run C# smoke tests by cd to generated directory
-  # ending with ".SmokeTests" and running:
-  # dotnet run -f netcoreapp1.0 -- PROJECT_ID
 
   # TODO: test other language clients.
 
@@ -505,12 +511,10 @@ workflows:
       - verify-and-test-php-7.2:
           requires:
             - generate-clients
-      - verify-csharp-generation:
+      # TODO: Other php versions
+      - verify-and-test-csharp-2.1.3:
           requires:
             - generate-clients
-      - test-csharp:
-          requires:
-            - verify-csharp-generation
       # TODO: schedule C# smoke tests job
 
 machine:
