@@ -23,10 +23,10 @@
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
-  @if needsImportSix(sample.initCode.argDefaultParams)
+  @if shouldImportSix(sample.initCode.argDefaultParams)
     import six
   @end
-  
+
   def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
     @# [START {@sample.regionTag}_core]
 
@@ -87,7 +87,7 @@
   @end
 @end
 
-@private needsImportSix(defaultParams)
+@private shouldImportSix(defaultParams)
   @join param : defaultParams
     @if param.lineType == "SimpleInitLine"
       @if param.typeName == "str"
@@ -96,8 +96,6 @@
     @end
   @end
 @end
-
-
 
 @private convertBinaryToStr(identifier)
   if isinstance({@identifier}, six.binary_type):
