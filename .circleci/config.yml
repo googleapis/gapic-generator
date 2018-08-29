@@ -1,5 +1,12 @@
 version: 2.0
 
+# Tip: You can run `circleci config validate -c .circleci/config.yml`
+# to validate this yaml after making changes to it.
+# That requires a circleCI local installation:
+# `curl -o /usr/local/bin/circleci \
+#      https://circle-downloads.s3.amazonaws.com/releases/build_agent_wrapper/circleci \
+#      && chmod +x /usr/local/bin/circleci`
+
 # ======================= ANCHORS =======================
 
 anchor_artman_vars: &anchor_artman_vars
@@ -22,30 +29,211 @@ anchor_run_decrypt: &anchor_run_decrypt
 
 anchor_check_generation: &anchor_check_generation
   command: |
-    # Generation for a language passed if there exists a [language].log
-    # which was outputted by generate_clients.py upon success.
+    # Generation for a language failed if there exists a [language].log
+    # which was outputted by generate_clients.py upon failure.
+    # LANGUAGE must be set in BASH_ENV in a prior command.
     if [ -e ${ARTMAN_REPORTS_DIR}/${LANGUAGE}.log ]
     then
-        exit 0
+      echo "Not all client generations for ${LANGUAGE} succeeded."
+      echo "See artman generation log at /tmp/workspace/reports/generations/smoketest.log."
+      exit 1
     else
-        exit 1
+      echo "All client generations for ${LANGUAGE} succeeded."
+      exit 0
     fi
 
-# We use this setup for jobs that verify that generation of a given language succeeded.
-anchor_verify_generation: &anchor_verify_generation
-  environment:
-    <<: *anchor_artman_vars
+# Test a Ruby client if generation succeeded.
+anchor_test_python_client: &anchor_test_python_client
+  command: |
+    if [ -z $NOX_COMMANDS]
+    then
+      echo "NOX_COMMANDS was not configured. Check CircleCI config."
+      exit 1
+    fi
+    if [ -e ${PYTHON_GEN_DIR}/${TEST_API} ]
+    then
+      cd ${PYTHON_GEN_DIR}/${TEST_API}
+      echo "Running test commands: $NOX_COMMANDS"
+      eval "$NOX_COMMANDS"
+    else
+      echo "Python ${TEST_API} library was not generated."
+      exit 1
+    fi
+  when: always
+
+anchor_verify_and_test_python: &anchor_verify_and_test_python
   working_directory: /tmp/
   docker:
-    # Use a small CircleCI Docker image which will support workspace persistence.
-    - image: circleci/slim-base
+    # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
+    # https://github.com/googleapis/gapic-generator/issues/2237
+    - image: googleapis/nox:0.17.0
   steps:
     - attach_workspace:
-        # Load the REPORTS_DIR from generate-clients
         at: workspace
     - run:
-        name: Check if language generation had succeeded.
+        <<: *anchor_run_decrypt
+    - run:
         <<: *anchor_check_generation
+    # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
+    - run:
+        name: Prepare for Pubsub testing.
+        command: |
+          echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+    - run:
+        name: Test Pubsub.
+        <<: *anchor_test_python_client
+    - run:
+        name: Prepare for Speech testing.
+        command: |
+          echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+    - run:
+        name: Test Speech.
+        <<: *anchor_test_python_client
+
+# Test a Ruby client if generation succeeded.
+anchor_test_ruby_client: &anchor_test_ruby_client
+  command: |
+    if [ -e ${RUBY_GEN_DIR}/google-cloud-${TEST_API} ]
+    then
+      cd ${RUBY_GEN_DIR}/google-cloud-${TEST_API}
+      bundle update
+      ${TEST_RUBY_COMMAND}
+    else
+      echo "Ruby ${TEST_API} library was not generated."
+      exit 1
+    fi
+  when: always
+
+anchor_run_ruby: &anchor_run_ruby
+  # Set var TEST_RUBY_COMMAND for each job this anchor is used in.
+  working_directory: /tmp/
+  docker:
+    - image: circleci/ruby:2.4-node
+  environment:
+    LANGUAGE: ruby
+    RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
+    SHOWCASE_VERSION: 0.0.4
+    <<: *anchor_artman_vars
+  steps:
+    - attach_workspace:
+        # Use the workspace created in generate-clients
+        at: workspace
+    - run:
+        <<: *anchor_run_decrypt
+    - run:
+        <<: *anchor_check_generation
+    - run:
+        name: Prepare for Pubsub testing.
+        command: |
+          echo 'export TEST_API="pubsub"' >> $BASH_ENV
+    - run:
+        name: Test Pubsub.
+        <<: *anchor_test_ruby_client
+    - run:
+        name: Prepare for Speech testing.
+        command: |
+          echo 'export TEST_API="speech"' >> $BASH_ENV
+    - run:
+        name: Test Speech.
+        <<: *anchor_test_ruby_client
+    - run:
+        name: Prepare for Logging testing.
+        command: |
+          echo 'export TEST_API="logging"' >> $BASH_ENV
+    - run:
+        name: Test Logging.
+        <<: *anchor_test_ruby_client
+    - run:
+        name: Prepare to test Showcase.
+        command: echo 'export TEST_API="showcase"' >> $BASH_ENV
+    - run:
+        name: Test Showcase Generated Unit Tests.
+        <<: *anchor_test_ruby_client
+    - run:
+        name: Setup Showcase Integration Tests
+        # Git needs to be initialized since the gemspec tracks the packaged files using git.
+        command: |
+          cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-showcase
+          git config --global user.email "googleapis@google.com"
+          git config --global user.name "googleapis"
+          git init
+          git add .
+          git commit -m "init"
+          gem build google-showcase.gemspec
+          gem install google-showcase-0.1.0.gem
+    - run:
+        name: Run Showcase Server.
+        command: |
+          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
+               --output showcase-server
+          chmod a+x showcase-server
+          ./showcase-server
+        background: true
+    - run:
+        name: Run Showcase Integration Tests
+        command: |
+          cd workspace/gapic-generator/showcase/ruby
+          bundle install
+          bundle exec ruby showcase_integration_test.rb
+
+anchor_test_php: &anchor_test_php
+  command: |
+    # Only run PHP API test if we have project credentials key
+    # or this API client doesn't require credentials.
+    # We can remove this if-check when https://github.com/googleapis/gapic-generator/issues/2235
+    # is resolved and unblocks PHP unit tests without credentials.
+    if ! [ -e ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API} ]
+    then
+      echo "PHP ${TEST_API} library was not generated."
+      exit 1
+    fi
+    if ! [ -z "$SYSTEM_TESTS_ENCRYPTION_KEY" ] || [ "$KEY_REQUIRED" = false ]
+    then
+      cd ${PHP_CLIENTS_DIR}/google-cloud-${TEST_API}
+      composer install
+      composer update
+      vendor/bin/phpunit ${TESTS_DIR}
+    fi
+  when: always
+
+anchor_run_php: &anchor_run_php
+  working_directory: /tmp/
+  steps:
+    - attach_workspace:
+        at: workspace
+    - run:
+        name: Verify all PHP generation succeeded
+        <<: *anchor_check_generation
+    - run:
+        <<: *anchor_run_decrypt
+    - run:
+        name: Prepare to test Pubsub
+        command: |
+          echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Pubsub client
+        <<: *anchor_test_php
+    - run:
+        name: Prepare to test Speech
+        command: |
+          echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+          # Need creds for Speech client tests that make live calls to server
+          echo 'export KEY_REQUIRED=true' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Speech client
+        <<: *anchor_test_php
+    - run:
+        name: Prepare to test Logging
+        command: |
+          echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+        when: always
+    - run:
+        name: Test PHP Logging client
+        <<: *anchor_test_php
 
 anchor_test_csharp_client: &anchor_test_csharp_client
   command: |
@@ -56,69 +244,6 @@ anchor_test_csharp_client: &anchor_test_csharp_client
     dotnet restore
     dotnet build
     dotnet test --no-build Build.Tests
-
-anchor_test_python: &anchor_test_python
-  working_directory: /tmp/
-  docker:
-    # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
-    - image: googleapis/nox:0.17.0
-  steps:
-    - attach_workspace:
-        at: workspace
-    - run:
-        <<: *anchor_run_decrypt
-    # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
-    - run:
-        name: Run nox on pubsub
-        command: |
-          cd workspace/gapic-generator/artman-genfiles/python/pubsub-v1
-          eval "$NOX_COMMANDS"
-        when: always
-    - run:
-        name: Run nox on speech
-        command: |
-          cd workspace/gapic-generator/artman-genfiles/python/speech-v1
-          eval "$NOX_COMMANDS"
-        when: always
-
-anchor_ruby_bundle: &anchor_ruby_bundle
-  command: |
-    cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/${TEST_API}
-    bundle update
-  when: always
-
-anchor_test_ruby: &anchor_test_ruby
-  # Set var TEST_RUBY_COMMAND for each job this anchor is used in.
-  working_directory: /tmp/
-  docker:
-    - image: circleci/ruby:2.4-node
-  steps:
-    - attach_workspace:
-        # Use the workspace created in generate-clients
-        at: workspace
-    - run:
-        <<: *anchor_run_decrypt
-    - run:
-        name: Test Pubsub.
-        command: |
-          cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-pubsub
-          bundle update
-          ${TEST_RUBY_COMMAND}
-        when: always
-    - run:
-        name: Test Speech.
-        command: |
-          cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-speech
-          bundle update
-          ${TEST_RUBY_COMMAND}
-        when: always
-    - run:
-        name: Test Logging.
-        command: |
-          cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-logging
-          bundle update
-          ${TEST_RUBY_COMMAND}
-        when: always
 
 # ======================= JOBS =======================
 
@@ -133,6 +258,8 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
+    environment:
+      SHOWCASE_VERSION: 0.0.4
     steps:
       - checkout:
           path: gapic-generator
@@ -141,6 +268,15 @@ jobs:
           command: |
             mkdir -p googleapis
             git clone https://github.com/googleapis/googleapis.git googleapis
+      - run:
+          name: Setup showcase protos.
+          command: |
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos.tar.gz | tar xz
+            mv gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos showcase-protos
+            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc"
+            cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha1/
+            cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
       - run:
           name: Build and install local toolkit
           command: |
@@ -153,9 +289,10 @@ jobs:
           paths:
             - gapic-generator
             - googleapis
+            - showcase-protos
   generate-clients:
     docker:
-      - image: googleapis/artman:0.14.3
+      - image: googleapis/artman:0.15.2
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -167,13 +304,43 @@ jobs:
           command: |
             mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
-          name: Generate all language libraries
+          name: Generate Pubsub Libraries
           command: |
             cd workspace/gapic-generator
             python generate_clients.py \
+                google/pubsub/artman_pubsub.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
-            # TODO: To add languages to generate, edit generate_clients.py
+          when: always
+      - run:
+          name: Generate Logging Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/logging/artman_logging.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
+      - run:
+          name: Generate Speech Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/cloud/speech/artman_speech_v1.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR}
+          when: always
+      - run:
+          name: Generate Showcase Libraries
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/showcase/artman_showcase.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR} \
+                --languages=ruby \
+                --root-dir=/tmp/workspace/showcase-protos
+          when: always
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -184,34 +351,19 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
-  verify-java-generation:
-    <<: *anchor_verify_generation
-    environment:
-      <<: *anchor_artman_vars
-      LANGUAGE: java
-  verify-python-generation:
-    <<: *anchor_verify_generation
-    environment:
-      <<: *anchor_artman_vars
-      LANGUAGE: python
-  verify-ruby-generation:
-    <<: *anchor_verify_generation
-    environment:
-      <<: *anchor_artman_vars
-      LANGUAGE: ruby
-  verify-csharp-generation:
-    <<: *anchor_verify_generation
-    environment:
-      <<: *anchor_artman_vars
-      LANGUAGE: csharp
-  # TODO: verify other language clients were generated.
-  test-java:
+  verify-and-test-java-openjdk8:
     working_directory: /tmp/
+    environment:
+      LANGUAGE: java
+      <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
       - attach_workspace:
           at: workspace
+      - run:
+          name: Verify all Java generation succeeded
+          <<: *anchor_check_generation
       - run:
           name: Run all Java generated unit tests
           command: |
@@ -227,13 +379,56 @@ jobs:
           path: /tmp/workspace/reports
       - store_artifacts:
           path: /tmp/workspace/reports
-  test-python:
+  verify-and-test-python:
     environment:
+      LANGUAGE: python
+      <<: *anchor_artman_vars
+      PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
       NOX_COMMANDS: "
         nox --session \"unit(py='2.7')\";
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
-    <<: *anchor_test_python
+    <<: *anchor_verify_and_test_python
+  verify-and-test-system-python:
+    environment:
+      <<: *anchor_auth_vars
+      LANGUAGE: python
+      <<: *anchor_artman_vars
+      PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
+      NOX_COMMANDS: "
+        nox --session \"unit(py='2.7')\";
+        nox --session \"unit(py='3.5')\";
+        nox --session \"unit(py='3.6')\";"
+    <<: *anchor_verify_and_test_python
+  verify-and-test-ruby-2.4:
+    environment:
+      RUBY_TEST_COMMAND: "bundle exec rake test"
+    <<: *anchor_run_ruby
+  verify-and-test-system-ruby-2.4:
+    environment:
+      RUBY_TEST_COMMAND: "bundle exec rake acceptance"
+      <<: *anchor_auth_vars
+    <<: *anchor_run_ruby
+  verify-and-test-php-7.2:
+    <<: *anchor_run_php
+    environment:
+      LANGUAGE: php
+      PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
+      TESTS_DIR: tests/Unit # Only run unit tests here.
+      <<: *anchor_artman_vars
+      <<: *anchor_auth_vars
+    docker:
+      - image: circleci/php:7.2.0-cli-stretch
+  verify-and-test-system-php-7.2:
+    <<: *anchor_run_php
+    environment:
+      LANGUAGE: php
+      PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
+      TESTS_DIR: tests # Only run unit tests here.
+      <<: *anchor_artman_vars
+      <<: *anchor_auth_vars
+    docker:
+      - image: circleci/php:7.2.0-cli-stretch
   test-csharp:
     working_directory: /tmp/
     docker:
@@ -273,23 +468,7 @@ jobs:
   # TODO: Run C# smoke tests by cd to generated directory
   # ending with ".SmokeTests" and running:
   # dotnet run -f netcoreapp1.0 -- PROJECT_ID
-  test-python-system:
-    environment:
-      <<: *anchor_auth_vars
-      NOX_COMMANDS: "
-        nox --session \"unit(py='2.7')\";
-        nox --session \"unit(py='3.5')\";
-        nox --session \"unit(py='3.6')\";"
-    <<: *anchor_test_python
-  test-ruby:
-    environment:
-      RUBY_TEST_COMMAND: "bundle exec rake test"
-    <<: *anchor_test_ruby
-  test-ruby-system:
-    environment:
-      RUBY_TEST_COMMAND: "bundle exec rake acceptance"
-      <<: *anchor_auth_vars
-    <<: *anchor_test_ruby
+
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
@@ -302,42 +481,36 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-#      - verify-java-generation:
-#          requires:
-#            - generate-clients
-#      - verify-python-generation:
-#          requires:
-#            - generate-clients
-#      - verify-ruby-generation:
-#          requires:
-#            - generate-clients
+      - verify-and-test-java-openjdk8:
+          requires:
+            - generate-clients
+      - verify-and-test-python:
+          requires:
+            - generate-clients
+      - verify-and-test-ruby-2.4:
+          requires:
+            - generate-clients
+      - verify-and-test-system-python:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - verify-and-test-system-ruby-2.4:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - verify-and-test-php-7.2:
+          requires:
+            - generate-clients
       - verify-csharp-generation:
           requires:
             - generate-clients
-#      - test-java:
-#          requires:
-#            - verify-java-generation
-#      - test-python:
-#          requires:
-#            - verify-python-generation
-#      - test-ruby:
-#          requires:
-#            - verify-ruby-generation
       - test-csharp:
           requires:
             - verify-csharp-generation
-#      - test-python-system:
-#          requires:
-#            - verify-python-generation
-#          filters:
-#            branches:
-#              only: master
-#      - test-ruby-system:
-#          requires:
-#            - verify-ruby-generation
-#          filters:
-#            branches:
-#              only: master
       # TODO: schedule C# smoke tests job
 
 machine:

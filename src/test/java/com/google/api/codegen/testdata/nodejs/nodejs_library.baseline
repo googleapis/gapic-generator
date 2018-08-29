@@ -25,19 +25,19 @@ $ npm install --save @google-cloud/library
 ```js
  const library = require('@google-cloud/library');
 
- var client = library.LibraryServiceClient({
+ const client = library.LibraryServiceClient({
    // optional auth parameters.
  });
 
- var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
- var optionalFoo = '';
- var rating = 'GOOD';
- var book = {
+ const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+ const optionalFoo = '';
+ const rating = 'GOOD';
+ const book = {
    rating: rating,
  };
- var updateMask = {};
- var physicalMask = {};
- var request = {
+ const updateMask = {};
+ const physicalMask = {};
+ const request = {
    name: formattedName,
    optionalFoo: optionalFoo,
    book: book,
@@ -46,7 +46,7 @@ $ npm install --save @google-cloud/library
  };
  client.updateBook(request)
    .then(responses => {
-     var response = responses[0];
+     const response = responses[0];
      // doThingsWith(response)
    })
    .catch(err => {
@@ -98,7 +98,7 @@ $ npm install --save @google-cloud/library
     "protobufjs": "^6.8.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
+    "mocha": "^5.2.0",
     "through2": "^2.0.3"
   },
   "scripts": {
@@ -108,7 +108,7 @@ $ npm install --save @google-cloud/library
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.0.0"
   }
 }
 
@@ -133,24 +133,24 @@ describe('LibraryServiceSmokeTest', () => {
   if (!process.env.GCLOUD_PROJECT) {
     throw new Error("Usage: GCLOUD_PROJECT=<project_id> node #{$0}");
   }
-  var projectId = process.env.GCLOUD_PROJECT;
+  const projectId = process.env.GCLOUD_PROJECT;
 
   it('successfully makes a call to the service', done => {
     const library = require('../src');
 
-    var client = new library.v1.LibraryServiceClient({
+    const client = new library.v1.LibraryServiceClient({
       // optional auth parameters.
     });
 
-    var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
-    var optionalFoo = '';
-    var rating = 'GOOD';
-    var book = {
+    const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    const optionalFoo = '';
+    const rating = 'GOOD';
+    const book = {
       rating: rating,
     };
-    var updateMask = {};
-    var physicalMask = {};
-    var request = {
+    const updateMask = {};
+    const physicalMask = {};
+    const request = {
       name: formattedName,
       optionalFoo: optionalFoo,
       book: book,
@@ -159,7 +159,7 @@ describe('LibraryServiceSmokeTest', () => {
     };
     client.updateBook(request)
       .then(responses => {
-        var response = responses[0];
+        const response = responses[0];
         console.log(response);
       })
       .then(done)
@@ -271,11 +271,11 @@ module.exports.default = Object.assign({}, module.exports);
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var stream = client.discussBook().on('data', response => {
+const stream = client.discussBook().on('data', response => {
   // doThingsWith(response)
 });
-var name = 'BASIC';
-var request = {
+const name = 'BASIC';
+const request = {
   name: name,
 };
 // Write request objects.
@@ -284,7 +284,7 @@ stream.write(request);
 // [END turing_prog_request_streaming_bidi_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END turing_prog_request_streaming_bidi]
 ============== file: src/samples/v1/find_related_books_request_async_paged_all_odyssey.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksRequestAsyncPagedAllOdyssey" ]
@@ -310,18 +310,18 @@ stream.write(request);
 
 /*
 // Iterate over all elements.
-var namesElement = 'Odyssey';
-var names = [namesElement];
-var shelvesElement = 'Classics';
-var shelves = [shelvesElement];
-var request = {
+const namesElement = 'Odyssey';
+const names = [namesElement];
+const shelvesElement = 'Classics';
+const shelves = [shelvesElement];
+const request = {
   names: names,
   shelves: shelves,
 };
 
 client.findRelatedBooks(request)
   .then(responses => {
-    var resources = responses[0];
+    const resources = responses[0];
     for (let i = 0; i < resources.length; i += 1) {
       // doThingsWith(resources[i])
     }
@@ -333,7 +333,7 @@ client.findRelatedBooks(request)
 // [END sample_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/samples/v1/find_related_books_request_async_paged_odyssey.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksRequestAsyncPagedOdyssey" ]
@@ -359,24 +359,24 @@ client.findRelatedBooks(request)
 
 /*
 // Or obtain the paged response.
-var namesElement = 'Odyssey';
-var names = [namesElement];
-var shelvesElement = 'Classics';
-var shelves = [shelvesElement];
-var request = {
+const namesElement = 'Odyssey';
+const names = [namesElement];
+const shelvesElement = 'Classics';
+const shelves = [shelvesElement];
+const request = {
   names: names,
   shelves: shelves,
 };
 
 
-var options = {autoPaginate: false};
-var callback = responses => {
+const options = {autoPaginate: false};
+const callback = responses => {
   // The actual resources in a response.
-  var resources = responses[0];
+  const resources = responses[0];
   // The next request if the response shows that there are more responses.
-  var nextRequest = responses[1];
+  const nextRequest = responses[1];
   // The actual response object, if necessary.
-  // var rawResponse = responses[2];
+  // const rawResponse = responses[2];
   for (let i = 0; i < resources.length; i += 1) {
     // doThingsWith(resources[i]);
   }
@@ -394,7 +394,7 @@ client.findRelatedBooks(request, options)
 // [END sample_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningEventEmitterWap" ]
@@ -419,13 +419,13 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
 
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    var operation = responses[0];
-    var initialApiResponse = responses[1];
+    const operation = responses[0];
+    const initialApiResponse = responses[1];
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
@@ -451,7 +451,7 @@ client.getBigBook({name: formattedName})
 // [END hopper_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END hopper]
 ============== file: src/samples/v1/get_big_book_long_running_promise_wap.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningPromiseWap" ]
@@ -476,26 +476,26 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
 
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    var operation = responses[0];
-    var initialApiResponse = responses[1];
+    const operation = responses[0];
+    const initialApiResponse = responses[1];
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
     // The final result of the operation.
-    var result = responses[0];
+    const result = responses[0];
 
     // The metadata value of the completed operation.
-    var metadata = responses[1];
+    const metadata = responses[1];
 
     // The response of the api call returning the complete operation.
-    var finalApiResponse = responses[2];
+    const finalApiResponse = responses[2];
   })
   .catch(err => {
     console.error(err);
@@ -504,7 +504,7 @@ client.getBigBook({name: formattedName})
 // [END hopper_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END hopper]
 ============== file: src/samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookRequestStreamingClientProg" ]
@@ -529,15 +529,15 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var stream = client.monologAboutBook((err, response) => {
+const stream = client.monologAboutBook((err, response) => {
   if (err) {
     console.error(err);
     return;
   }
   // doThingsWith(response)
 });
-var name = 'BASIC';
-var request = {
+const name = 'BASIC';
+const request = {
   name: name,
 };
 // Write request objects.
@@ -546,7 +546,7 @@ stream.write(request);
 // [END sample_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/samples/v1/publish_series_request_pi_version.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestPiVersion" ]
@@ -554,79 +554,79 @@ stream.write(request);
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
-// [START sample]
+// [START canonical]
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
 //      calling form: "Request"
-//        region tag: "sample"
+//        region tag: "canonical"
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
 //        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
 //      apiMethod "publishSeries" of type "OptionalArrayMethod"
 
-// [START sample_core]
+// [START canonical_core]
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var name = 'Math';
-var shelf = {
+// const name = 'Math';
+const shelf = {
   name: name,
 };
-var books = [];
-var seriesString = 'xyz3141592654';
-var seriesUuid = {
+const books = [];
+const seriesString = 'xyz3141592654';
+const seriesUuid = {
   seriesString: seriesString,
 };
-var request = {
+const request = {
   shelf: shelf,
   books: books,
   seriesUuid: seriesUuid,
 };
 client.publishSeries(request)
   .then(responses => {
-    var response = responses[0];
+    const response = responses[0];
     // doThingsWith(response)
   })
   .catch(err => {
     console.error(err);
   });
 */
-// [END sample_core]
+// [END canonical_core]
 
 // FIXME: Insert here clean-up code.
-
-// [END sample]
+// tslint:disable-next-line:no-any
+// [END canonical]
 ============== file: src/samples/v1/publish_series_request_second_edition.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestSecondEdition" ]
 //// STUB standalone sample "PublishSeriesRequestSecondEdition" /////
 
 // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
-// [START sample]
+// [START canonical]
 
 // FIXME: Insert here boilerplate code not directly related to the method call itself.
 
 //      calling form: "Request"
-//        region tag: "sample"
+//        region tag: "canonical"
 //         className: "PublishSeriesRequestSecondEdition"
 //          valueSet: "second_edition" ("Second edition")
 //       description: "Testing calling forms"
 //        [edition=2]
 //      apiMethod "publishSeries" of type "OptionalArrayMethod"
 
-// [START sample_core]
+// [START canonical_core]
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var shelf = {};
-var books = [];
-var seriesUuid = {};
-var edition = 2;
-var request = {
+const shelf = {};
+const books = [];
+const seriesUuid = {};
+const edition = 2;
+const request = {
   shelf: shelf,
   books: books,
   seriesUuid: seriesUuid,
@@ -634,18 +634,18 @@ var request = {
 };
 client.publishSeries(request)
   .then(responses => {
-    var response = responses[0];
+    const response = responses[0];
     // doThingsWith(response)
   })
   .catch(err => {
     console.error(err);
   });
 */
-// [END sample_core]
+// [END canonical_core]
 
 // FIXME: Insert here clean-up code.
-
-// [END sample]
+// tslint:disable-next-line:no-any
+// [END canonical]
 ============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksRequestStreamingServerProg" ]
 //// STUB standalone sample "StreamBooksRequestStreamingServerProg" /////
@@ -669,7 +669,7 @@ client.publishSeries(request)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-var name = 'BASIC';
+const name = 'BASIC';
   client.streamBooks({name: name}).on('data', response => {
       // doThingsWith(response)
   });
@@ -677,7 +677,7 @@ var name = 'BASIC';
 // [END lovelace_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END lovelace]
 ============== file: src/samples/v1/stream_shelves_request_streaming_server_empty.js ==============
 //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesRequestStreamingServerEmpty" ]
@@ -710,7 +710,7 @@ var name = 'BASIC';
 // [END sample_core]
 
 // FIXME: Insert here clean-up code.
-
+// tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
 // Copyright 2018 Google LLC
@@ -751,7 +751,7 @@ var name = 'BASIC';
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.BookFromAnywhere definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/book_from_anywhere.proto}
  */
-var BookFromAnywhere = {
+const BookFromAnywhere = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/example/library/v1/doc_field_mask.js ==============
@@ -780,7 +780,7 @@ var BookFromAnywhere = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.FieldMask definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/field_mask.proto}
  */
-var FieldMask = {
+const FieldMask = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -912,7 +912,7 @@ var FieldMask = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.Book definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var Book = {
+const Book = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -953,7 +953,7 @@ var Book = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.BookFromArchive definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var BookFromArchive = {
+const BookFromArchive = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -970,7 +970,7 @@ var BookFromArchive = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.SomeMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var SomeMessage = {
+const SomeMessage = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -996,7 +996,7 @@ var SomeMessage = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.SomeMessage2 definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var SomeMessage2 = {
+const SomeMessage2 = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -1063,7 +1063,7 @@ var SomeMessage2 = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.Shelf definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var Shelf = {
+const Shelf = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1079,7 +1079,7 @@ var Shelf = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.CreateShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var CreateShelfRequest = {
+const CreateShelfRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1104,7 +1104,7 @@ var CreateShelfRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetShelfRequest = {
+const GetShelfRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1117,7 +1117,7 @@ var GetShelfRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StringBuilder definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var StringBuilder = {
+const StringBuilder = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1134,7 +1134,7 @@ var StringBuilder = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListShelvesRequest = {
+const ListShelvesRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1157,7 +1157,7 @@ var ListShelvesRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListShelvesResponse = {
+const ListShelvesResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1167,7 +1167,7 @@ var ListShelvesResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StreamShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var StreamShelvesRequest = {
+const StreamShelvesRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1183,7 +1183,7 @@ var StreamShelvesRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StreamShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var StreamShelvesResponse = {
+const StreamShelvesResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1197,7 +1197,7 @@ var StreamShelvesResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.DeleteShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var DeleteShelfRequest = {
+const DeleteShelfRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1215,7 +1215,7 @@ var DeleteShelfRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.MergeShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var MergeShelvesRequest = {
+const MergeShelvesRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1234,7 +1234,7 @@ var MergeShelvesRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.CreateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var CreateBookRequest = {
+const CreateBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1266,7 +1266,7 @@ var CreateBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var PublishSeriesRequest = {
+const PublishSeriesRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1279,7 +1279,7 @@ var PublishSeriesRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.SeriesUuid definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var SeriesUuid = {
+const SeriesUuid = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1293,7 +1293,7 @@ var SeriesUuid = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.PublishSeriesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var PublishSeriesResponse = {
+const PublishSeriesResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1307,7 +1307,7 @@ var PublishSeriesResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetBookRequest = {
+const GetBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1334,7 +1334,7 @@ var GetBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListBooksRequest = {
+const ListBooksRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1357,7 +1357,7 @@ var ListBooksRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListBooksResponse = {
+const ListBooksResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1371,7 +1371,7 @@ var ListBooksResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StreamBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var StreamBooksRequest = {
+const StreamBooksRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1403,7 +1403,7 @@ var StreamBooksRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.UpdateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var UpdateBookRequest = {
+const UpdateBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1417,7 +1417,7 @@ var UpdateBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.DeleteBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var DeleteBookRequest = {
+const DeleteBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1435,7 +1435,7 @@ var DeleteBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.MoveBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var MoveBookRequest = {
+const MoveBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1450,7 +1450,7 @@ var MoveBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListStringsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListStringsRequest = {
+const ListStringsRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1463,7 +1463,7 @@ var ListStringsRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.ListStringsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var ListStringsResponse = {
+const ListStringsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1477,7 +1477,7 @@ var ListStringsResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.AddCommentsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var AddCommentsRequest = {
+const AddCommentsRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1502,7 +1502,7 @@ var AddCommentsRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.Comment definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var Comment = {
+const Comment = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -1527,7 +1527,7 @@ var Comment = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromArchiveRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetBookFromArchiveRequest = {
+const GetBookFromArchiveRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1545,7 +1545,7 @@ var GetBookFromArchiveRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetBookFromAnywhereRequest = {
+const GetBookFromAnywhereRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1559,7 +1559,7 @@ var GetBookFromAnywhereRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetBookFromAbsolutelyAnywhereRequest = {
+const GetBookFromAbsolutelyAnywhereRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1579,7 +1579,7 @@ var GetBookFromAbsolutelyAnywhereRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.UpdateBookIndexRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var UpdateBookIndexRequest = {
+const UpdateBookIndexRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1598,7 +1598,7 @@ var UpdateBookIndexRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.DiscussBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var DiscussBookRequest = {
+const DiscussBookRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1617,7 +1617,7 @@ var DiscussBookRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.FindRelatedBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var FindRelatedBooksRequest = {
+const FindRelatedBooksRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1632,7 +1632,7 @@ var FindRelatedBooksRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.FindRelatedBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var FindRelatedBooksResponse = {
+const FindRelatedBooksResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1646,7 +1646,7 @@ var FindRelatedBooksResponse = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBigBookMetadata definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var GetBigBookMetadata = {
+const GetBigBookMetadata = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1779,7 +1779,7 @@ var GetBigBookMetadata = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var TestOptionalRequiredFlatteningParamsRequest = {
+const TestOptionalRequiredFlatteningParamsRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 
   /**
@@ -1808,7 +1808,7 @@ var TestOptionalRequiredFlatteningParamsRequest = {
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
-var TestOptionalRequiredFlatteningParamsResponse = {
+const TestOptionalRequiredFlatteningParamsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/longrunning/doc_operations.js ==============
@@ -1872,7 +1872,7 @@ var TestOptionalRequiredFlatteningParamsResponse = {
  * @memberof google.longrunning
  * @see [google.longrunning.Operation definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var Operation = {
+const Operation = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1886,7 +1886,7 @@ var Operation = {
  * @memberof google.longrunning
  * @see [google.longrunning.GetOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var GetOperationRequest = {
+const GetOperationRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1909,7 +1909,7 @@ var GetOperationRequest = {
  * @memberof google.longrunning
  * @see [google.longrunning.ListOperationsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var ListOperationsRequest = {
+const ListOperationsRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1928,7 +1928,7 @@ var ListOperationsRequest = {
  * @memberof google.longrunning
  * @see [google.longrunning.ListOperationsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var ListOperationsResponse = {
+const ListOperationsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1942,7 +1942,7 @@ var ListOperationsResponse = {
  * @memberof google.longrunning
  * @see [google.longrunning.CancelOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var CancelOperationRequest = {
+const CancelOperationRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1956,7 +1956,29 @@ var CancelOperationRequest = {
  * @memberof google.longrunning
  * @see [google.longrunning.DeleteOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
-var DeleteOperationRequest = {
+const DeleteOperationRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * The protocol buffer types used to indirectly support this method.
+ *
+ * @property {string} response
+ *   Required. The message name of the primary return type for this
+ *   long-running operation.
+ *   This type will be used to deserialize the LRO's response.
+ *
+ *   If the response is in a different package from the rpc, a fully-qualified
+ *   message name must be used (e.g. "google.protobuf.Empty").
+ *
+ * @property {string} metadata
+ *   The metadata message name for this long-running operation.
+ *
+ * @typedef OperationTypes
+ * @memberof google.longrunning
+ * @see [google.longrunning.OperationTypes definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
+ */
+const OperationTypes = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_any.js ==============
@@ -2059,17 +2081,18 @@ var DeleteOperationRequest = {
  *     }
  *
  * @property {string} typeUrl
- *   A URL/resource name whose content describes the type of the
- *   serialized protocol buffer message.
+ *   A URL/resource name that uniquely identifies the type of the serialized
+ *   protocol buffer message. The last segment of the URL's path must represent
+ *   the fully qualified name of the type (as in
+ *   `path/google.protobuf.Duration`). The name should be in a canonical form
+ *   (e.g., leading "." is not accepted).
  *
- *   For URLs which use the scheme `http`, `https`, or no scheme, the
- *   following restrictions and interpretations apply:
+ *   In practice, teams usually precompile into the binary all types that they
+ *   expect it to use in the context of Any. However, for URLs which use the
+ *   scheme `http`, `https`, or no scheme, one can optionally set up a type
+ *   server that maps type URLs to message definitions as follows:
  *
  *   * If no scheme is provided, `https` is assumed.
- *   * The last segment of the URL's path must represent the fully
- *     qualified name of the type (as in `path/google.protobuf.Duration`).
- *     The name should be in a canonical form (e.g., leading "." is
- *     not accepted).
  *   * An HTTP GET on the URL must yield a google.protobuf.Type
  *     value in binary format, or produce an error.
  *   * Applications are allowed to cache lookup results based on the
@@ -2077,6 +2100,10 @@ var DeleteOperationRequest = {
  *     lookup. Therefore, binary compatibility needs to be preserved
  *     on changes to types. (Use versioned type names to manage
  *     breaking changes.)
+ *
+ *   Note: this functionality is not currently available in the official
+ *   protobuf release, and it is not used for type URLs beginning with
+ *   type.googleapis.com.
  *
  *   Schemes other than `http`, `https` (or the empty scheme) might be
  *   used with implementation specific semantics.
@@ -2088,7 +2115,7 @@ var DeleteOperationRequest = {
  * @memberof google.protobuf
  * @see [google.protobuf.Any definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/any.proto}
  */
-var Any = {
+const Any = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_duration.js ==============
@@ -2186,7 +2213,7 @@ var Any = {
  * @memberof google.protobuf
  * @see [google.protobuf.Duration definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/duration.proto}
  */
-var Duration = {
+const Duration = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_empty.js ==============
@@ -2221,7 +2248,7 @@ var Duration = {
  * @memberof google.protobuf
  * @see [google.protobuf.Empty definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/empty.proto}
  */
-var Empty = {
+const Empty = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_field_mask.js ==============
@@ -2445,6 +2472,12 @@ var Empty = {
  * Note that oneof type names ("test_oneof" in this case) cannot be used in
  * paths.
  *
+ * ## Field Mask Verification
+ *
+ * The implementation of any API method which has a FieldMask type field in the
+ * request should verify the included field paths, and return an
+ * `INVALID_ARGUMENT` error if any path is duplicated or unmappable.
+ *
  * @property {string[]} paths
  *   The set of field mask paths.
  *
@@ -2452,7 +2485,7 @@ var Empty = {
  * @memberof google.protobuf
  * @see [google.protobuf.FieldMask definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/field_mask.proto}
  */
-var FieldMask = {
+const FieldMask = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_struct.js ==============
@@ -2490,7 +2523,7 @@ var FieldMask = {
  * @memberof google.protobuf
  * @see [google.protobuf.Struct definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
-var Struct = {
+const Struct = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2530,7 +2563,7 @@ var Struct = {
  * @memberof google.protobuf
  * @see [google.protobuf.Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
-var Value = {
+const Value = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2548,7 +2581,7 @@ var Value = {
  * @memberof google.protobuf
  * @see [google.protobuf.ListValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
-var ListValue = {
+const ListValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2561,7 +2594,7 @@ var ListValue = {
  * @enum {number}
  * @memberof google.protobuf
  */
-var NullValue = {
+const NullValue = {
 
   /**
    * Null value.
@@ -2650,7 +2683,9 @@ var NullValue = {
  * {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
  * seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
  * are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
- * is required, though only UTC (as indicated by "Z") is presently supported.
+ * is required. A proto3 JSON serializer should always use UTC (as indicated by
+ * "Z") when printing the Timestamp type and a proto3 JSON parser should be
+ * able to accept both UTC and other timezones (as indicated by an offset).
  *
  * For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
  * 01:30 UTC on January 15, 2017.
@@ -2661,8 +2696,8 @@ var NullValue = {
  * to this format using [`strftime`](https://docs.python.org/2/library/time.html#time.strftime)
  * with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
  * can use the Joda Time's [`ISODateTimeFormat.dateTime()`](https://cloud.google.com
- * http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime())
- * to obtain a formatter capable of generating timestamps in this format.
+ * http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--
+ * ) to obtain a formatter capable of generating timestamps in this format.
  *
  * @property {number} seconds
  *   Represents seconds of UTC time since Unix epoch
@@ -2679,7 +2714,7 @@ var NullValue = {
  * @memberof google.protobuf
  * @see [google.protobuf.Timestamp definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/timestamp.proto}
  */
-var Timestamp = {
+const Timestamp = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_wrappers.js ==============
@@ -2712,7 +2747,7 @@ var Timestamp = {
  * @memberof google.protobuf
  * @see [google.protobuf.DoubleValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var DoubleValue = {
+const DoubleValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2728,7 +2763,7 @@ var DoubleValue = {
  * @memberof google.protobuf
  * @see [google.protobuf.FloatValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var FloatValue = {
+const FloatValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2744,7 +2779,7 @@ var FloatValue = {
  * @memberof google.protobuf
  * @see [google.protobuf.Int64Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var Int64Value = {
+const Int64Value = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2760,7 +2795,7 @@ var Int64Value = {
  * @memberof google.protobuf
  * @see [google.protobuf.UInt64Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var UInt64Value = {
+const UInt64Value = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2776,7 +2811,7 @@ var UInt64Value = {
  * @memberof google.protobuf
  * @see [google.protobuf.Int32Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var Int32Value = {
+const Int32Value = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2792,7 +2827,7 @@ var Int32Value = {
  * @memberof google.protobuf
  * @see [google.protobuf.UInt32Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var UInt32Value = {
+const UInt32Value = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2808,7 +2843,7 @@ var UInt32Value = {
  * @memberof google.protobuf
  * @see [google.protobuf.BoolValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var BoolValue = {
+const BoolValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2824,7 +2859,7 @@ var BoolValue = {
  * @memberof google.protobuf
  * @see [google.protobuf.StringValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var StringValue = {
+const StringValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2840,7 +2875,7 @@ var StringValue = {
  * @memberof google.protobuf
  * @see [google.protobuf.BytesValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-var BytesValue = {
+const BytesValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/rpc/doc_status.js ==============
@@ -2933,7 +2968,7 @@ var BytesValue = {
  * @memberof google.rpc
  * @see [google.rpc.Status definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto}
  */
-var Status = {
+const Status = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/tagger/v1/doc_tagger.js ==============
@@ -2967,7 +3002,7 @@ var Status = {
  * @memberof google.tagger.v1
  * @see [google.tagger.v1.AddTagRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
  */
-var AddTagRequest = {
+const AddTagRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2984,7 +3019,7 @@ var AddTagRequest = {
  * @memberof google.tagger.v1
  * @see [google.tagger.v1.AddLabelRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
  */
-var AddLabelRequest = {
+const AddLabelRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -2995,7 +3030,7 @@ var AddLabelRequest = {
  * @memberof google.tagger.v1
  * @see [google.tagger.v1.AddTagResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
  */
-var AddTagResponse = {
+const AddTagResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -3006,7 +3041,7 @@ var AddTagResponse = {
  * @memberof google.tagger.v1
  * @see [google.tagger.v1.AddLabelResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
  */
-var AddLabelResponse = {
+const AddLabelResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/test/shared/data/doc_shared_type.js ==============
@@ -3037,7 +3072,7 @@ var AddLabelResponse = {
  * @memberof google.test.shared.data
  * @see [google.test.shared.data.Used definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/shared_type.proto}
  */
-var Used = {
+const Used = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -3052,7 +3087,7 @@ var Used = {
  * @memberof google.test.shared.data
  * @see [google.test.shared.data.Unused definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/shared_type.proto}
  */
-var Unused = {
+const Unused = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/index.js ==============
@@ -3164,13 +3199,13 @@ class LibraryServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    var clientHeader = [
+    const clientHeader = [
       `gl-node/${process.version}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
@@ -3181,7 +3216,7 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge(
+    const protos = merge(
       {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
@@ -3248,7 +3283,7 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
-    var protoFilesRoot = new gax.GoogleProtoFilesRoot();
+    const protoFilesRoot = new gax.GoogleProtoFilesRoot();
     protoFilesRoot = protobuf.loadSync(
       path.join(__dirname, '..', '..', 'protos', 'library.proto'),
       protoFilesRoot
@@ -3289,16 +3324,16 @@ class LibraryServiceClient {
       grpc: gaxGrpc.grpc,
     }).operationsClient(opts);
 
-    var getBigBookResponse = protoFilesRoot.lookup(
+    const getBigBookResponse = protoFilesRoot.lookup(
       'google.example.library.v1.Book'
     );
-    var getBigBookMetadata = protoFilesRoot.lookup(
+    const getBigBookMetadata = protoFilesRoot.lookup(
       'google.example.library.v1.GetBigBookMetadata'
     );
-    var getBigNothingResponse = protoFilesRoot.lookup(
+    const getBigNothingResponse = protoFilesRoot.lookup(
       'google.protobuf.Empty'
     );
-    var getBigNothingMetadata = protoFilesRoot.lookup(
+    const getBigNothingMetadata = protoFilesRoot.lookup(
       'google.example.library.v1.GetBigBookMetadata'
     );
 
@@ -3316,7 +3351,7 @@ class LibraryServiceClient {
     };
 
     // Put together the default options sent with requests.
-    var defaults = gaxGrpc.constructSettings(
+    const defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       gapicConfig,
       opts.clientConfig,
@@ -3330,14 +3365,14 @@ class LibraryServiceClient {
 
     // Put together the "service stub" for
     // google.example.library.v1.LibraryService.
-    var libraryServiceStub = gaxGrpc.createStub(
+    const libraryServiceStub = gaxGrpc.createStub(
       protos.google.example.library.v1.LibraryService,
       opts
     );
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    var libraryServiceStubMethods = [
+    const libraryServiceStubMethods = [
       'createShelf',
       'getShelf',
       'listShelves',
@@ -3371,7 +3406,7 @@ class LibraryServiceClient {
         libraryServiceStub.then(
           stub =>
             function() {
-              var args = Array.prototype.slice.call(arguments, 0);
+              const args = Array.prototype.slice.call(arguments, 0);
               return stub[methodName].apply(stub, args);
             }
         ),
@@ -3382,14 +3417,14 @@ class LibraryServiceClient {
 
     // Put together the "service stub" for
     // google.tagger.v1.Labeler.
-    var labelerStub = gaxGrpc.createStub(
+    const labelerStub = gaxGrpc.createStub(
       protos.google.tagger.v1.Labeler,
       opts
     );
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    var labelerStubMethods = [
+    const labelerStubMethods = [
       'addLabel',
     ];
     for (let methodName of labelerStubMethods) {
@@ -3397,7 +3432,7 @@ class LibraryServiceClient {
         labelerStub.then(
           stub =>
             function() {
-              var args = Array.prototype.slice.call(arguments, 0);
+              const args = Array.prototype.slice.call(arguments, 0);
               return stub[methodName].apply(stub, args);
             }
         ),
@@ -3470,14 +3505,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var shelf = {};
+   * const shelf = {};
    * client.createShelf({shelf: shelf})
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3524,19 +3559,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var options = '';
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const options = '';
+   * const request = {
    *   name: formattedName,
    *   options: options,
    * };
    * client.getShelf(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3585,14 +3620,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
    * // Iterate over all elements.
    * client.listShelves({})
    *   .then(responses => {
-   *     var resources = responses[0];
+   *     const resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
    *       // doThingsWith(resources[i])
    *     }
@@ -3603,14 +3638,14 @@ class LibraryServiceClient {
    *
    * // Or obtain the paged response.
    *
-   * var options = {autoPaginate: false};
-   * var callback = responses => {
+   * const options = {autoPaginate: false};
+   * const callback = responses => {
    *   // The actual resources in a response.
-   *   var resources = responses[0];
+   *   const resources = responses[0];
    *   // The next request if the response shows that there are more responses.
-   *   var nextRequest = responses[1];
+   *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
-   *   // var rawResponse = responses[2];
+   *   // const rawResponse = responses[2];
    *   for (let i = 0; i < resources.length; i += 1) {
    *     // doThingsWith(resources[i]);
    *   }
@@ -3662,7 +3697,7 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -3705,11 +3740,11 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath('[SHELF_ID]');
+   * const formattedName = client.shelfPath('[SHELF_ID]');
    * client.deleteShelf({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -3750,19 +3785,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+   * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
    * };
    * client.mergeShelves(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3805,19 +3840,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var book = {};
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const book = {};
+   * const request = {
    *   name: formattedName,
    *   book: book,
    * };
    * client.createBook(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3876,24 +3911,24 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var shelf = {};
-   * var books = [];
-   * var seriesString = 'foobar';
-   * var seriesUuid = {
+   * const shelf = {};
+   * const books = [];
+   * const seriesString = 'foobar';
+   * const seriesUuid = {
    *   seriesString: seriesString,
    * };
-   * var request = {
+   * const request = {
    *   shelf: shelf,
    *   books: books,
    *   seriesUuid: seriesUuid,
    * };
    * client.publishSeries(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3932,14 +3967,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBook({name: formattedName})
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -3998,21 +4033,21 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
    * // Iterate over all elements.
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var filter = 'book-filter-string';
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const filter = 'book-filter-string';
+   * const request = {
    *   name: formattedName,
    *   filter: filter,
    * };
    *
    * client.listBooks(request)
    *   .then(responses => {
-   *     var resources = responses[0];
+   *     const resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
    *       // doThingsWith(resources[i])
    *     }
@@ -4022,22 +4057,22 @@ class LibraryServiceClient {
    *   });
    *
    * // Or obtain the paged response.
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var filter = 'book-filter-string';
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const filter = 'book-filter-string';
+   * const request = {
    *   name: formattedName,
    *   filter: filter,
    * };
    *
    *
-   * var options = {autoPaginate: false};
-   * var callback = responses => {
+   * const options = {autoPaginate: false};
+   * const callback = responses => {
    *   // The actual resources in a response.
-   *   var resources = responses[0];
+   *   const resources = responses[0];
    *   // The next request if the response shows that there are more responses.
-   *   var nextRequest = responses[1];
+   *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
-   *   // var rawResponse = responses[2];
+   *   // const rawResponse = responses[2];
    *   for (let i = 0; i < resources.length; i += 1) {
    *     // doThingsWith(resources[i]);
    *   }
@@ -4097,13 +4132,13 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath('[SHELF_ID]');
-   * var filter = 'book-filter-string';
-   * var request = {
+   * const formattedName = client.shelfPath('[SHELF_ID]');
+   * const filter = 'book-filter-string';
+   * const request = {
    *   name: formattedName,
    *   filter: filter,
    * };
@@ -4143,11 +4178,11 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.deleteBook({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -4198,19 +4233,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var book = {};
-   * var request = {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const book = {};
+   * const request = {
    *   name: formattedName,
    *   book: book,
    * };
    * client.updateBook(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -4251,19 +4286,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-   * var request = {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+   * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
    * };
    * client.moveBook(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -4319,14 +4354,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
    * // Iterate over all elements.
    * client.listStrings({})
    *   .then(responses => {
-   *     var resources = responses[0];
+   *     const resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
    *       // doThingsWith(resources[i])
    *     }
@@ -4337,14 +4372,14 @@ class LibraryServiceClient {
    *
    * // Or obtain the paged response.
    *
-   * var options = {autoPaginate: false};
-   * var callback = responses => {
+   * const options = {autoPaginate: false};
+   * const callback = responses => {
    *   // The actual resources in a response.
-   *   var resources = responses[0];
+   *   const resources = responses[0];
    *   // The next request if the response shows that there are more responses.
-   *   var nextRequest = responses[1];
+   *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
-   *   // var rawResponse = responses[2];
+   *   // const rawResponse = responses[2];
    *   for (let i = 0; i < resources.length; i += 1) {
    *     // doThingsWith(resources[i]);
    *   }
@@ -4401,7 +4436,7 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -4443,21 +4478,21 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var comment = '';
-   * var stage = 'UNSET';
-   * var alignment = 'CHAR';
-   * var commentsElement = {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const comment = '';
+   * const stage = 'UNSET';
+   * const alignment = 'CHAR';
+   * const commentsElement = {
    *   comment: comment,
    *   stage: stage,
    *   alignment: alignment,
    * };
-   * var comments = [commentsElement];
-   * var request = {
+   * const comments = [commentsElement];
+   * const request = {
    *   name: formattedName,
    *   comments: comments,
    * };
@@ -4497,14 +4532,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+   * const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
    * client.getBookFromArchive({name: formattedName})
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -4546,19 +4581,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var request = {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
    * };
    * client.getBookFromAnywhere(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -4597,14 +4632,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBookFromAbsolutelyAnywhere({name: formattedName})
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -4644,15 +4679,15 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var indexName = 'default index';
-   * var indexMapItem = '';
-   * var indexMap = {'default_key' : indexMapItem,};
-   * var request = {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const indexName = 'default index';
+   * const indexMapItem = '';
+   * const indexMap = {'default_key' : indexMapItem,};
+   * const request = {
    *   name: formattedName,
    *   indexName: indexName,
    *   indexMap: indexMap,
@@ -4687,7 +4722,7 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -4722,11 +4757,11 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var name = '';
+   * const name = '';
    * client.streamBooks({name: name}).on('data', response => {
    *   // doThingsWith(response)
    * });
@@ -4753,15 +4788,15 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var stream = client.discussBook().on('data', response => {
+   * const stream = client.discussBook().on('data', response => {
    *   // doThingsWith(response)
    * });
-   * var name = '';
-   * var request = {
+   * const name = '';
+   * const request = {
    *   name: name,
    * };
    * // Write request objects.
@@ -4791,19 +4826,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var stream = client.monologAboutBook((err, response) => {
+   * const stream = client.monologAboutBook((err, response) => {
    *   if (err) {
    *     console.error(err);
    *     return;
    *   }
    *   // doThingsWith(response)
    * });
-   * var name = '';
-   * var request = {
+   * const name = '';
+   * const request = {
    *   name: name,
    * };
    * // Write request objects.
@@ -4857,22 +4892,22 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
    * // Iterate over all elements.
-   * var namesElement = '';
-   * var names = [namesElement];
-   * var shelves = [];
-   * var request = {
+   * const namesElement = '';
+   * const names = [namesElement];
+   * const shelves = [];
+   * const request = {
    *   names: names,
    *   shelves: shelves,
    * };
    *
    * client.findRelatedBooks(request)
    *   .then(responses => {
-   *     var resources = responses[0];
+   *     const resources = responses[0];
    *     for (let i = 0; i < resources.length; i += 1) {
    *       // doThingsWith(resources[i])
    *     }
@@ -4882,23 +4917,23 @@ class LibraryServiceClient {
    *   });
    *
    * // Or obtain the paged response.
-   * var namesElement = '';
-   * var names = [namesElement];
-   * var shelves = [];
-   * var request = {
+   * const namesElement = '';
+   * const names = [namesElement];
+   * const shelves = [];
+   * const request = {
    *   names: names,
    *   shelves: shelves,
    * };
    *
    *
-   * var options = {autoPaginate: false};
-   * var callback = responses => {
+   * const options = {autoPaginate: false};
+   * const callback = responses => {
    *   // The actual resources in a response.
-   *   var resources = responses[0];
+   *   const resources = responses[0];
    *   // The next request if the response shows that there are more responses.
-   *   var nextRequest = responses[1];
+   *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
-   *   // var rawResponse = responses[2];
+   *   // const rawResponse = responses[2];
    *   for (let i = 0; i < resources.length; i += 1) {
    *     // doThingsWith(resources[i]);
    *   }
@@ -4956,14 +4991,14 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var namesElement = '';
-   * var names = [namesElement];
-   * var shelves = [];
-   * var request = {
+   * const namesElement = '';
+   * const names = [namesElement];
+   * const shelves = [];
+   * const request = {
    *   names: names,
    *   shelves: shelves,
    * };
@@ -5010,19 +5045,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var tag = '';
-   * var request = {
+   * const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const tag = '';
+   * const request = {
    *   resource: formattedResource,
    *   tag: tag,
    * };
    * client.addTag(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -5065,19 +5100,19 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * var label = '';
-   * var request = {
+   * const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const label = '';
+   * const request = {
    *   resource: formattedResource,
    *   label: label,
    * };
    * client.addLabel(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -5116,42 +5151,42 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     var operation = responses[0];
-   *     var initialApiResponse = responses[1];
+   *     const operation = responses[0];
+   *     const initialApiResponse = responses[1];
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
    *     // The final result of the operation.
-   *     var result = responses[0];
+   *     const result = responses[0];
    *
    *     // The metadata value of the completed operation.
-   *     var metadata = responses[1];
+   *     const metadata = responses[1];
    *
    *     // The response of the api call returning the complete operation.
-   *     var finalApiResponse = responses[2];
+   *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     var operation = responses[0];
-   *     var initialApiResponse = responses[1];
+   *     const operation = responses[0];
+   *     const initialApiResponse = responses[1];
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5206,42 +5241,42 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     var operation = responses[0];
-   *     var initialApiResponse = responses[1];
+   *     const operation = responses[0];
+   *     const initialApiResponse = responses[1];
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
    *     // The final result of the operation.
-   *     var result = responses[0];
+   *     const result = responses[0];
    *
    *     // The metadata value of the completed operation.
-   *     var metadata = responses[1];
+   *     const metadata = responses[1];
    *
    *     // The response of the api call returning the complete operation.
-   *     var finalApiResponse = responses[2];
+   *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     var operation = responses[0];
-   *     var initialApiResponse = responses[1];
+   *     const operation = responses[0];
+   *     const initialApiResponse = responses[1];
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5360,40 +5395,40 @@ class LibraryServiceClient {
    *
    * const library = require('@google-cloud/library');
    *
-   * var client = new library.v1.LibraryServiceClient({
+   * const client = new library.v1.LibraryServiceClient({
    *   // optional auth parameters.
    * });
    *
-   * var requiredSingularInt32 = 0;
-   * var requiredSingularInt64 = 0;
-   * var requiredSingularFloat = 0.0;
-   * var requiredSingularDouble = 0.0;
-   * var requiredSingularBool = false;
-   * var requiredSingularEnum = 'ZERO';
-   * var requiredSingularString = '';
-   * var requiredSingularBytes = '';
-   * var requiredSingularMessage = {};
-   * var requiredSingularResourceName = '';
-   * var requiredSingularResourceNameOneof = '';
-   * var requiredSingularResourceNameCommon = '';
-   * var requiredSingularFixed32 = 0;
-   * var requiredSingularFixed64 = 0;
-   * var requiredRepeatedInt32 = [];
-   * var requiredRepeatedInt64 = [];
-   * var requiredRepeatedFloat = [];
-   * var requiredRepeatedDouble = [];
-   * var requiredRepeatedBool = [];
-   * var requiredRepeatedEnum = [];
-   * var requiredRepeatedString = [];
-   * var requiredRepeatedBytes = [];
-   * var requiredRepeatedMessage = [];
-   * var formattedRequiredRepeatedResourceName = [];
-   * var formattedRequiredRepeatedResourceNameOneof = [];
-   * var requiredRepeatedResourceNameCommon = [];
-   * var requiredRepeatedFixed32 = [];
-   * var requiredRepeatedFixed64 = [];
-   * var requiredMap = {};
-   * var request = {
+   * const requiredSingularInt32 = 0;
+   * const requiredSingularInt64 = 0;
+   * const requiredSingularFloat = 0.0;
+   * const requiredSingularDouble = 0.0;
+   * const requiredSingularBool = false;
+   * const requiredSingularEnum = 'ZERO';
+   * const requiredSingularString = '';
+   * const requiredSingularBytes = '';
+   * const requiredSingularMessage = {};
+   * const requiredSingularResourceName = '';
+   * const requiredSingularResourceNameOneof = '';
+   * const requiredSingularResourceNameCommon = '';
+   * const requiredSingularFixed32 = 0;
+   * const requiredSingularFixed64 = 0;
+   * const requiredRepeatedInt32 = [];
+   * const requiredRepeatedInt64 = [];
+   * const requiredRepeatedFloat = [];
+   * const requiredRepeatedDouble = [];
+   * const requiredRepeatedBool = [];
+   * const requiredRepeatedEnum = [];
+   * const requiredRepeatedString = [];
+   * const requiredRepeatedBytes = [];
+   * const requiredRepeatedMessage = [];
+   * const formattedRequiredRepeatedResourceName = [];
+   * const formattedRequiredRepeatedResourceNameOneof = [];
+   * const requiredRepeatedResourceNameCommon = [];
+   * const requiredRepeatedFixed32 = [];
+   * const requiredRepeatedFixed64 = [];
+   * const requiredMap = {};
+   * const request = {
    *   requiredSingularInt32: requiredSingularInt32,
    *   requiredSingularInt64: requiredSingularInt64,
    *   requiredSingularFloat: requiredSingularFloat,
@@ -5426,7 +5461,7 @@ class LibraryServiceClient {
    * };
    * client.testOptionalRequiredFlatteningParams(request)
    *   .then(responses => {
-   *     var response = responses[0];
+   *     const response = responses[0];
    *     // doThingsWith(response)
    *   })
    *   .catch(err => {
@@ -5838,29 +5873,29 @@ const through2 = require('through2');
 
 const libraryModule = require('../src');
 
-var FAKE_STATUS_CODE = 1;
-var error = new Error();
+const FAKE_STATUS_CODE = 1;
+const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('LibraryServiceClient', () => {
   describe('createShelf', () => {
     it('invokes createShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var shelf = {};
-      var request = {
+      const shelf = {};
+      const request = {
         shelf: shelf,
       };
 
       // Mock response
-      var name = 'name3373707';
-      var theme = 'theme110327241';
-      var internalTheme = 'internalTheme792518087';
-      var expectedResponse = {
+      const name = 'name3373707';
+      const theme = 'theme110327241';
+      const internalTheme = 'internalTheme792518087';
+      const expectedResponse = {
         name: name,
         theme: theme,
         internalTheme: internalTheme,
@@ -5880,14 +5915,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var shelf = {};
-      var request = {
+      const shelf = {};
+      const request = {
         shelf: shelf,
       };
 
@@ -5909,24 +5944,24 @@ describe('LibraryServiceClient', () => {
 
   describe('getShelf', () => {
     it('invokes getShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var options = 'options-1249474914';
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const options = 'options-1249474914';
+      const request = {
         name: formattedName,
         options: options,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var theme = 'theme110327241';
-      var internalTheme = 'internalTheme792518087';
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const theme = 'theme110327241';
+      const internalTheme = 'internalTheme792518087';
+      const expectedResponse = {
         name: name2,
         theme: theme,
         internalTheme: internalTheme,
@@ -5946,15 +5981,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var options = 'options-1249474914';
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const options = 'options-1249474914';
+      const request = {
         name: formattedName,
         options: options,
       };
@@ -5977,19 +6012,19 @@ describe('LibraryServiceClient', () => {
 
   describe('listShelves', () => {
     it('invokes listShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock response
-      var nextPageToken = '';
-      var shelvesElement = {};
-      var shelves = [shelvesElement];
-      var expectedResponse = {
+      const nextPageToken = '';
+      const shelvesElement = {};
+      const shelves = [shelvesElement];
+      const expectedResponse = {
         nextPageToken: nextPageToken,
         shelves: shelves,
       };
@@ -6008,13 +6043,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.listShelves = mockSimpleGrpcMethod(
@@ -6034,14 +6069,14 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteShelf', () => {
     it('invokes deleteShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6055,14 +6090,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6083,24 +6118,24 @@ describe('LibraryServiceClient', () => {
 
   describe('mergeShelves', () => {
     it('invokes mergeShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var theme = 'theme110327241';
-      var internalTheme = 'internalTheme792518087';
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const theme = 'theme110327241';
+      const internalTheme = 'internalTheme792518087';
+      const expectedResponse = {
         name: name2,
         theme: theme,
         internalTheme: internalTheme,
@@ -6120,15 +6155,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes mergeShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
@@ -6151,25 +6186,25 @@ describe('LibraryServiceClient', () => {
 
   describe('createBook', () => {
     it('invokes createBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var book = {};
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const book = {};
+      const request = {
         name: formattedName,
         book: book,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6190,15 +6225,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var book = {};
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const book = {};
+      const request = {
         name: formattedName,
         book: book,
       };
@@ -6221,28 +6256,28 @@ describe('LibraryServiceClient', () => {
 
   describe('publishSeries', () => {
     it('invokes publishSeries without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var shelf = {};
-      var books = [];
-      var seriesString = 'foobar';
-      var seriesUuid = {
+      const shelf = {};
+      const books = [];
+      const seriesString = 'foobar';
+      const seriesUuid = {
         seriesString: seriesString,
       };
-      var request = {
+      const request = {
         shelf: shelf,
         books: books,
         seriesUuid: seriesUuid,
       };
 
       // Mock response
-      var bookNamesElement = 'bookNamesElement1491670575';
-      var bookNames = [bookNamesElement];
-      var expectedResponse = {
+      const bookNamesElement = 'bookNamesElement1491670575';
+      const bookNames = [bookNamesElement];
+      const expectedResponse = {
         bookNames: bookNames,
       };
 
@@ -6260,19 +6295,19 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes publishSeries with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var shelf = {};
-      var books = [];
-      var seriesString = 'foobar';
-      var seriesUuid = {
+      const shelf = {};
+      const books = [];
+      const seriesString = 'foobar';
+      const seriesUuid = {
         seriesString: seriesString,
       };
-      var request = {
+      const request = {
         shelf: shelf,
         books: books,
         seriesUuid: seriesUuid,
@@ -6296,23 +6331,23 @@ describe('LibraryServiceClient', () => {
 
   describe('getBook', () => {
     it('invokes getBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6333,14 +6368,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6362,24 +6397,24 @@ describe('LibraryServiceClient', () => {
 
   describe('listBooks', () => {
     it('invokes listBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var filter = 'book-filter-string';
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const filter = 'book-filter-string';
+      const request = {
         name: formattedName,
         filter: filter,
       };
 
       // Mock response
-      var nextPageToken = '';
-      var booksElement = {};
-      var books = [booksElement];
-      var expectedResponse = {
+      const nextPageToken = '';
+      const booksElement = {};
+      const books = [booksElement];
+      const expectedResponse = {
         nextPageToken: nextPageToken,
         books: books,
       };
@@ -6398,15 +6433,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.shelfPath('[SHELF_ID]');
-      var filter = 'book-filter-string';
-      var request = {
+      const formattedName = client.shelfPath('[SHELF_ID]');
+      const filter = 'book-filter-string';
+      const request = {
         name: formattedName,
         filter: filter,
       };
@@ -6429,14 +6464,14 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteBook', () => {
     it('invokes deleteBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6450,14 +6485,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6478,25 +6513,25 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBook', () => {
     it('invokes updateBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var book = {};
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const book = {};
+      const request = {
         name: formattedName,
         book: book,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6517,15 +6552,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var book = {};
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const book = {};
+      const request = {
         name: formattedName,
         book: book,
       };
@@ -6548,25 +6583,25 @@ describe('LibraryServiceClient', () => {
 
   describe('moveBook', () => {
     it('invokes moveBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6587,15 +6622,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes moveBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+      const request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
@@ -6618,19 +6653,19 @@ describe('LibraryServiceClient', () => {
 
   describe('listStrings', () => {
     it('invokes listStrings without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock response
-      var nextPageToken = '';
-      var stringsElement = 'stringsElement474465855';
-      var strings = [stringsElement];
-      var expectedResponse = {
+      const nextPageToken = '';
+      const stringsElement = 'stringsElement474465855';
+      const strings = [stringsElement];
+      const expectedResponse = {
         nextPageToken: nextPageToken,
         strings: strings,
       };
@@ -6649,13 +6684,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listStrings with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.listStrings = mockSimpleGrpcMethod(
@@ -6675,23 +6710,23 @@ describe('LibraryServiceClient', () => {
 
   describe('addComments', () => {
     it('invokes addComments without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var comment = '95';
-      var stage = 'UNSET';
-      var alignment = 'CHAR';
-      var commentsElement = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const comment = '95';
+      const stage = 'UNSET';
+      const alignment = 'CHAR';
+      const commentsElement = {
         comment: comment,
         stage: stage,
         alignment: alignment,
       };
-      var comments = [commentsElement];
-      var request = {
+      const comments = [commentsElement];
+      const request = {
         name: formattedName,
         comments: comments,
       };
@@ -6706,23 +6741,23 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addComments with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var comment = '95';
-      var stage = 'UNSET';
-      var alignment = 'CHAR';
-      var commentsElement = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const comment = '95';
+      const stage = 'UNSET';
+      const alignment = 'CHAR';
+      const commentsElement = {
         comment: comment,
         stage: stage,
         alignment: alignment,
       };
-      var comments = [commentsElement];
-      var request = {
+      const comments = [commentsElement];
+      const request = {
         name: formattedName,
         comments: comments,
       };
@@ -6744,23 +6779,23 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromArchive', () => {
     it('invokes getBookFromArchive without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6781,14 +6816,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromArchive with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6810,25 +6845,25 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAnywhere', () => {
     it('invokes getBookFromAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6849,15 +6884,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
       };
@@ -6880,23 +6915,23 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAbsolutelyAnywhere', () => {
     it('invokes getBookFromAbsolutelyAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -6917,14 +6952,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAbsolutelyAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -6946,17 +6981,17 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBookIndex', () => {
     it('invokes updateBookIndex without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var indexName = 'default index';
-      var indexMapItem = 'indexMapItem1918721251';
-      var indexMap = {'default_key' : indexMapItem,};
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const indexName = 'default index';
+      const indexMapItem = 'indexMapItem1918721251';
+      const indexMap = {'default_key' : indexMapItem,};
+      const request = {
         name: formattedName,
         indexName: indexName,
         indexMap: indexMap,
@@ -6972,17 +7007,17 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBookIndex with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var indexName = 'default index';
-      var indexMapItem = 'indexMapItem1918721251';
-      var indexMap = {'default_key' : indexMapItem,};
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const indexName = 'default index';
+      const indexMapItem = 'indexMapItem1918721251';
+      const indexMap = {'default_key' : indexMapItem,};
+      const request = {
         name: formattedName,
         indexName: indexName,
         indexMap: indexMap,
@@ -7005,25 +7040,25 @@ describe('LibraryServiceClient', () => {
 
   describe('streamShelves', () => {
     it('invokes streamShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock response
-      var shelvesElement = {};
-      var shelves = [shelvesElement];
-      var expectedResponse = {
+      const shelvesElement = {};
+      const shelves = [shelvesElement];
+      const expectedResponse = {
         shelves: shelves,
       };
 
       // Mock Grpc layer
       client._innerApiCalls.streamShelves = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      var stream = client.streamShelves(request);
+      const stream = client.streamShelves(request);
       stream.on('data', response => {
         assert.deepStrictEqual(response, expectedResponse);
         done();
@@ -7036,18 +7071,18 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
-      var stream = client.streamShelves(request);
+      const stream = client.streamShelves(request);
       stream.on('data', () => {
         assert.fail();
       });
@@ -7063,23 +7098,23 @@ describe('LibraryServiceClient', () => {
 
   describe('streamBooks', () => {
     it('invokes streamBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var name = 'name3373707';
-      var request = {
+      const name = 'name3373707';
+      const request = {
         name: name,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -7089,7 +7124,7 @@ describe('LibraryServiceClient', () => {
       // Mock Grpc layer
       client._innerApiCalls.streamBooks = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      var stream = client.streamBooks(request);
+      const stream = client.streamBooks(request);
       stream.on('data', response => {
         assert.deepStrictEqual(response, expectedResponse);
         done();
@@ -7102,21 +7137,21 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var name = 'name3373707';
-      var request = {
+      const name = 'name3373707';
+      const request = {
         name: name,
       };
 
       // Mock Grpc layer
       client._innerApiCalls.streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
-      var stream = client.streamBooks(request);
+      const stream = client.streamBooks(request);
       stream.on('data', () => {
         assert.fail();
       });
@@ -7132,21 +7167,21 @@ describe('LibraryServiceClient', () => {
 
   describe('discussBook', () => {
     it('invokes discussBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var name = 'name3373707';
-      var request = {
+      const name = 'name3373707';
+      const request = {
         name: name,
       };
 
       // Mock response
-      var userName = 'userName339340927';
-      var comment = '95';
-      var expectedResponse = {
+      const userName = 'userName339340927';
+      const comment = '95';
+      const expectedResponse = {
         userName: userName,
         comment: comment,
       };
@@ -7154,7 +7189,7 @@ describe('LibraryServiceClient', () => {
       // Mock Grpc layer
       client._innerApiCalls.discussBook = mockBidiStreamingGrpcMethod(request, expectedResponse);
 
-      var stream = client.discussBook().on('data', response => {
+      const stream = client.discussBook().on('data', response => {
         assert.deepStrictEqual(response, expectedResponse);
         done();
       }).on('error', err => {
@@ -7165,21 +7200,21 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes discussBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var name = 'name3373707';
-      var request = {
+      const name = 'name3373707';
+      const request = {
         name: name,
       };
 
       // Mock Grpc layer
       client._innerApiCalls.discussBook = mockBidiStreamingGrpcMethod(request, null, error);
 
-      var stream = client.discussBook().on('data', () => {
+      const stream = client.discussBook().on('data', () => {
         assert.fail();
       }).on('error', err => {
         assert(err instanceof Error);
@@ -7193,25 +7228,25 @@ describe('LibraryServiceClient', () => {
 
   describe('findRelatedBooks', () => {
     it('invokes findRelatedBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var namesElement = 'namesElement-249113339';
-      var names = [namesElement];
-      var shelves = [];
-      var request = {
+      const namesElement = 'namesElement-249113339';
+      const names = [namesElement];
+      const shelves = [];
+      const request = {
         names: names,
         shelves: shelves,
       };
 
       // Mock response
-      var nextPageToken = '';
-      var namesElement2 = 'namesElement21120252792';
-      var names2 = [namesElement2];
-      var expectedResponse = {
+      const nextPageToken = '';
+      const namesElement2 = 'namesElement21120252792';
+      const names2 = [namesElement2];
+      const expectedResponse = {
         nextPageToken: nextPageToken,
         names: names2,
       };
@@ -7230,16 +7265,16 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes findRelatedBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var namesElement = 'namesElement-249113339';
-      var names = [namesElement];
-      var shelves = [];
-      var request = {
+      const namesElement = 'namesElement-249113339';
+      const names = [namesElement];
+      const shelves = [];
+      const request = {
         names: names,
         shelves: shelves,
       };
@@ -7262,21 +7297,21 @@ describe('LibraryServiceClient', () => {
 
   describe('addTag', () => {
     it('invokes addTag without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var tag = 'tag114586';
-      var request = {
+      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const tag = 'tag114586';
+      const request = {
         resource: formattedResource,
         tag: tag,
       };
 
       // Mock response
-      var expectedResponse = {};
+      const expectedResponse = {};
 
       // Mock Grpc layer
       client._innerApiCalls.addTag = mockSimpleGrpcMethod(
@@ -7292,15 +7327,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addTag with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var tag = 'tag114586';
-      var request = {
+      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const tag = 'tag114586';
+      const request = {
         resource: formattedResource,
         tag: tag,
       };
@@ -7323,21 +7358,21 @@ describe('LibraryServiceClient', () => {
 
   describe('addLabel', () => {
     it('invokes addLabel without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var label = 'label102727412';
-      var request = {
+      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const label = 'label102727412';
+      const request = {
         resource: formattedResource,
         label: label,
       };
 
       // Mock response
-      var expectedResponse = {};
+      const expectedResponse = {};
 
       // Mock Grpc layer
       client._innerApiCalls.addLabel = mockSimpleGrpcMethod(
@@ -7353,15 +7388,15 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addLabel with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var label = 'label102727412';
-      var request = {
+      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const label = 'label102727412';
+      const request = {
         resource: formattedResource,
         label: label,
       };
@@ -7384,23 +7419,23 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigBook', function() {
     it('invokes getBigBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
+      const name2 = 'name2-1052831874';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
         name: name2,
         author: author,
         title: title,
@@ -7411,7 +7446,7 @@ describe('LibraryServiceClient', () => {
       client._innerApiCalls.getBigBook = mockLongRunningGrpcMethod(request, expectedResponse);
 
       client.getBigBook(request).then(responses => {
-        var operation = responses[0];
+        const operation = responses[0];
         return operation.promise();
       }).then(responses => {
         assert.deepStrictEqual(responses[0], expectedResponse);
@@ -7422,14 +7457,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -7437,7 +7472,7 @@ describe('LibraryServiceClient', () => {
       client._innerApiCalls.getBigBook = mockLongRunningGrpcMethod(request, null, error);
 
       client.getBigBook(request).then(responses => {
-        var operation = responses[0];
+        const operation = responses[0];
         return operation.promise();
       }).then(() => {
         assert.fail();
@@ -7449,7 +7484,7 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
@@ -7460,25 +7495,25 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigNothing', function() {
     it('invokes getBigNothing without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
       // Mock response
-      var expectedResponse = {};
+      const expectedResponse = {};
 
       // Mock Grpc layer
       client._innerApiCalls.getBigNothing = mockLongRunningGrpcMethod(request, expectedResponse);
 
       client.getBigNothing(request).then(responses => {
-        var operation = responses[0];
+        const operation = responses[0];
         return operation.promise();
       }).then(responses => {
         assert.deepStrictEqual(responses[0], expectedResponse);
@@ -7489,14 +7524,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigNothing with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      var request = {
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
         name: formattedName,
       };
 
@@ -7504,7 +7539,7 @@ describe('LibraryServiceClient', () => {
       client._innerApiCalls.getBigNothing = mockLongRunningGrpcMethod(request, null, error);
 
       client.getBigNothing(request).then(responses => {
-        var operation = responses[0];
+        const operation = responses[0];
         return operation.promise();
       }).then(() => {
         assert.fail();
@@ -7516,7 +7551,7 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
@@ -7527,42 +7562,42 @@ describe('LibraryServiceClient', () => {
 
   describe('testOptionalRequiredFlatteningParams', () => {
     it('invokes testOptionalRequiredFlatteningParams without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var requiredSingularInt32 = 72313594;
-      var requiredSingularInt64 = 72313499;
-      var requiredSingularFloat = -7514705.0;
-      var requiredSingularDouble = 1.9111005E8;
-      var requiredSingularBool = true;
-      var requiredSingularEnum = 'ZERO';
-      var requiredSingularString = 'requiredSingularString-1949894503';
-      var requiredSingularBytes = '-29';
-      var requiredSingularMessage = {};
-      var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-      var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-      var requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
-      var requiredSingularFixed32 = 720656715;
-      var requiredSingularFixed64 = 720656810;
-      var requiredRepeatedInt32 = [];
-      var requiredRepeatedInt64 = [];
-      var requiredRepeatedFloat = [];
-      var requiredRepeatedDouble = [];
-      var requiredRepeatedBool = [];
-      var requiredRepeatedEnum = [];
-      var requiredRepeatedString = [];
-      var requiredRepeatedBytes = [];
-      var requiredRepeatedMessage = [];
-      var formattedRequiredRepeatedResourceName = [];
-      var formattedRequiredRepeatedResourceNameOneof = [];
-      var requiredRepeatedResourceNameCommon = [];
-      var requiredRepeatedFixed32 = [];
-      var requiredRepeatedFixed64 = [];
-      var requiredMap = {};
-      var request = {
+      const requiredSingularInt32 = 72313594;
+      const requiredSingularInt64 = 72313499;
+      const requiredSingularFloat = -7514705.0;
+      const requiredSingularDouble = 1.9111005E8;
+      const requiredSingularBool = true;
+      const requiredSingularEnum = 'ZERO';
+      const requiredSingularString = 'requiredSingularString-1949894503';
+      const requiredSingularBytes = '-29';
+      const requiredSingularMessage = {};
+      const requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+      const requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+      const requiredSingularFixed32 = 720656715;
+      const requiredSingularFixed64 = 720656810;
+      const requiredRepeatedInt32 = [];
+      const requiredRepeatedInt64 = [];
+      const requiredRepeatedFloat = [];
+      const requiredRepeatedDouble = [];
+      const requiredRepeatedBool = [];
+      const requiredRepeatedEnum = [];
+      const requiredRepeatedString = [];
+      const requiredRepeatedBytes = [];
+      const requiredRepeatedMessage = [];
+      const formattedRequiredRepeatedResourceName = [];
+      const formattedRequiredRepeatedResourceNameOneof = [];
+      const requiredRepeatedResourceNameCommon = [];
+      const requiredRepeatedFixed32 = [];
+      const requiredRepeatedFixed64 = [];
+      const requiredMap = {};
+      const request = {
         requiredSingularInt32: requiredSingularInt32,
         requiredSingularInt64: requiredSingularInt64,
         requiredSingularFloat: requiredSingularFloat,
@@ -7595,7 +7630,7 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock response
-      var expectedResponse = {};
+      const expectedResponse = {};
 
       // Mock Grpc layer
       client._innerApiCalls.testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(
@@ -7611,42 +7646,42 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes testOptionalRequiredFlatteningParams with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient({
+      const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var requiredSingularInt32 = 72313594;
-      var requiredSingularInt64 = 72313499;
-      var requiredSingularFloat = -7514705.0;
-      var requiredSingularDouble = 1.9111005E8;
-      var requiredSingularBool = true;
-      var requiredSingularEnum = 'ZERO';
-      var requiredSingularString = 'requiredSingularString-1949894503';
-      var requiredSingularBytes = '-29';
-      var requiredSingularMessage = {};
-      var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-      var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-      var requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
-      var requiredSingularFixed32 = 720656715;
-      var requiredSingularFixed64 = 720656810;
-      var requiredRepeatedInt32 = [];
-      var requiredRepeatedInt64 = [];
-      var requiredRepeatedFloat = [];
-      var requiredRepeatedDouble = [];
-      var requiredRepeatedBool = [];
-      var requiredRepeatedEnum = [];
-      var requiredRepeatedString = [];
-      var requiredRepeatedBytes = [];
-      var requiredRepeatedMessage = [];
-      var formattedRequiredRepeatedResourceName = [];
-      var formattedRequiredRepeatedResourceNameOneof = [];
-      var requiredRepeatedResourceNameCommon = [];
-      var requiredRepeatedFixed32 = [];
-      var requiredRepeatedFixed64 = [];
-      var requiredMap = {};
-      var request = {
+      const requiredSingularInt32 = 72313594;
+      const requiredSingularInt64 = 72313499;
+      const requiredSingularFloat = -7514705.0;
+      const requiredSingularDouble = 1.9111005E8;
+      const requiredSingularBool = true;
+      const requiredSingularEnum = 'ZERO';
+      const requiredSingularString = 'requiredSingularString-1949894503';
+      const requiredSingularBytes = '-29';
+      const requiredSingularMessage = {};
+      const requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+      const requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+      const requiredSingularFixed32 = 720656715;
+      const requiredSingularFixed64 = 720656810;
+      const requiredRepeatedInt32 = [];
+      const requiredRepeatedInt64 = [];
+      const requiredRepeatedFloat = [];
+      const requiredRepeatedDouble = [];
+      const requiredRepeatedBool = [];
+      const requiredRepeatedEnum = [];
+      const requiredRepeatedString = [];
+      const requiredRepeatedBytes = [];
+      const requiredRepeatedMessage = [];
+      const formattedRequiredRepeatedResourceName = [];
+      const formattedRequiredRepeatedResourceNameOneof = [];
+      const requiredRepeatedResourceNameCommon = [];
+      const requiredRepeatedFixed32 = [];
+      const requiredRepeatedFixed64 = [];
+      const requiredMap = {};
+      const request = {
         requiredSingularInt32: requiredSingularInt32,
         requiredSingularInt64: requiredSingularInt64,
         requiredSingularFloat: requiredSingularFloat,
@@ -7712,7 +7747,7 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
 function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
   return actualRequest => {
     assert.deepStrictEqual(actualRequest, expectedRequest);
-    var mockStream = through2.obj((chunk, enc, callback) => {
+    const mockStream = through2.obj((chunk, enc, callback) => {
       if (error) {
         callback(error);
       }
@@ -7726,7 +7761,7 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
 
 function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
   return () => {
-    var mockStream = through2.obj((chunk, enc, callback) => {
+    const mockStream = through2.obj((chunk, enc, callback) => {
       assert.deepStrictEqual(chunk, expectedRequest);
       if (error) {
         callback(error);
@@ -7742,7 +7777,7 @@ function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
 function mockLongRunningGrpcMethod(expectedRequest, response, error) {
   return request => {
     assert.deepStrictEqual(request, expectedRequest);
-    var mockOperation = {
+    const mockOperation = {
       promise: function() {
         return new Promise((resolve, reject) => {
           if (error) {

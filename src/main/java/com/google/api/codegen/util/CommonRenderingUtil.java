@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Utility class to process text in the templates. */
@@ -39,7 +41,8 @@ public class CommonRenderingUtil {
   public static List<String> getDocLines(String text) {
     // TODO: Convert markdown to language-specific doc format.
     // https://github.com/googleapis/toolkit/issues/331
-    List<String> result = Splitter.on(String.format("%n")).splitToList(text);
+    text = text.replace("\r\n", "\n").replace("\r", "\n");
+    List<String> result = Splitter.on('\n').splitToList(text);
     return result.size() == 1 && result.get(0).isEmpty() ? ImmutableList.<String>of() : result;
   }
 
@@ -49,6 +52,7 @@ public class CommonRenderingUtil {
    * <p>maxWidth includes the ending newline.
    */
   public static List<String> getDocLines(String text, int maxWidth) {
+    text = text.replace("\r\n", "\n").replace("\r", "\n");
     maxWidth = maxWidth - 1;
     List<String> lines = new ArrayList<>();
     for (String line : text.trim().split("\n")) {
@@ -107,5 +111,11 @@ public class CommonRenderingUtil {
    */
   public static int toInt(String value) {
     return Integer.valueOf(value);
+  }
+
+  public static List<String> pretty(Doc doc) {
+    StringBuilder sb = new StringBuilder();
+    doc.prettyPrint(sb);
+    return Arrays.asList(sb.toString().split("\n"));
   }
 }

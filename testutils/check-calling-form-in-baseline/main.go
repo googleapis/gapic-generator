@@ -123,8 +123,8 @@ func (s checkConfigSlice) Less(i, j int) bool {
 	if s[i].lang != s[j].lang {
 		return s[i].lang < s[j].lang
 	}
-	if s[i].id != s[j].id {
-		return s[i].id < s[j].id
+	if s[i].valueSet != s[j].valueSet {
+		return s[i].valueSet < s[j].valueSet
 	}
 	return s[i].form < s[j].form
 }
@@ -154,9 +154,9 @@ func readChecks(r io.Reader) (map[checkConfig]bool, error) {
 		}
 		for _, form := range strings.Fields(line[p+1:]) {
 			cc := checkConfig{
-				id:   idLang[0],
-				lang: idLang[1],
-				form: form,
+				valueSet: idLang[0],
+				lang:     idLang[1],
+				form:     form,
 			}
 			checks[cc] = true
 		}
@@ -171,9 +171,9 @@ fail:
 }
 
 type checkConfig struct {
-	id   string
-	lang string
-	form string
+	valueSet string
+	lang     string
+	form     string
 }
 
 // deleteFoundForms reads the baseline, then deletes any used calling forms and value sets from forms.
@@ -211,7 +211,7 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 
 		// The expected lines look like this:
 		//   // calling form: "form"
-		//   ## valueSet "set" ("title")
+		//   // valueSet: "set" ("title")
 		// The comment character differs between languages.
 		// Some langs also have colons and others don't. Instead of mandating
 		// exact format, just be a little resilient.
@@ -222,16 +222,37 @@ func deleteFoundForms(r io.Reader, lang string, forms map[checkConfig]bool) erro
 		})
 		var set *string
 		const (
-			formPrefix = "calling form"
-			setPrefix  = "valueSet"
+			formPrefix     = "calling form"
+			setPrefix      = "valueSet"
+			combinedPrefix = "DO NOT EDIT! This is a generated sample (\""
 		)
 		switch {
 		case strings.HasPrefix(line, formPrefix):
 			set = &foundForm.form
 			line = line[len(formPrefix):]
 		case strings.HasPrefix(line, setPrefix):
-			set = &foundForm.id
+			set = &foundForm.valueSet
 			line = line[len(setPrefix):]
+		case strings.HasPrefix(line, combinedPrefix):
+			workString := line[len(combinedPrefix):]
+			quoteIndex := strings.IndexRune(workString, '"')
+			if quoteIndex < 0 {
+				return fmt.Errorf("could not find end quote for calling form")
+			}
+			foundForm.form = workString[:quoteIndex]
+			workString = workString[quoteIndex+1:]
+
+			if quoteIndex = strings.IndexRune(workString, '"'); quoteIndex < 0 {
+				return fmt.Errorf("could not find start quote for value set")
+			}
+			workString = workString[quoteIndex+1:]
+
+			if quoteIndex = strings.IndexRune(workString, '"'); quoteIndex < 0 {
+				return fmt.Errorf("could not find end quote for value set")
+			}
+			foundForm.valueSet = workString[:quoteIndex]
+
+			continue
 		default:
 			continue
 		}

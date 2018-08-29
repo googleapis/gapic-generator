@@ -17,12 +17,13 @@ package com.google.api.codegen.configgen;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
-import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
-import com.google.common.io.Files;
-import java.io.File;
+import com.google.common.io.CharStreams;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.List;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.composer.ComposerException;
@@ -31,11 +32,11 @@ import org.yaml.snakeyaml.nodes.Node;
 
 /** Reads YAML into a FieldConfigNode. */
 public class ConfigYamlReader {
-  public FieldConfigNode generateConfigNode(File file, ConfigHelper helper) {
+  public FieldConfigNode generateConfigNode(URL file, ConfigHelper helper) {
     int initialErrorCount = helper.getErrorCount();
     String input;
-    try {
-      input = Files.toString(file, Charsets.UTF_8);
+    try (Reader fileReader = new InputStreamReader(file.openStream())) {
+      input = CharStreams.toString(fileReader);
     } catch (IOException e) {
       helper.error("Cannot read configuration file: %s", e.getMessage());
       return null;

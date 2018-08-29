@@ -68,7 +68,7 @@ public class LegacyGapicGenerator implements CodeGenerator<Doc> {
   private Map<String, GeneratedResult<Doc>> generate(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return ImmutableMap.of();
     }
 
@@ -94,7 +94,7 @@ public class LegacyGapicGenerator implements CodeGenerator<Doc> {
     }
 
     // Return result.
-    if (model.getDiagCollector().getErrorCount() > 0) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return ImmutableMap.of();
     }
 

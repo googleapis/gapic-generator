@@ -65,7 +65,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
 
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    String dir = language.toString().toLowerCase();
+    if ("python".equals(dir)) {
+      dir = "py";
+    }
+    getTestDataLocator().addTestDataSource(getClass(), dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
   }
 
   @Override
@@ -76,9 +82,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   @Override
   protected void setupModel() {
     super.setupModel();
-    gapicConfig =
-        CodegenTestUtil.readConfig(
-            model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+    if (gapicConfigFileNames != null) {
+      gapicConfig =
+          CodegenTestUtil.readConfig(
+              model.getDiagReporter().getDiagCollector(),
+              getTestDataLocator(),
+              gapicConfigFileNames);
+    }
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
         ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
@@ -95,8 +105,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       }
     }
     // TODO (garrettjones) depend on the framework to take care of this.
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       throw new IllegalArgumentException("Problem creating Generator");
@@ -151,8 +161,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   @Override
   public Map<String, ?> run() throws IOException {
     model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;
@@ -160,7 +170,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig, language);
     if (productConfig == null) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;

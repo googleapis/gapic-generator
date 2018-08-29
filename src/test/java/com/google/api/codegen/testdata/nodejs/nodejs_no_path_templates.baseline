@@ -63,7 +63,7 @@ $ npm install --save example
     "lodash.merge": "^4.6.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
+    "mocha": "^5.2.0",
     "through2": "^2.0.3"
   },
   "scripts": {
@@ -73,7 +73,7 @@ $ npm install --save example
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.0.0"
   }
 }
 
@@ -100,7 +100,7 @@ $ npm install --save example
  * @memberof google.cloud.example.v1
  * @see [google.cloud.example.v1.IncrementRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/no_path_templates_messages.proto}
  */
-var IncrementRequest = {
+const IncrementRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/doc/google/protobuf/doc_empty.js ==============
@@ -135,7 +135,7 @@ var IncrementRequest = {
  * @memberof google.protobuf
  * @see [google.protobuf.Empty definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/empty.proto}
  */
-var Empty = {
+const Empty = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/index.js ==============
@@ -230,13 +230,13 @@ class NoTemplatesApiServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    var gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gax.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    var clientHeader = [
+    const clientHeader = [
       `gl-node/${process.version}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
@@ -247,7 +247,7 @@ class NoTemplatesApiServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge(
+    const protos = merge(
       {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', 'protos'),
@@ -256,7 +256,7 @@ class NoTemplatesApiServiceClient {
     );
 
     // Put together the default options sent with requests.
-    var defaults = gaxGrpc.constructSettings(
+    const defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       gapicConfig,
       opts.clientConfig,
@@ -270,14 +270,14 @@ class NoTemplatesApiServiceClient {
 
     // Put together the "service stub" for
     // google.cloud.example.v1.NoTemplatesAPIService.
-    var noTemplatesApiServiceStub = gaxGrpc.createStub(
+    const noTemplatesApiServiceStub = gaxGrpc.createStub(
       protos.google.cloud.example.v1.NoTemplatesAPIService,
       opts
     );
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    var noTemplatesApiServiceStubMethods = [
+    const noTemplatesApiServiceStubMethods = [
       'increment',
     ];
     for (let methodName of noTemplatesApiServiceStubMethods) {
@@ -285,7 +285,7 @@ class NoTemplatesApiServiceClient {
         noTemplatesApiServiceStub.then(
           stub =>
             function() {
-              var args = Array.prototype.slice.call(arguments, 0);
+              const args = Array.prototype.slice.call(arguments, 0);
               return stub[methodName].apply(stub, args);
             }
         ),
@@ -353,7 +353,7 @@ class NoTemplatesApiServiceClient {
    *
    * const example = require('example');
    *
-   * var client = example.NoTemplatesApiServiceClient({
+   * const client = example.NoTemplatesApiServiceClient({
    *   // optional auth parameters.
    * });
    *
@@ -414,20 +414,20 @@ const assert = require('assert');
 
 const exampleModule = require('../src');
 
-var FAKE_STATUS_CODE = 1;
-var error = new Error();
+const FAKE_STATUS_CODE = 1;
+const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('NoTemplatesApiServiceClient', () => {
   describe('increment', () => {
     it('invokes increment without error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient({
+      const client = new exampleModule.NoTemplatesApiServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.increment = mockSimpleGrpcMethod(request);
@@ -439,13 +439,13 @@ describe('NoTemplatesApiServiceClient', () => {
     });
 
     it('invokes increment with error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient({
+      const client = new exampleModule.NoTemplatesApiServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
 
       // Mock request
-      var request = {};
+      const request = {};
 
       // Mock Grpc layer
       client._innerApiCalls.increment = mockSimpleGrpcMethod(

@@ -36,14 +36,14 @@ class MultiCallableStub(object):
 
     def __call__(self, request, timeout=None, metadata=None, credentials=None):
         self.channel_stub.requests.append((self.method, request))
-        
+
         response = None
         if self.channel_stub.responses:
             response = self.channel_stub.responses.pop()
 
         if isinstance(response, Exception):
             raise response
-            
+
         if response:
             return response
 
@@ -125,7 +125,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup Request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         response = {@unaryTestMethodCall(test)}
@@ -150,7 +150,7 @@ class CustomException(Exception):
         {@clientSetup(test, moduleName)}
 
         @# Setup Request
-        {@initCode(test.initCode)}
+        {@initCode(test.initCode.lines)}
         request = {@test.requestTypeName}(**request)
         requests = [request]
 
@@ -177,7 +177,7 @@ class CustomException(Exception):
             channel=channel)
 
         @# Setup Request
-        {@initCode(test.initCode)}
+        {@initCode(test.initCode.lines)}
         request = {@test.requestTypeName}(**request)
         requests = [request]
 
@@ -206,7 +206,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup Request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         @if test.hasReturnValue
@@ -232,7 +232,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup Request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         paged_list_response = {@unaryTestMethodCall(test)}
@@ -261,7 +261,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         with pytest.raises(CustomException):
@@ -276,7 +276,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         paged_list_response = {@unaryTestMethodCall(test)}
@@ -293,7 +293,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         request = {@test.requestTypeName}(**request)
@@ -317,7 +317,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup Request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         response = {@unaryTestMethodCall(test)}
@@ -341,7 +341,7 @@ class CustomException(Exception):
 
         @if test.hasRequestParameters
             @# Setup Request
-            {@initCode(test.initCode)}
+            {@initCode(test.initCode.lines)}
 
         @end
         response = {@unaryTestMethodCall(test)}
@@ -355,7 +355,7 @@ class CustomException(Exception):
 @end
 
 @private responseInitCode(test)
-    {@initCode(test.mockResponse.initCode)}
+    {@initCode(test.mockResponse.initCode.lines)}
     expected_response = {@test.responseTypeName}(**expected_response)
 @end
 

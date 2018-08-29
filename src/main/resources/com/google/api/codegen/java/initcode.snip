@@ -1,7 +1,18 @@
 @extends "java/common.snip"
 
 @snippet initCode(initCodeSpec)
-  @join line : initCodeSpec.lines
+  @if initCodeSpec.argDefaultLines
+    @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
+      // {@line}
+    @end
+
+
+  @end
+  {@initCodeLines(initCodeSpec.lines)}
+@end
+
+@private initCodeLines(lines)
+  @join line : lines
     @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}

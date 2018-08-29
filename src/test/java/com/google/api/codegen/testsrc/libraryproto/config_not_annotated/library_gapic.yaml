@@ -5,6 +5,7 @@ language_settings:
     package_name: com.google.gcloud.pubsub.v1
     interface_names:
       google.example.library.v1.LibraryService: Library
+    release_level: GA
   python:
     package_name: google.cloud.example.library_v1.gapic
   go:
@@ -245,8 +246,12 @@ interfaces:
       title: "Pi version"
       description: "Testing calling forms"
       parameters:
-      - shelf.name=Math
-      - series_uuid.series_string=xyz3141592654
+        defaults:
+        - shelf.name=Math
+        - series_uuid.series_string=xyz3141592654
+        attributes:
+        - parameter: shelf.name
+          sample_argument: true
       on_success:
       - loop:
           variable: title
@@ -264,7 +269,8 @@ interfaces:
       title: "Second edition"
       description: "Testing calling forms"
       parameters:
-      - edition=2
+        defaults:
+        - edition=2
     samples:
       in_code:
       - calling_forms: [callable]
@@ -277,6 +283,7 @@ interfaces:
       standalone:
       - calling_forms: ".*"
         value_sets: [second_edition, pi_version]
+        region_tag: "canonical"
       - calling_forms: callable
         value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
   - name: GetBook
@@ -299,7 +306,8 @@ interfaces:
       title: "Non-existent book"
       description: "This value set should never be used"
       parameters:
-      - name="Unreal book"
+        defaults:
+        - name="Unreal book"
     samples:
       in_code:
       - calling_forms: "foo"
@@ -547,6 +555,7 @@ interfaces:
       title: "Programming Books"
       description: "Testing calling forms"
       parameters:
+        defaults:
         - name=BASIC
     samples:
       in_code:
@@ -580,6 +589,7 @@ interfaces:
       title: "Programming Books"
       description: "Testing calling forms"
       parameters:
+        defaults:
         - name=BASIC
     samples:
       in_code:
@@ -608,6 +618,7 @@ interfaces:
       title: "Programming Books"
       description: "Testing calling forms"
       parameters:
+        defaults:
         - name=BASIC
     samples:
       in_code:
@@ -653,8 +664,9 @@ interfaces:
       title: "The Odyssey"
       description: "Testing calling forms"
       parameters:
-      - names[0]=Odyssey
-      - shelves[0]=Classics
+        defaults:
+        - names[0]=Odyssey
+        - shelves[0]=Classics
       on_success:
         - define: book = $resp
         - print:
@@ -743,7 +755,8 @@ interfaces:
       title: "GetBigBook: 'War and Peace'"
       description: "Testing calling forms"
       parameters:
-      - name="War and Peace"
+        defaults:
+        - name="War and Peace"
     samples:
       standalone:
       - calling_forms: ".*"

@@ -32,7 +32,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.GrpcDocView;
-import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.ModuleView;
@@ -72,7 +71,6 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
     for (ProtoFile file : ProtoFiles.getProtoFiles(productConfig)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
-    surfaceDocs.add(generateOverview(model, productConfig));
     return surfaceDocs.build();
   }
 
@@ -99,19 +97,6 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
             namer,
             isSourceApiInterfaceFile(file) ? file : null,
             false));
-    return doc.build();
-  }
-
-  private ViewModel generateOverview(ApiModel model, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    GrpcDocView.Builder doc = GrpcDocView.newBuilder();
-    doc.templateFileName(DOC_TEMPLATE_FILENAME);
-    doc.outputPath(pathMapper.getOutputPath(null, productConfig) + "/doc/overview.rb");
-    doc.fileHeader(
-        fileHeaderTransformer.generateFileHeader(
-            productConfig, ImportSectionView.newBuilder().build(), namer));
-    doc.elementDocs(ImmutableList.<GrpcElementDocView>of());
-    doc.modules(generateModuleViews(model, productConfig, namer, null, true));
     return doc.build();
   }
 

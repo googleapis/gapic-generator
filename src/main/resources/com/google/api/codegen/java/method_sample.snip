@@ -43,7 +43,7 @@
   }
 @end
 
-@snippet resourceListGetCall(apiMethod)
+@private resourceListGetCall(apiMethod)
   @if apiMethod.unpagedListCallableMethod.resourceListParseFunction
     {@apiMethod.unpagedListCallableMethod.resourceListParseFunction}(\
       response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}())
@@ -98,7 +98,7 @@
   @end
 @end
 
-@snippet bidiStreamingCallableSampleCode(apiMethod, initCode)
+@private bidiStreamingCallableSampleCode(apiMethod, initCode)
   BidiStream<{@apiMethod.callableMethod.requestType}, {@apiMethod.callableMethod.genericAwareResponseType}> bidiStream =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().call();
 
@@ -109,7 +109,7 @@
   }
 @end
 
-@snippet serverStreamingCallableSampleCode(apiMethod, initCode)
+@private serverStreamingCallableSampleCode(apiMethod, initCode)
   {@initCode(initCode)}
 
   ServerStream<{@apiMethod.callableMethod.genericAwareResponseType}> stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
@@ -119,7 +119,7 @@
   }
 @end
 
-@snippet clientStreamingCallableSampleCode(apiMethod, initCode)
+@private clientStreamingCallableSampleCode(apiMethod, initCode)
   {@responseObserver(apiMethod)}
   ApiStreamObserver<{@apiMethod.callableMethod.requestType}> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver);

@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.configgen.GapicConfigGeneratorApp;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
+import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
 import java.io.File;
@@ -26,6 +27,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
+
+  private final TestDataLocator testDataLocator =
+      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
+
+  @Override
+  protected TestDataLocator getTestDataLocator() {
+    return this.testDataLocator;
+  }
+
   @Override
   protected String baselineFileName() {
     return testName.getMethodName() + "_config.baseline";
@@ -49,15 +59,13 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(serviceConfigPath));
     new GapicConfigGeneratorApp(options).run();
 
-    String outputContent =
-        new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);
-
-    return outputContent;
+    return new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);
   }
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/config_not_annotated");
   }
 
   @Test

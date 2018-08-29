@@ -96,9 +96,9 @@ public class InitCodeTransformer {
       MethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      return buildInitCodeViewFlattened(methodContext, rootNode);
+      return buildInitCodeViewFlattened(methodContext, initCodeContext, rootNode);
     } else {
-      return buildInitCodeViewRequestObject(methodContext, rootNode);
+      return buildInitCodeViewRequestObject(methodContext, initCodeContext, rootNode);
     }
   }
 
@@ -232,22 +232,51 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(MethodContext context, InitCodeNode root) {
-    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
+  private InitCodeView buildInitCodeViewFlattened(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
     // Remove the request object for flattened method
-    orderedItems.remove(orderedItems.size() - 1);
-    return buildInitCodeView(context, orderedItems, argItems);
-  }
-
-  private InitCodeView buildInitCodeViewRequestObject(MethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
-    List<InitCodeNode> argItems = Lists.newArrayList(root);
-    return buildInitCodeView(context, orderedItems, argItems);
+    orderedItems.remove(orderedItems.size() - 1);
+
+    return buildInitCodeView(
+        context,
+        orderedItems,
+        ImmutableList.copyOf(root.getChildren().values()),
+        subTrees(root, initCodeContext.sampleArgStrings()));
   }
 
+  private InitCodeView buildInitCodeViewRequestObject(
+      MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    return buildInitCodeView(
+        context,
+        root.listInInitializationOrder(),
+        ImmutableList.of(root),
+        subTrees(root, initCodeContext.sampleArgStrings()));
+  }
+
+  private List<InitCodeNode> subTrees(InitCodeNode root, List<String> paths) {
+    return paths.stream().map(path -> root.subTree(path)).collect(ImmutableList.toImmutableList());
+  }
+
+  /**
+   * Transform {@code InitCodeNode}s into {@code InitCodeView}.
+   *
+   * @param orderedItems These nodes are converted into request-initialization code. It contains all
+   *     initializations regardless of whether they are parameters to the sample function. The
+   *     initialization is "shallow": children nodes are not initialized. If children nodes should
+   *     also be initialized, callers must also include them in the list.
+   * @param libArguments Used by samples for flattened client lib methods. These nodes contain
+   *     values that become arguments to the method.
+   * @param sampleFuncParams Subset of {@code orderedItems} containing only items that are function
+   *     parameters. Unlike {@code orderedItems}, the {@code sampleFuncParams} are "deep". The init
+   *     code for these nodes and their children are commented out so that they don't clobber the
+   *     function arguments.
+   */
   private InitCodeView buildInitCodeView(
-      MethodContext context, Iterable<InitCodeNode> orderedItems, Iterable<InitCodeNode> argItems) {
+      MethodContext context,
+      List<InitCodeNode> orderedItems,
+      List<InitCodeNode> libArguments,
+      List<InitCodeNode> sampleFuncParams) {
     ImportTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -256,14 +285,31 @@ public class InitCodeTransformer {
     typeTable.getAndSaveNicknameFor(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
-    List<FieldSettingView> fieldSettings = getFieldSettings(context, argItems);
+    List<FieldSettingView> fieldSettings = getFieldSettings(context, libArguments);
     List<FieldSettingView> optionalFieldSettings =
         fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
+
+    List<InitCodeLineView> argDefaultParams = new ArrayList<>();
+    List<InitCodeLineView> argDefaultLines = new ArrayList<>();
+    for (InitCodeNode param : sampleFuncParams) {
+      List<InitCodeNode> paramInits = param.listInInitializationOrder();
+      argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
+
+      // The param itself is always at the end.
+      argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
+
+      // Since we're going to write the inits for the params here,
+      // remove so we don't init twice.
+      orderedItems.removeAll(paramInits);
+    }
+
     return InitCodeView.newBuilder()
+        .argDefaultLines(argDefaultLines)
+        .argDefaultParams(argDefaultParams)
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
-        .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
+        .topLevelLines(generateSurfaceInitCodeLines(context, libArguments))
         .fieldSettings(fieldSettings)
         .optionalFieldSettings(optionalFieldSettings)
         .requiredFieldSettings(requiredFieldSettings)

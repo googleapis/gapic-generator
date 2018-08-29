@@ -40,8 +40,8 @@ public class GapicConfigGeneratorApp extends ToolDriverBase {
   @Override
   protected void process() throws Exception {
     model.establishStage(Merged.KEY);
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      for (Diag diag : model.getDiagCollector().getDiags()) {
+    if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return;

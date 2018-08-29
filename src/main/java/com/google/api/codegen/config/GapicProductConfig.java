@@ -132,7 +132,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto, file, language);
+        createResourceNameConfigs(
+            model.getDiagReporter().getDiagCollector(), configProto, file, language);
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
@@ -144,7 +145,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
-            model.getDiagCollector(),
+            model.getDiagReporter().getDiagCollector(),
             configProto,
             settings,
             messageConfigs,
@@ -161,10 +162,12 @@ public abstract class GapicProductConfig implements ProductConfig {
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      copyrightLines = loadCopyrightLines(model.getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(model.getDiagCollector(), licenseHeader);
+      copyrightLines =
+          loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+      licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
     } catch (Exception e) {
       model
+          .getDiagReporter()
           .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
@@ -175,6 +178,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       model
+          .getDiagReporter()
           .getDiagCollector()
           .addDiag(
               Diag.error(

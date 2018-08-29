@@ -19,8 +19,30 @@ import java.util.List;
 
 @AutoValue
 public abstract class InitCodeView {
+  /**
+   * Used by standalone samples, each of which includes a function that performs the request
+   * creation, client library call, and response processing. These lines contain inits for values
+   * that are passed into function parameters and their dependencies. They do not contain any value
+   * unrelated to the said function parameters.
+   */
+  public abstract List<InitCodeLineView> argDefaultLines();
+
+  /**
+   * A subset of {@code argDefaultLines}, containing only the sample's function's parameters
+   * themselves, not the value they depend on. Used to render these params.
+   */
+  public abstract List<InitCodeLineView> argDefaultParams();
+
+  /** The "normal" init lines. */
   public abstract List<InitCodeLineView> lines();
 
+  /**
+   * Used by PHP and C# in different ways.
+   *
+   * <p>PHP: used to send multiple requests in streaming RPCs, one line per request.
+   *
+   * <p>C#: used as "roots" to render nested-initialization.
+   */
   public abstract List<InitCodeLineView> topLevelLines();
 
   public abstract List<FieldSettingView> fieldSettings();
@@ -41,6 +63,10 @@ public abstract class InitCodeView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder argDefaultLines(List<InitCodeLineView> val);
+
+    public abstract Builder argDefaultParams(List<InitCodeLineView> val);
+
     public abstract Builder lines(List<InitCodeLineView> val);
 
     public abstract Builder topLevelLines(List<InitCodeLineView> val);

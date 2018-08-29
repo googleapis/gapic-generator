@@ -48,6 +48,16 @@ public class GeneratorMain {
           .argName("DESCRIPTOR-SET")
           .required(true)
           .build();
+  private static final Option TARGET_API_PROTO_PACKAGE =
+      Option.builder()
+          .longOpt("package")
+          .desc(
+              "The proto package designating the files actually intended for output. "
+                  + "This option is required if a GAPIC config is not given.")
+          .hasArg()
+          .argName("PACKAGE")
+          .required(false)
+          .build();
   private static final Option SERVICE_YAML_OPTION =
       Option.builder()
           .longOpt("service_yaml")
@@ -95,6 +105,16 @@ public class GeneratorMain {
           .hasArg()
           .argName("GAPIC-YAML")
           .required(true)
+          .build();
+  private static final Option GAPIC_YAML_NONREQUIRED_OPTION =
+      Option.builder()
+          .longOpt("gapic_yaml")
+          .desc(
+              "The GAPIC YAML configuration file or files. This is required only if "
+                  + "the --package option is not specified.")
+          .hasArg()
+          .argName("GAPIC-YAML")
+          .required(false)
           .build();
   private static final Option PACKAGE_YAML2_OPTION =
       Option.builder("c2")
@@ -200,11 +220,12 @@ public class GeneratorMain {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
-    options.addOption(SERVICE_YAML_OPTION);
+    options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
     // TODO make required after artman passes this in
     options.addOption(LANGUAGE_NONREQUIRED_OPTION);
-    options.addOption(GAPIC_YAML_OPTION);
+    options.addOption(GAPIC_YAML_NONREQUIRED_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
+    options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(OUTPUT_OPTION);
     Option enabledArtifactsOption =
         Option.builder()
@@ -227,23 +248,35 @@ public class GeneratorMain {
     ToolOptions toolOptions = ToolOptions.create();
     toolOptions.set(
         ToolOptions.DESCRIPTOR_SET, cl.getOptionValue(DESCRIPTOR_SET_OPTION.getLongOpt()));
+
+    // TODO(andrealin): Write system tests to ensure at least one option given.
+    checkAtLeastOneOption(cl, SERVICE_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
+    checkAtLeastOneOption(cl, GAPIC_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
+
     toolOptions.set(
-        ToolOptions.CONFIG_FILES,
-        Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_OPTION.getLongOpt())));
+        GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
     toolOptions.set(
         GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_NONREQUIRED_OPTION.getLongOpt()));
     toolOptions.set(
         GapicGeneratorApp.OUTPUT_FILE, cl.getOptionValue(OUTPUT_OPTION.getLongOpt(), ""));
     toolOptions.set(
-        GapicGeneratorApp.GENERATOR_CONFIG_FILES,
-        Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_OPTION.getLongOpt())));
-    toolOptions.set(
         GapicGeneratorApp.PACKAGE_CONFIG2_FILE,
         cl.getOptionValue(PACKAGE_YAML2_OPTION.getLongOpt()));
 
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
-    checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
-    checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
+
+    if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          ToolOptions.CONFIG_FILES,
+          Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt())));
+      checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
+    }
+    if (cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          GapicGeneratorApp.GENERATOR_CONFIG_FILES,
+          Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt())));
+      checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
+    }
     if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
     }
@@ -262,6 +295,7 @@ public class GeneratorMain {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
+    options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
     options.addOption(LANGUAGE_OPTION);
     Option inputOption =
@@ -294,11 +328,15 @@ public class GeneratorMain {
     }
 
     ToolOptions toolOptions = ToolOptions.create();
+
     toolOptions.set(PackageGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.INPUT_DIR, cl.getOptionValue(inputOption.getLongOpt()));
     toolOptions.set(PackageGeneratorApp.OUTPUT_DIR, cl.getOptionValue(OUTPUT_OPTION.getLongOpt()));
     toolOptions.set(
         ToolOptions.DESCRIPTOR_SET, cl.getOptionValue(DESCRIPTOR_SET_OPTION.getLongOpt()));
+    toolOptions.set(
+        PackageGeneratorApp.PROTO_PACKAGE,
+        cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
     if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
       toolOptions.set(
           ToolOptions.CONFIG_FILES,
@@ -349,8 +387,7 @@ public class GeneratorMain {
     // TODO make required after artman passes this in
     options.addOption(LANGUAGE_NONREQUIRED_OPTION);
     options.addOption(DISCOVERY_DOC_OPTION);
-    // TODO add this option back
-    // options.addOption(SERVICE_YAML_OPTION);
+    // TODO (andrealin): Make Gapic YAML optional
     options.addOption(GAPIC_YAML_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(OUTPUT_OPTION);
@@ -406,6 +443,17 @@ public class GeneratorMain {
   private static void checkFile(String filePath) {
     if (!new File(filePath).exists()) {
       throw new IllegalArgumentException("File not found: " + filePath);
+    }
+  }
+
+  // Throws an exception if neither option was given.
+  private static void checkAtLeastOneOption(CommandLine cl, Option option1, Option option2) {
+    if (cl.getOptionValues(option1.getLongOpt()) == null
+        && cl.getOptionValues(option2.getLongOpt()) == null) {
+      throw new IllegalArgumentException(
+          String.format(
+              "At least one of --%s and/or --%s must be given.",
+              option1.getLongOpt(), option2.getLongOpt()));
     }
   }
 }
