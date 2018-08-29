@@ -60,7 +60,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      MethodConfigProto methodConfigProto,
+      @Nullable MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -71,13 +71,15 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
     PageStreamingConfig pageStreaming = null;
-    if (!PageStreamingConfigProto.getDefaultInstance()
-        .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming =
-          PageStreamingConfig.createPageStreaming(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
-      if (pageStreaming == null) {
-        error = true;
+    if (methodConfigProto != null) {
+      if (!PageStreamingConfigProto.getDefaultInstance()
+          .equals(methodConfigProto.getPageStreaming())) {
+        pageStreaming =
+            PageStreamingConfig.createPageStreaming(
+                diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+        if (pageStreaming == null) {
+          error = true;
+        }
       }
     }
 
@@ -95,6 +97,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
         }
       }
     }
+    // TODO(andrealin): Make GrpcStreamingConfig when configProto is null
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {

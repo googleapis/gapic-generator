@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -29,8 +31,6 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {

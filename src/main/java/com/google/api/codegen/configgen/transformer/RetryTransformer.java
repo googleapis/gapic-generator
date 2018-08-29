@@ -34,6 +34,14 @@ public class RetryTransformer {
   public static final int DEFAULT_MAX_RPC_TIMEOUT_MILLIS = 20000;
   public static final int DEFAULT_TOTAL_TIMEOUT_MILLIS = 600000;
 
+  public static final String INITIAL_RETRY_DELAY_NAME = "initial_retry_delay_millis";
+  public static final String RETRY_DELAY_MULTIPLIER_NAME = "retry_delay_multiplier";
+  public static final String MAX_RETRY_DELAY_NAME = "max_retry_delay_millis";
+  public static final String INITIAL_RPC_TIMEOUT_NAME = "initial_rpc_timeout_millis";
+  public static final String RPC_TIMEOUT_MULTIPLIER_NAME = "rpc_timeout_multiplier";
+  public static final String MAX_RPC_TIMEOUT_NAME = "max_rpc_timeout_millis";
+  public static final String TOTAL_TIMEOUT_NAME = "total_timeout_millis";
+
   public void generateRetryDefinitions(
       InterfaceView.Builder interfaceView,
       List<String> idempotentRetryCodes,

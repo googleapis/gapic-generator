@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.BackendRule;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
-
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {

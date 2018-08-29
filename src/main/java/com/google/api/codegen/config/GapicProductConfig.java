@@ -50,7 +50,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -149,13 +148,12 @@ public abstract class GapicProductConfig implements ProductConfig {
               .filter(f -> f.getProto().getPackage().equals(defaultPackage))
               .collect(Collectors.toList());
       if (sourceProtos.size() == 0) {
-        throw new IllegalArgumentException(String.format(
-            "No proto package %s in input descriptor set.", defaultPackage));
+        throw new IllegalArgumentException(
+            String.format("No proto package %s in input descriptor set.", defaultPackage));
       }
       file = sourceProtos.get(0);
       if (configProto == null) {
         sourceProtos.stream().forEach(p -> model.addRoot(p));
-
       }
     } else if (configProto != null) {
       // Otherwise use configProto to get the proto file containing the first interface listed in

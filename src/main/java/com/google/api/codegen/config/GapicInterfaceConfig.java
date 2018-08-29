@@ -35,6 +35,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -210,24 +212,48 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       TargetLanguage language,
-      InterfaceConfigProto interfaceConfigProto,
+      @Nullable InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
-    ImmutableMap.Builder<String, GapicMethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
+    Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      Interface targetInterface =
-          getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-      Method method = targetInterface.lookupMethod(methodConfigProto.getName());
-      if (method == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-        continue;
+    // Keep track of the MethodConfigProtos encountered.
+    Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
+
+    if (interfaceConfigProto != null) {
+      for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+        Interface targetInterface =
+            getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+        Method method = targetInterface.lookupMethod(methodConfigProto.getName());
+        if (method == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+          continue;
+        }
+        GapicMethodConfig methodConfig =
+            GapicMethodConfig.createMethodConfig(
+                diagCollector,
+                language,
+                methodConfigProto,
+                method,
+                messageConfigs,
+                resourceNameConfigs,
+                retryCodesConfigNames,
+                retryParamsConfigNames);
+        if (methodConfig == null) {
+          continue;
+        }
+        methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
+        methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
       }
+    }
+    for (Method method : apiInterface.getMethods()) {
+      // TODO(andrealin): Reroute to grpc interface.
+      MethodConfigProto methodConfigProto = methodConfigProtoMap.get(method.getSimpleName());
       GapicMethodConfig methodConfig =
           GapicMethodConfig.createMethodConfig(
               diagCollector,
@@ -241,13 +267,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       if (methodConfig == null) {
         continue;
       }
-      methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
+      methodConfigMapBuilder.put(method.getSimpleName(), methodConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return methodConfigMapBuilder.build();
+      return ImmutableMap.copyOf(methodConfigMapBuilder);
     }
   }
 

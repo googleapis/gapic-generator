@@ -28,12 +28,9 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -107,16 +104,17 @@ public class RetryDefinitionsTransformer {
       }
     } else {
       // Use default values.
-      RetryParamsDefinitionProto defaultRetryParams = RetryParamsDefinitionProto.getDefaultInstance()
-          .toBuilder()
-          .setInitialRetryDelayMillis(DEFAULT_INITIAL_RETRY_DELAY)
-          .setRetryDelayMultiplier(DEFAULT_RETRY_DELAY_MULTIPLIER)
-          .setMaxRetryDelayMillis(DEFAULT_MAX_RETRY_DELAY)
-          .setInitialRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
-          .setRpcTimeoutMultiplier(DEFAULT_RPC_TIMEOUT_MULTIPLIER)
-          .setMaxRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
-          .setTotalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
-          .build();
+      RetryParamsDefinitionProto defaultRetryParams =
+          RetryParamsDefinitionProto.getDefaultInstance()
+              .toBuilder()
+              .setInitialRetryDelayMillis(DEFAULT_INITIAL_RETRY_DELAY)
+              .setRetryDelayMultiplier(DEFAULT_RETRY_DELAY_MULTIPLIER)
+              .setMaxRetryDelayMillis(DEFAULT_MAX_RETRY_DELAY)
+              .setInitialRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
+              .setRpcTimeoutMultiplier(DEFAULT_RPC_TIMEOUT_MULTIPLIER)
+              .setMaxRpcTimeoutMillis(DEFAULT_MAX_RPC_TIMEOUT_MILLIS)
+              .setTotalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
+              .build();
       builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
     }
     return builder.build();
