@@ -44,7 +44,9 @@ public class AdviserTest extends ConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator()
+        .addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/config_not_annotated");
   }
 
   @Test
