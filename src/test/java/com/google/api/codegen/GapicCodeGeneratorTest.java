@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Go code generator baseline tests. */
+/** Code generator baseline tests. Tests generation using config files. */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
@@ -37,12 +37,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       String baseline) {
     super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline);
     this.apiName = apiName;
-    String dir = language.toString().toLowerCase();
-    if ("python".equals(dir)) {
-      dir = "py";
-    }
-    getTestDataLocator().addTestDataSource(getClass(), dir);
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/config_not_annotated");
   }
 
   @Parameters(name = "{5}")

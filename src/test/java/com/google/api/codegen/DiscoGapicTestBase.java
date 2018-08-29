@@ -86,7 +86,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
               gapicConfigFilePaths,
               getTestDataLocator().findTestData(packageConfigFileName).getPath(),
               getTestDataLocator()
-                  .findTestData("com/google/api/codegen/testsrc/frozen_dependencies.yaml")
+                  .findTestData("com/google/api/codegen/testsrc/common/frozen_dependencies.yaml")
                   .getPath(),
               language.toString().toLowerCase(),
               Collections.emptyList());
