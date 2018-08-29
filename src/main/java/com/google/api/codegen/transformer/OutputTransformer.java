@@ -201,7 +201,6 @@ class OutputTransformer {
 
     TypeModel type = null;
     String typeName = null;
-    System.out.println(baseIdentifier);
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
       view.variable(context.getNamer().getSampleResponseVarName(context));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
@@ -236,15 +235,13 @@ class OutputTransformer {
       // Referencing the value of a local variable
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getTypeModel(baseIdentifier);
-      if (type == null) {
-        typeName =
-            Preconditions.checkNotNull(
-                localVars.getTypeName(baseIdentifier),
-                "%s:%s: variable not defined: %s",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId(),
-                baseIdentifier);
-      }
+      typeName =
+          Preconditions.checkNotNull(
+              localVars.getTypeName(baseIdentifier),
+              "%s:%s: variable not defined: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              baseIdentifier);
     }
 
     int token;
@@ -328,7 +325,7 @@ class OutputTransformer {
                 context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
       }
       typeName =
-          type == null
+          typeName != null
               ? typeName
               : context.getNamer().getAndSaveTypeName(context.getTypeTable(), type);
       if (!localVars.put(newVar, type, typeName)) {

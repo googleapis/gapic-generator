@@ -16,16 +16,18 @@ package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.transformer.OutputTransformer.accessorNewVariable;
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
@@ -47,45 +49,121 @@ public class OutputTransformerTest {
   @Mock private FeatureConfig featureConfig;
   @Mock private SurfaceNamer namer;
   @Mock private FieldConfig resourceFieldConfig;
+  @Mock private ImportTypeTable typeTable;
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
     valueSet = SampleValueSet.newBuilder().setId("test-sample-value-set-id").build();
     parent = new OutputTransformer.ScopeTable();
     child = new OutputTransformer.ScopeTable(parent);
+
+    MockitoAnnotations.initMocks(this);
+    when(context.getFeatureConfig()).thenReturn(featureConfig);
+    when(context.getMethodConfig()).thenReturn(config);
+    when(context.getMethodModel()).thenReturn(model);
+    when(context.getNamer()).thenReturn(namer);
+    when(context.getTypeTable()).thenReturn(typeTable);
+    when(model.getSimpleName()).thenReturn("methodSimpleName");
+    when(namer.getSampleResponseVarName(context)).thenReturn("sampleResponseVarName");
   }
 
   @Test
   public void testAccessorNewVariableResourceName() {
-    String input = "$resp";
-    Scanner scanner = new Scanner(input);
-    String newVar = "variable";
-    when(context.getMethodConfig()).thenReturn(config);
-    when(context.getMethodModel()).thenReturn(model);
-    when(context.getFeatureConfig()).thenReturn(featureConfig);
-    when(model.getSimpleName()).thenReturn("methodSimpleName");
+    Scanner scanner = new Scanner("$resp");
+
     when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
     when(pageStreamingConfig.getResourcesFieldConfig()).thenReturn(resourceFieldConfig);
-    when(context.getNamer()).thenReturn(namer);
-    when(namer.getSampleResponseVarName(any(MethodContext.class))).thenReturn("variable");
-    when(featureConfig.useResourceNameFormatOption(any(FieldConfig.class))).thenReturn(true);
+    when(namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig))
+        .thenReturn("ShelfBookName");
+    when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
+
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, newVar, false);
-    System.out.println(variableView);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
+    assertThat(variableView.accessors()).isEmpty();
+    assertThat(parent.getTypeName("newVar")).isEqualTo("ShelfBookName");
+    assertThat(parent.getTypeModel("newVar")).isNull();
   }
 
   @Test
-  public void testAccessorNewVariablePageStreaming() {}
+  public void testAccessorNewVariablePageStreaming() {
+    Scanner scanner = new Scanner("$resp");
+
+    when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
+    when(pageStreamingConfig.getResourcesFieldConfig()).thenReturn(resourceFieldConfig);
+    when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(false);
+    FieldModel fieldModel = mock(FieldModel.class);
+    when(resourceFieldConfig.getField()).thenReturn(fieldModel);
+    TypeModel typeModel = mock(TypeModel.class);
+    when(fieldModel.getType()).thenReturn(typeModel);
+    when(typeModel.makeOptional()).thenReturn(typeModel);
+    when(namer.getAndSaveTypeName(typeTable, typeModel)).thenReturn("TypeName");
+
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
+    assertThat(variableView.accessors()).isEmpty();
+    assertThat(parent.getTypeName("newVar")).isEqualTo("TypeName");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(typeModel);
+  }
 
   @Test
-  public void testAccessorNewVariableResponseType() {}
+  public void testAccessorNewVariableResponseType() {
+    Scanner scanner = new Scanner("$resp");
+
+    when(config.getPageStreaming()).thenReturn(null);
+    TypeModel typeModel = mock(TypeModel.class);
+    when(namer.getAndSaveTypeName(typeTable, typeModel)).thenReturn("TypeName");
+    when(model.getOutputType()).thenReturn(typeModel);
+
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
+    assertThat(variableView.accessors()).isEmpty();
+    assertThat(parent.getTypeName("newVar")).isEqualTo("TypeName");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(typeModel);
+  }
 
   @Test
-  public void testAccessorNewVariableFromScopeTable() {}
+  public void testAccessorNewVariableResourceNameFromScopeTable() {
+    assertThat(parent.put("old_var", null, "ShelfBookName")).isTrue();
+    Scanner scanner = new Scanner("old_var");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("oldVar");
+    assertThat(variableView.accessors()).isEmpty();
+    assertThat(parent.getTypeName("newVar")).isEqualTo("ShelfBookName");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(null);
+  }
 
   @Test
-  public void testResponseResourceNameType() {}
+  public void testAccessorNewVariableFromScopeTable() {
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    Scanner scanner = new Scanner("old_var");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("oldVar");
+    assertThat(variableView.accessors()).isEmpty();
+    assertThat(parent.getTypeName("newVar")).isEqualTo("OldVarType");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(oldVarTypeModel);
+  }
+
+  @Test
+  public void testAccessorNewVariableWithAccessors() {
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    Scanner scanner = new Scanner("old_var.one.two");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+
+  }
 
   @Test
   public void testScopeTablePut() {
