@@ -284,8 +284,6 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
-    environment:
-      TEST_REPORTS_DIR: reports/gapic-generator
     steps:
       - checkout:
           path: gapic-generator
@@ -298,6 +296,7 @@ jobs:
           command: |
             cd gapic-generator
             ./gradlew clean test
+            export TEST_REPORTS_DIR=/tmp/workspace/reports/gapic-generator
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
           when: always
       - store_test_results:
