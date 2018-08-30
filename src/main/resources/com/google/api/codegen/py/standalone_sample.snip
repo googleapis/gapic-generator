@@ -2,13 +2,13 @@
 @extends "py/sample_init.snip"
 
 @snippet generate(sampleFile)
-  @# -*- coding: utf-8 -*-
+  {@licenseSection(sampleFile.fileHeader)}
   {@""}
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
-      @#### [ DO NOT EDIT: generated sample file ("{@sample.callingForm}",  "{@sample.valueSet.id}") ]
+      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
 
-      @# To run with the published packages, execute the following before running this code:
+      @# To install the latest published package dependency, execute the following:
       @#   pip install {@sampleFile.gapicPackageName}
 
       {@standaloneSample(apiMethod, sample)}
@@ -20,60 +20,67 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-  {@standaloneSampleSetup(apiMethod, sample)}
-  @switch sample.callingForm
-  @case "Request"
-    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-    {@processResponse(sample)}
-  @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
-  @case "RequestPagedAll"
-    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
-  @case "RequestStreamingBidi"
-    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
-    {@processResponse(sample)}
-  @case "RequestStreamingClient"
-    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
-    {@processResponse(sample)}
-  @case "RequestStreamingServer"
-    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
-    {@processResponse(sample)}
-  @case "LongRunningPromise"
-    {@lroSampleCode(apiMethod, sample.initCode)}
-    {@processResponse(sample)}
-  @default
-    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
-  @end
+  import sys
   
-  {@standaloneSampleTeardown(apiMethod, sample)}
-@end
-
-@private standaloneSampleSetup(apiMethod, sample)
   @# [START {@sample.regionTag}]
-  
+
   {@importList(sample.initCode.importSection.appImports)}
 
-  @# [START {@sample.regionTag}_core]
-  
-  client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+  def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
+    @# [START {@sample.regionTag}_core]
 
-  @if sample.initCode.argDefaultLines
-    @join line : util.pretty(initCode(sample.initCode.argDefaultLines))
-      @# {@line}
+    client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+
+    @if sample.initCode.argDefaultLines
+      @join line : util.pretty(initCode(sample.initCode.argDefaultLines))
+        @# {@line}
+      @end
+
+
+    @end
+    @if sample.initCode.lines
+      {@initCode(sample.initCode.lines)}
+
+    @end
+    @switch sample.callingForm
+    @case "Request"
+      {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+      {@processResponse(sample)}
+    @case "RequestPaged"
+      {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
+    @case "RequestPagedAll"
+      {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
+    @case "RequestStreamingBidi"
+      {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
+      {@processResponse(sample)}
+    @case "RequestStreamingClient"
+      {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
+      {@processResponse(sample)}
+    @case "RequestStreamingServer"
+      {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
+      {@processResponse(sample)}
+    @case "LongRunningPromise"
+      {@lroSampleCode(apiMethod, sample.initCode)}
+      {@processResponse(sample)}
+    @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
 
+    @# [END {@sample.regionTag}_core]
+  @# [END {@sample.regionTag}]
 
-  @end
-  @if sample.initCode.lines
-    {@initCode(sample.initCode.lines)}
+  def main():
+    @# FIXME: Convert argv from strings to the correct types.
+    sample_{@apiMethod.name}(*sys.argv[1:])
 
-  @end
+  if __name__ == '__main__':
+    main()
 @end
 
-@private standaloneSampleTeardown(apiMethod, sample)
-  @# [END {@sample.regionTag}_core]
-  
-  @# [END {@sample.regionTag}]
+@private sampleFuncParam(defaultParams)
+  @join param : defaultParams on ", "
+    {@param.identifier}
+  @end
 @end
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)

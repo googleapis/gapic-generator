@@ -3938,7 +3938,12 @@ import sys
 
 from google.api_core.protobuf_helpers import get_messages
 
+from google.api import annotations_pb2
 from google.api import http_pb2
+from google.api import metadata_pb2
+from google.api import resources_pb2
+from google.api import retry_pb2
+from google.api import signature_pb2
 from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import errors_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
@@ -3959,7 +3964,12 @@ from google.rpc import status_pb2
 
 
 _shared_modules = [
+    annotations_pb2,
     http_pb2,
+    metadata_pb2,
+    resources_pb2,
+    retry_pb2,
+    signature_pb2,
     other_shared_type_pb2,
     shared_type_pb2,
     tagger_pb2,
@@ -4083,265 +4093,472 @@ def lint_setup_py(session):
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
 ============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/discuss_book_request_streaming_bidi_prog.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestStreamingBidi",  "prog") ]
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START turing_prog_request_streaming_bidi]
 
 from google.cloud.example import library_v1
 
-# [START turing_prog_request_streaming_bidi_core]
+def sample_discuss_book():
+  # [START turing_prog_request_streaming_bidi_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
-request = {'name': name}
+  name = 'BASIC'
+  request = {'name': name}
 
-requests = [request]
-for element in client.discuss_book(requests):
-    # process element
-    pass
-print(response)
+  requests = [request]
+  for element in client.discuss_book(requests):
+      # process element
+      pass
+  print(response)
 
-# [END turing_prog_request_streaming_bidi_core]
-
+  # [END turing_prog_request_streaming_bidi_core]
 # [END turing_prog_request_streaming_bidi]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_discuss_book(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_all_odyssey.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestPagedAll",  "odyssey") ]
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START sample]
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def sample_find_related_books():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-names_element = 'Odyssey'
-names = [names_element]
-shelves_element = 'Classics'
-shelves = [shelves_element]
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
 
-# Iterate over all results
-for element in client.find_related_books(names, shelves):
-    book = element
-    print('Here\'s a related book: {}'.format(book))
+  # Iterate over all results
+  for element in client.find_related_books(names, shelves):
+      book = element
+      print('Here\'s a related book: {}'.format(book))
 
-# [END sample_core]
-
+  # [END sample_core]
 # [END sample]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_find_related_books(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_odyssey.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestPaged",  "odyssey") ]
+# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START sample]
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def sample_find_related_books():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-names_element = 'Odyssey'
-names = [names_element]
-shelves_element = 'Classics'
-shelves = [shelves_element]
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
 
-# Iterate over results one page at a time
-for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
-    for element in page:
-        book = element
-        print('Here\'s a related book: {}'.format(book))
+  # Iterate over results one page at a time
+  for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+      for element in page:
+          book = element
+          print('Here\'s a related book: {}'.format(book))
 
-# [END sample_core]
-
+  # [END sample_core]
 # [END sample]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_find_related_books(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_long_running_promise_wap.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("LongRunningPromise",  "wap") ]
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START hopper]
 
 from google.cloud.example import library_v1
 
-# [START hopper_core]
+def sample_get_big_book():
+  # [START hopper_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-response = client.get_big_book(name)
+  response = client.get_big_book(name)
 
-def callback(operation_future):
-    # Handle result.
-    result = operation_future.result()
+  def callback(operation_future):
+      # Handle result.
+      result = operation_future.result()
 
-response.add_done_callback(callback)
+  response.add_done_callback(callback)
 
-# Handle metadata.
-metadata = response.metadata()
-print(response)
+  # Handle metadata.
+  metadata = response.metadata()
+  print(response)
 
-# [END hopper_core]
-
+  # [END hopper_core]
 # [END hopper]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_get_big_book(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestStreamingClient",  "prog") ]
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START sample]
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def sample_monolog_about_book():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
-request = {'name': name}
+  name = 'BASIC'
+  request = {'name': name}
 
-requests = [request]
-response = client.monolog_about_book(requests)
-print(response)
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(response)
 
-# [END sample_core]
-
+  # [END sample_core]
 # [END sample]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_monolog_about_book(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("Request",  "pi_version") ]
+# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START canonical]
 
 from google.cloud.example import library_v1
 
-# [START canonical_core]
+def sample_publish_series(name):
+  # [START canonical_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-# name = 'Math'
+  # name = 'Math'
 
-shelf = {'name': name}
+  shelf = {'name': name}
 
-# TODO: Initialize ``books``:
-books = []
-series_string = 'xyz3141592654'
-series_uuid = {'series_string': series_string}
+  # TODO: Initialize ``books``:
+  books = []
+  series_string = 'xyz3141592654'
+  series_uuid = {'series_string': series_string}
 
-response = client.publish_series(shelf, books, series_uuid)
-for title in response.book_names:
-  print('Title: {}'.format(title))
-print('That\'s all!')
+  response = client.publish_series(shelf, books, series_uuid)
+  for title in response.book_names:
+    print('Title: {}'.format(title))
+  print('That\'s all!')
 
-# [END canonical_core]
-
+  # [END canonical_core]
 # [END canonical]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_publish_series(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_second_edition.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("Request",  "second_edition") ]
+# DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START canonical]
 
 from google.cloud.example import library_v1
 
-# [START canonical_core]
+def sample_publish_series():
+  # [START canonical_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-# TODO: Initialize ``shelf``:
-shelf = {}
+  # TODO: Initialize ``shelf``:
+  shelf = {}
 
-# TODO: Initialize ``books``:
-books = []
+  # TODO: Initialize ``books``:
+  books = []
 
-# TODO: Initialize ``series_uuid``:
-series_uuid = {}
-edition = 2
+  # TODO: Initialize ``series_uuid``:
+  series_uuid = {}
+  edition = 2
 
-response = client.publish_series(shelf, books, series_uuid, edition=edition)
-print(response)
+  response = client.publish_series(shelf, books, series_uuid, edition=edition)
+  print(response)
 
-# [END canonical_core]
-
+  # [END canonical_core]
 # [END canonical]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_publish_series(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_books/stream_books_request_streaming_server_prog.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestStreamingServer",  "prog") ]
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START lovelace]
 
 from google.cloud.example import library_v1
 
-# [START lovelace_core]
+def sample_stream_books():
+  # [START lovelace_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-name = 'BASIC'
+  name = 'BASIC'
 
-for element in client.stream_books(name):
-    # process element
-    pass
-print(response)
+  for element in client.stream_books(name):
+      # process element
+      pass
+  print(response)
 
-# [END lovelace_core]
-
+  # [END lovelace_core]
 # [END lovelace]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_stream_books(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_request_streaming_server_empty.py ==============
 # -*- coding: utf-8 -*-
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-#### [ DO NOT EDIT: generated sample file ("RequestStreamingServer",  "empty") ]
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
 
-# To run with the published packages, execute the following before running this code:
+# To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
+
+import sys
 
 # [START sample]
 
 from google.cloud.example import library_v1
 
-# [START sample_core]
+def sample_stream_shelves():
+  # [START sample_core]
 
-client = library_v1.LibraryServiceClient()
+  client = library_v1.LibraryServiceClient()
 
-for element in client.stream_shelves():
-    # process element
-    pass
-print(response)
+  for element in client.stream_shelves():
+      # process element
+      pass
+  print(response)
 
-# [END sample_core]
-
+  # [END sample_core]
 # [END sample]
+
+def main():
+  # FIXME: Convert argv from strings to the correct types.
+  sample_stream_shelves(*sys.argv[1:])
+
+if __name__ == '__main__':
+  main()
 ============== file: setup.cfg ==============
 [bdist_wheel]
 universal = 1

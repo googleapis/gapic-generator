@@ -17,9 +17,11 @@ package com.google.api.codegen.advising;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
+import com.google.api.tools.framework.aspects.control.ControlConfigAspect;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +31,12 @@ public class AdviserTest extends ConfigBaselineTestCase {
 
   @Override
   public Object run() throws Exception {
-    model.addSupressionDirective(model, "control-*");
-    model.getDiagSuppressor().addPattern(model, "http:.*");
+    model
+        .getDiagReporter()
+        .getDiagSuppressor()
+        .addSuppressionDirective(
+            model, "control-*", Arrays.asList(ControlConfigAspect.create(model)));
+    model.getDiagReporter().getDiagSuppressor().addPattern(model, "http:.*");
     model.establishStage(Merged.KEY);
     adviser.advise(model, configProto);
     return "";
@@ -38,7 +44,9 @@ public class AdviserTest extends ConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator()
+        .addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/config_not_annotated");
   }
 
   @Test
