@@ -198,8 +198,6 @@ anchor_test_php: &anchor_test_php
 
 anchor_run_php: &anchor_run_php
   working_directory: /tmp/
-  environment:
-    SHOWCASE_VERSION: 0.0.4
   steps:
     - attach_workspace:
         at: workspace
@@ -248,8 +246,8 @@ anchor_run_php: &anchor_run_php
         name: Run Showcase Server.
         command: |
           ls
-          echo https://github.com/googleapis/gapic-showcase/releases/download/v0.0.4/gapic-showcase-v1alpha1-0.0.4-linux-amd64
-          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v0.0.4/gapic-showcase-v1alpha1-0.0.4-linux-amd64 \
+          echo https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64
+          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
                --output showcase-server
           ls
           chmod a+x showcase-server
@@ -432,6 +430,7 @@ jobs:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests/Unit # Only run unit tests here.
+      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
@@ -442,6 +441,7 @@ jobs:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests # Only run unit tests here.
+      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
