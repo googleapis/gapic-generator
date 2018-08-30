@@ -1,1 +1,0 @@
-This directory contains the version of library.proto that is proto-annotated.
