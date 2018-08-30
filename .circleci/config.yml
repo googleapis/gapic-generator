@@ -235,6 +235,16 @@ anchor_run_php: &anchor_run_php
         name: Test PHP Logging client
         <<: *anchor_test_php
 
+# Test a NodeJS client if generation succeeded.
+anchor_test_nodejs_client: &anchor_test_nodejs_client
+  command: |
+    cd ${NODEJS_GEN_DIR}/${TEST_API}
+    npm install
+    # Copy over IAM protos.
+    cp -r node_modules/google-proto-files/google/iam/ protos/google/
+    npm test
+  when: always
+
 # ======================= JOBS =======================
 
 jobs:
@@ -420,6 +430,44 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
+  verify-and-test-nodejs-8:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: nodejs
+      NODEJS_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/js
+      <<: *anchor_artman_vars
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all NodeJS generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Prepare to test Pubsub
+          command: |
+            echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Pubsub client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Speech
+          command: |
+            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Speech client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Logging
+          command: |
+            echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Logging client
+          <<: *anchor_test_nodejs_client
   verify-and-test-go-1.10:
     working_directory: /tmp/
     environment:
@@ -515,6 +563,9 @@ workflows:
             - generate-clients
       # TODO: Other php versions
       - verify-and-test-go-1.10:
+          requires:
+            - generate-clients
+      - verify-and-test-nodejs-8:
           requires:
             - generate-clients
 
