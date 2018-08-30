@@ -237,6 +237,7 @@ anchor_run_php: &anchor_run_php
 
 anchor_test_csharp_client: &anchor_test_csharp_client
   command: |
+    export TEST_API=`cat test_api.txt`
     cd ${CSHARP_GEN_DIR}/google-cloud-${TEST_API}
     dotnet new sln
     dotnet new classlib
@@ -253,21 +254,22 @@ anchor_run_csharp: &anchor_run_csharp
     - run:
         name: Prepare for C# Pubsub testing.
         command: |
-          echo 'export TEST_API="pubsub"' >> $BASH_ENV
+          # BASH_ENV doesn't work on this docker image, so save state in a text file.
+          echo "pubsub" > test_api.txt
     - run:
         name: Test Pubsub.
         <<: *anchor_test_csharp_client
     - run:
         name: Prepare for C# Logging testing.
         command: |
-          echo 'export TEST_API="logging"' >> $BASH_ENV
+          echo "logging" > test_api.txt
     - run:
         name: Test Logging.
         <<: *anchor_test_csharp_client
     - run:
         name: Prepare for C# Speech testing.
         command: |
-          echo 'export TEST_API="speech"' >> $BASH_ENV
+          echo "speech" > test_api.txt
     - run:
         name: Test Speech.
         <<: *anchor_test_csharp_client
