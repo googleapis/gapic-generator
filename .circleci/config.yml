@@ -296,6 +296,7 @@ jobs:
       - run:
           name: Run unit tests for gapic-generator
           command: |
+            cd gapic-generator
             ./gradlew clean test
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
           when: always
