@@ -34,6 +34,7 @@ default_languages = [
     "python",
     "ruby",
     "php",
+    "nodejs"
     # TODO: add other languages here.
 ]
 
