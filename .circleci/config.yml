@@ -239,9 +239,9 @@ anchor_run_php: &anchor_run_php
 anchor_test_nodejs_client: &anchor_test_nodejs_client
   command: |
     cd ${NODEJS_GEN_DIR}/${TEST_API}
+    npm install
     # Copy over IAM protos.
     cp -r node_modules/google-proto-files/google/iam/ protos/google/
-    npm install
     npm test
   when: always
 
@@ -514,4 +514,3 @@ workflows:
 machine:
   services:
     - docker
-
