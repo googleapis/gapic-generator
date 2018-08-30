@@ -36,4 +36,15 @@ public class CommonRenderingUtilTest {
     assertThat(CommonRenderingUtil.stripQuotes("'a'bc'")).isEqualTo("'a'bc'");
     assertThat(CommonRenderingUtil.stripQuotes("\"a\"bc\"")).isEqualTo("\"a\"bc\"");
   }
+
+  @Test
+  public void testGetDocLines() {
+    // Check that we don't care which form of line break is used.
+    assertThat(CommonRenderingUtil.getDocLines("a\nb\nc")).containsExactly("a", "b", "c").inOrder();
+    assertThat(CommonRenderingUtil.getDocLines("a\rb\rc")).containsExactly("a", "b", "c").inOrder();
+    assertThat(CommonRenderingUtil.getDocLines("a\r\nb\r\nc"))
+        .containsExactly("a", "b", "c")
+        .inOrder();
+    assertThat(CommonRenderingUtil.getDocLines("")).isEmpty();
+  }
 }

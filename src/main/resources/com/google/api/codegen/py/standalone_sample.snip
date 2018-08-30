@@ -6,9 +6,9 @@
   {@""}
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
-      @#### DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
 
-      @# To run with the published packages, execute the following before running this code:
+      @# To install the latest published package dependency, execute the following:
       @#   pip install {@sampleFile.gapicPackageName}
 
       {@standaloneSample(apiMethod, sample)}
@@ -20,6 +20,8 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
+  import sys
+  
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
@@ -65,9 +67,14 @@
     @end
 
     @# [END {@sample.regionTag}_core]
-
   @# [END {@sample.regionTag}]
-  # FIXME(pongad): add a main method
+
+  def main():
+    @# FIXME: Convert argv from strings to the correct types.
+    sample_{@apiMethod.name}(*sys.argv[1:])
+
+  if __name__ == '__main__':
+    main()
 @end
 
 @private sampleFuncParam(defaultParams)

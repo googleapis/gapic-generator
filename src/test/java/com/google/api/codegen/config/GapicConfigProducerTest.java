@@ -36,7 +36,8 @@ public class GapicConfigProducerTest {
   @Test
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = TestDataLocator.create(GapicConfigProducerTest.class);
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/config_not_annotated");
     model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
