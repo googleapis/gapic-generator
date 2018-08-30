@@ -491,6 +491,13 @@ jobs:
     steps:
       - checkout:
           path: csharp
+  csharp-2.1:
+    docker:
+      - image: microsoft/dotnet:2.1-sdk
+    working_directory: /tmp/
+    steps:
+      - checkout:
+          path: csharp
 
 
   # TODO: test other language clients.
@@ -503,10 +510,11 @@ workflows:
     jobs:
       - csharp-2.0.9
       - csharp-2.1.3
-#      - install-gapic-generator
-#      - generate-clients:
-#          requires:
-#            - install-gapic-generator
+      - csharp-2.1
+      - install-gapic-generator
+      - generate-clients:
+          requires:
+            - install-gapic-generator
 #      - verify-and-test-java-openjdk8:
 #          requires:
 #            - generate-clients
@@ -532,9 +540,9 @@ workflows:
 #          requires:
 #            - generate-clients
 #      # TODO: Other php versions
-#      - verify-and-test-csharp-2.1.3:
-#          requires:
-#            - generate-clients
+      - verify-and-test-csharp-2.1.3:
+          requires:
+            - generate-clients
       # TODO: schedule C# smoke tests job
 
 machine:
