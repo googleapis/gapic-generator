@@ -325,7 +325,7 @@ class OutputTransformer {
                 context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
       }
       typeName =
-          typeName != null
+          type == null
               ? typeName
               : context.getNamer().getAndSaveTypeName(context.getTypeTable(), type);
       if (!localVars.put(newVar, type, typeName)) {

@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.transformer.OutputTransformer.accessorNewVariable;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -144,25 +145,59 @@ public class OutputTransformerTest {
   @Test
   public void testAccessorNewVariableFromScopeTable() {
     TypeModel oldVarTypeModel = mock(TypeModel.class);
-    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarTypeName")).isTrue();
     Scanner scanner = new Scanner("old_var");
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
-
+    when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
     OutputView.VariableView variableView =
         accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).isEmpty();
-    assertThat(parent.getTypeName("newVar")).isEqualTo("OldVarType");
+    assertThat(parent.getTypeName("newVar")).isEqualTo("OldVarTypeName");
     assertThat(parent.getTypeModel("newVar")).isEqualTo(oldVarTypeModel);
   }
 
   @Test
   public void testAccessorNewVariableWithAccessors() {
-    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
-    Scanner scanner = new Scanner("old_var.one.two");
+    Scanner scanner = new Scanner("old_var.property");
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    when(oldVarTypeModel.isMessage()).thenReturn(true);
+    when(oldVarTypeModel.isRepeated()).thenReturn(false);
+    when(oldVarTypeModel.isMap()).thenReturn(false);
+    FieldModel propertyFieldModel = mock(FieldModel.class);
+    when(oldVarTypeModel.getField("property")).thenReturn(propertyFieldModel);
+    TypeModel propertyTypeModel = mock(TypeModel.class);
+    when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty()");
+    when(namer.getAndSaveTypeName(typeTable, propertyTypeModel)).thenReturn("PropertyTypeName");
+    when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
+    OutputView.VariableView variableView =
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false);
+
+    assertThat(variableView.variable()).isEqualTo("oldVar");
+    assertThat(variableView.accessors()).containsExactly("getProperty()");
+    assertThat(parent.getTypeName("newVar")).isEqualTo("PropertyTypeName");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(propertyTypeModel);
+  }
+
+  @Test
+  public void testAccessorNewVariableScalarTypeForCollectionFail() {
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarTypeName")).isTrue();
+    Scanner scanner = new Scanner("old_var");
+    when(oldVarTypeModel.isRepeated()).thenReturn(false);
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
+    try {
+      OutputView.VariableView variableView =
+          accessorNewVariable(scanner, context, valueSet, parent, "newVar", true);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage().contains("is not a repeated field"));
+    }
   }
 
   @Test
