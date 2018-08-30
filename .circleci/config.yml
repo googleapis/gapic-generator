@@ -476,7 +476,29 @@ jobs:
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
-      - image: microsoft/dotnet:2.1.401-sdk
+      - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
+  csharp-2.1.3:
+    docker:
+      - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
+    working_directory: /tmp/
+    steps:
+      - checkout:
+          path: csharp
+  csharp-2.0:
+    docker:
+      - image: microsoft/dotnet:2.0-sdk-nanoserver
+    working_directory: /tmp/
+    steps:
+      - checkout:
+          path: csharp
+  csharp-2.0.9:
+    docker:
+      - image: microsoft/dotnet:2.0.9-sdk-2.1.202
+    working_directory: /tmp/
+    steps:
+      - checkout:
+          path: csharp
+
 
   # TODO: test other language clients.
 
@@ -486,38 +508,41 @@ workflows:
   version: 2
   run_generated_tests:
     jobs:
-      - install-gapic-generator
-      - generate-clients:
-          requires:
-            - install-gapic-generator
-      - verify-and-test-java-openjdk8:
-          requires:
-            - generate-clients
-      - verify-and-test-python:
-          requires:
-            - generate-clients
-      - verify-and-test-ruby-2.4:
-          requires:
-            - generate-clients
-      - verify-and-test-system-python:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - verify-and-test-system-ruby-2.4:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - verify-and-test-php-7.2:
-          requires:
-            - generate-clients
-      # TODO: Other php versions
-      - verify-and-test-csharp-2.1.3:
-          requires:
-            - generate-clients
+      - csharp-2.0.9
+      - csharp-2.1.3
+      - csharp-2.0
+#      - install-gapic-generator
+#      - generate-clients:
+#          requires:
+#            - install-gapic-generator
+#      - verify-and-test-java-openjdk8:
+#          requires:
+#            - generate-clients
+#      - verify-and-test-python:
+#          requires:
+#            - generate-clients
+#      - verify-and-test-ruby-2.4:
+#          requires:
+#            - generate-clients
+#      - verify-and-test-system-python:
+#          requires:
+#            - generate-clients
+#          filters:
+#            branches:
+#              only: master
+#      - verify-and-test-system-ruby-2.4:
+#          requires:
+#            - generate-clients
+#          filters:
+#            branches:
+#              only: master
+#      - verify-and-test-php-7.2:
+#          requires:
+#            - generate-clients
+#      # TODO: Other php versions
+#      - verify-and-test-csharp-2.1.3:
+#          requires:
+#            - generate-clients
       # TODO: schedule C# smoke tests job
 
 machine:
