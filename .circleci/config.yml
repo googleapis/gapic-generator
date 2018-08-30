@@ -285,7 +285,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      TEST_REPORTS_DIR: /tmp/workspace/reports/gapic-generator
+      TEST_REPORTS_DIR: reports/gapic-generator
     steps:
       - checkout:
           path: gapic-generator
@@ -308,7 +308,7 @@ jobs:
           # Save all generated directories in workspace for later CircleCI jobs.
           root: /tmp/workspace
           paths:
-            - reports/gapic-generator
+            - ${TEST_REPORTS_DIR}
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.2
