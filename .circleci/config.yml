@@ -239,10 +239,7 @@ anchor_run_php: &anchor_run_php
 anchor_test_nodejs_client: &anchor_test_nodejs_client
   command: |
     cd ${NODEJS_GEN_DIR}/${TEST_API}
-    curl https://gist.githubusercontent.com/alexander-fenster/8e28b40658fa517dc3c0873edc31e233/raw/package-setup.js > package-setup.js
-    sudo node package-setup.js
-    npm run prettier
-    npm run lint
+    npm install
     npm test
   when: always
 
