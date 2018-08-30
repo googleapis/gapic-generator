@@ -315,6 +315,7 @@ jobs:
           name: Generate Speech Libraries
           command: |
             cd workspace/gapic-generator
+            # TODO: Move off artman once package2.yaml is no longer needed.
             python generate_clients.py \
                 google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
@@ -419,7 +420,63 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-
+  verify-and-test-go-1.10:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: go
+      <<: *anchor_artman_vars
+      GOPATH: /tmp/go
+    docker:
+      - image: circleci/golang:1.10
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all Golang generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Set up golang dev env.
+          command: |
+            mkdir -p $GOPATH/src
+            mkdir -p $GOPATH/bin
+            mkdir -p $GOPATH/pkg
+            export PATH="$PATH:$GOPATH/bin"
+            echo 'export PATH="$PATH:$GOPATH/bin"' >> $BASH_ENV
+            go get -u github.com/golang/protobuf/protoc-gen-go
+            go get -d cloud.google.com/go/...
+      - run:
+          name: Delete exisiting clients for APIs that we generated
+          command: |
+            cd $GOPATH/src/cloud.google.com/go
+            rm -rf logging/apiv2
+            rm -rf speech/apiv1
+            rm -rf pubsub/apiv1
+            cd $GOPATH/src/google.golang.org/genproto/googleapis
+            rm -rf logging/v2
+            rm -rf cloud/speech
+            rm -rf pubsub
+      - run:
+          name: Copy over generated clients
+          command: |
+            cd /tmp/workspace/gapic-generator/artman-genfiles
+            for d in gapi-cloud-*; do
+              cp -r $d/cloud.google.com/ $GOPATH/src
+            done
+            for d in go/*; do
+              cp -r $d/google.golang.org $GOPATH/src
+            done
+      - run:
+          name: Test Pubsub.
+          command: go test cloud.google.com/go/pubsub/apiv1
+          when: always
+      - run:
+          name: Test Logging
+          command: go test cloud.google.com/go/logging/apiv2
+          when: always
+      - run:
+          name: Test Speech
+          command: go test cloud.google.com/go/speech/apiv1
+          when: always
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
@@ -456,8 +513,10 @@ workflows:
       - verify-and-test-php-7.2:
           requires:
             - generate-clients
-        # TODO: php smoke tests
-        # TODO: Other php versions
+      # TODO: Other php versions
+      - verify-and-test-go-1.10:
+          requires:
+            - generate-clients
 
 machine:
   services:
