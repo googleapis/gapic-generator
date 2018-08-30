@@ -235,13 +235,15 @@ class OutputTransformer {
       // Referencing the value of a local variable
       view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getTypeModel(baseIdentifier);
-      typeName =
-          Preconditions.checkNotNull(
-              localVars.getTypeName(baseIdentifier),
-              "%s:%s: variable not defined: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
-              baseIdentifier);
+      if (type == null) {
+        typeName =
+            Preconditions.checkNotNull(
+                localVars.getTypeName(baseIdentifier),
+                "%s:%s: variable not defined: %s",
+                context.getMethodModel().getSimpleName(),
+                valueSet.getId(),
+                baseIdentifier);
+      }
     }
 
     int token;

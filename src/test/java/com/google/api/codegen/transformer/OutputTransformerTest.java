@@ -43,14 +43,14 @@ public class OutputTransformerTest {
   private OutputTransformer.ScopeTable child;
   private SampleValueSet valueSet;
 
-  @Mock private MethodModel model;
-  @Mock private MethodContext context;
-  @Mock private MethodConfig config;
-  @Mock private PageStreamingConfig pageStreamingConfig;
   @Mock private FeatureConfig featureConfig;
-  @Mock private SurfaceNamer namer;
   @Mock private FieldConfig resourceFieldConfig;
   @Mock private ImportTypeTable typeTable;
+  @Mock private MethodConfig config;
+  @Mock private MethodContext context;
+  @Mock private MethodModel model;
+  @Mock private PageStreamingConfig pageStreamingConfig;
+  @Mock private SurfaceNamer namer;
 
   @Before
   public void setUp() {
@@ -69,7 +69,7 @@ public class OutputTransformerTest {
   }
 
   @Test
-  public void testAccessorNewVariableResourceName() {
+  public void testAccessorNewVariablePageStreamingResourceNameResponse() {
     Scanner scanner = new Scanner("$resp");
 
     when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
@@ -88,7 +88,7 @@ public class OutputTransformerTest {
   }
 
   @Test
-  public void testAccessorNewVariablePageStreaming() {
+  public void testAccessorNewVariablePageStreamingResponse() {
     Scanner scanner = new Scanner("$resp");
 
     when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
@@ -111,7 +111,7 @@ public class OutputTransformerTest {
   }
 
   @Test
-  public void testAccessorNewVariableResponseType() {
+  public void testAccessorNewVariableResponse() {
     Scanner scanner = new Scanner("$resp");
 
     when(config.getPageStreaming()).thenReturn(null);
