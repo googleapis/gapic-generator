@@ -23,7 +23,7 @@
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
-  @if shouldImportSix(sample.initCode.argDefaultParams)
+  @if convertText(sample)
     import six
   @end
 
@@ -39,13 +39,7 @@
 
 
       # FIXME(hzyi): handle ListInitType, MapInitType and StructInitType correctly
-      @join line : sample.initCode.argDefaultLines
-        @if line.lineType == "SimpleInitLine"
-          @if line.typeName == "str"
-            {@convertBinaryToStr(line.identifier)}
-          @end
-        @end
-      @end
+      {@convertText(sample)}
     @end
     @if sample.initCode.lines
       {@initCode(sample.initCode.lines)}
@@ -97,10 +91,16 @@
   @end
 @end
 
-@private convertBinaryToStr(identifier)
-  if isinstance({@identifier}, six.binary_type):
-    {@identifier} = {@identifier}.decode('utf-8')
+@private convertText(sample)
+  @join line : sample.initCode.argDefaultLines
+    @if line.lineType == "SimpleInitLine"
+      @if line.typeName == "str"
+        if isinstance({@line.identifier}, six.binary_type):
+          {@line.identifier} = {@line.identifier}.decode('utf-8')
 
+      @end
+    @end
+  @end
 @end
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
