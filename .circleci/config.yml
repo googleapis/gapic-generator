@@ -287,8 +287,7 @@ jobs:
     environment:
       TEST_REPORTS_DIR: /tmp/workspace/reports/gapic-generator
     steps:
-      - attach_workspace:
-          at: workspace
+      - checkout
       - run:
           name: Make reports directory
           command: |
@@ -296,8 +295,7 @@ jobs:
       - run:
           name: Run unit tests for gapic-generator
           command: |
-            cd workspace/gapic-generator
-            ./gradlew test
+            ./gradlew clean test
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
           when: always
       - store_test_results:
@@ -308,8 +306,7 @@ jobs:
           # Save all generated directories in workspace for later CircleCI jobs.
           root: /tmp/workspace
           paths:
-            - gapic-generator/artman-genfiles
-            - reports
+            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.2
