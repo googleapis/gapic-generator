@@ -229,28 +229,38 @@ public abstract class GapicMethodConfig extends MethodConfig {
             getOptionalFields(methodModel, requiredFields));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
-    sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
-    SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
+    SampleSpec sampleSpec = null;
+    if (methodConfigProto != null) {
+      sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+      sampleSpec = new SampleSpec(methodConfigProto);
+    }
 
-    String rerouteToGrpcInterface =
-        Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
+    String rerouteToGrpcInterface = null;
+    if (methodConfigProto != null) {
+      rerouteToGrpcInterface =
+          Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
+    }
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.GA;
-    for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
-      if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
-        continue;
-      }
-      if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
-        visibility = VisibilityConfig.fromProto(treatment.getVisibility());
-      }
-      if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
-        releaseLevel = treatment.getReleaseLevel();
+    if (methodConfigProto != null) {
+      for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
+        if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
+          continue;
+        }
+        if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
+          visibility = VisibilityConfig.fromProto(treatment.getVisibility());
+        }
+        if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
+          releaseLevel = treatment.getReleaseLevel();
+        }
       }
     }
 
     LongRunningConfig longRunningConfig = null;
-    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
+    // TODO(andrealin): get longrunning from proto annotations
+
+    if (methodConfigProto != null && !LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
           LongRunningConfig.createLongRunningConfig(
               method.getModel(), diagCollector, methodConfigProto.getLongRunning());
