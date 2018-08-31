@@ -29,10 +29,8 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.longrunning.OperationTypes;
 import com.google.rpc.Code;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -106,8 +104,9 @@ public class ProtoAnnotations {
         .orElse(false);
   }
 
-//  /** Get long running settings. **/
-//  public static OperationTypes getLongRunningOperation(Method method) {
-//    OperationTypes operationTypes = method.getOptionFields().get(OperationTypes.getDescriptor().);
-//  }
+  //  /** Get long running settings. **/
+  //  public static OperationTypes getLongRunningOperation(Method method) {
+  //    OperationTypes operationTypes =
+  // method.getOptionFields().get(OperationTypes.getDescriptor().);
+  //  }
 }

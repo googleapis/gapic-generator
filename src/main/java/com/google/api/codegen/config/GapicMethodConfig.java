@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -237,8 +238,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     String rerouteToGrpcInterface = null;
     if (methodConfigProto != null) {
-      rerouteToGrpcInterface =
-          Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
+      rerouteToGrpcInterface = Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
     }
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
@@ -260,7 +260,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     LongRunningConfig longRunningConfig = null;
     // TODO(andrealin): get longrunning from proto annotations
 
-    if (methodConfigProto != null && !LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
+    if (methodConfigProto != null
+        && !LongRunningConfigProto.getDefaultInstance()
+            .equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
           LongRunningConfig.createLongRunningConfig(
               method.getModel(), diagCollector, methodConfigProto.getLongRunning());
@@ -269,8 +271,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    List<String> headerRequestParams =
-        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+    List<String> headerRequestParams = new LinkedList<>();
+    // TODO(andrealin): infer header request params from proto annotations.
+    if (methodConfigProto != null) {
+      headerRequestParams = ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+    }
 
     if (error) {
       return null;
