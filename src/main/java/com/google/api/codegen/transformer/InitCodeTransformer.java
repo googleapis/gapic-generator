@@ -46,12 +46,15 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -234,6 +237,8 @@ public class InitCodeTransformer {
 
   private InitCodeView buildInitCodeViewFlattened(
       MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    assertNoOverlap(root, initCodeContext.sampleArgStrings());
+
     // Remove the request object for flattened method
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     orderedItems.remove(orderedItems.size() - 1);
@@ -247,6 +252,7 @@ public class InitCodeTransformer {
 
   private InitCodeView buildInitCodeViewRequestObject(
       MethodContext context, InitCodeContext initCodeContext, InitCodeNode root) {
+    assertNoOverlap(root, initCodeContext.sampleArgStrings());
     return buildInitCodeView(
         context,
         root.listInInitializationOrder(),
@@ -256,6 +262,25 @@ public class InitCodeTransformer {
 
   private List<InitCodeNode> subTrees(InitCodeNode root, List<String> paths) {
     return paths.stream().map(path -> root.subTree(path)).collect(ImmutableList.toImmutableList());
+  }
+
+  @VisibleForTesting
+  static void assertNoOverlap(InitCodeNode root, List<String> paths) {
+    HashMap<InitCodeNode, String> nodes = new HashMap<>();
+    ArrayDeque<InitCodeNode> subNodes = new ArrayDeque<>();
+
+    for (String path : paths) {
+      subNodes.add(root.subTree(path));
+      while (!subNodes.isEmpty()) {
+        InitCodeNode node = subNodes.pollLast();
+        String oldPath = nodes.put(node, path);
+        if (oldPath != null) {
+          throw new IllegalArgumentException(
+              String.format("SampleInitAttribute %s overlaps with %s", oldPath, path));
+        }
+        subNodes.addAll(node.getChildren().values());
+      }
+    }
   }
 
   /**
