@@ -174,7 +174,6 @@ public abstract class FlatteningConfig {
       // TODO(andrealin): handle resource names in param.
       FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(parameterField);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
-
     }
     return new AutoValue_FlatteningConfig(
         flattenedFieldConfigBuilder.build(), methodSignature.getFunctionName());

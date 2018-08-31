@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -25,18 +24,12 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -194,11 +187,13 @@ public abstract class MethodConfig {
       @Nullable MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
     boolean missing = false;
-    // Enforce unique flattening configs, in case proto annotations overlaps with configProto flattening.
+    // Enforce unique flattening configs, in case proto annotations overlaps with configProto
+    // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
     if (methodConfigProto != null) {
-      for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
+      for (FlatteningGroupProto flatteningGroup :
+          methodConfigProto.getFlattening().getGroupsList()) {
         FlatteningConfig groupConfig =
             FlatteningConfig.createFlattening(
                 diagCollector,
@@ -219,18 +214,15 @@ public abstract class MethodConfig {
     }
     // TODO get flattenings from proto annotations.
     if (methodModel instanceof ProtoMethodModel) {
-      List<MethodSignature> methodSignatures = ProtoAnnotations.getMethodSignatures((ProtoMethodModel) methodModel);
+      List<MethodSignature> methodSignatures =
+          ProtoAnnotations.getMethodSignatures((ProtoMethodModel) methodModel);
       for (MethodSignature signature : methodSignatures) {
         if (signature.getFieldsCount() == 0) {
           break;
         }
         FlatteningConfig groupConfig =
             FlatteningConfig.createFlattening(
-                diagCollector,
-                messageConfigs,
-                resourceNameConfigs,
-                signature,
-                methodModel);
+                diagCollector, messageConfigs, resourceNameConfigs, signature, methodModel);
         if (groupConfig == null) {
           missing = true;
         } else {
@@ -267,7 +259,7 @@ public abstract class MethodConfig {
     return fieldConfigsBuilder.build();
   }
 
-  /** Returns a string representing the ordered fields in a flattening config.*/
+  /** Returns a string representing the ordered fields in a flattening config. */
   private static String flatteningConfigToString(FlatteningConfig flatteningConfig) {
     Iterable<FieldModel> paramList = flatteningConfig.getFlattenedFields();
     StringBuilder paramsAsString = new StringBuilder();

@@ -14,22 +14,21 @@
  */
 package com.google.api.codegen.util;
 
+import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
+
 import com.google.api.AnnotationsProto;
+import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
-import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import org.mozilla.javascript.TopLevel;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
+import com.google.rpc.Code;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,11 +55,33 @@ public class ProtoAnnotations {
 
   /* Return a list of method signatures, aka flattenings, specified on a given method. */
   public static List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
-    MethodSignature methodSignature = method.getProtoMethod().getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
+    MethodSignature methodSignature =
+        method
+            .getProtoMethod()
+            .getDescriptor()
+            .getMethodAnnotation(AnnotationsProto.methodSignature);
     // Let's only recurse once when we look for additional MethodSignatures.
     List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
     return ImmutableList.<MethodSignature>builder()
         .add(methodSignature)
-        .addAll(additionalSignatures).build();
+        .addAll(additionalSignatures)
+        .build();
+  }
+
+  public static List<String> getRetryCodes(Method method) {
+    Retry retry = method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
+    HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+
+    // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and `UNAVAILABLE`.
+    if (retry.getCodesCount() == 0 && !Strings.isNullOrEmpty(httpRule.getGet())) {
+      return DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
+    }
+
+    // If there is no google.api.http annotation, do not retry any errors.
+    if (httpRule == null || httpRule.equals(httpRule.getDefaultInstanceForType())) {
+      return ImmutableList.of();
+    }
+
+    return retry.getCodesList().stream().map(Code::name).collect(Collectors.toList());
   }
 }

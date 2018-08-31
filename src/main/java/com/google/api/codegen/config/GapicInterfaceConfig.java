@@ -39,9 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.annotation.Nullable;
-import javax.swing.text.html.Option;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the
@@ -119,6 +117,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
+    // TODO(andrealin): enforce auto retries on GET, and then whatever's explicitly given
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =

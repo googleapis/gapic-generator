@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.LongRunningConfigProto;
@@ -25,6 +27,7 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -36,7 +39,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -86,8 +88,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
-      if (methodConfigProto == null || PageStreamingConfigProto.getDefaultInstance()
-          .equals(methodConfigProto.getGrpcStreaming())) {
+      if (methodConfigProto == null
+          || PageStreamingConfigProto.getDefaultInstance()
+              .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
       } else {
         grpcStreaming =
@@ -113,7 +116,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     BatchingConfig batching = null;
     // Batching is not supported in proto annotations.
     if (methodConfigProto != null
-        && ! BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
+        && !BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
           BatchingConfig.createBatching(
               diagCollector, methodConfigProto.getBatching(), methodModel);
@@ -122,15 +125,30 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodConfigProto.getRetryCodesName();
-    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
+    String retryCodesName = null;
+    if (methodConfigProto != null) {
+      retryCodesName = methodConfigProto.getRetryCodesName();
+      if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Retry codes config used but not defined: '%s' (in method %s)",
+                retryCodesName,
+                methodModel.getFullName()));
+        error = true;
+      }
+    }
+    // Check proto annotations for retry settings.
+    // TODO(andrealin): add in the retryCodes somewhere...
+    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
+    if (retryCodes.isEmpty()) {
+      if (Strings.isNullOrEmpty(retryCodesName)) {
+        retryCodesName = RETRY_CODES_NON_IDEMPOTENT_NAME;
+      }
+    }
+    if (Strings.isNullOrEmpty(retryCodesName)) {
+      // TODO(andrealin): what does the name do??
+      retryCodesName = String.format("%s_retry", method.getSimpleName());
     }
 
     String retryParamsName = methodConfigProto.getRetryParamsName();
