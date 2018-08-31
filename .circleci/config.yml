@@ -290,6 +290,34 @@ jobs:
             - gapic-generator
             - googleapis
             - showcase-protos
+  test-gapic-generator:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: /tmp/workspace
+    steps:
+      - checkout:
+          path: gapic-generator
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p reports/gapic-generator
+      - run:
+          name: Run unit tests for gapic-generator
+          command: |
+            cd gapic-generator
+            ./gradlew clean test
+            export TEST_REPORTS_DIR=/tmp/workspace/reports/gapic-generator
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+          when: always
+      - store_test_results:
+          path: reports/gapic-generator
+      - store_artifacts:
+          path: reports/gapic-generator
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.2
@@ -534,6 +562,9 @@ workflows:
   run_generated_tests:
     jobs:
       - install-gapic-generator
+      - test-gapic-generator:
+          requires:
+            - install-gapic-generator
       - generate-clients:
           requires:
             - install-gapic-generator
