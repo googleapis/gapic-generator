@@ -22,6 +22,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -218,20 +219,17 @@ public abstract class MethodConfig {
     }
     // TODO get flattenings from proto annotations.
     if (methodModel instanceof ProtoMethodModel) {
-      MethodSignature methodSignature = ((ProtoMethodModel) methodModel)
-          .getProtoMethod().getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
-      // Let's only recurse once when we look for additional MethodSignatures.
-      List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
-      List<MethodSignature> methodSignatures = ImmutableList.<MethodSignature>builder()
-          .add(methodSignature)
-          .addAll(additionalSignatures).build();
-      for (MethodSignature flatteningGroup : methodSignatures) {
+      List<MethodSignature> methodSignatures = ProtoAnnotations.getMethodSignatures((ProtoMethodModel) methodModel);
+      for (MethodSignature signature : methodSignatures) {
+        if (signature.getFieldsCount() == 0) {
+          break;
+        }
         FlatteningConfig groupConfig =
             FlatteningConfig.createFlattening(
                 diagCollector,
                 messageConfigs,
                 resourceNameConfigs,
-                flatteningGroup,
+                signature,
                 methodModel);
         if (groupConfig == null) {
           missing = true;

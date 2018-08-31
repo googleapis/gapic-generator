@@ -18,12 +18,15 @@ import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.mozilla.javascript.TopLevel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -52,19 +55,12 @@ public class ProtoAnnotations {
   }
 
   /* Return a list of method signatures, aka flattenings, specified on a given method. */
-  public static List<FlatteningConfig> getMethodSignatures(Method method, DiagCollector diagCollector) {
-    MethodSignature methodSignature = method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
+  public static List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
+    MethodSignature methodSignature = method.getProtoMethod().getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
     // Let's only recurse once when we look for additional MethodSignatures.
     List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
-    List<MethodSignature> methodSignatures = ImmutableList.<MethodSignature>builder()
+    return ImmutableList.<MethodSignature>builder()
         .add(methodSignature)
         .addAll(additionalSignatures).build();
-
-
-
-    ImmutableList.Builder<List<FlatteningConfig>> signatures = ImmutableList.builder();
-    // TODO(andrealin): Handle function_name.
-    methodSignatures.stream().filter(s -> s.getFieldsCount() > 0).forEach(s -> signatures.add(s.getFieldsList()));
-    return signatures.build();
   }
 }

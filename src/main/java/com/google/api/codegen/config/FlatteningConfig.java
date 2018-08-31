@@ -135,7 +135,6 @@ public abstract class FlatteningConfig {
       MethodSignature methodSignature,
       MethodModel method) {
 
-    boolean missing = false;
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
     if (methodSignature == null || methodSignature.getFieldsCount() == 0) return null;
@@ -172,37 +171,13 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
-      ResourceNameTreatment defaultResourceNameTreatment =
-          methodConfigProto.getResourceNameTreatment();
-      if (!parameterField.mayBeInResourceName()) {
-        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
-      }
-      if (defaultResourceNameTreatment == null
-          || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-      }
+      // TODO(andrealin): handle resource names in param.
+      FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(parameterField);
+      flattenedFieldConfigBuilder.put(parameter, fieldConfig);
 
-      FieldConfig fieldConfig =
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              methodConfigProto.getFieldNamePatternsMap(),
-              resourceNameConfigs,
-              parameterField,
-              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
-              defaultResourceNameTreatment);
-      if (fieldConfig == null) {
-        missing = true;
-      } else {
-        flattenedFieldConfigBuilder.put(parameter, fieldConfig);
-      }
     }
-    if (missing) {
-      return null;
-    }
-
     return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+        flattenedFieldConfigBuilder.build(), methodSignature.getFunctionName());
   }
 
   public Iterable<FieldModel> getFlattenedFields() {
