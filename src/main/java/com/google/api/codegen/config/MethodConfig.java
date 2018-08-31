@@ -241,7 +241,7 @@ public abstract class MethodConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
-      ImmutableMap<String, String> fieldNamePatterns,
+      @Nullable ImmutableMap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();

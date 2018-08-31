@@ -24,12 +24,14 @@ import com.google.api.Resource;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.rpc.Code;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // Utils for parsing proto annotations.
@@ -83,5 +85,22 @@ public class ProtoAnnotations {
     }
 
     return retry.getCodesList().stream().map(Code::name).collect(Collectors.toList());
+  }
+
+  public static List<String> getRequiredFields(Method method) {
+    MessageType inputMessage = method.getInputMessage();
+    return inputMessage
+        .getFields()
+        .stream()
+        .filter(ProtoAnnotations::isFieldRequired)
+        .map(Field::getSimpleName)
+        .collect(Collectors.toList());
+  }
+
+  /** Returns if a field is required, according to the proto annotations. */
+  public static boolean isFieldRequired(Field field) {
+    return Optional.ofNullable(
+            (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
+        .orElse(false);
   }
 }

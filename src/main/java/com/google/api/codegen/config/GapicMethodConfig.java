@@ -191,14 +191,23 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableMap<String, String> fieldNamePatterns = null;
+    if (methodConfigProto != null) {
+      fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    }
 
-    ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
+    ResourceNameTreatment defaultResourceNameTreatment = null;
+    if (methodConfigProto != null) {
+      defaultResourceNameTreatment = methodConfigProto.getResourceNameTreatment();
+    }
     if (defaultResourceNameTreatment == null
         || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    }
+
+    List<String> requiredFields = ProtoAnnotations.getRequiredFields(method);
+    if (requiredFields.isEmpty() && methodConfigProto != null) {
+      requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
     ImmutableList<FieldConfig> requiredFieldConfigs =
@@ -208,8 +217,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFields));
 
     ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -218,7 +226,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+            getOptionalFields(methodModel, requiredFields));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
