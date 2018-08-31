@@ -4379,6 +4379,7 @@ import sys
 # [START canonical]
 
 from google.cloud.example import library_v1
+import six
 
 def sample_publish_series(name):
   # [START canonical_core]
@@ -4386,6 +4387,9 @@ def sample_publish_series(name):
   client = library_v1.LibraryServiceClient()
 
   # name = 'Math'
+
+  if isinstance(name, six.binary_type):
+    name = name.decode('utf-8')
 
   shelf = {'name': name}
 

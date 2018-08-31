@@ -25,49 +25,57 @@
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
+  @let convertTextCode = convertText(sample)
+    @if convertTextCode
+      import six
+      
+    @end
 
-  def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
-    @# [START {@sample.regionTag}_core]
+    def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
+      @# [START {@sample.regionTag}_core]
 
-    client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+      client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
-    @if sample.initCode.argDefaultLines
-      @join line : util.pretty(initCode(sample.initCode.argDefaultLines))
-        @# {@line}
+      @if sample.initCode.argDefaultLines
+        @join line : util.pretty(initCode(sample.initCode.argDefaultLines))
+          @# {@line}
+        @end
+
+
+        # FIXME(hzyi): handle ListInitType, MapInitType and StructInitType correctly
+        {@convertTextCode}
+      @end
+      @if sample.initCode.lines
+        {@initCode(sample.initCode.lines)}
+
+      @end
+      @switch sample.callingForm
+      @case "Request"
+        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+        {@processResponse(sample)}
+      @case "RequestPaged"
+        {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
+      @case "RequestPagedAll"
+        {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
+      @case "RequestStreamingBidi"
+        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
+        {@processResponse(sample)}
+      @case "RequestStreamingClient"
+        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
+        {@processResponse(sample)}
+      @case "RequestStreamingServer"
+        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
+        {@processResponse(sample)}
+      @case "LongRunningPromise"
+        {@lroSampleCode(apiMethod, sample.initCode)}
+        {@processResponse(sample)}
+      @default
+        $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
       @end
 
-
-    @end
-    @if sample.initCode.lines
-      {@initCode(sample.initCode.lines)}
-
-    @end
-    @switch sample.callingForm
-    @case "Request"
-      {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-      {@processResponse(sample)}
-    @case "RequestPaged"
-      {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
-    @case "RequestPagedAll"
-      {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
-    @case "RequestStreamingBidi"
-      {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
-      {@processResponse(sample)}
-    @case "RequestStreamingClient"
-      {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
-      {@processResponse(sample)}
-    @case "RequestStreamingServer"
-      {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
-      {@processResponse(sample)}
-    @case "LongRunningPromise"
-      {@lroSampleCode(apiMethod, sample.initCode)}
-      {@processResponse(sample)}
-    @default
-      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
-    @end
-
-    @# [END {@sample.regionTag}_core]
-  @# [END {@sample.regionTag}]
+      @# [END {@sample.regionTag}_core]
+    @# [END {@sample.regionTag}]
+  @end
 
   def main():
     @# FIXME: Convert argv from strings to the correct types.
@@ -80,6 +88,18 @@
 @private sampleFuncParam(defaultParams)
   @join param : defaultParams on ", "
     {@param.identifier}
+  @end
+@end
+
+@private convertText(sample)
+  @join line : sample.initCode.argDefaultLines
+    @if line.lineType == "SimpleInitLine"
+      @if line.typeName == "str"
+        if isinstance({@line.identifier}, six.binary_type):
+          {@line.identifier} = {@line.identifier}.decode('utf-8')
+
+      @end
+    @end
   @end
 @end
 
