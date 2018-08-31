@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -85,7 +86,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
-      if (PageStreamingConfigProto.getDefaultInstance()
+      if (methodConfigProto == null || PageStreamingConfigProto.getDefaultInstance()
           .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
       } else {
@@ -97,10 +98,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
         }
       }
     }
-    // TODO(andrealin): Make GrpcStreamingConfig when configProto is null
 
     ImmutableList<FlatteningConfig> flattening = null;
-    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
+    if (methodConfigProto == null
+        || !FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           createFlattening(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);

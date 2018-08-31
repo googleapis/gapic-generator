@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
@@ -58,6 +59,88 @@ public abstract class FlatteningConfig {
     if (method.hasExtraFieldMask()) {
       flattenedParams.add(DiscoveryMethodTransformer.FIELDMASK_STRING);
     }
+    for (String parameter : flattenedParams) {
+
+      FieldModel parameterField = method.getInputField(parameter);
+      if (parameterField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Field missing for flattening: method = %s, message type = %s, field = %s",
+                method.getFullName(),
+                method.getInputFullName(),
+                parameter));
+        return null;
+      }
+
+      Oneof oneof = parameterField.getOneof();
+      if (oneof != null) {
+        String oneofName = oneof.getName();
+        if (oneofNames.contains(oneofName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Value from oneof already specifed for flattening:%n"
+                      + "method = %s, message type = %s, oneof = %s",
+                  method.getFullName(),
+                  method.getInputFullName(),
+                  oneofName));
+          return null;
+        }
+        oneofNames.add(oneofName);
+      }
+
+      ResourceNameTreatment defaultResourceNameTreatment =
+          methodConfigProto.getResourceNameTreatment();
+      if (!parameterField.mayBeInResourceName()) {
+        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+      }
+      if (defaultResourceNameTreatment == null
+          || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+      }
+
+      FieldConfig fieldConfig =
+          FieldConfig.createFieldConfig(
+              diagCollector,
+              messageConfigs,
+              methodConfigProto.getFieldNamePatternsMap(),
+              resourceNameConfigs,
+              parameterField,
+              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
+              defaultResourceNameTreatment);
+      if (fieldConfig == null) {
+        missing = true;
+      } else {
+        flattenedFieldConfigBuilder.put(parameter, fieldConfig);
+      }
+    }
+    if (missing) {
+      return null;
+    }
+
+    return new AutoValue_FlatteningConfig(
+        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+  }
+
+  /**
+   * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
+   * provided method.
+   */
+  @Nullable
+  static FlatteningConfig createFlattening(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodSignature methodSignature,
+      MethodModel method) {
+
+    boolean missing = false;
+    ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
+    Set<String> oneofNames = new HashSet<>();
+    if (methodSignature == null || methodSignature.getFieldsCount() == 0) return null;
+
+    List<String> flattenedParams = Lists.newArrayList(methodSignature.getFieldsList());
     for (String parameter : flattenedParams) {
 
       FieldModel parameterField = method.getInputField(parameter);
