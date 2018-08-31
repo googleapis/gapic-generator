@@ -20,6 +20,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -115,7 +116,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       Interface apiInterface,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      ProtoMethodTransformer configUtils) {
 
     // TODO(andrealin): enforce auto retries on GET, and then whatever's explicitly given
     ImmutableMap<String, List<String>> retryCodesDefinition =
@@ -135,7 +137,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet());
+              retrySettingsDefinition.keySet(),
+              configUtils);
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
@@ -218,7 +221,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoMethodTransformer configUtils) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     // Keep track of the MethodConfigProtos encountered.
@@ -244,7 +248,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
                 messageConfigs,
                 resourceNameConfigs,
                 retryCodesConfigNames,
-                retryParamsConfigNames);
+                retryParamsConfigNames,
+                configUtils);
         if (methodConfig == null) {
           continue;
         }
@@ -264,7 +269,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfigNames,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              configUtils);
       if (methodConfig == null) {
         continue;
       }

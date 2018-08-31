@@ -24,6 +24,7 @@ import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -42,6 +43,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.io.IOException;
 import java.io.InputStream;
@@ -377,12 +379,15 @@ public abstract class GapicProductConfig implements ProductConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
       TargetLanguage language) {
+    // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
+    // Maps name of interfaces to found InterfaceConfigs from config yamls.
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedTreeMap<>();
 
+    ProtoMethodTransformer configUtils = new ProtoMethodTransformer();
+    // Parse config for interfaceConfigProtos.
     if (configProto != null) {
-      // Parse config for interfaces.
       for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
         Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
         if (apiInterface == null || !apiInterface.isReachable()) {
@@ -394,22 +399,6 @@ public abstract class GapicProductConfig implements ProductConfig {
           continue;
         }
         interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
-        String interfaceNameOverride =
-            languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
-
-        GapicInterfaceConfig interfaceConfig =
-            GapicInterfaceConfig.createInterfaceConfig(
-                diagCollector,
-                language,
-                interfaceConfigProto,
-                apiInterface,
-                interfaceNameOverride,
-                messageConfigs,
-                resourceNameConfigs);
-        if (interfaceConfig == null) {
-          continue;
-        }
-        interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
       }
     }
     // Parse proto file for interfaces.
@@ -425,8 +414,10 @@ public abstract class GapicProductConfig implements ProductConfig {
           continue;
         }
         InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
-        String interfaceNameOverride =
-            languageSettings.getInterfaceNamesMap().get(service.getName());
+        String interfaceNameOverride = null;
+        if (languageSettings != null) {
+          interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
+        }
 
         GapicInterfaceConfig interfaceConfig =
             GapicInterfaceConfig.createInterfaceConfig(
@@ -436,11 +427,12 @@ public abstract class GapicProductConfig implements ProductConfig {
                 apiInterface,
                 interfaceNameOverride,
                 messageConfigs,
-                resourceNameConfigs);
+                resourceNameConfigs,
+                configUtils);
         if (interfaceConfig == null) {
           continue;
         }
-        interfaceConfigMap.put(service.getName(), interfaceConfig);
+        interfaceConfigMap.put(serviceFullName, interfaceConfig);
       }
     }
 

@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
-
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.LongRunningConfigProto;
@@ -26,6 +24,8 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
+import com.google.api.codegen.configgen.mergers.ProtoConfigMerger;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
@@ -48,6 +48,8 @@ import org.threeten.bp.Duration;
  */
 @AutoValue
 public abstract class GapicMethodConfig extends MethodConfig {
+  private ProtoConfigMerger protoConfigMerger = new ProtoConfigMerger();
+
   public Method getMethod() {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
   }
@@ -68,7 +70,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoMethodTransformer configUtils) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -141,28 +144,31 @@ public abstract class GapicMethodConfig extends MethodConfig {
     // Check proto annotations for retry settings.
     // TODO(andrealin): add in the retryCodes somewhere...
     List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
-    if (retryCodes.isEmpty()) {
-      if (Strings.isNullOrEmpty(retryCodesName)) {
-        retryCodesName = RETRY_CODES_NON_IDEMPOTENT_NAME;
-      }
-    }
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      // TODO(andrealin): what does the name do??
+    if (retryCodes.size() > 0 && Strings.isNullOrEmpty(retryCodesName)) {
       retryCodesName = String.format("%s_retry", method.getSimpleName());
     }
 
-    String retryParamsName = methodConfigProto.getRetryParamsName();
-    if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry parameters config used but not defined: %s (in method %s)",
-              retryParamsName,
-              methodModel.getFullName()));
-      error = true;
+    String retryParamsName = null;
+    if (methodConfigProto != null) {
+      retryParamsName = methodConfigProto.getRetryParamsName();
+      if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Retry parameters config used but not defined: %s (in method %s)",
+                retryParamsName,
+                methodModel.getFullName()));
+        error = true;
+      }
     }
+    // TODO(andrealin): handle default retry params
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    Duration timeout;
+    if (methodConfigProto != null) {
+      timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    } else {
+      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
+    }
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
@@ -172,14 +178,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
-    if (hasRequestObjectMethod && method.getRequestStreaming()) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "request_object_method incompatible with streaming method %s",
-              method.getFullName()));
-      error = true;
+    boolean hasRequestObjectMethod = configUtils.isRequestObjectMethod(methodModel);
+    if (methodConfigProto != null) {
+      hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+      if (hasRequestObjectMethod && method.getRequestStreaming()) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "request_object_method incompatible with streaming method %s",
+                method.getFullName()));
+        error = true;
+      }
     }
 
     ImmutableMap<String, String> fieldNamePatterns =

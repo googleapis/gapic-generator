@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.configgen;
+package com.google.api.codegen.configgen.defaults;
 
-import com.google.api.codegen.config.MethodModel;
-import java.util.List;
-
-/** Generates API source specific method data. */
-public interface MethodTransformer {
-  boolean isIgnoredParameter(String parameter);
-
-  String getTimeoutMillis(MethodModel method);
-
-  boolean isRequestObjectMethod(MethodModel method);
-
-  List<String> getParameterList(MethodModel method);
-}
+public class DefaultConfigValues {}
