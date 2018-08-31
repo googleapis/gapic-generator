@@ -235,6 +235,16 @@ anchor_run_php: &anchor_run_php
         name: Test PHP Logging client
         <<: *anchor_test_php
 
+# Test a NodeJS client if generation succeeded.
+anchor_test_nodejs_client: &anchor_test_nodejs_client
+  command: |
+    cd ${NODEJS_GEN_DIR}/${TEST_API}
+    npm install
+    # Copy over IAM protos.
+    cp -r node_modules/google-proto-files/google/iam/ protos/google/
+    npm test
+  when: always
+
 # ======================= JOBS =======================
 
 jobs:
@@ -280,6 +290,34 @@ jobs:
             - gapic-generator
             - googleapis
             - showcase-protos
+  test-gapic-generator:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: /tmp/workspace
+    steps:
+      - checkout:
+          path: gapic-generator
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p reports/gapic-generator
+      - run:
+          name: Run unit tests for gapic-generator
+          command: |
+            cd gapic-generator
+            ./gradlew clean test
+            export TEST_REPORTS_DIR=/tmp/workspace/reports/gapic-generator
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+          when: always
+      - store_test_results:
+          path: reports/gapic-generator
+      - store_artifacts:
+          path: reports/gapic-generator
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.2
@@ -315,6 +353,7 @@ jobs:
           name: Generate Speech Libraries
           command: |
             cd workspace/gapic-generator
+            # TODO: Move off artman once package2.yaml is no longer needed.
             python generate_clients.py \
                 google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
@@ -419,7 +458,101 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-
+  verify-and-test-nodejs-8:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: nodejs
+      NODEJS_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/js
+      <<: *anchor_artman_vars
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all NodeJS generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Prepare to test Pubsub
+          command: |
+            echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Pubsub client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Speech
+          command: |
+            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Speech client
+          <<: *anchor_test_nodejs_client
+      - run:
+          name: Prepare to test Logging
+          command: |
+            echo 'export TEST_API="logging-v2"' >> $BASH_ENV
+          when: always
+      - run:
+          name: Test Node Logging client
+          <<: *anchor_test_nodejs_client
+  verify-and-test-go-1.10:
+    working_directory: /tmp/
+    environment:
+      LANGUAGE: go
+      <<: *anchor_artman_vars
+      GOPATH: /tmp/go
+    docker:
+      - image: circleci/golang:1.10
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Verify all Golang generation succeeded
+          <<: *anchor_check_generation
+      - run:
+          name: Set up golang dev env.
+          command: |
+            mkdir -p $GOPATH/src
+            mkdir -p $GOPATH/bin
+            mkdir -p $GOPATH/pkg
+            export PATH="$PATH:$GOPATH/bin"
+            echo 'export PATH="$PATH:$GOPATH/bin"' >> $BASH_ENV
+            go get -u github.com/golang/protobuf/protoc-gen-go
+            go get -d cloud.google.com/go/...
+      - run:
+          name: Delete exisiting clients for APIs that we generated
+          command: |
+            cd $GOPATH/src/cloud.google.com/go
+            rm -rf logging/apiv2
+            rm -rf speech/apiv1
+            rm -rf pubsub/apiv1
+            cd $GOPATH/src/google.golang.org/genproto/googleapis
+            rm -rf logging/v2
+            rm -rf cloud/speech
+            rm -rf pubsub
+      - run:
+          name: Copy over generated clients
+          command: |
+            cd /tmp/workspace/gapic-generator/artman-genfiles
+            for d in gapi-cloud-*; do
+              cp -r $d/cloud.google.com/ $GOPATH/src
+            done
+            for d in go/*; do
+              cp -r $d/google.golang.org $GOPATH/src
+            done
+      - run:
+          name: Test Pubsub.
+          command: go test cloud.google.com/go/pubsub/apiv1
+          when: always
+      - run:
+          name: Test Logging
+          command: go test cloud.google.com/go/logging/apiv2
+          when: always
+      - run:
+          name: Test Speech
+          command: go test cloud.google.com/go/speech/apiv1
+          when: always
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
@@ -429,6 +562,9 @@ workflows:
   run_generated_tests:
     jobs:
       - install-gapic-generator
+      - test-gapic-generator:
+          requires:
+            - install-gapic-generator
       - generate-clients:
           requires:
             - install-gapic-generator
@@ -456,8 +592,13 @@ workflows:
       - verify-and-test-php-7.2:
           requires:
             - generate-clients
-        # TODO: php smoke tests
-        # TODO: Other php versions
+      # TODO: Other php versions
+      - verify-and-test-go-1.10:
+          requires:
+            - generate-clients
+      - verify-and-test-nodejs-8:
+          requires:
+            - generate-clients
 
 machine:
   services:
