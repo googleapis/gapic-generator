@@ -24,6 +24,13 @@ option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
+option (google.api.metadata) = {
+  product_name: "Library Service"
+  product_uri: "https://cloud.google.com/library/"
+  package_name: "Library"
+  package_namespace: ["Google", "Example"]
+};
+
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
 // resource model:
@@ -40,16 +47,30 @@ option go_package = "google.golang.org/genproto/googleapis/example/library/v1;li
 // Service comment may include special characters: <>&"`'@.
 //
 service LibraryService {
+  option (google.api.default_host) = "library-example.googleapis.com";
+  option (google.api.oauth) = {
+    scopes: ["https://www.googleapis.com/auth/library",
+      "https://www.googleapis.com/auth/cloud-platform"]
+  };
 
   // Creates a shelf, and returns the new Shelf.
   // RPC method comment may include special characters: <>&"`'@.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/bookShelves" body: "shelf" };
+    option (google.api.method_signature) = {
+      fields: ["shelf"]
+    };
   }
 
   // Gets a shelf.
   rpc GetShelf(GetShelfRequest) returns (Shelf) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*}" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+      additional_signatures: [{
+        fields: ["name", "message"]
+      }]
+    };
   }
 
   // Lists shelves.
@@ -60,6 +81,9 @@ service LibraryService {
   // Deletes a shelf.
   rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=bookShelves/*}" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Merges two shelves by adding all books from the shelf named
@@ -67,51 +91,81 @@ service LibraryService {
   // `other_shelf_name`. Returns the updated shelf.
   rpc MergeShelves(MergeShelvesRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}:merge" body: "*" };
+    option (google.api.method_signature) = {
+      fields: ["name", "other_shelf_name"]
+    };
   }
 
   // Creates a book.
   rpc CreateBook(CreateBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}/books" body: "book" };
+    option (google.api.method_signature) = {
+      fields: ["name", "book"]
+    };
   }
 
   // Creates a series of books.
   rpc PublishSeries(PublishSeriesRequest) returns (PublishSeriesResponse) {
     option (google.api.http) = { post: "/v1:publish" body: "*" };
+    option (google.api.method_signature) = {
+      fields: ["shelf", "books"]
+    };
   }
 
   // Gets a book.
   rpc GetBook(GetBookRequest) returns (Book) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Lists books in a shelf.
   rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*}/books" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Deletes a book.
   rpc DeleteBook(DeleteBookRequest) returns (protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=bookShelves/*/books/*}" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Updates a book.
   rpc UpdateBook(UpdateBookRequest) returns (Book) {
     option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
+    option (google.api.method_signature) = {
+      fields: ["name", "book", "update_mask"]
+    };
   }
 
   // Moves a book to another shelf, and returns the new book.
   rpc MoveBook(MoveBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}:move" body: "*" };
+    option (google.api.method_signature) = {
+      fields: ["name", "other_shelf_name"]
+    };
   }
 
   // Lists a primitive resource. To test go page streaming.
   rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
     option (google.api.http) = { get: "/v1/strings" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Adds comments to a book
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}/comments" body: "*" };
+    option (google.api.method_signature) = {
+      fields: ["name", "comments"]
+    };
   }
 
   // Gets a book from an archive.
@@ -119,11 +173,17 @@ service LibraryService {
     // The http binding on this field does not include the "**" path in order to
     // test the name conflict resolution in configgen.
     option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Gets a book from a shelf or archive.
   rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Test proper OneOf-Any resource name mapping
@@ -134,11 +194,17 @@ service LibraryService {
         post: "/v1/{name=bookShelves/*/books/*}"
       }
     };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Updates the index of a book.
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
+    option (google.api.method_signature) = {
+      fields: ["name", "index_name", "index_map"]
+    };
   }
 
   // Test server streaming
@@ -147,22 +213,34 @@ service LibraryService {
   }
 
   // Test server streaming, non-paged responses.
+  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc StreamBooks(StreamBooksRequest) returns (stream Book) {
-    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Test bidi-streaming.
+  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
-    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Test client streaming.
+  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
-    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
+    option (google.api.method_signature) = {
+      fields: ["names"]
+    };
   }
 
   // Adds a tag to the book. This RPC is a mixin.
@@ -175,11 +253,17 @@ service LibraryService {
   // Test long-running operations
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Test long-running operations with empty return type.
   rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
+    option (google.api.method_signature) = {
+      fields: ["name"]
+    };
   }
 
   // Test optional flattening parameters of all types
@@ -194,7 +278,9 @@ message Book {
   // The resource name of the book.
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource).path = "shelves/*/books/*"];
 
   // The name of the book author.
   string author = 2;
@@ -255,7 +341,9 @@ message Book {
 message BookFromArchive {
   // The resource name of the book.
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the book author.
   string author = 2;
@@ -313,7 +401,9 @@ message SomeMessage2 {
 message Shelf {
   // The resource name of the shelf.
   // Shelf names have the form `bookShelves/{shelf_id}`.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource).path = "bookShelves/*"];
 
   // The theme of the shelf
   string theme = 2;
@@ -325,13 +415,17 @@ message Shelf {
 // Request message for LibraryService.CreateShelf.
 message CreateShelfRequest {
   // The shelf to create.
-  Shelf shelf = 1;
+  Shelf shelf = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 // Request message for LibraryService.GetShelf.
 message GetShelfRequest {
   // The name of the shelf to retrieve.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 
   // Field to verify that message-type query parameter gets flattened.
   SomeMessage message = 2;
@@ -360,7 +454,8 @@ message ListShelvesRequest {
 // Response message for LibraryService.ListShelves.
 message ListShelvesResponse {
   // The list of shelves.
-  repeated Shelf shelves = 1;
+  repeated Shelf shelves = 1 [
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 
   // A token to retrieve next page of results.
   // Pass this value in the
@@ -377,41 +472,54 @@ message StreamShelvesRequest {
 // Response message for LibraryService.StreamShelves.
 message StreamShelvesResponse {
   // The list of shelves.
-  repeated Shelf shelves = 1;
+  repeated Shelf shelves = 1 [
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 // Request message for LibraryService.DeleteShelf.
 message DeleteShelfRequest {
   // The name of the shelf to delete.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 // Describes the shelf being removed (other_shelf_name) and updated
 // (name) in this merge.
 message MergeShelvesRequest {
   // The name of the shelf we're adding books to.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 
   // The name of the shelf we're removing books from and deleting.
-  string other_shelf_name = 2;
+  string other_shelf_name = 2 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 // Request message for LibraryService.CreateBook.
 message CreateBookRequest {
   // The name of the shelf in which the book is created.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 
   // The book to create.
-  Book book = 2;
+  Book book = 2 [
+    (google.api.required) = true];
 }
 
 // Request message for LibraryService.PublishSeries.
 message PublishSeriesRequest {
   // The shelf in which the series is created.
-  Shelf shelf = 1;
+  Shelf shelf = 1 [
+    (google.api.required) = true];
 
   // The books to publish in the series.
-  repeated Book books = 2;
+  repeated Book books = 2 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   oneof versioning {
     // The edition of the series
@@ -435,19 +543,25 @@ message SeriesUuid {
 // Response message for LibraryService.PublishSeries.
 message PublishSeriesResponse {
   // The names of the books in the series that were published
-  repeated string book_names = 1;
+  repeated string book_names = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.GetBook.
 message GetBookRequest {
   // The name of the book to retrieve.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.ListBooks.
 message ListBooksRequest {
   // The name of the shelf whose books we'd like to list.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 
   // Requested page size. Server may return fewer books than requested.
   // If unspecified, server will pick an appropriate default.
@@ -466,7 +580,8 @@ message ListBooksRequest {
 // Response message for LibraryService.ListBooks.
 message ListBooksResponse {
   // The list of books.
-  repeated Book books = 1;
+  repeated Book books = 1 [
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // A token to retrieve next page of results.
   // Pass this value in the
@@ -479,22 +594,30 @@ message ListBooksResponse {
 // Request message for LibraryService.StreamBooks.
 message StreamBooksRequest {
   // The name of the shelf whose books we'd like to list.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 // Request message for LibraryService.UpdateBook.
 message UpdateBookRequest {
   // The name of the book to update.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // An optional foo.
   string optional_foo = 2;
 
   // The book to update with.
-  Book book = 3;
+  Book book = 3 [
+    (google.api.required) = true
+  ];
 
   // A field mask to apply, rendered as an HTTP parameter.
-  google.protobuf.FieldMask update_mask = 4;
+  google.protobuf.FieldMask update_mask = 4 [
+    (google.api.required) = true
+  ];
 
   // To test Python import clash resolution.
   google.example.library.v1.FieldMask physical_mask = 5;
@@ -503,21 +626,27 @@ message UpdateBookRequest {
 // Request message for LibraryService.DeleteBook.
 message DeleteBookRequest {
   // The name of the book to delete.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Describes what book to move (name) and what shelf we're moving it
 // to (other_shelf_name).
 message MoveBookRequest {
   // The name of the book to move.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the destination shelf.
-  string other_shelf_name = 2;
+  string other_shelf_name = 2 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
 }
 
 message ListStringsRequest {
-  string name = 1;
+  string name = 1 [(google.api.required) = true];
   int32 page_size = 2;
   string page_token = 3;
 }
@@ -528,9 +657,13 @@ message ListStringsResponse {
 }
 
 message AddCommentsRequest {
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Comment"];
 
-  repeated Comment comments = 2;
+  repeated Comment comments = 2 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Comment"];
 }
 
 message Comment {
@@ -557,42 +690,55 @@ message Comment {
 // Request message for LibraryService.GetBookFromArchive.
 message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
 message GetBookFromAnywhereRequest {
   // The name of the book to retrieve.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
-  string alt_book_name = 2;
+  string alt_book_name = 2 [
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
 message GetBookFromAbsolutelyAnywhereRequest {
   // The name of the book to retrieve.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.UpdateBookIndex.
 message UpdateBookIndexRequest {
   // The name of the book to update.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the index for the book
-  string index_name = 2;
+  string index_name = 2 [
+    (google.api.required) = true];
 
   // The index to update the book with
-  map<string, string> index_map = 3;
+  map<string, string> index_map = 3 [
+    (google.api.required) = true];
 }
 
 message DiscussBookRequest {
   // The name of the book to be discussed. If this is in the middle
   // of the stream and this is not specified, the name in the previous
   // message will be reused.
-  string name = 1;
+  string name = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The new comment.
   Comment comment = 2;
@@ -600,7 +746,9 @@ message DiscussBookRequest {
 
 // Test repeated field with resource name format in request
 message FindRelatedBooksRequest {
-  repeated string names = 1;
+  repeated string names = 1 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
   repeated string shelves = 2;
   int32 page_size = 4;
   string page_token = 5;
@@ -608,7 +756,8 @@ message FindRelatedBooksRequest {
 
 // Test repeated field with resource name format in page streaming response
 message FindRelatedBooksResponse {
-  repeated string names = 1;
+  repeated string names = 1 [
+    (google.api.resource_type) = "google.example.library.v1.Book"];
   string next_page_token = 2;
 }
 
@@ -633,37 +782,37 @@ message TestOptionalRequiredFlatteningParamsRequest {
     message InnerMessage {
     }
 
-    int32 required_singular_int32 = 1;
-    int64 required_singular_int64 = 2;
-    float required_singular_float = 3;
-    double required_singular_double = 4;
-    bool required_singular_bool = 5;
-    InnerEnum required_singular_enum = 6;
-    string required_singular_string = 7;
-    bytes required_singular_bytes = 8;
-    InnerMessage required_singular_message = 9;
-    string required_singular_resource_name = 10;
-    string required_singular_resource_name_oneof = 11;
-    string required_singular_resource_name_common = 14;
-    fixed32 required_singular_fixed32 = 12;
-    fixed64 required_singular_fixed64 = 13;
+    int32 required_singular_int32 = 1 [(google.api.required) = true];
+    int64 required_singular_int64 = 2 [(google.api.required) = true];
+    float required_singular_float = 3 [(google.api.required) = true];
+    double required_singular_double = 4 [(google.api.required) = true];
+    bool required_singular_bool = 5 [(google.api.required) = true];
+    InnerEnum required_singular_enum = 6 [(google.api.required) = true];
+    string required_singular_string = 7 [(google.api.required) = true];
+    bytes required_singular_bytes = 8 [(google.api.required) = true];
+    InnerMessage required_singular_message = 9 [(google.api.required) = true];
+    string required_singular_resource_name = 10 [(google.api.required) = true];
+    string required_singular_resource_name_oneof = 11 [(google.api.required) = true];
+    string required_singular_resource_name_common = 14 [(google.api.required) = true];
+    fixed32 required_singular_fixed32 = 12 [(google.api.required) = true];
+    fixed64 required_singular_fixed64 = 13 [(google.api.required) = true];
 
-    repeated int32 required_repeated_int32 = 21;
-    repeated int64 required_repeated_int64 = 22;
-    repeated float required_repeated_float = 23;
-    repeated double required_repeated_double = 24;
-    repeated bool required_repeated_bool = 25;
-    repeated InnerEnum required_repeated_enum = 26;
-    repeated string required_repeated_string = 27;
-    repeated bytes required_repeated_bytes = 28;
-    repeated InnerMessage required_repeated_message = 29;
-    repeated string required_repeated_resource_name = 30;
-    repeated string required_repeated_resource_name_oneof = 31;
-    repeated string required_repeated_resource_name_common = 34;
-    repeated fixed32 required_repeated_fixed32 = 32;
-    repeated fixed64 required_repeated_fixed64 = 33;
+    repeated int32 required_repeated_int32 = 21 [(google.api.required) = true];
+    repeated int64 required_repeated_int64 = 22 [(google.api.required) = true];
+    repeated float required_repeated_float = 23 [(google.api.required) = true];
+    repeated double required_repeated_double = 24 [(google.api.required) = true];
+    repeated bool required_repeated_bool = 25 [(google.api.required) = true];
+    repeated InnerEnum required_repeated_enum = 26 [(google.api.required) = true];
+    repeated string required_repeated_string = 27 [(google.api.required) = true];
+    repeated bytes required_repeated_bytes = 28 [(google.api.required) = true];
+    repeated InnerMessage required_repeated_message = 29 [(google.api.required) = true];
+    repeated string required_repeated_resource_name = 30 [(google.api.required) = true];
+    repeated string required_repeated_resource_name_oneof = 31 [(google.api.required) = true];
+    repeated string required_repeated_resource_name_common = 34 [(google.api.required) = true];
+    repeated fixed32 required_repeated_fixed32 = 32 [(google.api.required) = true];
+    repeated fixed64 required_repeated_fixed64 = 33 [(google.api.required) = true];
 
-    map<int32, string> required_map = 41;
+    map<int32, string> required_map = 41 [(google.api.required) = true];
 
     int32 optional_singular_int32 = 51;
     int64 optional_singular_int64 = 52;
