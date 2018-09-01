@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
+import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
@@ -102,6 +103,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   public ExtensionRegistry getPlatformExtensions() {
     ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
+    OperationsProto.registerAllExtensions(extensionRegistry);
     return extensionRegistry;
   }
 

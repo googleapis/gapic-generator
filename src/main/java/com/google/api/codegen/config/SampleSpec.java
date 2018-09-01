@@ -21,6 +21,7 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -93,6 +94,17 @@ public class SampleSpec {
                 methodConfigProto.getName(), id));
       }
     }
+  }
+
+  /** Default, empty sample spec. */
+  private SampleSpec() {
+    this.specified = false;
+    this.sampleConfiguration = null;
+    this.valueSets = ImmutableList.of();
+  }
+
+  public static SampleSpec createEmptySampleSpec() {
+    return new SampleSpec();
   }
 
   public boolean isConfigured() {

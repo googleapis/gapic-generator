@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.LongRunningConfigProto;
@@ -130,7 +133,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     String retryCodesName = null;
-    if (methodConfigProto != null) {
+    // Check proto annotations for retry settings.
+    // TODO(andrealin): add in the retryCodes somewhere...
+    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
+    if (retryCodes.size() > 0) {
+      retryCodesName = String.format("%s_retry", method.getSimpleName());
+    }
+    if (methodConfigProto != null && Strings.isNullOrEmpty(retryCodesName)) {
       retryCodesName = methodConfigProto.getRetryCodesName();
       if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
         diagCollector.addDiag(
@@ -142,11 +151,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
         error = true;
       }
     }
-    // Check proto annotations for retry settings.
-    // TODO(andrealin): add in the retryCodes somewhere...
-    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
-    if (retryCodes.size() > 0 && Strings.isNullOrEmpty(retryCodesName)) {
-      retryCodesName = String.format("%s_retry", method.getSimpleName());
+    if (Strings.isNullOrEmpty(retryCodesName)) {
+      retryCodesName = RETRY_CODES_NON_IDEMPOTENT_NAME;
     }
 
     String retryParamsName = null;
@@ -163,6 +169,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
     // TODO(andrealin): handle default retry params
+    if (Strings.isNullOrEmpty(retryParamsName)) {
+      retryParamsName = RETRY_PARAMS_DEFAULT_NAME;
+    }
 
     Duration timeout;
     if (methodConfigProto != null) {
@@ -192,9 +201,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableMap<String, String> fieldNamePatterns = null;
+    ImmutableMap<String, String> fieldNamePatterns;
     if (methodConfigProto != null) {
       fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    } else {
+      // TODO(andrealin): Get field name patterns.
+      fieldNamePatterns = ImmutableMap.of();
     }
 
     ResourceNameTreatment defaultResourceNameTreatment = null;
@@ -230,10 +242,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
             getOptionalFields(methodModel, requiredFields));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
-    SampleSpec sampleSpec = null;
+    SampleSpec sampleSpec;
     if (methodConfigProto != null) {
       sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
       sampleSpec = new SampleSpec(methodConfigProto);
+    } else {
+      sampleSpec = SampleSpec.createEmptySampleSpec();
     }
 
     String rerouteToGrpcInterface = null;
@@ -257,10 +271,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig = null;
-    // TODO(andrealin): get longrunning from proto annotations
-
+    LongRunningConfig longRunningConfig =
+        LongRunningConfig.createLongRunningConfig(method, diagCollector);
     if (methodConfigProto != null
+        && longRunningConfig != null
         && !LongRunningConfigProto.getDefaultInstance()
             .equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
