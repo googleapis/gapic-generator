@@ -31,6 +31,7 @@
  */
 
 use Google\ApiCore\ApiException;
+use Google\ApiCore\ValidationException;
 use Google\Rpc\Code;
 use Google\Rpc\Status;
 use PHPUnit\Framework\TestCase;
@@ -81,23 +82,29 @@ class ShowcaseIntegrationTests extends TestCase
      */
     public function clientProvider()
     {
-        if (empty(self::$grpcClient)) {
-            self::$grpcClient = new \Google\Showcase\V1alpha1\EchoClient([
-                'serviceAddress' => 'localhost:7469',
-                'transport' => 'grpc',
-                'transportConfig' => [
-                    'grpc' => [
-                        'stubOpts' => [
-                            'credentials' => null,
+        try {
+            if (empty(self::$grpcClient)) {
+                self::$grpcClient = new \Google\Showcase\V1alpha1\EchoClient([
+                    'serviceAddress' => 'localhost:7469',
+                    'transport' => 'grpc',
+                    'transportConfig' => [
+                        'grpc' => [
+                            'stubOpts' => [
+                                'credentials' => null,
+                            ]
                         ]
                     ]
-                ]
-            ]);
+                ]);
+            }
+
+            // TODO(michaelbausor): add clients that use alternate transports
+            // (rest, grpc-fallback) once they are supported by Showcase
+            return [
+                [self::$grpcClient],
+            ];
+        } catch (ValidationException $ex) {
+            var_dump($ex);
+            throw $ex;
         }
-        // TODO(michaelbausor): add clients that use alternate transports
-        // (rest, grpc-fallback) once they are supported by Showcase
-        return [
-            [self::$grpcClient],
-        ];
     }
 }
