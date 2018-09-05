@@ -110,4 +110,10 @@ public class ProtoAnnotations {
   public static OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
+
+  public static String listToString(Iterable<?> list) {
+    StringBuilder paramsAsString = new StringBuilder();
+    list.forEach(p -> paramsAsString.append(p.toString()).append(", "));
+    return paramsAsString.toString();
+  }
 }

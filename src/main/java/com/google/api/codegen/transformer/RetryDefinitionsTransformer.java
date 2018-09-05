@@ -21,16 +21,22 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -64,7 +70,15 @@ public class RetryDefinitionsTransformer {
   }
 
   public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector, @Nullable InterfaceConfigProto interfaceConfigProto) {
+      DiagCollector diagCollector,
+      @Nullable InterfaceConfigProto interfaceConfigProto,
+      Interface apiInterface) {
+    // Use a symbol table to get unique names for retry codes.
+    SymbolTable retryCodeNames = new SymbolTable();
+    // Keep track of which sets of retry codes (key) have been encountered, and the names (value)
+    // for each set.
+    Map<String, String> retryCodeSets = new HashMap<>();
+
     ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
     if (interfaceConfigProto != null) {
       for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
@@ -84,15 +98,38 @@ public class RetryDefinitionsTransformer {
         }
         builder.put(
             retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
+        retryCodeSets.put(ProtoAnnotations.listToString(codes), retryDef.getName());
+        retryCodeNames.getNewSymbol(retryDef.getName());
       }
     } else {
       // Use default values for retry settings.
       builder.putAll(DEFAULT_RETRY_CODES);
+      for (Entry<String, List<String>> entry : DEFAULT_RETRY_CODES.entrySet()) {
+        retryCodeSets.put(ProtoAnnotations.listToString(entry.getValue()), entry.getKey());
+        retryCodeNames.getNewSymbol(entry.getKey());
+      }
     }
+
+    // Check proto annotations for retry settings.
+    if (apiInterface != null) {
+      for (Method method : apiInterface.getMethods()) {
+        List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
+        if (retryCodeSets.containsKey(ProtoAnnotations.listToString(retryCodes))) {
+          continue; // We've already seen this set of retry codes.
+        }
+        String retryCodesName = retryCodeNames.getNewSymbol(getRetryCodesName(method));
+        retryCodeSets.put(ProtoAnnotations.listToString(retryCodes), retryCodesName);
+      }
+    }
+
     if (diagCollector.getErrorCount() > 0) {
       return null;
     }
     return builder.build();
+  }
+
+  public static String getRetryCodesName(Method method) {
+    return String.format("%s_retry_code", method.getSimpleName());
   }
 
   public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(

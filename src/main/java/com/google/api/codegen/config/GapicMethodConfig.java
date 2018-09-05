@@ -28,7 +28,6 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
-import com.google.api.codegen.configgen.mergers.ProtoConfigMerger;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
@@ -52,7 +51,6 @@ import org.threeten.bp.Duration;
  */
 @AutoValue
 public abstract class GapicMethodConfig extends MethodConfig {
-  private ProtoConfigMerger protoConfigMerger = new ProtoConfigMerger();
 
   public Method getMethod() {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
@@ -274,7 +272,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(method, diagCollector);
     if (methodConfigProto != null
-        && longRunningConfig != null
         && !LongRunningConfigProto.getDefaultInstance()
             .equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =

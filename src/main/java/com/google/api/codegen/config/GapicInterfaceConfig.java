@@ -121,7 +121,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
     // TODO(andrealin): enforce auto retries on GET, and then whatever's explicitly given
     ImmutableMap<String, List<String>> retryCodesDefinition =
-        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetryCodesDefinition(
+            diagCollector, interfaceConfigProto, apiInterface);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
