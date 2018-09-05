@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
 
 import com.google.api.codegen.BatchingConfigProto;
@@ -28,6 +27,7 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
@@ -130,27 +130,20 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = null;
-    // Check proto annotations for retry settings.
-    // TODO(andrealin): add in the retryCodes somewhere...
-    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
-    if (retryCodes.size() > 0) {
-      retryCodesName = String.format("%s_retry", method.getSimpleName());
-    }
-    if (methodConfigProto != null && Strings.isNullOrEmpty(retryCodesName)) {
+    String retryCodesName;
+    if (methodConfigProto != null) {
       retryCodesName = methodConfigProto.getRetryCodesName();
-      if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Retry codes config used but not defined: '%s' (in method %s)",
-                retryCodesName,
-                methodModel.getFullName()));
-        error = true;
-      }
+    } else {
+      retryCodesName = RetryDefinitionsTransformer.getRetryCodesName(method);
     }
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      retryCodesName = RETRY_CODES_NON_IDEMPOTENT_NAME;
+    if (!Strings.isNullOrEmpty(retryCodesName) && !retryCodesConfigNames.contains(retryCodesName)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Retry codes config used but not defined: '%s' (in method %s)",
+              retryCodesName,
+              methodModel.getFullName()));
+      error = true;
     }
 
     String retryParamsName = null;
