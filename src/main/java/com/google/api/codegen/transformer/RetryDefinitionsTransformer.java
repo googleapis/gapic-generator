@@ -128,7 +128,7 @@ public class RetryDefinitionsTransformer {
     return builder.build();
   }
 
-  public static String getRetryCodesName(Method method) {
+  private static String getRetryCodesName(Method method) {
     return String.format("%s_retry_code", method.getSimpleName());
   }
 

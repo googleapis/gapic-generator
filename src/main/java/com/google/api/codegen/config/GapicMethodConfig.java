@@ -27,7 +27,6 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
-import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.tools.framework.model.Diag;
@@ -42,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -71,7 +71,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
+      Map<String, List<String>> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoMethodTransformer configUtils) {
 
@@ -130,21 +130,20 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName;
-    if (methodConfigProto != null) {
-      retryCodesName = methodConfigProto.getRetryCodesName();
-    } else {
-      retryCodesName = RetryDefinitionsTransformer.getRetryCodesName(method);
-    }
-    if (!Strings.isNullOrEmpty(retryCodesName) && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
+    String retryCodesName =
+        retryCodesConfigNames
+            .entrySet()
+            .stream()
+            .filter(e -> e.getValue().equals(retryCodes))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        String.format(
+                            "No retry codes name in retryCodesConfigNames for %s",
+                            method.getSimpleName())));
 
     String retryParamsName = null;
     if (methodConfigProto != null) {

@@ -136,10 +136,10 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               apiInterface,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesDefinition.keySet(),
+              retryCodesDefinition,
               retrySettingsDefinition.keySet(),
               configUtils);
-      methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
+      methodConfigs = createMethodConfigs(methodConfigMap, apiInterface);
     }
 
     SmokeTestConfig smokeTestConfig =
@@ -220,7 +220,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
+      Map<String, List<String>> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoMethodTransformer configUtils) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
@@ -282,6 +282,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return ImmutableMap.copyOf(methodConfigMapBuilder);
     }
+  }
+
+  static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap, Interface apiInterface) {
+    List<T> methodConfigs = new ArrayList<>();
+    for (Method method : apiInterface.getMethods()) {
+      methodConfigs.add(methodConfigMap.get(method.getSimpleName()));
+    }
+    return methodConfigs;
   }
 
   static <T> List<T> createMethodConfigs(
