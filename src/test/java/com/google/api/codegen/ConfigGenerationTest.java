@@ -64,7 +64,8 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/config_not_annotated");
   }
 
   @Test

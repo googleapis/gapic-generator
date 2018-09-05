@@ -4,7 +4,7 @@
     @if apiMethod.hasApiVersion
         const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
-        var client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({
+        const client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({
           // optional auth parameters.
         });
 
@@ -17,7 +17,7 @@
 @snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
-    var client = {@apiMethod.localPackageName}.{@apiMethod.apiClassName}({
+    const client = {@apiMethod.localPackageName}.{@apiMethod.apiClassName}({
       // optional auth parameters.
     });
 
@@ -93,7 +93,7 @@
 @end
 
 @snippet clientStreamingSampleCode(apiMethod, init, additionalCallback)
-    var stream = client.{@apiMethod.name}((err, response) => {
+    const stream = client.{@apiMethod.name}((err, response) => {
       @if additionalCallback
         if (err) {
           {@additionalCallback}(err);
@@ -114,7 +114,7 @@
 @end
 
 @snippet bidiStreamingSampleCode(apiMethod, init, additionalCallback)
-    var stream = client.{@apiMethod.name}().on('data', response => {
+    const stream = client.{@apiMethod.name}().on('data', response => {
       @if additionalCallback
         console.log(response);
         {@additionalCallback}();
@@ -182,7 +182,7 @@
   @end
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
-      var resources = responses[0];
+      const resources = responses[0];
       for (let i = 0; i < resources.length; i += 1) {
         @if additionalCallback
           console.log(resources[i]);
@@ -202,14 +202,14 @@
 
     @end
 
-    var options = {autoPaginate: false};
-    var callback = responses => {
+    const options = {autoPaginate: false};
+    const callback = responses => {
       // The actual resources in a response.
-      var resources = responses[0];
+      const resources = responses[0];
       // The next request if the response shows that there are more responses.
-      var nextRequest = responses[1];
+      const nextRequest = responses[1];
       // The actual response object, if necessary.
-      // var rawResponse = responses[2];
+      // const rawResponse = responses[2];
       for (let i = 0; i < resources.length; i += 1) {
         @if additionalCallback
           console.log(resources[i]);
@@ -240,7 +240,7 @@
   {@initCode(apiMethod, init)}
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
-      var response = responses[0];
+      const response = responses[0];
       @if additionalCallback
         console.log(response);
       @else
@@ -263,8 +263,8 @@
   // Handle the operation using the promise pattern.
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
-      var operation = responses[0];
-      var initialApiResponse = responses[1];
+      const operation = responses[0];
+      const initialApiResponse = responses[1];
       @if additionalCallback
         console.log(operation);
         console.log(initialApiResponse);
@@ -275,13 +275,13 @@
     })
     .then(responses => {
       // The final result of the operation.
-      var result = responses[0];
+      const result = responses[0];
 
       // The metadata value of the completed operation.
-      var metadata = responses[1];
+      const metadata = responses[1];
 
       // The response of the api call returning the complete operation.
-      var finalApiResponse = responses[2];
+      const finalApiResponse = responses[2];
       @if additionalCallback
 
         console.log(result);
@@ -298,8 +298,8 @@
   // Handle the operation using the event emitter pattern.
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
-      var operation = responses[0];
-      var initialApiResponse = responses[1];
+      const operation = responses[0];
+      const initialApiResponse = responses[1];
 
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
@@ -375,7 +375,7 @@
 @end
 
 @private initLineStructure(line)
-  var {@line.identifier} = {
+  const {@line.identifier} = {
     @join fieldSetting : line.fieldSettings on BREAK
       {@fieldSetting.fieldName}: {@fieldSetting.identifier},
     @end
@@ -383,7 +383,7 @@
 @end
 
 @private initLineList(line)
-    var {@line.identifier} = [{@varList(line.elementIdentifiers)}];
+    const {@line.identifier} = [{@varList(line.elementIdentifiers)}];
 @end
 
 @snippet varList(args)
@@ -393,7 +393,7 @@
 @end
 
 @private initLineMap(line)
-  var {@line.identifier} = {{@keyVarList(line.initEntries)}};
+  const {@line.identifier} = {{@keyVarList(line.initEntries)}};
 @end
 
 @private keyVarList(mapEntries)
@@ -403,7 +403,7 @@
 @end
 
 @private initLineSimple(line)
-  var {@line.identifier} = {@renderInitValue(line.initValue)};
+  const {@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
 @private renderInitValue(initValue)
@@ -435,7 +435,7 @@
     @case "0"
     @case "1"
     @default
-      var request = {
+      const request = {
         @join fieldSetting : init.fieldSettings on BREAK
           {@fieldSetting.fieldName}: {@fieldSetting.identifier},
         @end

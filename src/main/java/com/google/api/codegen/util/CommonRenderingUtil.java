@@ -41,7 +41,8 @@ public class CommonRenderingUtil {
   public static List<String> getDocLines(String text) {
     // TODO: Convert markdown to language-specific doc format.
     // https://github.com/googleapis/toolkit/issues/331
-    List<String> result = Splitter.on(String.format("%n")).splitToList(text);
+    text = text.replace("\r\n", "\n").replace("\r", "\n");
+    List<String> result = Splitter.on('\n').splitToList(text);
     return result.size() == 1 && result.get(0).isEmpty() ? ImmutableList.<String>of() : result;
   }
 
@@ -51,6 +52,7 @@ public class CommonRenderingUtil {
    * <p>maxWidth includes the ending newline.
    */
   public static List<String> getDocLines(String text, int maxWidth) {
+    text = text.replace("\r\n", "\n").replace("\r", "\n");
     maxWidth = maxWidth - 1;
     List<String> lines = new ArrayList<>();
     for (String line : text.trim().split("\n")) {

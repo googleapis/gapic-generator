@@ -65,7 +65,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
 
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    String dir = language.toString().toLowerCase();
+    if ("python".equals(dir)) {
+      dir = "py";
+    }
+    getTestDataLocator().addTestDataSource(getClass(), dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
   }
 
   @Override
@@ -76,9 +82,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   @Override
   protected void setupModel() {
     super.setupModel();
-    gapicConfig =
-        CodegenTestUtil.readConfig(
-            model.getDiagReporter().getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+    if (gapicConfigFileNames != null) {
+      gapicConfig =
+          CodegenTestUtil.readConfig(
+              model.getDiagReporter().getDiagCollector(),
+              getTestDataLocator(),
+              gapicConfigFileNames);
+    }
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
         ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
