@@ -116,7 +116,7 @@ anchor_run_ruby: &anchor_run_ruby
     <<: *anchor_artman_vars
   steps:
     - attach_workspace:
-        # Use the workspace created in generate-clients
+        # Use the workspace created in generate-all
         at: workspace
     - run:
         <<: *anchor_run_decrypt
@@ -318,7 +318,8 @@ jobs:
           root: /tmp/workspace
           paths:
             - reports/gapic-generator
-  generate-clients:
+
+  generate-pubsub:
     docker:
       - image: googleapis/artman:0.15.2
     working_directory: /tmp/
@@ -340,6 +341,31 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
+      - store_artifacts:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/gapic-generator/artman-genfiles
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator/artman-genfiles
+            - reports
+
+
+  generate-logging:
+    docker:
+      - image: googleapis/artman:0.15.2
+    working_directory: /tmp/
+    environment:
+      <<: *anchor_artman_vars
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
           name: Generate Logging Libraries
           command: |
@@ -349,6 +375,31 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
+      - store_artifacts:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/gapic-generator/artman-genfiles
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator/artman-genfiles
+            - reports
+
+
+  generate-speech:
+    docker:
+      - image: googleapis/artman:0.15.2
+    working_directory: /tmp/
+    environment:
+      <<: *anchor_artman_vars
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
           name: Generate Speech Libraries
           command: |
@@ -359,6 +410,31 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
+      - store_artifacts:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/gapic-generator/artman-genfiles
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator/artman-genfiles
+            - reports
+
+
+  generate-showcase:
+    docker:
+      - image: googleapis/artman:0.15.2
+    working_directory: /tmp/
+    environment:
+      <<: *anchor_artman_vars
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${ARTMAN_REPORTS_DIR}
       - run:
           name: Generate Showcase Libraries
           command: |
@@ -380,6 +456,25 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
+
+  # No-op job. Used to checkpoint all generators succeeding.
+  generate-all:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - attach_workspace:
+          at: workspace
+      - store_artifacts:
+          path: /tmp/workspace/reports
+      - store_artifacts:
+          path: /tmp/workspace/gapic-generator/artman-genfiles
+      - persist_to_workspace:
+          # Save all generated directories in workspace for later CircleCI jobs.
+          root: /tmp/workspace
+          paths:
+            - gapic-generator/artman-genfiles
+            - reports
+
   verify-and-test-java-openjdk8:
     working_directory: /tmp/
     environment:
@@ -565,40 +660,58 @@ workflows:
       - test-gapic-generator:
           requires:
             - install-gapic-generator
-      - generate-clients:
+
+      - generate-pubsub:
           requires:
             - install-gapic-generator
+      - generate-logging:
+          requires:
+            - install-gapic-generator
+      - generate-speech:
+          requires:
+            - install-gapic-generator
+      - generate-showcase:
+          requires:
+            - install-gapic-generator
+
+      - generate-all:
+          requires:
+            - generate-pubsub
+            - generate-logging
+            - generate-speech
+            - generate-showcase
+
       - verify-and-test-java-openjdk8:
           requires:
-            - generate-clients
+            - generate-all
       - verify-and-test-python:
           requires:
-            - generate-clients
+            - generate-all
       - verify-and-test-ruby-2.4:
           requires:
-            - generate-clients
+            - generate-all
       - verify-and-test-system-python:
           requires:
-            - generate-clients
+            - generate-all
           filters:
             branches:
               only: master
       - verify-and-test-system-ruby-2.4:
           requires:
-            - generate-clients
+            - generate-all
           filters:
             branches:
               only: master
       - verify-and-test-php-7.2:
           requires:
-            - generate-clients
+            - generate-all
       # TODO: Other php versions
       - verify-and-test-go-1.10:
           requires:
-            - generate-clients
+            - generate-all
       - verify-and-test-nodejs-8:
           requires:
-            - generate-clients
+            - generate-all
 
 machine:
   services:
