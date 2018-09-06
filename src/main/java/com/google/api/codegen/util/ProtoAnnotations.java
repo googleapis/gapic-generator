@@ -80,57 +80,6 @@ public class ProtoAnnotations {
         .build();
   }
 
-  public static List<String> getRetryCodes(
-      Method method, InterfaceConfigProto interfaceConfigProto, DiagCollector diagCollector) {
-    Retry retry = method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
-    HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
-
-    // Use GAPIC config if retry codes is defined there, and Retry proto annotation does not exist
-    if (interfaceConfigProto != null && retry.getCodesCount() == 0) {
-      String configRetryCodesName =
-          interfaceConfigProto
-              .getMethodsList()
-              .stream()
-              .filter(mcp -> mcp.getName().equals(method.getSimpleName()))
-              .map(MethodConfigProto::getRetryCodesName)
-              .findFirst()
-              .orElse(null);
-      if (!Strings.isNullOrEmpty(configRetryCodesName)) {
-        Optional<? extends List<String>> retryCodes =
-            interfaceConfigProto
-                .getRetryCodesDefList()
-                .stream()
-                .filter(retryCodeDef -> configRetryCodesName.equals(retryCodeDef.getName()))
-                .map(RetryCodesDefinitionProto::getRetryCodesList)
-                .findFirst();
-        if (!retryCodes.isPresent()) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "Retry codes config used but not defined: '%s' (in method %s)",
-                  configRetryCodesName,
-                  method.getFullName()));
-          return null;
-        }
-        List<String> retryCodesList = Lists.newArrayList(retryCodes.get());
-        Collections.sort(retryCodesList);
-        return retryCodesList;
-      }
-    }
-
-    // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and `UNAVAILABLE`.
-    if (retry.getCodesCount() == 0 && !Strings.isNullOrEmpty(httpRule.getGet())) {
-      return DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
-    }
-
-    // If there is no google.api.http annotation, do not retry any errors.
-    if (httpRule == null || httpRule.equals(httpRule.getDefaultInstanceForType())) {
-      return ImmutableList.of();
-    }
-
-    return retry.getCodesList().stream().map(Code::name).collect(Collectors.toList());
-  }
-
   public static List<String> getRequiredFields(Method method) {
     MessageType inputMessage = method.getInputMessage();
     return inputMessage
