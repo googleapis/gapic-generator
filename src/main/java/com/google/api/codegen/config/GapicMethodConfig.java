@@ -71,7 +71,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, List<String>> retryCodesConfigNames,
+      Map<String, String> methodNamesToRetryCodeDefNames,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoMethodTransformer configUtils) {
 
@@ -130,20 +130,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
-    String retryCodesName =
-        retryCodesConfigNames
-            .entrySet()
-            .stream()
-            .filter(e -> e.getValue().equals(retryCodes))
-            .map(Map.Entry::getKey)
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        String.format(
-                            "No retry codes name in retryCodesConfigNames for %s",
-                            method.getSimpleName())));
+    String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
 
     String retryParamsName = null;
     if (methodConfigProto != null) {

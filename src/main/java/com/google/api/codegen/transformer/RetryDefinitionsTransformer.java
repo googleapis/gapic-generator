@@ -17,13 +17,15 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.*;
 
+import autovalue.shaded.com.google.common.common.collect.Lists;
+import com.google.api.AnnotationsProto;
+import com.google.api.HttpRule;
+import com.google.api.Retry;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
@@ -35,16 +37,14 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.rpc.Code;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -75,28 +75,29 @@ public class RetryDefinitionsTransformer {
     return definitions;
   }
 
+  /**
+   * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
+   * the @param methodNameToRetryCodeNames with a mapping of
+   */
   public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
       @Nullable InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface) {
+      Interface apiInterface,
+      ImmutableMap.Builder<String, String> methodNameToRetryCodeNames) {
     // Use a symbol table to get unique names for retry codes.
-    SymbolTable retryCodeNames = new SymbolTable();
-    // Keep track of which sets of retry codes (key) have been encountered, and the names (value)
-    // for each set.
-    Map<String, String> retryCodeSets = new HashMap<>();
-
-    Set<String> methodsWithoutRetryConfigProto;
+    SymbolTable retryCodeNameSymbolTable = new SymbolTable();
+    Map<String, String> methodNamesToRetryNamesFromConfig = new TreeMap<>();
 
     ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
     if (interfaceConfigProto != null) {
-      methodsWithoutRetryConfigProto =
-          interfaceConfigProto.getMethodsList().stream()
-              .filter(m -> Strings.isNullOrEmpty(m.getRetryCodesName()))
-              .map(MethodConfigProto::getName)
-              .collect(Collectors.toSet());
+      //      methodsWithoutRetryConfigProto =
+      //          interfaceConfigProto.getMethodsList().stream()
+      //              .filter(m -> Strings.isNullOrEmpty(m.getRetryCodesName()))
+      //              .map(MethodConfigProto::getName)
+      //              .collect(Collectors.toSet());
       for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
         // Enforce ordering on set for baseline test consistency.
-        Set<String> codes = new TreeSet<>();
+        List<String> codes = new ArrayList<>();
         for (String codeText : retryDef.getRetryCodesList()) {
           try {
             codes.add(String.valueOf(codeText));
@@ -109,19 +110,24 @@ public class RetryDefinitionsTransformer {
                     interfaceConfigProto.getName()));
           }
         }
+        Collections.sort(codes);
         builder.put(
             retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
-        retryCodeSets.put(ProtoAnnotations.listToString(codes), retryDef.getName());
-        retryCodeNames.getNewSymbol(retryDef.getName());
+        retryCodeNameSymbolTable.getNewSymbol(retryDef.getName());
       }
+
+      // Map each methodConfig name to its retry codes name.
+      interfaceConfigProto
+          .getMethodsList()
+          .stream()
+          .filter(m -> !Strings.isNullOrEmpty(m.getRetryCodesName()))
+          .forEach(m -> methodNamesToRetryNamesFromConfig.put(m.getName(), m.getRetryCodesName()));
     } else {
-      methodsWithoutRetryConfigProto = new HashSet<>();
       // TODO (andrealin): Use unique names for default values
       // Use default values for retry settings.
       builder.putAll(DEFAULT_RETRY_CODES);
       for (Entry<String, List<String>> entry : DEFAULT_RETRY_CODES.entrySet()) {
-        retryCodeSets.put(ProtoAnnotations.listToString(entry.getValue()), entry.getKey());
-        retryCodeNames.getNewSymbol(entry.getKey());
+        retryCodeNameSymbolTable.getNewSymbol(entry.getKey());
       }
     }
 
@@ -129,15 +135,69 @@ public class RetryDefinitionsTransformer {
     if (apiInterface != null) {
       for (Method method : apiInterface.getMethods()) {
 
-        List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
-        if (retryCodeSets.containsKey(ProtoAnnotations.listToString(retryCodes))) {
-          continue; // We've already seen this set of retry codes.
+        List<String> retryCodes = null;
+        Retry retry = method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
+        HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+        String retryCodesName = null;
+
+        // Use GAPIC config if retry codes is defined there, and Retry proto annotation does not
+        // exist
+        if (methodNamesToRetryNamesFromConfig.containsKey(method.getSimpleName())
+            && retry.getCodesCount() == 0) {
+          String configRetryCodesName =
+              interfaceConfigProto
+                  .getMethodsList()
+                  .stream()
+                  .filter(mcp -> mcp.getName().equals(method.getSimpleName()))
+                  .map(MethodConfigProto::getRetryCodesName)
+                  .findFirst()
+                  .orElse(null);
+          if (!Strings.isNullOrEmpty(configRetryCodesName)) {
+            Optional<RetryCodesDefinitionProto> maybeRetryCodes =
+                interfaceConfigProto
+                    .getRetryCodesDefList()
+                    .stream()
+                    .filter(retryCodeDef -> configRetryCodesName.equals(retryCodeDef.getName()))
+                    .findFirst();
+            if (!maybeRetryCodes.isPresent()) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "Retry codes config used but not defined: '%s' (in method %s)",
+                      configRetryCodesName,
+                      method.getFullName()));
+              return null;
+            }
+            List<String> retryCodesList =
+                Lists.newArrayList(maybeRetryCodes.get().getRetryCodesList());
+            Collections.sort(retryCodesList);
+            retryCodes = retryCodesList;
+            retryCodesName = maybeRetryCodes.get().getName();
+          }
         }
 
-        String retryCodesName = retryCodeNames.getNewSymbol(getRetryCodesName(method));
-        retryCodeSets.put(ProtoAnnotations.listToString(retryCodes), retryCodesName);
+        if (retryCodes == null) {
+          if (retry.getCodesCount() == 0 && !Strings.isNullOrEmpty(httpRule.getGet())) {
+            // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and
+            // `UNAVAILABLE`.
+            retryCodes = DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
+          } else if (httpRule == null || httpRule.equals(httpRule.getDefaultInstanceForType())) {
+            // If there is no google.api.http annotation, do not retry any errors.
+            retryCodes = ImmutableList.of();
+          } else {
+            retryCodes = retry.getCodesList().stream().map(Code::name).collect(Collectors.toList());
+          }
+          // Create a retryCode config internally.
+          retryCodesName = retryCodeNameSymbolTable.getNewSymbol(getRetryCodesName(method));
+        }
+
+        Collections.sort(retryCodes);
+
+        methodNamesToRetryNamesFromConfig.put(method.getSimpleName(), retryCodesName);
       }
     }
+
+    methodNameToRetryCodeNames.putAll(methodNamesToRetryNamesFromConfig);
 
     if (diagCollector.getErrorCount() > 0) {
       return null;

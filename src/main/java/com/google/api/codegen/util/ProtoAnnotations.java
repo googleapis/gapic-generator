@@ -17,22 +17,29 @@ package com.google.api.codegen.util;
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 
+import autovalue.shaded.com.google.common.common.collect.Lists;
 import com.google.api.AnnotationsProto;
 import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
+import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.rpc.Code;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,14 +80,42 @@ public class ProtoAnnotations {
         .build();
   }
 
-  public static List<String> getRetryCodes(Method method, MethodConfigProto methodConfigProto) {
+  public static List<String> getRetryCodes(
+      Method method, InterfaceConfigProto interfaceConfigProto, DiagCollector diagCollector) {
     Retry retry = method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
     HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
 
     // Use GAPIC config if retry codes is defined there, and Retry proto annotation does not exist
-    if (methodConfigProto != null && Strings.isNullOrEmpty(methodConfigProto.getRetryCodesName())
-        && retry.getCodesCount() == 0) {
-      return methodConfigProto.getRetryCodesName();
+    if (interfaceConfigProto != null && retry.getCodesCount() == 0) {
+      String configRetryCodesName =
+          interfaceConfigProto
+              .getMethodsList()
+              .stream()
+              .filter(mcp -> mcp.getName().equals(method.getSimpleName()))
+              .map(MethodConfigProto::getRetryCodesName)
+              .findFirst()
+              .orElse(null);
+      if (!Strings.isNullOrEmpty(configRetryCodesName)) {
+        Optional<? extends List<String>> retryCodes =
+            interfaceConfigProto
+                .getRetryCodesDefList()
+                .stream()
+                .filter(retryCodeDef -> configRetryCodesName.equals(retryCodeDef.getName()))
+                .map(RetryCodesDefinitionProto::getRetryCodesList)
+                .findFirst();
+        if (!retryCodes.isPresent()) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Retry codes config used but not defined: '%s' (in method %s)",
+                  configRetryCodesName,
+                  method.getFullName()));
+          return null;
+        }
+        List<String> retryCodesList = Lists.newArrayList(retryCodes.get());
+        Collections.sort(retryCodesList);
+        return retryCodesList;
+      }
     }
 
     // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and `UNAVAILABLE`.
@@ -118,9 +153,9 @@ public class ProtoAnnotations {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
-  public static String listToString(Iterable<?> list) {
+  public static String listToString(List<String> list) {
     StringBuilder paramsAsString = new StringBuilder();
-    list.forEach(p -> paramsAsString.append(p.toString()).append(", "));
+    list.forEach(p -> paramsAsString.append(p).append(", "));
     return paramsAsString.toString();
   }
 }

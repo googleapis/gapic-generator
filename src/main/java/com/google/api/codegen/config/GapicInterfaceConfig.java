@@ -120,9 +120,10 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoMethodTransformer configUtils) {
 
+    ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector, interfaceConfigProto, apiInterface);
+            diagCollector, interfaceConfigProto, apiInterface, methodNameToRetryNameMap);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
@@ -137,7 +138,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               apiInterface,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesDefinition,
+              methodNameToRetryNameMap.build(),
               retrySettingsDefinition.keySet(),
               configUtils);
       methodConfigs = createMethodConfigs(methodConfigMap, apiInterface, interfaceConfigProto);
@@ -221,7 +222,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, List<String>> retryCodesConfigNames,
+      Map<String, String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoMethodTransformer configUtils) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
