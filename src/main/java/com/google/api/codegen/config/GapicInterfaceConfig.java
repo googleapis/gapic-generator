@@ -36,16 +36,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import javax.annotation.Nullable;
 
 /**
@@ -291,16 +286,18 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   static <T> List<T> createMethodConfigs(
-      ImmutableMap<String, T> methodConfigMap, Interface apiInterface, InterfaceConfigProto interfaceConfigProto) {
-    Map<String, T> methodConfigs = new TreeMap<>();
-    for (Method method : apiInterface.getMethods()) {
-      methodConfigs.put(method.getSimpleName(), methodConfigMap.get(method.getSimpleName()));
-    }
+      ImmutableMap<String, T> methodConfigMap,
+      Interface apiInterface,
+      InterfaceConfigProto interfaceConfigProto) {
+    Map<String, T> methodConfigs = new LinkedHashMap<>();
     // Add in methods that aren't defined in the source protos but are defined in the GAPIC config.
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      if (!methodConfigs.containsKey(methodConfigProto.getName())) {
-        methodConfigs.put(methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
-      }
+      methodConfigs.put(
+          methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
+    }
+    // Add in methods that aren't defined in the GAPIC config but are defined in the source protos.
+    for (Method method : apiInterface.getMethods()) {
+      methodConfigs.put(method.getSimpleName(), methodConfigMap.get(method.getSimpleName()));
     }
     return new LinkedList<>(methodConfigs.values());
   }
