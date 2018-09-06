@@ -289,12 +289,14 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   static <T> List<T> createMethodConfigs(
       ImmutableMap<String, T> methodConfigMap,
       Interface apiInterface,
-      InterfaceConfigProto interfaceConfigProto) {
+      @Nullable InterfaceConfigProto interfaceConfigProto) {
     Map<String, T> methodConfigs = new LinkedHashMap<>();
     // Add in methods that aren't defined in the source protos but are defined in the GAPIC config.
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      methodConfigs.put(
-          methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
+    if (interfaceConfigProto != null) {
+      for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+        methodConfigs.put(
+            methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
+      }
     }
     // Add in methods that aren't defined in the GAPIC config but are defined in the source protos.
     for (Method method : apiInterface.getMethods()) {
