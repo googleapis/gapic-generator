@@ -67,12 +67,12 @@ def generate_clients(root_dir, languages, artman_config, log_dir, user_config):
                 target, artman_config)
             success.append(msg)
         logger.info(msg)
-    if not lang_success:
-        # Output the [language.log] file.
-        write_lang_error_log(language, log_dir)
+        if not lang_success:
+            # Output the [language.log] file.
+            write_lang_error_log(language, log_dir, msg)
 
     logger.info('================ Library Generation Summary ================')
-    if not warning or not failure:
+    if warning or failure:
         logger.info('Successes:')
         if warning:
             for msg in success:
@@ -111,11 +111,11 @@ def _generate_artifact(artman_config, artifact_name, root_dir, log_file, user_co
         return subprocess.call(grpc_pipeline_args, stdout=log, stderr=log)
 
 
-def write_lang_error_log(language, log_dir):
+def write_lang_error_log(language, log_dir, msg):
     file_name = "%s.log" % language
     filepath = os.path.join(log_dir, file_name)
-    with open(filepath,"w") as f:
-        f.write("Error.")
+    with open(filepath,"a") as f:
+        f.write("Error: %s\n" % msg)
 
 
 def parse_args(*args):
@@ -160,10 +160,6 @@ if __name__ == '__main__':
     root_dir = os.path.abspath(flags.root_dir)
     log_dir = os.path.abspath(flags.log_dir)
     user_config = os.path.abspath(os.path.expanduser(flags.user_config)) if flags.user_config else None
-
-    # Clear log directory.
-    for f in os.listdir(log_dir):
-        os.remove(os.path.join(log_dir, f))
 
     successes = generate_clients(root_dir, flags.languages, flags.artman_config, log_dir, user_config)
 
