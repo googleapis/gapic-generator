@@ -36,10 +36,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.annotation.Nullable;
 
 /**
@@ -139,7 +145,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               retryCodesDefinition,
               retrySettingsDefinition.keySet(),
               configUtils);
-      methodConfigs = createMethodConfigs(methodConfigMap, apiInterface);
+      methodConfigs = createMethodConfigs(methodConfigMap, apiInterface, interfaceConfigProto);
     }
 
     SmokeTestConfig smokeTestConfig =
@@ -285,12 +291,18 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   static <T> List<T> createMethodConfigs(
-      ImmutableMap<String, T> methodConfigMap, Interface apiInterface) {
-    List<T> methodConfigs = new ArrayList<>();
+      ImmutableMap<String, T> methodConfigMap, Interface apiInterface, InterfaceConfigProto interfaceConfigProto) {
+    Map<String, T> methodConfigs = new TreeMap<>();
     for (Method method : apiInterface.getMethods()) {
-      methodConfigs.add(methodConfigMap.get(method.getSimpleName()));
+      methodConfigs.put(method.getSimpleName(), methodConfigMap.get(method.getSimpleName()));
     }
-    return methodConfigs;
+    // Add in methods that aren't defined in the source protos but are defined in the GAPIC config.
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      if (!methodConfigs.containsKey(methodConfigProto.getName())) {
+        methodConfigs.put(methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
+      }
+    }
+    return new LinkedList<>(methodConfigs.values());
   }
 
   static <T> List<T> createMethodConfigs(
