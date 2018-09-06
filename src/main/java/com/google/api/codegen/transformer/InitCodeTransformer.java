@@ -264,16 +264,27 @@ public class InitCodeTransformer {
     return paths.stream().map(path -> root.subTree(path)).collect(ImmutableList.toImmutableList());
   }
 
+  /**
+   * Given node `root` and `paths` describing subtrees of `root`, verify that all subtrees are
+   * disjoint. Ie, no two subtrees are the same, and no subtrees are themselves part of other
+   * subtrees.
+   */
   @VisibleForTesting
   static void assertNoOverlap(InitCodeNode root, List<String> paths) {
-    HashMap<InitCodeNode, String> nodes = new HashMap<>();
+    // Keep track of the path that adds a node. If we detect collision we can report the two paths
+    // that reference the same nodes.
+    HashMap<InitCodeNode, String> refFrom = new HashMap<>();
+
+    // Below we'll perform depth-first search, keep a list of nodes we've seen but have not
+    // descended into. It doesn't really matter if we search breath- or depth-first; DFS is a little
+    // more efficient on average.
     ArrayDeque<InitCodeNode> subNodes = new ArrayDeque<>();
 
     for (String path : paths) {
       subNodes.add(root.subTree(path));
       while (!subNodes.isEmpty()) {
         InitCodeNode node = subNodes.pollLast();
-        String oldPath = nodes.put(node, path);
+        String oldPath = refFrom.put(node, path);
         if (oldPath != null) {
           throw new IllegalArgumentException(
               String.format("SampleInitAttribute %s overlaps with %s", oldPath, path));
