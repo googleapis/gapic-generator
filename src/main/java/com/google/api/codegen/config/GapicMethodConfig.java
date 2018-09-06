@@ -131,6 +131,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
+    if (Strings.isNullOrEmpty(retryCodesName)) {
+      retryCodesName = "";
+    }
 
     String retryParamsName = null;
     if (methodConfigProto != null) {
