@@ -22,6 +22,7 @@ import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
@@ -72,9 +73,15 @@ public class ProtoAnnotations {
         .build();
   }
 
-  public static List<String> getRetryCodes(Method method) {
+  public static List<String> getRetryCodes(Method method, MethodConfigProto methodConfigProto) {
     Retry retry = method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
     HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+
+    // Use GAPIC config if retry codes is defined there, and Retry proto annotation does not exist
+    if (methodConfigProto != null && Strings.isNullOrEmpty(methodConfigProto.getRetryCodesName())
+        && retry.getCodesCount() == 0) {
+      return methodConfigProto.getRetryCodesName();
+    }
 
     // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and `UNAVAILABLE`.
     if (retry.getCodesCount() == 0 && !Strings.isNullOrEmpty(httpRule.getGet())) {

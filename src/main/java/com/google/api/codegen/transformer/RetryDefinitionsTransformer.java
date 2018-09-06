@@ -18,8 +18,10 @@ import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.*;
 
 import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoAnnotations;
 import com.google.api.codegen.util.SymbolTable;
@@ -30,16 +32,20 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
@@ -79,8 +85,15 @@ public class RetryDefinitionsTransformer {
     // for each set.
     Map<String, String> retryCodeSets = new HashMap<>();
 
+    Set<String> methodsWithoutRetryConfigProto;
+
     ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
     if (interfaceConfigProto != null) {
+      methodsWithoutRetryConfigProto =
+          interfaceConfigProto.getMethodsList().stream()
+              .filter(m -> Strings.isNullOrEmpty(m.getRetryCodesName()))
+              .map(MethodConfigProto::getName)
+              .collect(Collectors.toSet());
       for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
         // Enforce ordering on set for baseline test consistency.
         Set<String> codes = new TreeSet<>();
@@ -102,6 +115,8 @@ public class RetryDefinitionsTransformer {
         retryCodeNames.getNewSymbol(retryDef.getName());
       }
     } else {
+      methodsWithoutRetryConfigProto = new HashSet<>();
+      // TODO (andrealin): Use unique names for default values
       // Use default values for retry settings.
       builder.putAll(DEFAULT_RETRY_CODES);
       for (Entry<String, List<String>> entry : DEFAULT_RETRY_CODES.entrySet()) {
@@ -113,10 +128,12 @@ public class RetryDefinitionsTransformer {
     // Check proto annotations for retry settings.
     if (apiInterface != null) {
       for (Method method : apiInterface.getMethods()) {
+
         List<String> retryCodes = ProtoAnnotations.getRetryCodes(method);
         if (retryCodeSets.containsKey(ProtoAnnotations.listToString(retryCodes))) {
           continue; // We've already seen this set of retry codes.
         }
+
         String retryCodesName = retryCodeNames.getNewSymbol(getRetryCodesName(method));
         retryCodeSets.put(ProtoAnnotations.listToString(retryCodes), retryCodesName);
       }
