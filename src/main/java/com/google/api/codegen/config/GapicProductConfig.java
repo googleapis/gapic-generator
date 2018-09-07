@@ -24,6 +24,7 @@ import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -137,10 +138,15 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
-    LanguageSettingsProto settings =
+
+    String clientPackageName;
+      LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
+      clientPackageName = settings.getPackageName();
+    } else {
+      clientPackageName = new LanguageTransformer().generateLanguageSettings()
     }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
@@ -191,7 +197,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
-        settings.getPackageName(),
+        clientPackageName,
         settings.getDomainLayerLocation(),
         settings.getReleaseLevel(),
         messageConfigs,
