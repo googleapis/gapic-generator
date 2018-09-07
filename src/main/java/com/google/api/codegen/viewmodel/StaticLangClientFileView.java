@@ -39,8 +39,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract List<RetryConfigDefinitionView> retryPairDefinitions();
 
-  public abstract List<IamResourceView> iamResources();
-
   public abstract List<StaticLangApiMethodView> apiMethods();
 
   public abstract String clientTypeName();
@@ -107,8 +105,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
 
     public abstract Builder retryPairDefinitions(List<RetryConfigDefinitionView> val);
-
-    public abstract Builder iamResources(List<IamResourceView> val);
 
     public abstract Builder serviceDoc(ServiceDocView val);
 

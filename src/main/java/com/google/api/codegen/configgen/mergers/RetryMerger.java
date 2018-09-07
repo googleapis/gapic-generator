@@ -51,7 +51,7 @@ public class RetryMerger {
         generateRetryCodeDefNode(
             NodeFinder.getNextLine(parentNode),
             RETRY_CODES_IDEMPOTENT_NAME,
-            ImmutableList.of(Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name()));
+            ImmutableList.of(Status.Code.DEADLINE_EXCEEDED.name(), Status.Code.UNAVAILABLE.name()));
     parentNode.setChild(idempotentNode);
     ConfigNode nonIdempotentNode =
         generateRetryCodeDefNode(
