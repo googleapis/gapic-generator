@@ -266,7 +266,7 @@ public class InitCodeTransformer {
 
   /**
    * Given node `root` and `paths` describing subtrees of `root`, verify that all subtrees are
-   * disjoint. Ie, no two subtrees are the same, and no subtrees are themselves part of other
+   * disjoint. i.e., no two subtrees are the same, and no subtrees are themselves part of other
    * subtrees.
    */
   @VisibleForTesting
