@@ -18,15 +18,24 @@ import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
+import com.google.protobuf.Api;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
@@ -37,6 +46,25 @@ public class ProtoParser {
         (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
     if (resource != null) {
       return resource.getPath();
+    }
+    return null;
+  }
+
+  /** Returns a base package name for an API's client. */
+  @Nullable
+  public static String getPackageName(Model model) {
+    if (model.getServiceConfig().getApisCount() > 0) {
+      Api api = model.getServiceConfig().getApis(0);
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
+      if (apiInterface != null) {
+        return apiInterface.getFile().getFullName();
+      }
+    } else {
+      ProtoFile root = (ProtoFile) model.getRoots().iterator().next();
+      if (root == null) {
+        return null;
+      }
+      return root.getFullName();
     }
     return null;
   }
@@ -87,5 +115,12 @@ public class ProtoParser {
     StringBuilder paramsAsString = new StringBuilder();
     list.forEach(p -> paramsAsString.append(p).append(", "));
     return paramsAsString.toString();
+  }
+
+  @Nullable
+  public static String getFormattedPackageName(String language, String basePackageName) {
+    LanguageTransformer.LanguageFormatter formatter =
+        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
+    return formatter.getFormattedPackageName(basePackageName);
   }
 }

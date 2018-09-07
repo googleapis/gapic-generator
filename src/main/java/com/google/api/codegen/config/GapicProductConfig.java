@@ -184,8 +184,13 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (configProto != null) {
       settings = configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     }
+    String clientPackageName;
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
+      String basePackageName = ProtoParser.getPackageName(model);
+      clientPackageName = ProtoParser.getFormattedPackageName(language.name(), basePackageName);
+    } else {
+      clientPackageName = settings.getPackageName();
     }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
@@ -239,7 +244,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
-        settings.getPackageName(),
+        clientPackageName,
         settings.getDomainLayerLocation(),
         settings.getReleaseLevel(),
         messageConfigs,
