@@ -32,7 +32,6 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.IamResourceTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -86,7 +85,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new GoImportSectionTransformer());
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
-  private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
@@ -159,13 +157,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       context.getImportTypeTable().saveNicknameFor("fmt;;;");
     }
 
-    view.iamResources(iamResourceTransformer.generateIamResources(context));
-    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
-        .getIamResources()
-        .isEmpty()) {
-      context.getImportTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
-    }
-
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
     // We have to dedupe the iterators.
     Map<String, PageStreamingDescriptorClassView> iterators = new TreeMap<>();
@@ -215,7 +206,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     view.clientConstructorExampleName(
         namer.getApiWrapperClassConstructorExampleName(interfaceConfig));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
-    view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
     // and so we omit most type names. We only need

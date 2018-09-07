@@ -62,8 +62,6 @@ public interface InterfaceConfig {
 
   boolean hasReroutedInterfaceMethods();
 
-  ImmutableList<? extends FieldModel> getIamResources();
-
   ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   @Nullable
