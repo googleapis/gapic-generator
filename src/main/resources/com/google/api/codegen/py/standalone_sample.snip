@@ -31,7 +31,7 @@
 
     @end
 
-    def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
+    def sample_{@apiMethod.name}({@sampleFuncParams(sample.initCode.argDefaultParams)}):
       """{@sample.valueSet.description}"""
 
       @# [START {@sample.regionTag}_core]
@@ -80,14 +80,28 @@
   @end
 
   def main():
+    import argparse
+
     @# FIXME: Convert argv from strings to the correct types.
-    sample_{@apiMethod.name}(*sys.argv[1:])
+    parser = argparse.ArgumentParser()
+    @join param : sample.initCode.argDefaultParams
+      parser.add_argument('--{@param.identifier}')
+    @end
+    args = parser.parse_args()
+
+    sample_{@apiMethod.name}({@sampleFuncArgs(sample.initCode.argDefaultParams)})
 
   if __name__ == '__main__':
     main()
 @end
 
-@private sampleFuncParam(defaultParams)
+@private sampleFuncArgs(defaultParams)
+  @join param : defaultParams on ", "
+    args.{@param.identifier}
+  @end
+@end
+
+@private sampleFuncParams(defaultParams)
   @join param : defaultParams on ", "
     {@param.identifier}
   @end
