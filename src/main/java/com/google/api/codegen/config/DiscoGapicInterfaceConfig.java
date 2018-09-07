@@ -62,11 +62,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   // Mapping of a method to its main resource name.
   public abstract Map<MethodConfig, SingleResourceNameConfig> methodToResourceNameMap();
 
-  @Override
-  public ImmutableList<FieldModel> getIamResources() {
-    return ImmutableList.of();
-  }
-
   static DiscoGapicInterfaceConfig createInterfaceConfig(
       DiscoApiModel model,
       TargetLanguage language,

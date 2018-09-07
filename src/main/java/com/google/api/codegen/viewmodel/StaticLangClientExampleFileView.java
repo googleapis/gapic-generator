@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangClientExampleFileView implements ViewModel {
@@ -46,10 +45,6 @@ public abstract class StaticLangClientExampleFileView implements ViewModel {
   /** Methods to make examples for */
   public abstract List<StaticLangApiMethodView> apiMethods();
 
-  /** Example of IAM resource functions. */
-  @Nullable
-  public abstract List<IamResourceView> iamResources();
-
   public static Builder newBuilder() {
     return new AutoValue_StaticLangClientExampleFileView.Builder();
   }
@@ -69,8 +64,6 @@ public abstract class StaticLangClientExampleFileView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
-
-    public abstract Builder iamResources(List<IamResourceView> val);
 
     public abstract StaticLangClientExampleFileView build();
   }
