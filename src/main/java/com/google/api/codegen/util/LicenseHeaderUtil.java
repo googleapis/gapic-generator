@@ -66,14 +66,9 @@ public class LicenseHeaderUtil {
   public ImmutableList<String> loadLicenseLines() {
     try {
       String licenseFile;
-      if (licenseHeader == null) {
+      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
         licenseFile = DEFAULT_LICENSE_FILE;
       } else {
-        if (Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "license_header.license_file missing"));
-          return null;
-        }
         licenseFile = licenseHeader.getLicenseFile();
       }
       return ImmutableList.copyOf(getResourceLines(licenseFile));
@@ -88,14 +83,9 @@ public class LicenseHeaderUtil {
   public ImmutableList<String> loadCopyrightLines() {
     try {
       String filepath;
-      if (licenseHeader == null) {
+      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
         filepath = DEFAULT_COPYRIGHT_FILE;
       } else {
-        if (Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "license_header.copyright_file missing"));
-          return null;
-        }
         filepath = licenseHeader.getCopyrightFile();
       }
       return ImmutableList.copyOf(getResourceLines(filepath));
