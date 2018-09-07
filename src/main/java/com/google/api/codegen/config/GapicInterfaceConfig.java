@@ -148,40 +148,47 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
     ImmutableList<FieldModel> iamResources =
-        createIamResources(
-            apiInterface.getModel(),
-            interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
+        createIamResources(apiInterface.getModel(), interfaceConfigProto);
 
-    ImmutableList<String> requiredConstructorParams =
-        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
-    for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
-      if (!CONSTRUCTOR_PARAMS.contains(param)) {
-        diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
+    ImmutableList<String> requiredConstructorParams;
+    if (interfaceConfigProto != null) {
+      requiredConstructorParams =
+          ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+      for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
+        if (!CONSTRUCTOR_PARAMS.contains(param)) {
+          diagCollector.addDiag(
+              Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
+        }
       }
+    } else {
+      requiredConstructorParams = ImmutableList.of();
     }
+
+    String manualDoc = "";
 
     ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
-    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
-      String entityName = collectionConfigProto.getEntityName();
-      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Inconsistent configuration - single resource name %s specified for interface, "
-                    + " but was not found in GapicProductConfig configuration.",
-                entityName));
-        return null;
+    if (interfaceConfigProto != null) {
+      for (CollectionConfigProto collectionConfigProto :
+          interfaceConfigProto.getCollectionsList()) {
+        String entityName = collectionConfigProto.getEntityName();
+        ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+        if (!(resourceName instanceof SingleResourceNameConfig)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Inconsistent configuration - single resource name %s specified for interface, "
+                      + " but was not found in GapicProductConfig configuration.",
+                  entityName));
+          return null;
+        }
+        resourcesBuilder.add((SingleResourceNameConfig) resourceName);
       }
-      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
+      manualDoc =
+          Strings.nullToEmpty(
+                  interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
+              .trim();
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
-
-    String manualDoc =
-        Strings.nullToEmpty(
-                interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
-            .trim();
 
     if (diagCollector.hasErrors()) {
       return null;
@@ -204,8 +211,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static SmokeTestConfig createSmokeTestConfig(
       DiagCollector diagCollector,
       Interface apiInterface,
-      InterfaceConfigProto interfaceConfigProto) {
-    if (interfaceConfigProto.hasSmokeTest()) {
+      @Nullable InterfaceConfigProto interfaceConfigProto) {
+    if (interfaceConfigProto != null && interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
           new ProtoInterfaceModel(apiInterface),
           interfaceConfigProto.getSmokeTest(),
@@ -364,23 +371,27 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   /** Creates a list of fields that can be turned into IAM resources */
   private static ImmutableList<FieldModel> createIamResources(
-      Model model, List<IamResourceProto> resources) {
+      Model model, InterfaceConfigProto interfaceConfigProto) {
     ImmutableList.Builder<FieldModel> fields = ImmutableList.builder();
-    for (IamResourceProto resource : resources) {
-      TypeRef type = model.getSymbolTable().lookupType(resource.getType());
-      if (type == null) {
-        throw new IllegalArgumentException("type not found: " + resource.getType());
+    if (interfaceConfigProto != null) {
+      List<IamResourceProto> resources =
+          interfaceConfigProto.getExperimentalFeatures().getIamResourcesList();
+      for (IamResourceProto resource : resources) {
+        TypeRef type = model.getSymbolTable().lookupType(resource.getType());
+        if (type == null) {
+          throw new IllegalArgumentException("type not found: " + resource.getType());
+        }
+        if (!type.isMessage()) {
+          throw new IllegalArgumentException("type must be a message: " + type);
+        }
+        Field field = type.getMessageType().lookupField(resource.getField());
+        if (field == null) {
+          throw new IllegalArgumentException(
+              String.format(
+                  "type %s does not have field %s", resource.getType(), resource.getField()));
+        }
+        fields.add(new ProtoField(field));
       }
-      if (!type.isMessage()) {
-        throw new IllegalArgumentException("type must be a message: " + type);
-      }
-      Field field = type.getMessageType().lookupField(resource.getField());
-      if (field == null) {
-        throw new IllegalArgumentException(
-            String.format(
-                "type %s does not have field %s", resource.getType(), resource.getField()));
-      }
-      fields.add(new ProtoField(field));
     }
     return fields.build();
   }

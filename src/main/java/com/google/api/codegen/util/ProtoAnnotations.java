@@ -14,32 +14,16 @@
  */
 package com.google.api.codegen.util;
 
-import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
-
-import autovalue.shaded.com.google.common.common.collect.Lists;
 import com.google.api.AnnotationsProto;
-import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
-import com.google.api.Retry;
-import com.google.api.codegen.InterfaceConfigProto;
-import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
-import com.google.rpc.Code;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,15 +33,13 @@ public class ProtoAnnotations {
   public static final String RESOURCE_ANNOTATION = "google.api.resources";
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
-  public static String getResourcePath(ProtoElement element) {
-    return element
-        .getOptionFields()
-        .entrySet()
-        .stream()
-        .filter(entry -> entry.getKey().getFullName().equals(RESOURCE_ANNOTATION))
-        .map(entry -> ((Resource) entry.getValue()).getPath())
-        .findFirst()
-        .orElse(null);
+  public static String getResourcePath(Field element) {
+    Resource resource =
+        (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
+    if (resource != null) {
+      return resource.getPath();
+    }
+    return null;
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
