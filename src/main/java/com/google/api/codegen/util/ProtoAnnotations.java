@@ -44,7 +44,7 @@ public class ProtoAnnotations {
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public static String getResourceEntityName(Field field) {
-    return field.getSimpleName().toLowerCase();
+    return field.getParent().getSimpleName().toLowerCase();
   }
 
   /* Return a list of method signatures, aka flattenings, specified on a given method. */
