@@ -28,7 +28,7 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -198,7 +198,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
-    List<String> requiredFields = ProtoAnnotations.getRequiredFields(method);
+    List<String> requiredFields = ProtoParser.getRequiredFields(method);
     if (requiredFields.isEmpty() && methodConfigProto != null) {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }

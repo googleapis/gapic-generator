@@ -25,7 +25,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.util.LicenseHeaderUtil;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -514,7 +514,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (ProtoFile protoFile : sourceProtos) {
       for (MessageType messageType : protoFile.getMessages()) {
         for (Field field : messageType.getFields()) {
-          String resourcePath = ProtoAnnotations.getResourcePath(field);
+          String resourcePath = ProtoParser.getResourcePath(field);
           if (resourcePath != null) {
             createSingleResourceNameConfig(
                 diagCollector, field, singleResourceNameConfigsMap, protoFile);

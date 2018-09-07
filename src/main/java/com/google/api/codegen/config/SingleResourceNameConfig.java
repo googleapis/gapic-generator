@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -79,7 +79,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector, Field resourceField, ProtoFile file) {
-    String namePattern = ProtoAnnotations.getResourcePath(resourceField);
+    String namePattern = ProtoParser.getResourcePath(resourceField);
     PathTemplate nameTemplate;
     try {
       nameTemplate = PathTemplate.create(namePattern);
@@ -87,7 +87,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = ProtoAnnotations.getResourceEntityName(resourceField);
+    String entityId = ProtoParser.getResourceEntityName(resourceField);
     String entityName = entityId;
     String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(

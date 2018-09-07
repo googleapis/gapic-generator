@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -71,7 +71,7 @@ public abstract class LongRunningConfig {
 
     boolean error = false;
     Model model = method.getModel();
-    OperationTypes operationTypes = ProtoAnnotations.getLongRunningOperation(method);
+    OperationTypes operationTypes = ProtoParser.getLongRunningOperation(method);
     if (operationTypes == null
         || operationTypes.equals(operationTypes.getDefaultInstanceForType())) {
       return null;

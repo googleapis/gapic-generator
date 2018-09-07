@@ -19,7 +19,7 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -71,7 +71,7 @@ public abstract class ResourceNameMessageConfigs {
 
       for (MessageType message : protoFile.getMessages()) {
         for (Field field : message.getFields()) {
-          String resourcePath = ProtoAnnotations.getResourcePath(field);
+          String resourcePath = ProtoParser.getResourcePath(field);
           if (Strings.isNullOrEmpty(resourcePath)) continue;
 
           ResourceNameMessageConfig messageResourceTypeConfig =

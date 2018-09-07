@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Utils for parsing proto annotations.
-public class ProtoAnnotations {
-  public static final String RESOURCE_ANNOTATION = "google.api.resources";
+// Utils for parsing possibly-annotated protobuf API IDL.
+public class ProtoParser {
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public static String getResourcePath(Field element) {
@@ -67,7 +66,7 @@ public class ProtoAnnotations {
     return inputMessage
         .getFields()
         .stream()
-        .filter(ProtoAnnotations::isFieldRequired)
+        .filter(ProtoParser::isFieldRequired)
         .map(Field::getSimpleName)
         .collect(Collectors.toList());
   }

@@ -21,7 +21,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.ProtoAnnotations;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -215,7 +215,7 @@ public abstract class MethodConfig {
     // TODO get flattenings from proto annotations.
     if (methodModel instanceof ProtoMethodModel) {
       List<MethodSignature> methodSignatures =
-          ProtoAnnotations.getMethodSignatures((ProtoMethodModel) methodModel);
+          ProtoParser.getMethodSignatures((ProtoMethodModel) methodModel);
       for (MethodSignature signature : methodSignatures) {
         if (signature.getFieldsCount() == 0) {
           break;
