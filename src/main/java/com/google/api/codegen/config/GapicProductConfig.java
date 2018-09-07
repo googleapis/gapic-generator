@@ -20,10 +20,10 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
-import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -33,15 +33,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.io.CharStreams;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -156,15 +151,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
     try {
-      LicenseHeaderProto licenseHeader =
-          configProto
-              .getLicenseHeader()
-              .toBuilder()
-              .mergeFrom(settings.getLicenseHeaderOverride())
-              .build();
-      copyrightLines =
-          loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+      LicenseHeaderUtil licenseHeaderUtil =
+          LicenseHeaderUtil.create(
+              configProto, settings, model.getDiagReporter().getDiagCollector());
+      copyrightLines = licenseHeaderUtil.loadCopyrightLines();
+      licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
       model
           .getDiagReporter()
@@ -233,14 +224,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
     try {
-      LicenseHeaderProto licenseHeader =
-          configProto
-              .getLicenseHeader()
-              .toBuilder()
-              .mergeFrom(settings.getLicenseHeaderOverride())
-              .build();
-      copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
-      licenseLines = getResourceLines(licenseHeader.getLicenseFile());
+      LicenseHeaderUtil licenseHeaderUtil =
+          LicenseHeaderUtil.create(configProto, settings, model.getDiagCollector());
+      copyrightLines = licenseHeaderUtil.loadCopyrightLines();
+      licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
       model
           .getDiagCollector()
@@ -389,43 +376,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     } else {
       return interfaceConfigMap.build();
     }
-  }
-
-  private static ImmutableList<String> loadCopyrightLines(
-      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
-    if (licenseHeaderProto == null) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-      return null;
-    }
-    if (Strings.isNullOrEmpty(licenseHeaderProto.getCopyrightFile())) {
-      diagCollector.addDiag(
-          Diag.error(SimpleLocation.TOPLEVEL, "license_header.copyright_file missing"));
-      return null;
-    }
-
-    return getResourceLines(licenseHeaderProto.getCopyrightFile());
-  }
-
-  private static ImmutableList<String> loadLicenseLines(
-      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
-    if (licenseHeaderProto == null) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-      return null;
-    }
-    if (Strings.isNullOrEmpty(licenseHeaderProto.getLicenseFile())) {
-      diagCollector.addDiag(
-          Diag.error(SimpleLocation.TOPLEVEL, "license_header.license_file missing"));
-      return null;
-    }
-
-    return getResourceLines(licenseHeaderProto.getLicenseFile());
-  }
-
-  private static ImmutableList<String> getResourceLines(String resourceFileName)
-      throws IOException {
-    InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
-    InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
-    return ImmutableList.copyOf(CharStreams.readLines(fileReader));
   }
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
