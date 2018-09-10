@@ -108,12 +108,6 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
-  public static String listToString(List<String> list) {
-    StringBuilder paramsAsString = new StringBuilder();
-    list.forEach(p -> paramsAsString.append(p).append(", "));
-    return paramsAsString.toString();
-  }
-
   @Nullable
   public static String getFormattedPackageName(String language, String basePackageName) {
     LanguageTransformer.LanguageFormatter formatter =
