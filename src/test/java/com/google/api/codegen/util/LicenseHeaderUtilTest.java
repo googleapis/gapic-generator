@@ -23,13 +23,12 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.common.truth.Truth;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class LicenseHeaderUtilTest {
 
@@ -53,29 +52,31 @@ public class LicenseHeaderUtilTest {
                     .setCopyrightFile(DEFAULT_COPYRIGHT_FILE)
                     .setLicenseFile(DEFAULT_LICENSE_FILE))
             .build();
-    explicitHeaderUtil = LicenseHeaderUtil.create(
-        configProto, LanguageSettingsProto.getDefaultInstance(), new BoundedDiagCollector());
+    explicitHeaderUtil =
+        LicenseHeaderUtil.create(
+            configProto, LanguageSettingsProto.getDefaultInstance(), new BoundedDiagCollector());
 
     ConfigProto langOverrideConfigProto =
-        configProto.toBuilder()
+        configProto
+            .toBuilder()
             .putLanguageSettings(
                 LANGUAGE,
                 LanguageSettingsProto.newBuilder()
                     .setLicenseHeaderOverride(
-                        LicenseHeaderProto.newBuilder()
-                            .setLicenseFile(IMAGINARY_FILE)
-                            .build())
+                        LicenseHeaderProto.newBuilder().setLicenseFile(IMAGINARY_FILE).build())
                     .build())
             .build();
-    langOverrideHeaderUtil = LicenseHeaderUtil.create(
-        langOverrideConfigProto, langOverrideConfigProto.getLanguageSettingsMap().get(LANGUAGE), new BoundedDiagCollector());
-
+    langOverrideHeaderUtil =
+        LicenseHeaderUtil.create(
+            langOverrideConfigProto,
+            langOverrideConfigProto.getLanguageSettingsMap().get(LANGUAGE),
+            new BoundedDiagCollector());
   }
-
 
   @Test
   public void loadDefaultLicenseLines() throws IOException {
-    String actualLicenseFilePath = String.format("src/main/resources/com/google/api/codegen/%s", DEFAULT_LICENSE_FILE);
+    String actualLicenseFilePath =
+        String.format("src/main/resources/com/google/api/codegen/%s", DEFAULT_LICENSE_FILE);
     BufferedReader actualLicenseReader = new BufferedReader(new FileReader(actualLicenseFilePath));
     String firstLicenseLine = actualLicenseReader.readLine();
 
@@ -86,13 +87,14 @@ public class LicenseHeaderUtilTest {
     Truth.assertThat(firstLicenseLine).isEqualTo(defaultLicenseLines.get(0));
     Truth.assertThat(defaultHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
     Truth.assertThat(explicitHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
-
   }
 
   @Test
   public void loadDefaultCopyrightLines() throws IOException {
-    String actualCopyrightFilePath = String.format("src/main/resources/com/google/api/codegen/%s", DEFAULT_COPYRIGHT_FILE);
-        BufferedReader actualCopyrightReader = new BufferedReader(new FileReader(actualCopyrightFilePath));
+    String actualCopyrightFilePath =
+        String.format("src/main/resources/com/google/api/codegen/%s", DEFAULT_COPYRIGHT_FILE);
+    BufferedReader actualCopyrightReader =
+        new BufferedReader(new FileReader(actualCopyrightFilePath));
     String firstCopyrightLine = actualCopyrightReader.readLine();
 
     List<String> defaultCopyrightLines = defaultHeaderUtil.loadCopyrightLines();
@@ -116,5 +118,4 @@ public class LicenseHeaderUtilTest {
 
     fail();
   }
-
 }
