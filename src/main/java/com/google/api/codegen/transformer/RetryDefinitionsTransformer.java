@@ -240,6 +240,7 @@ public class RetryDefinitionsTransformer {
                 "Retry parameters config used but not defined: %s (in method %s)",
                 retryParamsName,
                 methodConfigProto.getName()));
+        return null;
       } else {
         return retryParamsName;
       }

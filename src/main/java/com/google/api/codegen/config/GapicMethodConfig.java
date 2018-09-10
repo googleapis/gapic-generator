@@ -123,6 +123,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(
             methodConfigProto, diagCollector, retryParamsConfigNames);
+    error |= (retryParamsName == null);
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
     if (timeout.toMillis() <= 0) {
