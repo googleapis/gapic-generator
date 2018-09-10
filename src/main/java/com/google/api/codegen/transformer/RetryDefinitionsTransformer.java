@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -224,6 +225,27 @@ public class RetryDefinitionsTransformer {
       builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
     }
     return builder.build();
+  }
+
+  public static String getRetryParamsName(
+      @Nullable MethodConfigProto methodConfigProto,
+      DiagCollector diagCollector,
+      Set<String> retryParamsConfigNames) {
+    if (methodConfigProto != null) {
+      String retryParamsName = methodConfigProto.getRetryParamsName();
+      if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Retry parameters config used but not defined: %s (in method %s)",
+                retryParamsName,
+                methodConfigProto.getName()));
+      } else {
+        return retryParamsName;
+      }
+    }
+    // TODO(andrealin): handle default retry params
+    return RETRY_PARAMS_DEFAULT_NAME;
   }
 
   public List<RetryParamsDefinitionView> generateRetryParamsDefinitions(InterfaceContext context) {

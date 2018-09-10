@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
-
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.LongRunningConfigProto;
@@ -26,6 +24,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -121,23 +120,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
 
-    String retryParamsName = null;
-    if (methodConfigProto != null) {
-      retryParamsName = methodConfigProto.getRetryParamsName();
-      if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Retry parameters config used but not defined: %s (in method %s)",
-                retryParamsName,
-                methodModel.getFullName()));
-        error = true;
-      }
-    }
-    // TODO(andrealin): handle default retry params
-    if (Strings.isNullOrEmpty(retryParamsName)) {
-      retryParamsName = RETRY_PARAMS_DEFAULT_NAME;
-    }
+    String retryParamsName =
+        RetryDefinitionsTransformer.getRetryParamsName(
+            methodConfigProto, diagCollector, retryParamsConfigNames);
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
     if (timeout.toMillis() <= 0) {
