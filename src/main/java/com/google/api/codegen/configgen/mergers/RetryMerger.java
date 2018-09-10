@@ -21,16 +21,9 @@ import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFA
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_RETRY_DELAY_MULTIPLIER;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_RPC_TIMEOUT_MULTIPLIER;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_TOTAL_TIMEOUT_MILLIS;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.INITIAL_RETRY_DELAY_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.INITIAL_RPC_TIMEOUT_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.MAX_RETRY_DELAY_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.MAX_RPC_TIMEOUT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_DELAY_MULTIPLIER_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_PARAMS_DEFAULT_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RPC_TIMEOUT_MULTIPLIER_NAME;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.TOTAL_TIMEOUT_NAME;
 
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
@@ -48,6 +41,14 @@ import java.util.Map;
 
 /** Merges retry properties from an API interface into a ConfigNode. */
 public class RetryMerger {
+
+  private static final String INITIAL_RETRY_DELAY_NAME = "initial_retry_delay_millis";
+  private static final String RETRY_DELAY_MULTIPLIER_NAME = "retry_delay_multiplier";
+  private static final String MAX_RETRY_DELAY_NAME = "max_retry_delay_millis";
+  private static final String INITIAL_RPC_TIMEOUT_NAME = "initial_rpc_timeout_millis";
+  private static final String RPC_TIMEOUT_MULTIPLIER_NAME = "rpc_timeout_multiplier";
+  private static final String MAX_RPC_TIMEOUT_NAME = "max_rpc_timeout_millis";
+  private static final String TOTAL_TIMEOUT_NAME = "total_timeout_millis";
 
   public static final Map<String, List<String>> DEFAULT_RETRY_CODES =
       ImmutableSortedMap.of(
