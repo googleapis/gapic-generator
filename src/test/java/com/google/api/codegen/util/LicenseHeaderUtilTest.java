@@ -22,14 +22,11 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.truth.Truth;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +34,7 @@ import java.util.List;
 public class LicenseHeaderUtilTest {
 
   // A dummy value for package name override.
-  private static final String PACKAGE_NAME_OVERRIDE = "imaginary_file.txt";
+  private static final String IMAGINARY_FILE = "imaginary_file.txt";
   // Some target language; the value isn't important.
   private static final String LANGUAGE = "python";
 
@@ -66,7 +63,7 @@ public class LicenseHeaderUtilTest {
                 LanguageSettingsProto.newBuilder()
                     .setLicenseHeaderOverride(
                         LicenseHeaderProto.newBuilder()
-                            .setLicenseFile(PACKAGE_NAME_OVERRIDE)
+                            .setLicenseFile(IMAGINARY_FILE)
                             .build())
                     .build())
             .build();
@@ -112,7 +109,7 @@ public class LicenseHeaderUtilTest {
     try {
       langOverrideHeaderUtil.loadLicenseLines();
     } catch (RuntimeException e) {
-      // This is supposed to happen.
+      // This is supposed to happen because IMAGINARY_FILE doesn't exist.
       Truth.assertThat(langOverrideHeaderUtil.getDiagCollector().getErrorCount()).isGreaterThan(0);
       return;
     }
