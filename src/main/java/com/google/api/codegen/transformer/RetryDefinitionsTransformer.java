@@ -125,13 +125,6 @@ public class RetryDefinitionsTransformer {
           .filter(m -> !Strings.isNullOrEmpty(m.getRetryCodesName()))
           .forEach(m -> methodNamesToRetryNamesFromConfig.put(m.getName(), m.getRetryCodesName()));
     }
-    //    else {
-    //      // Use default values for retry settings.
-    //      builder.putAll(DEFAULT_RETRY_CODES);
-    //      for (Entry<String, List<String>> entry : DEFAULT_RETRY_CODES.entrySet()) {
-    //        retryCodeNameSymbolTable.getNewSymbol(entry.getKey());
-    //      }
-    //    }
 
     // Check proto annotations for retry settings.
     if (apiInterface != null) {
