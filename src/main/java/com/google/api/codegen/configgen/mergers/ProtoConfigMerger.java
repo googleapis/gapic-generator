@@ -60,7 +60,7 @@ public class ProtoConfigMerger {
     if (packageName != null) {
       return packageName;
     }
-    helper.error(model.getLocation(), "No interface found");
+    helper.error(model.getLocation(), "Failed to determine package name.");
     return null;
   }
 }

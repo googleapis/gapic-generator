@@ -24,14 +24,11 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
