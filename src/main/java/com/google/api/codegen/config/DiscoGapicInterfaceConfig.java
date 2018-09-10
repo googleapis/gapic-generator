@@ -70,9 +70,9 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
+    ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            model.getDiagCollector(), interfaceConfigProto);
+            model.getDiagCollector(), interfaceConfigProto, null, ImmutableMap.builder());
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
@@ -86,8 +86,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               interfaceConfigProto,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet());
+              ImmutableList.copyOf(retryCodesDefinition.keySet()),
+              ImmutableList.copyOf(retrySettingsDefinition.keySet()));
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
@@ -184,8 +184,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      List<String> retryCodesConfigNames,
+      List<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 

@@ -26,6 +26,22 @@ public class RetryTransformer {
   public static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";
   public static final String RETRY_PARAMS_DEFAULT_NAME = "default";
 
+  public static final int DEFAULT_INITIAL_RETRY_DELAY = 100;
+  public static final double DEFAULT_RETRY_DELAY_MULTIPLIER = 1.3;
+  public static final int DEFAULT_MAX_RETRY_DELAY = 60000;
+  public static final int DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER = 20000;
+  public static final int DEFAULT_RPC_TIMEOUT_MULTIPLIER = 1;
+  public static final int DEFAULT_MAX_RPC_TIMEOUT_MILLIS = 20000;
+  public static final int DEFAULT_TOTAL_TIMEOUT_MILLIS = 600000;
+
+  public static final String INITIAL_RETRY_DELAY_NAME = "initial_retry_delay_millis";
+  public static final String RETRY_DELAY_MULTIPLIER_NAME = "retry_delay_multiplier";
+  public static final String MAX_RETRY_DELAY_NAME = "max_retry_delay_millis";
+  public static final String INITIAL_RPC_TIMEOUT_NAME = "initial_rpc_timeout_millis";
+  public static final String RPC_TIMEOUT_MULTIPLIER_NAME = "rpc_timeout_multiplier";
+  public static final String MAX_RPC_TIMEOUT_NAME = "max_rpc_timeout_millis";
+  public static final String TOTAL_TIMEOUT_NAME = "total_timeout_millis";
+
   public void generateRetryDefinitions(
       InterfaceView.Builder interfaceView,
       List<String> idempotentRetryCodes,
@@ -54,13 +70,13 @@ public class RetryTransformer {
     return ImmutableList.of(
         RetryParamView.newBuilder()
             .name(RETRY_PARAMS_DEFAULT_NAME)
-            .initialRetryDelayMillis("100")
-            .retryDelayMultiplier("1.3")
-            .maxRetryDelayMillis("60000")
-            .initialRpcTimeoutMillis("20000")
-            .rpcTimeoutMultiplier("1")
-            .maxRpcTimeoutMillis("20000")
-            .totalTimeoutMillis("600000")
+            .initialRetryDelayMillis(String.valueOf(DEFAULT_INITIAL_RETRY_DELAY))
+            .retryDelayMultiplier(String.valueOf(DEFAULT_RETRY_DELAY_MULTIPLIER))
+            .maxRetryDelayMillis(String.valueOf(DEFAULT_MAX_RETRY_DELAY))
+            .initialRpcTimeoutMillis(String.valueOf(DEFAULT_INITIAL_RPC_TIMEOUT_MULTIPLIER))
+            .rpcTimeoutMultiplier(String.valueOf(DEFAULT_RPC_TIMEOUT_MULTIPLIER))
+            .maxRpcTimeoutMillis(String.valueOf(DEFAULT_MAX_RPC_TIMEOUT_MILLIS))
+            .totalTimeoutMillis(String.valueOf(DEFAULT_TOTAL_TIMEOUT_MILLIS))
             .build());
   }
 }
