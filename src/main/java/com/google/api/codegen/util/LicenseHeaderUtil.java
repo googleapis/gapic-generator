@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,7 +77,6 @@ public class LicenseHeaderUtil {
 
     } catch (Exception e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }
   }
@@ -91,14 +92,20 @@ public class LicenseHeaderUtil {
       return ImmutableList.copyOf(getResourceLines(filepath));
     } catch (Exception e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }
   }
 
   private ImmutableList<String> getResourceLines(String resourceFileName) throws IOException {
     InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
+    if (fileStream == null) {
+      throw new FileNotFoundException(resourceFileName);
+    }
     InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
     return ImmutableList.copyOf(CharStreams.readLines(fileReader));
+  }
+
+  public DiagCollector getDiagCollector() {
+    return diagCollector;
   }
 }
