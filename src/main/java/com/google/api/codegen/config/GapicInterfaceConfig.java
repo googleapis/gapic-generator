@@ -135,18 +135,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
-    ImmutableList<String> requiredConstructorParams;
-    if (interfaceConfigProto != null) {
-      requiredConstructorParams =
-          ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
-      for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
-        if (!CONSTRUCTOR_PARAMS.contains(param)) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
-        }
+    ImmutableList<String> requiredConstructorParams =
+        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+    for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
+      if (!CONSTRUCTOR_PARAMS.contains(param)) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
       }
-    } else {
-      requiredConstructorParams = ImmutableList.of();
     }
 
     ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
