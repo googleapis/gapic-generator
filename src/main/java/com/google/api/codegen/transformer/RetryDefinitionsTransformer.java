@@ -185,15 +185,11 @@ public class RetryDefinitionsTransformer {
           retryCodes.addAll(
               retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
 
-          if (retryCodes.isEmpty()) {
-            retryCodesName = "";
-          } else {
-            // Create a retryCode config internally.
-            retryCodesName = retryCodeNameSymbolTable.getNewSymbol(getRetryCodesName(method));
-            methodNamesToRetryNamesFromConfig.put(method.getSimpleName(), retryCodesName);
-            builder.put(
-                retryCodesName, (new ImmutableList.Builder<String>()).addAll(retryCodes).build());
-          }
+          // Create a retryCode config internally.
+          retryCodesName = retryCodeNameSymbolTable.getNewSymbol(getRetryCodesName(method));
+          methodNamesToRetryNamesFromConfig.put(method.getSimpleName(), retryCodesName);
+          builder.put(
+              retryCodesName, (new ImmutableList.Builder<String>()).addAll(retryCodes).build());
         }
 
         methodNamesToRetryNamesFromConfig.put(method.getSimpleName(), retryCodesName);
