@@ -48,7 +48,9 @@ public class LicenseHeaderUtil {
       @Nullable LanguageSettingsProto settings,
       @Nullable DiagCollector diagCollector) {
     Preconditions.checkNotNull(diagCollector);
-    Preconditions.checkArgument((configProto != null && settings != null) || configProto == null, "If configProto is non-null, then settings must also be non-null");
+    Preconditions.checkArgument(
+        (configProto != null && settings != null) || configProto == null,
+        "If configProto is non-null, then settings must also be non-null");
     LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector);
 
     if (configProto != null) {
