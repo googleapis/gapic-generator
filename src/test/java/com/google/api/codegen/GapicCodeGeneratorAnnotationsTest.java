@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
+
 import com.google.api.codegen.common.TargetLanguage;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   private final String apiName;
+  private static final ArtifactType ARTIFACT_TYPE = GAPIC_CODE;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -49,8 +52,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     //    return new LinkedList<>();
     // TODO(andrealin): Implement parsing proto-annotations.
     return Arrays.asList(
-        GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
-        GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library"));
+        GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library", ARTIFACT_TYPE),
+        GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library", ARTIFACT_TYPE));
   }
 
   @Test
