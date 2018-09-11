@@ -39,8 +39,10 @@ public class LicenseHeaderUtil {
   private LicenseHeaderProto licenseHeader;
   private final DiagCollector diagCollector;
 
-  private LicenseHeaderUtil(DiagCollector diagCollector) {
+  private LicenseHeaderUtil(
+      DiagCollector diagCollector, @Nullable LicenseHeaderProto licenseHeader) {
     this.diagCollector = diagCollector;
+    this.licenseHeader = licenseHeader;
   }
 
   public static LicenseHeaderUtil create(
@@ -51,16 +53,17 @@ public class LicenseHeaderUtil {
     Preconditions.checkArgument(
         (configProto != null && settings != null) || configProto == null,
         "If configProto is non-null, then settings must also be non-null");
-    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector);
 
+    LicenseHeaderProto licenseHeader = null;
     if (configProto != null) {
-      licenseHeaderUtil.licenseHeader =
+      licenseHeader =
           configProto
               .getLicenseHeader()
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
     }
+    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector, licenseHeader);
     return licenseHeaderUtil;
   }
 
