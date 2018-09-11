@@ -20,6 +20,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -112,7 +113,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector, interfaceConfigProto, apiInterface, methodNameToRetryNameMap);
+            diagCollector, interfaceConfigProto, apiInterface, methodNameToRetryNameMap, new ProtoParser());
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 

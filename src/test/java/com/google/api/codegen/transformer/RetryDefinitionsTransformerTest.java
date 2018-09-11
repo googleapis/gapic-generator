@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
 import static com.google.rpc.Code.INVALID_ARGUMENT;
@@ -30,6 +31,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.truth.Truth;
 import io.grpc.Status;
 import java.util.List;
 import java.util.Map;
@@ -40,35 +42,33 @@ import org.mockito.Mockito;
 public class RetryDefinitionsTransformerTest {
 
   private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
-  private static final Method noRetryCodesMethod = Mockito.mock(Method.class);
+  private static final Method httpGetMethod = Mockito.mock(Method.class);
   private static final Method idempotentMethod = Mockito.mock(Method.class);
   private static final Method nonIdempotentMethod = Mockito.mock(Method.class);
   private static final Method permissionDeniedMethod = Mockito.mock(Method.class);
   private static final Interface apiInterface = Mockito.mock(Interface.class);
 
-  private static final String noRetryCodesMethodName = "NoRetryMethod";
-  private static final String idempotentMethodName = "NonIdempotentMethod";
-  private static final String nonIdempotentMethodName = "IdempotentMethod";
-  private static final String permissionDeniedMethodName = "PermissionDeniedMethod";
-
-  private static final String permissionDeniedRetryName = "permission_denied";
+  private static final String GET_HTTP_METHOD_NAME = "HttpGetMethod";
+  private static final String IDEMPOTENT_METHOD_NAME = "IdempotentMethod";
+  private static final String NON_IDEMPOTENT_METHOD_NAME = "NonIdempotentMethod";
+  private static final String PERMISSION_DENIED_METHOD_NAME = "PermissionDeniedMethod";
 
   private static InterfaceConfigProto interfaceConfigProto;
 
   @BeforeClass
   public static void startUp() {
-    Mockito.when(noRetryCodesMethod.getSimpleName()).thenReturn("NoRetryMethod");
-    Mockito.when(nonIdempotentMethod.getSimpleName()).thenReturn("NonIdempotentMethod");
-    Mockito.when(idempotentMethod.getSimpleName()).thenReturn("IdempotentMethod");
-    Mockito.when(permissionDeniedMethod.getSimpleName()).thenReturn("PermissionDeniedMethod");
+    Mockito.when(httpGetMethod.getSimpleName()).thenReturn(GET_HTTP_METHOD_NAME);
+    Mockito.when(nonIdempotentMethod.getSimpleName()).thenReturn(NON_IDEMPOTENT_METHOD_NAME);
+    Mockito.when(idempotentMethod.getSimpleName()).thenReturn(IDEMPOTENT_METHOD_NAME);
+    Mockito.when(permissionDeniedMethod.getSimpleName()).thenReturn(PERMISSION_DENIED_METHOD_NAME);
 
-    Mockito.when(permissionDeniedMethod.getSimpleName()).thenReturn("permissionDeniedMethod");
     Mockito.when(apiInterface.getMethods())
         .thenReturn(
+            // Only include idempotentMethod in interfaceConfigProto, but not in the interface.getMethods() list.
             ImmutableList.of(
-                noRetryCodesMethod, idempotentMethod, nonIdempotentMethod, permissionDeniedMethod));
+                httpGetMethod, nonIdempotentMethod, permissionDeniedMethod));
 
-    InterfaceConfigProto interfaceConfigCustomRetry =
+    interfaceConfigProto =
         InterfaceConfigProto.newBuilder()
             .addRetryCodesDef(
                 RetryCodesDefinitionProto.newBuilder()
@@ -80,61 +80,64 @@ public class RetryDefinitionsTransformerTest {
                     .setName(RETRY_CODES_NON_IDEMPOTENT_NAME)
                     // This is not the default list for non-idempotent retry codes.
                     .addRetryCodes(Status.Code.FAILED_PRECONDITION.name()))
-            .addMethods(MethodConfigProto.newBuilder().setName(noRetryCodesMethodName))
             .addMethods(
                 MethodConfigProto.newBuilder()
-                    .setName(nonIdempotentMethodName)
-                    .setRetryCodesName(RETRY_CODES_NON_IDEMPOTENT_NAME))
-            .addMethods(
-                MethodConfigProto.newBuilder()
-                    .setName(idempotentMethodName)
+                    .setName(GET_HTTP_METHOD_NAME)
                     .setRetryCodesName(RETRY_CODES_IDEMPOTENT_NAME))
             .addMethods(
                 MethodConfigProto.newBuilder()
-                    .setName(permissionDeniedMethodName)
-                    .setRetryCodesName(permissionDeniedRetryName))
+                    .setName(NON_IDEMPOTENT_METHOD_NAME)
+                    .setRetryCodesName(RETRY_CODES_NON_IDEMPOTENT_NAME))
+            .addMethods(
+                MethodConfigProto.newBuilder()
+                    .setName(IDEMPOTENT_METHOD_NAME)
+                    .setRetryCodesName(RETRY_CODES_IDEMPOTENT_NAME))
+            .addMethods(
+                MethodConfigProto.newBuilder()
+                    // Leave retry codes empty in this method config.
+                    .setName(PERMISSION_DENIED_METHOD_NAME))
             .build();
 
-    Mockito.when(protoParser.isHttpGetMethod(noRetryCodesMethod)).thenReturn(true);
+    Mockito.when(protoParser.isHttpGetMethod(httpGetMethod)).thenReturn(true);
 
-    Mockito.when(protoParser.getRetry(noRetryCodesMethod)).thenReturn(Retry.getDefaultInstance());
-    Mockito.when(protoParser.getRetry(idempotentMethod))
-        .thenReturn(Retry.newBuilder().addCodes(INVALID_ARGUMENT).build());
+    Mockito.when(protoParser.getRetry(httpGetMethod)).thenReturn(Retry.getDefaultInstance());
     Mockito.when(protoParser.getRetry(nonIdempotentMethod)).thenReturn(Retry.getDefaultInstance());
     Mockito.when(protoParser.getRetry(permissionDeniedMethod))
         .thenReturn(Retry.newBuilder().addCodes(PERMISSION_DENIED).build());
   }
 
   @Test
-  public void testNoConfigProto() {
+  public void testWithConfigAndInterface() {
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     ImmutableMap.Builder<String, String> methodNameToRetryCodeNames = ImmutableMap.builder();
+
     Map<String, List<String>> retryCodesDef =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector, null, apiInterface, methodNameToRetryCodeNames);
+            diagCollector,
+            interfaceConfigProto,
+            apiInterface,
+            methodNameToRetryCodeNames,
+            protoParser);
 
     Map<String, String> retryCodesMap = methodNameToRetryCodeNames.build();
+
+    Truth.assertThat(retryCodesMap.size()).isEqualTo(3);
+    String getHttpRetryName = retryCodesMap.get(GET_HTTP_METHOD_NAME);
+    String nonIdempotentRetryName = retryCodesMap.get(NON_IDEMPOTENT_METHOD_NAME);
+    String permissionDeniedName = retryCodesMap.get(PERMISSION_DENIED_METHOD_NAME);
+
+    // httpGetMethod was an HTTP Get method, so it has two codes by default; disregard the extra
+    // retry code specified in the InterfaceConfigProto.
+    Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
+
+    // Even though config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod, proto annotations have nothing
+    // specified in retry codes.
+    Truth.assertThat(retryCodesDef.get(nonIdempotentRetryName).size()).isEqualTo(0);
+
+    // For permissionDeniedMethod, Config proto gives [] and proto method gives [PERMISSION_DENIED].
+    Truth.assertThat(retryCodesDef.get(permissionDeniedName).size()).isEqualTo(1);
+    Truth.assertThat(retryCodesDef.get(permissionDeniedName).get(0))
+        .isEqualTo(PERMISSION_DENIED.name());
   }
-
-  //  @Test
-  //  public void testWithConfigAndInterface() {
-  //
-  //    DiagCollector diagCollector = new BoundedDiagCollector();
-  //    Map<String, List<String>> retryCodesDef =
-  // RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector,
-  //        null, apiInterface, )
-  //  }
-  //
-  //  @Test
-  //  public void testWithInterfaceAndConfigDifferentFromDefaults() {
-  //
-  //    DiagCollector diagCollector = new BoundedDiagCollector();
-  //    Map<String, List<String>> retryCodesDef =
-  // RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector,
-  //        null, apiInterface, )
-  //  }
-
-  @Test
-  public void testConfigNoProto() {}
 }
