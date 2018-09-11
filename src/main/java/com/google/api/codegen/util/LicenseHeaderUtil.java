@@ -65,43 +65,37 @@ public class LicenseHeaderUtil {
   }
 
   public ImmutableList<String> loadLicenseLines() {
-    try {
-      String licenseFile;
-      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
-        licenseFile = DEFAULT_LICENSE_FILE;
-      } else {
-        licenseFile = licenseHeader.getLicenseFile();
-      }
-      return getResourceLines(licenseFile);
-
-    } catch (Exception e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      throw new RuntimeException(e);
+    String licenseFile;
+    if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
+      licenseFile = DEFAULT_LICENSE_FILE;
+    } else {
+      licenseFile = licenseHeader.getLicenseFile();
     }
+    return getResourceLines(licenseFile);
   }
 
   public ImmutableList<String> loadCopyrightLines() {
+    String filepath;
+    if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
+      filepath = DEFAULT_COPYRIGHT_FILE;
+    } else {
+      filepath = licenseHeader.getCopyrightFile();
+    }
+    return getResourceLines(filepath);
+  }
+
+  private ImmutableList<String> getResourceLines(String resourceFileName) {
     try {
-      String filepath;
-      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
-        filepath = DEFAULT_COPYRIGHT_FILE;
-      } else {
-        filepath = licenseHeader.getCopyrightFile();
+      InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
+      if (fileStream == null) {
+        throw new FileNotFoundException(resourceFileName);
       }
-      return getResourceLines(filepath);
-    } catch (Exception e) {
+      InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
+      return ImmutableList.copyOf(CharStreams.readLines(fileReader));
+    } catch (IOException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       throw new RuntimeException(e);
     }
-  }
-
-  private ImmutableList<String> getResourceLines(String resourceFileName) throws IOException {
-    InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
-    if (fileStream == null) {
-      throw new FileNotFoundException(resourceFileName);
-    }
-    InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
-    return ImmutableList.copyOf(CharStreams.readLines(fileReader));
   }
 
   public DiagCollector getDiagCollector() {
