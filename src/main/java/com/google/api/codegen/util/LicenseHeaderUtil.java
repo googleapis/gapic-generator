@@ -36,7 +36,7 @@ public class LicenseHeaderUtil {
   public static final String DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
 
   private LicenseHeaderProto licenseHeader;
-  private DiagCollector diagCollector;
+  private final DiagCollector diagCollector;
 
   private LicenseHeaderUtil(DiagCollector diagCollector) {
     this.diagCollector = diagCollector;
@@ -72,7 +72,7 @@ public class LicenseHeaderUtil {
       } else {
         licenseFile = licenseHeader.getLicenseFile();
       }
-      return ImmutableList.copyOf(getResourceLines(licenseFile));
+      return getResourceLines(licenseFile);
 
     } catch (Exception e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
@@ -88,7 +88,7 @@ public class LicenseHeaderUtil {
       } else {
         filepath = licenseHeader.getCopyrightFile();
       }
-      return ImmutableList.copyOf(getResourceLines(filepath));
+      return getResourceLines(filepath);
     } catch (Exception e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       throw new RuntimeException(e);
