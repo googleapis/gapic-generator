@@ -21,6 +21,7 @@ import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -53,6 +54,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+
+  private static final ProtoMethodTransformer configUtils = new ProtoMethodTransformer();
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
@@ -110,13 +113,16 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       Interface apiInterface,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ProtoMethodTransformer configUtils) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector, interfaceConfigProto, apiInterface, methodNameToRetryNameMap);
+            diagCollector,
+            interfaceConfigProto,
+            apiInterface,
+            methodNameToRetryNameMap,
+            new ProtoParser());
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
@@ -132,8 +138,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               methodNameToRetryNameMap.build(),
-              retrySettingsDefinition.keySet(),
-              configUtils);
+              retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, apiInterface, interfaceConfigProto);
     }
 
@@ -219,8 +224,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Map<String, String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames,
-      ProtoMethodTransformer configUtils) {
+      ImmutableSet<String> retryParamsConfigNames) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     // Keep track of the MethodConfigProtos encountered.

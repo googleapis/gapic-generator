@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -72,7 +73,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            model.getDiagCollector(), interfaceConfigProto, null, ImmutableMap.builder());
+            model.getDiagCollector(), interfaceConfigProto);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
@@ -86,8 +87,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               interfaceConfigProto,
               messageConfigs,
               resourceNameConfigs,
-              ImmutableList.copyOf(retryCodesDefinition.keySet()),
-              ImmutableList.copyOf(retrySettingsDefinition.keySet()));
+              retryCodesDefinition.keySet(),
+              retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
@@ -184,8 +185,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      List<String> retryCodesConfigNames,
-      List<String> retryParamsConfigNames) {
+      Set<String> retryCodesConfigNames,
+      Set<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 

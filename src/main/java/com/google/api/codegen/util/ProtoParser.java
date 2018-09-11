@@ -17,6 +17,7 @@ package com.google.api.codegen.util;
 import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
+import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
@@ -25,6 +26,7 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
@@ -113,5 +115,16 @@ public class ProtoParser {
     LanguageTransformer.LanguageFormatter formatter =
         LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
     return formatter.getFormattedPackageName(basePackageName);
+  }
+
+  /** Return the extra retry codes for the given method. */
+  public Retry getRetry(Method method) {
+    return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
+  }
+
+  /** Return whether the method has the HttpRule for GET. */
+  public boolean isHttpGetMethod(Method method) {
+    return !Strings.isNullOrEmpty(
+        method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
   }
 }

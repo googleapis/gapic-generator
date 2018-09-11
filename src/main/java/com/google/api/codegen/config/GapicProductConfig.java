@@ -23,7 +23,6 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -379,7 +378,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
     Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedTreeMap<>();
 
-    ProtoMethodTransformer configUtils = new ProtoMethodTransformer();
     // Parse config for interfaceConfigProtos.
     if (configProto != null) {
       for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
@@ -421,8 +419,7 @@ public abstract class GapicProductConfig implements ProductConfig {
                 apiInterface,
                 interfaceNameOverride,
                 messageConfigs,
-                resourceNameConfigs,
-                configUtils);
+                resourceNameConfigs);
         if (interfaceConfig == null) {
           continue;
         }
