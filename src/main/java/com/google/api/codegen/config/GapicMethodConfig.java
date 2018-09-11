@@ -222,7 +222,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
       sampleSpec = new SampleSpec(methodConfigProto);
     } else {
-      sampleSpec = SampleSpec.createEmptySampleSpec();
+      sampleSpec = new SampleSpec(MethodConfigProto.getDefaultInstance());
     }
 
     String rerouteToGrpcInterface = null;
