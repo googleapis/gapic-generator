@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
-import static com.google.rpc.Code.INVALID_ARGUMENT;
 import static com.google.rpc.Code.PERMISSION_DENIED;
 
 import com.google.api.Retry;
@@ -64,9 +63,9 @@ public class RetryDefinitionsTransformerTest {
 
     Mockito.when(apiInterface.getMethods())
         .thenReturn(
-            // Only include idempotentMethod in interfaceConfigProto, but not in the interface.getMethods() list.
-            ImmutableList.of(
-                httpGetMethod, nonIdempotentMethod, permissionDeniedMethod));
+            // Only include idempotentMethod in interfaceConfigProto, but not in the
+            // interface.getMethods() list.
+            ImmutableList.of(httpGetMethod, nonIdempotentMethod, permissionDeniedMethod));
 
     interfaceConfigProto =
         InterfaceConfigProto.newBuilder()
@@ -129,9 +128,11 @@ public class RetryDefinitionsTransformerTest {
 
     // httpGetMethod was an HTTP Get method, so it has two codes by default; disregard the extra
     // retry code specified in the InterfaceConfigProto.
-    Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
+    Truth.assertThat(retryCodesDef.get(getHttpRetryName))
+        .isEqualTo(DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
 
-    // Even though config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod, proto annotations have nothing
+    // Even though config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod, proto
+    // annotations have nothing
     // specified in retry codes.
     Truth.assertThat(retryCodesDef.get(nonIdempotentRetryName).size()).isEqualTo(0);
 

@@ -29,7 +29,6 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
-import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.SymbolTable;
@@ -50,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -58,7 +56,8 @@ import javax.annotation.Nullable;
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
 
-  public static List<String> RETRY_CODES_FOR_HTTP_GET = DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
+  public static List<String> RETRY_CODES_FOR_HTTP_GET =
+      DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
 
   public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(InterfaceContext context) {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
@@ -166,8 +165,7 @@ public class RetryDefinitionsTransformer {
     SymbolTable usedRetryNames = new SymbolTable();
     Map<String, List<String>> retryDefsFromConfig = new LinkedHashMap<>();
     if (interfaceConfigProto != null) {
-      retryDefsFromConfig =
-          createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+      retryDefsFromConfig = createRetryCodesDefinition(diagCollector, interfaceConfigProto);
       if (retryDefsFromConfig == null) {
         return null;
       }
@@ -175,8 +173,9 @@ public class RetryDefinitionsTransformer {
         usedRetryNames.getNewSymbol(retryName);
       }
     }
-    Map<String, List<String>> retryCodesFromProto = createRetryCodesDefinition(
-        diagCollector, apiInterface, methodNameToRetryCodeNames, protoParser, usedRetryNames);
+    Map<String, List<String>> retryCodesFromProto =
+        createRetryCodesDefinition(
+            diagCollector, apiInterface, methodNameToRetryCodeNames, protoParser, usedRetryNames);
     if (retryCodesFromProto == null) {
       return null;
     }

@@ -113,7 +113,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
     ImmutableMap<String, List<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector, interfaceConfigProto, apiInterface, methodNameToRetryNameMap, new ProtoParser());
+            diagCollector,
+            interfaceConfigProto,
+            apiInterface,
+            methodNameToRetryNameMap,
+            new ProtoParser());
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
