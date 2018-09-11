@@ -20,6 +20,7 @@ import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -47,6 +48,7 @@ public class LicenseHeaderUtil {
       @Nullable LanguageSettingsProto settings,
       @Nullable DiagCollector diagCollector) {
     Preconditions.checkNotNull(diagCollector);
+    Preconditions.checkArgument((configProto != null && settings != null) || configProto == null, "If configProto is non-null, then settings must also be non-null");
     LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector);
 
     if (configProto != null) {
@@ -56,10 +58,6 @@ public class LicenseHeaderUtil {
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      if (licenseHeaderUtil.licenseHeader == null) {
-        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-        return null;
-      }
     }
     return licenseHeaderUtil;
   }
@@ -98,6 +96,7 @@ public class LicenseHeaderUtil {
     }
   }
 
+  @VisibleForTesting
   public DiagCollector getDiagCollector() {
     return diagCollector;
   }
