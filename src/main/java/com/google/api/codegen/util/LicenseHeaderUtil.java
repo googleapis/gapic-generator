@@ -63,8 +63,7 @@ public class LicenseHeaderUtil {
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
     }
-    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector, licenseHeader);
-    return licenseHeaderUtil;
+    return new LicenseHeaderUtil(diagCollector, licenseHeader);
   }
 
   public ImmutableList<String> loadLicenseLines() {
