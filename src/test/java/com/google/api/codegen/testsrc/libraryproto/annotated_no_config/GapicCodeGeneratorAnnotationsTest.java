@@ -46,7 +46,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     super(language, null, null, snippetName, baseline, "google.example.library.v1");
 
     this.apiName = apiName;
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/annotated_no_config");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
+    getTestDataLocator().addTestDataSource(getClass(), "../../common");
   }
 
   @Parameters(name = "{3}")
