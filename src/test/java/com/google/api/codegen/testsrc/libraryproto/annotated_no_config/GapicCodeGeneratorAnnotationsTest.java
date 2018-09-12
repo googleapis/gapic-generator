@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.testsrc.libraryproto.config_not_annotated;
+package com.google.api.codegen.testsrc.libraryproto.annotated_no_config;
 
 import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
 
