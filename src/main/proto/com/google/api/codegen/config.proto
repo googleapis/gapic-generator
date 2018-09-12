@@ -163,8 +163,6 @@ message InterfaceConfigProto {
   // Definition for retry/backoff parameters
   repeated RetryParamsDefinitionProto retry_params_def = 31;
 
-  ExperimentalFeatures experimental_features = 40;
-
   // Params that are always required to construct an instance of the
   // API wrapper class.
   repeated string required_constructor_params = 50;
@@ -319,8 +317,8 @@ message SampleValueSet {
   // be used in a UI menu, for example.
   string title = 2;
 
-  // A longer description for this set of values. This name may be
-  // used in a UI hoverbox, for example.
+  // A longer description for this set of values. This may be
+  // used in the sample itself or in a UI element such as hoverbox.
   string description = 3;
 
   // How to initialize the request object for the RPC.
@@ -619,25 +617,6 @@ message ResourceNameMessageConfigProto {
   // A list of field simple names and corresponding entity names, as defined in
   // the collection configs.
   map<string, string> field_entity_map = 2;
-}
-
-// ExperimentalFeatures contain special-case features that,
-// for lack of similar problems, we don't quite know how to properly
-// expose as a config.
-// Configs defined here should eventually be replaced with more general ones.
-message ExperimentalFeatures {
-  repeated IamResourceProto iam_resources = 1;
-}
-
-// IamResourceProto describes an IAM resource, since client libraries might want to
-// integrate with external helpers.
-// It is experimental: We should find a general way to integrate with external code.
-message IamResourceProto {
-  // Fully qualified name of resource types. Eg, google.example.library.v1.Book.
-  string type = 1;
-
-  // The field containing the resource name.
-  string field = 2;
 }
 
 // SurfaceTreatmentProto describes treatments to the code generation

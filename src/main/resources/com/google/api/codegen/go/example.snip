@@ -19,26 +19,6 @@
         _ = c
     }
 
-    @join resource : view.iamResources
-        func {@resource.exampleName}() {
-            ctx := context.Background()
-            c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
-            if err != nil {
-                // TODO: Handle error.
-            }
-
-            {@resource.paramName} := {@resource.resourceConstructorName}{}
-            h := c.{@resource.resourceGetterFunctionName}({@resource.paramName})
-            policy, err := h.Policy(ctx)
-            if err != nil {
-                // TODO: Handle error.
-            }
-            //TODO: Use the IAM policy
-            _ = policy
-        }
-
-    @end
-
     @join method : view.apiMethods
         @switch method.grpcStreamingType
         @case "BidiStreaming"
