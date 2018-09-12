@@ -29,11 +29,9 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
 @AutoValue
@@ -80,7 +78,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   }
 
   // Wrapper for PathTemplate.create().
-  // If there are literal '*' wildcards, replace them with an appropriate string representing a resource.
+  // If there are literal '*' wildcards, replace them with an appropriate string representing a
+  // resource.
   // e.g. createPathTemplate("bookShelves/*/books/{book}") returns
   // PathTemplate.create("bookShelves/{bookShelf}/books/{book}")
   @VisibleForTesting
@@ -89,9 +88,9 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     String[] pieces = template.split("/");
     List<String> newPieces = Arrays.asList(pieces);
     // Iterate only over wildcard pieces.
-    for (int i = 1; i < pieces.length; i = i+2) {
+    for (int i = 1; i < pieces.length; i = i + 2) {
       String piece = pieces[i];
-      String prevPiece = pieces[i-1];
+      String prevPiece = pieces[i - 1];
       if (piece.equals("*")) {
         piece = String.format("{%s}", Inflector.singularize(prevPiece));
         newPieces.set(i, piece);

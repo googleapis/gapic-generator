@@ -157,16 +157,13 @@ public abstract class GapicProductConfig implements ProductConfig {
             .collect(Collectors.toList());
 
     if (protoPackage != null) {
-      if (sourceProtos.size() == 0) {
-        throw new IllegalArgumentException(
-            String.format("No proto package %s in input descriptor set.", defaultPackage));
-      }
       if (configProto == null) {
+        if (sourceProtos.size() == 0) {
+          throw new IllegalArgumentException(
+              String.format("No proto package %s in input descriptor set.", defaultPackage));
+        }
         sourceProtos.forEach(model::addRoot);
       }
-    }
-    if (file == null) {
-      file = sourceProtos.get(0);
     }
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =

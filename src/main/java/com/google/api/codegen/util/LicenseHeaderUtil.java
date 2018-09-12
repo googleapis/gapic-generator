@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,13 @@ import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,11 +36,13 @@ public class LicenseHeaderUtil {
   public static final String DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   public static final String DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
 
-  private LicenseHeaderProto licenseHeader;
-  private DiagCollector diagCollector;
+  private final LicenseHeaderProto licenseHeader;
+  private final DiagCollector diagCollector;
 
-  private LicenseHeaderUtil(DiagCollector diagCollector) {
+  private LicenseHeaderUtil(
+      DiagCollector diagCollector, @Nullable LicenseHeaderProto licenseHeader) {
     this.diagCollector = diagCollector;
+    this.licenseHeader = licenseHeader;
   }
 
   public static LicenseHeaderUtil create(
@@ -46,59 +50,59 @@ public class LicenseHeaderUtil {
       @Nullable LanguageSettingsProto settings,
       @Nullable DiagCollector diagCollector) {
     Preconditions.checkNotNull(diagCollector);
-    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil(diagCollector);
-
     if (configProto != null) {
-      licenseHeaderUtil.licenseHeader =
+      Preconditions.checkNotNull(
+          settings, "If configProto is non-null, then settings must also be non-null");
+    }
+
+    LicenseHeaderProto licenseHeader = null;
+    if (configProto != null) {
+      licenseHeader =
           configProto
               .getLicenseHeader()
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      if (licenseHeaderUtil.licenseHeader == null) {
-        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-        return null;
-      }
     }
-    return licenseHeaderUtil;
+    return new LicenseHeaderUtil(diagCollector, licenseHeader);
   }
 
   public ImmutableList<String> loadLicenseLines() {
-    try {
-      String licenseFile;
-      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
-        licenseFile = DEFAULT_LICENSE_FILE;
-      } else {
-        licenseFile = licenseHeader.getLicenseFile();
-      }
-      return ImmutableList.copyOf(getResourceLines(licenseFile));
-
-    } catch (Exception e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
-      throw new RuntimeException(e);
+    String licenseFile;
+    if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getLicenseFile())) {
+      licenseFile = DEFAULT_LICENSE_FILE;
+    } else {
+      licenseFile = licenseHeader.getLicenseFile();
     }
+    return getResourceLines(licenseFile);
   }
 
   public ImmutableList<String> loadCopyrightLines() {
+    String filepath;
+    if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
+      filepath = DEFAULT_COPYRIGHT_FILE;
+    } else {
+      filepath = licenseHeader.getCopyrightFile();
+    }
+    return getResourceLines(filepath);
+  }
+
+  private ImmutableList<String> getResourceLines(String resourceFileName) {
     try {
-      String filepath;
-      if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
-        filepath = DEFAULT_COPYRIGHT_FILE;
-      } else {
-        filepath = licenseHeader.getCopyrightFile();
+      InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
+      if (fileStream == null) {
+        throw new FileNotFoundException(resourceFileName);
       }
-      return ImmutableList.copyOf(getResourceLines(filepath));
-    } catch (Exception e) {
+      InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
+      return ImmutableList.copyOf(CharStreams.readLines(fileReader));
+    } catch (IOException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }
   }
 
-  private ImmutableList<String> getResourceLines(String resourceFileName) throws IOException {
-    InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
-    InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
-    return ImmutableList.copyOf(CharStreams.readLines(fileReader));
+  @VisibleForTesting
+  public DiagCollector getDiagCollector() {
+    return diagCollector;
   }
 }

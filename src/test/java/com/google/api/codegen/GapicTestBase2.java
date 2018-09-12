@@ -136,12 +136,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName,
-      ArtifactType artifactType) {
+      String protoPackage) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
     ArtifactFlags artifactFlags =
-        new ArtifactFlags(Arrays.asList("surface", "test", "samples"), artifactType);
+        new ArtifactFlags(
+            Arrays.asList("surface", "test", "samples"), ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
@@ -154,7 +155,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
 
     return new Object[] {
-      language, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
+      language,
+      gapicConfigFileNames,
+      packageConfigFileName,
+      snippetNames,
+      apiName,
+      baseline,
+      protoPackage
     };
   }
 

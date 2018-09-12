@@ -55,8 +55,10 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     //    return new LinkedList<>();
     // TODO(andrealin): Implement parsing proto-annotations.
     return Arrays.asList(
-        GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library", ARTIFACT_TYPE),
-        GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library", ARTIFACT_TYPE));
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.GO, null, null, "library", "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA, null, null, "library", "google.example.library.v1"));
   }
 
   @Test
