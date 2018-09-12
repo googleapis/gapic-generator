@@ -49,7 +49,6 @@ public class RubyCommentReformatter implements CommentReformatter {
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
-          .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
           .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
           .transform(
               LinkPattern.RELATIVE
