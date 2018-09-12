@@ -112,16 +112,25 @@ public abstract class GapicProductConfig implements ProductConfig {
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
    * returned, and diagnostics are reported to the model.
+   *
+   * @param configProto The parsed set of config files from input
+   * @param protoPackage The source proto package, as opposed to imported protos, that we will
+   *     generate clients for.
    */
   @Nullable
   public static GapicProductConfig create(
-      Model model, ConfigProto configProto, TargetLanguage language) {
+      Model model,
+      @Nullable ConfigProto configProto,
+      @Nullable String protoPackage,
+      TargetLanguage language) {
 
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
     ProtoFile file =
         model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     String defaultPackage = file.getProto().getPackage();
+
+    // TODO(andrealin): Use protoPackage to determine source protofiles.
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
