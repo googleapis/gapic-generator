@@ -180,7 +180,8 @@ class OutputTransformer {
    *   accessor '.' identifier
    * </code></pre>
    */
-  private static OutputView.VariableView accessorNewVariable(
+  @VisibleForTesting
+  static OutputView.VariableView accessorNewVariable(
       Scanner config,
       MethodContext context,
       SampleValueSet valueSet,
