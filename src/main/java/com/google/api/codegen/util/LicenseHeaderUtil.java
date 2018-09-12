@@ -36,7 +36,7 @@ public class LicenseHeaderUtil {
   public static final String DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   public static final String DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
 
-  private LicenseHeaderProto licenseHeader;
+  private final LicenseHeaderProto licenseHeader;
   private final DiagCollector diagCollector;
 
   private LicenseHeaderUtil(
@@ -50,9 +50,10 @@ public class LicenseHeaderUtil {
       @Nullable LanguageSettingsProto settings,
       @Nullable DiagCollector diagCollector) {
     Preconditions.checkNotNull(diagCollector);
-    Preconditions.checkArgument(
-        (configProto != null && settings != null) || configProto == null,
-        "If configProto is non-null, then settings must also be non-null");
+    if (configProto != null) {
+      Preconditions.checkNotNull(
+          settings, "If configProto is non-null, then settings must also be non-null");
+    }
 
     LicenseHeaderProto licenseHeader = null;
     if (configProto != null) {
