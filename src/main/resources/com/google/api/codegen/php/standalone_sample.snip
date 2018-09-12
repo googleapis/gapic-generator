@@ -70,25 +70,28 @@
     try {
         @switch sample.callingForm
         @case "LongRunningRequest"
-            {@longRunningSampleCode(apiMethod)}
+            {@longRunningSampleCode(sample, apiMethod)}
         @case "LongRunningRequestAsync"
-            {@longRunningAsyncSampleCode(apiMethod)}
+            {@longRunningAsyncSampleCode(sample, apiMethod)}
         @case "Request"
-            {@requestSampleCode(apiMethod)}
+            {@requestSampleCode(sample, apiMethod)}
+            {@processResponse(sample)}
         @case "RequestPaged"
-            {@pagedSampleCode(apiMethod)}
+            {@pagedSampleCode(sample, apiMethod)}
         @case "RequestPagedAll"
-            {@pagedAllSampleCode(apiMethod)}
+            {@pagedAllSampleCode(sample, apiMethod)}
         @case "RequestStreamingBidi"
-            {@bidiStreamingSampleCode(apiMethod)}
+            {@bidiStreamingSampleCode(sample, apiMethod)}
         @case "RequestStreamingBidiAsync"
-            {@bidiStreamingAsyncSampleCode(apiMethod)}
+            {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
         @case "RequestStreamingClient"
-            {@clientStreamingSampleCode(apiMethod)}
+            {@clientStreamingSampleCode(sample, apiMethod)}
+            {@processResponse(sample)}
         @case "RequestStreamingClientAsync"
-            {@clientStreamingAsyncSampleCode(apiMethod)}
+            {@clientStreamingAsyncSampleCode(sample, apiMethod)}
+            {@processResponse(sample)}
         @case "RequestStreamingServer"
-            {@serverStreamingSampleCode(apiMethod)}
+            {@serverStreamingSampleCode(sample, apiMethod)}
         @default
             $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
         @end
@@ -112,7 +115,7 @@
     @end
 @end
 
-@private longRunningSampleCode(apiMethod)
+@private longRunningSampleCode(sample, apiMethod)
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
@@ -120,7 +123,7 @@
             // operation succeeded and returns no value
         @else
             $result = $operationResponse->getResult();
-            // doSomethingWith($result)
+            {@processResponse(sample)}
         @end
     } else {
         $error = $operationResponse->getError();
@@ -128,7 +131,7 @@
     }
 @end
 
-@private longRunningAsyncSampleCode(apiMethod)
+@private longRunningAsyncSampleCode(sample, apiMethod)
     // start the operation, keep the operation name, and resume later
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationName = $operationResponse->getName();
@@ -143,7 +146,7 @@
           // operation succeeded and returns no value
       @else
           $result = $newOperationResponse->getResult();
-          // doSomethingWith($result)
+          {@processResponse(sample)}
       @end
     } else {
       $error = $newOperationResponse->getError();
@@ -151,7 +154,7 @@
     }
 @end
 
-@private requestSampleCode(apiMethod)
+@private requestSampleCode(sample, apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
     @else
@@ -159,33 +162,32 @@
     @end
 @end
 
-@private pagedSampleCode(apiMethod)
+@private pagedSampleCode(sample, apiMethod)
     // Iterate over pages of elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $element) {
-            // doSomethingWith($element);
+            {@processResponse(sample)};
         }
     }
 @end
 
-@private pagedAllSampleCode(apiMethod)
+@private pagedAllSampleCode(sample, apiMethod)
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $element) {
-        // doSomethingWith($element);
+        {@processResponse(sample)}
     }
 @end
 
-@private clientStreamingSampleCode(apiMethod)
+@private clientStreamingSampleCode(sample, apiMethod)
     // Write data to server and wait for a response
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $result = $stream->writeAllAndReadResponse($requests);
-    // doSomethingWith($result)
 @end
 
-@private clientStreamingAsyncSampleCode(apiMethod)
+@private clientStreamingAsyncSampleCode(sample, apiMethod)
     // Write data as it becomes available, then wait for a response
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
@@ -193,29 +195,28 @@
         $stream->write($request);
     }
     $result = $stream->readResponse();
-    // doSomethingWith($result)
 @end
 
-@private serverStreamingSampleCode(apiMethod)
+@private serverStreamingSampleCode(sample, apiMethod)
     // Read all responses until the stream is complete
     $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($stream->readAll() as $element) {
-        // doSomethingWith($element);
+        {@processResponse(sample)};
     }
 @end
 
-@private bidiStreamingSampleCode(apiMethod)
+@private bidiStreamingSampleCode(sample, apiMethod)
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $stream->writeAll($requests);
     foreach ($stream->closeWriteAndReadAll() as $element) {
-        // doSomethingWith($element);
+        {@processResponse(sample)};
     }
 @end
 
-@private bidiStreamingAsyncSampleCode(apiMethod)
+@private bidiStreamingAsyncSampleCode(sample, apiMethod)
     // Write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
@@ -225,7 +226,7 @@
         $stream->write($request);
         // if required, read a single response from the stream
         $element = $stream->read();
-        // doSomethingWith($element)
+        {@processResponse(sample)}
     }
     $stream->closeWrite();
     $element = $stream->read();
@@ -275,11 +276,11 @@
     @end
 @end
 
-@snippet optionalField(fieldSettings)
+@private optionalField(fieldSettings)
     [{@optionalFieldEntries(fieldSettings)}]
 @end
 
-@snippet optionalFieldEntries(fieldSettings)
+@private optionalFieldEntries(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
         '{@fieldSetting.fieldName}' => ${@fieldSetting.identifier}
     @end
@@ -296,7 +297,7 @@
     ${@line.identifier} = [{@varList(line.elementIdentifiers)}];
 @end
 
-@snippet varList(args)
+@private varList(args)
     @join arg : args on ", "
         ${@arg}
     @end
@@ -324,5 +325,75 @@
         ${@apiVariableName}->{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private processResponse(sample)
+    {@sample.outputs}
+    @if sample.outputs.size == 0
+        print(response)
+    @else
+        {@processOutputViews(sample.outputs)}
+    @end
+@end
+
+@private processOutputViews(outputViews)
+    @join view : outputViews on BREAK
+        @switch view.kind
+        @case "COMMENT"
+            {@processCommentView(view)}
+        @case "DEFINE"
+            {@processDefineView(view)}
+        @case "LOOP"
+            {@processLoopView(view)}
+        @case "PRINT"
+            {@processPrintView(view)}
+        @default
+            $unhandledResponseForm: {@view}
+        @end
+    @end
+@end
+
+@private processPrintView(view)
+    # Since numeric comparison seems to not work, we use explicit zero tests
+    @if not(view.args.size)
+        print('{@view.format}');
+    @else
+        @if view.format == "{}"
+            print({@variableField(view.args.get(0))});
+        @else
+            printf("{@view.format}", {@concatenatedArgs(view.args)});
+        @end
+    @end
+@end
+
+@private processCommentView(view)
+    {@toComments(view.lines)}
+@end
+
+@private processLoopView(view)
+    foreach ({@variableField(view.collection)} as {@view.variableName}) {
+        {@processOutputViews(view.body)}
+    }
+@end
+
+@private processDefineView(view)
+    ${@view.variableName} = {@variableField(view.reference)};
+@end
+
+
+@private concatenatedArgs(args)
+    @join arg : args on ", "
+        {@variableField(arg)}
+    @end
+@end
+
+@private variableField(arg)
+    {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+    @join field : accessors on ""
+        ->{@field}
     @end
 @end
