@@ -1541,7 +1541,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getSampleResponseVarName(MethodContext context) {
-    return context.getMethodConfig().getPageStreaming() == null ? "response" : "element";
+    MethodConfig config = context.getMethodConfig();
+    if (config.getPageStreaming() != null) {
+      return "element";
+    }
+    if (config.getGrpcStreaming() != null) {
+      GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
+      if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
+          || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
+        return "element";
+      }
+    }
+    return "response";
   }
 
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////

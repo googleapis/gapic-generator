@@ -60,14 +60,12 @@
       @case "RequestPagedAll"
         {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
       @case "RequestStreamingBidi"
-        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
       @case "RequestStreamingClient"
         {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
         {@processResponse(sample)}
       @case "RequestStreamingServer"
-        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
       @case "LongRunningPromise"
         {@lroSampleCode(apiMethod, sample.initCode)}
         {@processResponse(sample)}
@@ -122,9 +120,9 @@
       {@processResponse(sample)}
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
 @private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
@@ -132,8 +130,8 @@
   {@singularResponseSampleCode(apiMethod, initCode)}
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
 @private lroSampleCode(apiMethod, initCode)
@@ -168,10 +166,9 @@
   @end
 @end
 
-@private responseStreamingSampleCode(apiMethod, initCode)
-  for element in {@methodCallSampleCode(apiMethod, initCode)}:
-      @# process element
-      pass
+@private responseStreamingSampleCode(apiMethod, sample)
+  for element in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+      {@processResponse(sample)}
 @end
 
 # Render the API method call for page streaming
