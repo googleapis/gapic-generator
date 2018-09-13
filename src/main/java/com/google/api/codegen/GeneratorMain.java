@@ -239,6 +239,15 @@ public class GeneratorMain {
             .build();
     options.addOption(enabledArtifactsOption);
 
+    Option devSamplesOption =
+        Option.builder()
+            .longOpt("dev_samples")
+            .desc("Whether to generate samples in non-production-ready languages.")
+            .argName("DEV_SAMPLES")
+            .required(false)
+            .build();
+    options.addOption(devSamplesOption);
+
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
       HelpFormatter formatter = new HelpFormatter();
@@ -286,6 +295,9 @@ public class GeneratorMain {
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
+
+    toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));
+
     GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
     System.exit(exitCode);

@@ -82,13 +82,34 @@ import java.util.function.Function;
 /** GapicGeneratorFactory creates CodeGenerator instances based on an id. */
 public class GapicGeneratorFactory {
 
-  /** Create the GapicGenerators based on the given id */
+  /**
+   * Create the GapicGenerators based on the given id.
+   *
+   * <p>Samples are created only in the languages for which they are production-ready.
+   */
   public static List<CodeGenerator<?>> create(
       TargetLanguage language,
       Model model,
       GapicProductConfig productConfig,
       PackageMetadataConfig packageConfig,
       ArtifactFlags artifactFlags) {
+    return create(language, model, productConfig, packageConfig, artifactFlags, false);
+  }
+
+  /**
+   * Create the GapicGenerators based on the given id.
+   *
+   * <p>If {@code devSamples} is set, standalone samples are generated for all languages, including
+   * those that currently have development stubs. Otherwise, samples are only produced in languages
+   * where they are production-ready.
+   */
+  public static List<CodeGenerator<?>> create(
+      TargetLanguage language,
+      Model model,
+      GapicProductConfig productConfig,
+      PackageMetadataConfig packageConfig,
+      ArtifactFlags artifactFlags,
+      boolean devSamples) {
 
     ArrayList<CodeGenerator<?>> generators = new ArrayList<>();
     // Please keep the following IDs in alphabetical order
@@ -204,7 +225,9 @@ public class GapicGeneratorFactory {
 
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
-          generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
+          if (devSamples) {
+            generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
+          }
         }
 
         if (artifactFlags.packagingFilesEnabled()) {
@@ -279,7 +302,7 @@ public class GapicGeneratorFactory {
         generators.add(metadataGenerator);
         generators.add(clientConfigGenerator);
 
-        if (artifactFlags.sampleGeneratorEnabled()) {
+        if (devSamples) {
           CodeGenerator sampleGenerator =
               GapicGenerator.newBuilder()
                   .setModel(model)
@@ -345,15 +368,17 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
-        CodeGenerator sampleGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
-                .build();
-        generators.add(sampleGenerator);
+        if (devSamples) {
+          CodeGenerator sampleGenerator =
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                  .build();
+          generators.add(sampleGenerator);
+        }
 
         generators.add(generator);
         generators.add(clientConfigGenerator);
@@ -381,14 +406,6 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(
                     new PythonGapicSurfaceTransformer(pythonPathMapper, packageConfig))
                 .build();
-        CodeGenerator sampleGenerator =
-            GapicGenerator.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
-                .build();
         CodeGenerator clientConfigGenerator =
             LegacyGapicGenerator.newBuilder()
                 .setModel(model)
@@ -399,8 +416,17 @@ public class GapicGeneratorFactory {
                 .setCodePathMapper(pythonPathMapper)
                 .build();
         generators.add(mainGenerator);
-        generators.add(sampleGenerator);
         generators.add(clientConfigGenerator);
+
+        CodeGenerator sampleGenerator =
+            GapicGenerator.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
+                .build();
+        generators.add(sampleGenerator);
 
         CodeGenerator metadataGenerator =
             GapicGenerator.newBuilder()

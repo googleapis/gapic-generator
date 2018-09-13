@@ -91,6 +91,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "Names of adviser rules to suppress warnings for.",
           ImmutableList.of());
 
+  public static final Option<Boolean> DEV_SAMPLES =
+      ToolOptions.createOption(
+          Boolean.class,
+          "dev_samples",
+          "Whether to generate samples in non-production-ready languages.",
+          false);
+
   private ArtifactType artifactType;
 
   /** Constructs a code generator api based on given options. */
@@ -171,7 +178,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
     String outputPath = options.get(OUTPUT_FILE);
     ArtifactFlags artifactFlags = new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType);
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
     ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
     ImmutableSet.Builder<String> executables = ImmutableSet.builder();
     for (CodeGenerator<?> generator : generators) {
