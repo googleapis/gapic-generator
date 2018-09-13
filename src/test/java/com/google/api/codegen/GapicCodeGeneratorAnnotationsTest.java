@@ -39,7 +39,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String baseline,
       String protoPackage) {
     //    super(language, null, null, snippetName, baseline);
-    super(language, null, null, snippetName, baseline, "google.example.library.v1");
+    super(language, null, null, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
