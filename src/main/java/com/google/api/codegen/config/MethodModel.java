@@ -91,13 +91,13 @@ public interface MethodModel {
 
   boolean isOutputTypeEmpty();
 
-  List<? extends FieldModel> getInputFields();
+  Iterable<? extends FieldModel> getInputFields();
 
   List<? extends FieldModel> getInputFieldsForResourceNameMethod();
 
-  List<? extends FieldModel> getOutputFields();
+  Iterable<? extends FieldModel> getOutputFields();
 
-  List<? extends FieldModel> getResourceNameInputFields();
+  Iterable<? extends FieldModel> getResourceNameInputFields();
 
   boolean isIdempotent();
 
