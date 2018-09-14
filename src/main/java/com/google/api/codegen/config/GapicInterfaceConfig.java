@@ -104,7 +104,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable InterfaceConfigProto interfaceConfigProto,
+      InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,

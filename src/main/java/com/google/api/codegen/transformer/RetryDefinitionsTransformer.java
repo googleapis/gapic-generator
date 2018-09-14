@@ -119,28 +119,59 @@ public class RetryDefinitionsTransformer {
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser,
-      SymbolTable symbolTable) {
+      Map<String, List<String>> configProtoRetryMap) {
 
-    ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, List<String>> builder =
+        ImmutableMap.<String, List<String>>builder().putAll(configProtoRetryMap);
+    SymbolTable symbolTable = new SymbolTable();
+    for (String retryCodesName : configProtoRetryMap.keySet()) {
+      symbolTable.getNewSymbol(retryCodesName);
+    }
+
+    // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
+    // reduce duplication.
+    String httpGetRetryName = symbolTable.getNewSymbol("http_get");
+    builder.put(httpGetRetryName, ImmutableList.copyOf(RETRY_CODES_FOR_HTTP_GET));
+    // Unite all methods that have no retry codes under one retry code name to reduce duplication.
+    String noRetryName = symbolTable.getNewSymbol("no_retry");
+    builder.put(noRetryName, ImmutableList.of());
 
     // Check proto annotations for retry settings.
     for (Method method : apiInterface.getMethods()) {
-
       Retry retry = protoParser.getRetry(method);
-
       Set<String> retryCodes = new TreeSet<>();
+
       if (protoParser.isHttpGetMethod(method)) {
         // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and
         // `UNAVAILABLE`.
         retryCodes.addAll(RETRY_CODES_FOR_HTTP_GET);
       }
-      // Add all retry codes defined in the Retry proto annotation.
-      retryCodes.addAll(retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
 
-      // Create a retryCode config internally.
-      String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
-      builder.put(retryCodesName, (new ImmutableList.Builder<String>()).addAll(retryCodes).build());
-      methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
+      if (retry.getCodesCount() == 0) {
+        String retryCodesName;
+        if (protoParser.isHttpGetMethod(method)) {
+          // It is a common case to have an HTTP GET method with no extra codes to retry on,
+          // so let's put them all under the same retry code name.
+          retryCodesName = httpGetRetryName;
+        } else {
+          // It is a common case to have a method with no codes to retry on,
+          // so let's put these methods all under the same retry code name.
+          retryCodesName = noRetryName;
+        }
+
+        methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
+      } else {
+
+        // Add all retry codes defined in the Retry proto annotation.
+        retryCodes.addAll(
+            retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
+
+        // Create a retryCode config internally.
+        String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
+        builder.put(
+            retryCodesName, (new ImmutableList.Builder<String>()).addAll(retryCodes).build());
+        methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
+      }
     }
 
     if (diagCollector.getErrorCount() > 0) {
@@ -156,26 +187,23 @@ public class RetryDefinitionsTransformer {
    */
   public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
-      @Nullable InterfaceConfigProto interfaceConfigProto,
+      InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser) {
 
-    // Keep track of all the retry names used in config proto so we don't clash.
-    SymbolTable usedRetryNames = new SymbolTable();
-    Map<String, List<String>> retryDefsFromConfig = new LinkedHashMap<>();
-    if (interfaceConfigProto != null) {
-      retryDefsFromConfig = createRetryCodesDefinition(diagCollector, interfaceConfigProto);
-      if (retryDefsFromConfig == null) {
-        return null;
-      }
-      for (String retryName : retryDefsFromConfig.keySet()) {
-        usedRetryNames.getNewSymbol(retryName);
-      }
+    Map<String, List<String>> retryDefsFromConfig =
+        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    if (retryDefsFromConfig == null) {
+      return null;
     }
     Map<String, List<String>> retryCodesFromProto =
         createRetryCodesDefinition(
-            diagCollector, apiInterface, methodNameToRetryCodeNames, protoParser, usedRetryNames);
+            diagCollector,
+            apiInterface,
+            methodNameToRetryCodeNames,
+            protoParser,
+            retryDefsFromConfig);
     if (retryCodesFromProto == null) {
       return null;
     }
