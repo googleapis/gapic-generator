@@ -7271,8 +7271,8 @@ public class DiscussBookCallableCallableStreamingBidiProg {
       .setName(name)
       .build();
     bidiStream.send(request);
-    for (Comment response : bidiStream) {
-      System.out.println(response);
+    for (Comment responseItem : bidiStream) {
+      System.out.println(responseItem);
     }
     // [END turing_prog_callable_streaming_bidi_core]
   }
@@ -7312,8 +7312,8 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
     // Do something
 
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7354,8 +7354,8 @@ public class FindRelatedBooksRequestPagedOdyssey {
       .addAllNames(ShelfBookName.toStringList(names))
       .addAllShelves(ShelfName.toStringList(shelves))
       .build();
-    for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7398,8 +7398,8 @@ public class FindRelatedBooksCallableCallableListOdyssey {
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
-        ShelfBookName book = element;
+      for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+        ShelfBookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
       String nextPageToken = response.getNextPageToken();
@@ -7451,8 +7451,8 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
     // Do something
 
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7966,8 +7966,8 @@ public class StreamBooksCallableCallableStreamingServerProg {
       .build();
 
     ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-    for (Book response : stream) {
-      System.out.println(response);
+    for (Book responseItem : stream) {
+      System.out.println(responseItem);
     }
     // [END babbage_core]
   }
@@ -8002,8 +8002,8 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
     ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
-    for (StreamShelvesResponse response : stream) {
-      System.out.println(response);
+    for (StreamShelvesResponse responseItem : stream) {
+      System.out.println(responseItem);
     }
     // [END sample_core]
   }

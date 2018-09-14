@@ -53,24 +53,19 @@
       @end
       @switch sample.callingForm
       @case "Request"
-        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
       @case "RequestPaged"
         {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
       @case "RequestPagedAll"
         {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
       @case "RequestStreamingBidi"
-        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
       @case "RequestStreamingClient"
-        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
       @case "RequestStreamingServer"
-        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
       @case "LongRunningPromise"
-        {@lroSampleCode(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@lroSampleCode(apiMethod, sample)}
       @default
         $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
       @end
@@ -105,39 +100,41 @@
   @end
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
-  {@singularResponseSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
   @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, sample.initCode)}:
-      for element in page:
+      for response_item in page:
           {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
   @# Iterate over all results
-  for element in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+  for response_item in {@methodCallSampleCode(apiMethod, sample.initCode)}:
       {@processResponse(sample)}
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
-  {@singularResponseSampleCode(apiMethod, initCode)}
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private lroSampleCode(apiMethod, initCode)
-  response = {@methodCallSampleCode(apiMethod, initCode)}
+@private lroSampleCode(apiMethod, sample)
+  response = {@methodCallSampleCode(apiMethod, sample.initCode)}
 
   def callback(operation_future):
       @# Handle result.
@@ -147,6 +144,7 @@
 
   @# Handle metadata.
   metadata = response.metadata()
+  {@processResponse(sample)}
 @end
 
 @private singularResponseSampleCode(apiMethod, initCode)
@@ -168,10 +166,9 @@
   @end
 @end
 
-@private responseStreamingSampleCode(apiMethod, initCode)
-  for element in {@methodCallSampleCode(apiMethod, initCode)}:
-      @# process element
-      pass
+@private responseStreamingSampleCode(apiMethod, sample)
+  for response_item in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+      {@processResponse(sample)}
 @end
 
 # Render the API method call for page streaming
