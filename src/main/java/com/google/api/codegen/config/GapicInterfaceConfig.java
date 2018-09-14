@@ -69,7 +69,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
   @Override
-  public abstract ImmutableMap<String, ImmutableList<String>> getRetryCodesDefinition();
+  public abstract ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
   @Override
   public abstract ImmutableMap<String, RetryParamsDefinitionProto> getRetrySettingsDefinition();
@@ -111,7 +111,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
-    ImmutableMap<String, ImmutableList<String>> retryCodesDefinition =
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             diagCollector,
             interfaceConfigProto,

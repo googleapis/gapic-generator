@@ -39,8 +39,8 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.rpc.Code;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,14 +56,14 @@ import javax.annotation.Nullable;
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
 
-  public static List<String> RETRY_CODES_FOR_HTTP_GET =
+  static ImmutableSet<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
 
   public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(InterfaceContext context) {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
-    for (Entry<String, ImmutableList<String>> retryCodesDef :
+    for (Entry<String, ImmutableSet<String>> retryCodesDef :
         context.getInterfaceConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
       for (String code : retryCodesDef.getValue()) {
@@ -83,9 +83,9 @@ public class RetryDefinitionsTransformer {
     return definitions;
   }
 
-  public static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
+  public static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableList<String>> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
       Set<String> codes = new TreeSet<>();
@@ -101,7 +101,7 @@ public class RetryDefinitionsTransformer {
                   interfaceConfigProto.getName()));
         }
       }
-      builder.put(retryDef.getName(), (new ImmutableList.Builder<String>()).addAll(codes).build());
+      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
     }
     if (diagCollector.getErrorCount() > 0) {
       return null;
@@ -114,15 +114,15 @@ public class RetryDefinitionsTransformer {
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings nmame.
    */
-  private static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
+  private static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser,
-      Map<String, ImmutableList<String>> configProtoRetryMap) {
+      Map<String, ImmutableSet<String>> configProtoRetryMap) {
 
-    ImmutableMap.Builder<String, ImmutableList<String>> builder =
-        ImmutableMap.<String, ImmutableList<String>>builder().putAll(configProtoRetryMap);
+    ImmutableMap.Builder<String, ImmutableSet<String>> builder =
+        ImmutableMap.<String, ImmutableSet<String>>builder().putAll(configProtoRetryMap);
     SymbolTable symbolTable = new SymbolTable();
     for (String retryCodesName : configProtoRetryMap.keySet()) {
       symbolTable.getNewSymbol(retryCodesName);
@@ -131,10 +131,10 @@ public class RetryDefinitionsTransformer {
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
     String httpGetRetryName = symbolTable.getNewSymbol("http_get");
-    builder.put(httpGetRetryName, ImmutableList.copyOf(RETRY_CODES_FOR_HTTP_GET));
+    builder.put(httpGetRetryName, ImmutableSet.copyOf(RETRY_CODES_FOR_HTTP_GET));
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
     String noRetryName = symbolTable.getNewSymbol("no_retry");
-    builder.put(noRetryName, ImmutableList.of());
+    builder.put(noRetryName, ImmutableSet.of());
 
     // Check proto annotations for retry settings.
     for (Method method : apiInterface.getMethods()) {
@@ -169,7 +169,7 @@ public class RetryDefinitionsTransformer {
         // Create a retryCode config internally.
         String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
         builder.put(
-            retryCodesName, (new ImmutableList.Builder<String>()).addAll(retryCodes).build());
+            retryCodesName, (new ImmutableSet.Builder<String>()).addAll(retryCodes).build());
         methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
       }
     }
@@ -185,19 +185,19 @@ public class RetryDefinitionsTransformer {
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings nmame.
    */
-  public static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
+  public static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser) {
 
-    Map<String, ImmutableList<String>> retryDefsFromConfig =
+    Map<String, ImmutableSet<String>> retryDefsFromConfig =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     if (retryDefsFromConfig == null) {
       return null;
     }
-    Map<String, ImmutableList<String>> retryCodesFromProto =
+    Map<String, ImmutableSet<String>> retryCodesFromProto =
         createRetryCodesDefinition(
             diagCollector,
             apiInterface,
@@ -207,7 +207,7 @@ public class RetryDefinitionsTransformer {
     if (retryCodesFromProto == null) {
       return null;
     }
-    Map<String, ImmutableList<String>> returnValue = new LinkedHashMap<>();
+    Map<String, ImmutableSet<String>> returnValue = new LinkedHashMap<>();
     returnValue.putAll(retryDefsFromConfig);
     returnValue.putAll(retryCodesFromProto);
     return ImmutableMap.copyOf(returnValue);

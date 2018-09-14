@@ -34,8 +34,13 @@ import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import io.grpc.Status;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,12 +55,12 @@ public class RetryMerger {
   private static final String MAX_RPC_TIMEOUT_NAME = "max_rpc_timeout_millis";
   private static final String TOTAL_TIMEOUT_NAME = "total_timeout_millis";
 
-  public static final Map<String, List<String>> DEFAULT_RETRY_CODES =
-      ImmutableSortedMap.of(
+  public static final Map<String, ImmutableSet<String>> DEFAULT_RETRY_CODES =
+      ImmutableMap.of(
           RETRY_CODES_IDEMPOTENT_NAME,
-          ImmutableList.of(Status.Code.DEADLINE_EXCEEDED.name(), Status.Code.UNAVAILABLE.name()),
+          ImmutableSet.of(Status.Code.DEADLINE_EXCEEDED.name(), Status.Code.UNAVAILABLE.name()),
           RETRY_CODES_NON_IDEMPOTENT_NAME,
-          ImmutableList.of());
+          ImmutableSet.of());
 
   public ConfigNode generateRetryDefinitionsNode(ConfigNode prevNode) {
     FieldConfigNode retryCodesDefNode =
@@ -76,13 +81,13 @@ public class RetryMerger {
         generateRetryCodeDefNode(
             NodeFinder.getNextLine(parentNode),
             RETRY_CODES_IDEMPOTENT_NAME,
-            DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
+            new ArrayList<>(DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME)));
     parentNode.setChild(idempotentNode);
     ConfigNode nonIdempotentNode =
         generateRetryCodeDefNode(
             NodeFinder.getNextLine(idempotentNode),
             RETRY_CODES_NON_IDEMPOTENT_NAME,
-            DEFAULT_RETRY_CODES.get(RETRY_CODES_NON_IDEMPOTENT_NAME));
+            new ArrayList<>(DEFAULT_RETRY_CODES.get(RETRY_CODES_NON_IDEMPOTENT_NAME)));
     idempotentNode.insertNext(nonIdempotentNode);
   }
 

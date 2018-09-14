@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
+import static com.google.api.codegen.transformer.RetryDefinitionsTransformer.RETRY_CODES_FOR_HTTP_GET;
 import static com.google.rpc.Code.PERMISSION_DENIED;
 
 import com.google.api.Retry;
@@ -30,6 +31,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
 import io.grpc.Status;
 import java.util.Map;
@@ -110,7 +112,7 @@ public class RetryDefinitionsTransformerTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     ImmutableMap.Builder<String, String> methodNameToRetryCodeNames = ImmutableMap.builder();
 
-    Map<String, ImmutableList<String>> retryCodesDef =
+    Map<String, ImmutableSet<String>> retryCodesDef =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             diagCollector,
             interfaceConfigProto,
@@ -128,7 +130,7 @@ public class RetryDefinitionsTransformerTest {
     // httpGetMethod was an HTTP Get method, so it has two codes by default; disregard the extra
     // retry code specified in the InterfaceConfigProto.
     Truth.assertThat(retryCodesDef.get(getHttpRetryName))
-        .isEqualTo(DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME));
+        .isEqualTo(RETRY_CODES_FOR_HTTP_GET);
 
     // Even though config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod, proto
     // annotations have nothing
@@ -137,7 +139,7 @@ public class RetryDefinitionsTransformerTest {
 
     // For permissionDeniedMethod, Config proto gives [] and proto method gives [PERMISSION_DENIED].
     Truth.assertThat(retryCodesDef.get(permissionDeniedName).size()).isEqualTo(1);
-    Truth.assertThat(retryCodesDef.get(permissionDeniedName).get(0))
+    Truth.assertThat(retryCodesDef.get(permissionDeniedName).iterator().next())
         .isEqualTo(PERMISSION_DENIED.name());
   }
 }

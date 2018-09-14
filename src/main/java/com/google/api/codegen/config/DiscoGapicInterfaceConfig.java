@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -71,7 +70,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableList<String>> retryCodesDefinition =
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             model.getDiagCollector(), interfaceConfigProto);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
@@ -185,8 +184,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Set<String> retryCodesConfigNames,
-      Set<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryCodesConfigNames,
+      ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
