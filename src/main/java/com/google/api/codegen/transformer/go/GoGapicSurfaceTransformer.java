@@ -282,7 +282,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     }
 
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
-    Map<String, List<String>> retryCodesDef =
+    Map<String, ImmutableList<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
     ImmutableMap<String, RetryParamsDefinitionProto> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();

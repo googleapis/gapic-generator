@@ -63,7 +63,7 @@ public class RetryDefinitionsTransformer {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
-    for (Entry<String, List<String>> retryCodesDef :
+    for (Entry<String, ImmutableList<String>> retryCodesDef :
         context.getInterfaceConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
       for (String code : retryCodesDef.getValue()) {
@@ -83,9 +83,9 @@ public class RetryDefinitionsTransformer {
     return definitions;
   }
 
-  public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
+  public static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, List<String>> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ImmutableList<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
       Set<String> codes = new TreeSet<>();
@@ -114,15 +114,15 @@ public class RetryDefinitionsTransformer {
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings nmame.
    */
-  private static ImmutableMap<String, List<String>> createRetryCodesDefinition(
+  private static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser,
-      Map<String, List<String>> configProtoRetryMap) {
+      Map<String, ImmutableList<String>> configProtoRetryMap) {
 
-    ImmutableMap.Builder<String, List<String>> builder =
-        ImmutableMap.<String, List<String>>builder().putAll(configProtoRetryMap);
+    ImmutableMap.Builder<String, ImmutableList<String>> builder =
+        ImmutableMap.<String, ImmutableList<String>>builder().putAll(configProtoRetryMap);
     SymbolTable symbolTable = new SymbolTable();
     for (String retryCodesName : configProtoRetryMap.keySet()) {
       symbolTable.getNewSymbol(retryCodesName);
@@ -185,19 +185,19 @@ public class RetryDefinitionsTransformer {
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings nmame.
    */
-  public static ImmutableMap<String, List<String>> createRetryCodesDefinition(
+  public static ImmutableMap<String, ImmutableList<String>> createRetryCodesDefinition(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
       ProtoParser protoParser) {
 
-    Map<String, List<String>> retryDefsFromConfig =
+    Map<String, ImmutableList<String>> retryDefsFromConfig =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     if (retryDefsFromConfig == null) {
       return null;
     }
-    Map<String, List<String>> retryCodesFromProto =
+    Map<String, ImmutableList<String>> retryCodesFromProto =
         createRetryCodesDefinition(
             diagCollector,
             apiInterface,
@@ -207,7 +207,7 @@ public class RetryDefinitionsTransformer {
     if (retryCodesFromProto == null) {
       return null;
     }
-    Map<String, List<String>> returnValue = new LinkedHashMap<>();
+    Map<String, ImmutableList<String>> returnValue = new LinkedHashMap<>();
     returnValue.putAll(retryDefsFromConfig);
     returnValue.putAll(retryCodesFromProto);
     return ImmutableMap.copyOf(returnValue);

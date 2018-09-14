@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
 import io.grpc.Status;
-import java.util.List;
 import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -111,7 +110,7 @@ public class RetryDefinitionsTransformerTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     ImmutableMap.Builder<String, String> methodNameToRetryCodeNames = ImmutableMap.builder();
 
-    Map<String, List<String>> retryCodesDef =
+    Map<String, ImmutableList<String>> retryCodesDef =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             diagCollector,
             interfaceConfigProto,
