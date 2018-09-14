@@ -83,7 +83,7 @@
 # since standalone samples can perform more sophisticated response handling
 @private pagedIterableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.initCode)}
-  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
+  for ({@apiMethod.listMethod.resourceTypeName} responseItem : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
     {@processResponse(sample)}
   }
 @end
@@ -94,7 +94,7 @@
 
   // Do something
 
-  for ({@apiMethod.listMethod.resourceTypeName} element : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
+  for ({@apiMethod.listMethod.resourceTypeName} responseItem : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
     {@processResponse(sample)}
   }
 @end
@@ -105,7 +105,7 @@
     {@apiMethod.responseTypeName} response = \
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
         {@sampleMethodCallArgList(sample.initCode.fieldSettings)});
-    for ({@apiMethod.listMethod.resourceTypeName} element : \
+    for ({@apiMethod.listMethod.resourceTypeName} responseItem : \
         {@resourceListGetCall(apiMethod)}) {
       {@processResponse(sample)}
     }
@@ -183,7 +183,7 @@
 
   {@initCode(sample.initCode)}
   bidiStream.send(request);
-  for ({@apiMethod.callableMethod.genericAwareResponseType} element : bidiStream) {
+  for ({@apiMethod.callableMethod.genericAwareResponseType} responseItem : bidiStream) {
     {@processResponse(sample)}
   }
 @end
@@ -193,7 +193,7 @@
 
   ServerStream<{@apiMethod.callableMethod.genericAwareResponseType}> stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
       {@sampleMethodCallArgList(sample.initCode.fieldSettings)});
-  for ({@apiMethod.callableMethod.genericAwareResponseType} element : stream) {
+  for ({@apiMethod.callableMethod.genericAwareResponseType} responseItem : stream) {
     {@processResponse(sample)}
   }
 @end

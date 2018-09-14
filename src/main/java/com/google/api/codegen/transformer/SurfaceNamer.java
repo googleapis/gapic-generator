@@ -1543,13 +1543,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getSampleResponseVarName(MethodContext context) {
     MethodConfig config = context.getMethodConfig();
     if (config.getPageStreaming() != null) {
-      return "element";
+      return "responseItem";
     }
     if (config.getGrpcStreaming() != null) {
       GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
       if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
           || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
-        return "element";
+        return "responseItem";
       }
     }
     return "response";

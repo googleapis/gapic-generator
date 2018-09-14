@@ -25,6 +25,7 @@ import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,8 @@ import javax.annotation.Nullable;
 
 class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
+  private static final Set<String> RESERVED_KEYWORDS =
+      ImmutableSet.<String>of("response", "response_item");
 
   static List<OutputSpec> defaultOutputSpecs(MethodModel method) {
     if (method.isOutputTypeEmpty()) {
@@ -117,13 +120,20 @@ class OutputTransformer {
       ScopeTable localVars) {
 
     ScopeTable scope = localVars.newChild();
+    String loopVariable = loop.getVariable();
+    Preconditions.checkArgument(
+        !RESERVED_KEYWORDS.contains(loopVariable),
+        "%s:%s cannot define variable %s: it is a reserved keyword",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        loopVariable);
     OutputView.VariableView accessor =
         accessorNewVariable(
-            new Scanner(loop.getCollection()), context, valueSet, scope, loop.getVariable(), true);
+            new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
-            .variableType(scope.getTypeName(loop.getVariable()))
-            .variableName(context.getNamer().localVarName(Name.from(loop.getVariable())))
+            .variableType(scope.getTypeName(loopVariable))
+            .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
             .collection(accessor)
             .body(
                 loop.getBodyList()
@@ -143,6 +153,12 @@ class OutputTransformer {
         valueSet.getId(),
         definition.input());
     String identifier = definition.tokenStr();
+    Preconditions.checkArgument(
+        !RESERVED_KEYWORDS.contains(identifier),
+        "%s:%s cannot define variable %s: it is a reserved keyword",
+        context.getMethodModel().getSimpleName(),
+        valueSet.getId(),
+        identifier);
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
@@ -305,6 +321,12 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
+      Preconditions.checkArgument(
+          !RESERVED_KEYWORDS.contains(newVar),
+          "%s:%s cannot define variable %s: it is a reserved keyword",
+          context.getMethodModel().getSimpleName(),
+          valueSet.getId(),
+          newVar);
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type != null,

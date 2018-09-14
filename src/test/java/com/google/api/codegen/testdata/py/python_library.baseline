@@ -4130,8 +4130,8 @@ def sample_discuss_book():
   request = {'name': name}
 
   requests = [request]
-  for element in client.discuss_book(requests):
-      print(element)
+  for response_item in client.discuss_book(requests):
+      print(response_item)
 
   # [END turing_prog_request_streaming_bidi_core]
 # [END turing_prog_request_streaming_bidi]
@@ -4183,8 +4183,8 @@ def sample_find_related_books():
   shelves = [shelves_element]
 
   # Iterate over all results
-  for element in client.find_related_books(names, shelves):
-      book = element
+  for response_item in client.find_related_books(names, shelves):
+      book = response_item
       print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
@@ -4238,8 +4238,8 @@ def sample_find_related_books():
 
   # Iterate over results one page at a time
   for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
-      for element in page:
-          book = element
+      for response_item in page:
+          book = response_item
           print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
@@ -4516,8 +4516,8 @@ def sample_stream_books():
 
   name = 'BASIC'
 
-  for element in client.stream_books(name):
-      print(element)
+  for response_item in client.stream_books(name):
+      print(response_item)
 
   # [END lovelace_core]
 # [END lovelace]
@@ -4563,8 +4563,8 @@ def sample_stream_shelves():
 
   client = library_v1.LibraryServiceClient()
 
-  for element in client.stream_shelves():
-      print(element)
+  for response_item in client.stream_shelves():
+      print(response_item)
 
   # [END sample_core]
 # [END sample]
