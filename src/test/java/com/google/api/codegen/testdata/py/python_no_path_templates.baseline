@@ -975,13 +975,17 @@ config = {
   "interfaces": {
     "google.cloud.example.v1.NoTemplatesAPIService": {
       "retry_codes": {
-        "increment_retry_code": []
+        "http_get": [
+          "DEADLINE_EXCEEDED",
+          "UNAVAILABLE"
+        ],
+        "no_retry": []
       },
       "retry_params": {},
       "methods": {
         "Increment": {
           "timeout_millis": 10000,
-          "retry_codes_name": "increment_retry_code",
+          "retry_codes_name": "no_retry",
           "retry_params_name": "default"
         }
       }
