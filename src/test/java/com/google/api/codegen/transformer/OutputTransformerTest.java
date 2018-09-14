@@ -69,6 +69,23 @@ public class OutputTransformerTest {
   }
 
   @Test
+  public void testAccessorNewVariableFailWithReservedKeyword() {
+    Scanner scanner = new Scanner("$resp");
+    when(config.getPageStreaming()).thenReturn(pageStreamingConfig);
+    when(pageStreamingConfig.getResourcesFieldConfig()).thenReturn(resourceFieldConfig);
+    when(namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig))
+        .thenReturn("ShelfBookName");
+    when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
+    try {
+      OutputView.VariableView variableView =
+          accessorNewVariable(scanner, context, valueSet, parent, "response", false);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage().contains("\"response\" is a reserved keyword."));
+    }
+  }
+
+  @Test
   public void testAccessorNewVariablePageStreamingResourceNameResponse() {
     Scanner scanner = new Scanner("$resp");
 

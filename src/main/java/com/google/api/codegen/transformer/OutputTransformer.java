@@ -123,7 +123,7 @@ class OutputTransformer {
     String loopVariable = loop.getVariable();
     Preconditions.checkArgument(
         !RESERVED_KEYWORDS.contains(loopVariable),
-        "%s:%s cannot define variable %s: it is a reserved keyword",
+        "%s:%s cannot define loop variable %s: it is a reserved keyword",
         context.getMethodModel().getSimpleName(),
         valueSet.getId(),
         loopVariable);
@@ -323,7 +323,7 @@ class OutputTransformer {
     if (newVar != null) {
       Preconditions.checkArgument(
           !RESERVED_KEYWORDS.contains(newVar),
-          "%s:%s cannot define variable %s: it is a reserved keyword",
+          "%s:%s \"%s\" is a reserved keyword",
           context.getMethodModel().getSimpleName(),
           valueSet.getId(),
           newVar);
