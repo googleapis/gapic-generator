@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -110,7 +109,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
+    // Sample entry value in this map: {"ListShelves" : "non_idempotent"}
     ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
+
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
             diagCollector,
@@ -205,13 +206,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable InterfaceConfigProto interfaceConfigProto,
+      InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Map<String, String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
-    Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
+    ImmutableMap.Builder<String, GapicMethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       Interface targetInterface =
@@ -242,7 +243,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return ImmutableMap.copyOf(methodConfigMapBuilder);
+      return methodConfigMapBuilder.build();
     }
   }
 

@@ -62,7 +62,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable MethodConfigProto methodConfigProto,
+      MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,

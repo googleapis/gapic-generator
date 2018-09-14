@@ -34,10 +34,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -83,8 +83,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Set<String> retryCodesConfigNames,
-      Set<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryCodesConfigNames,
+      ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
     DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, apiModel);
