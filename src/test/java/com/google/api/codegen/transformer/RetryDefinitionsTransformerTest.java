@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
 import static com.google.api.codegen.transformer.RetryDefinitionsTransformer.RETRY_CODES_FOR_HTTP_GET;
@@ -129,8 +128,7 @@ public class RetryDefinitionsTransformerTest {
 
     // httpGetMethod was an HTTP Get method, so it has two codes by default; disregard the extra
     // retry code specified in the InterfaceConfigProto.
-    Truth.assertThat(retryCodesDef.get(getHttpRetryName))
-        .isEqualTo(RETRY_CODES_FOR_HTTP_GET);
+    Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(RETRY_CODES_FOR_HTTP_GET);
 
     // Even though config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod, proto
     // annotations have nothing
