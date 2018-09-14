@@ -57,7 +57,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import java.io.File;
 import java.util.ArrayList;
@@ -283,12 +282,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     }
 
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
-    Map<String, ImmutableSet<String>> retryCodesDef =
+    Map<String, List<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
     ImmutableMap<String, RetryParamsDefinitionProto> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
-      ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());
+      List<String> codes = retryCodesDef.get(name.retryCodesConfigName());
       if (codes.isEmpty()) {
         continue;
       }

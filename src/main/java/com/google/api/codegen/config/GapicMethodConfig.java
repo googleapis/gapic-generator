@@ -24,6 +24,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -36,6 +37,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -60,11 +62,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      MethodConfigProto methodConfigProto,
+      @Nullable MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
+      Map<String, String> methodNamesToRetryCodeDefNames,
       ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
@@ -116,27 +118,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodConfigProto.getRetryCodesName();
-    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
 
-    String retryParamsName = methodConfigProto.getRetryParamsName();
-    if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry parameters config used but not defined: %s (in method %s)",
-              retryParamsName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryParamsName =
+        RetryDefinitionsTransformer.getRetryParamsName(
+            methodConfigProto, diagCollector, retryParamsConfigNames);
+    error |= (retryParamsName == null);
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
     if (timeout.toMillis() <= 0) {

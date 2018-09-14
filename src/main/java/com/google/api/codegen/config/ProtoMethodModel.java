@@ -40,7 +40,7 @@ import java.util.Map;
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
   private List<ProtoField> inputFields;
-  private Iterable<ProtoField> outputFields;
+  private List<ProtoField> outputFields;
   private final TypeModel inputType;
   private final TypeModel outputType;
 
@@ -195,7 +195,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<ProtoField> getOutputFields() {
+  public List<ProtoField> getOutputFields() {
     if (outputFields != null) {
       return outputFields;
     }
@@ -209,7 +209,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<ProtoField> getResourceNameInputFields() {
+  public List<ProtoField> getResourceNameInputFields() {
     return new ArrayList<>();
   }
 
