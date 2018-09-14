@@ -121,12 +121,8 @@ class OutputTransformer {
 
     ScopeTable scope = localVars.newChild();
     String loopVariable = loop.getVariable();
-    Preconditions.checkArgument(
-        !RESERVED_KEYWORDS.contains(loopVariable),
-        "%s:%s cannot define loop variable %s: it is a reserved keyword",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
-        loopVariable);
+    assertIdentifierNotReserved(
+        loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId());
     OutputView.VariableView accessor =
         accessorNewVariable(
             new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true);
@@ -153,12 +149,8 @@ class OutputTransformer {
         valueSet.getId(),
         definition.input());
     String identifier = definition.tokenStr();
-    Preconditions.checkArgument(
-        !RESERVED_KEYWORDS.contains(identifier),
-        "%s:%s cannot define variable %s: it is a reserved keyword",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
-        identifier);
+    assertIdentifierNotReserved(
+        identifier, context.getMethodModel().getSimpleName(), valueSet.getId());
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
@@ -321,12 +313,8 @@ class OutputTransformer {
     }
 
     if (newVar != null) {
-      Preconditions.checkArgument(
-          !RESERVED_KEYWORDS.contains(newVar),
-          "%s:%s \"%s\" is a reserved keyword",
-          context.getMethodModel().getSimpleName(),
-          valueSet.getId(),
-          newVar);
+      assertIdentifierNotReserved(
+          newVar, context.getMethodModel().getSimpleName(), valueSet.getId());
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type != null,
@@ -361,6 +349,16 @@ class OutputTransformer {
     }
 
     return view.accessors(accessors.build()).build();
+  }
+
+  private static void assertIdentifierNotReserved(
+      String identifier, String methodName, String valueSetId) {
+    Preconditions.checkArgument(
+        !RESERVED_KEYWORDS.contains(identifier),
+        "%s:%s cannot define variable %s: it is a reserved keyword",
+        methodName,
+        valueSetId,
+        identifier);
   }
 
   /**

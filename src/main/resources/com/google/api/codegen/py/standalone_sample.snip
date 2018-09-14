@@ -53,8 +53,7 @@
       @end
       @switch sample.callingForm
       @case "Request"
-        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
       @case "RequestPaged"
         {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
       @case "RequestPagedAll"
@@ -62,13 +61,11 @@
       @case "RequestStreamingBidi"
         {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
       @case "RequestStreamingClient"
-        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
       @case "RequestStreamingServer"
         {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
       @case "LongRunningPromise"
-        {@lroSampleCode(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@lroSampleCode(apiMethod, sample)}
       @default
         $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
       @end
@@ -103,8 +100,9 @@
   @end
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
-  {@singularResponseSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
@@ -125,17 +123,18 @@
   {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
-  {@singularResponseSampleCode(apiMethod, initCode)}
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
 @private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
   {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private lroSampleCode(apiMethod, initCode)
-  response = {@methodCallSampleCode(apiMethod, initCode)}
+@private lroSampleCode(apiMethod, sample)
+  response = {@methodCallSampleCode(apiMethod, sample.initCode)}
 
   def callback(operation_future):
       @# Handle result.
@@ -145,6 +144,7 @@
 
   @# Handle metadata.
   metadata = response.metadata()
+  {@processResponse(sample)}
 @end
 
 @private singularResponseSampleCode(apiMethod, initCode)
