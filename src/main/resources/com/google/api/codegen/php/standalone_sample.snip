@@ -75,7 +75,6 @@
             {@longRunningAsyncSampleCode(sample, apiMethod)}
         @case "Request"
             {@requestSampleCode(sample, apiMethod)}
-            {@processResponse(sample)}
         @case "RequestPaged"
             {@pagedSampleCode(sample, apiMethod)}
         @case "RequestPagedAll"
@@ -86,10 +85,8 @@
             {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
         @case "RequestStreamingClient"
             {@clientStreamingSampleCode(sample, apiMethod)}
-            {@processResponse(sample)}
         @case "RequestStreamingClientAsync"
             {@clientStreamingAsyncSampleCode(sample, apiMethod)}
-            {@processResponse(sample)}
         @case "RequestStreamingServer"
             {@serverStreamingSampleCode(sample, apiMethod)}
         @default
@@ -122,7 +119,7 @@
         @if apiMethod.longRunningView.isEmptyOperation
             // operation succeeded and returns no value
         @else
-            $result = $operationResponse->getResult();
+            $response = $operationResponse->getResult();
             {@processResponse(sample)}
         @end
     } else {
@@ -145,7 +142,7 @@
       @if apiMethod.longRunningView.isEmptyOperation
           // operation succeeded and returns no value
       @else
-          $result = $newOperationResponse->getResult();
+          $response = $newOperationResponse->getResult();
           {@processResponse(sample)}
       @end
     } else {
@@ -157,17 +154,19 @@
 @private requestSampleCode(sample, apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
+
     @else
         {@methodCallSampleCode(apiMethod)};
     @end
+    {@processResponse(sample)}
 @end
 
 @private pagedSampleCode(sample, apiMethod)
     // Iterate over pages of elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
-        foreach ($page as $element) {
-            {@processResponse(sample)};
+        foreach ($page as $responseItem) {
+            {@processResponse(sample)}
         }
     }
 @end
@@ -175,7 +174,7 @@
 @private pagedAllSampleCode(sample, apiMethod)
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($pagedResponse->iterateAllElements() as $element) {
+    foreach ($pagedResponse->iterateAllElements() as $responseItem) {
         {@processResponse(sample)}
     }
 @end
@@ -184,7 +183,8 @@
     // Write data to server and wait for a response
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
-    $result = $stream->writeAllAndReadResponse($requests);
+    $response = $stream->writeAllAndReadResponse($requests);
+    {@processResponse(sample)}
 @end
 
 @private clientStreamingAsyncSampleCode(sample, apiMethod)
@@ -194,14 +194,15 @@
     foreach ($requests as $request) {
         $stream->write($request);
     }
-    $result = $stream->readResponse();
+    $response = $stream->readResponse();
+    {@processResponse(sample)}
 @end
 
 @private serverStreamingSampleCode(sample, apiMethod)
     // Read all responses until the stream is complete
     $stream = {@methodCallSampleCode(apiMethod)};
-    foreach ($stream->readAll() as $element) {
-        {@processResponse(sample)};
+    foreach ($stream->readAll() as $responseItem) {
+        {@processResponse(sample)}
     }
 @end
 
@@ -211,8 +212,8 @@
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $stream->writeAll($requests);
-    foreach ($stream->closeWriteAndReadAll() as $element) {
-        {@processResponse(sample)};
+    foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+        {@processResponse(sample)}
     }
 @end
 
@@ -225,14 +226,14 @@
     foreach ($requests as $request) {
         $stream->write($request);
         // if required, read a single response from the stream
-        $element = $stream->read();
+        $responseItem = $stream->read();
         {@processResponse(sample)}
     }
     $stream->closeWrite();
-    $element = $stream->read();
-    while (!is_null($element)) {
-        // doSomethingWith($element)
-        $element = $stream->read();
+    $responseItem = $stream->read();
+    while (!is_null($responseItem)) {
+        {@processResponse(sample)}
+        $responseItem = $stream->read();
     }
 @end
 
@@ -329,9 +330,9 @@
 @end
 
 @private processResponse(sample)
-    {@sample.outputs}
+    #{@sample.outputs}
     @if sample.outputs.size == 0
-        print(response)
+        print($response);
     @else
         {@processOutputViews(sample.outputs)}
     @end
@@ -357,9 +358,9 @@
 @private processPrintView(view)
     # Since numeric comparison seems to not work, we use explicit zero tests
     @if not(view.args.size)
-        print('{@view.format}');
+        print("{@view.format}");
     @else
-        @if view.format == "{}"
+        @if view.format == "%s"
             print({@variableField(view.args.get(0))});
         @else
             printf("{@view.format}", {@concatenatedArgs(view.args)});
@@ -372,13 +373,13 @@
 @end
 
 @private processLoopView(view)
-    foreach ({@variableField(view.collection)} as {@view.variableName}) {
+    foreach ({@variableField(view.collection)} as {@variable(view.variableName)}) {
         {@processOutputViews(view.body)}
     }
 @end
 
 @private processDefineView(view)
-    ${@view.variableName} = {@variableField(view.reference)};
+    {@variable(view.variableName)} = {@variableField(view.reference)};
 @end
 
 
@@ -389,11 +390,15 @@
 @end
 
 @private variableField(arg)
-    {@arg.variable}{@accessor(arg.accessors)}
+    {@variable(arg.variable)}{@accessor(arg.accessors)}
+@end
+
+@private variable(var)
+    ${@var}
 @end
 
 @private accessor(accessors)
     @join field : accessors on ""
-        ->{@field}
+        ->{@field}()
     @end
 @end
