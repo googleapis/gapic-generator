@@ -470,4 +470,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       cursor = p + 2;
     }
   }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context) {
+    return Name.anyCamel(super.getSampleResponseVarName(context)).toLowerUnderscore().toString();
+  }
 }
