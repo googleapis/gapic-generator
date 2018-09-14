@@ -39,6 +39,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.rpc.Code;
@@ -51,7 +52,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
@@ -161,7 +161,6 @@ public class RetryDefinitionsTransformer {
 
         methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
       } else {
-
         // Add all retry codes defined in the Retry proto annotation.
         retryCodes.addAll(
             retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
@@ -219,12 +218,11 @@ public class RetryDefinitionsTransformer {
 
   public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(
       InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetryParamsDefinitionProto> builder = ImmutableMap.builder();
-    if (interfaceConfigProto != null) {
-      for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-        builder.put(retryDef.getName(), retryDef);
-      }
-    } else {
+    Map<String, RetryParamsDefinitionProto> builder = new LinkedHashMap<>();
+    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
+      builder.put(retryDef.getName(), retryDef);
+    }
+    if (builder.isEmpty()) {
       // Use default values.
       RetryParamsDefinitionProto defaultRetryParams =
           RetryParamsDefinitionProto.getDefaultInstance()
@@ -238,30 +236,30 @@ public class RetryDefinitionsTransformer {
               .setTotalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
               .build();
       builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
+    } else {
+
     }
-    return builder.build();
+    return ImmutableMap.copyOf(builder);
   }
 
   public static String getRetryParamsName(
-      @Nullable MethodConfigProto methodConfigProto,
+      MethodConfigProto methodConfigProto,
       DiagCollector diagCollector,
       Set<String> retryParamsConfigNames) {
-    if (methodConfigProto != null) {
-      String retryParamsName = methodConfigProto.getRetryParamsName();
-      if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Retry parameters config used but not defined: %s (in method %s)",
-                retryParamsName,
-                methodConfigProto.getName()));
-        return null;
-      } else {
-        return retryParamsName;
-      }
+    String retryParamsName = methodConfigProto.getRetryParamsName();
+    if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Retry parameters config used but not defined: %s (in method %s)",
+              retryParamsName,
+              methodConfigProto.getName()));
+      return null;
     }
-    // TODO(andrealin): handle default retry params
-    return RETRY_PARAMS_DEFAULT_NAME;
+    if (Strings.isNullOrEmpty(retryParamsName)) {
+      return RETRY_PARAMS_DEFAULT_NAME;
+    }
+    return retryParamsName;
   }
 
   public List<RetryParamsDefinitionView> generateRetryParamsDefinitions(InterfaceContext context) {
