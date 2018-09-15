@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -109,8 +110,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    // Sample entry value in this map: {"ListShelves" : "non_idempotent"}
-    ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
+    // Map to store all method names to their retry codes, e.g {"ListShelves" : "non_idempotent"}
+    Map<String, String> methodNameToRetryNameMap = new HashMap<>();
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(
@@ -133,7 +134,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               apiInterface,
               messageConfigs,
               resourceNameConfigs,
-              methodNameToRetryNameMap.build(),
+              ImmutableMap.copyOf(methodNameToRetryNameMap),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }

@@ -16,6 +16,8 @@ package com.google.api.codegen.util;
 
 import com.google.api.AnnotationsProto;
 import com.google.api.Retry;
+import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -23,6 +25,9 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.protobuf.Api;
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
@@ -56,5 +61,18 @@ public class ProtoParser {
   public boolean isHttpGetMethod(Method method) {
     return !Strings.isNullOrEmpty(
         method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
+  }
+
+  /** Return the mapping of each method in apiInterface to its counterpart in interfaceConfigProto. */
+  public Map<Method, MethodConfigProto> getProtoMethodToConfigMap(Interface apiInterface, InterfaceConfigProto interfaceConfigProto) {
+    Map<String, Method> methodNamestoProtoMethod = apiInterface.getMethods().stream()
+        .collect(Collectors.toMap(Method::getSimpleName, m -> m));
+    Map<String, MethodConfigProto> methodNamestoMethodConfigProto = interfaceConfigProto.getMethodsList().stream()
+        .collect(Collectors.toMap(MethodConfigProto::getName, m -> m));
+
+    return methodNamestoProtoMethod.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+              Map.Entry::getValue, entry -> methodNamestoMethodConfigProto.get(entry.getKey())));
   }
 }

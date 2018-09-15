@@ -42,9 +42,12 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.rpc.Code;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +58,6 @@ import java.util.stream.Collectors;
 
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
-
-  static ImmutableSet<String> RETRY_CODES_FOR_HTTP_GET =
-      DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
 
   public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(InterfaceContext context) {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
@@ -81,139 +81,6 @@ public class RetryDefinitionsTransformer {
     }
 
     return definitions;
-  }
-
-  public static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
-    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(String.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
-      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
-  }
-
-  /**
-   * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
-   * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
-   * settings nmame.
-   */
-  private static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector,
-      Interface apiInterface,
-      ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
-      ProtoParser protoParser,
-      Map<String, ImmutableSet<String>> configProtoRetryMap) {
-
-    ImmutableMap.Builder<String, ImmutableSet<String>> builder =
-        ImmutableMap.<String, ImmutableSet<String>>builder().putAll(configProtoRetryMap);
-    SymbolTable symbolTable = new SymbolTable();
-    for (String retryCodesName : configProtoRetryMap.keySet()) {
-      symbolTable.getNewSymbol(retryCodesName);
-    }
-
-    // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
-    // reduce duplication.
-    String httpGetRetryName = symbolTable.getNewSymbol("http_get");
-    builder.put(httpGetRetryName, ImmutableSet.copyOf(RETRY_CODES_FOR_HTTP_GET));
-    // Unite all methods that have no retry codes under one retry code name to reduce duplication.
-    String noRetryName = symbolTable.getNewSymbol("no_retry");
-    builder.put(noRetryName, ImmutableSet.of());
-
-    // Check proto annotations for retry settings.
-    for (Method method : apiInterface.getMethods()) {
-      Retry retry = protoParser.getRetry(method);
-      Set<String> retryCodes = new TreeSet<>();
-
-      if (protoParser.isHttpGetMethod(method)) {
-        // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and
-        // `UNAVAILABLE`.
-        retryCodes.addAll(RETRY_CODES_FOR_HTTP_GET);
-      }
-
-      if (retry.getCodesCount() == 0) {
-        String retryCodesName;
-        if (protoParser.isHttpGetMethod(method)) {
-          // It is a common case to have an HTTP GET method with no extra codes to retry on,
-          // so let's put them all under the same retry code name.
-          retryCodesName = httpGetRetryName;
-        } else {
-          // It is a common case to have a method with no codes to retry on,
-          // so let's put these methods all under the same retry code name.
-          retryCodesName = noRetryName;
-        }
-
-        methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
-      } else {
-        // Add all retry codes defined in the Retry proto annotation.
-        retryCodes.addAll(
-            retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
-
-        // Create a retryCode config internally.
-        String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
-        builder.put(
-            retryCodesName, (new ImmutableSet.Builder<String>()).addAll(retryCodes).build());
-        methodNameToRetryCodeNames.put(method.getSimpleName(), retryCodesName);
-      }
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
-  }
-
-  /**
-   * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
-   * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
-   * settings nmame.
-   */
-  public static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector,
-      InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
-      ImmutableMap.Builder<String, String> methodNameToRetryCodeNames,
-      ProtoParser protoParser) {
-
-    Map<String, ImmutableSet<String>> retryDefsFromConfig =
-        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
-    if (retryDefsFromConfig == null) {
-      return null;
-    }
-    Map<String, ImmutableSet<String>> retryCodesFromProto =
-        createRetryCodesDefinition(
-            diagCollector,
-            apiInterface,
-            methodNameToRetryCodeNames,
-            protoParser,
-            retryDefsFromConfig);
-    if (retryCodesFromProto == null) {
-      return null;
-    }
-    Map<String, ImmutableSet<String>> returnValue = new LinkedHashMap<>();
-    returnValue.putAll(retryDefsFromConfig);
-    returnValue.putAll(retryCodesFromProto);
-    return ImmutableMap.copyOf(returnValue);
-  }
-
-  private static String getRetryCodesName(Method method) {
-    return String.format("%s_retry_code", method.getSimpleName().toLowerCase());
   }
 
   public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(
@@ -241,6 +108,8 @@ public class RetryDefinitionsTransformer {
     }
     return ImmutableMap.copyOf(builder);
   }
+
+
 
   public static String getRetryParamsName(
       MethodConfigProto methodConfigProto,
