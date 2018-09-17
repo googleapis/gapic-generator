@@ -27,10 +27,10 @@ import javax.annotation.Nullable;
 
 public class RetryCodesConfig {
 
-  static ImmutableSet<String> RETRY_CODES_FOR_HTTP_GET =
+  public static ImmutableSet<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
-  static final String HTTP_RETRY_CODE_DEF_NAME = "http_get";
-  static final String NO_RETRY_CODE_DEF_NAME = "no_retry";
+  public static final String HTTP_RETRY_CODE_DEF_NAME = "http_get";
+  public static final String NO_RETRY_CODE_DEF_NAME = "no_retry";
 
   private Map<String, ImmutableSet<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
@@ -73,6 +73,7 @@ public class RetryCodesConfig {
     if (retryCodesConfig.error) {
       return null;
     }
+    retryCodesConfig.populateRetryCodesDefinition(diagCollector, interfaceConfigProto, null, new ProtoParser());
     return retryCodesConfig;
   }
 
@@ -86,6 +87,7 @@ public class RetryCodesConfig {
     if (retryCodesConfig.error) {
       return null;
     }
+    retryCodesConfig.populateRetryCodesDefinition(diagCollector, interfaceConfigProto, apiInterface, protoParser);
     return retryCodesConfig;
   }
 
@@ -224,6 +226,7 @@ public class RetryCodesConfig {
         }
 
         methodRetryNames.put(method.getSimpleName(), retryCodesName);
+        retryCodesDefinition.put(retryCodesName, )
       } else {
         // Add all retry codes defined in the Retry proto annotation.
         retryCodes.addAll(

@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.config.RetryCodesConfig.NO_RETRY_CODE_DEF_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
-import static com.google.api.codegen.transformer.RetryDefinitionsTransformer.NO_RETRY_CODE_DEF_NAME;
-import static com.google.api.codegen.transformer.RetryDefinitionsTransformer.RETRY_CODES_FOR_HTTP_GET;
 import static com.google.rpc.Code.CANCELLED;
 import static com.google.rpc.Code.FAILED_PRECONDITION;
 import static com.google.rpc.Code.PERMISSION_DENIED;
@@ -93,7 +92,7 @@ public class RetryDefinitionsTransformerTest {
                 RetryCodesDefinitionProto.newBuilder()
                     // Empty retry codes list.
                     // Force protomethods to escape this retry name.
-                    .setName(RetryDefinitionsTransformer.NO_RETRY_CODE_DEF_NAME))
+                    .setName(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME))
             .addMethods(MethodConfigProto.newBuilder().setName(GET_HTTP_METHOD_NAME))
             // Don't set a retry code in config proto for GET_HTTP_METHOD
             .addMethods(
@@ -108,7 +107,7 @@ public class RetryDefinitionsTransformerTest {
                 MethodConfigProto.newBuilder()
                     // Leave retry codes empty in this method config.
                     .setName(PERMISSION_DENIED_METHOD_NAME)
-                    .setRetryCodesName(NO_RETRY_CODE_DEF_NAME))
+                    .setRetryCodesName(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME))
             .build();
 
     Mockito.when(protoParser.isHttpGetMethod(httpGetMethod)).thenReturn(true);
@@ -125,13 +124,12 @@ public class RetryDefinitionsTransformerTest {
   public void testWithConfigAndInterface() {
 
     DiagCollector diagCollector = new BoundedDiagCollector();
-    Map<String, String> retryCodesMap = new HashMap<>();
-    RetryCodesConfig retryCodesConfig = RetryCodesConfig.create(
-        diagCollector, interfaceConfigProto, apiInterface, protoParser);
 
-    Map<String, ImmutableSet<String>> retryCodesDef =
-        RetryCodesConfig.create(
-            diagCollector, interfaceConfigProto, apiInterface, protoParser);
+    RetryCodesConfig retryCodesConfig =
+        RetryCodesConfig.create(diagCollector, interfaceConfigProto, apiInterface, protoParser);
+
+    Map<String, ImmutableSet<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
+    Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
 
     Truth.assertThat(retryCodesMap.size()).isEqualTo(5);
     String getHttpRetryName = retryCodesMap.get(GET_HTTP_METHOD_NAME);
@@ -143,7 +141,7 @@ public class RetryDefinitionsTransformerTest {
     // GET_HTTP_METHOD_NAME had to be escaped because it was defined in the config proto retry code
     // map already.
     Truth.assertThat(getHttpRetryName)
-        .isEqualTo(RetryDefinitionsTransformer.HTTP_RETRY_CODE_DEF_NAME);
+        .isEqualTo(RetryCodesConfig.HTTP_RETRY_CODE_DEF_NAME);
     Truth.assertThat(nonIdempotentRetryName).isEqualTo(RETRY_CODES_NON_IDEMPOTENT_NAME);
     Truth.assertThat(permissionDeniedRetryName).isEqualTo("http_get");
     Truth.assertThat(idempotentRetryName).isEqualTo("http_get");
@@ -151,7 +149,7 @@ public class RetryDefinitionsTransformerTest {
 
     // httpGetMethod was an HTTP Get method, so it has two codes by default; config proto didn't
     // have a retry config.
-    Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(RETRY_CODES_FOR_HTTP_GET);
+    Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(RetryCodesConfig.RETRY_CODES_FOR_HTTP_GET);
 
     // Config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod; method from protofile has
     // [] for retry codes.
