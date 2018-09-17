@@ -32,8 +32,8 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -49,7 +49,7 @@ public class RetryDefinitionsTransformer {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
-    for (Entry<String, ImmutableSet<String>> retryCodesDef :
+    for (Entry<String, ImmutableList<String>> retryCodesDef :
         context.getInterfaceConfig().getRetryCodesConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
       for (String code : retryCodesDef.getValue()) {

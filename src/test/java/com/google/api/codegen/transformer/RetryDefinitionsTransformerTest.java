@@ -32,7 +32,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
 import io.grpc.Status;
 import java.util.Map;
@@ -126,7 +125,7 @@ public class RetryDefinitionsTransformerTest {
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(diagCollector, interfaceConfigProto, apiInterface, protoParser);
 
-    Map<String, ImmutableSet<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
+    Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
 
     Truth.assertThat(retryCodesMap.size()).isEqualTo(5);
@@ -174,7 +173,7 @@ public class RetryDefinitionsTransformerTest {
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(diagCollector, emptyConfig, apiInterface, protoParser);
 
-    Map<String, ImmutableSet<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
+    Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
 
     Truth.assertThat(retryCodesMap.size()).isEqualTo(4);

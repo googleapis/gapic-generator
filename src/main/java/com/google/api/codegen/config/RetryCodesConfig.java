@@ -29,12 +29,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.rpc.Code;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,23 +40,23 @@ import java.util.stream.Collectors;
 
 public class RetryCodesConfig {
 
-  public static ImmutableSet<String> RETRY_CODES_FOR_HTTP_GET =
+  public static ImmutableList<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
   public static final String HTTP_RETRY_CODE_DEF_NAME = "http_get";
   public static final String NO_RETRY_CODE_DEF_NAME = "no_retry";
 
-  private Map<String, ImmutableSet<String>> retryCodesDefinition = new HashMap<>();
+  private Map<String, ImmutableList<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
 
-  private ImmutableMap<String, ImmutableSet<String>> finalRetryCodesDefinition;
+  private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
   private boolean error = false;
 
   /**
-   * A map of retry config names to the list of code to retry on, e.g. { "idempotent" :
+   * A map of retry config names to the list of codes to retry on, e.g. { "idempotent" :
    * ["UNAVAILABLE"] }.
    */
-  public ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition() {
+  public ImmutableMap<String, ImmutableList<String>> getRetryCodesDefinition() {
     return finalRetryCodesDefinition;
   }
 
@@ -116,13 +114,13 @@ public class RetryCodesConfig {
     return builder.build();
   }
 
-  private static ImmutableMap<String, ImmutableSet<String>>
+  private static ImmutableMap<String, ImmutableList<String>>
       createRetryCodesDefinitionFromConfigProto(
           DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ImmutableList<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new HashSet<>();
+      Set<String> codes = new TreeSet<>();
       for (String codeText : retryDef.getRetryCodesList()) {
         try {
           codes.add(String.valueOf(codeText));
@@ -135,7 +133,7 @@ public class RetryCodesConfig {
                   interfaceConfigProto.getName()));
         }
       }
-      builder.put(retryDef.getName(), ImmutableSortedSet.copyOf(codes));
+      builder.put(retryDef.getName(), ImmutableList.copyOf(codes));
     }
     if (diagCollector.getErrorCount() > 0) {
       return null;
@@ -170,7 +168,7 @@ public class RetryCodesConfig {
   private void populateRetryCodesDefinitionFromConfigProto(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
 
-    ImmutableMap<String, ImmutableSet<String>> retryCodesDefFromConfigProto =
+    ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
         createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     if (error) {
       return;
@@ -231,12 +229,12 @@ public class RetryCodesConfig {
           // It is a common case to have an HTTP GET method with no extra codes to retry on,
           // so let's put them all under the same retry code name.
           retryCodesName = httpGetRetryName;
-          retryCodesDefinition.put(httpGetRetryName, ImmutableSet.copyOf(RETRY_CODES_FOR_HTTP_GET));
+          retryCodesDefinition.put(httpGetRetryName, RETRY_CODES_FOR_HTTP_GET);
         } else {
           // It is a common case to have a method with no codes to retry on,
           // so let's put these methods all under the same retry code name.
           retryCodesName = noRetryName;
-          retryCodesDefinition.put(noRetryName, ImmutableSet.of());
+          retryCodesDefinition.put(noRetryName, ImmutableList.of());
         }
 
         methodRetryNames.put(method.getSimpleName(), retryCodesName);
@@ -249,7 +247,7 @@ public class RetryCodesConfig {
         // Create a retryCode config internally.
         String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
         methodRetryNames.put(method.getSimpleName(), retryCodesName);
-        retryCodesDefinition.put(retryCodesName, ImmutableSet.copyOf(retryCodes));
+        retryCodesDefinition.put(retryCodesName, ImmutableList.copyOf(retryCodes));
       }
     }
   }
