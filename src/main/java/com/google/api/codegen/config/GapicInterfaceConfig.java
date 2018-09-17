@@ -113,13 +113,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     // Map to store all method names to their retry codes, e.g {"ListShelves" : "non_idempotent"}
     Map<String, String> methodNameToRetryNameMap = new HashMap<>();
 
+    RetryCodesConfig retryCodesConfig = RetryCodesConfig.create(
+        diagCollector, interfaceConfigProto, apiInterface, new ProtoParser());
+
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
-        RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector,
-            interfaceConfigProto,
-            apiInterface,
-            methodNameToRetryNameMap,
-            new ProtoParser());
+        retryCodesConfig.getRetryCodesDefinition();
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 

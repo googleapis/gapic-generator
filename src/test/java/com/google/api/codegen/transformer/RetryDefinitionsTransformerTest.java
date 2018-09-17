@@ -28,18 +28,15 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.config.RetryCodesConfig;
-import com.google.api.codegen.configgen.transformer.RetryTransformer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
 import io.grpc.Status;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.BeforeClass;
@@ -70,14 +67,16 @@ public class RetryDefinitionsTransformerTest {
     Mockito.when(permissionDeniedMethod.getSimpleName()).thenReturn(PERMISSION_DENIED_METHOD_NAME);
     Mockito.when(cancelledMethod.getSimpleName()).thenReturn(CANCELED_METHOD_NAME);
 
-
     // Protofile Interface only contains methods with names
-    // [GET_HTTP_METHOD_NAME, NON_IDEMPOTENT_METHOD_NAME, PERMISSION_DENIED_METHOD_NAME, CANCELED_METHOD_NAME].
+    // [GET_HTTP_METHOD_NAME, NON_IDEMPOTENT_METHOD_NAME, PERMISSION_DENIED_METHOD_NAME,
+    // CANCELED_METHOD_NAME].
     // ConfigProto only contains methods with names
-    // [GET_HTTP_METHOD_NAME, NON_IDEMPOTENT_METHOD_NAME, PERMISSION_DENIED_METHOD_NAME, RETRY_CODES_IDEMPOTENT_NAME].
+    // [GET_HTTP_METHOD_NAME, NON_IDEMPOTENT_METHOD_NAME, PERMISSION_DENIED_METHOD_NAME,
+    // RETRY_CODES_IDEMPOTENT_NAME].
     Mockito.when(apiInterface.getMethods())
         .thenReturn(
-            ImmutableList.of(httpGetMethod, nonIdempotentMethod, permissionDeniedMethod, cancelledMethod));
+            ImmutableList.of(
+                httpGetMethod, nonIdempotentMethod, permissionDeniedMethod, cancelledMethod));
 
     interfaceConfigProto =
         InterfaceConfigProto.newBuilder()
@@ -95,10 +94,8 @@ public class RetryDefinitionsTransformerTest {
                     // Empty retry codes list.
                     // Force protomethods to escape this retry name.
                     .setName(RetryDefinitionsTransformer.NO_RETRY_CODE_DEF_NAME))
-            .addMethods(
-                MethodConfigProto.newBuilder()
-                    .setName(GET_HTTP_METHOD_NAME))
-                    // Don't set a retry code in config proto for GET_HTTP_METHOD
+            .addMethods(MethodConfigProto.newBuilder().setName(GET_HTTP_METHOD_NAME))
+            // Don't set a retry code in config proto for GET_HTTP_METHOD
             .addMethods(
                 MethodConfigProto.newBuilder()
                     .setName(NON_IDEMPOTENT_METHOD_NAME)
@@ -129,14 +126,12 @@ public class RetryDefinitionsTransformerTest {
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     Map<String, String> retryCodesMap = new HashMap<>();
+    RetryCodesConfig retryCodesConfig = RetryCodesConfig.create(
+        diagCollector, interfaceConfigProto, apiInterface, protoParser);
 
     Map<String, ImmutableSet<String>> retryCodesDef =
-        RetryCodesConfig.createRetryCodesDefinition(
-            diagCollector,
-            interfaceConfigProto,
-            apiInterface,
-            retryCodesMap,
-            protoParser);
+        RetryCodesConfig.create(
+            diagCollector, interfaceConfigProto, apiInterface, protoParser);
 
     Truth.assertThat(retryCodesMap.size()).isEqualTo(5);
     String getHttpRetryName = retryCodesMap.get(GET_HTTP_METHOD_NAME);
@@ -145,20 +140,24 @@ public class RetryDefinitionsTransformerTest {
     String idempotentRetryName = retryCodesMap.get(IDEMPOTENT_METHOD_NAME);
     String cancelledRetryName = retryCodesMap.get(CANCELED_METHOD_NAME);
 
-    // GET_HTTP_METHOD_NAME had to be escaped because it was defined in the config proto retry code map already.
-    Truth.assertThat(getHttpRetryName).isEqualTo(RetryDefinitionsTransformer.HTTP_RETRY_CODE_DEF_NAME);
+    // GET_HTTP_METHOD_NAME had to be escaped because it was defined in the config proto retry code
+    // map already.
+    Truth.assertThat(getHttpRetryName)
+        .isEqualTo(RetryDefinitionsTransformer.HTTP_RETRY_CODE_DEF_NAME);
     Truth.assertThat(nonIdempotentRetryName).isEqualTo(RETRY_CODES_NON_IDEMPOTENT_NAME);
     Truth.assertThat(permissionDeniedRetryName).isEqualTo("http_get");
     Truth.assertThat(idempotentRetryName).isEqualTo("http_get");
     Truth.assertThat(cancelledRetryName).isEqualTo("http_get");
 
-
-    // httpGetMethod was an HTTP Get method, so it has two codes by default; config proto didn't have a retry config.
+    // httpGetMethod was an HTTP Get method, so it has two codes by default; config proto didn't
+    // have a retry config.
     Truth.assertThat(retryCodesDef.get(getHttpRetryName)).isEqualTo(RETRY_CODES_FOR_HTTP_GET);
 
-    // Config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod; method from protofile has [] for retry codes.
+    // Config proto gives [FAILED_PRECONDITION] for nonIdempotentMethod; method from protofile has
+    // [] for retry codes.
     Truth.assertThat(retryCodesDef.get(nonIdempotentRetryName).size()).isEqualTo(1);
-    Truth.assertThat(retryCodesDef.get(nonIdempotentRetryName).iterator().next()).isEqualTo(FAILED_PRECONDITION.name());
+    Truth.assertThat(retryCodesDef.get(nonIdempotentRetryName).iterator().next())
+        .isEqualTo(FAILED_PRECONDITION.name());
 
     // For permissionDeniedMethod, Config proto gives [] and proto method gives [PERMISSION_DENIED].
     Truth.assertThat(retryCodesDef.get(permissionDeniedRetryName).size()).isEqualTo(1);

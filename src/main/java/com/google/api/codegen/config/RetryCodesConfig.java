@@ -1,5 +1,8 @@
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
+
 import com.google.api.Retry;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -11,23 +14,16 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.rpc.Code;
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
-import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
+import javax.annotation.Nullable;
 
 public class RetryCodesConfig {
 
@@ -36,32 +32,37 @@ public class RetryCodesConfig {
   static final String HTTP_RETRY_CODE_DEF_NAME = "http_get";
   static final String NO_RETRY_CODE_DEF_NAME = "no_retry";
 
-  private Map<String, ImmutableSet<String>> retryCodesDefinition = new HashMap();
+  private Map<String, ImmutableSet<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
   private boolean error = false;
 
-  @Nullable
-  private ProtoParser protoParser;
+  @Nullable private ProtoParser protoParser;
 
-  /** A map of retry config names to the list of code to retry on, e.g. { "idempotent" : ["UNAVAILABLE"] }. */
+  /**
+   * A map of retry config names to the list of code to retry on, e.g. { "idempotent" :
+   * ["UNAVAILABLE"] }.
+   */
   public ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition() {
     return ImmutableMap.copyOf(retryCodesDefinition);
   }
 
-  /** A map of method names to the method's retry config name, e.g. { "ListShelves" : "idempotent" }. */
+  /**
+   * A map of method names to the method's retry config name, e.g. { "ListShelves" : "idempotent" }.
+   */
   public ImmutableMap<String, String> getMethodRetryNames() {
     return ImmutableMap.copyOf(methodRetryNames);
   }
 
-  private RetryCodesConfig(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+  private RetryCodesConfig(DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     this.retryCodesDefinition =
         createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     this.methodRetryNames = createMethodRetryNamesFromConfigProto(interfaceConfigProto);
   }
 
   private RetryCodesConfig(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface apiInterface,
+      DiagCollector diagCollector,
+      InterfaceConfigProto interfaceConfigProto,
+      Interface apiInterface,
       ProtoParser protoParser) {
     this.protoParser = protoParser;
   }
@@ -76,9 +77,12 @@ public class RetryCodesConfig {
   }
 
   public static RetryCodesConfig create(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface apiInterface,
+      DiagCollector diagCollector,
+      InterfaceConfigProto interfaceConfigProto,
+      Interface apiInterface,
       ProtoParser protoParser) {
-    RetryCodesConfig retryCodesConfig = new RetryCodesConfig(diagCollector, interfaceConfigProto, apiInterface, protoParser);
+    RetryCodesConfig retryCodesConfig =
+        new RetryCodesConfig(diagCollector, interfaceConfigProto, apiInterface, protoParser);
     if (retryCodesConfig.error) {
       return null;
     }
@@ -98,8 +102,9 @@ public class RetryCodesConfig {
     return builder.build();
   }
 
-  private static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinitionFromConfigProto(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+  private static ImmutableMap<String, ImmutableSet<String>>
+      createRetryCodesDefinitionFromConfigProto(
+          DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
@@ -124,7 +129,6 @@ public class RetryCodesConfig {
     return builder.build();
   }
 
-
   /**
    * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
@@ -136,24 +140,25 @@ public class RetryCodesConfig {
       Interface apiInterface,
       ProtoParser protoParser) {
 
-    ImmutableMap<String, ImmutableSet<String>> retryCodesDefFromConfigProto = createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefFromConfigProto =
+        createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     if (error) {
       return;
     }
 
-    Map<String, String> methodRetryNamesFromConfigProto = createMethodRetryNamesFromConfigProto(interfaceConfigProto);
+    Map<String, String> methodRetryNamesFromConfigProto =
+        createMethodRetryNamesFromConfigProto(interfaceConfigProto);
     if (error) {
       return;
     }
     retryCodesDefinition.putAll(retryCodesDefFromConfigProto);
     methodRetryNames.putAll(methodRetryNamesFromConfigProto);
 
-    populateRetryCodesDefinitionWithProtoFile(
-        diagCollector,
-        apiInterface);
+    populateRetryCodesDefinitionWithProtoFile(diagCollector, apiInterface);
   }
 
-  private static Map<String, String> getMethodConfigProtoRetryCodeNames(InterfaceConfigProto interfaceConfigProto) {
+  private static Map<String, String> getMethodConfigProtoRetryCodeNames(
+      InterfaceConfigProto interfaceConfigProto) {
     Map<String, String> methodRetryCodes = new HashMap<>();
     for (MethodConfigProto method : interfaceConfigProto.getMethodsList()) {
       if (!Strings.isNullOrEmpty(method.getRetryCodesName())) {
@@ -163,15 +168,13 @@ public class RetryCodesConfig {
     return methodRetryCodes;
   }
 
-
   /**
    * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings name.
    */
   private boolean populateRetryCodesDefinitionWithProtoFile(
-      DiagCollector diagCollector,
-      Interface apiInterface) {
+      DiagCollector diagCollector, Interface apiInterface) {
 
     ImmutableMap.Builder<String, ImmutableSet<String>> builder =
         ImmutableMap.<String, ImmutableSet<String>>builder();
@@ -194,7 +197,8 @@ public class RetryCodesConfig {
     for (Method method : apiInterface.getMethods()) {
       if (methodRetryNames.containsKey(method.getSimpleName())) {
         // https://github.com/googleapis/gapic-generator/issues/2311.
-        // For now, let GAPIC config take precedent over proto annotations, for retry code definitions.
+        // For now, let GAPIC config take precedent over proto annotations, for retry code
+        // definitions.
         continue;
       }
 
@@ -239,6 +243,4 @@ public class RetryCodesConfig {
   private static String getRetryCodesName(Method method) {
     return String.format("%s_retry_code", method.getSimpleName().toLowerCase());
   }
-
-
 }
