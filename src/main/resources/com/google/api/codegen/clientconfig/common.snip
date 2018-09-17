@@ -36,7 +36,7 @@
 
 @private retryCodesSection(service)
     @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            codes = context.entrySet(gapicInterfaceConfig.getRetryCodesDefinition)
+            codes = context.entrySet(gapicInterfaceConfig.getRetryCodesConfig.getRetryCodesDefinition)
         @if codes
             @join retryDef : codes on ",".add(BREAK)
                 @if retryDef.getValue
