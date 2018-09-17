@@ -77,7 +77,8 @@
   def main():
     import argparse
 
-    @# FIXME: Convert argv from strings to the correct types.
+    # FIXME: Convert the args from strings to the correct types;
+    # default values should be correct type as well.
     parser = argparse.ArgumentParser()
     @join param : sample.initCode.argDefaultParams
       parser.add_argument('--{@param.identifier}', default='')
@@ -90,14 +91,14 @@
     main()
 @end
 
-@private actualArgs(defaultArgs)
-  @join param : defaultArgs on ", "
+@private actualArgs(sampleArgs)
+  @join param : sampleArgs on ", "
     args.{@param.identifier}
   @end
 @end
 
-@private formalArgs(defaultArgs)
-  @join param : defaultArgs on ", "
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
     {@param.identifier}
   @end
 @end
