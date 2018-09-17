@@ -118,18 +118,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     String retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      retryCodesName = methodConfigProto.getRetryCodesName();
-    }
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
 
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(
