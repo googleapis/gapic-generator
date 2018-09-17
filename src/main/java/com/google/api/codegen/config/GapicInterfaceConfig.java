@@ -74,7 +74,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
   @Override
-  public abstract ImmutableMap<String, List<String>> getRetryCodesDefinition();
+  public abstract RetryCodesConfig getRetryCodesConfig();
 
   @Override
   public abstract ImmutableMap<String, RetryParamsDefinitionProto> getRetrySettingsDefinition();
@@ -109,26 +109,22 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable InterfaceConfigProto interfaceConfigProto,
+      InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap.Builder<String, String> methodNameToRetryNameMap = ImmutableMap.builder();
-    ImmutableMap<String, List<String>> retryCodesDefinition =
-        RetryDefinitionsTransformer.createRetryCodesDefinition(
-            diagCollector,
-            interfaceConfigProto,
-            apiInterface,
-            methodNameToRetryNameMap,
-            new ProtoParser());
+    RetryCodesConfig retryCodesConfig =
+        RetryCodesConfig.create(
+            diagCollector, interfaceConfigProto, apiInterface, new ProtoParser());
+
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
-    if (retryCodesDefinition != null && retrySettingsDefinition != null) {
+    if (retryCodesConfig != null && retrySettingsDefinition != null) {
       methodConfigMap =
           createMethodConfigMap(
               diagCollector,
@@ -137,7 +133,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               apiInterface,
               messageConfigs,
               resourceNameConfigs,
-              methodNameToRetryNameMap.build(),
+              retryCodesConfig,
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, apiInterface, interfaceConfigProto);
     }
@@ -194,7 +190,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
           methodConfigs,
           smokeTestConfig,
           methodConfigMap,
-          retryCodesDefinition,
+          retryCodesConfig,
           retrySettingsDefinition,
           requiredConstructorParams,
           singleResourceNames,
@@ -219,49 +215,27 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable InterfaceConfigProto interfaceConfigProto,
+      InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, String> retryCodesConfigNames,
+      RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     // Keep track of the MethodConfigProtos encountered.
     Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
 
-    if (interfaceConfigProto != null) {
-      for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-        Interface targetInterface =
-            getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-        Method method = targetInterface.lookupMethod(methodConfigProto.getName());
-        if (method == null) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-          continue;
-        }
-        GapicMethodConfig methodConfig =
-            GapicMethodConfig.createMethodConfig(
-                diagCollector,
-                language,
-                methodConfigProto,
-                method,
-                messageConfigs,
-                resourceNameConfigs,
-                retryCodesConfigNames,
-                retryParamsConfigNames,
-                configUtils);
-        if (methodConfig == null) {
-          continue;
-        }
-        methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
-        methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      Interface targetInterface =
+          getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+      Method method = targetInterface.lookupMethod(methodConfigProto.getName());
+      if (method == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+        continue;
       }
-    }
-    for (Method method : apiInterface.getMethods()) {
-      // TODO(andrealin): Reroute to grpc interface.
-      MethodConfigProto methodConfigProto = methodConfigProtoMap.get(method.getSimpleName());
       GapicMethodConfig methodConfig =
           GapicMethodConfig.createMethodConfig(
               diagCollector,
@@ -270,7 +244,31 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               method,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesConfigNames,
+              retryCodesConfig,
+              retryParamsConfigNames,
+              configUtils);
+      if (methodConfig == null) {
+        continue;
+      }
+      methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
+      methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
+    }
+
+    for (Method method : apiInterface.getMethods()) {
+      // TODO(andrealin): Reroute to grpc interface.
+      MethodConfigProto methodConfigProto = methodConfigProtoMap.get(method.getSimpleName());
+      if (methodConfigProto == null) {
+        methodConfigProto = MethodConfigProto.getDefaultInstance();
+      }
+      GapicMethodConfig methodConfig =
+          GapicMethodConfig.createMethodConfig(
+              diagCollector,
+              language,
+              methodConfigProto,
+              method,
+              messageConfigs,
+              resourceNameConfigs,
+              retryCodesConfig,
               retryParamsConfigNames,
               configUtils);
       if (methodConfig == null) {

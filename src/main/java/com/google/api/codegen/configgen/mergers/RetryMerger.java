@@ -34,7 +34,7 @@ import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableMap;
 import io.grpc.Status;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +50,8 @@ public class RetryMerger {
   private static final String MAX_RPC_TIMEOUT_NAME = "max_rpc_timeout_millis";
   private static final String TOTAL_TIMEOUT_NAME = "total_timeout_millis";
 
-  public static final Map<String, List<String>> DEFAULT_RETRY_CODES =
-      ImmutableSortedMap.of(
+  public static final Map<String, ImmutableList<String>> DEFAULT_RETRY_CODES =
+      ImmutableMap.of(
           RETRY_CODES_IDEMPOTENT_NAME,
           ImmutableList.of(Status.Code.DEADLINE_EXCEEDED.name(), Status.Code.UNAVAILABLE.name()),
           RETRY_CODES_NON_IDEMPOTENT_NAME,

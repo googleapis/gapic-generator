@@ -34,10 +34,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -83,8 +83,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Set<String> retryCodesConfigNames,
-      Set<String> retryParamsConfigNames) {
+      RetryCodesConfig retryCodesConfig,
+      ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
     DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, apiModel);
@@ -121,16 +121,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodConfigProto.getRetryCodesName();
-    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(methodConfigProto.getName());
 
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(

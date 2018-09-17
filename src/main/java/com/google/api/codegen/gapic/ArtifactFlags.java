@@ -20,7 +20,6 @@ import java.util.List;
 public class ArtifactFlags {
   public static final String ARTIFACT_SURFACE = "surface";
   public static final String ARTIFACT_TEST = "test";
-  public static final String ARTIFACT_SAMPLES = "samples";
 
   private List<String> enabledArtifacts;
   private ArtifactType artifactType;
@@ -36,10 +35,6 @@ public class ArtifactFlags {
 
   public boolean testGeneratorEnabled() {
     return enabledArtifacts.isEmpty() || enabledArtifacts.contains(ARTIFACT_TEST);
-  }
-
-  public boolean sampleGeneratorEnabled() {
-    return enabledArtifacts.contains(ARTIFACT_SAMPLES);
   }
 
   public boolean codeFilesEnabled() {

@@ -165,6 +165,11 @@ public abstract class GapicProductConfig implements ProductConfig {
         sourceProtos.forEach(model::addRoot);
       }
     }
+
+    if (configProto == null) {
+      configProto = ConfigProto.getDefaultInstance();
+    }
+
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
@@ -362,7 +367,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
-      @Nullable ConfigProto configProto,
+      ConfigProto configProto,
       List<ProtoFile> sourceProtos,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
@@ -376,20 +381,19 @@ public abstract class GapicProductConfig implements ProductConfig {
     Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedTreeMap<>();
 
     // Parse config for interfaceConfigProtos.
-    if (configProto != null) {
-      for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-        Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
-        if (apiInterface == null || !apiInterface.isReachable()) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "interface not found: %s",
-                  interfaceConfigProto.getName()));
-          continue;
-        }
-        interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+      Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
+      if (apiInterface == null || !apiInterface.isReachable()) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "interface not found: %s",
+                interfaceConfigProto.getName()));
+        continue;
       }
+      interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
     }
+
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
       if (file.getProto().getServiceList().size() == 0) continue;

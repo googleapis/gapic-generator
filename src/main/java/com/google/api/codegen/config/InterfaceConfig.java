@@ -34,7 +34,7 @@ public interface InterfaceConfig {
 
   List<? extends MethodConfig> getMethodConfigs();
 
-  ImmutableMap<String, List<String>> getRetryCodesDefinition();
+  RetryCodesConfig getRetryCodesConfig();
 
   ImmutableMap<String, RetryParamsDefinitionProto> getRetrySettingsDefinition();
 

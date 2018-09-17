@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -71,15 +70,15 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, List<String>> retryCodesDefinition =
-        RetryDefinitionsTransformer.createRetryCodesDefinition(
-            model.getDiagCollector(), interfaceConfigProto);
+    RetryCodesConfig retryCodesConfig =
+        RetryCodesConfig.create(model.getDiagCollector(), interfaceConfigProto);
+
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
-    if (retryCodesDefinition != null && retrySettingsDefinition != null) {
+    if (retryCodesConfig != null && retrySettingsDefinition != null) {
       methodConfigMap =
           createMethodConfigMap(
               model,
@@ -87,7 +86,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               interfaceConfigProto,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesDefinition.keySet(),
+              retryCodesConfig,
               retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -157,7 +156,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     } else {
       return new AutoValue_DiscoGapicInterfaceConfig(
           methodConfigs,
-          retryCodesDefinition,
+          retryCodesConfig,
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
@@ -185,8 +184,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Set<String> retryCodesConfigNames,
-      Set<String> retryParamsConfigNames) {
+      RetryCodesConfig retryCodesConfig,
+      ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
@@ -208,7 +207,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               method,
               messageConfigs,
               resourceNameConfigs,
-              retryCodesConfigNames,
+              retryCodesConfig,
               retryParamsConfigNames);
       if (methodConfig == null) {
         continue;

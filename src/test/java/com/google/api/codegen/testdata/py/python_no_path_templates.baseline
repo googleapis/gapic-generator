@@ -975,6 +975,7 @@ config = {
   "interfaces": {
     "google.cloud.example.v1.NoTemplatesAPIService": {
       "retry_codes": {
+<<<<<<< HEAD
         "increment_retry_code": []
       },
       "retry_params": {},
@@ -982,6 +983,25 @@ config = {
         "Increment": {
           "timeout_millis": 10000,
           "retry_codes_name": "increment_retry_code",
+=======
+        "no_retry": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "Increment": {
+          "timeout_millis": 10000,
+          "retry_codes_name": "no_retry",
+>>>>>>> master
           "retry_params_name": "default"
         }
       }

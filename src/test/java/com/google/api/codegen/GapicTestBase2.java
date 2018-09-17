@@ -145,7 +145,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             Arrays.asList("surface", "test", "samples"), ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, true);
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> generator : generators) {
@@ -197,7 +198,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
         new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, true);
 
     // Don't run any generators we're not testing.
     ArrayList<CodeGenerator<?>> testedGenerators = new ArrayList<>();

@@ -40,7 +40,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -66,11 +65,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      @Nullable MethodConfigProto methodConfigProto,
+      MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, String> methodNamesToRetryCodeDefNames,
+      RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoMethodTransformer configUtils) {
 
@@ -78,22 +77,19 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
     PageStreamingConfig pageStreaming = null;
-    if (methodConfigProto != null) {
-      if (!PageStreamingConfigProto.getDefaultInstance()
-          .equals(methodConfigProto.getPageStreaming())) {
-        pageStreaming =
-            PageStreamingConfig.createPageStreaming(
-                diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
-        if (pageStreaming == null) {
-          error = true;
-        }
+    if (!PageStreamingConfigProto.getDefaultInstance()
+        .equals(methodConfigProto.getPageStreaming())) {
+      pageStreaming =
+          PageStreamingConfig.createPageStreaming(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+      if (pageStreaming == null) {
+        error = true;
       }
     }
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
-      if (methodConfigProto == null
-          || PageStreamingConfigProto.getDefaultInstance()
+      if (PageStreamingConfigProto.getDefaultInstance()
               .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
       } else {
@@ -107,8 +103,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     ImmutableList<FlatteningConfig> flattening = null;
-    if (methodConfigProto == null
-        || !FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
+    if (FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           createFlattening(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
@@ -119,8 +114,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     BatchingConfig batching = null;
     // Batching is not supported in proto annotations.
-    if (methodConfigProto != null
-        && !BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
+    if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
           BatchingConfig.createBatching(
               diagCollector, methodConfigProto.getBatching(), methodModel);
@@ -129,19 +123,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      retryCodesName = methodConfigProto.getRetryCodesName();
-    }
-    if (Strings.isNullOrEmpty(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
 
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(
@@ -164,25 +146,18 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     boolean hasRequestObjectMethod = configUtils.isRequestObjectMethod(methodModel);
-    if (methodConfigProto != null) {
-      hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
-      if (hasRequestObjectMethod && method.getRequestStreaming()) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "request_object_method incompatible with streaming method %s",
-                method.getFullName()));
-        error = true;
-      }
+    hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+    if (hasRequestObjectMethod && method.getRequestStreaming()) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "request_object_method incompatible with streaming method %s",
+              method.getFullName()));
+      error = true;
     }
 
-    ImmutableMap<String, String> fieldNamePatterns;
-    if (methodConfigProto != null) {
-      fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
-    } else {
-      // TODO(andrealin): Get field name patterns.
-      fieldNamePatterns = ImmutableMap.of();
-    }
+    // TODO(andrealin): Get field name patterns.
+    ImmutableMap<String, String> fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
     ResourceNameTreatment defaultResourceNameTreatment = null;
     if (methodConfigProto != null) {
@@ -218,38 +193,29 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     SampleSpec sampleSpec;
-    if (methodConfigProto != null) {
-      sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
-      sampleSpec = new SampleSpec(methodConfigProto);
-    } else {
-      sampleSpec = new SampleSpec(MethodConfigProto.getDefaultInstance());
-    }
+    sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+    sampleSpec = new SampleSpec(methodConfigProto);
 
     String rerouteToGrpcInterface = null;
-    if (methodConfigProto != null) {
-      rerouteToGrpcInterface = Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
-    }
+    rerouteToGrpcInterface = Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.GA;
-    if (methodConfigProto != null) {
-      for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
-        if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
-          continue;
-        }
-        if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
-          visibility = VisibilityConfig.fromProto(treatment.getVisibility());
-        }
-        if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
-          releaseLevel = treatment.getReleaseLevel();
-        }
+    for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
+      if (!treatment.getIncludeLanguagesList().contains(language.toString().toLowerCase())) {
+        continue;
+      }
+      if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
+        visibility = VisibilityConfig.fromProto(treatment.getVisibility());
+      }
+      if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
+        releaseLevel = treatment.getReleaseLevel();
       }
     }
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(method, diagCollector);
-    if (methodConfigProto != null
-        && !LongRunningConfigProto.getDefaultInstance()
+    if (!LongRunningConfigProto.getDefaultInstance()
             .equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
           LongRunningConfig.createLongRunningConfig(
@@ -259,11 +225,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    List<String> headerRequestParams = new LinkedList<>();
+    List<String> headerRequestParams =  ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
     // TODO(andrealin): infer header request params from proto annotations.
-    if (methodConfigProto != null) {
-      headerRequestParams = ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
-    }
 
     if (error) {
       return null;
