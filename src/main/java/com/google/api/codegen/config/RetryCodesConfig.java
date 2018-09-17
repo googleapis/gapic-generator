@@ -31,8 +31,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.rpc.Code;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -120,7 +122,7 @@ public class RetryCodesConfig {
     ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
+      Set<String> codes = new HashSet<>();
       for (String codeText : retryDef.getRetryCodesList()) {
         try {
           codes.add(String.valueOf(codeText));
@@ -133,7 +135,7 @@ public class RetryCodesConfig {
                   interfaceConfigProto.getName()));
         }
       }
-      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
+      builder.put(retryDef.getName(), ImmutableSortedSet.copyOf(codes));
     }
     if (diagCollector.getErrorCount() > 0) {
       return null;
