@@ -16,7 +16,6 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
 import org.junit.Rule;

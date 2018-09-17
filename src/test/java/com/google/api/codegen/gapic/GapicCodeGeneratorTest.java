@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     super(
         language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
     this.apiName = apiName;
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
   }
 
   @Parameters(name = "{5}")

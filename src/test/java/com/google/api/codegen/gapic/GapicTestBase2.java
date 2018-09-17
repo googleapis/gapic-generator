@@ -12,9 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
 import com.google.api.Service;
+import com.google.api.codegen.ArtifactType;
+import com.google.api.codegen.CodegenTestUtil;
+import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.common.TargetLanguage;
@@ -23,8 +26,6 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.gapic.ArtifactFlags;
-import com.google.api.codegen.gapic.GapicGeneratorFactory;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -74,9 +75,9 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     if ("python".equals(dir)) {
       dir = "py";
     }
-    getTestDataLocator().addTestDataSource(getClass(), dir);
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, dir);
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testdata/" + dir);
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
   @Override

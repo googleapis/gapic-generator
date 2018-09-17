@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.api.codegen.util.Inflector;
 import com.google.common.truth.Truth;
 import org.junit.Test;
 

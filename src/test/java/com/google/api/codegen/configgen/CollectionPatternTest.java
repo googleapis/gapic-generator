@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.configgen;
 
-import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;

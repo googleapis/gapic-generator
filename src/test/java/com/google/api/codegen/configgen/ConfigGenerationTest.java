@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.MixedPathTestDataLocator;
-import com.google.api.codegen.configgen.GapicConfigGeneratorApp;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -31,7 +30,8 @@ import org.junit.Test;
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(CodegenTestUtil.class, Paths.get("src", "test", "java").toString());
+      new MixedPathTestDataLocator(
+          CodegenTestUtil.class, Paths.get("src", "test", "java").toString());
 
   @Override
   protected TestDataLocator getTestDataLocator() {
