@@ -50,7 +50,7 @@ public class RetryDefinitionsTransformer {
 
     final SurfaceNamer namer = context.getNamer();
     for (Entry<String, ImmutableSet<String>> retryCodesDef :
-        context.getInterfaceConfig().getRetryCodesDefinition().entrySet()) {
+        context.getInterfaceConfig().getRetryCodesConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
       for (String code : retryCodesDef.getValue()) {
         codeNames.add(namer.getStatusCodeName(code));

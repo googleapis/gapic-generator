@@ -37,7 +37,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -66,7 +65,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, String> methodNamesToRetryCodeDefNames,
+      RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
@@ -118,7 +117,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodNamesToRetryCodeDefNames.get(method.getSimpleName());
+    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
     if (Strings.isNullOrEmpty(retryCodesName)) {
       retryCodesName = methodConfigProto.getRetryCodesName();
     }

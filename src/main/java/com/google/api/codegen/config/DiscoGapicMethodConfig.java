@@ -83,7 +83,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
+      RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
@@ -121,16 +121,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodConfigProto.getRetryCodesName();
-    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(methodConfigProto.getName());
 
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(

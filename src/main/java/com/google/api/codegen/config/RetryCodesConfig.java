@@ -47,6 +47,9 @@ public class RetryCodesConfig {
 
   private Map<String, ImmutableSet<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
+
+  private ImmutableMap<String, ImmutableSet<String>> finalRetryCodesDefinition;
+  private ImmutableMap<String, String> finalMethodRetryNames;
   private boolean error = false;
 
   /**
@@ -54,14 +57,14 @@ public class RetryCodesConfig {
    * ["UNAVAILABLE"] }.
    */
   public ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition() {
-    return ImmutableMap.copyOf(retryCodesDefinition);
+    return finalRetryCodesDefinition;
   }
 
   /**
    * A map of method names to the method's retry config name, e.g. { "ListShelves" : "idempotent" }.
    */
   public ImmutableMap<String, String> getMethodRetryNames() {
-    return ImmutableMap.copyOf(methodRetryNames);
+    return finalMethodRetryNames;
   }
 
   private RetryCodesConfig() {}
@@ -75,10 +78,9 @@ public class RetryCodesConfig {
     if (retryCodesConfig.error) {
       return null;
     }
-    //    retryCodesConfig.retryCodesDefinition =
-    //        createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
-    //    retryCodesConfig.methodRetryNames =
-    // createMethodRetryNamesFromConfigProto(interfaceConfigProto);
+    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
+    retryCodesConfig.finalRetryCodesDefinition =
+        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
     return retryCodesConfig;
   }
 
@@ -93,6 +95,9 @@ public class RetryCodesConfig {
     if (retryCodesConfig.error) {
       return null;
     }
+    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
+    retryCodesConfig.finalRetryCodesDefinition =
+        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
     return retryCodesConfig;
   }
 
