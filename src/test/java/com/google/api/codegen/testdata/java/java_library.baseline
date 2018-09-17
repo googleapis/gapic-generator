@@ -6641,12 +6641,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "http_get",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "no_retry",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
@@ -6785,27 +6779,27 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private static Builder initDefaults(Builder builder) {
 
       builder.createShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.mergeShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.createBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.publishSeriesSettings().setBatchingSettings(
@@ -6819,31 +6813,31 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
               .build())
           .build());
       builder.publishSeriesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.updateBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.moveBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listStringsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addCommentsSettings().setBatchingSettings(
@@ -6857,39 +6851,39 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
               .build())
           .build());
       builder.addCommentsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromArchiveSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromAnywhereSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromAbsolutelyAnywhereSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.updateBookIndexSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.findRelatedBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addTagSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addLabelSettings()
@@ -6897,15 +6891,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBigBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBigNothingSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.testOptionalRequiredFlatteningParamsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
       builder
           .getBigBookOperationSettings()
