@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.protoannotations;
 
+import com.google.api.codegen.CodegenTestUtil;
+import com.google.api.codegen.GapicTestBase2;
 import com.google.api.codegen.common.TargetLanguage;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +45,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
     this.apiName = apiName;
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
-    getTestDataLocator().addTestDataSource(getClass(), "../../common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
   @Parameters(name = "{3}")
