@@ -76,7 +76,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       dir = "py";
     }
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, dir);
-    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testdata/" + dir);
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 

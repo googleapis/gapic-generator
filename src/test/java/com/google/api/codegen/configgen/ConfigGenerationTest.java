@@ -66,6 +66,7 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   @Before
   public void setup() {
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
   }
