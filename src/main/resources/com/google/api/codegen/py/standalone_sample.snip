@@ -81,7 +81,7 @@
     # default values should be correct type as well.
     parser = argparse.ArgumentParser()
     @join param : sample.initCode.argDefaultParams
-      parser.add_argument('--{@param.identifier}', default='')
+      parser.add_argument('--{@param.identifier}', type={@param.typeName}, default={@paramDefault(param)})
     @end
     args = parser.parse_args()
 
@@ -112,6 +112,17 @@
 
       @end
     @end
+  @end
+@end
+
+@private paramDefault(param)
+  @switch param.typeName
+  @case "str"
+    ''
+  @case "bool"
+    False
+  @default
+    0
   @end
 @end
 
