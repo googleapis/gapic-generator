@@ -36,9 +36,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -71,11 +69,12 @@ public class RetryDefinitionsTransformer {
 
   public static ImmutableMap<String, RetryParamsDefinitionProto> createRetrySettingsDefinition(
       InterfaceConfigProto interfaceConfigProto) {
-    Map<String, RetryParamsDefinitionProto> builder = new LinkedHashMap<>();
-    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      builder.put(retryDef.getName(), retryDef);
-    }
-    if (builder.isEmpty()) {
+    ImmutableMap.Builder<String, RetryParamsDefinitionProto> builder = ImmutableMap.builder();
+    if (interfaceConfigProto.getRetryParamsDefCount() > 0) {
+      for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
+        builder.put(retryDef.getName(), retryDef);
+      }
+    } else {
       // Use default values.
       RetryParamsDefinitionProto defaultRetryParams =
           RetryParamsDefinitionProto.getDefaultInstance()
@@ -89,10 +88,8 @@ public class RetryDefinitionsTransformer {
               .setTotalTimeoutMillis(DEFAULT_TOTAL_TIMEOUT_MILLIS)
               .build();
       builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
-    } else {
-
     }
-    return ImmutableMap.copyOf(builder);
+    return builder.build();
   }
 
   public static String getRetryParamsName(
