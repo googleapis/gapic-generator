@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.configgen.DiscoConfigGeneratorApp;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -58,7 +59,7 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/discogapic");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
   }
 
   @Test
