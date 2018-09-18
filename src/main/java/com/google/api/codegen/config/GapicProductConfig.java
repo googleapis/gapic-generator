@@ -224,12 +224,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
-    if (configProto != null) {
-      // TODO(andrealin): Figure out how to get LICENSE without a configProto.
+    // TODO(andrealin): Figure out how to get LICENSE without a configProto.
 
+    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
       configSchemaVersion = configProto.getConfigSchemaVersion();
       // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
-      if (Strings.isNullOrEmpty(configSchemaVersion)) {
+      if (Strings.isNullOrEmpty(configSchemaVersion)){
         model
             .getDiagReporter()
             .getDiagCollector()
@@ -407,6 +407,9 @@ public abstract class GapicProductConfig implements ProductConfig {
           continue;
         }
         InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
+        if (interfaceConfigProto == null) {
+          interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
+        }
         String interfaceNameOverride = null;
         if (languageSettings != null) {
           interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);

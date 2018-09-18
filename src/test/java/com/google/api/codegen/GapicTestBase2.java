@@ -136,13 +136,14 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName,
-      String protoPackage) {
+      String protoPackage,
+      ArtifactType artifactType) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
     ArtifactFlags artifactFlags =
         new ArtifactFlags(
-            Arrays.asList("surface", "test", "samples"), ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
+            Arrays.asList("surface", "test", "samples"), artifactType);
 
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(

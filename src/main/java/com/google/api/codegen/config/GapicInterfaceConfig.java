@@ -262,11 +262,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     for (Method method : apiInterface.getMethods()) {
       // TODO(andrealin): Reroute to grpc interface.
       MethodConfigProto methodConfigProto = methodConfigProtoMap.get(method.getSimpleName());
-      int i = 0;
       if (methodConfigProto == null) {
         methodConfigProto = MethodConfigProto.getDefaultInstance();
-        i++;
-        System.out.print(i);
       }
       GapicMethodConfig methodConfig =
           GapicMethodConfig.createMethodConfig(

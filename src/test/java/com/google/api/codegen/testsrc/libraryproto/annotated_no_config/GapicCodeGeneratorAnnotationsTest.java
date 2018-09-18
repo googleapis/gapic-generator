@@ -32,8 +32,9 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
-  private final String apiName;
   private static final ArtifactType ARTIFACT_TYPE = GAPIC_CODE;
+
+  private final String apiName;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -41,9 +42,10 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String packageConfigFileName,
       List<String> snippetName,
       String apiName,
-      String baseline) {
+      String baseline,
+      String protoPackage) {
     //    super(language, null, null, snippetName, baseline);
-    super(language, null, null, snippetName, baseline, "google.example.library.v1");
+    super(language, null, null, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
@@ -56,9 +58,9 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     // TODO(andrealin): Implement parsing proto-annotations.
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
-            TargetLanguage.GO, null, null, "library", "google.example.library.v1"),
+            TargetLanguage.GO, null, null, "library", "google.example.library.v1", ARTIFACT_TYPE),
         GapicTestBase2.createTestConfig(
-            TargetLanguage.JAVA, null, null, "library", "google.example.library.v1"));
+            TargetLanguage.JAVA, null, null, "library", "google.example.library.v1", ARTIFACT_TYPE));
   }
 
   @Test
