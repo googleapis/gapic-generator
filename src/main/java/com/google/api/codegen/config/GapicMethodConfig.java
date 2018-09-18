@@ -38,7 +38,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -90,7 +89,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
       if (PageStreamingConfigProto.getDefaultInstance()
-              .equals(methodConfigProto.getGrpcStreaming())) {
+          .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
       } else {
         grpcStreaming =
@@ -130,10 +129,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout;
-    if (methodConfigProto != null) {
-      timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
-    } else {
+    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    if (timeout.toMillis() <= 0) {
       timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
     }
     if (timeout.toMillis() <= 0) {
@@ -157,7 +154,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     // TODO(andrealin): Get field name patterns.
-    ImmutableMap<String, String> fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
     ResourceNameTreatment defaultResourceNameTreatment = null;
     if (methodConfigProto != null) {
@@ -215,8 +213,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(method, diagCollector);
-    if (!LongRunningConfigProto.getDefaultInstance()
-            .equals(methodConfigProto.getLongRunning())) {
+    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
           LongRunningConfig.createLongRunningConfig(
               method.getModel(), diagCollector, methodConfigProto.getLongRunning());
@@ -225,7 +222,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    List<String> headerRequestParams =  ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+    List<String> headerRequestParams =
+        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
     // TODO(andrealin): infer header request params from proto annotations.
 
     if (error) {
