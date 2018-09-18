@@ -260,7 +260,14 @@ jobs:
     working_directory: /tmp/workspace
     environment:
       SHOWCASE_VERSION: 0.0.4
+      GRADLE_USER_HOME: /tmp/gradle_user_home
     steps:
+      - restore_cache:
+          keys:
+            # Use the cache of current commit if that exists (eg if we're rerunning workflow).
+            # Otherwise, use whatever is newest. Gradle should know what to do anyway.
+            - gapic-generator-{{.Revision}}
+            - gapic-generator-
       - checkout:
           path: gapic-generator
       - run:
@@ -283,6 +290,10 @@ jobs:
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
             gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test -x javadoc
+      - save_cache:
+          key: gapic-generator-{{.Revision}}
+          paths:
+            - /tmp/gradle_user_home
       - persist_to_workspace:
           # Save the toolkit and googleapis installations in workspace for later CircleCI jobs.
           root: /tmp/workspace
@@ -294,7 +305,13 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
+    environment:
+      GRADLE_USER_HOME: /tmp/gradle_user_home
     steps:
+      - restore_cache:
+          keys:
+            - gapic-generator-{{.Revision}}
+            - gapic-generator-
       - checkout:
           path: gapic-generator
       - run:
@@ -313,11 +330,6 @@ jobs:
           path: reports/gapic-generator
       - store_artifacts:
           path: reports/gapic-generator
-      - persist_to_workspace:
-          # Save all generated directories in workspace for later CircleCI jobs.
-          root: /tmp/workspace
-          paths:
-            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.4
