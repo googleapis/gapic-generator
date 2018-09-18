@@ -115,6 +115,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   protected void process() throws Exception {
 
+    String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
+
     // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     if (configFileNames.size() == 0) {
@@ -167,7 +169,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
       language = TargetLanguage.fromString(languageStr.toUpperCase());
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
+    GapicProductConfig productConfig =
+        GapicProductConfig.create(model, configProto, protoPackage, language);
     if (productConfig == null) {
       return;
     }
