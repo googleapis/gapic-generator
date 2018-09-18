@@ -108,6 +108,12 @@ public abstract class GapicProductConfig implements ProductConfig {
         getConfigSchemaVersion());
   }
 
+  @Nullable
+  public static GapicProductConfig create(
+      Model model, ConfigProto configProto, TargetLanguage language) {
+    return create(model, configProto, null, language);
+  }
+
   /**
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be

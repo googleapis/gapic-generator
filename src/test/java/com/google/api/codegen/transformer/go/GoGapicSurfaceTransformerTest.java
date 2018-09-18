@@ -66,9 +66,7 @@ public class GoGapicSurfaceTransformerTest {
             locator,
             new String[] {"myproto_gapic.yaml"});
 
-    productConfig =
-        GapicProductConfig.create(
-            model, configProto, "google.example.myproto.v1", TargetLanguage.GO);
+    productConfig = GapicProductConfig.create(model, configProto, TargetLanguage.GO);
 
     if (model.getDiagReporter().getDiagCollector().hasErrors()) {
       throw new IllegalStateException(
