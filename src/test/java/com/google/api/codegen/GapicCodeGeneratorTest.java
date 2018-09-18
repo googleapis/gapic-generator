@@ -43,8 +43,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     super(
         language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
     this.apiName = apiName;
-    getTestDataLocator()
-        .addTestDataSource(getClass(), "testsrc/libraryproto/config_not_annotated/testdata");
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto");
   }
 
   @Parameters(name = "{5}")

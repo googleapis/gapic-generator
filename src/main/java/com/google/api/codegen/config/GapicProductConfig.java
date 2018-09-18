@@ -116,14 +116,28 @@ public abstract class GapicProductConfig implements ProductConfig {
         getConfigSchemaVersion());
   }
 
+  @Nullable
+  public static GapicProductConfig create(
+      Model model, ConfigProto configProto, TargetLanguage language) {
+    return create(model, configProto, null, language);
+  }
+
   /**
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
    * returned, and diagnostics are reported to the model.
    *
+<<<<<<< HEAD
    * @param configProto The parsed set of config files from input
    * @param protoPackage The source proto package, as opposed to imported protos, that we will
    *     generate clients for.
+=======
+   * @param model The protobuf model for which we are creating a config.
+   * @param configProto The parsed set of config files from input
+   * @param protoPackage The source proto package, as opposed to imported protos, that we will
+   *     generate clients for.
+   * @param language The language that this config will be used to generate a client in.
+>>>>>>> master
    */
   @Nullable
   public static GapicProductConfig create(
