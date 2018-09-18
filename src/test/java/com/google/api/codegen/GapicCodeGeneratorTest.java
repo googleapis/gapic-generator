@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen;
 
-import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
-import static com.google.api.codegen.ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE;
 import static com.google.api.codegen.ArtifactType.LEGACY_GAPIC_AND_PACKAGE;
 
 import com.google.api.codegen.common.TargetLanguage;

@@ -60,7 +60,12 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         GapicTestBase2.createTestConfig(
             TargetLanguage.GO, null, null, "library", "google.example.library.v1", ARTIFACT_TYPE),
         GapicTestBase2.createTestConfig(
-            TargetLanguage.JAVA, null, null, "library", "google.example.library.v1", ARTIFACT_TYPE));
+            TargetLanguage.JAVA,
+            null,
+            null,
+            "library",
+            "google.example.library.v1",
+            ARTIFACT_TYPE));
   }
 
   @Test
