@@ -201,115 +201,7 @@ func defaultClientOptions() []option.ClientOption {
 
 func defaultCallOptions() *CallOptions {
     retry := map[[2]string][]gax.CallOption{
-        {"default", "findrelatedbooks_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getbigbook_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getbignothing_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getbook_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getbookfromanywhere_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getbookfromarchive_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "getshelf_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "listbooks_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "listshelves_retry_code"}: {
-            gax.WithRetry(func() gax.Retryer {
-                return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
-                    codes.Unavailable,
-                }, gax.Backoff{
-                    Initial: 100*time.Millisecond,
-                    Max: 1000*time.Millisecond,
-                    Multiplier: 1.2,
-                })
-            }),
-        },
-        {"default", "liststrings_retry_code"}: {
+        {"default", "idempotent"}: {
             gax.WithRetry(func() gax.Retryer {
                 return gax.OnCodes([]codes.Code{
                     codes.DeadlineExceeded,
@@ -323,33 +215,33 @@ func defaultCallOptions() *CallOptions {
         },
     }
     return &CallOptions{
-        CreateShelf: retry[[2]string{"default", "createshelf_retry_code"}],
-        GetShelf: retry[[2]string{"default", "getshelf_retry_code"}],
-        ListShelves: retry[[2]string{"default", "listshelves_retry_code"}],
-        DeleteShelf: retry[[2]string{"default", "deleteshelf_retry_code"}],
-        MergeShelves: retry[[2]string{"default", "mergeshelves_retry_code"}],
-        CreateBook: retry[[2]string{"default", "createbook_retry_code"}],
-        PublishSeries: retry[[2]string{"default", "publishseries_retry_code"}],
-        GetBook: retry[[2]string{"default", "getbook_retry_code"}],
-        ListBooks: retry[[2]string{"default", "listbooks_retry_code"}],
-        DeleteBook: retry[[2]string{"default", "deletebook_retry_code"}],
-        UpdateBook: retry[[2]string{"default", "updatebook_retry_code"}],
-        MoveBook: retry[[2]string{"default", "movebook_retry_code"}],
-        ListStrings: retry[[2]string{"default", "liststrings_retry_code"}],
-        AddComments: retry[[2]string{"default", "addcomments_retry_code"}],
-        GetBookFromArchive: retry[[2]string{"default", "getbookfromarchive_retry_code"}],
-        GetBookFromAnywhere: retry[[2]string{"default", "getbookfromanywhere_retry_code"}],
-        GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "getbookfromabsolutelyanywhere_retry_code"}],
-        UpdateBookIndex: retry[[2]string{"default", "updatebookindex_retry_code"}],
-        StreamShelves: retry[[2]string{"default", "streamshelves_retry_code"}],
-        StreamBooks: retry[[2]string{"default", "streambooks_retry_code"}],
-        DiscussBook: retry[[2]string{"default", "discussbook_retry_code"}],
-        MonologAboutBook: retry[[2]string{"default", "monologaboutbook_retry_code"}],
-        FindRelatedBooks: retry[[2]string{"default", "findrelatedbooks_retry_code"}],
+        CreateShelf: retry[[2]string{"default", "non_idempotent"}],
+        GetShelf: retry[[2]string{"default", "idempotent"}],
+        ListShelves: retry[[2]string{"default", "idempotent"}],
+        DeleteShelf: retry[[2]string{"default", "idempotent"}],
+        MergeShelves: retry[[2]string{"default", "non_idempotent"}],
+        CreateBook: retry[[2]string{"default", "non_idempotent"}],
+        PublishSeries: retry[[2]string{"default", "non_idempotent"}],
+        GetBook: retry[[2]string{"default", "idempotent"}],
+        ListBooks: retry[[2]string{"default", "idempotent"}],
+        DeleteBook: retry[[2]string{"default", "idempotent"}],
+        UpdateBook: retry[[2]string{"default", "idempotent"}],
+        MoveBook: retry[[2]string{"default", "non_idempotent"}],
+        ListStrings: retry[[2]string{"default", "idempotent"}],
+        AddComments: retry[[2]string{"default", "non_idempotent"}],
+        GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
+        UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        StreamShelves: retry[[2]string{"default", "idempotent"}],
+        StreamBooks: retry[[2]string{"default", "idempotent"}],
+        DiscussBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
+        FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
-        GetBigBook: retry[[2]string{"default", "getbigbook_retry_code"}],
-        GetBigNothing: retry[[2]string{"default", "getbignothing_retry_code"}],
-        TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "testoptionalrequiredflatteningparams_retry_code"}],
+        GetBigBook: retry[[2]string{"default", "non_idempotent"}],
+        GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
+        TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
