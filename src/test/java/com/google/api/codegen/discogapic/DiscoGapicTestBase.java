@@ -19,7 +19,6 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -48,8 +47,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final List<String> gapicConfigFilePaths = new LinkedList<>();
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
-  protected ConfigProto gapicConfig;
-  protected PackageMetadataConfig packageConfig;
+  protected ConfigProto config;
   private List<CodeGenerator<?>> discoGapicGenerators;
 
   public DiscoGapicTestBase(
@@ -89,10 +87,10 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.", e);
     }
 
-    gapicConfig =
+    config =
         CodegenTestUtil.readConfig(
             new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
-    if (gapicConfig == null) {
+    if (config == null) {
       throw new IllegalArgumentException("Problem fetching or parsing Gapic config files.");
     }
   }
