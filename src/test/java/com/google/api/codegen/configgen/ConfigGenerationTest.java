@@ -29,15 +29,6 @@ import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(
-          CodegenTestUtil.class, Paths.get("src", "test", "java").toString());
-
-  @Override
-  protected TestDataLocator getTestDataLocator() {
-    return this.testDataLocator;
-  }
-
   @Override
   protected String baselineFileName() {
     return testName.getMethodName() + "_config.baseline";
