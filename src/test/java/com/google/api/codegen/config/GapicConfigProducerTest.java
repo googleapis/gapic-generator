@@ -37,7 +37,7 @@ public class GapicConfigProducerTest {
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = TestDataLocator.create(GapicConfigProducerTest.class);
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/config_not_annotated");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
     model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
@@ -47,7 +47,7 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto, TargetLanguage.JAVA);
+    productConfig = GapicProductConfig.create(model, configProto, null, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");

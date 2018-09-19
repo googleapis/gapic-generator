@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.protoannotations;
 
+import com.google.api.codegen.CodegenTestUtil;
+import com.google.api.codegen.GapicTestBase2;
 import com.google.api.codegen.common.TargetLanguage;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,20 +38,20 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String packageConfigFileName,
       List<String> snippetName,
       String apiName,
-      String baseline) {
-    super(language, null, null, snippetName, baseline);
+      String baseline,
+      String protoPackage) {
+    //    super(language, null, null, snippetName, baseline);
+    super(language, null, null, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto/annotated_no_config");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
     return new LinkedList<>();
-    // TODO(andrealin): Implement parsing proto-annotations.
-    //        return Arrays.asList(
-    //            GapicTestBase2.createTestConfig(TargetLanguage.GO, null, null, "library"),
-    //            GapicTestBase2.createTestConfig(TargetLanguage.JAVA, null, null, "library"));
+    // TODO(andrealin): Implement parsing proto-annotations, make baseline files, write tests.
   }
 
   @Test

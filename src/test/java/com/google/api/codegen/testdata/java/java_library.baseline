@@ -7681,7 +7681,7 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 //         className: "PublishSeriesFlattenedPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "FlattenedMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7690,11 +7690,11 @@ public class PublishSeriesFlattenedPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
     List<Book> books = new ArrayList<>();
-    int edition = 0;
     String seriesString = "xyz3141592654";
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
@@ -7762,7 +7762,7 @@ public class PublishSeriesFlattenedSecondEdition {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "RequestObjectMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7771,6 +7771,7 @@ public class PublishSeriesRequestPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
@@ -7783,6 +7784,7 @@ public class PublishSeriesRequestPiVersion {
       .setShelf(shelf)
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
       .build();
     PublishSeriesResponse response = libraryClient.publishSeries(request);
     for (String title : response.getBookNamesList()) {
@@ -7853,7 +7855,7 @@ public class PublishSeriesRequestSecondEdition {
 //         className: "PublishSeriesCallableCallablePiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeriesCallable" of type "CallableMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7862,6 +7864,7 @@ public class PublishSeriesCallableCallablePiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
@@ -7874,6 +7877,7 @@ public class PublishSeriesCallableCallablePiVersion {
       .setShelf(shelf)
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 

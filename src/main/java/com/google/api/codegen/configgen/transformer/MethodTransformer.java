@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -57,7 +59,7 @@ public class MethodTransformer {
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
       generateFieldNamePatterns(method, methodView, collectionNameMap);
-      methodView.timeoutMillis("60000");
+      methodView.timeoutMillis(String.valueOf(DEFAULT_MAX_RETRY_DELAY));
       methods.add(methodView.build());
     }
     return methods.build();
