@@ -23,7 +23,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.longrunning.OperationTypes;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -69,10 +68,12 @@ public abstract class LongRunningConfig {
 
   @Nullable
   static LongRunningConfig createLongRunningConfig(
-      Method method, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto,
+      Method method,
+      DiagCollector diagCollector,
+      LongRunningConfigProto longRunningConfigProto,
       ProtoParser protoParser) {
-    LongRunningConfig longRunningConfig = createLongRunningConfig(method, diagCollector,
-        protoParser);
+    LongRunningConfig longRunningConfig =
+        createLongRunningConfig(method, diagCollector, protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
