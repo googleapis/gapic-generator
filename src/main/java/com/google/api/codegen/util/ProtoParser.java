@@ -23,6 +23,8 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
+import com.google.longrunning.OperationTypes;
+import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
 import javax.annotation.Nullable;
 
@@ -55,6 +57,11 @@ public class ProtoParser {
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public static String getResourceEntityName(Field field) {
     return field.getParent().getSimpleName().toLowerCase();
+  }
+
+  /** Get long running settings. * */
+  public static OperationTypes getLongRunningOperation(Method method) {
+    return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
   @Nullable

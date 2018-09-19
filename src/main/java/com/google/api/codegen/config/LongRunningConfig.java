@@ -15,18 +15,27 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
+import com.google.longrunning.OperationTypes;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
 public abstract class LongRunningConfig {
+  private static final boolean LRO_IMPLEMENTS_CANCEL = true;
+  private static final boolean LRO_IMPLEMENTS_DELETE = true;
+  private static final int LRO_INITIAL_POLL_DELAY_MILLIS = 3000;
+  private static final double LRO_POLL_DELAY_MULTIPLIER = 1.3;
+  private static final int LRO_MAX_POLL_DELAY_MILLIS = 60000;
+  private static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 600000;
 
   /** Returns the message type returned from a completed operation. */
   public abstract TypeModel getReturnType();
@@ -54,6 +63,77 @@ public abstract class LongRunningConfig {
 
   /** Returns total polling timeout. */
   public abstract Duration getTotalPollTimeout();
+
+  /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
+  @Nullable
+  public static LongRunningConfig createLongRunningConfig(
+      Method method, DiagCollector diagCollector) {
+
+    boolean error = false;
+    Model model = method.getModel();
+    OperationTypes operationTypes = ProtoParser.getLongRunningOperation(method);
+    if (operationTypes == null
+        || operationTypes.equals(operationTypes.getDefaultInstanceForType())) {
+      return null;
+    }
+
+    String responseTypeName = operationTypes.getResponse();
+    String metadataTypeName = operationTypes.getMetadata();
+
+    TypeRef returnType = model.getSymbolTable().lookupType(responseTypeName);
+    TypeRef metadataType = model.getSymbolTable().lookupType(metadataTypeName);
+
+    if (returnType == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Type not found for long running config: '%s'",
+              responseTypeName));
+      error = true;
+    } else if (!returnType.isMessage()) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Type for long running config is not a message: '%s'",
+              responseTypeName));
+      error = true;
+    }
+
+    if (metadataType == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Metadata type not found for long running config: '%s'",
+              metadataTypeName));
+      error = true;
+    } else if (!metadataType.isMessage()) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Metadata type for long running config is not a message: '%s'",
+              metadataTypeName));
+      error = true;
+    }
+
+    Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
+    double pollDelayMultiplier = LRO_POLL_DELAY_MULTIPLIER;
+    Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
+    Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
+
+    if (error) {
+      return null;
+    } else {
+      return new AutoValue_LongRunningConfig(
+          ProtoTypeRef.create(returnType),
+          ProtoTypeRef.create(metadataType),
+          LRO_IMPLEMENTS_DELETE,
+          LRO_IMPLEMENTS_DELETE,
+          initialPollDelay,
+          pollDelayMultiplier,
+          maxPollDelay,
+          totalPollTimeout);
+    }
+  }
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable

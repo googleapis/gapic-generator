@@ -194,7 +194,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig = null;
+    LongRunningConfig longRunningConfig =
+        LongRunningConfig.createLongRunningConfig(method, diagCollector);
     if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
           LongRunningConfig.createLongRunningConfig(
