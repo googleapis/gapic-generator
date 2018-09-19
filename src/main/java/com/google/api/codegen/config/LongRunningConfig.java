@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.longrunning.OperationTypes;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -30,12 +31,14 @@ import org.threeten.bp.Duration;
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
 public abstract class LongRunningConfig {
-  private static final boolean LRO_IMPLEMENTS_CANCEL = true;
-  private static final boolean LRO_IMPLEMENTS_DELETE = true;
-  private static final int LRO_INITIAL_POLL_DELAY_MILLIS = 3000;
-  private static final double LRO_POLL_DELAY_MULTIPLIER = 1.3;
-  private static final int LRO_MAX_POLL_DELAY_MILLIS = 60000;
-  private static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 600000;
+
+  // Default values for LongRunningConfig fields.
+  static final boolean LRO_IMPLEMENTS_CANCEL = true;
+  static final boolean LRO_IMPLEMENTS_DELETE = true;
+  static final int LRO_INITIAL_POLL_DELAY_MILLIS = 3000;
+  static final double LRO_POLL_DELAY_MULTIPLIER = 1.3;
+  static final int LRO_MAX_POLL_DELAY_MILLIS = 60000;
+  static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 600000;
 
   /** Returns the message type returned from a completed operation. */
   public abstract TypeModel getReturnType();
@@ -66,8 +69,10 @@ public abstract class LongRunningConfig {
 
   @Nullable
   static LongRunningConfig createLongRunningConfig(
-      Method method, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
-    LongRunningConfig longRunningConfig = createLongRunningConfig(method, diagCollector);
+      Method method, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto,
+      ProtoParser protoParser) {
+    LongRunningConfig longRunningConfig = createLongRunningConfig(method, diagCollector,
+        protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
@@ -82,11 +87,11 @@ public abstract class LongRunningConfig {
   /** Creates an instance of LongRunningConfig based on protofile annotations. */
   @Nullable
   private static LongRunningConfig createLongRunningConfig(
-      Method method, DiagCollector diagCollector) {
+      Method method, DiagCollector diagCollector, ProtoParser protoParser) {
 
     boolean error = false;
     Model model = method.getModel();
-    OperationTypes operationTypes = ProtoParser.getLongRunningOperation(method);
+    OperationTypes operationTypes = protoParser.getLongRunningOperation(method);
     if (operationTypes == null
         || operationTypes.equals(operationTypes.getDefaultInstanceForType())) {
       return null;

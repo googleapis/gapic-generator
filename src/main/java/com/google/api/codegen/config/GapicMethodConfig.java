@@ -25,6 +25,7 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -45,6 +46,7 @@ import org.threeten.bp.Duration;
  */
 @AutoValue
 public abstract class GapicMethodConfig extends MethodConfig {
+
   public Method getMethod() {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
   }
@@ -198,7 +200,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method, diagCollector, methodConfigProto.getLongRunning());
+            method, diagCollector, methodConfigProto.getLongRunning(), ProtoParser.getProtoParser());
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }
