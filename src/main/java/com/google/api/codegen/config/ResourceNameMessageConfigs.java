@@ -19,17 +19,23 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.util.ProtoParser;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /** Configuration of the resource name types for all message field. */
 @AutoValue
@@ -43,28 +49,51 @@ public abstract class ResourceNameMessageConfigs {
    */
   public abstract ListMultimap<String, FieldModel> getFieldsWithResourceNamesByMessage();
 
-  @Nullable
-  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      Model model, ConfigProto configProto, String defaultPackage) {
-    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
-    if (configProto != null) {
-      // Get ResourceNameMessageConfigs from configProto.
-      for (ResourceNameMessageConfigProto messageResourceTypesProto :
-          configProto.getResourceNameGenerationList()) {
-        ResourceNameMessageConfig messageResourceTypeConfig =
-            ResourceNameMessageConfig.createResourceNameMessageConfig(
-                model.getDiagReporter().getDiagCollector(),
-                messageResourceTypesProto,
-                defaultPackage);
-        builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
-      }
-      // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      DiagCollector diagCollector, ConfigProto configProto, String defaultPackage) {
+    return createMessageResourceTypesConfig(
+        new LinkedList<>(), diagCollector, configProto, defaultPackage, null);
+  }
+
+  @VisibleForTesting
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      List<ProtoFile> protoFiles,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      String defaultPackage,
+      ProtoParser protoParser) {
+    Map<String, ResourceNameMessageConfig> builder = new HashMap<>();
+    // Get ResourceNameMessageConfigs from configProto.
+    for (ResourceNameMessageConfigProto messageResourceTypesProto :
+        configProto.getResourceNameGenerationList()) {
+      ResourceNameMessageConfig messageResourceTypeConfig =
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              diagCollector, messageResourceTypesProto, defaultPackage);
+      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
-    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
+    // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.
+
+    // Add more ResourceNameMessageConfigs from proto annotations. Overwrite the configs from
+    // configProto if any clash.
+    for (ProtoFile protoFile : protoFiles) {
+      for (MessageType message : protoFile.getMessages()) {
+        for (Field field : message.getFields()) {
+          String resourcePath = protoParser.getResourcePath(field);
+          if (Strings.isNullOrEmpty(resourcePath)) continue;
+
+          ResourceNameMessageConfig messageResourceTypeConfig =
+              ResourceNameMessageConfig.createResourceNameMessageConfig(field);
+          builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+        }
+      }
+    }
+
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
+        ImmutableMap.copyOf(builder);
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
     Set<String> seenProtoFiles = new HashSet<>();
-    for (ProtoFile protoFile : model.getFiles()) {
+    for (ProtoFile protoFile : protoFiles) {
       if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
         seenProtoFiles.add(protoFile.getSimpleName());
         for (MessageType msg : protoFile.getMessages()) {
