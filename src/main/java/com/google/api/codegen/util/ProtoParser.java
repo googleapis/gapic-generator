@@ -26,6 +26,7 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.common.collect.ImmutableList;
