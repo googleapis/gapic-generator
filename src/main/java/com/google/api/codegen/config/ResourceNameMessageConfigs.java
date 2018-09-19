@@ -71,7 +71,6 @@ public abstract class ResourceNameMessageConfigs {
               diagCollector, messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
-    // TODO(andrealin): Get ResourceNameMessageConfigs from proto annotations.
 
     // Add more ResourceNameMessageConfigs from proto annotations. Overwrite the configs from
     // configProto if any clash.

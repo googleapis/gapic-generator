@@ -19,7 +19,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import javax.annotation.Nullable;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue
@@ -29,7 +28,6 @@ public abstract class ResourceNameMessageConfig {
 
   abstract ImmutableMap<String, String> fieldEntityMap();
 
-  @Nullable
   public static ResourceNameMessageConfig createResourceNameMessageConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigProto messageResourceTypesProto,
