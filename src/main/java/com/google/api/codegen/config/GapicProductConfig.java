@@ -476,7 +476,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ProtoParser protoParser) {
     ProtoFile file = null;
     if (sourceProtos == null) {
-      sourceProtos = new LinkedList<>();
+      sourceProtos = ImmutableList.of();
     } else {
       file = sourceProtos.get(0);
     }

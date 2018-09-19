@@ -42,7 +42,6 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
-  @Nullable
   public static ResourceNameMessageConfig createResourceNameMessageConfig(Field field) {
     String messageName = field.getParent().getFullName();
     ImmutableMap<String, String> fieldEntityMap =
