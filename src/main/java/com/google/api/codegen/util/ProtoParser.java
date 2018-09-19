@@ -15,17 +15,24 @@
 package com.google.api.codegen.util;
 
 import com.google.api.AnnotationsProto;
+import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
@@ -67,6 +74,38 @@ public class ProtoParser {
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
+  }
+
+  /* Return a list of method signatures, aka flattenings, specified on a given method. */
+  public static List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
+    MethodSignature methodSignature =
+        method
+            .getProtoMethod()
+            .getDescriptor()
+            .getMethodAnnotation(AnnotationsProto.methodSignature);
+    // Let's only recurse once when we look for additional MethodSignatures.
+    List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
+    return ImmutableList.<MethodSignature>builder()
+        .add(methodSignature)
+        .addAll(additionalSignatures)
+        .build();
+  }
+
+  public static List<String> getRequiredFields(Method method) {
+    MessageType inputMessage = method.getInputMessage();
+    return inputMessage
+        .getFields()
+        .stream()
+        .filter(ProtoParser::isFieldRequired)
+        .map(Field::getSimpleName)
+        .collect(Collectors.toList());
+  }
+
+  /** Returns if a field is required, according to the proto annotations. */
+  public static boolean isFieldRequired(Field field) {
+    return Optional.ofNullable(
+            (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
+        .orElse(false);
   }
 
   @Nullable

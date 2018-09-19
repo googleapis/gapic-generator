@@ -23,6 +23,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
@@ -67,7 +68,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoMethodTransformer configUtils) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -127,6 +129,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
     if (timeout.toMillis() <= 0) {
+      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
+    }
+    if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -135,7 +140,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+    boolean hasRequestObjectMethod = configUtils.isRequestObjectMethod(methodModel);
+    hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
     if (hasRequestObjectMethod && method.getRequestStreaming()) {
       diagCollector.addDiag(
           Diag.error(
@@ -155,6 +161,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
+    List<String> requiredFields = ProtoParser.getRequiredFields(method);
+    if (requiredFields.isEmpty() && methodConfigProto != null) {
+      requiredFields = methodConfigProto.getRequiredFieldsList();
+    }
+
     ImmutableList<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
@@ -162,8 +173,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFields));
 
     ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(

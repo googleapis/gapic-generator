@@ -15,10 +15,15 @@
 package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.config.MethodModel;
+import java.util.List;
 
 /** Generates API source specific method data. */
 public interface MethodTransformer {
   boolean isIgnoredParameter(String parameter);
 
   String getTimeoutMillis(MethodModel method);
+
+  boolean isRequestObjectMethod(MethodModel method);
+
+  List<String> getParameterList(MethodModel method);
 }

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
@@ -25,8 +24,6 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.common.collect.Iterables;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +32,6 @@ public class MethodMerger {
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(garrettjones): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
-
-  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   // Default LRO values.
   private static final String LRO_TOTAL_POLL_TIMEOUT = "300000";
@@ -143,13 +138,7 @@ public class MethodMerger {
   }
 
   private ConfigNode generateField(ConfigNode prevNode, MethodModel method) {
-    List<String> parameterList = new ArrayList<>();
-    for (FieldModel field : method.getInputFields()) {
-      String fieldName = field.getSimpleName();
-      if (field.getOneof() == null && !methodTransformer.isIgnoredParameter(fieldName)) {
-        parameterList.add(fieldName);
-      }
-    }
+    List<String> parameterList = methodTransformer.getParameterList(method);
 
     int numParams = parameterList.size();
     if (method.hasExtraFieldMask()) {
@@ -170,12 +159,7 @@ public class MethodMerger {
       prevNode = requiredFieldsNode;
     }
 
-    // use all fields for the following check; if there are ignored fields for flattening
-    // purposes, the caller still needs a way to set them (by using the request object method).
-    int fieldCount = Iterables.size(method.getInputFields());
-    boolean requestObjectMethod =
-        (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
-            && !method.getRequestStreaming();
+    boolean requestObjectMethod = methodTransformer.isRequestObjectMethod(method);
     ConfigNode requestObjectMethodNode =
         FieldConfigNode.createStringPair(
             NodeFinder.getNextLine(prevNode),

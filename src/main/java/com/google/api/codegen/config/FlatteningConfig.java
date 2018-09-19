@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
@@ -120,6 +121,62 @@ public abstract class FlatteningConfig {
 
     return new AutoValue_FlatteningConfig(
         flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+  }
+
+  /**
+   * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
+   * provided method.
+   */
+  @Nullable
+  static FlatteningConfig createFlattening(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodSignature methodSignature,
+      MethodModel method) {
+
+    ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
+    Set<String> oneofNames = new HashSet<>();
+    if (methodSignature == null || methodSignature.getFieldsCount() == 0) return null;
+
+    List<String> flattenedParams = Lists.newArrayList(methodSignature.getFieldsList());
+    for (String parameter : flattenedParams) {
+
+      FieldModel parameterField = method.getInputField(parameter);
+      if (parameterField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Field missing for flattening: method = %s, message type = %s, field = %s",
+                method.getFullName(),
+                method.getInputFullName(),
+                parameter));
+        return null;
+      }
+
+      Oneof oneof = parameterField.getOneof();
+      if (oneof != null) {
+        String oneofName = oneof.getName();
+        if (oneofNames.contains(oneofName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Value from oneof already specifed for flattening:%n"
+                      + "method = %s, message type = %s, oneof = %s",
+                  method.getFullName(),
+                  method.getInputFullName(),
+                  oneofName));
+          return null;
+        }
+        oneofNames.add(oneofName);
+      }
+
+      // TODO(andrealin): handle resource names in param.
+      FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(parameterField);
+      flattenedFieldConfigBuilder.put(parameter, fieldConfig);
+    }
+    return new AutoValue_FlatteningConfig(
+        flattenedFieldConfigBuilder.build(), methodSignature.getFunctionName());
   }
 
   public Iterable<FieldModel> getFlattenedFields() {

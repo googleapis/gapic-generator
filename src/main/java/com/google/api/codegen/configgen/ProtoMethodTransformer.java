@@ -17,14 +17,19 @@ package com.google.api.codegen.configgen;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 import com.google.api.BackendRule;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.Iterables;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
   private static final int MILLIS_PER_SECOND = 1000;
+  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   @Override
   public boolean isIgnoredParameter(String parameter) {
@@ -44,5 +49,25 @@ public class ProtoMethodTransformer implements MethodTransformer {
       }
     }
     return DEFAULT_MAX_RETRY_DELAY;
+  }
+
+  @Override
+  public boolean isRequestObjectMethod(MethodModel method) {
+    // use all fields for the following check; if there are ignored fields for flattening
+    // purposes, the caller still needs a way to set them (by using the request object method).
+    List<String> parameterList = getParameterList(method);
+    int fieldCount = Iterables.size(method.getInputFields());
+    return (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
+        && !method.getRequestStreaming();
+  }
+
+  @Override
+  public List<String> getParameterList(MethodModel method) {
+    return method
+        .getInputFields()
+        .stream()
+        .filter(f -> f.getOneof() == null && !isIgnoredParameter(f.getSimpleName()))
+        .map(FieldModel::getSimpleName)
+        .collect(Collectors.toList());
   }
 }
