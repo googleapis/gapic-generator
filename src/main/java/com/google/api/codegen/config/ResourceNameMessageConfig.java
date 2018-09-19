@@ -24,8 +24,11 @@ import com.google.common.collect.ImmutableMap;
 @AutoValue
 public abstract class ResourceNameMessageConfig {
 
+  // Fully qualified name of the message that this resource name represents.
   public abstract String messageName();
 
+  // Maps the simple name of a field to the name of a resource entity (a resource entity
+  // contains a resource URL).
   abstract ImmutableMap<String, String> fieldEntityMap();
 
   public static ResourceNameMessageConfig createResourceNameMessageConfig(
@@ -43,8 +46,6 @@ public abstract class ResourceNameMessageConfig {
   public static ResourceNameMessageConfig createResourceNameMessageConfig(Field field) {
     String messageName = field.getParent().getFullName();
     ImmutableMap<String, String> fieldEntityMap =
-        // Assume that each MessageType will only have one Field that has a resource name,
-        // And that that Field is the name of the MessageType.
         ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
 
     return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
