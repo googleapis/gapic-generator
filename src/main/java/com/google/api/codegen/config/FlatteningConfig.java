@@ -24,6 +24,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashSet;
@@ -39,11 +40,13 @@ public abstract class FlatteningConfig {
 
   @Nullable
   public abstract String getFlatteningName();
+
   /**
    * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
    * provided method.
    */
   @Nullable
+  @VisibleForTesting
   static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,

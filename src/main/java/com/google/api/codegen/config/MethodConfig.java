@@ -212,7 +212,8 @@ public abstract class MethodConfig {
         return null;
       }
     }
-    // TODO get flattenings from proto annotations.
+
+    // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     if (methodModel instanceof ProtoMethodModel) {
       List<MethodSignature> methodSignatures =
           ProtoParser.getMethodSignatures((ProtoMethodModel) methodModel);
