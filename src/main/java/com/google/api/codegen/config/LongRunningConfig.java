@@ -64,9 +64,24 @@ public abstract class LongRunningConfig {
   /** Returns total polling timeout. */
   public abstract Duration getTotalPollTimeout();
 
-  /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  public static LongRunningConfig createLongRunningConfig(
+  static LongRunningConfig createLongRunningConfig(
+      Method method, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
+    LongRunningConfig longRunningConfig = createLongRunningConfig(method, diagCollector);
+    if (longRunningConfig != null) {
+      return longRunningConfig;
+    }
+
+    if (!LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
+      return LongRunningConfig.createLongRunningConfig(
+          method.getModel(), diagCollector, longRunningConfigProto);
+    }
+    return null;
+  }
+
+  /** Creates an instance of LongRunningConfig based on protofile annotations. */
+  @Nullable
+  private static LongRunningConfig createLongRunningConfig(
       Method method, DiagCollector diagCollector) {
 
     boolean error = false;
@@ -116,7 +131,6 @@ public abstract class LongRunningConfig {
     }
 
     Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
-    double pollDelayMultiplier = LRO_POLL_DELAY_MULTIPLIER;
     Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
     Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
 
@@ -129,7 +143,7 @@ public abstract class LongRunningConfig {
           LRO_IMPLEMENTS_CANCEL,
           LRO_IMPLEMENTS_DELETE,
           initialPollDelay,
-          pollDelayMultiplier,
+          LRO_POLL_DELAY_MULTIPLIER,
           maxPollDelay,
           totalPollTimeout);
     }
@@ -137,7 +151,7 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  public static LongRunningConfig createLongRunningConfig(
+  private static LongRunningConfig createLongRunningConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
     boolean error = false;

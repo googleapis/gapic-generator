@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -172,6 +171,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
             fieldNamePatterns,
             resourceNameConfigs,
             getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
@@ -195,14 +197,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     LongRunningConfig longRunningConfig =
-        LongRunningConfig.createLongRunningConfig(method, diagCollector);
-    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
-      longRunningConfig =
-          LongRunningConfig.createLongRunningConfig(
-              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
-      if (longRunningConfig == null) {
-        error = true;
-      }
+        LongRunningConfig.createLongRunningConfig(
+            method, diagCollector, methodConfigProto.getLongRunning());
+    if (diagCollector.getErrorCount() > 0) {
+      error = true;
     }
 
     List<String> headerRequestParams =
